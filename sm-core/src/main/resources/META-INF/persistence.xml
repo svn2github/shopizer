@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0">
+	<persistence-unit name="jpa">
+		<class>com.salesmanager.core.business.reference.country.model.Country</class>
+		<class>com.salesmanager.core.business.reference.zone.model.Zone</class>
+		<class>com.salesmanager.core.business.merchant.model.MerchantStore</class>
+		<class>com.salesmanager.core.business.merchant.model.StoreBranding</class>
+		<class>com.salesmanager.core.business.reference.language.model.Language</class>
+	</persistence-unit>
+</persistence>

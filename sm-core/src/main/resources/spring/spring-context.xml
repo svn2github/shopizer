@@ -1,0 +1,85 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+   http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
+   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+   http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.salesmanager.core.business" />
+
+	<!-- datasource -->
+	<import resource="classpath:/spring/datasource-c3p0.xml" />
+
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="datasource" />
+		<property name="jpaVendorAdapter" ref="jpaAdapter" />
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.format_sql">false</prop>
+				<prop key="hibernate.generate_statistics">true</prop>
+				<prop key="hibernate.bytecode.use_reflection_optimizer">true</prop>
+				<prop key="hibernate.default_schema">${db.schema}</prop>
+
+				<!-- Enable entity caching ; it is also needed that cached entities must be annotated with @Cacheable (jpa2) * cached entities may be declared in ehcache-hibernate.xml -->
+				<prop key="javax.persistence.sharedCache.mode">ENABLE_SELECTIVE</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+				<prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop>
+				<prop key="net.sf.ehcache.configurationResourceName">/ehcache/ehcache-hibernate.xml</prop>
+				<!-- enabled hibernate to store entries in a more readable format (from documentation) -->
+				<prop key="hibernate.cache.use_structured_entries">true</prop>
+			</props>
+		</property>
+		<property name="loadTimeWeaver">
+			<bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver" />
+		</property>
+	</bean>
+
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+	<bean id="jpaAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+		<property name="database" value="MYSQL" />
+	</bean>
+
+	<!-- Définition de la gestion des transactions -->
+	<tx:annotation-driven />
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
+		p:entityManagerFactory-ref="entityManagerFactory">
+	</bean>
+
+<!-- 	<aop:config> -->
+<!-- 		<aop:pointcut id="txPointCutDef" expression="this(com.salesmanager.core.business.generic.service.TransactionalAspectAwareService)" /> -->
+<!-- 		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointCutDef" /> -->
+<!-- 	</aop:config> -->
+
+<!-- 	<tx:advice id="txAdvice" transaction-manager="transactionManager"> -->
+<!-- 		<tx:attributes> -->
+<!-- 			<tx:method name="get*" read-only="true" /> -->
+<!-- 			<tx:method name="list*" read-only="true" /> -->
+<!-- 			<tx:method name="search*" read-only="true" /> -->
+<!-- 			<tx:method name="*" read-only="false" rollback-for="com.salesmanager.core.business.generic.exception.ServiceException" /> -->
+<!-- 		</tx:attributes> -->
+<!-- 	</tx:advice> -->
+
+	<!-- traduction des exceptions -->
+	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+	<!-- persistence -->
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:database.properties</value>
+		</property>
+	</bean>
+</beans>
