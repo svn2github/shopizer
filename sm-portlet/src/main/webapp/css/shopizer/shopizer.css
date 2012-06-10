@@ -1,0 +1,4 @@
+[class*="span"] {
+    float: left;
+    margin-left: 25px;
+}
