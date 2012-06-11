@@ -4,9 +4,10 @@
 <liferay-portlet-app>
 	<portlet>
 		<portlet-name>category</portlet-name>
+		<icon>/img/icon/logo.png</icon>
 		<instanceable>true</instanceable>
 		<remoteable>true</remoteable>
-		<header-portlet-css>/css/bootstrap/bootstrap.min.css</header-portlet-css>
+		<header-portlet-css>/css/bootstrap/bootstrap.css</header-portlet-css>
 		<header-portlet-css>/css/bootstrap/bootstrap-responsive.min.css</header-portlet-css>
 		<header-portlet-css>/css/shopizer/shopizer.css</header-portlet-css>
 		<header-portlet-javascript>/js/jquery/jquery-1.7.2.min.js</header-portlet-javascript>
@@ -14,9 +15,10 @@
 	</portlet>
 	<portlet>
 		<portlet-name>product</portlet-name>
+		<icon>/img/icon/logo.png</icon>
 		<instanceable>true</instanceable>
 		<remoteable>true</remoteable>
-		<header-portlet-css>/css/bootstrap/bootstrap.min.css</header-portlet-css>
+		<header-portlet-css>/css/bootstrap/bootstrap.css</header-portlet-css>
 		<header-portlet-css>/css/bootstrap/bootstrap-responsive.min.css</header-portlet-css>
 		<header-portlet-css>/css/shopizer/shopizer.css</header-portlet-css>
 		<header-portlet-javascript>/js/jquery/jquery-1.7.2.min.js</header-portlet-javascript>
@@ -24,9 +26,10 @@
 	</portlet>
 	<portlet>
 		<portlet-name>minicart</portlet-name>
+		<icon>/img/icon/logo.png</icon>
 		<instanceable>true</instanceable>
 		<remoteable>true</remoteable>
-		<header-portlet-css>/css/bootstrap/bootstrap.min.css</header-portlet-css>
+		<header-portlet-css>/css/bootstrap/bootstrap.css</header-portlet-css>
 		<header-portlet-css>/css/bootstrap/bootstrap-responsive.min.css</header-portlet-css>
 		<header-portlet-css>/css/shopizer/shopizer.css</header-portlet-css>
 		<header-portlet-javascript>/js/jquery/jquery-1.7.2.min.js</header-portlet-javascript>
