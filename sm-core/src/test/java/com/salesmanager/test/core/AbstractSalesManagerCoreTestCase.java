@@ -28,6 +28,7 @@ import com.salesmanager.core.business.catalog.product.model.attribute.ProductOpt
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
+import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
@@ -142,64 +143,22 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	
 	@After
 	public void close() throws ServiceException {
-		cleanAll();
-		checkEmptyDatabase();
+		//cleanAll();
+		//checkEmptyDatabase();
 	}
 	
 	private void cleanAll() throws ServiceException {
 		cleanCategories();
 		cleanOrders();
-		cleanStores();
-		cleanMerchants();
 		cleanCustomers();
-		cleanProductPrices();
-		cleanProductAvailabilities();
-		cleanProductImages();
-		cleanProductAttributes();
-		cleanProductOptions();
-		cleanProductOptionValues();
 		cleanProducts();
 		cleanCurrencies();
 		cleanCountries();
+		cleanMerchants();
 		cleanLanguages();
 	}
 	
-	private void cleanProductImages() throws ServiceException {
-		for(ProductImage image : productImageService.list()) {
-			productImageService.delete(image);
-		}
-	}
-
-	private void cleanProductOptions() throws ServiceException {
-		for(ProductOption option : productOptionService.list()){
-			productOptionService.delete(option);
-		}
-	}
-
-	private void cleanProductOptionValues() throws ServiceException {
-		for(ProductOptionValue value : productOptionValueService.list()) {
-			productOptionValueService.delete(value);
-		}
-		
-	}
-
-	private void cleanProductAttributes() throws ServiceException {
-		for(ProductAttribute attribute : productAttributeService.list()) {
-			productAttributeService.delete(attribute);
-		}
-	}
-
-	private void cleanProductPrices() throws ServiceException {
-		for(ProductPrice price : productPriceService.list()) {
-			productPriceService.delete(price);
-		}
-	}
-
-	private void cleanProductAvailabilities() throws ServiceException {
-		for(ProductAvailability availability : productAvailabilityService.list()) {
-			productAvailabilityService.delete(availability);
-		}
-	}
+	
 
 	private void cleanCountries() throws ServiceException {
 		for (Country country : countryService.list()) {
@@ -230,23 +189,43 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	}
 	
 	private void cleanMerchants() throws ServiceException {
-		List<MerchantStore> list = merchantService.list();
+/*		List<MerchantStore> list = merchantService.list();
 		for (MerchantStore merchant : list) {
 			merchantService.delete(merchant);
 		}
+		List<StoreBranding> blist = storeBrandingService.list();
+		for (StoreBranding storeBranding : blist) {
+			storeBrandingService.delete(storeBranding);
+		}*/
 	}
 	
-	private void cleanStores() throws ServiceException {
-		List<StoreBranding> list = storeBrandingService.list();
-		for (StoreBranding storeBranding : list) {
-			storeBrandingService.delete(storeBranding);
-		}
-	}
+
 	
 	private void cleanProducts() throws ServiceException {
 		List<Product> list = productService.list();
 		for (Product product : list) {
 			productService.delete(product);
+		}
+		for(ProductAvailability availability : productAvailabilityService.list()) {
+			productAvailabilityService.delete(availability);
+		}
+		for(ProductPrice price : productPriceService.list()) {
+			productPriceService.delete(price);
+		}
+		for(ProductImage image : productImageService.list()) {
+			productImageService.delete(image);
+		}
+		for(ProductOption option : productOptionService.list()){
+			productOptionService.delete(option);
+		}
+		for(ProductOptionValue value : productOptionValueService.list()) {
+			productOptionValueService.delete(value);
+		}
+		for(ProductAttribute attribute : productAttributeService.list()) {
+			productAttributeService.delete(attribute);
+		}
+		for(Manufacturer manufacturer : manufacturerService.list()) {
+			manufacturerService.delete(manufacturer);
 		}
 	}
 	
