@@ -55,10 +55,10 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "product")
 	private Set<ProductDescription> descriptions = new HashSet<ProductDescription>();
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy="product")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy="product", orphanRemoval = true)
 	private Set<ProductAvailability> availabilities = new HashSet<ProductAvailability>();
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "product")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "product")
 	private Set<ProductAttribute> attributes = new HashSet<ProductAttribute>();
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "product")
@@ -73,7 +73,6 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 			inverseJoinColumns = { @JoinColumn(name = "MERCHANT_ID", 
 					nullable = false, updatable = false) })
 	private Set<MerchantStore> stores = new HashSet<MerchantStore>();
-
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name="MANUFACTURER_ID", nullable=true)
@@ -83,12 +82,9 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 	@JoinColumn(name="PRODUCT_TYPE_ID", nullable=true)
 	private ProductType type = null;
 
-
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name="TAX_CLASS_ID", nullable=true)
 	private TaxClass taxClass = null;
-
-
 
 	@Column(name = "PRODUCT_VIRTUAL")
 	private Boolean productVirtual = false;

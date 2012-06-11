@@ -2,6 +2,7 @@ package com.salesmanager.core.business.catalog.product.model.attribute;
 
 import java.math.BigDecimal;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -44,34 +45,34 @@ public class ProductAttribute extends SalesManagerEntity<Long, ProductAttribute>
 	private Integer productOptionSortOrder;
 	
 	@Column(name="PRODUCT_ATTRIBUTE_FREE")
-	private boolean productAttributeIsFree;
+	private Boolean productAttributeIsFree;
 	
 	@Column(name="PRODUCT_ATTRIBUTE_WEIGHT")
 	private BigDecimal productAttributeWeight;
 	
 	@Column(name="PRODUCT_ATTRIBUTE_DEFAULT")
-	private boolean attributeDefault=false;
+	private Boolean attributeDefault=false;
 	
 	@Column(name="PRODUCT_ATTRIBUTE_REQUIRED")
-	private boolean attributeRequired=false;
+	private Boolean attributeRequired=false;
 	
 	@Column(name="PRODUCT_ATTRIBUTE_FOR_DISP")
-	private boolean attributeDisplayOnly=false;
+	private Boolean attributeDisplayOnly=false;
 	
 	@Column(name="PRODUCT_ATTRIBUTE_DISCOUNTED")
-	private boolean attributeDiscounted=false;
+	private Boolean attributeDiscounted=false;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="OPTION_ID", nullable=false)
-	private ProductOption productOption = null;
+	private ProductOption productOption;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="OPTION_VALUE_ID", nullable=false)  
-	private ProductOptionValue productOptionValue = null;
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	@JoinColumn(name="OPTION_VALUE_ID", nullable=false)
+	private ProductOptionValue productOptionValue;
 	
 	@ManyToOne(targetEntity = Product.class)
 	@JoinColumn(name = "PRODUCT_ID", nullable = false)
-	private Product product = null;
+	private Product product;
 	
 	public ProductAttribute() {
 	}
@@ -102,11 +103,11 @@ public class ProductAttribute extends SalesManagerEntity<Long, ProductAttribute>
 		this.productOptionSortOrder = productOptionSortOrder;
 	}
 
-	public boolean getProductAttributeIsFree() {
+	public Boolean getProductAttributeIsFree() {
 		return productAttributeIsFree;
 	}
 
-	public void setProductAttributeIsFree(boolean productAttributeIsFree) {
+	public void setProductAttributeIsFree(Boolean productAttributeIsFree) {
 		this.productAttributeIsFree = productAttributeIsFree;
 	}
 
@@ -118,35 +119,35 @@ public class ProductAttribute extends SalesManagerEntity<Long, ProductAttribute>
 		this.productAttributeWeight = productAttributeWeight;
 	}
 
-	public boolean getAttributeDefault() {
+	public Boolean getAttributeDefault() {
 		return attributeDefault;
 	}
 
-	public void setAttributeDefault(boolean attributeDefault) {
+	public void setAttributeDefault(Boolean attributeDefault) {
 		this.attributeDefault = attributeDefault;
 	}
 
-	public boolean getAttributeRequired() {
+	public Boolean getAttributeRequired() {
 		return attributeRequired;
 	}
 
-	public void setAttributeRequired(boolean attributeRequired) {
+	public void setAttributeRequired(Boolean attributeRequired) {
 		this.attributeRequired = attributeRequired;
 	}
 
-	public boolean getAttributeDisplayOnly() {
+	public Boolean getAttributeDisplayOnly() {
 		return attributeDisplayOnly;
 	}
 
-	public void setAttributeDisplayOnly(boolean attributeDisplayOnly) {
+	public void setAttributeDisplayOnly(Boolean attributeDisplayOnly) {
 		this.attributeDisplayOnly = attributeDisplayOnly;
 	}
 
-	public boolean getAttributeDiscounted() {
+	public Boolean getAttributeDiscounted() {
 		return attributeDiscounted;
 	}
 
-	public void setAttributeDiscounted(boolean attributeDiscounted) {
+	public void setAttributeDiscounted(Boolean attributeDiscounted) {
 		this.attributeDiscounted = attributeDiscounted;
 	}
 

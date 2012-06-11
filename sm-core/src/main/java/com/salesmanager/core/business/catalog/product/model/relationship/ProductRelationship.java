@@ -28,8 +28,6 @@ public class ProductRelationship extends SalesManagerEntity<Long, ProductRelatio
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
 	
-
-	
 	@ManyToOne(targetEntity = MerchantStore.class)
 	@JoinColumn(name="MERCHANT_ID",nullable=false)  
 	private MerchantStore store;
