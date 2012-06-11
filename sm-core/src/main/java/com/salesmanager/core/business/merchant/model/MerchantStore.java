@@ -250,33 +250,33 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	
 	//mappings
 	@SuppressWarnings("unused")
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores")
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = CascadeType.REMOVE)
 	private Set<Manufacturer> manufacturers = new HashSet<Manufacturer>();
 	
 	@SuppressWarnings("unused")
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores")
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = CascadeType.REMOVE)
 	private Set<TaxClass> taxClasses = new HashSet<TaxClass>();
 	
 	@SuppressWarnings("unused")
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores")
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = CascadeType.REMOVE)
 	private Set<ProductOption> productOptions = new HashSet<ProductOption>();
 	
 	@SuppressWarnings("unused")
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores")
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = CascadeType.REMOVE)
 	private Set<ProductOptionValue> productOptionValues = new HashSet<ProductOptionValue>();
 	
 	@SuppressWarnings("unused")
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores")
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = CascadeType.REMOVE)
 	private Set<Product> products = new HashSet<Product>();
 	
 	//TODO Currency is system not specific to a merchant
-	@ManyToOne(targetEntity = Currency.class)
+	@ManyToOne(targetEntity = Currency.class, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "CURRENCY_ID", nullable=false)
 	private Currency currency;
 	
 	//TODO ManyToMany
 	@SuppressWarnings("unused")
-	@OneToMany(mappedBy = "merchant")
+	@OneToMany(mappedBy = "merchant", cascade = CascadeType.REMOVE)
 	private List<TaxRate> taxRates = new ArrayList<TaxRate>();
 
 
