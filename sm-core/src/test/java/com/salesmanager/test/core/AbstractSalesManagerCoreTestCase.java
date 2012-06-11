@@ -152,10 +152,12 @@ public abstract class AbstractSalesManagerCoreTestCase {
 		cleanOrders();
 		cleanCustomers();
 		cleanProducts();
+		cleanMerchants();
+		//references
 		cleanCurrencies();
 		cleanCountries();
-		cleanMerchants();
 		cleanLanguages();
+
 	}
 	
 	
@@ -189,14 +191,14 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	}
 	
 	private void cleanMerchants() throws ServiceException {
-/*		List<MerchantStore> list = merchantService.list();
+		List<MerchantStore> list = merchantService.list();
 		for (MerchantStore merchant : list) {
 			merchantService.delete(merchant);
 		}
 		List<StoreBranding> blist = storeBrandingService.list();
 		for (StoreBranding storeBranding : blist) {
 			storeBrandingService.delete(storeBranding);
-		}*/
+		}
 	}
 	
 
