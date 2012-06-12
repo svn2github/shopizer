@@ -3,6 +3,7 @@ package com.salesmanager.core.business.reference.language.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -105,6 +106,6 @@ public class Language extends SalesManagerEntity<Integer, Language> implements A
 	}
 	
 	@SuppressWarnings("unused")
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "languages")
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "languages", cascade = CascadeType.REMOVE)
 	private Set<MerchantStore> stores = new HashSet<MerchantStore>();
 }
