@@ -2,10 +2,7 @@ package com.salesmanager.test.catalog;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -26,9 +23,7 @@ import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDe
 import com.salesmanager.core.business.catalog.product.model.type.ProductType;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.merchant.model.StoreBranding;
 import com.salesmanager.core.business.reference.country.model.Country;
-import com.salesmanager.core.business.reference.country.model.CountryDescription;
 import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;

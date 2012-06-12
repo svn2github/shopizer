@@ -44,9 +44,7 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.generic.util.EntityManagerUtils;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.merchant.model.StoreBranding;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
-import com.salesmanager.core.business.merchant.service.StoreBrandingService;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.country.model.Country;
@@ -69,9 +67,15 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	
 	protected static final String ENGLISH_LANGUAGE_CODE = "en";
 	
+	protected static final String FRENCH_LANGUAGE_CODE = "fr";
+	
 	protected static final String EURO_CURRENCY_CODE = "EUR";
 	
-	protected static final String FRA_COUNTRY_CODE = "FRA";
+	protected static final String FR_COUNTRY_CODE = "FR";
+	
+	protected static final String CAD_CURRENCY_CODE = "CAD";
+	
+	protected static final String CA_COUNTRY_CODE = "CA";
 	
 	@Autowired
 	private EntityManagerUtils entityManagerUtils;
@@ -106,8 +110,7 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	@Autowired
 	protected ProductTypeService productTypeService;
 	
-	@Autowired
-	protected StoreBrandingService storeBrandingService;
+
 	
 	@Autowired
 	protected LanguageService languageService;
@@ -149,9 +152,6 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	private void cleanAll() throws ServiceException {
 		cleanCategories();
 		cleanOrders();
-		cleanStores();
-		cleanMerchants();
-		cleanCustomers();
 		cleanProductPrices();
 		cleanProductAvailabilities();
 		cleanProductImages();
@@ -159,6 +159,8 @@ public abstract class AbstractSalesManagerCoreTestCase {
 		cleanProductOptions();
 		cleanProductOptionValues();
 		cleanProducts();
+		cleanCustomers();
+		cleanMerchants();
 		cleanCurrencies();
 		cleanCountries();
 		cleanLanguages();
@@ -236,13 +238,7 @@ public abstract class AbstractSalesManagerCoreTestCase {
 		}
 	}
 	
-	private void cleanStores() throws ServiceException {
-		List<StoreBranding> list = storeBrandingService.list();
-		for (StoreBranding storeBranding : list) {
-			storeBrandingService.delete(storeBranding);
-		}
-	}
-	
+
 	private void cleanProducts() throws ServiceException {
 		List<Product> list = productService.list();
 		for (Product product : list) {
@@ -322,15 +318,26 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	}
 	
 	private void populate() throws ServiceException {
-		Language language = new Language();
-		language.setCode(ENGLISH_LANGUAGE_CODE);
-		languageService.create(language);
+		Language english = new Language();
+		english.setCode(ENGLISH_LANGUAGE_CODE);
+		languageService.create(english);
 		
-		Currency currency = new Currency();
-		currency.setCurrency(java.util.Currency.getInstance(EURO_CURRENCY_CODE));
-		currencyService.create(currency);
+		Language french = new Language();
+		french.setCode(FRENCH_LANGUAGE_CODE);
+		languageService.create(french);
 		
-		Country country = new Country(FRA_COUNTRY_CODE);
-		countryService.create(country);
+		Currency euro = new Currency();
+		euro.setCurrency(java.util.Currency.getInstance(EURO_CURRENCY_CODE));
+		currencyService.create(euro);
+		
+		Currency cad = new Currency();
+		cad.setCurrency(java.util.Currency.getInstance(CAD_CURRENCY_CODE));
+		currencyService.create(cad);
+		
+		Country fr = new Country(FR_COUNTRY_CODE);
+		countryService.create(fr);
+		
+		Country ca = new Country(CA_COUNTRY_CODE);
+		countryService.create(ca);
 	}
 }
