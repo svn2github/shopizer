@@ -40,7 +40,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		
 		Language language = languageService.getByCode(ENGLISH_LANGUAGE_CODE);
 		Currency currency = currencyService.getByCode(EURO_CURRENCY_CODE);
-		Country country = countryService.getByCode(FRA_COUNTRY_CODE);
+		Country country = countryService.getByCode(FR_COUNTRY_CODE);
 		
 		MerchantStore merchant = new MerchantStore();
 		
