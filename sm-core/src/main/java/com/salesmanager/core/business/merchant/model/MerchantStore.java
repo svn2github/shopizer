@@ -86,8 +86,8 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	private Date inBusinessSince;
 	
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "LANGUAGE_ID",nullable=false, updatable=false)
+	@ManyToOne(targetEntity = Language.class)
+	@JoinColumn(name = "LANGUAGE_ID", nullable=false)
 	private Language defaultLanguage;
 
 
@@ -120,6 +120,13 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	
 	@Column(name = "STORE_EMAIL", length=60, nullable=false)
 	private String storeEmailAddress;
+	
+	@Column(name="STORE_LOGO", length=100)
+	private String storeLogo;
+	
+	@ManyToOne(targetEntity = Currency.class)
+	@JoinColumn(name = "CURRENCY_ID", nullable=false)
+	private Currency currency;
 	
 
 	public boolean isUseCache() {
@@ -277,13 +284,14 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = CascadeType.REMOVE)
 	private Set<Product> products = new HashSet<Product>();
 	
-	//TODO Currency is system not specific to a merchant
-	@ManyToOne(targetEntity = Currency.class, cascade = CascadeType.REMOVE)
-	@JoinColumn(name = "CURRENCY_ID", nullable=false)
-	private Currency currency;
+
 	
-	@Column(name="STORE_LOGO", length=100)
-	private String storeLogo;
+	//TODO ManyToMany
+	@SuppressWarnings("unused")
+	@OneToMany(mappedBy = "merchant", cascade = CascadeType.REMOVE)
+	private List<TaxRate> taxRates = new ArrayList<TaxRate>();
+	
+
 	
 	public String getStoreLogo() {
 		return storeLogo;
@@ -335,10 +343,7 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 
 
 
-	//TODO ManyToMany
-	@SuppressWarnings("unused")
-	@OneToMany(mappedBy = "merchant", cascade = CascadeType.REMOVE)
-	private List<TaxRate> taxRates = new ArrayList<TaxRate>();
+
 
 
 }
