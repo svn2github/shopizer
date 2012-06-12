@@ -87,7 +87,6 @@ public class MerchantStoreDaoImpl extends SalesManagerEntityDaoImpl<Integer, Mer
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qMerchantStore)
-			.leftJoin(qMerchantStore.branding)
 			.innerJoin(qMerchantStore.defaultLanguage)
 			.leftJoin(qMerchantStore.languages)
 			.where(qMerchantStore.id.eq(merchantStoreId));

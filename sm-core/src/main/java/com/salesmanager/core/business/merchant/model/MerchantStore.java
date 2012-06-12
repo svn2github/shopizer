@@ -89,9 +89,6 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	@JoinColumn(name="LANGUAGE_ID", nullable=false)
 	private Language defaultLanguage;
 
-	@OneToOne
-	@JoinColumn(name="STORE_BRANDING_ID", nullable=true, updatable=true)
-	private StoreBranding branding;
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "MERCHANT_LANGUAGE", joinColumns = { 
@@ -107,6 +104,22 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	
 	@Column(name = "USE_CACHE")
 	private boolean useCache = false;
+	
+	@Column(name="STORE_TEMPLATE", length=25)
+	private String storeTemplate;
+	
+	@Column(name="INVOICE_TEMPLATE", length=25)
+	private String invoiceTemplate;
+	
+	@Column(name="DOMAIN_NAME", length=80)
+	private String domainName;
+	
+	@Column(name="CONTINUESHOPPINGURL", length=150)
+	private String continueshoppingurl;
+	
+	@Column(name = "STORE_EMAIL", length=60, nullable=false)
+	private String storeEmailAddress;
+	
 
 	public boolean isUseCache() {
 		return useCache;
@@ -214,13 +227,7 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 		this.seizeunitcode = seizeunitcode;
 	}
 
-	public StoreBranding getBranding() {
-		return branding;
-	}
 
-	public void setBranding(StoreBranding branding) {
-		this.branding = branding;
-	}
 
 	public Date getInBusinessSince() {
 		return CloneUtils.clone(inBusinessSince);
@@ -250,33 +257,86 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	
 	//mappings
 	@SuppressWarnings("unused")
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores")
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = CascadeType.REMOVE)
 	private Set<Manufacturer> manufacturers = new HashSet<Manufacturer>();
 	
 	@SuppressWarnings("unused")
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores")
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = CascadeType.REMOVE)
 	private Set<TaxClass> taxClasses = new HashSet<TaxClass>();
 	
 	@SuppressWarnings("unused")
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores")
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = CascadeType.REMOVE)
 	private Set<ProductOption> productOptions = new HashSet<ProductOption>();
 	
 	@SuppressWarnings("unused")
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores")
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = CascadeType.REMOVE)
 	private Set<ProductOptionValue> productOptionValues = new HashSet<ProductOptionValue>();
 	
 	@SuppressWarnings("unused")
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores")
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = CascadeType.REMOVE)
 	private Set<Product> products = new HashSet<Product>();
 	
 	//TODO Currency is system not specific to a merchant
-	@ManyToOne(targetEntity = Currency.class)
+	@ManyToOne(targetEntity = Currency.class, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "CURRENCY_ID", nullable=false)
 	private Currency currency;
 	
+	@Column(name="STORE_LOGO", length=100)
+	private String storeLogo;
+	
+	public String getStoreLogo() {
+		return storeLogo;
+	}
+
+	public void setStoreLogo(String storeLogo) {
+		this.storeLogo = storeLogo;
+	}
+
+	public String getStoreTemplate() {
+		return storeTemplate;
+	}
+
+	public void setStoreTemplate(String storeTemplate) {
+		this.storeTemplate = storeTemplate;
+	}
+
+	public String getInvoiceTemplate() {
+		return invoiceTemplate;
+	}
+
+	public void setInvoiceTemplate(String invoiceTemplate) {
+		this.invoiceTemplate = invoiceTemplate;
+	}
+
+	public String getDomainName() {
+		return domainName;
+	}
+
+	public void setDomainName(String domainName) {
+		this.domainName = domainName;
+	}
+
+	public String getContinueshoppingurl() {
+		return continueshoppingurl;
+	}
+
+	public void setContinueshoppingurl(String continueshoppingurl) {
+		this.continueshoppingurl = continueshoppingurl;
+	}
+
+	public String getStoreEmailAddress() {
+		return storeEmailAddress;
+	}
+
+	public void setStoreEmailAddress(String storeEmailAddress) {
+		this.storeEmailAddress = storeEmailAddress;
+	}
+
+
+
 	//TODO ManyToMany
 	@SuppressWarnings("unused")
-	@OneToMany(mappedBy = "merchant")
+	@OneToMany(mappedBy = "merchant", cascade = CascadeType.REMOVE)
 	private List<TaxRate> taxRates = new ArrayList<TaxRate>();
 
 
