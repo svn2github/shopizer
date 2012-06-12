@@ -5,7 +5,6 @@
 		<class>com.salesmanager.core.business.reference.country.model.Country</class>
 		<class>com.salesmanager.core.business.reference.zone.model.Zone</class>
 		<class>com.salesmanager.core.business.merchant.model.MerchantStore</class>
-		<class>com.salesmanager.core.business.merchant.model.StoreBranding</class>
 		<class>com.salesmanager.core.business.reference.language.model.Language</class>
 	</persistence-unit>
 </persistence>
