@@ -33,7 +33,7 @@ public class MerchantSalesManagerTestCase extends AbstractSalesManagerCoreTestCa
 	@Test
 	public void createMerchant() throws Exception {
 
-/*		
+	
 		//create a merchant
 		Country country = super.countryService.getByCode("CA");
 		Language lang = super.languageService.getByCode("en");
@@ -62,7 +62,7 @@ public class MerchantSalesManagerTestCase extends AbstractSalesManagerCoreTestCa
 		System.out.println(store.getDomainName());
 		System.out.println(store.getDefaultLanguage().getId());
 		System.out.println(store.getLanguages().size());
-*/
+
 	}
 
 }
