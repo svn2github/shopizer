@@ -48,7 +48,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		store.setDefaultLanguage(DEFAULT_LANGUAGE);
 		store.setInBusinessSince(date);
 		store.setStorename("store name");
-		
+		store.setStoreEmailAddress("test@test.com");
 		merchantService.create(store);
 		
 		//create a Manufacturer
