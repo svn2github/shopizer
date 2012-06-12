@@ -85,8 +85,9 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	@Column(name = "IN_BUSINESS_SINCE")
 	private Date inBusinessSince;
 	
-	@OneToOne
-	@JoinColumn(name="LANGUAGE_ID", nullable=false)
+
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "LANGUAGE_ID",nullable=false, updatable=false)
 	private Language defaultLanguage;
 
 
