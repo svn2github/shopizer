@@ -257,10 +257,11 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 		this.languages = languages;
 	}
 	
-	//mappings
+	//reverse mappings
 	@SuppressWarnings("unused")
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = CascadeType.REMOVE)
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = { CascadeType.REFRESH})
 	private Set<Manufacturer> manufacturers = new HashSet<Manufacturer>();
+	
 	
 	@SuppressWarnings("unused")
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = CascadeType.REMOVE)
@@ -334,6 +335,8 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	public void setStoreEmailAddress(String storeEmailAddress) {
 		this.storeEmailAddress = storeEmailAddress;
 	}
+
+
 
 
 
