@@ -28,7 +28,9 @@ import com.salesmanager.core.business.catalog.product.model.attribute.ProductOpt
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
+import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
+import com.salesmanager.core.business.catalog.product.model.type.ProductType;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionService;
@@ -82,6 +84,7 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	
 	@Autowired
 	protected ProductService productService;
+
 	
 	@Autowired
 	protected ProductPriceService productPriceService;
@@ -154,9 +157,11 @@ public abstract class AbstractSalesManagerCoreTestCase {
 		cleanProductAttributes();
 		cleanProductOptions();
 		cleanProductOptionValues();
+		cleanManufacturers();
 		cleanProducts();
 		cleanCustomers();
 		cleanMerchants();
+		cleanProductTypes();
 		cleanCurrencies();
 		cleanCountries();
 		cleanLanguages();
@@ -231,6 +236,20 @@ public abstract class AbstractSalesManagerCoreTestCase {
 		List<MerchantStore> list = merchantService.list();
 		for (MerchantStore merchant : list) {
 			merchantService.delete(merchant);
+		}
+	}
+	
+	private void cleanManufacturers() throws ServiceException {
+		List<Manufacturer> list = manufacturerService.list();
+		for (Manufacturer manufacturer : list) {
+			manufacturerService.delete(manufacturer);
+		}
+	}
+	
+	private void cleanProductTypes() throws ServiceException {
+		List<ProductType> list = productTypeService.list();
+		for (ProductType type : list) {
+			productTypeService.delete(type);
 		}
 	}
 	
