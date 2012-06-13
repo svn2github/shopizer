@@ -43,37 +43,38 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 	private List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="MERCHANT_ID", nullable=false, updatable=false)
+	@JoinColumn(name="MERCHANT_ID", nullable=false)
 	private MerchantStore merchantSore;
 
 	@ManyToOne
-	@JoinColumn(name = "PARENT_ID" , updatable=false , insertable=false )
+	@JoinColumn(name = "PARENT_ID")
 	private Category parent;
 	
 	@Column(name = "CATEGORY_IMAGE", length=100)
 	private String categoryImage;
 
-	@Column(name = "PARENT_ID")
-	private Long parentId;
-
 	@Column(name = "SORT_ORDER")
-	private int sortOrder = 0;
+	private Integer sortOrder = 0;
 
 	@Column(name = "CATEGORY_STATUS")
-	private boolean categoryStatus;
+	private Boolean categoryStatus;
 
 	@Column(name = "VISIBLE")
-	private boolean visible;
+	private Boolean visible;
 
 	@Column(name = "DEPTH")
-	private int depth;
+	private Integer depth;
 
 	@Column(name = "LINEAGE")
 	private String lineage;
 
 	public Category() {
 	}
-
+	
+	public Category(MerchantStore store) {
+		this.merchantSore = store;
+	}
+	
 	@Override
 	public Long getId() {
 		return this.id;
@@ -110,43 +111,35 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 		this.categoryImage = categoryImage;
 	}
 
-	public Long getParentId() {
-		return parentId;
-	}
-
-	public void setParentId(Long parentId) {
-		this.parentId = parentId;
-	}
-
-	public int getSortOrder() {
+	public Integer getSortOrder() {
 		return sortOrder;
 	}
 
-	public void setSortOrder(int sortOrder) {
+	public void setSortOrder(Integer sortOrder) {
 		this.sortOrder = sortOrder;
 	}
 
-	public boolean isCategoryStatus() {
+	public Boolean isCategoryStatus() {
 		return categoryStatus;
 	}
 
-	public void setCategoryStatus(boolean categoryStatus) {
+	public void setCategoryStatus(Boolean categoryStatus) {
 		this.categoryStatus = categoryStatus;
 	}
 
-	public boolean isVisible() {
+	public Boolean isVisible() {
 		return visible;
 	}
 
-	public void setVisible(boolean visible) {
+	public void setVisible(Boolean visible) {
 		this.visible = visible;
 	}
 
-	public int getDepth() {
+	public Integer getDepth() {
 		return depth;
 	}
 
-	public void setDepth(int depth) {
+	public void setDepth(Integer depth) {
 		this.depth = depth;
 	}
 

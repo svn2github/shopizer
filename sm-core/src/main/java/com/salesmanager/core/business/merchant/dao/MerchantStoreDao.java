@@ -10,5 +10,6 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 public interface MerchantStoreDao extends SalesManagerEntityDao<Integer, MerchantStore> {
 	
 	public Collection<Product> getProducts(MerchantStore merchantStore) throws ServiceException;
-	public MerchantStore getMerchantStore(int merchantStoreId);
+	
+	public MerchantStore getMerchantStore(Integer merchantStoreId);
 }

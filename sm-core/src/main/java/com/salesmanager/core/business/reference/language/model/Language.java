@@ -1,18 +1,17 @@
 package com.salesmanager.core.business.reference.language.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 
@@ -44,10 +43,13 @@ public class Language extends SalesManagerEntity<Integer, Language> implements A
 	@Column(name="SORT_ORDER")
 	private Integer sortOrder;
 	
-/*	@SuppressWarnings("unused")
-	@OneToOne(mappedBy = "defaultLanguage", targetEntity = MerchantStore.class)
-	@JoinColumn(name = "STORE_ID")
-	private MerchantStore store;*/
+	@SuppressWarnings("unused")
+	@OneToMany(mappedBy = "defaultLanguage", targetEntity = MerchantStore.class)
+	private List<MerchantStore> storesDefaultLanguage;
+	
+	@SuppressWarnings("unused")
+	@ManyToMany(mappedBy = "languages", targetEntity = MerchantStore.class)
+	private List<MerchantStore> stores = new ArrayList<MerchantStore>();
 	
 	public Language() {
 	}
@@ -104,8 +106,4 @@ public class Language extends SalesManagerEntity<Integer, Language> implements A
 			return (this.id == language.getId());
 		}
 	}
-	
-	@SuppressWarnings("unused")
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "languages", cascade = CascadeType.REMOVE)
-	private Set<MerchantStore> stores = new HashSet<MerchantStore>();
 }

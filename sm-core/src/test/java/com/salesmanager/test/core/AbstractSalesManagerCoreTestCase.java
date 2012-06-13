@@ -110,8 +110,6 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	@Autowired
 	protected ProductTypeService productTypeService;
 	
-
-	
 	@Autowired
 	protected LanguageService languageService;
 	
@@ -127,13 +125,11 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	@Autowired
 	protected ManufacturerService manufacturerService;
 
-	
 	@Autowired
 	protected CurrencyService currencyService;
 	
 	@Autowired
 	protected OrderService orderService;
-
 
 	@Before
 	public void init() throws ServiceException {

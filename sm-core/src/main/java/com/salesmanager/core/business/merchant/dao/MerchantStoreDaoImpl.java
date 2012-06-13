@@ -78,7 +78,7 @@ public class MerchantStoreDaoImpl extends SalesManagerEntityDaoImpl<Integer, Mer
 		
 	}
 	
-	public MerchantStore getMerchantStore(int merchantStoreId)  {
+	public MerchantStore getMerchantStore(Integer merchantStoreId)  {
 		
 		
 		QMerchantStore qMerchantStore = QMerchantStore.merchantStore;

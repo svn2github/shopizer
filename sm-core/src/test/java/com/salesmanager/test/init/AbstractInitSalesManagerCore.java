@@ -78,7 +78,7 @@ public class AbstractInitSalesManagerCore {
 		for(String code : SchemaConstant.COUNTRY_ISO_CODE) {
 			Locale locale = SchemaConstant.LOCALES.get(code);
 			if (locale != null) {
-				Country country = new Country(code);
+				Country country = new Country(locale.getCountry());
 				countryService.create(country);
 				
 				for (Language language : languageService.list()) {

@@ -39,8 +39,6 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		Country ca = super.countryService.getByCode("CA");
 		Currency currency = currencyService.getByCode("CAD");
 
-		
-		
 		//create a merchant
 		MerchantStore store = new MerchantStore();
 		store.setCountry(ca);
@@ -377,10 +375,5 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		System.out.println(product.getAttributes().size());
 		System.out.println(product.getAvailabilities().size());
 		System.out.println(product.getImages().size());
-
 	}
-	
-
-	
-
 }

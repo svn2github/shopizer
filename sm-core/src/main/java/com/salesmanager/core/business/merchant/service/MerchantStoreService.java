@@ -20,6 +20,6 @@ public interface MerchantStoreService extends SalesManagerEntityService<Integer,
 	
 	Collection<Product> getProducts(MerchantStore merchantStore) throws ServiceException;
 	
-	MerchantStore getMerchantStore(int merchantStoreId) throws ServiceException;
+	MerchantStore getMerchantStore(Integer merchantStoreId) throws ServiceException;
 	
 }

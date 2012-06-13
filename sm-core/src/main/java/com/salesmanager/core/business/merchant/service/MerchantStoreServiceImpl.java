@@ -24,7 +24,7 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 		this.merchantStoreDao = merchantStoreDao;
 	}
 	
-	public MerchantStore getMerchantStore(int merchantStoreId) throws ServiceException {
+	public MerchantStore getMerchantStore(Integer merchantStoreId) throws ServiceException {
 		return this.merchantStoreDao.getMerchantStore(merchantStoreId);
 	}
 

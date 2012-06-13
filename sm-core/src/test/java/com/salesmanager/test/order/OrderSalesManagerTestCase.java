@@ -15,18 +15,16 @@ import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;
 
-public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase  {
-
-	private static final Date date = new Date(System.currentTimeMillis());
+public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase {
 
 	@Test
 	public void createOrder() throws ServiceException {
-		Order order = new Order();
-
-		order.setDatePurchased(date);
 		Currency currency = currencyService.getByCode(EURO_CURRENCY_CODE);
+
+		Order order = new Order();
+		order.setDatePurchased(new Date());
 		order.setCurrency(currency);
-		order.setLastModified(date);
+		order.setLastModified(new Date());
 		
 		orderService.create(order);
 		Assert.assertTrue(orderService.count() == 1);
@@ -73,12 +71,12 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		
 		Order order = new Order();
 
-		order.setDatePurchased(date);
+		order.setDatePurchased(new Date());
 
 		order.setCustomer(customer);
 		order.setCurrency(currency);
 		order.setMerchant(merchant);
-		order.setLastModified(date);
+		order.setLastModified(new Date());
 		
 		orderService.create(order);
 		

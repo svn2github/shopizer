@@ -45,7 +45,8 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	
 	@Id
 	@Column(name = "MERCHANT_ID", unique=true, nullable=false)
-	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "LANG_SEQ_NEXT_VAL")
+	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT",
+		pkColumnValue = "STORE_SEQ_NEXT_VAL")
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Integer id;
 
@@ -84,27 +85,20 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	@Temporal(TemporalType.DATE)
 	@Column(name = "IN_BUSINESS_SINCE")
 	private Date inBusinessSince;
-	
 
 	@ManyToOne(targetEntity = Language.class)
 	@JoinColumn(name = "LANGUAGE_ID", nullable=false)
 	private Language defaultLanguage;
 
-
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinTable(name = "MERCHANT_LANGUAGE", joinColumns = { 
-			@JoinColumn(name = "MERCHANT_ID", nullable = false, updatable = false) }, 
-			inverseJoinColumns = { @JoinColumn(name = "LANGUAGE_ID", 
-					nullable = false, updatable = false) })
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "MERCHANT_LANGUAGE")
 	private List<Language> languages = new ArrayList<Language>();
-	
-
 	
 	public MerchantStore() {
 	}
 	
 	@Column(name = "USE_CACHE")
-	private boolean useCache = false;
+	private Boolean useCache = false;
 	
 	@Column(name="STORE_TEMPLATE", length=25)
 	private String storeTemplate;
@@ -129,11 +123,11 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	private Currency currency;
 	
 
-	public boolean isUseCache() {
+	public Boolean isUseCache() {
 		return useCache;
 	}
 
-	public void setUseCache(boolean useCache) {
+	public void setUseCache(Boolean useCache) {
 		this.useCache = useCache;
 	}
 	

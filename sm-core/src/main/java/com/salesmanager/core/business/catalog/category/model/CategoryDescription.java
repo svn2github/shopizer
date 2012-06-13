@@ -9,6 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import com.salesmanager.core.business.common.model.Description;
+import com.salesmanager.core.business.reference.language.model.Language;
 
 @Entity
 @Table(name="CATEGORY_DESCRIPTION", schema="SALESMANAGER",uniqueConstraints={
@@ -37,6 +38,14 @@ public class CategoryDescription extends Description {
 	
 	@Column(name="META_DESCRIPTION")
 	private String metatagDescription;
+	
+	public CategoryDescription() {
+	}
+	
+	public CategoryDescription(String name, Language language) {
+		this.setName(name);
+		this.setLanguage(language);
+	}
 	
 	public String getSeUrl() {
 		return seUrl;
