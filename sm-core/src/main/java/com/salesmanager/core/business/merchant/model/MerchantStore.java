@@ -94,9 +94,6 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	@JoinTable(name = "MERCHANT_LANGUAGE")
 	private List<Language> languages = new ArrayList<Language>();
 	
-	public MerchantStore() {
-	}
-	
 	@Column(name = "USE_CACHE")
 	private Boolean useCache = false;
 	
@@ -122,7 +119,9 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	@JoinColumn(name = "CURRENCY_ID", nullable=false)
 	private Currency currency;
 	
-
+	public MerchantStore() {
+	}
+	
 	public Boolean isUseCache() {
 		return useCache;
 	}

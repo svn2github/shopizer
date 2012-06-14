@@ -47,16 +47,15 @@ public class Manufacturer extends SalesManagerEntity<Long, Manufacturer> impleme
 	@OneToMany(mappedBy = "manufacturer", cascade = CascadeType.ALL)
 	private Set<ManufacturerDescription> descriptions = new HashSet<ManufacturerDescription>();
 	
-	
 	@Column(name = "MANUFACTURER_IMAGE")
 	private String image;
 	
 	@ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.REFRESH})
 	@JoinTable(name = "MERCHANT_MANUFACTURER", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
-			@JoinColumn(name = "MANUFACTURER_ID", nullable = false, updatable = false) }
+			@JoinColumn(name = "MANUFACTURER_ID", nullable = false) }
 			, 
 			inverseJoinColumns = { @JoinColumn(name = "MERCHANT_ID", 
-					nullable = false, updatable = false) }
+					nullable = false) }
 	)
 	@Cascade({
 		org.hibernate.annotations.CascadeType.DETACH,

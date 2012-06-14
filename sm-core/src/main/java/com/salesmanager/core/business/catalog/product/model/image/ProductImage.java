@@ -38,7 +38,7 @@ public class ProductImage extends SalesManagerEntity<Long, ProductImage> {
 	
 	@ManyToOne(targetEntity = Product.class)
 	@JoinColumn(name = "PRODUCT_ID", nullable = false)
-	private Product product = null;
+	private Product product;
 
 	public ProductImage(){
 	}

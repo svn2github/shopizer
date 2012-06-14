@@ -1,5 +1,6 @@
 package com.salesmanager.test.order;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;
 
+// TODO : clean it!
 public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase {
 
 	@Test
@@ -34,7 +36,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 	@Test
 	public void getMerchantOrders() throws ServiceException {
 		
-		List<Order> merchantOrders= null;
+		List<Order> merchantOrders= new ArrayList<Order>();
 		
 		Language language = languageService.getByCode(ENGLISH_LANGUAGE_CODE);
 		Currency currency = currencyService.getByCode(EURO_CURRENCY_CODE);
@@ -46,11 +48,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		merchant.setStorename("Test Store");
 		merchant.setCountry(country);
 		merchant.setDefaultLanguage(language);
-		
-		
-		
-		
-		
+
 		merchantService.create(merchant);
 		
 		Customer customer = new Customer();

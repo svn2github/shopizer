@@ -111,7 +111,6 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 		this.categoryImage = categoryImage;
 	}
 
-
 	public Integer getSortOrder() {
 		return sortOrder;
 	}

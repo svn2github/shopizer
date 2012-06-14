@@ -44,9 +44,9 @@ public class ProductOption extends SalesManagerEntity<Long, ProductOption> {
 	
 	@ManyToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "MERCHANT_PRD_OPTION", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
-			@JoinColumn(name = "PRODUCT_OPTION_ID", nullable = false, updatable = false) }, 
+			@JoinColumn(name = "PRODUCT_OPTION_ID", nullable = false) },
 			inverseJoinColumns = { @JoinColumn(name = "MERCHANT_ID", 
-					nullable = false, updatable = false) })
+					nullable = false) })
 	private Set<MerchantStore> stores = new HashSet<MerchantStore>();
 	
 	public ProductOption() {

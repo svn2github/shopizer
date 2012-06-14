@@ -16,7 +16,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 @Service("productService")
 public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Product> implements ProductService {
 	
-	ProductDao productDao = null;
+	ProductDao productDao;
 	
 	@Autowired
 	public ProductServiceImpl(ProductDao productDao) {

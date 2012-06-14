@@ -69,22 +69,22 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 	
 	@ManyToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "MERCHANT_PRODUCT", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
-			@JoinColumn(name = "PRODUCT_ID", nullable = false, updatable = false) }, 
+			@JoinColumn(name = "PRODUCT_ID", nullable = false) }, 
 			inverseJoinColumns = { @JoinColumn(name = "MERCHANT_ID", 
-					nullable = false, updatable = false) })
+					nullable = false) })
 	private Set<MerchantStore> stores = new HashSet<MerchantStore>();
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name="MANUFACTURER_ID", nullable=true)
-	private Manufacturer manufacturer = null;
+	private Manufacturer manufacturer;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name="PRODUCT_TYPE_ID", nullable=true)
-	private ProductType type = null;
+	private ProductType type;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name="TAX_CLASS_ID", nullable=true)
-	private TaxClass taxClass = null;
+	private TaxClass taxClass;
 
 	@Column(name = "PRODUCT_VIRTUAL")
 	private Boolean productVirtual = false;
