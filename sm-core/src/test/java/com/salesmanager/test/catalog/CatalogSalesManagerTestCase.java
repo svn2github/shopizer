@@ -5,7 +5,6 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -29,7 +28,6 @@ import com.salesmanager.core.business.catalog.product.model.type.ProductType;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
-import com.salesmanager.core.business.reference.country.model.CountryDescription;
 import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;
@@ -397,10 +395,6 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		 * 		Business
 		 */
 		
-
-
-
-		
 		Language en = languageService.getByCode("en");
 		Language fr = languageService.getByCode("fr");
 		Country ca = super.countryService.getByCode("CA");
@@ -468,7 +462,6 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		Category novell = new Category();
 		novell.setDepth(1);
 		novell.setLineage("/" + book.getId() + "/");
-		novell.setParent(book);
 		novell.setMerchantSore(store);
 		
 		CategoryDescription novellEnglishDescription = new CategoryDescription();
@@ -488,10 +481,10 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		novell.setDescriptions(descriptions3);
 		
 		categoryService.create(novell);
+		categoryService.addChild(book, novell);
 		
 		Category tech = new Category();
 		tech.setDepth(1);
-		tech.setParent(book);
 		tech.setLineage("/" + book.getId() + "/");
 		tech.setMerchantSore(store);
 		
@@ -512,11 +505,11 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		tech.setDescriptions(descriptions4);
 		
 		categoryService.create(tech);
+		categoryService.addChild(book, tech);
 		
 		
 		Category fiction = new Category();
 		fiction.setDepth(2);
-		fiction.setParent(novell);
 		fiction.setLineage("/" + book.getId() + "/" + novell.getId() + "/");
 		fiction.setMerchantSore(store);
 		
@@ -537,14 +530,8 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		fiction.setDescriptions(fictiondescriptions);
 		
 		categoryService.create(fiction);
+		categoryService.addChild(book, fiction);
 		
 		Assert.assertTrue(categoryService.count() == 5);
-		
-		
-		
 	}
-	
-
-	
-
 }

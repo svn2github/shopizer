@@ -9,4 +9,6 @@ public interface CategoryDao extends SalesManagerEntityDao<Long, Category> {
 
 	List<Category> listBySeUrl(String seUrl);
 
+	List<Category> listByByParent(Category category);
+
 }

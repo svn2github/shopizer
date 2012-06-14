@@ -50,6 +50,9 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 	@JoinColumn(name = "PARENT_ID")
 	private Category parent;
 	
+	@OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<Category> categories = new ArrayList<Category>();
+	
 	@Column(name = "CATEGORY_IMAGE", length=100)
 	private String categoryImage;
 
@@ -168,5 +171,13 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 
 	public void setMerchantSore(MerchantStore merchantSore) {
 		this.merchantSore = merchantSore;
+	}
+
+	public List<Category> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<Category> categories) {
+		this.categories = categories;
 	}
 }

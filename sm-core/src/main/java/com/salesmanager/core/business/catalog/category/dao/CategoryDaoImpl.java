@@ -32,4 +32,23 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		
 		return query.list(qCategory);
 	}
+
+	@Override
+	public List<Category> listByByParent(Category category) {
+		QCategory qCategory = QCategory.category;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		if (category == null) {
+			query.from(qCategory)
+			.where(qCategory.parent.isNull())
+			.orderBy(qCategory.id.desc());
+		} else {
+			query.from(qCategory)
+				.where(qCategory.parent.eq(category))
+				.orderBy(qCategory.id.desc());
+		}
+		
+		return query.list(qCategory);
+	}
 }

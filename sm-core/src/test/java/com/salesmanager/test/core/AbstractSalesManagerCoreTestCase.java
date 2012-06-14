@@ -226,7 +226,7 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	}
 
 	private void cleanCategories() throws ServiceException {
-		List<Category> list = categoryService.list();
+		List<Category> list = categoryService.listByParent(null);
 		for (Category category : list) {
 			categoryService.delete(category);
 		}

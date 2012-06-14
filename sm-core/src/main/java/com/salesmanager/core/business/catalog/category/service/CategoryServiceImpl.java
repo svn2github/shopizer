@@ -38,6 +38,11 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	}
 	
 	@Override
+	public List<Category> listByParent(Category category) {
+		return categoryDao.listByByParent(category);
+	}
+	
+	@Override
 	public void addCategoryDescription(Category category, CategoryDescription description)
 			throws ServiceException {
 		category.getDescriptions().add(description);
@@ -90,4 +95,10 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		return null;
 	}
 	
+	@Override
+	public void addChild(Category parent, Category child) throws ServiceException {
+		parent.getCategories().add(child);
+		child.setParent(parent);
+		update(child);
+	}
 }
