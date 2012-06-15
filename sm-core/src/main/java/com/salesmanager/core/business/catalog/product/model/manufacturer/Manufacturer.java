@@ -51,7 +51,7 @@ public class Manufacturer extends SalesManagerEntity<Long, Manufacturer> impleme
 	private String image;
 	
 	@ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.REFRESH})
-	@JoinTable(name = "MERCHANT_MANUFACTURER", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
+	@JoinTable(name = "MANUFACTURER_MERCHANT", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
 			@JoinColumn(name = "MANUFACTURER_ID", nullable = false) }
 			, 
 			inverseJoinColumns = { @JoinColumn(name = "MERCHANT_ID", 
