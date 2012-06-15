@@ -27,7 +27,9 @@ public interface CategoryService extends SalesManagerEntityService<Long, Categor
 
 	void addCategoryDescription(Category category, CategoryDescription description) throws ServiceException;
 
+
 	void addChild(Category parent, Category child) throws ServiceException;
 
 	List<Category> listByParent(Category category);
+
 }

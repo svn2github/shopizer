@@ -49,6 +49,12 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		description.setCategory(category);
 		update(category);
 	}
+	
+	//@Override
+	//public void delete(Category category) throws ServiceException {
+		//reject if category has products attached
+		//categoryDao.delete(category);
+	//}
 
 	@Override
 	public void addProduct(Category category, Product product) throws ServiceException {
