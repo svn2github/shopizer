@@ -48,6 +48,7 @@ public class TaxClass extends SalesManagerEntity<Long, TaxClass> {
 	@OneToMany(mappedBy = "taxClass", targetEntity = Product.class)
 	private List<Product> products = new ArrayList<Product>();
 	
+	//TODO appropriate mapping
 	@ManyToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "MERCHANT_TAXCLASS", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
 			@JoinColumn(name = "TAX_CLASS_ID", nullable = false) }, 
