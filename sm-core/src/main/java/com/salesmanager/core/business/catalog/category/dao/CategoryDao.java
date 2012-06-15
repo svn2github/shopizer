@@ -8,6 +8,8 @@ import com.salesmanager.core.business.generic.dao.SalesManagerEntityDao;
 public interface CategoryDao extends SalesManagerEntityDao<Long, Category> {
 
 	List<Category> listBySeUrl(String seUrl);
+	
+	//void delete(Category category);
 
 	List<Category> listByByParent(Category category);
 
