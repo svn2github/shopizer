@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.model.CountryDescription;
@@ -16,7 +18,10 @@ import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.currency.service.CurrencyService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
+import com.salesmanager.core.business.system.model.SystemConfiguration;
+import com.salesmanager.core.business.system.service.SystemConfigurationService;
 import com.salesmanager.core.constants.SchemaConstant;
+import com.salesmanager.core.constants.SystemConstants;
 
 @Service("initializationDatabase")
 public class InitializationDatabaseImpl implements InitializationDatabase {
@@ -32,6 +37,9 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 	@Autowired
 	private CurrencyService currencyService;
 	
+	@Autowired
+	private SystemConfigurationService systemConfigurationService;
+	
 	private String name;
 	
 	public boolean isEmpty() {
@@ -45,6 +53,8 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		createLanguages();
 		createCountries();
 		createCurrencies();
+		//TODO need to create a default admin merchant store
+		createSystemConfiguration();
 	}
 
 	private void createCurrencies() throws ServiceException {
@@ -88,6 +98,48 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 			Language language = new Language(code);
 			languageService.create(language);
 		}
+	}
+	
+	private void createSystemConfiguration() throws ServiceException {
+		LOGGER.info(String.format("%s : Checking configuration ", name));
+		
+		List<SystemConfiguration> configurations = systemConfigurationService.list();
+		
+		if(configurations.size()==0) {
+			//create flag populate data
+			SystemConfiguration configuration = new SystemConfiguration();
+			configuration.getAuditSection().setModifiedBy("SYSTEM");
+			configuration.setKey(SystemConstants.POPULATE_TEST_DATA_KEY);
+			configuration.setValue("false");
+			systemConfigurationService.create(configuration);
+		} else {
+			for(SystemConfiguration config : configurations) {
+				if(config.getKey().equals(SystemConstants.POPULATE_TEST_DATA_KEY)) {
+					if(config.getValue().equals(SystemConstants.CONFIG_VALUE_TRUE)) {
+						//populate
+						createTestData();
+						//set value to false
+						config.setValue(SystemConstants.CONFIG_VALUE_FALSE);
+						systemConfigurationService.save(config);		
+					}
+					break;
+				}	
+			}	
+		}
+	}
+	
+	private void createTestData() {
+		
+		
+		try {
+			
+			//TODO Store, Categories, Products
+			
+		} catch (Exception e) {//don't raise the exception
+			LOGGER.error("An exception occured while populating test data, you may want to erase the data before trying to pupulate", e);
+		}
+		
+		
 	}
 
 }
