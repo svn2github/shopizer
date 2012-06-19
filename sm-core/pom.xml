@@ -187,6 +187,13 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>${sm-core.mysql-connector-java}</version>
 		</dependency>
+		
+		<!-- H2 Connector -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.3.152</version>
+		</dependency>
 
 
 		<!-- Jackson JSON Processor -->
@@ -240,12 +247,7 @@
 			<version>${sm-core.spring.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>1.3.152</version>
-			<scope>test</scope>
-		</dependency>
+
 		<!-- <dependency> <groupId>com.oracle</groupId> <artifactId>ojdbc5</artifactId> 
 			<version>11.1.0.7.0</version> <scope>provided</scope> </dependency> -->
 	</dependencies>
