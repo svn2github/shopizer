@@ -50,6 +50,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		store.setDefaultLanguage(DEFAULT_LANGUAGE);
 		store.setInBusinessSince(date);
 		store.setStorename("store name");
+		store.setCode("STORE");
 		store.setStoreEmailAddress("test@test.com");
 		merchantService.create(store);
 		
@@ -383,6 +384,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 
 	
 	@Test
+	// TODO : redo : this is not the way we add description
 	public void testCreateCategory() throws ServiceException {
 		
 		/**
@@ -407,6 +409,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		store.setDefaultLanguage(en);
 		store.setInBusinessSince(date);
 		store.setStorename("store name");
+		store.setCode("STORE");
 		store.setStoreEmailAddress("test@test.com");
 		
 		merchantService.create(store);

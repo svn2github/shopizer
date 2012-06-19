@@ -26,6 +26,7 @@ public class MerchantSalesManagerTestCase extends AbstractSalesManagerCoreTestCa
 		store.setDefaultLanguage(lang);
 		store.setInBusinessSince(new Date());
 		store.setStorename("store name");
+		store.setCode("STORE");
 		store.setLanguages(langs);
 		store.setStoreEmailAddress("test@test.com");
 

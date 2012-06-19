@@ -12,6 +12,7 @@ import com.salesmanager.core.business.catalog.category.model.Category_;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 
 @Service("categoryService")
@@ -39,7 +40,12 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	
 	@Override
 	public List<Category> listByParent(Category category) {
-		return categoryDao.listByByParent(category);
+		return categoryDao.listByStoreAndParent(null, category);
+	}
+	
+	@Override
+	public List<Category> listByStoreAndParent(MerchantStore store, Category category) {
+		return categoryDao.listByStoreAndParent(store, category);
 	}
 	
 	@Override
@@ -49,12 +55,6 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		description.setCategory(category);
 		update(category);
 	}
-	
-	//@Override
-	//public void delete(Category category) throws ServiceException {
-		//reject if category has products attached
-		//categoryDao.delete(category);
-	//}
 
 	@Override
 	public void addProduct(Category category, Product product) throws ServiceException {

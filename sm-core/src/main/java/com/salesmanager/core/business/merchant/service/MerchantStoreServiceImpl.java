@@ -11,6 +11,7 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.dao.MerchantStoreDao;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.merchant.model.MerchantStore_;
 
 @Service("merchantService")
 public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Integer, MerchantStore> 
@@ -25,7 +26,7 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 	}
 	
 	public MerchantStore getMerchantStore(Integer merchantStoreId) throws ServiceException {
-		return this.merchantStoreDao.getMerchantStore(merchantStoreId);
+		return merchantStoreDao.getMerchantStore(merchantStoreId);
 	}
 
 	@Override
@@ -68,7 +69,10 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 		
 		
 	}
-	
 
+	@Override
+	public MerchantStore getByCode(String code) {
+		return getByField(MerchantStore_.code, code);
+	}
 
 }

@@ -10,6 +10,7 @@ import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.QCategory;
 import com.salesmanager.core.business.catalog.category.model.QCategoryDescription;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 
 @Repository("categoryDao")
 public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> implements CategoryDao {
@@ -33,63 +34,35 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		return query.list(qCategory);
 	}
 
-	
-/*	@Override
-	public void delete(Category category) {
-		
-		//the category still exists ??
-		Category tmpCategory = this.getById(category.getId());
-		if(tmpCategory==null) {
-			return;
-		}
-		
-		String lineage = category.getLineage();
-		StringBuilder lineageQuery = new StringBuilder().append(lineage).append(category.getId()).append("/%");
-		
-		QCategory qCategory = QCategory.category;
-		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
-		
-		JPQLQuery query = new JPAQuery (getEntityManager());
-		
-		//Get sub categories
-		query.from(qCategory)
-			.leftJoin(qCategory.descriptions, qDescription)
-			.where(qCategory.lineage.like(lineageQuery.toString()))
-			.orderBy(qCategory.depth.asc());
-		
-		List<Category> categories = query.list(qCategory);
-		
-		for(Category c : categories) {
-			
-			if(c.getId()!=category.getId()) {
-				super.delete(c);
-			}
-		}
-
-		//delete current category
-		super.delete(category);
-		
-		
-	}*/
-
-
 	@Override
-	public List<Category> listByByParent(Category category) {
+	public List<Category> listByStoreAndParent(MerchantStore store, Category category) {
 		QCategory qCategory = QCategory.category;
-		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
-		if (category == null) {
-			query.from(qCategory)
-			.where(qCategory.parent.isNull())
-			.orderBy(qCategory.id.desc());
+		if (store == null) {
+			if (category == null) {
+				query.from(qCategory)
+					.where(qCategory.parent.isNull())
+					.orderBy(qCategory.id.desc());
+			} else {
+				query.from(qCategory)
+					.where(qCategory.parent.eq(category))
+					.orderBy(qCategory.id.desc());
+			}
 		} else {
-			query.from(qCategory)
-				.where(qCategory.parent.eq(category))
-				.orderBy(qCategory.id.desc());
+			if (category == null) {
+				query.from(qCategory)
+					.where(qCategory.parent.isNull()
+						.and(qCategory.merchantSore.eq(store)))
+					.orderBy(qCategory.id.desc());
+			} else {
+				query.from(qCategory)
+					.where(qCategory.parent.eq(category)
+						.and(qCategory.merchantSore.eq(store)))
+					.orderBy(qCategory.id.desc());
+			}
 		}
 		
 		return query.list(qCategory);
 	}
-
 }

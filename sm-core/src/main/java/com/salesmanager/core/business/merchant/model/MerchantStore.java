@@ -52,7 +52,10 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 
 	@Column(name = "STORE_NAME", nullable=false, unique=true, length=100)
 	private String storename;
-
+	
+	@Column(name = "STORE_CODE", nullable=false, unique=true, length=100)
+	private String code;
+	
 	@Column(name = "STORE_PHONE", length=50)
 	private String storephone;
 
@@ -333,6 +336,14 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 
 	public void setStoreEmailAddress(String storeEmailAddress) {
 		this.storeEmailAddress = storeEmailAddress;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 

@@ -22,4 +22,5 @@ public interface MerchantStoreService extends SalesManagerEntityService<Integer,
 	
 	MerchantStore getMerchantStore(Integer merchantStoreId) throws ServiceException;
 	
+	MerchantStore getByCode(String code);
 }

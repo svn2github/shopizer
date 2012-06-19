@@ -1,9 +1,7 @@
 package com.salesmanager.core.business.catalog.category.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,13 +13,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 
-import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.common.model.audit.AuditListener;
 import com.salesmanager.core.business.common.model.audit.AuditSection;
 import com.salesmanager.core.business.common.model.audit.Auditable;
@@ -43,32 +39,20 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 	@Embedded
 	private AuditSection auditSection = new AuditSection();
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy="category", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy="category", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
 	private MerchantStore merchantSore;
 
-/*	@ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.REFRESH})
-	@JoinColumn(name = "PARENT_ID")
-	@Cascade({
-		org.hibernate.annotations.CascadeType.DETACH,
-		org.hibernate.annotations.CascadeType.LOCK,
-		org.hibernate.annotations.CascadeType.REFRESH,
-		org.hibernate.annotations.CascadeType.REPLICATE
-		
-	})
-	private Category parent;*/
-	
 	@ManyToOne
 	@JoinColumn(name = "PARENT_ID")
 	private Category parent;
 	
-
 	@OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Category> categories = new ArrayList<Category>();
-
+	
 	@Column(name = "CATEGORY_IMAGE", length=100)
 	private String categoryImage;
 
@@ -189,13 +173,6 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 		this.merchantSore = merchantSore;
 	}
 
-	
-	//reverse mappings
-	@SuppressWarnings("unused")
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "categories", cascade = { CascadeType.REFRESH})
-	private Set<Product> products = new HashSet<Product>();
-
-
 	public List<Category> getCategories() {
 		return categories;
 	}
@@ -203,5 +180,4 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 	public void setCategories(List<Category> categories) {
 		this.categories = categories;
 	}
-
 }

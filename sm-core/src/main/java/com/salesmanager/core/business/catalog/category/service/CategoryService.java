@@ -7,6 +7,7 @@ import com.salesmanager.core.business.catalog.category.model.CategoryDescription
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 
 public interface CategoryService extends SalesManagerEntityService<Long, Category> {
@@ -27,9 +28,9 @@ public interface CategoryService extends SalesManagerEntityService<Long, Categor
 
 	void addCategoryDescription(Category category, CategoryDescription description) throws ServiceException;
 
-
 	void addChild(Category parent, Category child) throws ServiceException;
 
 	List<Category> listByParent(Category category);
-
+	
+	List<Category> listByStoreAndParent(MerchantStore store, Category category);
 }
