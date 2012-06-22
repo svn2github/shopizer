@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
@@ -50,7 +51,7 @@ public class Manufacturer extends SalesManagerEntity<Long, Manufacturer> impleme
 	@Column(name = "MANUFACTURER_IMAGE")
 	private String image;
 	
-	@ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.REFRESH})
+/*	@ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.REFRESH})
 	@JoinTable(name = "MANUFACTURER_MERCHANT", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
 			@JoinColumn(name = "MANUFACTURER_ID", nullable = false) }
 			, 
@@ -64,7 +65,11 @@ public class Manufacturer extends SalesManagerEntity<Long, Manufacturer> impleme
 		org.hibernate.annotations.CascadeType.REPLICATE
 		
 	})
-	private Set<MerchantStore> stores = new HashSet<MerchantStore>();
+	private Set<MerchantStore> stores = new HashSet<MerchantStore>();*/
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="MERCHANT_ID", nullable=false)
+	private MerchantStore merchantSore;
 
 	public Manufacturer() {
 	}
@@ -105,12 +110,14 @@ public class Manufacturer extends SalesManagerEntity<Long, Manufacturer> impleme
 		this.descriptions = descriptions;
 	}
 
-	public Set<MerchantStore> getStores() {
-		return stores;
+
+
+	public MerchantStore getMerchantSore() {
+		return merchantSore;
 	}
 
-	public void setStores(Set<MerchantStore> stores) {
-		this.stores = stores;
+	public void setMerchantSore(MerchantStore merchantSore) {
+		this.merchantSore = merchantSore;
 	}
 
 
