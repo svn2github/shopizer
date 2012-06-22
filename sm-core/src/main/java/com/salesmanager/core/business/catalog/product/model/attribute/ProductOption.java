@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
@@ -42,12 +43,16 @@ public class ProductOption extends SalesManagerEntity<Long, ProductOption> {
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "productOption")
 	private Set<ProductOptionDescription> descriptions = new HashSet<ProductOptionDescription>();
 	
-	@ManyToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+/*	@ManyToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "MERCHANT_PRD_OPTION", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
 			@JoinColumn(name = "PRODUCT_OPTION_ID", nullable = false) },
 			inverseJoinColumns = { @JoinColumn(name = "MERCHANT_ID", 
 					nullable = false) })
-	private Set<MerchantStore> stores = new HashSet<MerchantStore>();
+	private Set<MerchantStore> stores = new HashSet<MerchantStore>();*/
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="MERCHANT_ID", nullable=false)
+	private MerchantStore merchantSore;
 	
 	public ProductOption() {
 	}
@@ -86,11 +91,13 @@ public class ProductOption extends SalesManagerEntity<Long, ProductOption> {
 		this.id = id;
 	}
 
-	public Set<MerchantStore> getStores() {
-		return stores;
+
+
+	public MerchantStore getMerchantSore() {
+		return merchantSore;
 	}
 
-	public void setStores(Set<MerchantStore> stores) {
-		this.stores = stores;
+	public void setMerchantSore(MerchantStore merchantSore) {
+		this.merchantSore = merchantSore;
 	}
 }
