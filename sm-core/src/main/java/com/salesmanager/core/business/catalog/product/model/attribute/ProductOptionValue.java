@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
@@ -24,7 +25,6 @@ import com.salesmanager.core.constants.SchemaConstant;
 
 @Entity
 @Table(name="PRODUCT_OPTION_VALUE", schema=SchemaConstant.SALESMANAGER_SCHEMA)
-//TODO : create DAO / Service
 public class ProductOptionValue extends SalesManagerEntity<Long, ProductOptionValue> {
 	private static final long serialVersionUID = 3736085877929910891L;
 
@@ -43,12 +43,16 @@ public class ProductOptionValue extends SalesManagerEntity<Long, ProductOptionVa
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "productOptionValue")
 	private Set<ProductOptionValueDescription> descriptions = new HashSet<ProductOptionValueDescription>();
 	
-	@ManyToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+/*	@ManyToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "MERCHANT_PRD_OPT_VAL", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
 			@JoinColumn(name = "PRODUCT_OPTION_VALUE_ID", nullable = false) }, 
 			inverseJoinColumns = { @JoinColumn(name = "MERCHANT_ID", 
 					nullable = false) })
-	private Set<MerchantStore> stores = new HashSet<MerchantStore>();
+	private Set<MerchantStore> stores = new HashSet<MerchantStore>();*/
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="MERCHANT_ID", nullable=false)
+	private MerchantStore merchantSore;
 	
 	public ProductOptionValue() {
 	}
@@ -87,13 +91,15 @@ public class ProductOptionValue extends SalesManagerEntity<Long, ProductOptionVa
 		this.descriptions = descriptions;
 	}
 
-	public Set<MerchantStore> getStores() {
-		return stores;
+	public MerchantStore getMerchantSore() {
+		return merchantSore;
 	}
 
-	public void setStores(Set<MerchantStore> stores) {
-		this.stores = stores;
+	public void setMerchantSore(MerchantStore merchantSore) {
+		this.merchantSore = merchantSore;
 	}
+
+
 
 
 
