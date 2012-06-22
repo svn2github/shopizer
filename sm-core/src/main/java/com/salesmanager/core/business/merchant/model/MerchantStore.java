@@ -260,33 +260,33 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	}
 	
 	//reverse mappings
-	@SuppressWarnings("unused")
+/*	@SuppressWarnings("unused")
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = { CascadeType.REFRESH})
-	private Set<Manufacturer> manufacturers = new HashSet<Manufacturer>();
+	private Set<Manufacturer> manufacturers = new HashSet<Manufacturer>();*/
 	
 	
-	@SuppressWarnings("unused")
+/*	@SuppressWarnings("unused")
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = CascadeType.REMOVE)
-	private Set<TaxClass> taxClasses = new HashSet<TaxClass>();
+	private Set<TaxClass> taxClasses = new HashSet<TaxClass>();*/
 	
-	@SuppressWarnings("unused")
+/*	@SuppressWarnings("unused")
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = CascadeType.REMOVE)
-	private Set<ProductOption> productOptions = new HashSet<ProductOption>();
+	private Set<ProductOption> productOptions = new HashSet<ProductOption>();*/
 	
-	@SuppressWarnings("unused")
+/*	@SuppressWarnings("unused")
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = CascadeType.REMOVE)
-	private Set<ProductOptionValue> productOptionValues = new HashSet<ProductOptionValue>();
+	private Set<ProductOptionValue> productOptionValues = new HashSet<ProductOptionValue>();*/
 	
-	@SuppressWarnings("unused")
+/*	@SuppressWarnings("unused")
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "stores", cascade = CascadeType.REMOVE)
-	private Set<Product> products = new HashSet<Product>();
+	private Set<Product> products = new HashSet<Product>();*/
 	
 
-	
+/*	
 	//TODO ManyToMany
 	@SuppressWarnings("unused")
 	@OneToMany(mappedBy = "merchant", cascade = CascadeType.REMOVE)
-	private List<TaxRate> taxRates = new ArrayList<TaxRate>();
+	private List<TaxRate> taxRates = new ArrayList<TaxRate>();*/
 	
 
 	
