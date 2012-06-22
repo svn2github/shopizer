@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
@@ -48,13 +49,17 @@ public class TaxClass extends SalesManagerEntity<Long, TaxClass> {
 	@OneToMany(mappedBy = "taxClass", targetEntity = Product.class)
 	private List<Product> products = new ArrayList<Product>();
 	
-	//TODO appropriate mapping
-	@ManyToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+
+/*	@ManyToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "MERCHANT_TAXCLASS", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
 			@JoinColumn(name = "TAX_CLASS_ID", nullable = false) }, 
 			inverseJoinColumns = { @JoinColumn(name = "MERCHANT_ID", 
 					nullable = false) })
-	private Set<MerchantStore> stores = new HashSet<MerchantStore>();
+	private Set<MerchantStore> stores = new HashSet<MerchantStore>();*/
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="MERCHANT_ID", nullable=false)
+	private MerchantStore merchantSore;
 	
 	@OneToMany(mappedBy = "taxClass", cascade = CascadeType.ALL)
 	private List<TaxClassDescription> descriptions = new ArrayList<TaxClassDescription>();
@@ -108,12 +113,13 @@ public class TaxClass extends SalesManagerEntity<Long, TaxClass> {
 		this.taxRates = taxRates;
 	}
 
-	public Set<MerchantStore> getStores() {
-		return stores;
+
+	public MerchantStore getMerchantSore() {
+		return merchantSore;
 	}
 
-	public void setStores(Set<MerchantStore> stores) {
-		this.stores = stores;
+	public void setMerchantSore(MerchantStore merchantSore) {
+		this.merchantSore = merchantSore;
 	}
 	
 }
