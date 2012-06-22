@@ -21,6 +21,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 
+import org.hibernate.annotations.Cascade;
+
+import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
@@ -67,22 +70,49 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "product")
 	private Set<ProductRelationship> relationships = new HashSet<ProductRelationship>();
 	
-	@ManyToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+/*	@ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.REFRESH})
 	@JoinTable(name = "MERCHANT_PRODUCT", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
 			@JoinColumn(name = "PRODUCT_ID", nullable = false) }, 
 			inverseJoinColumns = { @JoinColumn(name = "MERCHANT_ID", 
 					nullable = false) })
-	private Set<MerchantStore> stores = new HashSet<MerchantStore>();
+	@Cascade({
+		org.hibernate.annotations.CascadeType.DETACH,
+		org.hibernate.annotations.CascadeType.LOCK,
+		org.hibernate.annotations.CascadeType.REFRESH,
+		org.hibernate.annotations.CascadeType.REPLICATE
+		
+	})
+	private Set<MerchantStore> stores = new HashSet<MerchantStore>();*/
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="MERCHANT_ID", nullable=false)
+	private MerchantStore merchantSore;
+	
+	@ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.REFRESH})
+	@JoinTable(name = "PRODUCT_CATEGORY", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
+			@JoinColumn(name = "PRODUCT_ID", nullable = false, updatable = false) }
+			, 
+			inverseJoinColumns = { @JoinColumn(name = "CATEGORY_ID", 
+					nullable = false, updatable = false) }
+	)
+	@Cascade({
+		org.hibernate.annotations.CascadeType.DETACH,
+		org.hibernate.annotations.CascadeType.LOCK,
+		org.hibernate.annotations.CascadeType.REFRESH,
+		org.hibernate.annotations.CascadeType.REPLICATE
+		
+	})
+	private Set<Category> categories = new HashSet<Category>();
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
 	@JoinColumn(name="MANUFACTURER_ID", nullable=true)
 	private Manufacturer manufacturer;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
 	@JoinColumn(name="PRODUCT_TYPE_ID", nullable=true)
 	private ProductType type;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
 	@JoinColumn(name="TAX_CLASS_ID", nullable=true)
 	private TaxClass taxClass;
 
@@ -299,12 +329,21 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 		this.relationships = relationships;
 	}
 
-	public Set<MerchantStore> getStores() {
-		return stores;
+
+	public Set<Category> getCategories() {
+		return categories;
 	}
 
-	public void setStores(Set<MerchantStore> stores) {
-		this.stores = stores;
+	public void setCategories(Set<Category> categories) {
+		this.categories = categories;
+	}
+
+	public MerchantStore getMerchantSore() {
+		return merchantSore;
+	}
+
+	public void setMerchantSore(MerchantStore merchantSore) {
+		this.merchantSore = merchantSore;
 	}
 
 
