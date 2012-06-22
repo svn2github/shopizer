@@ -56,7 +56,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		
 		//create a Manufacturer
 		Manufacturer manufacturer = new Manufacturer();
-		manufacturer.getStores().add(store);
+		manufacturer.setMerchantSore(store);
 		
 		manufacturerService.create(manufacturer);
 		
@@ -232,7 +232,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		
 		option.setDescriptions(optSet);
 		
-		option.getStores().add(store);
+		option.setMerchantSore(store);
 		//create option
 		productOptionService.create(option);
 		
@@ -258,7 +258,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		
 		option2.setDescriptions(optSet2);
 		
-		option2.getStores().add(store);
+		option2.setMerchantSore(store);
 		//create option
 		productOptionService.create(option2);
 		
@@ -286,8 +286,8 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		optionsValueSet1.add(optionValueDescription2);
 		optionValue1.setDescriptions(optionsValueSet1);
 		
-		optionValue1.getStores().add(store);
-		
+		optionValue1.setMerchantSore(store);
+
 		//create option value black
 		productOptionValueService.create(optionValue1);
 		
@@ -312,7 +312,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		optionsValueSet2.add(optionValueDescription4);
 		optionValue2.setDescriptions(optionsValueSet2);
 		
-		optionValue2.getStores().add(store);
+		optionValue2.setMerchantSore(store);
 		
 		//create option value white
 		productOptionValueService.create(optionValue2);
@@ -339,7 +339,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		
 		
 		
-		optionValue3.getStores().add(store);
+		optionValue3.setMerchantSore(store);
 		
 		//create option value large
 		productOptionValueService.create(optionValue3);
