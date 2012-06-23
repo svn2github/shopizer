@@ -31,6 +31,8 @@ import com.salesmanager.core.constants.SchemaConstant;
 public class TaxClass extends SalesManagerEntity<Long, TaxClass> {
 	private static final long serialVersionUID = -325750148480212355L;
 	
+	public final static String DEFAULT_TAX_CLASS = "DEFAULT";
+	
 	@Id
 	@Column(name = "TAX_CLASS_ID", unique=true, nullable=false)
 	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "TX_CLASS_SEQ_NEXT_VAL")
@@ -60,9 +62,7 @@ public class TaxClass extends SalesManagerEntity<Long, TaxClass> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
 	private MerchantStore merchantSore;
-	
-	@OneToMany(mappedBy = "taxClass", cascade = CascadeType.ALL)
-	private List<TaxClassDescription> descriptions = new ArrayList<TaxClassDescription>();
+
 	
 	@OneToMany(mappedBy = "taxClass")
 	private List<TaxRate> taxRates = new ArrayList<TaxRate>();
@@ -81,13 +81,6 @@ public class TaxClass extends SalesManagerEntity<Long, TaxClass> {
 		this.id = id;
 	}
 
-	public List<TaxClassDescription> getDescriptions() {
-		return descriptions;
-	}
-
-	public void setDescriptions(List<TaxClassDescription> descriptions) {
-		this.descriptions = descriptions;
-	}
 
 	public String getTitle() {
 		return title;
