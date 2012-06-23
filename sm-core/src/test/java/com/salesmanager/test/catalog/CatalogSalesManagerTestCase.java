@@ -72,6 +72,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		product.setSku("TEST");
 		product.setManufacturer(manufacturer);
 		product.setType(productType);
+		product.setMerchantSore(store);
 		
 		
 		//Product description
