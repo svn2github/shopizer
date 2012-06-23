@@ -59,19 +59,19 @@
 		p:entityManagerFactory-ref="entityManagerFactory">
 	</bean>
 
-<!-- 	<aop:config> -->
-<!-- 		<aop:pointcut id="txPointCutDef" expression="this(com.salesmanager.core.business.generic.service.TransactionalAspectAwareService)" /> -->
-<!-- 		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointCutDef" /> -->
-<!-- 	</aop:config> -->
+	<aop:config>
+		<aop:pointcut id="txPointCutDef" expression="this(com.salesmanager.core.business.generic.service.TransactionalAspectAwareService)" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointCutDef" />
+	</aop:config>
 
-<!-- 	<tx:advice id="txAdvice" transaction-manager="transactionManager"> -->
-<!-- 		<tx:attributes> -->
-<!-- 			<tx:method name="get*" read-only="true" /> -->
-<!-- 			<tx:method name="list*" read-only="true" /> -->
-<!-- 			<tx:method name="search*" read-only="true" /> -->
-<!-- 			<tx:method name="*" read-only="false" rollback-for="com.salesmanager.core.business.generic.exception.ServiceException" /> -->
-<!-- 		</tx:attributes> -->
-<!-- 	</tx:advice> -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="list*" read-only="true" />
+			<tx:method name="search*" read-only="true" />
+			<tx:method name="*" read-only="false" rollback-for="com.salesmanager.core.business.generic.exception.ServiceException" />
+		</tx:attributes>
+	</tx:advice>
 
 	<!-- traduction des exceptions -->
 	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
