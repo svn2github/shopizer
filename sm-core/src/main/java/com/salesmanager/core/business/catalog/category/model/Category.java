@@ -45,6 +45,22 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
 	private MerchantStore merchantSore;
+	
+/*	@ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.REFRESH})
+	@JoinTable(name = "PRODUCT_CATEGORY", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
+			@JoinColumn(name = "CATEGORY_ID", nullable = false) }
+			, 
+			inverseJoinColumns = { @JoinColumn(name = "PRODUCT_ID", 
+					nullable = false) }
+	)
+	@Cascade({
+		org.hibernate.annotations.CascadeType.DETACH,
+		org.hibernate.annotations.CascadeType.LOCK,
+		org.hibernate.annotations.CascadeType.REFRESH,
+		org.hibernate.annotations.CascadeType.REPLICATE
+		
+	})
+	private Set<Product> products = new HashSet<Product>();*/
 
 	@ManyToOne
 	@JoinColumn(name = "PARENT_ID")
