@@ -21,6 +21,9 @@ public interface MerchantStoreService extends SalesManagerEntityService<Integer,
 	Collection<Product> getProducts(MerchantStore merchantStore) throws ServiceException;
 	
 	MerchantStore getMerchantStore(Integer merchantStoreId) throws ServiceException;
+
+	MerchantStore getMerchantStore(String merchantStoreCode)
+			throws ServiceException;
 	
 	MerchantStore getByCode(String code);
 }

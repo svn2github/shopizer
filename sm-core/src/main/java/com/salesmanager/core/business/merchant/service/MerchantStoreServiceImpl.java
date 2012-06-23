@@ -28,6 +28,11 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 	public MerchantStore getMerchantStore(Integer merchantStoreId) throws ServiceException {
 		return merchantStoreDao.getMerchantStore(merchantStoreId);
 	}
+	
+	@Override
+	public MerchantStore getMerchantStore(String merchantStoreCode) throws ServiceException {
+		return super.getByField(MerchantStore_.code, merchantStoreCode);
+	}
 
 	@Override
 	public void addProduct(MerchantStore merchantStore, Product product) throws ServiceException {
