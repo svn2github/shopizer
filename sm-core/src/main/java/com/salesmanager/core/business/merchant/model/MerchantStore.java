@@ -43,6 +43,9 @@ import com.salesmanager.core.utils.CloneUtils;
 public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	private static final long serialVersionUID = 7671103335743647655L;
 	
+	
+	public final static String DEFAULT_STORE = "DEFAULT";
+	
 	@Id
 	@Column(name = "MERCHANT_ID", unique=true, nullable=false)
 	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT",
