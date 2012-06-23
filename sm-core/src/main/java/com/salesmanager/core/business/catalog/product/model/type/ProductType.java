@@ -25,6 +25,8 @@ import com.salesmanager.core.constants.SchemaConstant;
 public class ProductType extends SalesManagerEntity<Long, ProductType> implements Auditable {
 	private static final long serialVersionUID = 65541494628227593L;
 	
+	public final static String GENERAL_TYPE = "GENERAL";
+	
 	@Id
 	@Column(name = "PRODUCT_TYPE_ID", unique=true, nullable=false)
 	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "PRD_TYPE_SEQ_NEXT_VAL")
