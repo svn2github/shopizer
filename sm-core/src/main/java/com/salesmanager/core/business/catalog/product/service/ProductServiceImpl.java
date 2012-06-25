@@ -1,10 +1,17 @@
 package com.salesmanager.core.business.catalog.product.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.salesmanager.core.business.catalog.category.model.Category;
+import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.common.CatalogServiceHelper;
 import com.salesmanager.core.business.catalog.product.dao.ProductDao;
 import com.salesmanager.core.business.catalog.product.model.Product;
@@ -17,6 +24,9 @@ import com.salesmanager.core.business.reference.language.model.Language;
 public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Product> implements ProductService {
 	
 	ProductDao productDao;
+	
+	@Autowired
+	CategoryService categoryService;
 	
 	@Autowired
 	public ProductServiceImpl(ProductDao productDao) {
@@ -43,10 +53,41 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	}
 
 	@Override
-	public Product getProduct(long productId, Language language, Locale locale)
+	public Product getProductForLocale(long productId, Language language, Locale locale)
 			throws ServiceException {
-		Product product =  productDao.getProduct(productId, language, locale);
+		Product product =  productDao.getProductForLocale(productId, language, locale);
+		
+		//TODO do we still need this
+		CatalogServiceHelper.setToAvailability(product, locale);
 		CatalogServiceHelper.setToLanguage(product, language.getId());
 		return product;
 	}
+
+	@Override
+	public List<Product> getProductsForLocale(Category category,
+			Language language, Locale locale) throws ServiceException {
+		// TODO Auto-generated method stub
+		
+		if(category==null) {
+			throw new ServiceException("The category is null");
+		}
+		
+		//Get the category list
+		String lineage = category.getLineage();
+		List<Category> categories = categoryService.listByLineage(lineage);
+		Set categoryIds = new HashSet();
+		for(Category c : categories) {
+			
+			categoryIds.add(c.getId());
+			
+		}
+		
+		//Get products
+		List<Product> products = productDao.getProductsForLocale(categoryIds, language, locale);
+		
+		//Filter availability
+		
+		return null;
+	}
+	
 }
