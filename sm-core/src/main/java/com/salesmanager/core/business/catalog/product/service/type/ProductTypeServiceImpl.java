@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.catalog.product.dao.type.ProductTypeDao;
 import com.salesmanager.core.business.catalog.product.model.type.ProductType;
+import com.salesmanager.core.business.catalog.product.model.type.ProductType_;
+import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 
 @Service("productTypeService")
@@ -18,6 +20,13 @@ public class ProductTypeServiceImpl extends SalesManagerEntityServiceImpl<Long, 
 			ProductTypeDao productTypeDao) {
 			super(productTypeDao);
 			this.productTypeDao = productTypeDao;
+	}
+	
+	@Override
+	public ProductType getProductType(String productTypeCode) throws ServiceException {
+		
+		return getByField(ProductType_.code, productTypeCode);
+		
 	}
 
 
