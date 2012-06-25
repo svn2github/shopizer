@@ -9,6 +9,7 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.system.model.SystemConfiguration;
 
 public interface CategoryService extends SalesManagerEntityService<Long, Category> {
 
@@ -18,13 +19,13 @@ public interface CategoryService extends SalesManagerEntityService<Long, Categor
 	
 	CategoryDescription getDescription(Category category, Language language);
 	
-	void addProduct(Category category, Product product) throws ServiceException;
+	//void addProduct(Category category, Product product) throws ServiceException;
 	
-	void removeProduct(Category category, Product product) throws ServiceException;
+	//void removeProduct(Category category, Product product) throws ServiceException;
 	
-	void addProducts(Category category, List<Product> products) throws ServiceException;
+	//void addProducts(Category category, List<Product> products) throws ServiceException;
 	
-	void removeProducts(Category category, List<Product> products) throws ServiceException;
+	//void removeProducts(Category category, List<Product> products) throws ServiceException;
 
 	void addCategoryDescription(Category category, CategoryDescription description) throws ServiceException;
 
@@ -33,4 +34,8 @@ public interface CategoryService extends SalesManagerEntityService<Long, Categor
 	List<Category> listByParent(Category category);
 	
 	List<Category> listByStoreAndParent(MerchantStore store, Category category);
+	Category getByName(String name) throws ServiceException;
+	
+	
+
 }
