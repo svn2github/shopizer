@@ -3,6 +3,7 @@ package com.salesmanager.core.business.catalog.product.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.persistence.Query;
 
@@ -19,12 +20,65 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		super();
 	}
 	
-	public Product getProduct(long productId, Language language, Locale locale) {
+	
+	@Override
+	public List<Product> getProductsForLocale(Set categoryIds, Language language, Locale locale) {
+		
+				List regionList = new ArrayList();
+				regionList.add("*");
+				regionList.add(locale.getCountry());
+
+
+				
+				StringBuilder qs = new StringBuilder();
+				qs.append("select distinct p from Product as p ");
+				qs.append("join fetch p.availabilities pa ");
+				qs.append("join fetch p.descriptions pd ");
+				qs.append("join fetch p.categories categs ");
+				qs.append("join fetch pa.prices pap ");
+				qs.append("join fetch pap.descriptions papd ");
+				
+				
+				//images
+				qs.append("left join fetch p.images images ");
+				//options
+				qs.append("left join fetch p.images images ");
+				qs.append("left join fetch p.attributes pattr ");
+				qs.append("left join fetch pattr.productOption po ");
+				qs.append("left join fetch po.descriptions pod ");
+				qs.append("left join fetch pattr.productOptionValue pov ");
+				qs.append("left join fetch pov.descriptions povd ");
+				//other lefts
+				qs.append("left join fetch p.manufacturer manuf ");
+				qs.append("left join fetch p.type type ");
+				qs.append("left join fetch p.taxClass tx ");
+				
+				qs.append("where categs.id in (:cid) and pa.region in (:lid) ");
+				qs.append("and pd.language.id=:lang and papd.language.id=:lang ");
+				//this cannot be done on child elements from left join
+				//qs.append("and pod.languageId=:lang and povd.languageId=:lang");
+
+		    	String hql = qs.toString();
+				Query q = super.getEntityManager().createQuery(hql);
+
+		    	q.setParameter("cid", categoryIds);
+		    	q.setParameter("lid", regionList);
+		    	q.setParameter("lang", language.getId());
+		    	
+		    	List<Product> products =  q.getResultList();
+		    	
+		    	return products;
+
+		
+	}
+	
+	@Override
+	public Product getProductForLocale(long productId, Language language, Locale locale) {
 
 
 				
 				List regionList = new ArrayList();
-				regionList.add("*");//depends of the config
+				regionList.add("*");
 				regionList.add(locale.getCountry());
 				
 
@@ -43,7 +97,11 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 				qs.append("left join fetch po.descriptions pod ");
 				qs.append("left join fetch pattr.productOptionValue pov ");
 				qs.append("left join fetch pov.descriptions povd ");
-				//qs.append("where p.id=:pid");
+				//other lefts
+				qs.append("left join fetch p.manufacturer manuf ");
+				qs.append("left join fetch p.type type ");
+				qs.append("left join fetch p.taxClass tx ");
+				
 				qs.append("where p.id=:pid and pa.region in (:lid) ");
 				qs.append("and pd.language.id=:lang and papd.language.id=:lang ");
 				//this cannot be done on child elements from left join
