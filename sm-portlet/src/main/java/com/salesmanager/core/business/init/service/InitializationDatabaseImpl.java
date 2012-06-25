@@ -80,8 +80,8 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		createLanguages();
 		createCountries();
 		createCurrencies();
-		createMerchant();
-		createSubReferences();
+		//createMerchant();
+		//createSubReferences();
 		//loadData();
 	}
 
@@ -196,7 +196,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 					}		
 			}
 			
-			initStoreData.initInitialData();
+			//initStoreData.initInitialData();
 			
 			configuration = new SystemConfiguration();
 			configuration.getAuditSection().setModifiedBy(SystemConstants.SYSTEM_USER);
