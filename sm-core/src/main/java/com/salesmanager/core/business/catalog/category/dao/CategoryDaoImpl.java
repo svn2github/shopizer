@@ -18,6 +18,25 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 	public CategoryDaoImpl() {
 		super();
 	}
+	
+	@Override
+	public Category getByName(String name) {
+		QCategory qCategory = QCategory.category;
+		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCategory)
+			.leftJoin(qCategory.descriptions, qDescription)
+			.where(qDescription.name.like(name));
+		
+		List<Category> categories = query.list(qCategory);
+		if(categories.size()>0) {
+			return categories.get(0);
+		} else {
+			return null;
+		}
+	}
 
 	@Override
 	public List<Category> listBySeUrl(String seUrl) {
@@ -32,6 +51,21 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 			.orderBy(qDescription._super.title.desc(), qDescription._super.name.desc());
 		
 		return query.list(qCategory);
+	}
+	
+	@Override
+	public List<Category> listByLineage(String lineage) {
+		QCategory qCategory = QCategory.category;
+		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCategory)
+			.leftJoin(qCategory.descriptions, qDescription)
+			.where(qCategory.lineage.like(new StringBuilder().append(lineage).append("%").toString()))
+			.orderBy(qCategory.lineage.asc(),qCategory.lineage.asc());
+		
+		return query.listDistinct(qCategory);
 	}
 
 	@Override
