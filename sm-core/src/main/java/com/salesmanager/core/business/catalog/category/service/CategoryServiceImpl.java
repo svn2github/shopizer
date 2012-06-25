@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import com.salesmanager.core.business.catalog.category.dao.CategoryDao;
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
-import com.salesmanager.core.business.catalog.category.model.Category_;
-import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -29,7 +27,7 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 
 	@Override
 	public List<Category> listByLineage(String lineage) {
-		return listByField(Category_.lineage, lineage);
+		return categoryDao.listByLineage(lineage);
 	}
 	
 
@@ -56,40 +54,48 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		update(category);
 	}
 
-	@Override
-	public void addProduct(Category category, Product product) throws ServiceException {
+	
+	//@Override
+	//public void delete(Category category) throws ServiceException {
+		//reject if category has products attached
+		//categoryDao.delete(category);
+	//}
+
+
+	//@Override
+	//public void addProduct(Category category, Product product) throws ServiceException {
 		//if (!category.getProducts().contains(product)) {
 		//	category.getProducts().add(product);
 		//	update(category);
 		//}
-	}
+	//}
 
-	@Override
-	public void removeProduct(Category category, Product product)
-			throws ServiceException {
+	//@Override
+	//public void removeProduct(Category category, Product product)
+			//throws ServiceException {
 		//if (category.getProducts().contains(product)) {
 		//	category.getProducts().remove(product);
 		//	update(category);
 		//}
-	}
+	//}
 
-	@Override
-	public void addProducts(Category category, List<Product> products)
-			throws ServiceException {
+	//@Override
+	//public void addProducts(Category category, List<Product> products)
+	//		throws ServiceException {
 		//if (!category.getProducts().contains(products)) {
 		//	category.getProducts().addAll(products);
 		//	update(category);
 		//}
-	}
+	//}
 
-	@Override
-	public void removeProducts(Category category, List<Product> products)
-			throws ServiceException {
+	//@Override
+	//public void removeProducts(Category category, List<Product> products)
+		//	throws ServiceException {
 		//if (category.getProducts().contains(products)) {
 		//	category.getProducts().removeAll(products);
 		//	update(category);
 		//}
-	}
+	//}
 
 	@Override
 	public CategoryDescription getDescription(Category category, Language language) {
@@ -107,4 +113,10 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		child.setParent(parent);
 		update(child);
 	}
+
+	@Override
+	public Category getByName(String name) throws ServiceException {
+		return categoryDao.getByName(name);
+	}
+
 }
