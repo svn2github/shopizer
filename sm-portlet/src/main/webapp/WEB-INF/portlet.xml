@@ -5,7 +5,7 @@
 
 	<!-- Category Portlet -->
 	<portlet>
-		<portlet-name>category</portlet-name>
+		<portlet-name>shopizer-category</portlet-name>
 		<portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
 		<init-param>
 			<name>contextConfigLocation</name>
@@ -29,7 +29,7 @@
 
 	<!-- Product Portlet -->
 	<portlet>
-		<portlet-name>product</portlet-name>
+		<portlet-name>shopizer-product</portlet-name>
 		<portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
 		<init-param>
 			<name>contextConfigLocation</name>
@@ -47,7 +47,7 @@
 
 	<!-- Minicart Portlet -->
 	<portlet>
-		<portlet-name>minicart</portlet-name>
+		<portlet-name>shopizer-minicart</portlet-name>
 		<portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
 		<init-param>
 			<name>contextConfigLocation</name>
@@ -60,6 +60,24 @@
 		<resource-bundle>com.salesmanager.portlet.shop.minicart.MiniCartController</resource-bundle>
 		<portlet-info>
 			<title>Shopizer - Mini Shopping Cart</title>
+		</portlet-info>
+	</portlet>
+	
+	<!-- Cart Portlet -->
+	<portlet>
+		<portlet-name>shopizer-cart</portlet-name>
+		<portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
+		<init-param>
+			<name>contextConfigLocation</name>
+			<value>classpath:spring/cart-portlet.xml</value>
+		</init-param>
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>view</portlet-mode>
+		</supports>
+		<resource-bundle>com.salesmanager.portlet.shop.checkout.cart.CheckoutController</resource-bundle>
+		<portlet-info>
+			<title>Shopizer - Shopping Cart</title>
 		</portlet-info>
 	</portlet>
 
