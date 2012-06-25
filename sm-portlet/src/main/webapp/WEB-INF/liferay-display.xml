@@ -2,8 +2,10 @@
 <!DOCTYPE display PUBLIC "-//Liferay//DTD Display 6.0.0//EN" "http://www.liferay.com/dtd/liferay-display_6_0_0.dtd">
 <display>
 	<category name="category.shopping">
-		<portlet id="category" />
-		<portlet id="product" />
-		<portlet id="minicart" />
+		<portlet id="shopizer-category" />
+		<portlet id="shopizer-product" />
+		<portlet id="shopizer-minicart" />
+		<portlet id="shopizer-cart" />
+		<portlet id="shopizer-checkout" />
 	</category>
 </display>
