@@ -1,7 +1,10 @@
 package com.salesmanager.core.business.init.service;
 
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import com.salesmanager.core.business.catalog.product.model.type.ProductType;
+import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
+import com.salesmanager.core.business.init.data.InitStoreData;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.model.CountryDescription;
 import com.salesmanager.core.business.reference.country.service.CountryService;
@@ -20,13 +28,20 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.system.model.SystemConfiguration;
 import com.salesmanager.core.business.system.service.SystemConfigurationService;
+import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
+import com.salesmanager.core.business.tax.service.TaxClassService;
+import com.salesmanager.core.business.utils.AppConfiguration;
 import com.salesmanager.core.constants.SchemaConstant;
 import com.salesmanager.core.constants.SystemConstants;
+import com.salesmanager.portlet.constants.ApplicationConstants;
 
 @Service("initializationDatabase")
 public class InitializationDatabaseImpl implements InitializationDatabase {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(InitializationDatabaseImpl.class);
+	
+	@Autowired
+	private InitStoreData initStoreData;
 	
 	@Autowired
 	private LanguageService languageService;
@@ -38,7 +53,19 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 	private CurrencyService currencyService;
 	
 	@Autowired
+	protected MerchantStoreService merchantService;
+	
+	@Autowired
 	private SystemConfigurationService systemConfigurationService;
+	
+	@Autowired
+	private AppConfiguration configuration;
+	
+	@Autowired
+	protected ProductTypeService productTypeService;
+	
+	@Autowired
+	private TaxClassService taxClassService;
 	
 	private String name;
 	
@@ -53,8 +80,9 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		createLanguages();
 		createCountries();
 		createCurrencies();
-		//TODO need to create a default admin merchant store
-		createSystemConfiguration();
+		createMerchant();
+		createSubReferences();
+		//loadData();
 	}
 
 	private void createCurrencies() throws ServiceException {
@@ -100,46 +128,85 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		}
 	}
 	
-	private void createSystemConfiguration() throws ServiceException {
+	private void createMerchant() throws ServiceException {
+		LOGGER.info(String.format("%s : Creating merchant ", name));
+		
+		Date date = new Date(System.currentTimeMillis());
+		
+		Language en = languageService.getByCode("en");
+		Country ca = countryService.getByCode("CA");
+		Currency currency = currencyService.getByCode("CAD");
+		
+		List<Language> supportedLanguages = new ArrayList<Language>();
+		supportedLanguages.add(en);
+		
+		//create a merchant
+		MerchantStore store = new MerchantStore();
+		store.setCountry(ca);
+		store.setCurrency(currency);
+		store.setDefaultLanguage(en);
+		store.setInBusinessSince(date);
+		store.setStorename("default store");
+		store.setCode(MerchantStore.DEFAULT_STORE);
+		store.setStoreEmailAddress("test@test.com");
+		store.setLanguages(supportedLanguages);
+		
+		merchantService.create(store);
+		
+		
+	}
+	
+	private void createSubReferences() throws ServiceException {
+		
+		MerchantStore store = merchantService.getMerchantStore(MerchantStore.DEFAULT_STORE);
+		
+		
+		ProductType productType = new ProductType();
+		productType.setCode(ProductType.GENERAL_TYPE);
+		productTypeService.create(productType);
+		
+		TaxClass taxclass = new TaxClass();
+		taxclass.setCode(TaxClass.DEFAULT_TAX_CLASS);
+		taxclass.setMerchantSore(store);
+		
+		taxClassService.create(taxclass);
+		
+		
+	}
+	
+	private void loadData() throws ServiceException {
 		LOGGER.info(String.format("%s : Checking configuration ", name));
 		
 		List<SystemConfiguration> configurations = systemConfigurationService.list();
 		
-		if(configurations.size()==0) {
-			//create flag populate data
-			SystemConfiguration configuration = new SystemConfiguration();
-			configuration.getAuditSection().setModifiedBy("SYSTEM");
-			configuration.setKey(SystemConstants.POPULATE_TEST_DATA_KEY);
-			configuration.setValue("false");
+		
+		String loadTestData = new AppConfiguration().getProperty(ApplicationConstants.POPULATE_TEST_DATA);
+		boolean loadData =  !StringUtils.isBlank(loadTestData) && loadTestData.equals(SystemConstants.CONFIG_VALUE_TRUE);
+		
+		
+		if(loadData) {
+			
+			SystemConfiguration configuration = systemConfigurationService.getByKey(ApplicationConstants.TEST_DATA_LOADED);
+		
+			if(configuration!=null) {
+					if(configuration.getKey().equals(ApplicationConstants.TEST_DATA_LOADED)) {
+						if(configuration.getValue().equals(SystemConstants.CONFIG_VALUE_TRUE)) {
+							return;		
+						}
+					}		
+			}
+			
+			initStoreData.initInitialData();
+			
+			configuration = new SystemConfiguration();
+			configuration.getAuditSection().setModifiedBy(SystemConstants.SYSTEM_USER);
+			configuration.setKey(ApplicationConstants.TEST_DATA_LOADED);
+			configuration.setValue(SystemConstants.CONFIG_VALUE_TRUE);
 			systemConfigurationService.create(configuration);
-		} else {
-			for(SystemConfiguration config : configurations) {
-				if(config.getKey().equals(SystemConstants.POPULATE_TEST_DATA_KEY)) {
-					if(config.getValue().equals(SystemConstants.CONFIG_VALUE_TRUE)) {
-						//populate
-						createTestData();
-						//set value to false
-						config.setValue(SystemConstants.CONFIG_VALUE_FALSE);
-						systemConfigurationService.save(config);		
-					}
-					break;
-				}	
-			}	
+			
+			
 		}
 	}
-	
-	private void createTestData() {
-		
-		
-		try {
-			
-			//TODO Store, Categories, Products
-			
-		} catch (Exception e) {//don't raise the exception
-			LOGGER.error("An exception occured while populating test data, you may want to erase the data before trying to pupulate", e);
-		}
-		
-		
-	}
+
 
 }
