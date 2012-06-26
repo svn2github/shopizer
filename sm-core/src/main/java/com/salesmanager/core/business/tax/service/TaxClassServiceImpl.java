@@ -12,11 +12,11 @@ public class TaxClassServiceImpl extends SalesManagerEntityServiceImpl<Long, Tax
 		implements TaxClassService {
 
 	private TaxClassDao taxClassDao;
+	
 	@Autowired
 	public TaxClassServiceImpl(TaxClassDao taxClassDao) {
 		super(taxClassDao);
+		
 		this.taxClassDao = taxClassDao;
 	}
-
-
 }

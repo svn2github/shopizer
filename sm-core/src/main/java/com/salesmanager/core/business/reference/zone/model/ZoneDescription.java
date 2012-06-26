@@ -7,6 +7,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import com.salesmanager.core.business.common.model.Description;
+import com.salesmanager.core.business.reference.language.model.Language;
 
 @Entity
 @Table(name="ZONE_DESCRIPTION", uniqueConstraints={
@@ -25,7 +26,13 @@ public class ZoneDescription extends Description {
 	
 	public ZoneDescription() {
 	}
-
+	
+	public ZoneDescription(Zone zone, Language language, String name) {
+		setZone(zone);
+		setLanguage(language);
+		setName(name);
+	}
+	
 	public Zone getZone() {
 		return zone;
 	}

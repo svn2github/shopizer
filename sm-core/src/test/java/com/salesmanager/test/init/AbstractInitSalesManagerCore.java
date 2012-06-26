@@ -1,7 +1,9 @@
 package com.salesmanager.test.init;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -9,6 +11,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.metamodel.EntityType;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +34,10 @@ import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.currency.service.CurrencyService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
+import com.salesmanager.core.business.reference.zone.imports.ZoneLoader;
+import com.salesmanager.core.business.reference.zone.imports.ZoneTransient;
+import com.salesmanager.core.business.reference.zone.model.Zone;
+import com.salesmanager.core.business.reference.zone.model.ZoneDescription;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.constants.SchemaConstant;
 import com.salesmanager.test.core.SalesManagerCoreTestExecutionListener;
@@ -68,12 +76,40 @@ public class AbstractInitSalesManagerCore {
 	}
 	
 	@Test
-	public void init() throws ServiceException {
+	public void init() throws ServiceException, JsonParseException, JsonMappingException, IOException {
 		initLanguages();
 		initCountries();
 		initCurrencies();
+		initZones();
 	}
 	
+	private void initZones() throws JsonParseException, JsonMappingException, IOException, ServiceException {
+		Map<String, List<ZoneTransient>> loadZones =  new ZoneLoader().loadZoneConfigurations();
+		for(String languageCode : loadZones.keySet()) {
+			Language language = languageService.getByCode(languageCode);
+			List<ZoneTransient> transients = loadZones.get(languageCode);
+			
+			for(ZoneTransient zoneTransient : transients) {
+				String code = zoneTransient.getZoneCode();
+				String name = zoneTransient.getZoneName();
+				Country country = countryService.getByCode(zoneTransient.getCountryCode());
+				
+				if (country != null) {
+					Zone zone = zoneService.getByCode(code);
+					if (zone == null) {
+						zone = new Zone(country, name, code);
+						zoneService.create(zone);
+					}
+					
+					ZoneDescription description = new ZoneDescription(zone, language, name);
+					zoneService.addDescription(zone, description);
+				} else {
+					LOGGER.info("Import Zone : bad country code");
+				}
+			}
+		}
+	}
+
 	public void initCountries() throws ServiceException {
 		for(String code : SchemaConstant.COUNTRY_ISO_CODE) {
 			Locale locale = SchemaConstant.LOCALES.get(code);
@@ -86,9 +122,6 @@ public class AbstractInitSalesManagerCore {
 					CountryDescription description = new CountryDescription(language, name);
 					countryService.addCountryDescription(country, description);
 				}
-				
-				// TODO : add GEOZONE
-				// TODO : add ZONES
 			}
 		}
 	}
@@ -108,7 +141,7 @@ public class AbstractInitSalesManagerCore {
 				currency.setName(SchemaConstant.CURRENCY_MAP.get(code));
 				currencyService.create(currency);
 			} catch (IllegalArgumentException e) {
-				LOGGER.info("----------------- bad currency code" + code);
+				LOGGER.info("Import Currency : bad currency code" + code);
 			}
 			
 		}
@@ -118,9 +151,15 @@ public class AbstractInitSalesManagerCore {
 		cleanCurrency();
 		cleanCountry();
 		cleanLanguage();
-		
+		cleanZone();
 	}
 	
+	private void cleanZone() throws ServiceException {
+		for(Zone zone : zoneService.list()) {
+			zoneService.delete(zone);
+		}
+	}
+
 	private void cleanCurrency() throws ServiceException {
 		for(Currency currency : currencyService.list()) {
 			currencyService.delete(currency);

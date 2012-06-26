@@ -1,10 +1,11 @@
-package com.salesmanager.core.business.reference.zone.model;
+package com.salesmanager.core.business.reference.zone.imports;
 
-public class ZonePojo {
+public class ZoneTransient {
 	
 	private String zoneCode;
 	private String zoneName;
 	private String countryCode;
+	
 	public String getZoneCode() {
 		return zoneCode;
 	}

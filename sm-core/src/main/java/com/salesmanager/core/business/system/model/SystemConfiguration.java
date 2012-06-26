@@ -21,10 +21,7 @@ import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 @EntityListeners(value = AuditListener.class)
 @Table(name = "SYSTEM_FONFIGURATION", schema="SALESMANAGER")
 public class SystemConfiguration extends SalesManagerEntity<Long,SystemConfiguration> implements Serializable, Auditable {
-
-
 	private static final long serialVersionUID = 6831573162350751684L;
-	
 	
 	@Id
 	@Column(name = "SYSTEM_CONFIG_ID")
@@ -51,13 +48,11 @@ public class SystemConfiguration extends SalesManagerEntity<Long,SystemConfigura
 
 	@Override
 	public Long getId() {
-		// TODO Auto-generated method stub
 		return id;
 	}
 
 	@Override
 	public void setId(Long id) {
-		// TODO Auto-generated method stub
 		this.id = id;
 	}
 
@@ -76,7 +71,4 @@ public class SystemConfiguration extends SalesManagerEntity<Long,SystemConfigura
 	public void setValue(String value) {
 		this.value = value;
 	}
-
-
-
 }
