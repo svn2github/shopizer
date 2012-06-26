@@ -13,6 +13,8 @@
         ">
 
 	<context:annotation-config />
+	<!-- properties -->
+	<import resource="classpath:/spring/shopizer-app-config.xml" />
 
 	<bean class="org.springframework.web.portlet.mvc.annotation.AnnotationMethodHandlerAdapter">
 	</bean>
