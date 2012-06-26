@@ -4,6 +4,8 @@
 	<portlet:param name="action" value="showProductPage" />
 </portlet:renderURL>
 
+<div class="sm">
+
 <div class="row">
 	<div class="span2">
 
@@ -83,4 +85,6 @@
 
 		</ul>
 	</div>
+</div>
+
 </div>
