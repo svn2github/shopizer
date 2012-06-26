@@ -33,6 +33,11 @@ public class TaxClass extends SalesManagerEntity<Long, TaxClass> {
 	
 	public final static String DEFAULT_TAX_CLASS = "DEFAULT";
 	
+	public TaxClass(String code) {
+		this.code = code;
+		this.title = code;
+	}
+	
 	@Id
 	@Column(name = "TAX_CLASS_ID", unique=true, nullable=false)
 	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "TX_CLASS_SEQ_NEXT_VAL")
