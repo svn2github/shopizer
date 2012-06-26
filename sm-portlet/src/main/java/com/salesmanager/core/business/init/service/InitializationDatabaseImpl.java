@@ -80,7 +80,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		createLanguages();
 		createCountries();
 		createCurrencies();
-		//createMerchant();
+		createMerchant();
 		//createSubReferences();
 		//loadData();
 	}
@@ -134,7 +134,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		Date date = new Date(System.currentTimeMillis());
 		
 		Language en = languageService.getByCode("en");
-		Country ca = countryService.getByCode("CA");
+		Country ca = countryService.getByCode("CAN");
 		Currency currency = currencyService.getByCode("CAD");
 		
 		List<Language> supportedLanguages = new ArrayList<Language>();
