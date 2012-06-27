@@ -75,9 +75,45 @@
 			<mime-type>text/html</mime-type>
 			<portlet-mode>view</portlet-mode>
 		</supports>
-		<resource-bundle>com.salesmanager.portlet.shop.checkout.cart.CheckoutController</resource-bundle>
+		<resource-bundle>com.salesmanager.portlet.shop.checkout.cart.CartController</resource-bundle>
 		<portlet-info>
 			<title>Shopizer - Shopping Cart</title>
+		</portlet-info>
+	</portlet>
+	
+	<!-- Checkout Portlet -->
+	<portlet>
+		<portlet-name>shopizer-checkout</portlet-name>
+		<portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
+		<init-param>
+			<name>contextConfigLocation</name>
+			<value>classpath:spring/checkout-portlet.xml</value>
+		</init-param>
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>view</portlet-mode>
+		</supports>
+		<resource-bundle>com.salesmanager.portlet.shop.checkout.cart.CheckoutController</resource-bundle>
+		<portlet-info>
+			<title>Shopizer - Shopping Checkout</title>
+		</portlet-info>
+	</portlet>
+	
+	<!-- Admin Portlet -->
+	<portlet>
+		<portlet-name>shopizer-admin</portlet-name>
+		<portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
+		<init-param>
+			<name>contextConfigLocation</name>
+			<value>classpath:spring/admin-portlet.xml</value>
+		</init-param>
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>view</portlet-mode>
+		</supports>
+		<resource-bundle>com.salesmanager.portlet.admin.AdminController</resource-bundle>
+		<portlet-info>
+			<title>Shopizer - Administration</title>
 		</portlet-info>
 	</portlet>
 
