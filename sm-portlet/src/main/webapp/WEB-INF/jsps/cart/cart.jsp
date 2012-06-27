@@ -12,88 +12,6 @@
 
 <div class="row">
 
- 
-
-  <div class="span4"><a class="brand" href="#"><h1>Project name</h1></a></div>
-
- 
-
-  <div class="span4 offset4">
-
- 
-
-      <div class="btn-group pull-right">Login</div>
-
- 
-
- 
-
-  </div>
-
- 
-
-   </div>
-
-  
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
-    <div class="navbar">
-
-      <div class="navbar-inner">
-
-        <div class="container-fluid">
-
- 
-
- 
-
-          <ul class="nav">
-
-            <li class="active">
-
-                  <a href="#">Home</a>
-
-            </li>
-
-            <li><a href="#">Link</a></li>
-
-            <li><a href="#">Link</a></li>
-
-        </ul>
-
- 
-
-         
-
-        </div>
-
-      </div>
-
-    </div>
-
- 
-
- 
-
- 
-
- 
-
- 
-
-<div class="row">
-
       <form>
 
  
@@ -188,7 +106,9 @@
 
 </div>
 
- 
+</div>
+
+</div> 
 
 
   
