@@ -81,8 +81,8 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		createCountries();
 		createCurrencies();
 		createMerchant();
-		//createSubReferences();
-		//loadData();
+		createSubReferences();
+		loadData();
 	}
 
 	private void createCurrencies() throws ServiceException {
@@ -158,6 +158,8 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 	
 	private void createSubReferences() throws ServiceException {
 		
+		LOGGER.info(String.format("%s : Loading catalog sub references ", name));
+		
 		MerchantStore store = merchantService.getMerchantStore(MerchantStore.DEFAULT_STORE);
 		
 		
@@ -165,8 +167,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		productType.setCode(ProductType.GENERAL_TYPE);
 		productTypeService.create(productType);
 		
-		TaxClass taxclass = new TaxClass();
-		taxclass.setCode(TaxClass.DEFAULT_TAX_CLASS);
+		TaxClass taxclass = new TaxClass(TaxClass.DEFAULT_TAX_CLASS);
 		taxclass.setMerchantSore(store);
 		
 		taxClassService.create(taxclass);
@@ -180,7 +181,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		List<SystemConfiguration> configurations = systemConfigurationService.list();
 		
 		
-		String loadTestData = new AppConfiguration().getProperty(ApplicationConstants.POPULATE_TEST_DATA);
+		String loadTestData = configuration.getProperty(ApplicationConstants.POPULATE_TEST_DATA);
 		boolean loadData =  !StringUtils.isBlank(loadTestData) && loadTestData.equals(SystemConstants.CONFIG_VALUE_TRUE);
 		
 		
@@ -196,7 +197,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 					}		
 			}
 			
-			//initStoreData.initInitialData();
+			initStoreData.initInitialData();
 			
 			configuration = new SystemConfiguration();
 			configuration.getAuditSection().setModifiedBy(SystemConstants.SYSTEM_USER);
