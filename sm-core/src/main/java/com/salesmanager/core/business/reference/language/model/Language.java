@@ -3,6 +3,7 @@ package com.salesmanager.core.business.reference.language.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -20,10 +21,12 @@ import com.salesmanager.core.business.common.model.audit.AuditSection;
 import com.salesmanager.core.business.common.model.audit.Auditable;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.constants.SchemaConstant;
 
 @Entity
 @EntityListeners(value = AuditListener.class)
-@Table(name = "LANGUAGE", schema="SALESMANAGER")
+@Table(name = "LANGUAGE", schema=SchemaConstant.SALESMANAGER_SCHEMA)
+@Cacheable
 public class Language extends SalesManagerEntity<Integer, Language> implements Auditable {
 	private static final long serialVersionUID = -7676627812941330669L;
 	
