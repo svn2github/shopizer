@@ -1,3 +1,11 @@
+.table tbody tr.subt:hover td,
+.table tbody tr.subt:hover th {
+      background-color: transparent;
+}
+
+ 
+
+
 [class*="span"] {
     float: left;
     margin-left: 25px;
