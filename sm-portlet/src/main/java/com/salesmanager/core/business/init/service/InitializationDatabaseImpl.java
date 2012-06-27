@@ -59,7 +59,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 	private SystemConfigurationService systemConfigurationService;
 	
 	@Autowired
-	private AppConfiguration configuration;
+	private AppConfiguration appConfiguration;
 	
 	@Autowired
 	protected ProductTypeService productTypeService;
@@ -181,7 +181,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		List<SystemConfiguration> configurations = systemConfigurationService.list();
 		
 		
-		String loadTestData = configuration.getProperty(ApplicationConstants.POPULATE_TEST_DATA);
+		String loadTestData = appConfiguration.getProperty(ApplicationConstants.POPULATE_TEST_DATA);
 		boolean loadData =  !StringUtils.isBlank(loadTestData) && loadTestData.equals(SystemConstants.CONFIG_VALUE_TRUE);
 		
 		

@@ -1,4 +1,4 @@
-package com.salesmanager.portlet.shop.checkout;
+package com.salesmanager.portlet.admin;
 
 import javax.portlet.RenderResponse;
 
@@ -8,13 +8,13 @@ import org.springframework.web.portlet.bind.annotation.RenderMapping;
 
 import com.salesmanager.portlet.common.controller.SalesManagerController;
 
-@Controller(value="checkoutController")
+@Controller(value="adminController")
 @RequestMapping(value = "VIEW")
-public class CheckoutController extends SalesManagerController {
+public class AdminController extends SalesManagerController {
 	
 	@RenderMapping
-	public String displayCheckout(RenderResponse response) {
-		return "checkout/checkout";
+	public String displayHome(RenderResponse response) {
+		return "admin/home";
 	}
 
 }
