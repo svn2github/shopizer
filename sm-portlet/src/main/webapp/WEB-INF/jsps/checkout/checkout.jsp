@@ -1,10 +1,12 @@
 <%@include file="../include.jsp"%>
 
-<portlet:renderURL var="showProductURL">
-	<portlet:param name="action" value="showProductPage" />
+<portlet:renderURL var="showCheckoutURL">
+	<portlet:param name="action" value="showCheckoutPage" />
 </portlet:renderURL>
 
 <div class="sm">
+
+<div class="container">
 
 <div class="row">
 
@@ -365,6 +367,8 @@
       </div>
 
 </form>
+
+</div>
 
 </div>
 
