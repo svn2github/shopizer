@@ -3,6 +3,7 @@ package com.salesmanager.core.business.reference.country.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,6 +23,7 @@ import com.salesmanager.core.constants.SchemaConstant;
 
 @Entity
 @Table(name = "COUNTRY", schema=SchemaConstant.SALESMANAGER_SCHEMA)
+@Cacheable
 public class Country extends SalesManagerEntity<Integer, Country> {
 	private static final long serialVersionUID = -7388011537255588035L;
 
