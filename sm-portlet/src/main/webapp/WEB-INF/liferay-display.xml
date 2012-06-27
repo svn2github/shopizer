@@ -7,5 +7,6 @@
 		<portlet id="shopizer-minicart" />
 		<portlet id="shopizer-cart" />
 		<portlet id="shopizer-checkout" />
+		<portlet id="shopizer-admin" />
 	</category>
 </display>

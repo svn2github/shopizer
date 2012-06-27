@@ -7,8 +7,8 @@
 		<icon>/img/icon/logo.png</icon>
 		<instanceable>true</instanceable>
 		<remoteable>true</remoteable>
-		<header-portlet-css>/css/bootstrap/sm-bootstrap.css</header-portlet-css>
-		<header-portlet-css>/css/bootstrap/sm-bootstrap-responsive.css</header-portlet-css>
+		<header-portlet-css>/css/bootstrap/css/sm-bootstrap.css</header-portlet-css>
+		<header-portlet-css>/css/bootstrap/css/sm-bootstrap-responsive.css</header-portlet-css>
 		<header-portlet-css>/css/shopizer/shopizer.css</header-portlet-css>
 		<header-portlet-javascript>/js/jquery/jquery-1.7.2.min.js</header-portlet-javascript>
 		<header-portlet-javascript>/js/bootstrap/bootstrap.min.js</header-portlet-javascript>
@@ -18,8 +18,8 @@
 		<icon>/img/icon/logo.png</icon>
 		<instanceable>true</instanceable>
 		<remoteable>true</remoteable>
-		<header-portlet-css>/css/bootstrap/bootstrap.css</header-portlet-css>
-		<header-portlet-css>/css/bootstrap/bootstrap-responsive.min.css</header-portlet-css>
+		<header-portlet-css>/css/bootstrap/css/sm-bootstrap.css</header-portlet-css>
+		<header-portlet-css>/css/bootstrap/css/sm-bootstrap-responsive.min.css</header-portlet-css>
 		<header-portlet-css>/css/shopizer/shopizer.css</header-portlet-css>
 		<header-portlet-javascript>/js/jquery/jquery-1.7.2.min.js</header-portlet-javascript>
 		<header-portlet-javascript>/js/bootstrap/bootstrap.min.js</header-portlet-javascript>
@@ -29,8 +29,8 @@
 		<icon>/img/icon/logo.png</icon>
 		<instanceable>true</instanceable>
 		<remoteable>true</remoteable>
-		<header-portlet-css>/css/bootstrap/bootstrap.css</header-portlet-css>
-		<header-portlet-css>/css/bootstrap/bootstrap-responsive.min.css</header-portlet-css>
+		<header-portlet-css>/css/bootstrap/css/bootstrap.css</header-portlet-css>
+		<header-portlet-css>/css/bootstrap/css/bootstrap-responsive.min.css</header-portlet-css>
 		<header-portlet-css>/css/shopizer/shopizer.css</header-portlet-css>
 		<header-portlet-javascript>/js/jquery/jquery-1.7.2.min.js</header-portlet-javascript>
 		<header-portlet-javascript>/js/bootstrap/bootstrap.min.js</header-portlet-javascript>
@@ -40,8 +40,8 @@
 		<icon>/img/icon/logo.png</icon>
 		<instanceable>true</instanceable>
 		<remoteable>true</remoteable>
-		<header-portlet-css>/css/bootstrap/sm-bootstrap.css</header-portlet-css>
-		<header-portlet-css>/css/bootstrap/sm-bootstrap-responsive.css</header-portlet-css>
+		<header-portlet-css>/css/bootstrap/css/sm-bootstrap.css</header-portlet-css>
+		<header-portlet-css>/css/bootstrap/css/sm-bootstrap-responsive.css</header-portlet-css>
 		<header-portlet-css>/css/shopizer/shopizer.css</header-portlet-css>
 		<header-portlet-javascript>/js/jquery/jquery-1.7.2.min.js</header-portlet-javascript>
 		<header-portlet-javascript>/js/bootstrap/bootstrap.min.js</header-portlet-javascript>
@@ -51,8 +51,19 @@
 		<icon>/img/icon/logo.png</icon>
 		<instanceable>true</instanceable>
 		<remoteable>true</remoteable>
-		<header-portlet-css>/css/bootstrap/sm-bootstrap.css</header-portlet-css>
-		<header-portlet-css>/css/bootstrap/sm-bootstrap-responsive.css</header-portlet-css>
+		<header-portlet-css>/css/bootstrap/css/sm-bootstrap.css</header-portlet-css>
+		<header-portlet-css>/css/bootstrap/css/sm-bootstrap-responsive.css</header-portlet-css>
+		<header-portlet-css>/css/shopizer/shopizer.css</header-portlet-css>
+		<header-portlet-javascript>/js/jquery/jquery-1.7.2.min.js</header-portlet-javascript>
+		<header-portlet-javascript>/js/bootstrap/bootstrap.min.js</header-portlet-javascript>
+	</portlet>
+		<portlet>
+		<portlet-name>shopizer-admin</portlet-name>
+		<icon>/img/icon/logo.png</icon>
+		<instanceable>true</instanceable>
+		<remoteable>true</remoteable>
+		<header-portlet-css>/css/bootstrap/css/sm-bootstrap.css</header-portlet-css>
+		<header-portlet-css>/css/bootstrap/css/sm-bootstrap-responsive.css</header-portlet-css>
 		<header-portlet-css>/css/shopizer/shopizer.css</header-portlet-css>
 		<header-portlet-javascript>/js/jquery/jquery-1.7.2.min.js</header-portlet-javascript>
 		<header-portlet-javascript>/js/bootstrap/bootstrap.min.js</header-portlet-javascript>
