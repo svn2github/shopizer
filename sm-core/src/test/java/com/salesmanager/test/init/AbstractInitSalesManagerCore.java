@@ -79,7 +79,7 @@ public class AbstractInitSalesManagerCore {
 	public void init() throws ServiceException, JsonParseException, JsonMappingException, IOException {
 		initLanguages();
 		initCountries();
-		initCurrencies();
+//		initCurrencies();
 		initZones();
 	}
 	
