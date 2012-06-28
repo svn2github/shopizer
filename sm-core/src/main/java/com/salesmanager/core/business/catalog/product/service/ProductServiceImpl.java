@@ -73,8 +73,8 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		}
 		
 		//Get the category list
-		String lineage = category.getLineage();
-		List<Category> categories = categoryService.listByLineage(lineage);
+		StringBuilder lineage = new StringBuilder().append(category.getLineage()).append(category.getId()).append("/");
+		List<Category> categories = categoryService.listByLineage(lineage.toString());
 		Set categoryIds = new HashSet();
 		for(Category c : categories) {
 			
@@ -82,12 +82,14 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 			
 		}
 		
+		categoryIds.add(category.getId());
+		
 		//Get products
 		List<Product> products = productDao.getProductsForLocale(categoryIds, language, locale);
 		
 		//Filter availability
 		
-		return null;
+		return products;
 	}
 	
 }
