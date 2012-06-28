@@ -545,8 +545,98 @@ public class IsolatedTestCase {
 		dprice4.getDescriptions().add(dpd);
 				
 		productPriceService.create(dprice4);
-	
 		
+		//PRODUCT 5
+		
+		Product product5 = new Product();
+		product5.setProductHeight(new BigDecimal(4));
+		product5.setProductLength(new BigDecimal(3));
+		product5.setProductWidth(new BigDecimal(1));
+		product5.setSku("SF333346");
+		product5.setManufacturer(packed);
+		product5.setType(generalType);
+		product5.setMerchantSore(store);
+				
+				
+		//Product description
+		description = new ProductDescription();
+		description.setName("Battle of the worlds 2");
+		description.setLanguage(en);
+		description.setProduct(product5);
+		
+		product5.getDescriptions().add(description);
+				
+		product5.getCategories().add(fiction);
+		productService.create(product5);
+				
+		//Availability
+		ProductAvailability availability5 = new ProductAvailability();
+		availability5.setProductDateAvailable(date);
+		availability5.setProductQuantity(100);
+		availability5.setRegion("*");
+		availability5.setProduct(product5);//associate with product
+				
+		productAvailabilityService.create(availability5);
+				
+		ProductPrice dprice5 = new ProductPrice();
+		dprice5.setDefaultPrice(true);
+		dprice5.setProductPriceAmount(new BigDecimal(18.99));
+		dprice5.setProductPriceAvailability(availability5);
+
+		dpd = new ProductPriceDescription();
+		dpd.setName("Base price");
+		dpd.setProductPrice(dprice5);
+		dpd.setLanguage(en);
+		
+		dprice5.getDescriptions().add(dpd);
+				
+		productPriceService.create(dprice5);
+	
+		//PRODUCT 6
+		
+		Product product6 = new Product();
+		product6.setProductHeight(new BigDecimal(4));
+		product6.setProductLength(new BigDecimal(3));
+		product6.setProductWidth(new BigDecimal(1));
+		product6.setSku("LL333444");
+		product6.setManufacturer(packed);
+		product6.setType(generalType);
+		product6.setMerchantSore(store);
+				
+				
+		//Product description
+		description = new ProductDescription();
+		description.setName("Life book");
+		description.setLanguage(en);
+		description.setProduct(product6);
+		
+		product6.getDescriptions().add(description);
+				
+		product6.getCategories().add(novell);
+		productService.create(product6);
+				
+		//Availability
+		ProductAvailability availability6 = new ProductAvailability();
+		availability6.setProductDateAvailable(date);
+		availability6.setProductQuantity(100);
+		availability6.setRegion("*");
+		availability6.setProduct(product6);//associate with product
+				
+		productAvailabilityService.create(availability6);
+				
+		ProductPrice dprice6 = new ProductPrice();
+		dprice6.setDefaultPrice(true);
+		dprice6.setProductPriceAmount(new BigDecimal(18.99));
+		dprice6.setProductPriceAvailability(availability6);
+
+		dpd = new ProductPriceDescription();
+		dpd.setName("Base price");
+		dpd.setProductPrice(dprice6);
+		dpd.setLanguage(en);
+		
+		dprice6.getDescriptions().add(dpd);
+				
+		productPriceService.create(dprice6);
 		
 		
 	}
