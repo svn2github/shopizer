@@ -1,6 +1,7 @@
 package com.salesmanager.core.business.catalog.product.model;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +21,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Cascade;
 
@@ -103,6 +106,14 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 		
 	})
 	private Set<Category> categories = new HashSet<Category>();
+	
+	@Column(name="DATE_AVAILABLE")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateAvailable = new Date();
+	
+	
+	@Column(name="AVAILABLE")
+	private Boolean available = new Boolean(true);
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
 	@JoinColumn(name="MANUFACTURER_ID", nullable=true)
@@ -344,6 +355,22 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 
 	public void setMerchantSore(MerchantStore merchantSore) {
 		this.merchantSore = merchantSore;
+	}
+
+	public Boolean getAvailable() {
+		return available;
+	}
+
+	public void setAvailable(Boolean available) {
+		this.available = available;
+	}
+
+	public Date getDateAvailable() {
+		return dateAvailable;
+	}
+
+	public void setDateAvailable(Date dateAvailable) {
+		this.dateAvailable = dateAvailable;
 	}
 
 
