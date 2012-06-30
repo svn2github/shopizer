@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.ProductList;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDao;
 import com.salesmanager.core.business.reference.language.model.Language;
 
@@ -14,5 +15,8 @@ public interface ProductDao extends SalesManagerEntityDao<Long, Product> {
 
 	List<Product> getProductsForLocale(Set categoryIds, Language language,
 			Locale locale);
+	
+	ProductList getProductsForLocale(Set categoryIds, Language language,
+			Locale locale, int startIndex, int maxCount);
 	
 }
