@@ -1,7 +1,5 @@
 package com.salesmanager.core.business.catalog.product.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -15,6 +13,7 @@ import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.common.CatalogServiceHelper;
 import com.salesmanager.core.business.catalog.product.dao.ProductDao;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.ProductList;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
@@ -90,6 +89,34 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		//Filter availability
 		
 		return products;
+	}
+
+	@Override
+	public ProductList getProductsForLocale(Category category,
+			Language language, Locale locale, int startIndex, int maxCount)
+			throws ServiceException {
+
+		if(category==null) {
+			throw new ServiceException("The category is null");
+		}
+		
+		//Get the category list
+		StringBuilder lineage = new StringBuilder().append(category.getLineage()).append(category.getId()).append("/");
+		List<Category> categories = categoryService.listByLineage(lineage.toString());
+		Set categoryIds = new HashSet();
+		for(Category c : categories) {
+			
+			categoryIds.add(c.getId());
+			
+		}
+		
+		categoryIds.add(category.getId());
+		
+		//Get products
+		ProductList productList = productDao.getProductsForLocale(categoryIds, language, locale, startIndex, maxCount);
+		
+		return productList;
+		
 	}
 	
 }
