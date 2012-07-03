@@ -420,6 +420,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		book.setDepth(0);
 		book.setLineage("/");
 		book.setMerchantSore(store);
+		book.setCode("book");
 		
 		CategoryDescription bookEnglishDescription = new CategoryDescription();
 		bookEnglishDescription.setName("Book");
@@ -444,6 +445,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		music.setDepth(0);
 		music.setLineage("/");
 		music.setMerchantSore(store);
+		music.setCode("music");
 		
 		CategoryDescription musicEnglishDescription = new CategoryDescription();
 		musicEnglishDescription.setName("Music");
@@ -467,6 +469,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		novell.setDepth(1);
 		novell.setLineage("/" + book.getId() + "/");
 		novell.setMerchantSore(store);
+		novell.setCode("novell");
 		
 		CategoryDescription novellEnglishDescription = new CategoryDescription();
 		novellEnglishDescription.setName("Novell");
@@ -491,6 +494,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		tech.setDepth(1);
 		tech.setLineage("/" + book.getId() + "/");
 		tech.setMerchantSore(store);
+		tech.setCode("tech");
 		
 		CategoryDescription techEnglishDescription = new CategoryDescription();
 		techEnglishDescription.setName("Technology");
@@ -516,6 +520,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		fiction.setDepth(2);
 		fiction.setLineage("/" + book.getId() + "/" + novell.getId() + "/");
 		fiction.setMerchantSore(store);
+		fiction.setCode("fiction");
 		
 		CategoryDescription fictionEnglishDescription = new CategoryDescription();
 		fictionEnglishDescription.setName("Fiction");
