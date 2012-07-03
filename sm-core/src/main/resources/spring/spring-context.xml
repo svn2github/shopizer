@@ -19,28 +19,31 @@
 	<import resource="classpath:/spring/shopizer-core-config.xml" />
 
 	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="sm-unit" />
 		<property name="dataSource" ref="datasource" />
 		<property name="jpaVendorAdapter" ref="jpaAdapter" />
 		<property name="jpaProperties">
-			<props>
-				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
-				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
-				<prop key="hibernate.show_sql">false</prop>
-				<prop key="hibernate.format_sql">false</prop>
-				<prop key="hibernate.generate_statistics">true</prop>
-				<prop key="hibernate.bytecode.use_reflection_optimizer">true</prop>
-				<prop key="hibernate.default_schema">${db.schema}</prop>
-
+		
+			<util:map>
+				<entry key="hibernate.default_schema" value="${db.schema}" />
+				<entry key="hibernate.hbm2ddl.auto" value="${hibernate.hbm2ddl.auto}" />
+				<entry key="hibernate.dialect" value="${hibernate.dialect}" />
+				<entry key="hibernate.show_sql" value="true" />
+				<entry key="hibernate.format_sql" value="false" />
+				<entry key="hibernate.generate_statistics" value="true" />
+				<entry key="hibernate.bytecode.use_reflection_optimizer" value="true" />
+				
+				
 				<!-- Enable entity caching ; it is also needed that cached entities must be annotated with @Cacheable (jpa2) * cached entities may be declared in ehcache-hibernate.xml -->
-				<prop key="javax.persistence.sharedCache.mode">ENABLE_SELECTIVE</prop>
-				<prop key="hibernate.cache.use_second_level_cache">true</prop>
-				<prop key="hibernate.cache.use_query_cache">true</prop>
-				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
-				<prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop>
-				<prop key="net.sf.ehcache.configurationResourceName">/ehcache/ehcache-hibernate.xml</prop>
-				<!-- enabled hibernate to store entries in a more readable format (from documentation) -->
-				<prop key="hibernate.cache.use_structured_entries">true</prop>
-			</props>
+				<entry key="javax.persistence.sharedCache.mode" value="ENABLE_SELECTIVE" />
+				<entry key="hibernate.cache.use_second_level_cache" value="true" />
+				<entry key="hibernate.cache.use_query_cache" value="true" />
+				<entry key="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.EhCacheRegionFactory" />
+				<entry key="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.EhCacheProvider" />
+				<entry key="net.sf.ehcache.configurationResourceName" value="/ehcache/ehcache-hibernate.xml" />
+				<entry key="hibernate.cache.use_structured_entries" value="true" />
+			</util:map>
+
 		</property>
 		<property name="loadTimeWeaver">
 			<bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver" />
@@ -50,7 +53,7 @@
 	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
 	<bean id="jpaAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-		<property name="database" value="MYSQL" />
+		<!-- <property name="database" value="MYSQL" /> -->
 	</bean>
 
 	<!-- Définition de la gestion des transactions -->
@@ -59,7 +62,7 @@
 		p:entityManagerFactory-ref="entityManagerFactory">
 	</bean>
 
-	<aop:config>
+ 	<aop:config>
 		<aop:pointcut id="txPointCutDef" expression="this(com.salesmanager.core.business.generic.service.TransactionalAspectAwareService)" />
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPointCutDef" />
 	</aop:config>
@@ -71,7 +74,7 @@
 			<tx:method name="search*" read-only="true" />
 			<tx:method name="*" read-only="false" rollback-for="com.salesmanager.core.business.generic.exception.ServiceException" />
 		</tx:attributes>
-	</tx:advice>
+	</tx:advice> 
 
 	<!-- traduction des exceptions -->
 	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
