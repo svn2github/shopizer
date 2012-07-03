@@ -11,7 +11,7 @@ import com.salesmanager.core.business.generic.model.SalesManagerEntity;
  *
  * @param <T> type d'entité
  */
-public interface SalesManagerEntityService<K extends Serializable & Comparable<K>, E extends SalesManagerEntity<K, ?>> {
+public interface SalesManagerEntityService<K extends Serializable & Comparable<K>, E extends SalesManagerEntity<K, ?>> extends TransactionalAspectAwareService{
 
 	/**
 	 * Crée l'entité dans la base de données. Mis à part dans les tests pour faire des sauvegardes simples, utiliser
