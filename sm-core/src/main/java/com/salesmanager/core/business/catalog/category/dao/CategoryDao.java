@@ -8,12 +8,14 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 
 public interface CategoryDao extends SalesManagerEntityDao<Long, Category> {
 
-	List<Category> listBySeUrl(String seUrl);
+	List<Category> listBySeUrl(MerchantStore store, String seUrl);
 
 	List<Category> listByStoreAndParent(MerchantStore store, Category category);
 
-	List<Category> listByLineage(String lineage);
+	List<Category> listByLineage(MerchantStore store, String lineage);
 
-	Category getByName(String name);
+	Category getByName(MerchantStore store, String name);
+
+	List<Category> listByCode(MerchantStore store, String code);
 
 }

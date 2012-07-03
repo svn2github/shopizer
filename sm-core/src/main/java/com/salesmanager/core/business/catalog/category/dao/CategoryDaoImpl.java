@@ -20,7 +20,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 	}
 	
 	@Override
-	public Category getByName(String name) {
+	public Category getByName(MerchantStore store, String name) {
 		QCategory qCategory = QCategory.category;
 		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
 		
@@ -28,7 +28,10 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		
 		query.from(qCategory)
 			.leftJoin(qCategory.descriptions, qDescription)
-			.where(qDescription.name.like(name));
+			.where(qDescription.name.like(name)
+			.and(qCategory.merchantSore.id.eq(store.getId())));
+		
+
 		
 		List<Category> categories = query.list(qCategory);
 		if(categories.size()>0) {
@@ -39,7 +42,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 	}
 
 	@Override
-	public List<Category> listBySeUrl(String seUrl) {
+	public List<Category> listBySeUrl(MerchantStore store,String seUrl) {
 		QCategory qCategory = QCategory.category;
 		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
 		
@@ -47,14 +50,15 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		
 		query.from(qCategory)
 			.leftJoin(qCategory.descriptions, qDescription)
-			.where(qDescription.seUrl.like(seUrl))
+			.where(qDescription.seUrl.like(seUrl)
+			.and(qCategory.merchantSore.id.eq(store.getId())))
 			.orderBy(qDescription._super.title.desc(), qDescription._super.name.desc());
 		
 		return query.list(qCategory);
 	}
 	
 	@Override
-	public List<Category> listByLineage(String lineage) {
+	public List<Category> listByCode(MerchantStore store, String code) {
 		QCategory qCategory = QCategory.category;
 		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
 		
@@ -62,7 +66,24 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		
 		query.from(qCategory)
 			.leftJoin(qCategory.descriptions, qDescription)
-			.where(qCategory.lineage.like(new StringBuilder().append(lineage).append("%").toString()))
+			.where(qCategory.code.eq(code)
+			.and(qCategory.merchantSore.id.eq(store.getId())))
+			.orderBy(qDescription._super.title.desc(), qDescription._super.name.desc());
+		
+		return query.list(qCategory);
+	}
+	
+	@Override
+	public List<Category> listByLineage(MerchantStore store, String lineage) {
+		QCategory qCategory = QCategory.category;
+		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCategory)
+			.leftJoin(qCategory.descriptions, qDescription)
+			.where(qCategory.lineage.like(new StringBuilder().append(lineage).append("%").toString())
+			.and(qCategory.merchantSore.id.eq(store.getId())))
 			.orderBy(qCategory.lineage.asc(),qCategory.lineage.asc());
 		
 		return query.listDistinct(qCategory);

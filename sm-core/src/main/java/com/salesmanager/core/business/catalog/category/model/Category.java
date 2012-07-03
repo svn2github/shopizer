@@ -86,6 +86,17 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 
 	@Column(name = "LINEAGE")
 	private String lineage;
+	
+	@Column(name="CODE", unique=true, length=100, nullable=false)
+	private String code;
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
 
 	public Category() {
 	}

@@ -65,7 +65,6 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	@Override
 	public List<Product> getProductsForLocale(Category category,
 			Language language, Locale locale) throws ServiceException {
-		// TODO Auto-generated method stub
 		
 		if(category==null) {
 			throw new ServiceException("The category is null");
@@ -73,7 +72,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		
 		//Get the category list
 		StringBuilder lineage = new StringBuilder().append(category.getLineage()).append(category.getId()).append("/");
-		List<Category> categories = categoryService.listByLineage(lineage.toString());
+		List<Category> categories = categoryService.listByLineage(category.getMerchantSore(),lineage.toString());
 		Set categoryIds = new HashSet();
 		for(Category c : categories) {
 			
@@ -102,7 +101,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		
 		//Get the category list
 		StringBuilder lineage = new StringBuilder().append(category.getLineage()).append(category.getId()).append("/");
-		List<Category> categories = categoryService.listByLineage(lineage.toString());
+		List<Category> categories = categoryService.listByLineage(category.getMerchantSore(),lineage.toString());
 		Set categoryIds = new HashSet();
 		for(Category c : categories) {
 			

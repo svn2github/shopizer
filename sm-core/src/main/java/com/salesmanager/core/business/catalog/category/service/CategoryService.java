@@ -4,20 +4,18 @@ import java.util.List;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
-import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.business.system.model.SystemConfiguration;
 
 public interface CategoryService extends SalesManagerEntityService<Long, Category> {
 
-	List<Category> listByLineage(String lineage);
+	List<Category> listByLineage(MerchantStore store, String lineage) throws ServiceException;
 	
-	List<Category> listBySeUrl(String seUrl);
+	List<Category> listBySeUrl(MerchantStore store, String seUrl) throws ServiceException;
 	
-	CategoryDescription getDescription(Category category, Language language);
+	CategoryDescription getDescription(Category category, Language language) throws ServiceException;
 	
 	//void addProduct(Category category, Product product) throws ServiceException;
 	
@@ -31,10 +29,13 @@ public interface CategoryService extends SalesManagerEntityService<Long, Categor
 
 	void addChild(Category parent, Category child) throws ServiceException;
 
-	List<Category> listByParent(Category category);
+	List<Category> listByParent(Category category) throws ServiceException;
 	
-	List<Category> listByStoreAndParent(MerchantStore store, Category category);
-	Category getByName(String name) throws ServiceException;
+	List<Category> listByStoreAndParent(MerchantStore store, Category category) throws ServiceException;
+	
+	
+	Category getByName(MerchantStore store, String name) throws ServiceException;
+
 	
 	
 

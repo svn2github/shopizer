@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.salesmanager.core.business.catalog.category.dao.CategoryDao;
 import com.salesmanager.core.business.catalog.category.model.Category;
@@ -11,12 +12,23 @@ import com.salesmanager.core.business.catalog.category.model.CategoryDescription
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.merchant.service.MerchantStoreService;
+import com.salesmanager.core.business.reference.country.model.Country;
+import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.language.service.LanguageService;
 
 @Service("categoryService")
 public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Category> implements CategoryService {
 	
 	private CategoryDao categoryDao;
+	
+	  @Autowired
+	  protected LanguageService            languageService;
+	  
+
+	  @Autowired
+	  protected MerchantStoreService       merchantService;
 	
 	@Autowired
 	public CategoryServiceImpl(CategoryDao categoryDao) {
@@ -26,32 +38,74 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	}
 
 	@Override
-	public List<Category> listByLineage(String lineage) {
-		return categoryDao.listByLineage(lineage);
+	public List<Category> listByLineage(MerchantStore store, String lineage) throws ServiceException {
+		try {
+			return categoryDao.listByLineage(store, lineage);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
+		
 	}
 	
 
 	@Override
-	public List<Category> listBySeUrl(String seUrl) {
-		return categoryDao.listBySeUrl(seUrl);
+	public List<Category> listBySeUrl(MerchantStore store, String seUrl) throws ServiceException{
+		
+		try {
+			return categoryDao.listBySeUrl(store, seUrl);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
+	}
+	
+	public List<Category> listByCode(MerchantStore store, String code) throws ServiceException {
+		
+		try {
+			return categoryDao.listByCode(store, code);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
 	}
 	
 	@Override
-	public List<Category> listByParent(Category category) {
-		return categoryDao.listByStoreAndParent(null, category);
+	public List<Category> listByParent(Category category) throws ServiceException {
+		
+		try {
+			return categoryDao.listByStoreAndParent(null, category);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
 	}
 	
 	@Override
-	public List<Category> listByStoreAndParent(MerchantStore store, Category category) {
-		return categoryDao.listByStoreAndParent(store, category);
+	public List<Category> listByStoreAndParent(MerchantStore store, Category category) throws ServiceException {
+		
+		try {
+			return categoryDao.listByStoreAndParent(store, category);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
 	}
 	
 	@Override
 	public void addCategoryDescription(Category category, CategoryDescription description)
 			throws ServiceException {
-		category.getDescriptions().add(description);
-		description.setCategory(category);
-		update(category);
+		
+		
+		
+		try {
+			category.getDescriptions().add(description);
+			description.setCategory(category);
+			update(category);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+
 	}
 
 	
@@ -99,6 +153,8 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 
 	@Override
 	public CategoryDescription getDescription(Category category, Language language) {
+		
+		
 		for (CategoryDescription description : category.getDescriptions()) {
 			if (description.getLanguage().equals(language)) {
 				return description;
@@ -109,14 +165,32 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	
 	@Override
 	public void addChild(Category parent, Category child) throws ServiceException {
-		parent.getCategories().add(child);
-		child.setParent(parent);
-		update(child);
+		
+		
+		try {
+			parent.getCategories().add(child);
+			child.setParent(parent);
+			update(child);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
+
 	}
 
 	@Override
-	public Category getByName(String name) throws ServiceException {
-		return categoryDao.getByName(name);
+	public Category getByName(MerchantStore store, String name) throws ServiceException {
+		
+		try {
+			return categoryDao.getByName(store, name);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
+		
 	}
+	
+	
+
 
 }
