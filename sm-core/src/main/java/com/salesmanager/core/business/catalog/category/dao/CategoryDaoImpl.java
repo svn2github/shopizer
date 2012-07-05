@@ -58,7 +58,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 	}
 	
 	@Override
-	public List<Category> listByCode(MerchantStore store, String code) {
+	public Category getByCode(MerchantStore store, String code) {
 		QCategory qCategory = QCategory.category;
 		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
 		
@@ -70,7 +70,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 			.and(qCategory.merchantSore.id.eq(store.getId())))
 			.orderBy(qDescription._super.title.desc(), qDescription._super.name.desc());
 		
-		return query.list(qCategory);
+		return query.uniqueResult(qCategory);
 	}
 	
 	@Override
@@ -119,5 +119,20 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		}
 		
 		return query.list(qCategory);
+	}
+
+	@Override
+	public List<Category> listByStore(MerchantStore store) {
+		QCategory qCategory = QCategory.category;
+		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCategory)
+			.leftJoin(qCategory.descriptions, qDescription)
+			.where(qCategory.merchantSore.id.eq(store.getId()))
+			.orderBy(qCategory.code.asc(),qCategory.code.asc());
+		
+		return query.listDistinct(qCategory);
 	}
 }

@@ -59,11 +59,11 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		}
 		
 	}
-	
-	public List<Category> listByCode(MerchantStore store, String code) throws ServiceException {
+	@Override
+	public Category getByCode(MerchantStore store, String code) throws ServiceException {
 		
 		try {
-			return categoryDao.listByCode(store, code);
+			return categoryDao.getByCode(store, code);
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}
@@ -188,6 +188,17 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		}
 		
 		
+	}
+
+	@Override
+	public List<Category> listByStore(MerchantStore store)
+			throws ServiceException {
+
+		try {
+			return categoryDao.listByStore(store);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
 	}
 	
 	

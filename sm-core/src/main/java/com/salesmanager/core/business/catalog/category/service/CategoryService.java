@@ -35,6 +35,11 @@ public interface CategoryService extends SalesManagerEntityService<Long, Categor
 	
 	
 	Category getByName(MerchantStore store, String name) throws ServiceException;
+	
+	List<Category> listByStore(MerchantStore store) throws ServiceException;
+
+	Category getByCode(MerchantStore store, String code)
+			throws ServiceException;
 
 	
 	
