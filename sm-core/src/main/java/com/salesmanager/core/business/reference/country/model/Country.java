@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Transient;
 
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.reference.geozone.model.GeoZone;
@@ -50,6 +51,17 @@ public class Country extends SalesManagerEntity<Integer, Country> {
 	@Column(name = "COUNTRY_ISOCODE", unique=true, nullable = false)
 	private String isoCode;
 	
+	@Transient
+	private String name;
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public Country() {
 	}
 	

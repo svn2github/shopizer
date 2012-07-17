@@ -76,8 +76,9 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 	}
 
 	@Override
-	public MerchantStore getByCode(String code) {
-		return getByField(MerchantStore_.code, code);
+	public MerchantStore getByCode(String code) throws ServiceException {
+		
+		return merchantStoreDao.getMerchantStore(code);
 	}
 
 }

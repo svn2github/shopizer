@@ -12,4 +12,6 @@ public interface MerchantStoreDao extends SalesManagerEntityDao<Integer, Merchan
 	public Collection<Product> getProducts(MerchantStore merchantStore) throws ServiceException;
 	
 	public MerchantStore getMerchantStore(Integer merchantStoreId);
+
+	public MerchantStore getMerchantStore(String code) throws ServiceException;
 }

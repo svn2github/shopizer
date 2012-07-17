@@ -24,6 +24,9 @@ import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
@@ -53,25 +56,30 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Integer id;
 
-	@Column(name = "STORE_NAME", nullable=false, unique=true, length=100)
+	@NotEmpty
+	@Column(name = "STORE_NAME", nullable=false, length=100)
 	private String storename;
 	
+	@NotEmpty
 	@Column(name = "STORE_CODE", nullable=false, unique=true, length=100)
 	private String code;
 	
+	@NotEmpty
 	@Column(name = "STORE_PHONE", length=50)
 	private String storephone;
 
 	@Column(name = "STORE_ADDRESS")
 	private String storeaddress;
 
+	@NotEmpty
 	@Column(name = "STORE_CITY", length=100)
 	private String storecity;
 
+	@NotEmpty
 	@Column(name = "STORE_POSTAL_CODE", length=15)
 	private String storepostalcode;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Country.class)
 	@JoinColumn(name="COUNTRY_ID", nullable=false, updatable=true)
 	private Country country;
 
@@ -92,7 +100,7 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	@Column(name = "IN_BUSINESS_SINCE")
 	private Date inBusinessSince;
 
-	@ManyToOne(targetEntity = Language.class)
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Language.class)
 	@JoinColumn(name = "LANGUAGE_ID", nullable=false)
 	private Language defaultLanguage;
 
@@ -115,13 +123,15 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	@Column(name="CONTINUESHOPPINGURL", length=150)
 	private String continueshoppingurl;
 	
+	@Email
+	@NotEmpty
 	@Column(name = "STORE_EMAIL", length=60, nullable=false)
 	private String storeEmailAddress;
 	
 	@Column(name="STORE_LOGO", length=100)
 	private String storeLogo;
 	
-	@ManyToOne(targetEntity = Currency.class)
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Currency.class)
 	@JoinColumn(name = "CURRENCY_ID", nullable=false)
 	private Currency currency;
 	
