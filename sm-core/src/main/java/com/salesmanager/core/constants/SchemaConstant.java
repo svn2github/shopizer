@@ -291,7 +291,7 @@ public class SchemaConstant {
         CURRENCY_MAP.put("TL", "US Dollar");
         CURRENCY_MAP.put("TG", "CFA Franc BCEAO");
         CURRENCY_MAP.put("TK", "New Zealand Dollar");
-        CURRENCY_MAP.put("TO", "Pa�۪anga");
+        CURRENCY_MAP.put("TO", "Pa’anga");
         CURRENCY_MAP.put("TT", "Trinidad and Tobago Dollar");
         CURRENCY_MAP.put("TN", "Tunisian Dinar");
         CURRENCY_MAP.put("TR", "Turkish Lira");
