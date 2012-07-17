@@ -33,9 +33,7 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.order.service.OrderService;
-import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
-import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.currency.service.CurrencyService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
@@ -108,8 +106,7 @@ public class InitStoreData implements InitData {
 		Language en = languageService.getByCode("en");
 		Language fr = languageService.getByCode("fr");
 		
-		//Country ca = countryService.getByCode("CA");
-		//Currency currency = currencyService.getByCode("CAD");
+
 		
 		//create a merchant
 		MerchantStore store = merchantService.getMerchantStore(MerchantStore.DEFAULT_STORE);
@@ -120,6 +117,7 @@ public class InitStoreData implements InitData {
 		book.setDepth(0);
 		book.setLineage("/");
 		book.setMerchantSore(store);
+		book.setCode("book");
 		
 		CategoryDescription bookEnglishDescription = new CategoryDescription();
 		bookEnglishDescription.setName("Book");
@@ -144,6 +142,7 @@ public class InitStoreData implements InitData {
 		music.setDepth(0);
 		music.setLineage("/");
 		music.setMerchantSore(store);
+		music.setCode("music");
 		
 		CategoryDescription musicEnglishDescription = new CategoryDescription();
 		musicEnglishDescription.setName("Music");
@@ -167,6 +166,7 @@ public class InitStoreData implements InitData {
 		novell.setDepth(1);
 		novell.setLineage("/" + book.getId() + "/");
 		novell.setMerchantSore(store);
+		novell.setCode("novell");
 		
 		CategoryDescription novellEnglishDescription = new CategoryDescription();
 		novellEnglishDescription.setName("Novell");
@@ -191,6 +191,7 @@ public class InitStoreData implements InitData {
 		tech.setDepth(1);
 		tech.setLineage("/" + book.getId() + "/");
 		tech.setMerchantSore(store);
+		tech.setCode("tech");
 		
 		CategoryDescription techEnglishDescription = new CategoryDescription();
 		techEnglishDescription.setName("Technology");
@@ -216,6 +217,7 @@ public class InitStoreData implements InitData {
 		fiction.setDepth(2);
 		fiction.setLineage("/" + book.getId() + "/" + novell.getId() + "/");
 		fiction.setMerchantSore(store);
+		fiction.setCode("fiction");
 		
 		CategoryDescription fictionEnglishDescription = new CategoryDescription();
 		fictionEnglishDescription.setName("Fiction");

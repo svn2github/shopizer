@@ -2,13 +2,15 @@ package com.salesmanager.core.business.utils;
 
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AppConfiguration {
 	
-	
-	public Properties properties = new Properties();
+	private static final Logger LOGGER = LoggerFactory.getLogger(AppConfiguration.class);
+	public Properties properties;
 	
 	public Properties getProperties() {
 		return properties;
@@ -22,7 +24,12 @@ public class AppConfiguration {
 	
 	public String getProperty(String propertyKey) {
 		
-		return properties.getProperty(propertyKey);
+		if(properties!=null) {
+			return properties.getProperty(propertyKey);
+		} else {
+			LOGGER.warn("Application properties are not loaded");
+			return null;
+		}
 		
 		
 	}
