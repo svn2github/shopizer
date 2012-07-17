@@ -119,8 +119,10 @@ public class IsolatedTestCase {
   @Autowired
   protected OrderService               orderService;
 
-  @Autowired
+  //@Autowired
   protected TestSupportFactory         testSupportFactory;
+  
+
 
   @Test
   public void test1CreateReferences() throws ServiceException {
@@ -181,6 +183,14 @@ public class IsolatedTestCase {
     productTypeService.create(generalType);
 
   }
+  
+  @Test
+  public void testGetMerchant() throws ServiceException {
+	  
+	  MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
+	  System.out.println("done");
+	  
+  }
 
   @Test
   public void testCreateProducts() throws ServiceException {
@@ -196,6 +206,7 @@ public class IsolatedTestCase {
     book.setDepth(0);
     book.setLineage("/");
     book.setMerchantSore(store);
+    book.setCode("book");
 
     CategoryDescription bookEnglishDescription = new CategoryDescription();
     bookEnglishDescription.setName("Book");
@@ -219,6 +230,7 @@ public class IsolatedTestCase {
     music.setDepth(0);
     music.setLineage("/");
     music.setMerchantSore(store);
+    music.setCode("music");
 
     CategoryDescription musicEnglishDescription = new CategoryDescription();
     musicEnglishDescription.setName("Music");
@@ -242,6 +254,7 @@ public class IsolatedTestCase {
     novell.setDepth(1);
     novell.setLineage("/" + book.getId() + "/");
     novell.setMerchantSore(store);
+    novell.setCode("novell");
 
     CategoryDescription novellEnglishDescription = new CategoryDescription();
     novellEnglishDescription.setName("Novell");
@@ -266,6 +279,7 @@ public class IsolatedTestCase {
     tech.setDepth(1);
     tech.setLineage("/" + book.getId() + "/");
     tech.setMerchantSore(store);
+    tech.setCode("tech");
 
     CategoryDescription techEnglishDescription = new CategoryDescription();
     techEnglishDescription.setName("Technology");
@@ -290,6 +304,7 @@ public class IsolatedTestCase {
     fiction.setDepth(2);
     fiction.setLineage("/" + book.getId() + "/" + novell.getId() + "/");
     fiction.setMerchantSore(store);
+    fiction.setCode("fiction");
 
     CategoryDescription fictionEnglishDescription = new CategoryDescription();
     fictionEnglishDescription.setName("Fiction");
@@ -640,8 +655,11 @@ public class IsolatedTestCase {
   public void testGetProducts() throws ServiceException {
     Language language = languageService.getByCode("en");
     Locale locale = new Locale("en", "CA");
+    
+    
+    MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
 
-    Category category = categoryService.getByName("Roman");
+    Category category = categoryService.getByName(store, "Roman");
 
     int nrOfIterations = 1;
 
@@ -660,55 +678,14 @@ public class IsolatedTestCase {
      * Creates a category hierarchy Music Books Novell Science-Fiction
      * Technology Business
      */
+	  
+	    Language en = languageService.getByCode("en");
+	    Language fr = languageService.getByCode("fr");
+	    Country ca = countryService.getByCode("CA");
+	    Currency currency = currencyService.getByCode("CAD");
+	    MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
 
-    Language en = new Language();
-    en.setCode("en");
-    languageService.create(en);
 
-    Language fr = new Language();
-    fr.setCode("fr");
-    languageService.create(fr);
-
-    // create country
-    Country ca = new Country();
-    ca.setIsoCode("CA");
-
-    CountryDescription caden = new CountryDescription();
-    caden.setCountry(ca);
-    caden.setLanguage(en);
-    caden.setName("Canada");
-    caden.setDescription("Canada Country");
-
-    CountryDescription cadfr = new CountryDescription();
-    cadfr.setCountry(ca);
-    cadfr.setLanguage(fr);
-    cadfr.setName("Canada");
-    cadfr.setDescription("Pays Canada");
-
-    List<CountryDescription> descriptionsca = new ArrayList<CountryDescription>();
-    descriptionsca.add(caden);
-    descriptionsca.add(cadfr);
-    ca.setDescriptions(descriptionsca);
-
-    countryService.create(ca);
-
-    // create a currency
-    Currency currency = new Currency();
-    currency.setCurrency(java.util.Currency.getInstance(Locale.CANADA));
-    currency.setSupported(true);
-    currencyService.create(currency);
-
-    // create a merchant
-    MerchantStore store = new MerchantStore();
-    store.setCountry(ca);
-    store.setCurrency(currency);
-    store.setDefaultLanguage(en);
-    store.setInBusinessSince(date);
-    store.setStorename("store name");
-    store.setCode(MerchantStore.DEFAULT_STORE);
-    store.setStoreEmailAddress("test@test.com");
-
-    merchantService.create(store);
 
     Category book = new Category();
     book.setDepth(0);
@@ -834,8 +811,10 @@ public class IsolatedTestCase {
 
   @Test
   public void testGetCategory() throws ServiceException {
+	  
+    MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
 
-    Category category = categoryService.getByName("Novell");
+    Category category = categoryService.getByName(store, "Novell");
     System.out.println("Done");
 
   }

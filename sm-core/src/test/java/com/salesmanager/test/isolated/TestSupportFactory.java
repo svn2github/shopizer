@@ -127,9 +127,13 @@ public class TestSupportFactory {
 
     List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
 
+    String name = getRandomString(categoryDescriptions);
+    cat.setCode(name);
+    
     for (Language language : languages) {
+     
       CategoryDescription desc = new CategoryDescription();
-      desc.setName(getRandomString(categoryDescriptions));
+      desc.setName(name);
       desc.setCategory(cat);
       desc.setLanguage(language);
       descriptions.add(desc);
