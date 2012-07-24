@@ -43,7 +43,7 @@ public class SchemaConstant {
 
 	static {
 		for (Locale locale : Locale.getAvailableLocales()) {
-			LOCALES.put(locale.getISO3Country(), locale);
+			LOCALES.put(locale.getCountry(), locale);
 		}
 	}
 	
