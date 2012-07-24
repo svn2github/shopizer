@@ -96,26 +96,28 @@ response.setDateHeader ("Expires", -1);
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script SRC="<c:url value="/resources/js-bootstrap/jquery.js" />"></script>
-    <script type="text/javascript" src="<c:url value="/resources/js-bootstrap/slide.js" />"></script> 
-    <script src="<c:url value="/resources/js-bootstrap/bootstrap-transition.js" />"></script>
-    <script src="<c:url value="/resources/js-bootstrap/bootstrap-alert.js" />"></script>
-    <script src="<c:url value="/resources/js-bootstrap/bootstrap-modal.js" />"></script>
-    <script src="<c:url value="/resources/js-bootstrap/bootstrap-dropdown.js" />"></script>
-    <script src="<c:url value="/resources/js-bootstrap/bootstrap-scrollspy.js" />"></script>
-    <script src="<c:url value="/resources/js-bootstrap/bootstrap-tab.js" />"></script>
-    <script src="<c:url value="/resources/js-bootstrap/bootstrap-tooltip.js" />"></script>
-    <script src="<c:url value="/resources/js-bootstrap/bootstrap-popover.js" />"></script>
-    <script src="<c:url value="/resources/js-bootstrap/bootstrap-button.js" />"></script>
-    <script src="<c:url value="/resources/js-bootstrap/bootstrap-collapse.js" />"></script>
-    <script src="<c:url value="/resources/js-bootstrap/bootstrap-carousel.js" />"></script>
-    <script src="<c:url value="/resources/js-bootstrap/bootstrap-typeahead.js" />"></script>
+    <script src="<c:url value="/resources/js/bootstrap/jquery.js" />"></script>
+    <script src="<c:url value="/resources/js/bootstrap/slide.js" />"></script> 
+    <script src="<c:url value="/resources/js/bootstrap/bootstrap-transition.js" />"></script>
+    <script src="<c:url value="/resources/js/bootstrap/bootstrap-alert.js" />"></script>
+    <script src="<c:url value="/resources/js/bootstrap/bootstrap-modal.js" />"></script>
+    <script src="<c:url value="/resources/js/bootstrap/bootstrap-dropdown.js" />"></script>
+    <script src="<c:url value="/resources/js/bootstrap/bootstrap-scrollspy.js" />"></script>
+    <script src="<c:url value="/resources/js/bootstrap/bootstrap-tab.js" />"></script>
+    <script src="<c:url value="/resources/js/bootstrap/bootstrap-tooltip.js" />"></script>
+    <script src="<c:url value="/resources/js/bootstrap/bootstrap-popover.js" />"></script>
+    <script src="<c:url value="/resources/js/bootstrap/bootstrap-button.js" />"></script>
+    <script src="<c:url value="/resources/js/bootstrap/bootstrap-collapse.js" />"></script>
+    <script src="<c:url value="/resources/js/bootstrap/bootstrap-carousel.js" />"></script>
+    <script src="<c:url value="/resources/js/bootstrap/bootstrap-typeahead.js" />"></script>
 
      	
      	
      <script>
 	
 		$(document).ready(function(){   
+
+			
 			$("#catalogue-products-create-link").click(function() {
 				window.location='<c:url value="/admin/catalogue/products/product.html" />';
   				
@@ -123,9 +125,15 @@ response.setDateHeader ("Expires", -1);
 			$("#catalogue-categories-list-link").click(function() {
 				window.location='<c:url value="/admin/categories/categories.html" />';
 			});
+			$("#catalogue-products-categories-link").click(function() {
+				window.location='<c:url value="/admin/catalogue/products/product-categories.html" />';
+  				
+			});
 			$("#catalogue-categories-hierarchy-link").click(function() {
   				
 			});
+			
+			
 
 		}); 
 	
