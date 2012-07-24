@@ -1,0 +1,51 @@
+
+html {
+  		font-size: 100%;
+  		-webkit-text-size-adjust: 100%;
+  		-ms-text-size-adjust: 100%;
+}
+
+body {
+  		margin: 0;
+  		font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  		font-size: 13px;
+  		color: #333333;
+  		background-color: #ffffff;
+}
+
+.error { color: #ff0000; }
+
+.sm-iframe-component {
+
+
+   	 	width:100%;
+		height:620px;
+		overflow:hidden;
+		border:0;
+
+}
+
+
+
+.table tbody tr.subt:hover td, 
+.table tbody tr.subt:hover th { 
+		background-color: transparent; 
+}
+
+/** Bootstrap overwrites **/
+	
+	
+.sm-ui-component label {
+ 		color: #333333;
+    	margin-bottom: 0;
+    	display: inline;
+}
+   
+.sm-ui-component IMG {
+
+   	 	max-width:none;
+
+}
+
+
+

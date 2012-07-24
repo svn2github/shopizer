@@ -1,0 +1,39 @@
+.total-price {
+	width: 100%; float: left; height: 27px
+}
+
+.total-price1 {
+	background-image: url(../img/shopizer/cart-price1.gif); width: 5px;; background-repeat: no-repeat; float: left; height: 27px
+}
+
+.total-price2 {
+	background-image: url(../img/shopizer/cart-price2.gif); width:95%; TEXT-ALIGN: right; PADDING-BOTTOM: 0px; BORDER-RIGHT-WIDTH: 0px; FONT-STYLE: normal; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; BACKGROUND-REPEAT: repeat-x; FONT-FAMILY: Tahoma, Helvetica, Arial; FLOAT: left; BORDER-TOP-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; HEIGHT: 27px; COLOR: #e1e1e1; BORDER-LEFT-WIDTH: 0px; FONT-WEIGHT: normal; PADDING-TOP: 2px
+}
+.total-price3 {
+	background-image: url(../img/shopizer/cart-price3.gif); width: 5px; background-repeat: no-repeat; float: left; height: 27px
+}
+.total-label {
+	font-size: 14px
+}
+.price-label {
+	color: #8dc63f
+}
+.price-total {
+	font-size: 18px;
+}
+
+.section-header {
+	BACKGROUND-IMAGE: url(../img/shopizer/header-dot.gif); PADDING-BOTTOM: 6px; TEXT-TRANSFORM: uppercase; FONT-STYLE: normal; WIDTH: 100%; BACKGROUND-REPEAT: repeat-x; FONT-FAMILY: "Times New Roman"; BACKGROUND-POSITION: left bottom; FLOAT: left; COLOR: #a1a1a1; FONT-SIZE: 18px; FONT-WEIGHT: normal
+}
+.section-header-1stword {
+	COLOR: #535353
+}
+
+.sm-ui-component label {
+
+
+    color: #333333;
+    margin-bottom: 0;
+    display: inline;
+
+}

@@ -1,0 +1,216 @@
+
+.box-cart { 
+	background: #ffffff;
+	overflow: hidden;
+    	/**position: absolute;**/
+	width:430px;
+	z-index: 999;
+	/**display: none;**/
+	/**float:right;**/
+	/**margin-top:20px;**/
+	border: 1px solid #85909c;
+
+
+
+      position: static;
+      top: auto;
+      left: auto;
+      display: block;
+      float: none;
+      max-width: none;
+      padding: 0;
+      margin: 0 15px;
+}
+
+
+
+.box-title {
+	width: 100%;
+	height: auto;
+	background: url(../img/misc/content-back.gif) repeat;
+	padding-bottom: 10px;
+}
+
+.box-cart h1 {
+	font-size: 1.4em;
+	padding: 5px 0 10px;
+	margin-left: 10px;
+	color: white;
+}
+
+.box-cart h2{
+	font-size: 1.1em;
+	padding: 10px 0 5px;
+	margin: 0;
+	color: white;
+}
+
+.box-cart p {
+	margin: 5px 0;
+	padding: 0;
+}
+
+
+
+.box-cart .box-content {
+	width: 430px;
+	/**margin: 0 auto;**/
+	/**padding-top: 0px;**/
+	/**text-align: left;**/
+	/**font-size: 12px;**/
+	border-top: 1px solid #85909c;
+}
+
+.box-cart .box-content .left180 {
+	width: 180px;
+	float: left;
+	padding: 0 14px;
+}
+
+.box-cart .box-content .right180 {
+	width: 180px;
+	float: right;
+	padding: 0 14px;
+}
+
+.box-cart .box-content .leftfull {
+	float: left;
+	padding: 0 10px;
+}
+
+
+.box-cart .box-content form {
+	margin: 0 0 10px 0;
+}
+
+.box-cart .box-content label {
+	float: left;
+	padding-top: 8px;
+	clear: both;
+	width: 180px;
+	display: block;
+}
+
+.box-cart .box-content input.field {
+	border: 1px #1A1A1A solid;
+	margin-right: 5px;
+	margin-top: 4px;
+	width: 170px;
+	color: white;
+	height: 16px;
+}
+
+
+
+.box-cart .box-content input:focus.field {
+	background: #545454;
+}
+
+.box-cart a-lost-pwd {
+	display: block;
+	float: left;
+}
+
+.box-cart .lost-pwd {
+	display: block;
+	float:left;
+	font-size: 12px;
+	text-decoration: underline;
+	margin-bottom:15px;
+}
+
+
+.box-cart .cart-product{
+   position: relative;
+   float: left;
+   left: 0px;
+   width: 400px;
+   margin-bottom:5px;
+}
+.box-cart .cart-product .image{
+   position: relative;
+   float: left;
+   left: 0px;
+   width: 50px;
+   height: 48px;
+   overflow: hidden;
+}
+.box-cart .cart-product .name {
+   position: relative;
+   float: left;
+   left: 10px;
+   width: 250px;
+}
+.box-cart .cart-product .price{
+   position: relative;
+   float: left;
+   left: 25px;
+   width: 80px;
+}
+.box-cart .cart-product .remove{
+   position: relative;
+   float: right;
+   width: 20px;
+}
+
+
+
+.box-cart .cart {
+   margin: 0px auto;
+   width: 100%;
+}
+
+
+.box-cart .button div.button-left {
+	float: left;
+	width: auto;
+	height: 25px;
+	padding-left: 10px;
+	background: url(../img/misc/button.gif) no-repeat left 0px;
+	cursor: pointer;
+}
+
+.box-cart .button div.button-right {
+	float: left;
+	width: auto;
+	height: 19px;
+	padding-right: 10px;
+	padding-top: 6px;
+	font: bold 12px Arial;
+	text-decoration: none;
+	color: #ffffff;
+	background: url(../img/misc/button.gif) no-repeat right 0px;
+	text-transform: uppercase;
+	cursor: pointer;
+}
+
+.box-cart .button:hover div.button-left {
+	float: left;
+	width: auto;
+	height: 25px;
+	padding-left: 10px;
+	background: url(../img/misc/button.gif) no-repeat left -25px;
+	cursor: pointer;
+}
+
+.box-cart .button:hover div.button-right {
+	float: left;
+	width: auto;
+	height: 19px;
+	padding-right: 10px;
+	padding-top: 6px;
+	font: bold 12px Arial;
+	text-decoration: none;
+	color: #ffffff;
+	background: url(../img/misc/button.gif) no-repeat right -25px;
+	cursor: pointer;
+	text-transform: uppercase;
+}
+
+.box-cart #checkout-button {
+
+	float: right;
+	margin-top: 20px;
+	margin-bottom:15px;
+
+}
