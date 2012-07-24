@@ -11,28 +11,8 @@
 <div class="tabbable">
 
   					
-  					<c:if test="${fn:length(currentMenu.menus)>0}">
-						
-  						<ul class="nav nav-tabs">
-  						<c:forEach items="${currentMenu.menus}" var="menu">
-  							<c:choose>
-  							    <c:when test="${fn:length(menu.menus)==0}">
-  									<li id="${menu.code}-tab" <c:if test="${activeMenus[menu.code]!=null}"> class="active"</c:if>><a href="#" id="${menu.code}-link" data-toggle="tab"><s:message code="menu.${menu.code}" text="${menu.code}"/></a></li>
-  							    </c:when>
-  							    <c:otherwise>
-  									<li class="dropdown <c:if test="${activeMenus[menu.code]!=null}"> active</c:if>" style="z-index:500000;position:relative"> 
-  										<a href="#" class="dropdown-toggle" data-toggle="dropdown"><s:message code="menu.${menu.code}" text="${menu.code}"/><b class="caret"></b></a>
-  										<ul class="dropdown-menu"> 
-  											<c:forEach items="${menu.menus}" var="submenu">
-  												<li><a href="#" id="${submenu.code}-link" data-toggle="tab"><s:message code="menu.${submenu.code}" text="${submenu.code}"/></a></li>
-  											</c:forEach>
-  										</ul> 
-  									</li>
-  							    </c:otherwise>
-  							</c:choose>
-  						</c:forEach>
-  						</ul>
-  					</c:if>
+					<jsp:include page="/common/adminTabs.jsp" />
+
 
 
   					<div class="tab-content">
@@ -81,7 +61,7 @@
 								//iterate from category objects to display data
       							isc.TreeGrid.create({
     								ID:"categoryTree",
-    								border:1,
+    								border:0,
     								showResizeBar: false,
     								data: isc.Tree.create({
         								modelType: "parent",
@@ -112,7 +92,7 @@
 							  
 							  isc.ListGrid.create({
     								ID: "itemList",
-    								border:1,
+    								border:0,
     								dataSource: "products",
     								showRecordComponents: true,    
     								showRecordComponentsByCell: true,
@@ -160,6 +140,7 @@
     								ID:"findForm",
     								/**dataSource:"supplyItem",**/
     								left:25,
+    								border:0,
     								top:10,
     								cellPadding:4,
     								numCols:6,
@@ -245,6 +226,7 @@ isc.HLayout.create({
                     isc.Canvas.create({
                         ID:"findPane",
                         height:60,
+                        border:0,
                         overflow:"auto",
                         styleName:"defaultBorder",
                         children:[findForm,findButton]
