@@ -30,6 +30,7 @@ public class ProductsController {
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("catalogue", "catalogue");
+		activeMenus.put("catalogue-products", "catalogue-products");
 		
 		Map menus = (Map)request.getAttribute("MENUMAP");
 		
@@ -38,7 +39,7 @@ public class ProductsController {
 		model.addAttribute("activeMenus",activeMenus);
 		//
 		
-		return "admin/products/products";
+		return "admin-products";
 		
 	}
 

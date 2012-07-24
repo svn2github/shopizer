@@ -23,6 +23,14 @@ import com.salesmanager.web.admin.entity.Menu;
 public class CustomerController {
 	
 	
+	/**
+	 * Customer details
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value="/admin/customers/display.html", method=RequestMethod.GET)
 	public String displayCustomer(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 	
@@ -48,12 +56,9 @@ public class CustomerController {
 		
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
-		activeMenus.put("catalogue", "catalogue");
+		activeMenus.put("customer", "customer");
 		
-		Map menus = (Map)request.getAttribute("MENUMAP");
-		
-		Menu currentMenu = (Menu)menus.get("catalogue");
-		model.addAttribute("currentMenu",currentMenu);
+
 		model.addAttribute("activeMenus",activeMenus);
 		//
 		
@@ -62,43 +67,83 @@ public class CustomerController {
 		
 		
 	}
-	
-	
-		
-	@RequestMapping(value="/admin/customers/list.html", method=RequestMethod.GET)
-	public String displayCustomers(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-		
 
+	
+	/**
+	 * List of customers
+	 * @param model
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/admin/customers/list.html", method=RequestMethod.GET)
+	public String displayCustomers(Model model) throws Exception {
+		
 		
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("customer", "customer");
+		
+
 		model.addAttribute("activeMenus",activeMenus);
 		//
 		
 		return "admin-customers";
 		
+		
+		
 	}
+	
 	
 	
 	@RequestMapping(value="/admin/customers/page.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageCustomers(HttpServletRequest request, HttpServletResponse response) {
-		
+
+		String searchTerm = request.getParameter("searchTerm");// will be the name of the customer
 		
 		String startRow = request.getParameter("_startRow");
 		String endRow = request.getParameter("_endRow");
 		
-		//get customers
+		String totalRows = "10";
 		
-		String r = "{ response:{" +
-		"	status:0," +
-		"	startRow:5," +
-		"	endRow:75," +
-		"	totalRows:200" +
-		"	data: [...]";
+
 		
-		return r;
+		if(searchTerm!=null) {
+			totalRows="2";
+		}
+		//get sub category & sub categories for input categoryId
 		
+		//get products using startRow and endRow
+		
+		//populate response object which has to be converted to JSON 
+		
+		//will receive name and sku as filter elements
+		
+		//JSONListResponse r = new JSONListResponse()
+		//r.setStatus(0);
+		//JSONObject obj = new JSONObject();
+		//obj.put("response",r)
+		
+		
+		StringBuilder res = new StringBuilder().append("{ response:{     status:0,     startRow:0,     endRow:9,     totalRows:10,     data:" +
+				"[           ");
+		
+				
+		
+		for(int i = 0; i < 10; i++) {
+					
+					
+					res.append("{id:" + i + ",name:\"customer_" + i + "\",country:\"CA\",active:\"true\"}");
+					if(i < Integer.parseInt(totalRows)-1) {
+						res.append(",");
+					}
+				}
+
+				res.append("]   } }");
+				
+
+			return res.toString();
 	}
+	
+		
+
 }

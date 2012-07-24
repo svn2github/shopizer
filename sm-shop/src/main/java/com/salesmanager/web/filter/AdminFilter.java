@@ -3,6 +3,7 @@ package com.salesmanager.web.filter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +55,7 @@ public class AdminFilter extends HandlerInterceptorAdapter {
 				
 				Menu currentMenu = null;
 				
-				menus = new TreeMap<String,Menu>();
+				menus = new LinkedHashMap<String,Menu>();
 				List objects = (List)data.get("menus");
 				for(Object object : objects) {
 					
