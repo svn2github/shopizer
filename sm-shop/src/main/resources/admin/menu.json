@@ -30,7 +30,10 @@
 				"code":"catalogue-products-create","url":"/admin/catalogue/products/product.html","roles":["admin","sub-admin"],"order":0
 			}},
 			{"menu":{
-				"code":"catalogue","url":"/admin/catalogue/products/list.html","roles":["admin","sub-admin"],"order":1
+				"code":"catalogue-products-categories","url":"/admin/catalogue/products/product-categories.html","roles":["admin","sub-admin"],"order":1
+			}},
+			{"menu":{
+				"code":"catalogue","url":"/admin/catalogue/products.html","roles":["admin","sub-admin"],"order":2
 			}}
 		]
 	}},
