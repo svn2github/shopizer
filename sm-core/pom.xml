@@ -26,8 +26,9 @@
 		<sm-core.aspectj.version>1.5.4</sm-core.aspectj.version>
 		<sm-core.mysql-connector-java>5.1.19</sm-core.mysql-connector-java>
 		<sm-core.junit.version>4.9</sm-core.junit.version>
-		<sm-core.spring.version>3.0.6.RELEASE</sm-core.spring.version>
-		<sm-core.org.springframework.version>3.0.6.RELEASE</sm-core.org.springframework.version>
+		<sm-core.spring.version>3.1.0.RELEASE</sm-core.spring.version>
+		<sm-core.org.springframework.version>3.1.0.RELEASE</sm-core.org.springframework.version>
+
 		<sm-core.c3p0.version>0.9.1.2</sm-core.c3p0.version>
 		<sm-core.querydsl.version>2.3.3</sm-core.querydsl.version>
 		<sm-core.jodatime.version>2.0</sm-core.jodatime.version>
@@ -167,6 +168,18 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
 			<version>${sm-core.org.springframework.version}</version>
+		</dependency>
+		
+		<!-- JSR 303 with Hibernate Validator -->
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>4.3.0.Final</version>
 		</dependency>
 
 		<!-- AspectJ -->
