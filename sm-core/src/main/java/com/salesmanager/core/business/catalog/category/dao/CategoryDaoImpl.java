@@ -11,6 +11,7 @@ import com.salesmanager.core.business.catalog.category.model.QCategory;
 import com.salesmanager.core.business.catalog.category.model.QCategoryDescription;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.reference.language.model.Language;
 
 @Repository("categoryDao")
 public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> implements CategoryDao {
@@ -27,7 +28,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qCategory)
-			.leftJoin(qCategory.descriptions, qDescription)
+			.leftJoin(qCategory.descriptions, qDescription).fetch()
 			.where(qDescription.name.like(name)
 			.and(qCategory.merchantSore.id.eq(store.getId())));
 		
@@ -49,7 +50,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qCategory)
-			.leftJoin(qCategory.descriptions, qDescription)
+			.leftJoin(qCategory.descriptions, qDescription).fetch()
 			.where(qDescription.seUrl.like(seUrl)
 			.and(qCategory.merchantSore.id.eq(store.getId())))
 			.orderBy(qDescription._super.title.desc(), qDescription._super.name.desc());
@@ -65,7 +66,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qCategory)
-			.leftJoin(qCategory.descriptions, qDescription)
+			.leftJoin(qCategory.descriptions, qDescription).fetch()
 			.where(qCategory.code.eq(code)
 			.and(qCategory.merchantSore.id.eq(store.getId())))
 			.orderBy(qDescription._super.title.desc(), qDescription._super.name.desc());
@@ -81,7 +82,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qCategory)
-			.leftJoin(qCategory.descriptions, qDescription)
+			.leftJoin(qCategory.descriptions, qDescription).fetch()
 			.where(qCategory.lineage.like(new StringBuilder().append(lineage).append("%").toString())
 			.and(qCategory.merchantSore.id.eq(store.getId())))
 			.orderBy(qCategory.lineage.asc(),qCategory.lineage.asc());
@@ -129,8 +130,24 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qCategory)
-			.leftJoin(qCategory.descriptions, qDescription)
+			.leftJoin(qCategory.descriptions, qDescription).fetch()
 			.where(qCategory.merchantSore.id.eq(store.getId()))
+			.orderBy(qCategory.code.asc(),qCategory.code.asc());
+		
+		return query.listDistinct(qCategory);
+	}
+	
+	@Override
+	public List<Category> listByStore(MerchantStore store, Language language) {
+		QCategory qCategory = QCategory.category;
+		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCategory)
+			.leftJoin(qCategory.descriptions, qDescription).fetch()
+			.where((qCategory.merchantSore.id.eq(store.getId()))
+			.and(qDescription.language.id.eq(language.getId())))
 			.orderBy(qCategory.code.asc(),qCategory.code.asc());
 		
 		return query.listDistinct(qCategory);

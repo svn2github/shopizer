@@ -201,6 +201,17 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		}
 	}
 	
+	@Override
+	public List<Category> listByStore(MerchantStore store, Language language)
+			throws ServiceException {
+
+		try {
+			return categoryDao.listByStore(store, language);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	}
+	
 	
 
 

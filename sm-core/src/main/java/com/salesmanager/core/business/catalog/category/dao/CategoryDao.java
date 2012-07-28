@@ -5,6 +5,7 @@ import java.util.List;
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDao;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.reference.language.model.Language;
 
 public interface CategoryDao extends SalesManagerEntityDao<Long, Category> {
 
@@ -19,5 +20,7 @@ public interface CategoryDao extends SalesManagerEntityDao<Long, Category> {
 	Category getByCode(MerchantStore store, String code);
 	
 	List<Category> listByStore(MerchantStore store);
+
+	List<Category> listByStore(MerchantStore store, Language language);
 
 }

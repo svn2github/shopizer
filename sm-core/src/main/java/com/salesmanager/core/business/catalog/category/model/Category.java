@@ -17,6 +17,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.validation.Valid;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.salesmanager.core.business.common.model.audit.AuditListener;
 import com.salesmanager.core.business.common.model.audit.AuditSection;
@@ -39,6 +42,7 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 	@Embedded
 	private AuditSection auditSection = new AuditSection();
 
+	@Valid
 	@OneToMany(mappedBy="category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
 	
@@ -76,10 +80,10 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 	private Integer sortOrder = 0;
 
 	@Column(name = "CATEGORY_STATUS")
-	private Boolean categoryStatus;
+	private boolean categoryStatus;
 
 	@Column(name = "VISIBLE")
-	private Boolean visible;
+	private boolean visible;
 
 	@Column(name = "DEPTH")
 	private Integer depth;
@@ -87,6 +91,7 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 	@Column(name = "LINEAGE")
 	private String lineage;
 	
+	@NotEmpty
 	@Column(name="CODE", unique=true, length=100, nullable=false)
 	private String code;
 
@@ -149,19 +154,19 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 		this.sortOrder = sortOrder;
 	}
 
-	public Boolean isCategoryStatus() {
+	public boolean isCategoryStatus() {
 		return categoryStatus;
 	}
 
-	public void setCategoryStatus(Boolean categoryStatus) {
+	public void setCategoryStatus(boolean categoryStatus) {
 		this.categoryStatus = categoryStatus;
 	}
 
-	public Boolean isVisible() {
+	public boolean isVisible() {
 		return visible;
 	}
 
-	public void setVisible(Boolean visible) {
+	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
 

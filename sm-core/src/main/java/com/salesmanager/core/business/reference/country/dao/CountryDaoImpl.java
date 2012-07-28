@@ -24,7 +24,7 @@ public class CountryDaoImpl extends SalesManagerEntityDaoImpl<Integer, Country> 
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qCountry)
-			.leftJoin(qCountry.descriptions, qDescription)
+			.leftJoin(qCountry.descriptions, qDescription).fetch()
 			.where(qDescription.language.id.eq(language.getId()));
 		
 

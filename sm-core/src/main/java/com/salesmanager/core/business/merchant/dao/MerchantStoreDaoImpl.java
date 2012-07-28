@@ -91,7 +91,7 @@ public class MerchantStoreDaoImpl extends SalesManagerEntityDaoImpl<Integer, Mer
 		queryQ.setParameter("code", code);
 		
 		return (MerchantStore)queryQ.getSingleResult();
-		
+		//TODO add fetch
 /*		QMerchantStore qMerchantStore = QMerchantStore.merchantStore;
 
 		
