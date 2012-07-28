@@ -115,7 +115,7 @@ public class CategoryController {
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("catalogue", "catalogue");
-		activeMenus.put("catalogue-categories-create", "catalogue-categories-create");
+		activeMenus.put("catalogue-categories", "catalogue-categories");
 		
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
