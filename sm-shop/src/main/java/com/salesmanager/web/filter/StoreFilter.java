@@ -9,14 +9,19 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
+import com.salesmanager.core.business.reference.init.service.InitializationDatabase;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
-import com.salesmanager.web.init.service.InitializationDatabase;
+import com.salesmanager.core.business.system.service.SystemConfigurationService;
+
 
 
 
@@ -28,6 +33,8 @@ import com.salesmanager.web.init.service.InitializationDatabase;
 
 public class StoreFilter extends HandlerInterceptorAdapter {
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(StoreFilter.class);
+	
 	@Autowired
 	private InitializationDatabase initializationDatabase;
 	
@@ -36,6 +43,14 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	
 	@Autowired
 	private LanguageService languageService;
+	
+	@Autowired
+	private com.salesmanager.web.init.data.InitStoreData initStoreData;
+	
+	@Autowired
+	private SystemConfigurationService systemConfigurationService;
+	
+
 
     /**
      * Default constructor. 
@@ -50,9 +65,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	            Object handler) throws Exception {
 		   
 		   
-		   System.out.println(" ***** In the Interceptor *****");
-			
-
+	
 
 			request.setCharacterEncoding("UTF-8");
 			
@@ -68,32 +81,35 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			request.setAttribute("LANGUAGE", language);
 			
 			try {
-			
-			//InitializationDatabase database = (InitializationDatabase) ContextLoader.getCurrentWebApplicationContext().getBean(
-			//		"initializationDatabase");
-			
-			
-			if (initializationDatabase.isEmpty()) {
-				//LOGGER.info(String.format("%s : Shopizer database is empty, populate it....", name));
-		
-				initializationDatabase.populate("sm-shop");
-
-			}
-
-			
-			
-			MerchantStore store = (MerchantStore)request.getSession().getAttribute("MERCHANT_STORE");
-			if(store==null) {
-				//MerchantStoreService merchantService = (MerchantStoreService) ContextLoader.getCurrentWebApplicationContext().getBean(
-				//		"merchantService");
 				
-				if(merchantService==null) {
-					System.out.println("*** MerchantService is null ***");
-				} else {
-					store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
-					request.getSession().setAttribute("MERCHANT_STORE", store);
+				
+
+				if (initializationDatabase.isEmpty()) {
+					LOGGER.info(String.format("%s : Shopizer database is empty, populate it....", "sm-shop"));
+			
+					initializationDatabase.populate("sm-shop");
+					
+					loadData();
+	
 				}
-			}
+	
+				
+				
+				MerchantStore store = (MerchantStore)request.getSession().getAttribute("MERCHANT_STORE");
+				if(store==null) {
+					//MerchantStoreService merchantService = (MerchantStoreService) ContextLoader.getCurrentWebApplicationContext().getBean(
+					//		"merchantService");
+					
+					if(merchantService==null) {
+						System.out.println("*** MerchantService is null ***");
+					} else {
+						store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
+						request.getSession().setAttribute("MERCHANT_STORE", store);
+						
+					}
+				}
+				
+				request.setAttribute("MERCHANT_STORE", store);
 			
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -103,6 +119,39 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			return true;
 		   
 	   }
+	   
+		private void loadData() throws ServiceException {
+	
+/*			List<SystemConfiguration> configurations = systemConfigurationService.list();
+			
+			
+			String loadTestData = appConfiguration.getProperty(ApplicationConstants.POPULATE_TEST_DATA);
+			boolean loadData =  !StringUtils.isBlank(loadTestData) && loadTestData.equals(SystemConstants.CONFIG_VALUE_TRUE);
+			
+			
+			if(loadData) {
+				
+				SystemConfiguration configuration = systemConfigurationService.getByKey(ApplicationConstants.TEST_DATA_LOADED);
+			
+				if(configuration!=null) {
+						if(configuration.getKey().equals(ApplicationConstants.TEST_DATA_LOADED)) {
+							if(configuration.getValue().equals(SystemConstants.CONFIG_VALUE_TRUE)) {
+								return;		
+							}
+						}		
+				}
+				
+				initStoreData.initInitialData();
+				
+				configuration = new SystemConfiguration();
+				configuration.getAuditSection().setModifiedBy(SystemConstants.SYSTEM_USER);
+				configuration.setKey(ApplicationConstants.TEST_DATA_LOADED);
+				configuration.setValue(SystemConstants.CONFIG_VALUE_TRUE);
+				systemConfigurationService.create(configuration);
+				
+				
+			}*/
+		}
 
 
 	/**

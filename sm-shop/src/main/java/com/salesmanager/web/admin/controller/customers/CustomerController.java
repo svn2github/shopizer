@@ -31,7 +31,7 @@ public class CustomerController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value="/admin/customers/display.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/customers/customer.html", method=RequestMethod.GET)
 	public String displayCustomer(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 	
 

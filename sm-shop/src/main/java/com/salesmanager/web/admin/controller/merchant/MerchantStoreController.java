@@ -42,7 +42,7 @@ public class MerchantStoreController {
 		
 		
 		//TODO use multiple store
-		MerchantStore store = merchantStoreService.getByCode(MerchantStore.DEFAULT_STORE);
+		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
 		
 		model.addAttribute("store", store);
 		
