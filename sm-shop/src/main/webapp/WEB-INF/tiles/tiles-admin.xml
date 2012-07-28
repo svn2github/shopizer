@@ -66,4 +66,16 @@
   		<put-attribute name="body" value="/pages/admin/shipping/customShipping.jsp" /> 
   	</definition>
   	
+  	<definition name="catalogue-categories" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/categories/categories.jsp" /> 
+  	</definition>
+  	
+  	 <definition name="catalogue-categories-category" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/categories/category.jsp" /> 
+  	</definition>
+  	
+  	<definition name="catalogue-categories-hierarchy" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/categories/hierarchy.jsp" /> 
+  	</definition>
+  	
 </tiles-definitions>

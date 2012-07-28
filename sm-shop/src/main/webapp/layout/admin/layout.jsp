@@ -33,6 +33,8 @@ response.setDateHeader ("Expires", -1);
     			<meta name="viewport" content="width=device-width, initial-scale=1.0">
     			<meta name="description" content="">
     			<meta name="author" content="">
+    			
+    			<script src="<c:url value="/resources/js/bootstrap/jquery.js" />"></script>
  
   
                 <jsp:include page="/common/adminLinks.jsp" />
@@ -51,6 +53,16 @@ response.setDateHeader ("Expires", -1);
 
 	<div class="container"> 
 		<div class="row">
+		
+			<div class="span12">
+				<img src="<c:url value="/resources/img/shopizer_small.jpg" />"/>
+			
+			</div>
+			<div class="span12">
+				&nbsp;
+			</div>
+			
+		
 			<div class="span3">
 				<ul class="nav nav-list">
 					  <c:forEach items="${requestScope.MENULIST}" var="menu">
@@ -96,7 +108,6 @@ response.setDateHeader ("Expires", -1);
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="<c:url value="/resources/js/bootstrap/jquery.js" />"></script>
     <script src="<c:url value="/resources/js/bootstrap/slide.js" />"></script> 
     <script src="<c:url value="/resources/js/bootstrap/bootstrap-transition.js" />"></script>
     <script src="<c:url value="/resources/js/bootstrap/bootstrap-alert.js" />"></script>
@@ -131,6 +142,9 @@ response.setDateHeader ("Expires", -1);
 			});
 			$("#catalogue-categories-hierarchy-link").click(function() {
   				
+			});
+			$("#catalogue-categories-create-link").click(function() {
+  				window.location='<c:url value="/admin/categories/category.html" />';
 			});
 			
 			
