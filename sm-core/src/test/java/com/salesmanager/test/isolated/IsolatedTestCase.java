@@ -172,9 +172,13 @@ public class IsolatedTestCase {
     store.setCurrency(currency);
     store.setDefaultLanguage(en);
     store.setInBusinessSince(date);
-    store.setStorename("store name");
-    store.setCode(MerchantStore.DEFAULT_STORE);
-    store.setStoreEmailAddress("test@test.com");
+	store.setStorename("default store");
+	store.setStorephone("888-888-8888");
+	store.setCode(MerchantStore.DEFAULT_STORE);
+	store.setStorecity("My city");
+	store.setStorepostalcode("H2H-2H2");
+	store.setStoreEmailAddress("test@test.com");
+
 
     merchantService.create(store);
 
