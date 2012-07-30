@@ -42,6 +42,7 @@ public class CountryServiceImpl extends SalesManagerEntityServiceImpl<Integer, C
 		update(country);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Country> getCountries(Language language) throws ServiceException {
 		
@@ -50,7 +51,7 @@ public class CountryServiceImpl extends SalesManagerEntityServiceImpl<Integer, C
 			
 			CacheUtils cacheUtils = CacheUtils.getInstance();
 			
-			countries = (List<Country>) cacheUtils.getFromCache("COUNTRIES_" + language.getCode(), CacheUtils.REFERENCE_CACHE);
+			countries = (List<Country>) cacheUtils.getFromCache("COUNTRIES_" + language.getCode());
 
 		
 		
@@ -68,7 +69,7 @@ public class CountryServiceImpl extends SalesManagerEntityServiceImpl<Integer, C
 				
 			}
 			
-			cacheUtils.putInCache(countries, "COUNTRIES_" + language.getCode(), CacheUtils.REFERENCE_CACHE);
+			cacheUtils.putInCache(countries, "COUNTRIES_" + language.getCode());
 		
 		
 		
