@@ -234,6 +234,13 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.0</version>
 		</dependency>
+		
+		<dependency>
+  			<groupId>org.jboss.cache</groupId>
+  			<artifactId>jbosscache-core</artifactId>
+  			<version>3.2.5.GA</version>
+		</dependency>
+		
 
 		<!-- JodaTime -->
 		<dependency>
@@ -264,6 +271,30 @@
 		<!-- <dependency> <groupId>com.oracle</groupId> <artifactId>ojdbc5</artifactId> 
 			<version>11.1.0.7.0</version> <scope>provided</scope> </dependency> -->
 	</dependencies>
+	
+	<repositories>	
+		<!-- For testing against latest Spring snapshots -->
+		<repository>
+			<id>org.springframework.maven.snapshot</id>
+			<name>Spring Maven Snapshot Repository</name>
+			<url>http://maven.springframework.org/snapshot</url>
+			<releases><enabled>false</enabled></releases>
+			<snapshots><enabled>true</enabled></snapshots>
+		</repository>
+		<!-- For developing against latest Spring milestones -->
+		<repository>
+			<id>org.springframework.maven.milestone</id>
+			<name>Spring Maven Milestone Repository</name>
+			<url>http://maven.springframework.org/milestone</url>
+			<snapshots><enabled>false</enabled></snapshots>
+		</repository>
+		<repository>
+			<id>org.jboss.repository.releases</id>
+			<name>JBoss Maven Release Repository</name>			
+			<url>https://repository.jboss.org/nexus/content/repositories/releases</url>
+			<snapshots><enabled>false</enabled></snapshots>			
+		</repository>
+	</repositories>
 
 	<build>
 		<plugins>
