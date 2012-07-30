@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,11 +17,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.customer.model.Customer;
-import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.web.admin.entity.Menu;
+import com.salesmanager.core.business.customer.service.CustomerService;
 
 @Controller
 public class CustomerController {
+	
+	@Autowired
+	CustomerService customerService;
 	
 	
 	/**
@@ -41,6 +44,12 @@ public class CustomerController {
 		activeMenus.put("customer", "customer");
 		model.addAttribute("activeMenus",activeMenus);
 		//
+		
+		//if request.attribute contains id then get this customer from customerService
+		
+		//get list of countries (see merchant controller)
+		
+		//get list of zones
 		
 		return "admin-customer";
 		
