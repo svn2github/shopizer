@@ -13,23 +13,28 @@ import javax.servlet.http.HttpServletResponse;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.web.admin.entity.Menu;
 
 
 public class AdminFilter extends HandlerInterceptorAdapter {
 	
 
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(AdminFilter.class);
 	
 	public boolean preHandle(
             HttpServletRequest request,
             HttpServletResponse response,
             Object handler) throws Exception {
 		
-		//TODO read from ehcache
-		Map<String,Menu> menus = (Map) request.getSession().getAttribute("MENUMAP");
+		CacheUtils cache = CacheUtils.getInstance();
+		//Map<String,Menu> menus = (Map) request.getSession().getAttribute("MENUMAP");
+		@SuppressWarnings("unchecked")
+		Map<String,Menu> menus = (Map) cache.getFromCache("MENUMAP");
 		
 
 		
@@ -59,20 +64,19 @@ public class AdminFilter extends HandlerInterceptorAdapter {
 					
 				}
 				
-				request.getSession().setAttribute("MENUMAP",menus);
+				
+				cache.putInCache(menus,"MENUMAP");
+				//request.getSession().setAttribute("MENUMAP",menus);
 				
 
 			
 
 			} catch (JsonParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("Error while creating menu", e);
 			} catch (JsonMappingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("Error while creating menu", e);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("Error while creating menu", e);
 			} finally {
 				if(in !=null) {
 					try {

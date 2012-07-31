@@ -1,6 +1,7 @@
 package com.salesmanager.web.filter;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -9,6 +10,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,11 @@ import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.init.service.InitializationDatabase;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
+import com.salesmanager.core.business.system.model.SystemConfiguration;
 import com.salesmanager.core.business.system.service.SystemConfigurationService;
+import com.salesmanager.core.constants.SystemConstants;
+import com.salesmanager.web.constants.ApplicationConstants;
+import com.salesmanager.web.utils.AppConfiguration;
 
 
 
@@ -34,6 +40,9 @@ import com.salesmanager.core.business.system.service.SystemConfigurationService;
 public class StoreFilter extends HandlerInterceptorAdapter {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(StoreFilter.class);
+	
+	@Autowired
+	private AppConfiguration appConfiguration;
 	
 	@Autowired
 	private InitializationDatabase initializationDatabase;
@@ -122,7 +131,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	   
 		private void loadData() throws ServiceException {
 	
-/*			List<SystemConfiguration> configurations = systemConfigurationService.list();
+			List<SystemConfiguration> configurations = systemConfigurationService.list();
 			
 			
 			String loadTestData = appConfiguration.getProperty(ApplicationConstants.POPULATE_TEST_DATA);
@@ -150,69 +159,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				systemConfigurationService.create(configuration);
 				
 				
-			}*/
-		}
-
-
-	/**
-	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
-	 */
-    /**
-     * Set attributes
-     * STORE
-     * templateId
-     * principal
-     */
-	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-		// TODO Auto-generated method stub
-		// place your code here
-		System.out.println(" ***** In the filter *****");
-		
-		try {
-
-/*		HttpServletRequest request = (HttpServletRequest)req;
-		HttpServletResponse response = (HttpServletResponse)resp;
-		request.setCharacterEncoding("UTF-8");
-		
-		
-		
-		InitializationDatabase database = (InitializationDatabase) ContextLoader.getCurrentWebApplicationContext().getBean(
-				"initializationDatabase");
-		
-		
-		if (database.isEmpty()) {
-			//LOGGER.info(String.format("%s : Shopizer database is empty, populate it....", name));
-	
-				database.populate("sm-shop");
-
-		}
-
-		
-		
-		MerchantStore store = (MerchantStore)request.getSession().getAttribute("MERCHANT_STORE");
-		if(store==null) {
-			MerchantStoreService merchantService = (MerchantStoreService) ContextLoader.getCurrentWebApplicationContext().getBean(
-					"merchantService");
-			
-			if(merchantService==null) {
-				System.out.println("*** MerchantService is null ***");
-			} else {
-				store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
-				request.getSession().setAttribute("MERCHANT_STORE", store);
 			}
-		}*/
-		
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 
-		
-
-
-		// pass the request along the filter chain
-		chain.doFilter(req, resp);
-	}
 
 	
 	

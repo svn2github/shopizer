@@ -35,6 +35,8 @@ public class CategoryController {
 	CategoryService categoryService;
 	
 	
+	
+	
 	@RequestMapping(value="/admin/categories/category.html", method=RequestMethod.GET)
 	public String displayCategory(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -125,19 +127,18 @@ public class CategoryController {
 		model.addAttribute("activeMenus",activeMenus);
 		//
 		
-		
-		//check category description
-		//get language list
-		//iterate, create map id, code
+		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
 		
 		
-		//List descriptions = category.getDescriptions();
-		//for(int i = 0;i< 2; i++) {
+		if(category.getId() != null && category.getId() >0) {
 			
-			//from the map get the id -> code
+			//get the category from the db and copy objects
 			
+			//check if it belongs to category
 			
-		//}
+		} 
+		
+		
 		
 		//ObjectError e = new ObjectError("descriptions[0].name","Hey en must be present");
 		//result.addError(e);
@@ -150,6 +151,9 @@ public class CategoryController {
 		}
 		
 		//save to DB
+		category.setMerchantSore(store);
+		
+		categoryService.save(category);
 		
 
 		model.addAttribute("success","success");
