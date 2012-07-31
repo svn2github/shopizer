@@ -38,8 +38,8 @@ public class Zone extends SalesManagerEntity<Long, Zone>{
 	@JoinColumn(name="COUNTRY_ID", nullable = false)
 	private Country country;
 	
-	@Column(name = "ZONE_NAME", nullable = false)
-	private String name;
+	//@Column(name = "ZONE_NAME")
+	//private String name;
 	
 	@Column(name = "ZONE_CODE", unique=true, nullable = false)
 	private String code;
@@ -50,7 +50,7 @@ public class Zone extends SalesManagerEntity<Long, Zone>{
 	public Zone(Country country, String name, String code) {
 		this.setCode(code);
 		this.setCountry(country);
-		this.setName(name);
+		this.setCode(name);
 	}
 	
 	public Country getCountry() {
@@ -61,13 +61,13 @@ public class Zone extends SalesManagerEntity<Long, Zone>{
 		this.country = country;
 	}
 
-	public String getName() {
-		return name;
-	}
+	//public String getName() {
+	//	return name;
+	//}
 
-	public void setName(String name) {
-		this.name = name;
-	}
+	//public void setName(String name) {
+	//	this.name = name;
+	//}
 
 	public String getCode() {
 		return code;

@@ -1,10 +1,14 @@
 package com.salesmanager.core.business.reference.init.service;
 
+import java.io.InputStream;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,9 @@ import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.currency.service.CurrencyService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
+import com.salesmanager.core.business.reference.zone.model.Zone;
+import com.salesmanager.core.business.reference.zone.model.ZoneDescription;
+import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.system.service.SystemConfigurationService;
 import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 import com.salesmanager.core.business.tax.service.TaxClassService;
@@ -34,6 +41,9 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 	private static final Logger LOGGER = LoggerFactory.getLogger(InitializationDatabaseImpl.class);
 	
 
+	
+	@Autowired
+	private ZoneService zoneService;
 	
 	@Autowired
 	private LanguageService languageService;
@@ -49,10 +59,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 	
 	@Autowired
 	private SystemConfigurationService systemConfigurationService;
-	
-	//@Autowired
-	//private AppConfiguration appConfiguration;
-	
+		
 	@Autowired
 	protected ProductTypeService productTypeService;
 	
@@ -71,6 +78,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		
 		createLanguages();
 		createCountries();
+		createZones();
 		createCurrencies();
 		createSubReferences();
 		createMerchant();
@@ -112,6 +120,82 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 				// TODO : add ZONES
 			}
 		}
+	}
+	
+	private void createZones() throws ServiceException {
+		LOGGER.info(String.format("%s : Populating Zones ", name));
+		List<Language> languages = languageService.list();
+		
+		List<Country> countries = countryService.list();
+		Map<String,Country> countriesMap = new HashMap<String,Country>();
+		for(Country country : countries) {
+			
+			countriesMap.put(country.getIsoCode(), country);
+			
+		}
+		
+		
+		ObjectMapper mapper = new ObjectMapper();
+
+        try {
+
+
+             
+
+              InputStream in =
+                    this.getClass().getClassLoader().getResourceAsStream("reference/zoneconfig.json");
+
+              @SuppressWarnings("unchecked")
+              Map<String,Object> data = mapper.readValue(in, Map.class);
+              
+              Map<String,Zone> zonesMap = new HashMap<String,Zone>();
+              
+              for(Language l : languages) {
+	              @SuppressWarnings("rawtypes")
+	              List langList = (List)data.get(l.getCode());
+	              if(langList!=null) {
+		              for(Object z : langList) {
+		                    @SuppressWarnings("unchecked")
+							Map<String,String> e = (Map<String,String>)z;
+		                    //System.out.println(e.get("countryCode"));
+		                    String zoneCode = e.get("zoneCode");
+		                    ZoneDescription zoneDescrption = new ZoneDescription();
+		                    zoneDescrption.setLanguage(l);
+		                    zoneDescrption.setName(e.get("zoneName"));
+		                    Zone zone = null;
+		                    List<ZoneDescription> descriptions = null;
+		                    if(zonesMap.containsKey(zoneCode)) {
+		                    	zone = zonesMap.get(zoneCode);
+		                    	descriptions = zone.getDescriptons();
+		                    } else {
+		                    	zone = new Zone();
+		                    	descriptions = new ArrayList<ZoneDescription>();
+		                    	zone.setDescriptons(descriptions);
+		                    }
+		                    
+		                    
+		                    descriptions.add(zoneDescrption);
+		                    zone.setCode(zoneCode);
+		                    Country country = countriesMap.get(e.get("countryCode"));
+		                    zone.setCountry(country);
+		                    zonesMap.put(zone.getCode(), zone);
+		                }
+		             }
+
+              }
+              
+              for (Map.Entry<String, Zone> entry : zonesMap.entrySet()) {
+            	    String key = entry.getKey();
+            	    Zone value = entry.getValue();
+            	    zoneService.create(value);
+            	}
+
+              
+  			
+  		} catch (Exception e) {
+  			throw new ServiceException(e);
+  		}
+
 	}
 
 	private void createLanguages() throws ServiceException {

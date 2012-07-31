@@ -53,7 +53,7 @@ public class CacheUtils {
 	@SuppressWarnings("unchecked")
 	public void putInCache(Object object, String keyName) throws Exception {
 		
-		refCache.put("COUNTRIES", object);
+		refCache.put(keyName, object);
 
 		
 	}
@@ -61,7 +61,7 @@ public class CacheUtils {
 	@SuppressWarnings("unchecked")
 	public Object getFromCache(String keyName) throws Exception {
 		
-		 return refCache.get("COUNTRIES");
+		 return refCache.get(keyName);
 		
 	}
 	
