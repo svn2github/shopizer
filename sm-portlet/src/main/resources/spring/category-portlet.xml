@@ -23,6 +23,7 @@
 		<property name="basenames">
 			<list>
 				<value>com.salesmanager.portlet.shop.category.Category</value>
+				<value>com.salesmanager.portlet.shop.Common</value>
 			</list>
 		</property>
 	</bean>
