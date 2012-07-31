@@ -61,7 +61,7 @@
                   </div>
                   
                   <div class="control-group">
-                        <label><s:message code="label.category.code" text="Category code"/></label>
+                        <label class="required"><s:message code="label.category.code" text="Category code"/></label>
 	                        <div class="controls">
 	                        		<form:input cssClass="input-large" path="code" />
 	                                <span class="help-inline"><form:errors path="code" cssClass="error" /></span>
@@ -71,7 +71,7 @@
                  <c:forEach items="${category.descriptions}" var="description" varStatus="counter">
                   
                  <div class="control-group">
-                        <label><s:message code="label.productedit.categoryname" text="Category name"/> (<c:out value="${description.language.code}"/>)</label>
+                        <label class="required"><s:message code="label.productedit.categoryname" text="Category name"/> (<c:out value="${description.language.code}"/>)</label>
                         <div class="controls">
                         			<form:input path="descriptions[${counter.index}].name"/>
                         			<span class="help-inline"><form:errors path="descriptions[${counter.index}].name" cssClass="error" /></span>

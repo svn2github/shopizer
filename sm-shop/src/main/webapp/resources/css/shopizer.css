@@ -13,6 +13,8 @@ body {
   		background-color: #ffffff;
 }
 
+
+
 .error { color: #ff0000; }
 
 .sm-iframe-component {
@@ -46,6 +48,25 @@ body {
    	 	max-width:none;
 
 }
+
+.sm-iframe-component {
+
+   	 	width:100%;
+		height:620px;
+		overflow:hidden;
+		border:0;
+
+}
+
+
+
+.required:after  
+{ 
+    content: "*"; 
+    font-weight: bold; 
+    color: red;  
+} 
+
 
 
 
