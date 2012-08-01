@@ -21,6 +21,8 @@ import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.reference.country.model.Country;
+import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.web.admin.entity.Menu;
@@ -33,6 +35,10 @@ public class CategoryController {
 	
 	@Autowired
 	CategoryService categoryService;
+	
+	@Autowired
+	CountryService countryService;
+
 	
 	
 	
@@ -114,6 +120,8 @@ public class CategoryController {
 	public String saveCategory(@Valid @ModelAttribute("category") Category category, BindingResult result, Model model, HttpServletRequest request) throws Exception {
 		
 		
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("catalogue", "catalogue");
@@ -130,13 +138,33 @@ public class CategoryController {
 		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
 		
 		
-		if(category.getId() != null && category.getId() >0) {
+		if(category.getId() != null && category.getId() >0) { //edit entry
 			
 			//get the category from the db and copy objects
 			
 			//check if it belongs to category
 			
-		} 
+		} else { //add entry
+			
+			Map<String,Language> langs = languageService.getLanguagesMap();
+			
+			Map<String,Country> countriesMap = countryService.getCountriesMap(language);
+			
+			List<CategoryDescription> descriptions = category.getDescriptions();
+			if(descriptions!=null) {
+				
+				for(CategoryDescription description : descriptions) {
+					
+					String code = description.getLanguage().getCode();
+					Language l = langs.get(code);
+					description.setLanguage(l);
+					description.setCategory(category);
+					
+					
+				}
+				
+			}
+		}
 		
 		
 		
@@ -154,6 +182,10 @@ public class CategoryController {
 		category.setMerchantSore(store);
 		
 		categoryService.save(category);
+		
+		//get parent categories
+		List<Category> categories = categoryService.listByStore(store,language);
+		model.addAttribute("categories", categories);
 		
 
 		model.addAttribute("success","success");
