@@ -641,7 +641,7 @@
 		"countryCode": "CH"
 	},
 	{
-		"zoneCode": "A Corua",
+		"zoneCode": "ACorua",
 		"zoneName": "A Corua",
 		"countryCode": "ES"
 	},
@@ -721,7 +721,7 @@
 		"countryCode": "ES"
 	},
 	{
-		"zoneCode": "Ciudad Real",
+		"zoneCode": "CiudadReal",
 		"zoneName": "Ciudad Real",
 		"countryCode": "ES"
 	},
@@ -771,12 +771,12 @@
 		"countryCode": "ES"
 	},
 	{
-		"zoneCode": "La Rioja",
+		"zoneCode": "LaRioja",
 		"zoneName": "La Rioja",
 		"countryCode": "ES"
 	},
 	{
-		"zoneCode": "Las Palmas",
+		"zoneCode": "LasPalmas",
 		"zoneName": "Las Palmas",
 		"countryCode": "ES"
 	},
@@ -841,7 +841,7 @@
 		"countryCode": "ES"
 	},
 	{
-		"zoneCode": "Santa Cruz de Tenerife",
+		"zoneCode": "SantaCruzdeTenerife",
 		"zoneName": "Santa Cruz de Tenerife",
 		"countryCode": "ES"
 	},
@@ -1664,7 +1664,7 @@
 		"countryCode": "ES"
 	},
 	{
-		"zoneCode": "Ciudad Real",
+		"zoneCode": "CiudadReal",
 		"zoneName": "Ciudad Real",
 		"countryCode": "ES"
 	},
@@ -1714,12 +1714,12 @@
 		"countryCode": "ES"
 	},
 	{
-		"zoneCode": "La Rioja",
+		"zoneCode": "LaRioja",
 		"zoneName": "La Rioja",
 		"countryCode": "ES"
 	},
 	{
-		"zoneCode": "Las Palmas",
+		"zoneCode": "LasPalmas",
 		"zoneName": "Las Palmas",
 		"countryCode": "ES"
 	},
@@ -1784,7 +1784,7 @@
 		"countryCode": "ES"
 	},
 	{
-		"zoneCode": "Santa Cruz de Tenerife",
+		"zoneCode": "SantaCruzdeTenerife",
 		"zoneName": "Santa Cruz de Tenerife",
 		"countryCode": "ES"
 	},
