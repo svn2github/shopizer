@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
@@ -96,7 +97,6 @@ public class InitStoreData implements InitData {
 	@Autowired
 	protected OrderService orderService;
 
-	@Override
 	public void initInitialData() throws ServiceException {
 		
 
@@ -185,6 +185,10 @@ public class InitStoreData implements InitData {
 		novell.setDescriptions(descriptions3);
 		
 		categoryService.create(novell);
+
+		//Category xbook = categoryService.getByCode(store, book.getCode());
+		//Category xnovell = categoryService.getByCode(store, novell.getCode());
+		
 		categoryService.addChild(book, novell);
 		
 		Category tech = new Category();
@@ -247,6 +251,7 @@ public class InitStoreData implements InitData {
 		ManufacturerDescription oreilleyd = new ManufacturerDescription();
 		oreilleyd.setLanguage(en);
 		oreilleyd.setName("O\'reilley");
+		oreilleyd.setManufacturer(oreilley);
 		oreilley.getDescriptions().add(oreilleyd);
 		
 		manufacturerService.create(oreilley);
@@ -257,6 +262,7 @@ public class InitStoreData implements InitData {
 		ManufacturerDescription packedd = new ManufacturerDescription();
 		packedd.setLanguage(en);
 		packedd.setName("Packed publishing");
+		packedd.setManufacturer(packed);
 		packed.getDescriptions().add(packedd);
 		
 		manufacturerService.create(packed);
@@ -267,6 +273,7 @@ public class InitStoreData implements InitData {
 		ManufacturerDescription novellsd = new ManufacturerDescription();
 		novellsd.setLanguage(en);
 		novellsd.setName("Novells publishing");
+		novellsd.setManufacturer(novells);
 		novells.getDescriptions().add(novellsd);
 		
 		manufacturerService.create(novells);
@@ -280,6 +287,7 @@ public class InitStoreData implements InitData {
 		product.setSku("TB12345");
 		product.setManufacturer(oreilley);
 		product.setType(generalType);
+		product.setMerchantSore(store);
 		
 		
 		//Product description
@@ -324,6 +332,7 @@ public class InitStoreData implements InitData {
 		product2.setSku("TB2468");
 		product2.setManufacturer(packed);
 		product2.setType(generalType);
+		product2.setMerchantSore(store);
 		
 		
 		//Product description
@@ -365,6 +374,7 @@ public class InitStoreData implements InitData {
 		product3.setSku("NB1111");
 		product3.setManufacturer(packed);
 		product3.setType(generalType);
+		product3.setMerchantSore(store);
 		
 		
 		//Product description
@@ -408,6 +418,7 @@ public class InitStoreData implements InitData {
 		product4.setSku("SF333345");
 		product4.setManufacturer(packed);
 		product4.setType(generalType);
+		product4.setMerchantSore(store);
 				
 				
 		//Product description
@@ -417,7 +428,7 @@ public class InitStoreData implements InitData {
 		description.setProduct(product4);
 				
 		product4.getCategories().add(fiction);
-		productService.create(product3);
+		productService.create(product4);
 				
 		//Availability
 		ProductAvailability availability4 = new ProductAvailability();
@@ -446,6 +457,7 @@ public class InitStoreData implements InitData {
 		
 		
 	}
+
 
 	
 
