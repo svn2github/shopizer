@@ -108,6 +108,7 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 	
 	public Category(MerchantStore store) {
 		this.merchantSore = store;
+		this.id = 0L;
 	}
 	
 	@Override

@@ -115,9 +115,6 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 					CountryDescription description = new CountryDescription(language, name);
 					countryService.addCountryDescription(country, description);
 				}
-				
-				// TODO : add GEOZONE
-				// TODO : add ZONES
 			}
 		}
 	}
@@ -149,6 +146,8 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
               Map<String,Object> data = mapper.readValue(in, Map.class);
               
               Map<String,Zone> zonesMap = new HashMap<String,Zone>();
+              Map<String,List<ZoneDescription>> zonesDescriptionsMap = new HashMap<String,List<ZoneDescription>>();
+              Map<String,String> zonesMark = new HashMap<String,String>();
               
               for(Language l : languages) {
 	              @SuppressWarnings("rawtypes")
@@ -157,28 +156,42 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		              for(Object z : langList) {
 		                    @SuppressWarnings("unchecked")
 							Map<String,String> e = (Map<String,String>)z;
-		                    //System.out.println(e.get("countryCode"));
 		                    String zoneCode = e.get("zoneCode");
-		                    ZoneDescription zoneDescrption = new ZoneDescription();
-		                    zoneDescrption.setLanguage(l);
-		                    zoneDescrption.setName(e.get("zoneName"));
+		                    ZoneDescription zoneDescription = new ZoneDescription();
+		                    zoneDescription.setLanguage(l);
+		                    zoneDescription.setName(e.get("zoneName"));
 		                    Zone zone = null;
 		                    List<ZoneDescription> descriptions = null;
-		                    if(zonesMap.containsKey(zoneCode)) {
-		                    	zone = zonesMap.get(zoneCode);
-		                    	descriptions = zone.getDescriptons();
-		                    } else {
+		                    if(!zonesMap.containsKey(zoneCode)) {
 		                    	zone = new Zone();
-		                    	descriptions = new ArrayList<ZoneDescription>();
-		                    	zone.setDescriptons(descriptions);
+		                    	Country country = countriesMap.get(e.get("countryCode"));
+		                    	if(country==null) {
+		                    		LOGGER.warn("Country is null for " + zoneCode + " and country code " + e.get("countryCode"));
+		                    		continue;
+		                    	}
+			                    zone.setCountry(country);
+		                    	zonesMap.put(zoneCode, zone);
+		                    	zone.setCode(zoneCode);
+
 		                    }
 		                    
 		                    
-		                    descriptions.add(zoneDescrption);
-		                    zone.setCode(zoneCode);
-		                    Country country = countriesMap.get(e.get("countryCode"));
-		                    zone.setCountry(country);
-		                    zonesMap.put(zone.getCode(), zone);
+		                    if(zonesMark.containsKey(l.getCode() + "_" + zoneCode)) {
+	                    		LOGGER.warn("This zone seems to be a duplicate !  " + zoneCode + " and language code " + l.getCode());
+	                    		continue;
+		                    }
+		                    
+		                    zonesMark.put(l.getCode() + "_" + zoneCode, l.getCode() + "_" + zoneCode);
+		                    
+		                    if(zonesDescriptionsMap.containsKey(zoneCode)) {
+		                    	descriptions = zonesDescriptionsMap.get(zoneCode);
+		                    } else {
+		                    	descriptions = new ArrayList<ZoneDescription>();
+		                    	zonesDescriptionsMap.put(zoneCode, descriptions);
+		                    }
+		                    
+		                    descriptions.add(zoneDescription);
+
 		                }
 		             }
 
@@ -187,8 +200,22 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
               for (Map.Entry<String, Zone> entry : zonesMap.entrySet()) {
             	    String key = entry.getKey();
             	    Zone value = entry.getValue();
+            	    
+            	    if(value.getDescriptions()==null) {
+            	    	LOGGER.warn("This zone " + key + " has no descriptions");
+            	    	continue;
+            	    }
+            	    
+            	    
             	    zoneService.create(value);
-            	}
+            	    //get descriptions
+            	    List<ZoneDescription> descriptions = zonesDescriptionsMap.get(key);
+            	    for(ZoneDescription description : descriptions) {
+            	    	description.setZone(value);
+            	    	zoneService.addDescription(value, description);
+            	    }
+              }
+
 
               
   			

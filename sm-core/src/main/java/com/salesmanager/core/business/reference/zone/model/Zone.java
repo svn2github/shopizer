@@ -32,14 +32,12 @@ public class Zone extends SalesManagerEntity<Long, Zone>{
 	private Long id;
 	
 	@OneToMany(mappedBy = "zone", cascade = CascadeType.ALL)
-	private List<ZoneDescription> descriptons = new ArrayList<ZoneDescription>();
+	private List<ZoneDescription> descriptions = new ArrayList<ZoneDescription>();
 	
 	@ManyToOne
 	@JoinColumn(name="COUNTRY_ID", nullable = false)
 	private Country country;
-	
-	//@Column(name = "ZONE_NAME")
-	//private String name;
+
 	
 	@Column(name = "ZONE_CODE", unique=true, nullable = false)
 	private String code;
@@ -61,13 +59,7 @@ public class Zone extends SalesManagerEntity<Long, Zone>{
 		this.country = country;
 	}
 
-	//public String getName() {
-	//	return name;
-	//}
 
-	//public void setName(String name) {
-	//	this.name = name;
-	//}
 
 	public String getCode() {
 		return code;
@@ -86,12 +78,12 @@ public class Zone extends SalesManagerEntity<Long, Zone>{
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public List<ZoneDescription> getDescriptons() {
-		return descriptons;
+	public List<ZoneDescription> getDescriptions() {
+		return descriptions;
 	}
 
-	public void setDescriptons(List<ZoneDescription> descriptons) {
-		this.descriptons = descriptons;
+	public void setDescriptons(List<ZoneDescription> descriptions) {
+		this.descriptions = descriptions;
 	}
 
 }

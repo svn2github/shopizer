@@ -45,6 +45,7 @@ public class CategoryDescription extends Description {
 	public CategoryDescription(String name, Language language) {
 		this.setName(name);
 		this.setLanguage(language);
+		super.setId(0L);
 	}
 	
 	public String getSeUrl() {

@@ -165,9 +165,14 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		
 		
 		try {
-			parent.getCategories().add(child);
-			child.setParent(parent);
-			update(child);
+			
+			Category p = this.getByCode(parent.getMerchantSore(), parent.getCode());
+			Category c = this.getByCode(child.getMerchantSore(), child.getCode());
+			
+			
+			p.getCategories().add(c);
+			c.setParent(p);
+			update(p);
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}

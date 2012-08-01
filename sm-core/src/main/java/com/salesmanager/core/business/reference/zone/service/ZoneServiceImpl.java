@@ -26,8 +26,8 @@ public class ZoneServiceImpl extends SalesManagerEntityServiceImpl<Long, Zone> i
 
 	@Override
 	public void addDescription(Zone zone, ZoneDescription description) throws ServiceException {
-		if (!zone.getDescriptons().contains(description)) {
-			zone.getDescriptons().add(description);
+		if (!zone.getDescriptions().contains(description)) {
+			zone.getDescriptions().add(description);
 			update(zone);
 		}
 	}
