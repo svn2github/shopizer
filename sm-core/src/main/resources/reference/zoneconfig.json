@@ -246,11 +246,6 @@
 		"countryCode": "US"
 	},
 	{
-		"zoneCode": "PW",
-		"zoneName": "Palau",
-		"countryCode": "PW"
-	},
-	{
 		"zoneCode": "PA",
 		"zoneName": "Pennsylvania",
 		"countryCode": "US"
@@ -471,7 +466,7 @@
 		"countryCode": "DE"
 	},
 	{
-		"zoneCode": "WI",
+		"zoneCode": "WIAT",
 		"zoneName": "Wien",
 		"countryCode": "AT"
 	},
@@ -501,12 +496,12 @@
 		"countryCode": "AT"
 	},
 	{
-		"zoneCode": "TI",
+		"zoneCode": "TIAT",
 		"zoneName": "Tirol",
 		"countryCode": "AT"
 	},
 	{
-		"zoneCode": "BL",
+		"zoneCode": "BLAT",
 		"zoneName": "Burgenland",
 		"countryCode": "AT"
 	},
@@ -526,7 +521,7 @@
 		"countryCode": "CH"
 	},
 	{
-		"zoneCode": "AR",
+		"zoneCode": "ARCH",
 		"zoneName": "Appenzell Ausserrhoden",
 		"countryCode": "CH"
 	},
@@ -561,7 +556,7 @@
 		"countryCode": "CH"
 	},
 	{
-		"zoneCode": "JU",
+		"zoneCode": "GR",
 		"zoneName": "Graubnden",
 		"countryCode": "CH"
 	},
@@ -576,7 +571,7 @@
 		"countryCode": "CH"
 	},
 	{
-		"zoneCode": "NE",
+		"zoneCode": "NECH",
 		"zoneName": "Neuenburg",
 		"countryCode": "CH"
 	},
@@ -916,7 +911,7 @@
 		"countryCode": "AU"
 	},
 	{
-		"zoneCode": "NT",
+		"zoneCode": "NTAU",
 		"zoneName": "Northern Territory",
 		"countryCode": "AU"
 	},
@@ -941,7 +936,7 @@
 		"countryCode": "AU"
 	},
 	{
-		"zoneCode": "WA",
+		"zoneCode": "WAAU",
 		"zoneName": "Western Australia",
 		"countryCode": "AU"
 	} 
@@ -1194,11 +1189,6 @@
 		"countryCode": "US"
 	},
 	{
-		"zoneCode": "PW",
-		"zoneName": "Palau",
-		"countryCode": "PW"
-	},
-	{
 		"zoneCode": "PA",
 		"zoneName": "Pennsylvania",
 		"countryCode": "US"
@@ -1419,7 +1409,7 @@
 		"countryCode": "DE"
 	},
 	{
-		"zoneCode": "WI",
+		"zoneCode": "WIAT",
 		"zoneName": "Wien",
 		"countryCode": "AT"
 	},
@@ -1449,12 +1439,12 @@
 		"countryCode": "AT"
 	},
 	{
-		"zoneCode": "TI",
+		"zoneCode": "TIAT",
 		"zoneName": "Tirol",
 		"countryCode": "AT"
 	},
 	{
-		"zoneCode": "BL",
+		"zoneCode": "BLAT",
 		"zoneName": "Burgenland",
 		"countryCode": "AT"
 	},
@@ -1474,7 +1464,7 @@
 		"countryCode": "CH"
 	},
 	{
-		"zoneCode": "AR",
+		"zoneCode": "ARCH",
 		"zoneName": "Appenzell Ausserrhoden",
 		"countryCode": "CH"
 	},
@@ -1509,7 +1499,7 @@
 		"countryCode": "CH"
 	},
 	{
-		"zoneCode": "JU",
+		"zoneCode": "GR",
 		"zoneName": "Graubnden",
 		"countryCode": "CH"
 	},
@@ -1524,7 +1514,7 @@
 		"countryCode": "CH"
 	},
 	{
-		"zoneCode": "NE",
+		"zoneCode": "NECH",
 		"zoneName": "Neuenburg",
 		"countryCode": "CH"
 	},
@@ -1854,44 +1844,45 @@
 		"countryCode": "ES"
 	},
 	{
-		"zoneCode": "ACT",
-		"zoneName": "Australian Capital Territory",
-		"countryCode": "AU"
+		"zoneCode":"ACT",
+		"zoneName":"Territoire de la capitale australienne",
+		"countryCode":"AU"
 	},
 	{
-		"zoneCode": "NSW",
-		"zoneName": "New South Wales",
-		"countryCode": "AU"
+		"zoneCode":"WAAU",
+		"zoneName":"Australie-Occidentale",
+		"countryCode":"AU"
 	},
 	{
-		"zoneCode": "NT",
-		"zoneName": "Northern Territory",
-		"countryCode": "AU"
+		"zoneCode":"SA",
+		"zoneName":"Australie-Mridionale",
+		"countryCode":"AU"
 	},
 	{
-		"zoneCode": "QLD",
-		"zoneName": "Queensland",
-		"countryCode": "AU"
+		"zoneCode":"NTAU",
+		"zoneName":"Territoire du Nord",
+		"countryCode":"AU"
 	},
 	{
-		"zoneCode": "SA",
-		"zoneName": "South Australia",
-		"countryCode": "AU"
+		"zoneCode":"VIC",
+		"zoneName":"Victoria",
+		"countryCode":"AU"
 	},
 	{
-		"zoneCode": "TAS",
-		"zoneName": "Tasmania",
-		"countryCode": "AU"
+		"zoneCode":"TAS",
+		"zoneName":"Tasmanie",
+		"countryCode":"AU"
 	},
 	{
-		"zoneCode": "VIC",
-		"zoneName": "Victoria",
-		"countryCode": "AU"
+		"zoneCode":"QLD",
+		"zoneName":"Queensland",
+		"countryCode":"AU"
 	},
 	{
-		"zoneCode": "WA",
-		"zoneName": "Western Australia",
-		"countryCode": "AU"
+		"zoneCode":"NSW",
+		"zoneName":"Nouvelle-Galles du Sud",
+		"countryCode":"AU"
 	}
+
 ] 
 }
