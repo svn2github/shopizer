@@ -131,13 +131,9 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 			
 		}
 		
-		
 		ObjectMapper mapper = new ObjectMapper();
 
         try {
-
-
-             
 
               InputStream in =
                     this.getClass().getClassLoader().getResourceAsStream("reference/zoneconfig.json");
