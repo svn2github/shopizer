@@ -1,6 +1,7 @@
 package com.salesmanager.core.business.reference.country.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
@@ -15,4 +16,7 @@ public interface CountryService extends SalesManagerEntityService<Integer, Count
 	public void addCountryDescription(Country country, CountryDescription description) throws ServiceException;
 
 	public List<Country> getCountries(Language language) throws ServiceException;
+
+	Map<String, Country> getCountriesMap(Language language)
+			throws ServiceException;
 }

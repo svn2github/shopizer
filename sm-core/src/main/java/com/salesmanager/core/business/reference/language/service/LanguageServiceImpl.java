@@ -1,17 +1,29 @@
 package com.salesmanager.core.business.reference.language.service;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
+import com.salesmanager.core.business.reference.country.model.Country;
+import com.salesmanager.core.business.reference.country.model.CountryDescription;
+import com.salesmanager.core.business.reference.country.service.CountryServiceImpl;
 import com.salesmanager.core.business.reference.language.dao.LanguageDao;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.model.Language_;
+import com.salesmanager.core.utils.CacheUtils;
 
 @Service("languageService")
 public class LanguageServiceImpl extends SalesManagerEntityServiceImpl<Integer, Language>
 	implements LanguageService {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(LanguageServiceImpl.class);
 	
 	@Autowired
 	public LanguageServiceImpl(LanguageDao languageDao) {
@@ -21,6 +33,57 @@ public class LanguageServiceImpl extends SalesManagerEntityServiceImpl<Integer, 
 	@Override
 	public Language getByCode(String code) throws ServiceException {
 		return getByField(Language_.code, code);
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public Map<String,Language> getLanguagesMap() throws ServiceException {
+		
+		List<Language> langs = this.getLanguages();
+
+		Map<String,Language> returnMap = new LinkedHashMap<String,Language>();
+		
+		for(Language lang : langs) {
+			
+			returnMap.put(lang.getCode(), lang);
+			
+		}
+		
+		return returnMap;
+		
+		
+	}
+	
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Language> getLanguages() throws ServiceException {
+		
+		
+		List<Language> langs = null;
+		try {
+			
+			CacheUtils cacheUtils = CacheUtils.getInstance();
+			
+			langs = (List<Language>) cacheUtils.getFromCache("LANGUAGES");
+
+		
+		
+			if(langs==null) {
+				langs = this.list();
+				cacheUtils.putInCache(langs, "LANGUAGES");
+			}
+			
+			
+		
+		
+		
+		} catch (Exception e) {
+			LOGGER.error("getCountries()", e);
+		}
+		
+		return langs;
+		
 	}
 
 }

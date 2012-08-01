@@ -1,6 +1,8 @@
 package com.salesmanager.core.business.reference.country.service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +44,20 @@ public class CountryServiceImpl extends SalesManagerEntityServiceImpl<Integer, C
 		update(country);
 	}
 	
+	@Override
+	public Map<String,Country> getCountriesMap(Language language) throws ServiceException {
+		
+		List<Country> countries = this.getCountries(language);
+		
+		Map<String,Country> returnMap = new LinkedHashMap<String,Country>();
+		
+		for(Country country : countries) {
+			returnMap.put(country.getIsoCode(), country);
+		}
+		
+		return returnMap;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Country> getCountries(Language language) throws ServiceException {
@@ -67,9 +83,11 @@ public class CountryServiceImpl extends SalesManagerEntityServiceImpl<Integer, C
 					
 				}
 				
+				cacheUtils.putInCache(countries, "COUNTRIES_" + language.getCode());
+				
 			}
 			
-			cacheUtils.putInCache(countries, "COUNTRIES_" + language.getCode());
+			
 		
 		
 		
