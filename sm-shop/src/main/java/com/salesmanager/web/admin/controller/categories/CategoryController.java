@@ -183,6 +183,11 @@ public class CategoryController {
 		
 		categoryService.save(category);
 		
+		Category parent = new Category();
+		parent.setId(category.getParent().getId());
+		
+		categoryService.addChild(parent, category);
+		
 		//get parent categories
 		List<Category> categories = categoryService.listByStore(store,language);
 		model.addAttribute("categories", categories);
