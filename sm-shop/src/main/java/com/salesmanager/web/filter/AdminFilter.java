@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.salesmanager.core.utils.CacheUtils;
-import com.salesmanager.web.admin.entity.Menu;
+import com.salesmanager.web.admin.entity.web.Menu;
 
 
 public class AdminFilter extends HandlerInterceptorAdapter {
