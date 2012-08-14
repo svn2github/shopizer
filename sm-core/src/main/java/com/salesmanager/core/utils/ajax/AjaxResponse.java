@@ -75,7 +75,7 @@ public class AjaxResponse implements JSONAware {
 			}
 			String dataField = data.toJSONString();
 			dataEntries.append(dataField);
-			if(count<keyValue.size()-1) {
+			if(count<keyValue.size()) {
 				dataEntries.append(",");
 			}
 			count ++;
