@@ -19,7 +19,7 @@
 "menu":{
 "code":"catalogue",
 "icon":"icon-tags", 
-"url":"/admin/catalogue/products/list.html", 
+"url":"/admin/products/products.html", 
 "roles":["admin","sub-admin"],
 "order":2,
 "menus":[
@@ -27,13 +27,13 @@
 		"code":"catalogue-products","url":"","roles":["admin","sub-admin"],"order":0,"menus":
 		[
 			{"menu":{
-				"code":"catalogue-products-create","url":"/admin/catalogue/products/product.html","roles":["admin","sub-admin"],"order":0
+				"code":"catalogue-products-create","url":"/admin/products/product.html","roles":["admin","sub-admin"],"order":0
 			}},
 			{"menu":{
-				"code":"catalogue-products-categories","url":"/admin/catalogue/products/product-categories.html","roles":["admin","sub-admin"],"order":1
+				"code":"catalogue-products-categories","url":"/admin/products/product-categories.html","roles":["admin","sub-admin"],"order":1
 			}},
 			{"menu":{
-				"code":"catalogue","url":"/admin/catalogue/products.html","roles":["admin","sub-admin"],"order":2
+				"code":"catalogue","url":"/admin/products/products.html","roles":["admin","sub-admin"],"order":2
 			}}
 		]
 	}},
@@ -41,13 +41,13 @@
 		"code":"catalogue-categories","url":"","roles":["admin","sub-admin"],"order":1,"menus":
 		[
 			{"menu":{
-				"code":"catalogue-categories-create","url":"/admin/catalogue/categories/category.html","roles":["admin","sub-admin"],"order":0
+				"code":"catalogue-categories-create","url":"/admin/categories/category.html","roles":["admin","sub-admin"],"order":0
 			}},
 			{"menu":{
-				"code":"catalogue-categories-list","url":"/admin/catalogue/categories/list.html","roles":["admin","sub-admin"],"order":1
+				"code":"catalogue-categories-list","url":"/admin/categories/list.html","roles":["admin","sub-admin"],"order":1
 			}},
 			{"menu":{
-				"code":"catalogue-categories-hierarchy","url":"/admin/catalogue/categories/hierarchy.html","roles":["admin","sub-admin"],"order":2
+				"code":"catalogue-categories-hierarchy","url":"/admin/categories/hierarchy.html","roles":["admin","sub-admin"],"order":2
 			}}
 		]
 	}},
