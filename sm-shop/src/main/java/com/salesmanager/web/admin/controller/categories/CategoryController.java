@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
@@ -25,7 +27,8 @@ import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
-import com.salesmanager.web.admin.entity.Menu;
+import com.salesmanager.web.admin.entity.web.AjaxResponse;
+import com.salesmanager.web.admin.entity.web.Menu;
 
 @Controller
 public class CategoryController {
@@ -116,7 +119,7 @@ public class CategoryController {
 	}
 	
 	
-	@RequestMapping(value="/admin/category/save.html", method=RequestMethod.POST)
+	@RequestMapping(value="/admin/categories/save.html", method=RequestMethod.POST)
 	public String saveCategory(@Valid @ModelAttribute("category") Category category, BindingResult result, Model model, HttpServletRequest request) throws Exception {
 		
 		
@@ -195,6 +198,97 @@ public class CategoryController {
 
 		model.addAttribute("success","success");
 		return "catalogue-categories-category";
+	}
+	
+	
+	//category list
+	@RequestMapping(value="/admin/categories/list.html", method=RequestMethod.GET)
+	public String displayCategories(Model model) {
+
+		//does nothing, ajax subsequent request
+		
+		return "catalogue-categories";
+	}
+	
+	@RequestMapping(value="/admin/categories/paging.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String pageCategories(HttpServletRequest request, HttpServletResponse response) {
+		String categoryId = request.getParameter("categoryId");
+		String searchTerm = request.getParameter("searchTerm");
+		
+		String startRow = request.getParameter("_startRow");
+		String endRow = request.getParameter("_endRow");
+		
+		String totalRows = "10";
+		
+
+		
+		if(searchTerm!=null) {
+			totalRows="2";
+		}
+		
+		
+		try {
+			
+			AjaxResponse resp = new AjaxResponse();
+				
+		
+			MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+			
+			List<Category> categories = categoryService.listByStore(store);
+			
+			for(Category category : categories) {
+				
+				Map entry = new HashMap();
+				entry.put("categoryId", category.getId());
+				
+				CategoryDescription description = category.getDescriptions().get(0);
+				
+				entry.put("name", description.getName());
+				entry.put("visible", category.isVisible());
+				resp.addDataEntry(entry);
+				
+				
+			}
+			
+			resp.setStatus(0);
+			
+			//PojoMapper mapper
+			//ObjectMapper mapper = new ObjectMapper();
+			//mapper.writeValueAsString(value)
+			
+			
+			//get sub category & sub categories for input categoryId
+			
+			//get products using startRow and endRow
+			
+			//populate response object which has to be converted to JSON 
+			
+			//will receive name and sku as filter elements
+			
+			//List<Map<String,String> //List<Map<key,value>
+	
+			/*StringBuilder res = new StringBuilder().append("{ response:{     status:0,     startRow:" + startRow + ",     endRow:" + endRow + ",     totalRows:" + totalRows + ",     data:" +
+					"[           ");
+			
+					for(int i = Integer.parseInt(startRow); i < Integer.parseInt(totalRows); i++) {
+						
+						
+						res.append("{name:\"category_" + i + "\",active:\"true\"}");
+						if(i < Integer.parseInt(totalRows)-1) {
+							res.append(",");
+						}
+					}
+	
+					res.append("]   } }");
+					
+	
+				return res.toString();*/
+		
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		return null;
 	}
 
 }
