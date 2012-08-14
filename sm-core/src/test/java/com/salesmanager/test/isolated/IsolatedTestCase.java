@@ -4,9 +4,11 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -52,7 +54,9 @@ import com.salesmanager.core.business.reference.currency.service.CurrencyService
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
+import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.test.core.SalesManagerCoreTestExecutionListener;
+
 
 @ContextConfiguration(locations = { "classpath:spring/test-spring-context.xml" })
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -185,6 +189,41 @@ public class IsolatedTestCase {
     generalType.setCode(ProductType.GENERAL_TYPE);
     productTypeService.create(generalType);
 
+  }
+  
+  @Test
+  public void testAjaxResponseObject() throws Exception {
+	  
+	  
+
+		AjaxResponse resp = new AjaxResponse();
+		
+		Language en = languageService.getByCode("en");
+		MerchantStore store = merchantService.getMerchantStore(MerchantStore.DEFAULT_STORE);
+		
+		List<Category> categories = categoryService.listByStore(store,en);
+		
+		for(Category category : categories) {
+			
+			Map entry = new HashMap();
+			entry.put("categoryId", category.getId());
+			
+			CategoryDescription description = category.getDescriptions().get(0);
+			
+			entry.put("name", description.getName());
+			entry.put("visible", category.isVisible());
+			resp.addDataEntry(entry);
+			
+			
+		}
+		
+		resp.setStatus(0);
+		
+		System.out.println(resp.toJSONString());
+		
+
+	  
+	  
   }
   
   @Test
