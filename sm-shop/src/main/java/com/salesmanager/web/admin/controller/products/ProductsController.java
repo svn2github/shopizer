@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.salesmanager.web.admin.entity.Menu;
+import com.salesmanager.web.admin.entity.web.Menu;
 
 @Controller
 public class ProductsController {
 	
 	
 	
-	@RequestMapping(value="/admin/catalogue/products/list.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/products/list.html", method=RequestMethod.GET)
 	public String displayProducts(Model model, HttpServletRequest request, HttpServletResponse response) {
 		
 		
