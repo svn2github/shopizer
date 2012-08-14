@@ -130,14 +130,14 @@ response.setDateHeader ("Expires", -1);
 
 			
 			$("#catalogue-products-create-link").click(function() {
-				window.location='<c:url value="/admin/catalogue/products/product.html" />';
+				window.location='<c:url value="/admin/products/product.html" />';
   				
 			});
 			$("#catalogue-categories-list-link").click(function() {
 				window.location='<c:url value="/admin/categories/categories.html" />';
 			});
 			$("#catalogue-products-categories-link").click(function() {
-				window.location='<c:url value="/admin/catalogue/products/product-categories.html" />';
+				window.location='<c:url value="/admin/products/product-categories.html" />';
   				
 			});
 			$("#catalogue-categories-hierarchy-link").click(function() {

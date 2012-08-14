@@ -23,7 +23,7 @@
 				<h3><s:message code="label.category.createcategory" text="Edit category" /></h3>	
 				<br/>
 
-				<c:url var="categorySave" value="/admin/category/save.html"/>
+				<c:url var="categorySave" value="/admin/categories/save.html"/>
 
 
 				<form:form method="POST" commandName="category" action="${categorySave}">
