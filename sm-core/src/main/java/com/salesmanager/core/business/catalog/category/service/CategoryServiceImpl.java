@@ -89,6 +89,8 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		
 	}
 	
+
+	
 	@Override
 	public void addCategoryDescription(Category category, CategoryDescription description)
 			throws ServiceException {
@@ -171,7 +173,13 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 			
 			
 			p.getCategories().add(c);
+			
+			String lineage = p.getLineage();
+			int depth = p.getDepth();
+			
 			c.setParent(p);
+			c.setDepth(depth+1);
+			c.setLineage(new StringBuilder().append(lineage).append(c.getId()).append("/").toString());
 			update(p);
 		} catch (Exception e) {
 			throw new ServiceException(e);
