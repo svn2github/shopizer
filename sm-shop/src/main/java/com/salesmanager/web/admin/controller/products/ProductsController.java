@@ -19,7 +19,7 @@ public class ProductsController {
 	
 	
 	
-	@RequestMapping(value="/admin/products/list.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/products/products.html", method=RequestMethod.GET)
 	public String displayProducts(Model model, HttpServletRequest request, HttpServletResponse response) {
 		
 		

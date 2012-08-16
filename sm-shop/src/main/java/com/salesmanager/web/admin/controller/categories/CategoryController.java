@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,13 +18,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
@@ -31,6 +33,8 @@ import com.salesmanager.web.admin.entity.web.Menu;
 
 @Controller
 public class CategoryController {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CategoryController.class);
 	
 	@Autowired
 	LanguageService languageService;
@@ -42,26 +46,27 @@ public class CategoryController {
 	CountryService countryService;
 
 	
+	@RequestMapping(value="/admin/categories/editCategory.html", method=RequestMethod.GET)
+	public String displayCategoryEdit(@RequestParam("id") long categoryId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return displayCategory(categoryId,model,request,response);
+
+	}
+	
+	@RequestMapping(value="/admin/categories/createCategory.html", method=RequestMethod.GET)
+	public String displayCategoryCreate(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return displayCategory(null,model,request,response);
+
+	}
 	
 	
 	
-	@RequestMapping(value="/admin/categories/category.html", method=RequestMethod.GET)
-	public String displayCategory(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String displayCategory(Long categoryId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 
+
+		
 		//display menu
-		Map<String,String> activeMenus = new HashMap<String,String>();
-		activeMenus.put("catalogue", "catalogue");
-		activeMenus.put("catalogue-categories", "catalogue-categories");
-
-		
-		@SuppressWarnings("unchecked")
-		Map<String,Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
-		
-		Menu currentMenu = (Menu)menus.get("catalogue");
-		model.addAttribute("currentMenu",currentMenu);
-		model.addAttribute("activeMenus",activeMenus);
-		//
+		setMenu(model,request);
 		
 		
 		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
@@ -70,16 +75,26 @@ public class CategoryController {
 		//get parent categories
 		List<Category> categories = categoryService.listByStore(store,language);
 		
-		String categoryId = request.getParameter("id");
+		//String categoryId = request.getParameter("id");
+
+
+		Category category = new Category();
+	
+
 		
-		Category category = null;
 		
-		if(categoryId!=null) {
+		if(categoryId!=null && categoryId!=0) {//edit mode
 			
 			//get from DB
+			category = categoryService.getById(store,categoryId);
 			
-			//remove current category from categories
+			if(category==null) {
+				return "catalogue-categories";
+			}
+
 			
+			categories.remove(category); //remove current category from categories
+		
 			
 		} else {
 		
@@ -125,33 +140,30 @@ public class CategoryController {
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		
 		//display menu
-		Map<String,String> activeMenus = new HashMap<String,String>();
-		activeMenus.put("catalogue", "catalogue");
-		activeMenus.put("catalogue-categories", "catalogue-categories");
-		
-		@SuppressWarnings("unchecked")
-		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
-		
-		Menu currentMenu = (Menu)menus.get("catalogue");
-		model.addAttribute("currentMenu",currentMenu);
-		model.addAttribute("activeMenus",activeMenus);
-		//
+		setMenu(model,request);
 		
 		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+				
 		
+		List<Category> subCategories = null;
 		
 		if(category.getId() != null && category.getId() >0) { //edit entry
 			
-			//get the category from the db and copy objects
+			//get from DB
+			Category currentCategory = categoryService.getById(store,category.getId());
 			
-			//check if it belongs to category
+			if(currentCategory==null) {
+				return "catalogue-categories";
+			}
 			
-		} else { //add entry
+			subCategories = categoryService.listByLineage(store, currentCategory.getLineage());
+			
+		}
+
 			
 			Map<String,Language> langs = languageService.getLanguagesMap();
 			
-			Map<String,Country> countriesMap = countryService.getCountriesMap(language);
-			
+
 			List<CategoryDescription> descriptions = category.getDescriptions();
 			if(descriptions!=null) {
 				
@@ -166,29 +178,48 @@ public class CategoryController {
 				}
 				
 			}
-		}
-		
-		
-		
-		//ObjectError e = new ObjectError("descriptions[0].name","Hey en must be present");
-		//result.addError(e);
-		
-		//ObjectError e1 = new ObjectError("descriptions0.name","Hey -id- en must be present");
-		//result.addError(e1);
+			
+			//save to DB
+			category.setMerchantSore(store);
+		//}
 		
 		if (result.hasErrors()) {
 			return "catalogue-categories-category";
 		}
 		
-		//save to DB
-		category.setMerchantSore(store);
+		//check parent
+		if(category.getParent()!=null) {
+			if(category.getParent().getId()==-1) {//this is a root category
+				category.setParent(null);
+				category.setLineage("/");
+				category.setDepth(0);
+			}
+		}
 		
-		categoryService.save(category);
 		
-		Category parent = new Category();
-		parent.setId(category.getParent().getId());
+		categoryService.saveOrUpdate(category);
+
+			
+		//ajust lineage and depth
+		if(category.getParent()!=null && category.getParent().getId()!=-1) { 
 		
-		categoryService.addChild(parent, category);
+			Category parent = new Category();
+			parent.setId(category.getParent().getId());
+			parent.setMerchantSore(store);
+			
+			categoryService.addChild(parent, category);
+		
+		}
+		
+		//ajust all sub categories lineages
+		if(subCategories!=null && subCategories.size()>0) {
+			for(Category subCategory : subCategories) {
+				if(category.getId()!=subCategory.getId()) {
+					categoryService.addChild(category, subCategory);
+				}
+			}
+			
+		}
 		
 		//get parent categories
 		List<Category> categories = categoryService.listByStore(store,language);
@@ -201,42 +232,50 @@ public class CategoryController {
 	
 	
 	//category list
-	@RequestMapping(value="/admin/categories/list.html", method=RequestMethod.GET)
-	public String displayCategories(Model model) {
+	@RequestMapping(value="/admin/categories/categories.html", method=RequestMethod.GET)
+	public String displayCategories(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
+		
+		
+		setMenu(model,request);
+		
 		//does nothing, ajax subsequent request
 		
 		return "catalogue-categories";
 	}
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/admin/categories/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageCategories(HttpServletRequest request, HttpServletResponse response) {
-		String categoryId = request.getParameter("categoryId");
-		String searchTerm = request.getParameter("searchTerm");
+		String categoryName = request.getParameter("name");
 		
-		String startRow = request.getParameter("_startRow");
-		String endRow = request.getParameter("_endRow");
 		
-		String totalRows = "10";
+		//String startRow = request.getParameter("_startRow");
+		//String endRow = request.getParameter("_endRow");
+		
+		//May search using name pattern %name%
 		
 
 		
-		if(searchTerm!=null) {
-			totalRows="2";
-		}
+		System.out.println(categoryName);
 		
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		
+		AjaxResponse resp = new AjaxResponse();
+
 		
 		try {
 			
-			AjaxResponse resp = new AjaxResponse();
+			
 				
 		
 			MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
 			
-			List<Category> categories = categoryService.listByStore(store);
+			List<Category> categories = categoryService.listByStore(store, language);
 			
 			for(Category category : categories) {
 				
+				@SuppressWarnings("rawtypes")
 				Map entry = new HashMap();
 				entry.put("categoryId", category.getId());
 				
@@ -249,7 +288,7 @@ public class CategoryController {
 				
 			}
 			
-			resp.setStatus(0);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
 			
 			//PojoMapper mapper
 			//ObjectMapper mapper = new ObjectMapper();
@@ -265,14 +304,14 @@ public class CategoryController {
 			//will receive name and sku as filter elements
 			
 			//List<Map<String,String> //List<Map<key,value>
-	
-			/*StringBuilder res = new StringBuilder().append("{ response:{     status:0,     startRow:" + startRow + ",     endRow:" + endRow + ",     totalRows:" + totalRows + ",     data:" +
+/*	
+			res.append("{ response:{     status:0,     startRow:" + startRow + ",     endRow:" + endRow + ",     totalRows:" + totalRows + ",     data:" +
 					"[           ");
 			
-					for(int i = Integer.parseInt(startRow); i < Integer.parseInt(totalRows); i++) {
+					for(int i = 0; i < 4; i++) {
 						
 						
-						res.append("{name:\"category_" + i + "\",active:\"true\"}");
+						res.append("{categoryId : 1, name:\"category_" + i + "\",active:\"true\"}");
 						if(i < Integer.parseInt(totalRows)-1) {
 							res.append(",");
 						}
@@ -280,14 +319,53 @@ public class CategoryController {
 	
 					res.append("]   } }");
 					
+				System.out.println(res.toString());*/
 	
-				return res.toString();*/
+				//return res.toString();
 		
 		} catch (Exception e) {
-			// TODO: handle exception
+			LOGGER.error("Error while paging categories", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 		}
 		
-		return null;
+		String returnString = resp.toJSONString();
+		
+		return returnString;
+	}
+	
+	@RequestMapping(value="/admin/categories/hierarchy.html", method=RequestMethod.GET)
+	public String displayCategoryHierarchy(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		
+		
+		setMenu(model,request);
+		
+		//get the list of categories
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		
+		List<Category> categories = categoryService.listByStore(store, language);
+		
+		model.addAttribute("categories", categories);
+		
+		return "catalogue-categories-hierarchy";
+	}
+	
+	private void setMenu(Model model, HttpServletRequest request) throws Exception {
+		
+		//display menu
+		Map<String,String> activeMenus = new HashMap<String,String>();
+		activeMenus.put("catalogue", "catalogue");
+		activeMenus.put("catalogue-categories", "catalogue-categories");
+		
+		@SuppressWarnings("unchecked")
+		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
+		
+		Menu currentMenu = (Menu)menus.get("catalogue");
+		model.addAttribute("currentMenu",currentMenu);
+		model.addAttribute("activeMenus",activeMenus);
+		//
+		
 	}
 
 }
