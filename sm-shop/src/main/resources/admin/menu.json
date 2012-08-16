@@ -41,10 +41,10 @@
 		"code":"catalogue-categories","url":"","roles":["admin","sub-admin"],"order":1,"menus":
 		[
 			{"menu":{
-				"code":"catalogue-categories-create","url":"/admin/categories/category.html","roles":["admin","sub-admin"],"order":0
+				"code":"catalogue-categories-create","url":"/admin/categories/createCategory.html","roles":["admin","sub-admin"],"order":0
 			}},
 			{"menu":{
-				"code":"catalogue-categories-list","url":"/admin/categories/list.html","roles":["admin","sub-admin"],"order":1
+				"code":"catalogue-categories-list","url":"/admin/categories/categories.html","roles":["admin","sub-admin"],"order":1
 			}},
 			{"menu":{
 				"code":"catalogue-categories-hierarchy","url":"/admin/categories/hierarchy.html","roles":["admin","sub-admin"],"order":2
