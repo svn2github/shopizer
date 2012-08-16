@@ -29,6 +29,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		
 		query.from(qCategory)
 			.leftJoin(qCategory.descriptions, qDescription).fetch()
+			.leftJoin(qCategory.merchantSore).fetch()
 			.where(qDescription.name.like(name)
 			.and(qCategory.merchantSore.id.eq(store.getId())));
 		
@@ -51,9 +52,10 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		
 		query.from(qCategory)
 			.leftJoin(qCategory.descriptions, qDescription).fetch()
+			.leftJoin(qCategory.merchantSore).fetch()
 			.where(qDescription.seUrl.like(seUrl)
 			.and(qCategory.merchantSore.id.eq(store.getId())))
-			.orderBy(qDescription._super.title.desc(), qDescription._super.name.desc());
+			.orderBy(qDescription._super.title.desc(), qDescription._super.name.desc(), qDescription.language.id.desc());
 		
 		return query.list(qCategory);
 	}
@@ -67,9 +69,29 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		
 		query.from(qCategory)
 			.leftJoin(qCategory.descriptions, qDescription).fetch()
+			.leftJoin(qCategory.merchantSore).fetch()
 			.where(qCategory.code.eq(code)
-			.and(qCategory.merchantSore.id.eq(store.getId())))
-			.orderBy(qDescription._super.title.desc(), qDescription._super.name.desc());
+			.and(qCategory.merchantSore.id.eq(store.getId())));
+			//.orderBy(qDescription._super.title.desc(), qDescription._super.name.desc(), qDescription.language.id.desc());
+			//.orderBy(qDescription.language.id.desc());
+		
+		return query.uniqueResult(qCategory);
+	}
+	
+	@Override
+	public Category getById(MerchantStore store, Long id) {
+		QCategory qCategory = QCategory.category;
+		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCategory)
+			.leftJoin(qCategory.descriptions, qDescription).fetch()
+			.leftJoin(qCategory.merchantSore).fetch()
+			.where(qCategory.id.eq(id)
+			.and(qCategory.merchantSore.id.eq(store.getId())));
+			//.orderBy(qDescription.language.id.desc());
+			//.orderBy(qDescription._super.title.desc(), qDescription._super.name.desc(), qDescription.language.id.desc());
 		
 		return query.uniqueResult(qCategory);
 	}
@@ -83,15 +105,19 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		
 		query.from(qCategory)
 			.leftJoin(qCategory.descriptions, qDescription).fetch()
+			.leftJoin(qCategory.merchantSore).fetch()
 			.where(qCategory.lineage.like(new StringBuilder().append(lineage).append("%").toString())
 			.and(qCategory.merchantSore.id.eq(store.getId())))
-			.orderBy(qCategory.lineage.asc(),qCategory.lineage.asc());
+			.orderBy(qCategory.lineage.asc(),qCategory.lineage.asc(), qDescription.language.id.desc());
 		
 		return query.listDistinct(qCategory);
 	}
+	
+	
 
 	@Override
 	public List<Category> listByStoreAndParent(MerchantStore store, Category category) {
+		//TODO join descriptions and merchantstore
 		QCategory qCategory = QCategory.category;
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
@@ -131,8 +157,9 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		
 		query.from(qCategory)
 			.leftJoin(qCategory.descriptions, qDescription).fetch()
+			.leftJoin(qCategory.merchantSore).fetch()
 			.where(qCategory.merchantSore.id.eq(store.getId()))
-			.orderBy(qCategory.code.asc(),qCategory.code.asc());
+			.orderBy(qCategory.id.asc());
 		
 		return query.listDistinct(qCategory);
 	}
@@ -146,9 +173,10 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		
 		query.from(qCategory)
 			.leftJoin(qCategory.descriptions, qDescription).fetch()
+			.leftJoin(qCategory.merchantSore).fetch()
 			.where((qCategory.merchantSore.id.eq(store.getId()))
 			.and(qDescription.language.id.eq(language.getId())))
-			.orderBy(qCategory.code.asc(),qCategory.code.asc());
+			.orderBy(qCategory.id.asc());
 		
 		return query.listDistinct(qCategory);
 	}

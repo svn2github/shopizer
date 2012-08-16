@@ -44,6 +44,10 @@ public interface CategoryService extends SalesManagerEntityService<Long, Categor
 	List<Category> listByStore(MerchantStore store, Language language)
 			throws ServiceException;
 
+	Category getById(MerchantStore store, Long id) throws ServiceException;
+
+	void saveOrUpdate(Category category) throws ServiceException;
+
 	
 	
 

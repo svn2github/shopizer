@@ -27,14 +27,14 @@ public class SalesManagerJpaDaoSupport {
 	private EntityManager entityManager;
 	
 	/**
-	 * Crée la requête et applique les conditions de limite / offset et retourne la {@link TypedQuery}
+	 * Cree la requete et applique les conditions de limite / offset et retourne la {@link TypedQuery}
 	 * correspondante.
 	 * 
-	 * @param <T> le type de l'entité retournée
+	 * @param <T> le type de l'entite retournee
 	 * @param criteria
 	 * @param limit null si pas de limite
 	 * @param offset null si pas d'offset
-	 * @return la {@link TypedQuery} avec limite et offset le cas échéant
+	 * @return la {@link TypedQuery} avec limite et offset le cas echeant
 	 */
 	protected <T> TypedQuery<T> buildTypedQuery(CriteriaQuery<T> criteria, Integer limit, Integer offset) {
 		TypedQuery<T> query = getEntityManager().createQuery(criteria);
@@ -77,7 +77,8 @@ public class SalesManagerJpaDaoSupport {
 	
 	protected <T> void update(T entity) {
 		if (!getEntityManager().contains(entity)) {
-			throw new PersistenceException("Updated entity must be attached");
+			getEntityManager().merge(entity);
+			//throw new PersistenceException("Updated entity must be attached");
 		}
 		//TODO: http://blog.xebia.com/2009/03/23/jpa-implementation-patterns-saving-detached-entities/
 	}

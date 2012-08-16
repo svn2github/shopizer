@@ -33,6 +33,23 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		
 		this.categoryDao = categoryDao;
 	}
+	
+	@Override
+	public void saveOrUpdate(Category category) throws ServiceException {
+		
+		
+		//save or update (persist and attach entities
+		if(category.getId()!=null && category.getId()>0) {
+
+			super.update(category);
+			
+		} else {
+			
+			super.save(category);
+			
+		}
+		
+	}
 
 	@Override
 	public List<Category> listByLineage(MerchantStore store, String lineage) throws ServiceException {
@@ -61,6 +78,18 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		
 		try {
 			return categoryDao.getByCode(store, code);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
+	}
+	
+	
+	@Override
+	public Category getById(MerchantStore store, Long id) throws ServiceException {
+		
+		try {
+			return categoryDao.getById(store, id);
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}
@@ -166,21 +195,25 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	public void addChild(Category parent, Category child) throws ServiceException {
 		
 		
+		if(parent==null || parent.getId()==null) {
+			return;
+		}
+		
 		try {
 			
-			Category p = this.getByCode(parent.getMerchantSore(), parent.getCode());
-			Category c = this.getByCode(child.getMerchantSore(), child.getCode());
+			Category p = this.getById(parent.getMerchantSore(), parent.getId());
+			//Category c = this.getById(child.getMerchantSore(), parent.getId());
 			
 			
-			p.getCategories().add(c);
+			//p.getCategories().add(c);
 			
 			String lineage = p.getLineage();
 			int depth = p.getDepth();
 			
-			c.setParent(p);
-			c.setDepth(depth+1);
-			c.setLineage(new StringBuilder().append(lineage).append(c.getId()).append("/").toString());
-			update(p);
+			child.setParent(p);
+			child.setDepth(depth+1);
+			child.setLineage(new StringBuilder().append(lineage).append(child.getId()).append("/").toString());
+			update(child);
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}
@@ -199,6 +232,8 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		
 		
 	}
+	
+	
 
 	@Override
 	public List<Category> listByStore(MerchantStore store)

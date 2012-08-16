@@ -10,6 +10,9 @@ import org.json.simple.JSONObject;
 
 public class AjaxResponse implements JSONAware {
 	
+	public final static int RESPONSE_STATUS_SUCCESS=0;
+	public final static int RESPONSE_STATUS_FAIURE=-1;
+	
 	private int status;
 	private List<Map<String,String>> data = new ArrayList<Map<String,String>>();
 	public int getStatus() {
@@ -75,7 +78,7 @@ public class AjaxResponse implements JSONAware {
 			}
 			String dataField = data.toJSONString();
 			dataEntries.append(dataField);
-			if(count<keyValue.size()) {
+			if(count<this.data.size()-1) {
 				dataEntries.append(",");
 			}
 			count ++;
@@ -85,9 +88,8 @@ public class AjaxResponse implements JSONAware {
 		if(dataEntries!=null) {
 			returnString.append(dataEntries.toString());
 		}
-		dataEntries.append("]");
-		
-		returnString.append("}");
+		returnString.append("]}}");
+
 		
 		return returnString.toString();
 
