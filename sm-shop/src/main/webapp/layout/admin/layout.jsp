@@ -35,6 +35,7 @@ response.setDateHeader ("Expires", -1);
     			<meta name="author" content="">
     			
     			<script src="<c:url value="/resources/js/bootstrap/jquery.js" />"></script>
+    			<script src="<c:url value="/resources/js/jquery.friendurl.min.js" />"></script>
  
   
                 <jsp:include page="/common/adminLinks.jsp" />
@@ -141,10 +142,10 @@ response.setDateHeader ("Expires", -1);
   				
 			});
 			$("#catalogue-categories-hierarchy-link").click(function() {
-  				
+				window.location='<c:url value="/admin/categories/hierarchy.html" />';
 			});
 			$("#catalogue-categories-create-link").click(function() {
-  				window.location='<c:url value="/admin/categories/category.html" />';
+  				window.location='<c:url value="/admin/categories/createCategory.html" />';
 			});
 			
 			
