@@ -235,7 +235,7 @@ public class IsolatedTestCase {
   }
 
   @Test
-  public void testCreateProducts() throws ServiceException {
+  public void test2CreateProducts() throws ServiceException {
 
     Language en = languageService.getByCode("en");
     Language fr = languageService.getByCode("fr");
@@ -729,125 +729,104 @@ public class IsolatedTestCase {
 
 
 
-    Category book = new Category();
-    book.setDepth(0);
-    book.setLineage("/");
-    book.setMerchantSore(store);
+	    Category book = new Category();
+	    book.setDepth(0);
+	    book.setLineage("/");
+	    book.setMerchantSore(store);
+	    book.setCode("book");
 
-    CategoryDescription bookEnglishDescription = new CategoryDescription();
-    bookEnglishDescription.setName("Book");
-    bookEnglishDescription.setCategory(book);
-    bookEnglishDescription.setLanguage(en);
+	    CategoryDescription bookEnglishDescription = new CategoryDescription();
+	    bookEnglishDescription.setName("Book");
+	    bookEnglishDescription.setCategory(book);
+	    bookEnglishDescription.setLanguage(en);
 
-    CategoryDescription bookFrenchDescription = new CategoryDescription();
-    bookFrenchDescription.setName("Livre");
-    bookFrenchDescription.setCategory(book);
-    bookFrenchDescription.setLanguage(fr);
+	    CategoryDescription bookFrenchDescription = new CategoryDescription();
+	    bookFrenchDescription.setName("Livre");
+	    bookFrenchDescription.setCategory(book);
+	    bookFrenchDescription.setLanguage(fr);
 
-    List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
-    descriptions.add(bookEnglishDescription);
-    descriptions.add(bookFrenchDescription);
+	    List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
+	    descriptions.add(bookEnglishDescription);
+	    descriptions.add(bookFrenchDescription);
 
-    book.setDescriptions(descriptions);
+	    book.setDescriptions(descriptions);
 
-    categoryService.create(book);
+	    categoryService.create(book);
 
-    Category music = new Category();
-    music.setDepth(0);
-    music.setLineage("/");
-    music.setMerchantSore(store);
+	    Category music = new Category();
+	    music.setDepth(0);
+	    music.setLineage("/");
+	    music.setMerchantSore(store);
+	    music.setCode("music");
 
-    CategoryDescription musicEnglishDescription = new CategoryDescription();
-    musicEnglishDescription.setName("Music");
-    musicEnglishDescription.setCategory(music);
-    musicEnglishDescription.setLanguage(en);
+	    CategoryDescription musicEnglishDescription = new CategoryDescription();
+	    musicEnglishDescription.setName("Music");
+	    musicEnglishDescription.setCategory(music);
+	    musicEnglishDescription.setLanguage(en);
 
-    CategoryDescription musicFrenchDescription = new CategoryDescription();
-    musicFrenchDescription.setName("Musique");
-    musicFrenchDescription.setCategory(music);
-    musicFrenchDescription.setLanguage(fr);
+	    CategoryDescription musicFrenchDescription = new CategoryDescription();
+	    musicFrenchDescription.setName("Musique");
+	    musicFrenchDescription.setCategory(music);
+	    musicFrenchDescription.setLanguage(fr);
 
-    List<CategoryDescription> descriptions2 = new ArrayList<CategoryDescription>();
-    descriptions2.add(musicEnglishDescription);
-    descriptions2.add(musicFrenchDescription);
+	    List<CategoryDescription> descriptions2 = new ArrayList<CategoryDescription>();
+	    descriptions2.add(musicEnglishDescription);
+	    descriptions2.add(musicFrenchDescription);
 
-    music.setDescriptions(descriptions2);
+	    music.setDescriptions(descriptions2);
 
-    categoryService.create(music);
+	    categoryService.create(music);
 
-    Category novell = new Category();
-    novell.setDepth(1);
-    novell.setLineage("/" + book.getId() + "/");
-    novell.setParent(book);
-    novell.setMerchantSore(store);
+	    Category novell = new Category();
+	    novell.setDepth(1);
+	    novell.setLineage("/" + book.getId() + "/");
+	    novell.setMerchantSore(store);
+	    novell.setCode("novell");
 
-    CategoryDescription novellEnglishDescription = new CategoryDescription();
-    novellEnglishDescription.setName("Novell");
-    novellEnglishDescription.setCategory(novell);
-    novellEnglishDescription.setLanguage(en);
+	    CategoryDescription novellEnglishDescription = new CategoryDescription();
+	    novellEnglishDescription.setName("Novell");
+	    novellEnglishDescription.setCategory(novell);
+	    novellEnglishDescription.setLanguage(en);
 
-    CategoryDescription novellFrenchDescription = new CategoryDescription();
-    novellFrenchDescription.setName("Roman");
-    novellFrenchDescription.setCategory(novell);
-    novellFrenchDescription.setLanguage(fr);
+	    CategoryDescription novellFrenchDescription = new CategoryDescription();
+	    novellFrenchDescription.setName("Roman");
+	    novellFrenchDescription.setCategory(novell);
+	    novellFrenchDescription.setLanguage(fr);
 
-    List<CategoryDescription> descriptions3 = new ArrayList<CategoryDescription>();
-    descriptions3.add(novellEnglishDescription);
-    descriptions3.add(novellFrenchDescription);
+	    List<CategoryDescription> descriptions3 = new ArrayList<CategoryDescription>();
+	    descriptions3.add(novellEnglishDescription);
+	    descriptions3.add(novellFrenchDescription);
 
-    novell.setDescriptions(descriptions3);
+	    novell.setDescriptions(descriptions3);
 
-    categoryService.create(novell);
+	    categoryService.create(novell);
+	    categoryService.addChild(book, novell);
 
-    Category tech = new Category();
-    tech.setDepth(1);
-    tech.setParent(book);
-    tech.setLineage("/" + book.getId() + "/");
-    tech.setMerchantSore(store);
+	    Category tech = new Category();
+	    tech.setDepth(1);
+	    tech.setLineage("/" + book.getId() + "/");
+	    tech.setMerchantSore(store);
+	    tech.setCode("tech");
 
-    CategoryDescription techEnglishDescription = new CategoryDescription();
-    techEnglishDescription.setName("Technology");
-    techEnglishDescription.setCategory(tech);
-    techEnglishDescription.setLanguage(en);
+	    CategoryDescription techEnglishDescription = new CategoryDescription();
+	    techEnglishDescription.setName("Technology");
+	    techEnglishDescription.setCategory(tech);
+	    techEnglishDescription.setLanguage(en);
 
-    CategoryDescription techFrenchDescription = new CategoryDescription();
-    techFrenchDescription.setName("Technologie");
-    techFrenchDescription.setCategory(tech);
-    techFrenchDescription.setLanguage(fr);
+	    CategoryDescription techFrenchDescription = new CategoryDescription();
+	    techFrenchDescription.setName("Technologie");
+	    techFrenchDescription.setCategory(tech);
+	    techFrenchDescription.setLanguage(fr);
 
-    List<CategoryDescription> descriptions4 = new ArrayList<CategoryDescription>();
-    descriptions4.add(techFrenchDescription);
-    descriptions4.add(techFrenchDescription);
+	    List<CategoryDescription> descriptions4 = new ArrayList<CategoryDescription>();
+	    descriptions4.add(techFrenchDescription);
+	    descriptions4.add(techFrenchDescription);
 
-    tech.setDescriptions(descriptions4);
+	    tech.setDescriptions(descriptions4);
 
-    categoryService.create(tech);
+	    categoryService.create(tech);
+	    categoryService.addChild(book, tech);
 
-    Category fiction = new Category();
-    fiction.setDepth(2);
-    fiction.setParent(novell);
-    fiction.setLineage("/" + book.getId() + "/" + novell.getId() + "/");
-    fiction.setMerchantSore(store);
-
-    CategoryDescription fictionEnglishDescription = new CategoryDescription();
-    fictionEnglishDescription.setName("Fiction");
-    fictionEnglishDescription.setCategory(fiction);
-    fictionEnglishDescription.setLanguage(en);
-
-    CategoryDescription fictionFrenchDescription = new CategoryDescription();
-    fictionFrenchDescription.setName("Sc Fiction");
-    fictionFrenchDescription.setCategory(fiction);
-    fictionFrenchDescription.setLanguage(fr);
-
-    List<CategoryDescription> fictiondescriptions = new ArrayList<CategoryDescription>();
-    fictiondescriptions.add(fictionEnglishDescription);
-    fictiondescriptions.add(fictionFrenchDescription);
-
-    fiction.setDescriptions(fictiondescriptions);
-
-    categoryService.create(fiction);
-
-    categoryService.delete(novell);
 
   }
 
