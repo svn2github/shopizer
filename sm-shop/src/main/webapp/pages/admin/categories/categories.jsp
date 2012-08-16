@@ -19,6 +19,8 @@
 
 
 								<div class="sm-ui-component">
+								<h3><s:message code="label.categories.title" text="Categories" /></h3>	
+								<br/>
       							
 			      			     <script>
 			      			     
@@ -51,9 +53,10 @@
 
 
     						      fields:[
-        								{title:"Name", name:"name"},
-        								{title:"Visible", name:"visible"},
-        								{title:"Info", name: "buttonField", align: "center",canFilter:false}
+										{title:"<s:message code="label.entity.id" text="Id"/>", name:"categoryId", canFilter:false},
+        								{title:"<s:message code="label.entity.name" text="Name"/>", name:"name"},
+        								{title:"<s:message code="label.entity.visible" text="Visible"/>", name:"visible", canFilter:false},
+        								{title:"<s:message code="label.entity.details" text="Details"/>", name: "buttonField", align: "center",canFilter:false,canSort:false, canReorder:false}
 
     							],
     							selectionType: "single",
@@ -66,9 +69,10 @@
 	           						var button = isc.IButton.create({
 	                						height: 18,
 	                						width: 65,
-	               					 		title: "Info",
+	               					 		title: "<s:message code="label.entity.details" text="Details"/>",
 	                						click : function () {
-	                    					isc.say(record["name"] + " info button clicked.");
+	                    						//isc.say(record["name"] + " info button clicked.");
+	                							window.location='<c:url value="/admin/categories/editCategory.html" />?id=' + record["categoryId"];
 	                						}
 	            					});
 	            					return button;  
@@ -79,39 +83,7 @@
 
 
 								});
-								
-								
-								isc.SearchForm.create({
-    								ID:"findForm",
-    								left:25,
-    								top:10,
-    								cellPadding:4,
-    								numCols:6,
-    								fields:[
-        								{name:"Category"}
-    								],
-    
-    								// Function to actually find items
-    								findItems : function () {
 
-    								
-    									itemList.fetchData({searchTerm:this.getValues()})
-    								
-
-								    }
-									});
-									
-									
-									isc.IButton.create({
-    									ID:"findButton",
-    									title:"Find",
-    									left:250,
-    									top:16,
-    									width:80,
-    									click:"findForm.findItems()",
-    									/**icon:"demoApp/icon_find.png",**/
-    									iconWidth:24
-									});
 
 
 
@@ -130,16 +102,7 @@ isc.HLayout.create({
             visibilityMode:"multiple",
             animateSections:true,
             sections:[
-                {title:"Find Categories", autoShow:true, items:[
-                    isc.Canvas.create({
-                        ID:"findPane",
-                        height:60,
-                        overflow:"auto",
-                        styleName:"defaultBorder",
-                        children:[findForm,findButton]
-                    })                
-                ]},
-                {title:"Items", autoShow:true, items:[categoriesList]}
+                {title:"<s:message code="label.categories.title" text="Categories"/>", autoShow:true, items:[categoriesList]}
             ]
         })
     ]

@@ -20,7 +20,17 @@
 								<div class="sm-ui-component">	
 								
 								
-				<h3><s:message code="label.category.createcategory" text="Edit category" /></h3>	
+				<h3>
+					<c:choose>
+						<c:when test="${category.id!=null && category.id>0}">
+								<s:message code="label.category.editcategory" text="Edit category" /> <c:out value="${category.code}"/>
+						</c:when>
+						<c:otherwise>
+								<s:message code="label.category.createcategory" text="Create category" />
+						</c:otherwise>
+					</c:choose>
+					
+				</h3>	
 				<br/>
 
 				<c:url var="categorySave" value="/admin/categories/save.html"/>
@@ -128,8 +138,11 @@
                   </div>
                   
                   <form:hidden path="descriptions[${counter.index}].language.code" />
+                  <form:hidden path="descriptions[${counter.index}].id" />
                   
                   </c:forEach>
+                  
+                  <form:hidden path="id" />
 			
 			      <div class="form-actions">
 
