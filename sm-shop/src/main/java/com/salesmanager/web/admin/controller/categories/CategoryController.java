@@ -3,6 +3,7 @@ package com.salesmanager.web.admin.controller.categories;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +31,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
 public class CategoryController {
@@ -44,6 +46,9 @@ public class CategoryController {
 	
 	@Autowired
 	CountryService countryService;
+	
+	@Autowired
+	LabelUtils messages;
 
 	
 	@RequestMapping(value="/admin/categories/editCategory.html", method=RequestMethod.GET)
@@ -144,9 +149,7 @@ public class CategoryController {
 		
 		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
 				
-		
-		List<Category> subCategories = null;
-		
+
 		if(category.getId() != null && category.getId() >0) { //edit entry
 			
 			//get from DB
@@ -156,7 +159,7 @@ public class CategoryController {
 				return "catalogue-categories";
 			}
 			
-			subCategories = categoryService.listByLineage(store, currentCategory.getLineage());
+
 			
 		}
 
@@ -211,15 +214,6 @@ public class CategoryController {
 		
 		}
 		
-		//ajust all sub categories lineages
-		if(subCategories!=null && subCategories.size()>0) {
-			for(Category subCategory : subCategories) {
-				if(category.getId()!=subCategory.getId()) {
-					categoryService.addChild(category, subCategory);
-				}
-			}
-			
-		}
 		
 		//get parent categories
 		List<Category> categories = categoryService.listByStore(store,language);
@@ -349,6 +343,128 @@ public class CategoryController {
 		model.addAttribute("categories", categories);
 		
 		return "catalogue-categories-hierarchy";
+	}
+	
+
+	@RequestMapping(value="/admin/categories/remove.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String deleteCategory(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		String sid = request.getParameter("categoryId");
+
+		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		
+		AjaxResponse resp = new AjaxResponse();
+
+		
+		try {
+			
+			Long id = Long.parseLong(sid);
+			
+			Category category = categoryService.getById(store,id);
+			
+			if(category==null) {
+
+				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
+				
+			} else {
+				
+				categoryService.delete(category);
+				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+				
+			}
+		
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while deleting category", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
+	}
+	
+	@RequestMapping(value="/admin/categories/moveCategory.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String moveCategory(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		String parentid = request.getParameter("parentId");
+		String childid = request.getParameter("childId");
+
+		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		
+		AjaxResponse resp = new AjaxResponse();
+
+		
+		try {
+			
+			Long parentId = Long.parseLong(parentid);
+			Long childId = Long.parseLong(childid);
+			
+			Category child = categoryService.getById(store,childId);
+			Category parent = categoryService.getById(store,parentId);
+			
+			if(child==null || parent==null) {
+				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			if(child.getMerchantSore().getId()!=store.getId() || parent.getMerchantSore().getId()!=store.getId()) {
+				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+
+			
+			categoryService.addChild(parent, child);
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+
+		} catch (Exception e) {
+			LOGGER.error("Error while moving category", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
+	}
+	
+	@RequestMapping(value="/admin/categories/checkCategoryCode.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String checkCategoryCode(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		String code = request.getParameter("code");
+
+
+		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		
+		AjaxResponse resp = new AjaxResponse();
+
+		
+		try {
+
+			
+			Category category = categoryService.getByCode(store, code);
+
+			if(category!=null) {
+				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
+				return resp.toJSONString();
+			}
+			
+
+			
+
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+
+		} catch (Exception e) {
+			LOGGER.error("Error while getting category", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
 	}
 	
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {

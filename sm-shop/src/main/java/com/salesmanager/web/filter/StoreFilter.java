@@ -2,6 +2,7 @@ package com.salesmanager.web.filter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -86,6 +87,15 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				language = languageService.getByCode("en");
 				request.getSession().setAttribute("LANGUAGE", language);
 			}
+			
+			//Locale locale = (Locale) request.getSession().getAttribute("LOCALE");
+			
+			//if(language==null) {
+			//	language = languageService.getByCode("en");
+			//	request.getSession().setAttribute("LANGUAGE", language);
+			//}
+			
+			
 			
 			request.setAttribute("LANGUAGE", language);
 			
