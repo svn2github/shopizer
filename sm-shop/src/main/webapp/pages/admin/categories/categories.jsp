@@ -21,7 +21,7 @@
 								<div class="sm-ui-component">
 								<h3><s:message code="label.categories.title" text="Categories" /></h3>	
 								<br/>
-      							
+
 			      			     <script>
 			      			     
 							
@@ -30,11 +30,25 @@
 								
 								isc.RestDataSource.create({ 
 									ID:"categories", 
-									dataFormat:"json", 
-									dataURL: "<c:url value="/admin/categories/paging.html" />", 
+									dataFormat:"json",  
 									operationBindings:[ 
-										{operationType:"fetch", dataProtocol:"postParams"} 
-									]
+										{operationType:"fetch", dataProtocol:"postParams",dataURL: "<c:url value="/admin/categories/paging.html" />"},
+										{operationType:"remove", dataProtocol:"postParams",dataURL: "<c:url value="/admin/categories/remove.html" />"},
+									],
+									transformResponse : function (dsResponse, dsRequest, jsonData) {
+										var status = isc.XMLTools.selectObjects(jsonData, "/response/status");
+										if (status != 0) {
+											if(status==9999) {//operation completed
+												//reload 
+												window.location='<c:url value="/admin/categories/categories.html" />';
+											}
+
+											var msg = isc.XMLTools.selectObjects(jsonData, "/response/statusMessage");
+
+												alert("! " + msg);
+
+										}
+									}
 								}); 
 								
 
@@ -45,7 +59,7 @@
     								dataSource: "categories",
     								showRecordComponents: true,    
     								showRecordComponentsByCell: true,
-    								
+    								canRemoveRecords: true,
     								autoFetchData: true,
     								showFilterEditor: true,
     								filterOnKeypress: true,
@@ -60,6 +74,14 @@
 
     							],
     							selectionType: "single",
+								removeData: function () {
+									if (confirm('<s:message code="label.entity.remove.confirm" text="Do you really want to remove this record ?" />')) {
+										return this.Super("removeData", arguments);
+									}
+								},
+								fetchData: function () {
+									return this.Super("fetchData", arguments);
+								},
     							createRecordComponent : function (record, colNum) {  
         
         							var fieldName = this.getFieldName(colNum);
@@ -71,13 +93,13 @@
 	                						width: 65,
 	               					 		title: "<s:message code="label.entity.details" text="Details"/>",
 	                						click : function () {
-	                    						//isc.say(record["name"] + " info button clicked.");
 	                							window.location='<c:url value="/admin/categories/editCategory.html" />?id=' + record["categoryId"];
 	                						}
 	            					});
 	            					return button;  
             				
             					}
+
  
     						  }
 

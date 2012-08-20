@@ -151,6 +151,33 @@ response.setDateHeader ("Expires", -1);
 			
 
 		}); 
+		
+		
+		function checkCode(code, url) {
+			
+			
+			$.ajax({
+					type: 'POST',
+					dataType: "json",
+					url: url,
+					data: "code="+ code,
+					success: function(response) { 
+						var msg = isc.XMLTools.selectObjects(response, "/response/statusMessage");
+						var status = isc.XMLTools.selectObjects(response, "/response/status");
+						
+						callBackCheckCode(msg,status);
+
+						
+					},
+					error: function(jqXHR,textStatus,errorThrown) { 
+						alert(jqXHR + "-" + textStatus + "-" + errorThrown);
+					}
+					
+			});
+			
+			
+			
+		}
 	
 </script>	
      	

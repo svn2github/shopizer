@@ -7,6 +7,48 @@
 
 <script src="<c:url value="/resources/js/ckeditor/ckeditor.js" />"></script>
 
+
+	<script type="text/javascript">
+	
+
+	
+	$(function(){	
+		$(".btn").button("disable");
+		<c:forEach items="${category.descriptions}" var="description" varStatus="counter">		
+			$("#name${counter.index}").friendurl({id : 'seUrl${counter.index}'});
+		</c:forEach>
+	});
+	
+	
+	function validateCode() {
+		$('#checkCodeStatus').html('<img src="<c:url value="/resources/img/ajax-loader.gif" />');
+		$('#checkCodeStatus').show();
+		var code = $("#code").val();
+		checkCode(code,'<c:url value="/admin/categories/checkCategoryCode.html" />');
+	}
+	
+	function callBackCheckCode(msg,code) {
+		
+		if(code==9999 || code==0) {
+
+			$('#checkCodeStatus').html('<font color="green"><s:message code="message.code.available" text="This code is available"/></font>');
+			$('#checkCodeStatus').show();
+			$(".btn").button("enable");
+		}
+		if(code==9998) {
+
+			$('#checkCodeStatus').html('<font color="red"><s:message code="message.code.exist" text="This code already exist"/></font>');
+			$('#checkCodeStatus').show();
+			$(".btn").button("disable");
+		}
+		
+	}
+	
+	
+	</script>
+
+
+
 <div class="tabbable">
 
 					<jsp:include page="/common/adminTabs.jsp" />
@@ -73,8 +115,8 @@
                   <div class="control-group">
                         <label class="required"><s:message code="label.category.code" text="Category code"/></label>
 	                        <div class="controls">
-	                        		<form:input cssClass="input-large" path="code" />
-	                                <span class="help-inline"><form:errors path="code" cssClass="error" /></span>
+	                        		<form:input cssClass="input-large" path="code" onblur="validateCode()"/>
+	                                <span class="help-inline"><div id="checkCodeStatus" style="display:none;"></div><form:errors path="code" cssClass="error" /></span>
 	                        </div>
                   </div>
                   
@@ -83,8 +125,17 @@
                  <div class="control-group">
                         <label class="required"><s:message code="label.productedit.categoryname" text="Category name"/> (<c:out value="${description.language.code}"/>)</label>
                         <div class="controls">
-                        			<form:input path="descriptions[${counter.index}].name"/>
+                        			<form:input id="name${counter.index}" path="descriptions[${counter.index}].name"/>
                         			<span class="help-inline"><form:errors path="descriptions[${counter.index}].name" cssClass="error" /></span>
+                        </div>
+
+                  </div>
+                  
+                  <div class="control-group">
+                        <label><s:message code="label.sefurl" text="SEF Url"/> (<c:out value="${description.language.code}"/>)</label>
+                        <div class="controls">
+                        			<form:input id="seUrl${counter.index}" path="descriptions[${counter.index}].seUrl"/>
+                        			<span class="help-inline"><form:errors path="descriptions[${counter.index}].seUrl" cssClass="error" /></span>
                         </div>
 
                   </div>
@@ -103,16 +154,7 @@
                         </div>
 
                   </div>
-                  
-                  <div class="control-group">
-                        <label><s:message code="label.sefurl" text="SEF Url"/> (<c:out value="${description.language.code}"/>)</label>
-                        <div class="controls">
-                        			<form:input path="descriptions[${counter.index}].seUrl"/>
-                        			<span class="help-inline"><form:errors path="descriptions[${counter.index}].seUrl" cssClass="error" /></span>
-                        </div>
-
-                  </div>
-                  
+                                    
                   <div class="control-group">
                         <label><s:message code="label.category.title" text="Metatag title"/> (<c:out value="${description.language.code}"/>)</label>
                         <div class="controls">
@@ -153,13 +195,7 @@
                   		</div>
 
             	 </div>
-            	 
-            	<%--  //form:radiobuttons path="favNumber" items="${numberList}" />
-            	 //form:checkboxes items="${webFrameworkList}" path="favFramework" />
-            	 //form:radiobutton path="sex" value="M" />Male form:radiobutton path="sex" value="F" />Female</td>
-            	  --%>
-            	 
-            	 
+ 
             	 </form:form>
 	      			     
       					</div>

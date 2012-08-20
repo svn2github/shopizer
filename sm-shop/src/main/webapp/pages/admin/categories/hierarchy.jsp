@@ -36,28 +36,13 @@
 // User Interface
 // ---------------------------------------------------------------------
 
-/* 								isc.RestDataSource.create({ 
-									ID:"categories", 
-									dataFormat:"json", 
-									dataURL: "<c:url value="/admin/products/paging.html" />",
-									data: isc.Tree.create({
-        									modelType: "parent",
-        									nameProperty: "Name",
-        									idField: "categoryId",
-        									parentIdField: "parentId",
-        									data: [
-            									{categoryId:"4", parentId:"1", Name:"Books", isFolder: true},
-            									{categoryId:"188", parentId:"4", Name:"Novell", isFolder: true},
-            									{categoryId:"189", parentId:"4", Name:"Technology", isFolder: true},
-            									{categoryId:"265", parentId:"188", Name:"Romance", isFolder: true},
-            									{categoryId:"267", parentId:"188", Name:"Test1", isFolder: true},
-            									{categoryId:"264", parentId:"188", Name:"Fiction", isFolder: true}
-        									]
-    									}),
-									operationBindings:[ 
-										{operationType:"update", dataProtocol:"postParams"} 
-									]
-								});  */
+ 								//isc.RestDataSource.create({ 
+								//	ID:"hierarchy", 
+								//	dataFormat:"json", 
+								//	operationBindings:[ 
+								//		{operationType:"update", dataProtocol:"postParams",dataURL: "<c:url value="/admin/categories/moveCategory.html" />"} 
+								//	]
+								//}); 
 
 
  
@@ -98,11 +83,41 @@
 										var newUnit=dropFolder.SysId;
 										var newRecord=record;
 										newRecord.ReportsTo=newUnit;
-										categoryTree.removeData(record);
-										categoryTree.data.addList([newRecord],dropFolder, index);
+										
+										//ajax call
+										$.ajax({
+  											type: 'POST',
+  											dataType: "json",
+  											url: "<c:url value="/admin/categories/moveCategory.html" />",
+  											data: "parentId="+ dropFolder.categoryId + "&childId=" + newRecord.categoryId,
+  											success: function(response) { 
+  												var msg = isc.XMLTools.selectObjects(response, "/response/statusMessage");
+  												var status = isc.XMLTools.selectObjects(response, "/response/status");
+  												if(status==0 || status ==9999) {
+  													categoryTree.removeData(record);
+  	  												categoryTree.data.addList([newRecord],dropFolder, index);
+  												} else {
+  													if(msg!=null && msg !='') {
+  														alert("! " + msg);
+  													}
+  												}
+  												
+  											},
+  											error: function(jqXHR,textStatus,errorThrown) { 
+  												alert(jqXHR + "-" + textStatus + "-" + errorThrown);
+
+  												//alert(data.statusMessage);
+  											}
+  											
+										});
+
+										
+										
+										
+										
 										//alert(index);
-										alert(dropFolder.categoryId);
-										alert(newRecord.categoryId);
+										//alert(dropFolder.categoryId);
+										//alert(newRecord.categoryId);
 									}
 
 
