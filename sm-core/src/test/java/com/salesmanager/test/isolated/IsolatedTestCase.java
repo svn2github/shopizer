@@ -245,8 +245,6 @@ public class IsolatedTestCase {
     ProductType generalType = productTypeService.getProductType(ProductType.GENERAL_TYPE);
 
     Category book = new Category();
-    book.setDepth(0);
-    book.setLineage("/");
     book.setMerchantSore(store);
     book.setCode("book");
 
@@ -269,8 +267,6 @@ public class IsolatedTestCase {
     categoryService.create(book);
 
     Category music = new Category();
-    music.setDepth(0);
-    music.setLineage("/");
     music.setMerchantSore(store);
     music.setCode("music");
 
@@ -293,8 +289,6 @@ public class IsolatedTestCase {
     categoryService.create(music);
 
     Category novell = new Category();
-    novell.setDepth(1);
-    novell.setLineage("/" + book.getId() + "/");
     novell.setMerchantSore(store);
     novell.setCode("novell");
 
@@ -313,13 +307,13 @@ public class IsolatedTestCase {
     descriptions3.add(novellFrenchDescription);
 
     novell.setDescriptions(descriptions3);
+    
+    novell.setParent(book);
 
     categoryService.create(novell);
     categoryService.addChild(book, novell);
 
     Category tech = new Category();
-    tech.setDepth(1);
-    tech.setLineage("/" + book.getId() + "/");
     tech.setMerchantSore(store);
     tech.setCode("tech");
 
@@ -338,13 +332,13 @@ public class IsolatedTestCase {
     descriptions4.add(techFrenchDescription);
 
     tech.setDescriptions(descriptions4);
+    
+    tech.setParent(book);
 
     categoryService.create(tech);
     categoryService.addChild(book, tech);
 
     Category fiction = new Category();
-    fiction.setDepth(2);
-    fiction.setLineage("/" + book.getId() + "/" + novell.getId() + "/");
     fiction.setMerchantSore(store);
     fiction.setCode("fiction");
 
@@ -363,6 +357,8 @@ public class IsolatedTestCase {
     fictiondescriptions.add(fictionFrenchDescription);
 
     fiction.setDescriptions(fictiondescriptions);
+    
+    fiction.setParent(novell);
 
     categoryService.create(fiction);
     categoryService.addChild(book, fiction);
@@ -711,6 +707,33 @@ public class IsolatedTestCase {
         log.info(MessageFormat.format("product found:{0}:iteration{1}", product.getId(), i));
       }
     }
+  }
+  
+  @Test
+  public void testGetProductsByCategories() throws ServiceException {
+    Language language = languageService.getByCode("en");
+    Locale locale = new Locale("en", "CA");
+    MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
+    
+    //Category category = categoryService.getByCode(store, "novell");
+    
+ 
+    Category category = categoryService.getByCode(store, "book");
+    
+    categoryService.delete(category);
+    
+    System.out.println("done");
+    
+/*    List<Long> ids = new ArrayList<Long>();
+    ids.add(1L);
+    ids.add(2L);
+    ids.add(3L);
+    
+
+    List<Product> products = productService.getProducts(ids);
+    
+    System.out.println(products.size());*/
+
   }
 
   @Test
