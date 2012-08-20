@@ -13,7 +13,7 @@
 
 	
 	$(function(){	
-		$(".btn").button("disable");
+		$('.btn').addClass('disabled');
 		<c:forEach items="${category.descriptions}" var="description" varStatus="counter">		
 			$("#name${counter.index}").friendurl({id : 'seUrl${counter.index}'});
 		</c:forEach>
@@ -33,13 +33,13 @@
 
 			$('#checkCodeStatus').html('<font color="green"><s:message code="message.code.available" text="This code is available"/></font>');
 			$('#checkCodeStatus').show();
-			$(".btn").button("enable");
+			$('.btn').removeClass('disabled');
 		}
 		if(code==9998) {
 
 			$('#checkCodeStatus').html('<font color="red"><s:message code="message.code.exist" text="This code already exist"/></font>');
 			$('#checkCodeStatus').show();
-			$(".btn").button("disable");
+			$('.btn').addClass('disabled');
 		}
 		
 	}
@@ -191,6 +191,7 @@
                   		<div class="pull-right">
 
                   			<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>
+                  			
 
                   		</div>
 
