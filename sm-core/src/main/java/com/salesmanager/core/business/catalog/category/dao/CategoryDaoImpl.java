@@ -108,7 +108,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 			.leftJoin(qCategory.merchantSore).fetch()
 			.where(qCategory.lineage.like(new StringBuilder().append(lineage).append("%").toString())
 			.and(qCategory.merchantSore.id.eq(store.getId())))
-			.orderBy(qCategory.lineage.asc(),qCategory.lineage.asc(), qDescription.language.id.desc());
+			.orderBy(qCategory.lineage.asc(), qCategory.lineage.asc(), qCategory.depth.asc(), qDescription.language.id.desc());
 		
 		return query.listDistinct(qCategory);
 	}

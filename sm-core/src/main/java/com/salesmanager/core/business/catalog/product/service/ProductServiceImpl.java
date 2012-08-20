@@ -40,6 +40,15 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		description.setProduct(product);
 		update(product);
 	}
+	
+	@Override
+	public List<Product> getProducts(List<Long> categoryIds) throws ServiceException {
+		
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		Set ids = new HashSet(categoryIds);
+		return productDao.getProductsListByCategories(ids);
+		
+	}
 
 	@Override
 	public ProductDescription getProductDescription(Product product, Language language) {

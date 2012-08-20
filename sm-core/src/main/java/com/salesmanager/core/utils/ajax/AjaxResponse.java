@@ -12,6 +12,8 @@ public class AjaxResponse implements JSONAware {
 	
 	public final static int RESPONSE_STATUS_SUCCESS=0;
 	public final static int RESPONSE_STATUS_FAIURE=-1;
+	public final static int RESPONSE_OPERATION_COMPLETED=9999;
+	public final static int CODE_ALREADY_EXIST=9998;
 	
 	private int status;
 	private List<Map<String,String>> data = new ArrayList<Map<String,String>>();
@@ -27,6 +29,10 @@ public class AjaxResponse implements JSONAware {
 	
 	public void addDataEntry(Map<String,String> dataEntry) {
 		this.data.add(dataEntry);
+	}
+	
+	public void setErrorMessage(Throwable t) {
+		this.setStatusMessage(t.getMessage());
 	}
 	
 
@@ -46,11 +52,11 @@ public class AjaxResponse implements JSONAware {
 		
 		StringBuilder returnString = new StringBuilder();
 		returnString.append("{");
-		returnString.append(JSONObject.escape("response")).append(":");
+		returnString.append("\"response\"").append(":");
 		returnString.append("{");
-		returnString.append(JSONObject.escape("status")).append(":").append(this.getStatus()).append(",");
-		if(this.getStatusMessage()!=null && this.getStatus()>0) {
-			returnString.append(JSONObject.escape("statusMessage")).append(":").append(JSONObject.escape(this.getStatusMessage()));
+		returnString.append("\"status\"").append(":").append(this.getStatus());
+		if(this.getStatusMessage()!=null && this.getStatus()!=0) {
+			returnString.append(",").append("\"statusMessag\"").append(":\"").append(JSONObject.escape(this.getStatusMessage())).append("\"");
 		}
 		return returnString.toString();
 		
@@ -62,33 +68,34 @@ public class AjaxResponse implements JSONAware {
 		StringBuilder returnString = new StringBuilder();
 		
 		returnString.append(getJsonInfo());
-		
-		JSONObject obj = new JSONObject();
 
-		StringBuilder dataEntries = null;
-		int count = 0;
-		for(Map keyValue : this.getData()) {
-			if(dataEntries == null) {
-				dataEntries = new StringBuilder();
+		if(this.getData().size()>0) {
+			StringBuilder dataEntries = null;
+			int count = 0;
+			for(Map keyValue : this.getData()) {
+				if(dataEntries == null) {
+					dataEntries = new StringBuilder();
+				}
+				JSONObject data = new JSONObject();
+				Set<String> keys = keyValue.keySet();
+				for(String key : keys) {
+					data.put(key, keyValue.get(key));
+				}
+				String dataField = data.toJSONString();
+				dataEntries.append(dataField);
+				if(count<this.data.size()-1) {
+					dataEntries.append(",");
+				}
+				count ++;
 			}
-			JSONObject data = new JSONObject();
-			Set<String> keys = keyValue.keySet();
-			for(String key : keys) {
-				data.put(key, keyValue.get(key));
+			
+			returnString.append(",").append("\"data\"").append(":[");
+			if(dataEntries!=null) {
+				returnString.append(dataEntries.toString());
 			}
-			String dataField = data.toJSONString();
-			dataEntries.append(dataField);
-			if(count<this.data.size()-1) {
-				dataEntries.append(",");
-			}
-			count ++;
+			returnString.append("]");
 		}
-		
-		returnString.append(JSONObject.escape("data")).append(":[");
-		if(dataEntries!=null) {
-			returnString.append(dataEntries.toString());
-		}
-		returnString.append("]}}");
+		returnString.append("}}");
 
 		
 		return returnString.toString();

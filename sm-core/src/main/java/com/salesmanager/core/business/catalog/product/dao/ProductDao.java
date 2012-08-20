@@ -13,10 +13,15 @@ public interface ProductDao extends SalesManagerEntityDao<Long, Product> {
 	
 	Product getProductForLocale(long productId, Language language, Locale locale);
 
+	@SuppressWarnings("rawtypes")
 	List<Product> getProductsForLocale(Set categoryIds, Language language,
 			Locale locale);
 	
+	@SuppressWarnings("rawtypes")
 	ProductList getProductsForLocale(Set categoryIds, Language language,
 			Locale locale, int startIndex, int maxCount);
+
+	@SuppressWarnings("rawtypes")
+	List<Product> getProductsListByCategories(Set categoryIds);
 	
 }

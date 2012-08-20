@@ -32,4 +32,6 @@ public interface ProductService extends SalesManagerEntityService<Long, Product>
 	 * @throws ServiceException
 	 */
 	ProductList getProductsForLocale(Category category, Language language, Locale locale, int startIndex, int maxCount) throws ServiceException;
+
+	List<Product> getProducts(List<Long> categoryIds) throws ServiceException;
 }

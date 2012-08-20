@@ -1,5 +1,7 @@
 package com.salesmanager.core.business.catalog.category.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,8 @@ import org.springframework.stereotype.Service;
 import com.salesmanager.core.business.catalog.category.dao.CategoryDao;
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
+import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -21,17 +25,40 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	private CategoryDao categoryDao;
 	
 	  @Autowired
-	  protected LanguageService            languageService;
+	  private LanguageService            languageService;
 	  
 
 	  @Autowired
-	  protected MerchantStoreService       merchantService;
+	  private MerchantStoreService       merchantService;
+	  
+	  @Autowired
+	  private ProductService productService;
 	
 	@Autowired
 	public CategoryServiceImpl(CategoryDao categoryDao) {
 		super(categoryDao);
 		
 		this.categoryDao = categoryDao;
+	}
+	
+	public void create(Category category) throws ServiceException {
+		
+		super.create(category);
+		
+		Long id = category.getId();
+		StringBuilder parenLineage = new StringBuilder();
+		Category parent = category.getParent();
+		if(parent!=null && parent.getId()!=null && parent.getId()!=0) {
+			parenLineage.append(parent.getLineage());
+			category.setDepth(parent.getDepth()+1);
+		} else {
+			parenLineage.append("/");
+			category.setDepth(0);
+		}
+		category.setLineage(parenLineage.append(id).append("/").toString());
+		super.update(category);
+		
+		
 	}
 	
 	@Override
@@ -138,10 +165,57 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 
 	
 	//@Override
-	//public void delete(Category category) throws ServiceException {
-		//reject if category has products attached
-		//categoryDao.delete(category);
-	//}
+	public void delete(Category category) throws ServiceException {
+		
+		//get category with lineage
+		List<Category> categories = this.listByLineage(category.getMerchantSore(), category.getLineage());
+		
+		if(categories.size()==0) {
+			categories.add(category);
+		}
+		
+		Collections.reverse(categories);
+		
+		List<Long> categoryIds = new ArrayList<Long>();
+
+			
+		for(Category c : categories) {
+				
+				
+				categoryIds.add(c.getId());
+		}
+			
+			
+		
+		
+		List<Product> products = productService.getProducts(categoryIds);
+		
+		for(Product product : products) {
+			
+			//remove product categories
+			product.setCategories(null);
+			
+			productService.delete(product);
+			
+			
+			
+			//need to delete a few things
+			
+			//delete attributes
+			
+			//delete availabilities
+			
+			
+			
+		}
+		
+		for(Category c : categories) {
+			
+			
+			categoryDao.delete(c);
+		}
+
+	}
 
 
 	//@Override
@@ -195,25 +269,35 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	public void addChild(Category parent, Category child) throws ServiceException {
 		
 		
-		if(parent==null || parent.getId()==null) {
-			return;
+		if(parent==null || parent.getId()==null || child==null || child.getMerchantSore()==null) {
+			throw new ServiceException("Parent category, Child category and merchant store should not be null");
 		}
 		
 		try {
 			
 			Category p = this.getById(parent.getMerchantSore(), parent.getId());
-			//Category c = this.getById(child.getMerchantSore(), parent.getId());
 			
-			
-			//p.getCategories().add(c);
+			List<Category> subCategories = listByLineage(child.getMerchantSore(), child.getLineage());
+
 			
 			String lineage = p.getLineage();
-			int depth = p.getDepth();
+			int depth = p.getDepth();//TODO sometimes null
 			
 			child.setParent(p);
 			child.setDepth(depth+1);
 			child.setLineage(new StringBuilder().append(lineage).append(child.getId()).append("/").toString());
 			update(child);
+			
+			
+			//ajust all sub categories lineages
+			if(subCategories!=null && subCategories.size()>0) {
+				for(Category subCategory : subCategories) {
+					if(child.getId()!=subCategory.getId()) {
+						addChild(child, subCategory);
+					}
+				}
+				
+			}
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}

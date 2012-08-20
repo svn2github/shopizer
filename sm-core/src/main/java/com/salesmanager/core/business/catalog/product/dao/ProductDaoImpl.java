@@ -23,6 +23,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		super();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Override
 	public List<Product> getProductsForLocale(Set categoryIds, Language language, Locale locale) {
 		
@@ -31,12 +32,79 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		return products.getProducts();
 	}
 	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public List<Product> getProductsListByCategories(Set categoryIds) {
+		
+
+		//List regionList = new ArrayList();
+		//regionList.add("*");
+		//regionList.add(locale.getCountry());
+		
+
+		//TODO Test performance 
+		/**
+		 * Testing in debug mode takes a long time with this query
+		 * running in normal mode is fine
+		 */
+
+		
+		StringBuilder qs = new StringBuilder();
+		qs.append("select p from Product as p ");
+		qs.append("join fetch p.availabilities pa ");
+		qs.append("join fetch pa.prices pap ");
+		
+		qs.append("join fetch p.descriptions pd ");
+		qs.append("join fetch p.categories categs ");
+		
+		
+		
+		qs.append("join fetch pap.descriptions papd ");
+		
+		
+		//images
+		qs.append("left join fetch p.images images ");
+		
+		//options (do not need attributes for listings)
+		qs.append("left join fetch p.attributes pattr ");
+		qs.append("left join fetch pattr.productOption po ");
+		qs.append("left join fetch po.descriptions pod ");
+		qs.append("left join fetch pattr.productOptionValue pov ");
+		qs.append("left join fetch pov.descriptions povd ");
+		
+		//other lefts
+		qs.append("left join fetch p.manufacturer manuf ");
+		qs.append("left join fetch p.type type ");
+		qs.append("left join fetch p.taxClass tx ");
+		
+		//qs.append("where pa.region in (:lid) ");
+		qs.append("where categs.id in (:cid)");
+
+
+
+    	String hql = qs.toString();
+		Query q = super.getEntityManager().createQuery(hql);
+
+    	q.setParameter("cid", categoryIds);
+
+
+    	
+    	@SuppressWarnings("unchecked")
+		List<Product> products =  q.getResultList();
+
+    	
+    	return products;
+
+
+}
+	
 	
 	
 	/**
 	 * This query is used for category listings. All collections are not fully loaded, only the required objects
 	 * so the listing page can display everything related to all products
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private ProductList getProductsListForLocale(Set categoryIds, Language language, Locale locale, int first, int max) {
 		
 
@@ -104,7 +172,6 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 
 		    	q.setParameter("cid", categoryIds);
 		    	q.setParameter("lid", regionList);
-		    	q.setParameter("lid", regionList);
 		    	q.setParameter("dt", new Date());
 		    	q.setParameter("lang", language.getId());
 		    	
@@ -170,7 +237,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 
 				return p;
 				
-			}
+	}
 
 	@Override
 	public ProductList getProductsForLocale(Set categoryIds, Language language,
