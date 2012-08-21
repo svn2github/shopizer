@@ -697,7 +697,7 @@ public class IsolatedTestCase {
     
     MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
 
-    Category category = categoryService.getByName(store, "Roman");
+    Category category = categoryService.getByCode(store, "book");
 
     int nrOfIterations = 1;
 
@@ -858,7 +858,7 @@ public class IsolatedTestCase {
 	  
     MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
 
-    Category category = categoryService.getByName(store, "Novell");
+    Category category = categoryService.getByCode(store, "book");
     System.out.println("Done");
 
   }

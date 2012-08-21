@@ -227,7 +227,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		po2.setLanguage(FRENCH);
 		po2.setProductOption(option);
 		
-		Set<ProductOptionDescription> optSet = new HashSet<ProductOptionDescription>();
+		List<ProductOptionDescription> optSet = new ArrayList<ProductOptionDescription>();
 		optSet.add(po1);
 		optSet.add(po2);
 		
@@ -253,7 +253,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		po4.setLanguage(FRENCH);
 		po4.setProductOption(option2);
 		
-		Set<ProductOptionDescription> optSet2 = new HashSet<ProductOptionDescription>();
+		List<ProductOptionDescription> optSet2 = new ArrayList<ProductOptionDescription>();
 		optSet2.add(po3);
 		optSet2.add(po4);
 		
