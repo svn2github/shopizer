@@ -78,4 +78,12 @@
   		<put-attribute name="body" value="/pages/admin/categories/hierarchy.jsp" /> 
   	</definition>
   	
+  	 <definition name="catalogue-options" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/products/options.jsp" /> 
+  	</definition>
+  	
+  	 <definition name="catalogue-options-values" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/products/optionsValues.jsp" /> 
+  	</definition>
+  	
 </tiles-definitions>
