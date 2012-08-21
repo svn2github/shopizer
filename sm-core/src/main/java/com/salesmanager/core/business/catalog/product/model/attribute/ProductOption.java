@@ -1,6 +1,8 @@
 package com.salesmanager.core.business.catalog.product.model.attribute;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -41,7 +43,7 @@ public class ProductOption extends SalesManagerEntity<Long, ProductOption> {
 	private String productOptionType;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "productOption")
-	private Set<ProductOptionDescription> descriptions = new HashSet<ProductOptionDescription>();
+	private List<ProductOptionDescription> descriptions = new ArrayList<ProductOptionDescription>();
 	
 /*	@ManyToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "MERCHANT_PRD_OPTION", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
@@ -73,11 +75,11 @@ public class ProductOption extends SalesManagerEntity<Long, ProductOption> {
 		this.productOptionType = productOptionType;
 	}
 	
-	public Set<ProductOptionDescription> getDescriptions() {
+	public List<ProductOptionDescription> getDescriptions() {
 		return descriptions;
 	}
 
-	public void setDescriptions(Set<ProductOptionDescription> descriptions) {
+	public void setDescriptions(List<ProductOptionDescription> descriptions) {
 		this.descriptions = descriptions;
 	}
 

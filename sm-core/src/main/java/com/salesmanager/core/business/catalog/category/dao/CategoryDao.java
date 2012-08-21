@@ -15,7 +15,7 @@ public interface CategoryDao extends SalesManagerEntityDao<Long, Category> {
 
 	List<Category> listByLineage(MerchantStore store, String lineage);
 
-	Category getByName(MerchantStore store, String name);
+	List<Category> getByName(MerchantStore store, String name, Language language);
 
 	Category getByCode(MerchantStore store, String code);
 	

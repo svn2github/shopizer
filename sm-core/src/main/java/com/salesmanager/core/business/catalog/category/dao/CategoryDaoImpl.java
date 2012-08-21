@@ -21,7 +21,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 	}
 	
 	@Override
-	public Category getByName(MerchantStore store, String name) {
+	public List<Category> getByName(MerchantStore store, String name, Language language) {
 		QCategory qCategory = QCategory.category;
 		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
 		
@@ -30,18 +30,17 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		query.from(qCategory)
 			.leftJoin(qCategory.descriptions, qDescription).fetch()
 			.leftJoin(qCategory.merchantSore).fetch()
-			.where(qDescription.name.like(name)
+			.where(qDescription.name.like("%" + name + "%")
+			.and(qDescription.language.id.eq(language.getId()))
 			.and(qCategory.merchantSore.id.eq(store.getId())));
 		
 
 		
 		List<Category> categories = query.list(qCategory);
-		if(categories.size()>0) {
-			return categories.get(0);
-		} else {
-			return null;
-		}
+		return categories;
 	}
+	
+
 
 	@Override
 	public List<Category> listBySeUrl(MerchantStore store,String seUrl) {

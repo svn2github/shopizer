@@ -306,10 +306,10 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	}
 
 	@Override
-	public Category getByName(MerchantStore store, String name) throws ServiceException {
+	public List<Category> getByName(MerchantStore store, String name, Language language) throws ServiceException {
 		
 		try {
-			return categoryDao.getByName(store, name);
+			return categoryDao.getByName(store, name, language);
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}

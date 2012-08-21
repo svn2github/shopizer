@@ -1,6 +1,8 @@
 package com.salesmanager.core.business.catalog.common;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -29,9 +31,9 @@ public class CatalogServiceHelper {
 			for(ProductAttribute attribute : attributes) {
 
 				ProductOption po = attribute.getProductOption();
-				Set<ProductOptionDescription> spod = po.getDescriptions();
+				List<ProductOptionDescription> spod = po.getDescriptions();
 				if(spod!=null) {
-					Set<ProductOptionDescription> podDescriptions = new HashSet();
+					List<ProductOptionDescription> podDescriptions = new ArrayList<ProductOptionDescription>();
 					for(ProductOptionDescription pod : spod) {
 						//System.out.println("    ProductOptionDescription : " + pod.getProductOptionName());
 						if(pod.getLanguage().getId()==language) {
