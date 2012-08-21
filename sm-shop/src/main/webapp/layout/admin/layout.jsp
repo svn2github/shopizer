@@ -29,7 +29,7 @@ response.setDateHeader ("Expires", -1);
      
      
         	 	<meta charset="utf-8">
-    			<title>Admin</title>
+    			<title><s:message code="label.storeadministration" text="Store administration" /></title>
     			<meta name="viewport" content="width=device-width, initial-scale=1.0">
     			<meta name="description" content="">
     			<meta name="author" content="">
@@ -132,20 +132,21 @@ response.setDateHeader ("Expires", -1);
 			
 			$("#catalogue-products-create-link").click(function() {
 				window.location='<c:url value="/admin/products/product.html" />';
-  				
 			});
 			$("#catalogue-categories-list-link").click(function() {
 				window.location='<c:url value="/admin/categories/categories.html" />';
 			});
 			$("#catalogue-products-categories-link").click(function() {
 				window.location='<c:url value="/admin/products/product-categories.html" />';
-  				
 			});
 			$("#catalogue-categories-hierarchy-link").click(function() {
 				window.location='<c:url value="/admin/categories/hierarchy.html" />';
 			});
 			$("#catalogue-categories-create-link").click(function() {
   				window.location='<c:url value="/admin/categories/createCategory.html" />';
+			});
+			$("#catalogue-options-list-link").click(function() {
+  				window.location='<c:url value="/admin/options/options.html" />';
 			});
 			
 			
