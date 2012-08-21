@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +81,6 @@ public class CategoryController {
 		//get parent categories
 		List<Category> categories = categoryService.listByStore(store,language);
 		
-		//String categoryId = request.getParameter("id");
 
 
 		Category category = new Category();
@@ -106,6 +106,8 @@ public class CategoryController {
 			//create a category
 			
 			List<Language> languages = languageService.list();//TODO get supported languages from MerchantStore
+			
+			//List<Language> languages = store.getLanguages();
 			
 			List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
 			
@@ -238,34 +240,36 @@ public class CategoryController {
 		return "catalogue-categories";
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked"})
 	@RequestMapping(value="/admin/categories/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageCategories(HttpServletRequest request, HttpServletResponse response) {
 		String categoryName = request.getParameter("name");
-		
-		
-		//String startRow = request.getParameter("_startRow");
-		//String endRow = request.getParameter("_endRow");
-		
-		//May search using name pattern %name%
-		
 
-		
-		System.out.println(categoryName);
-		
-		Language language = (Language)request.getAttribute("LANGUAGE");
-		
+
 		AjaxResponse resp = new AjaxResponse();
 
 		
 		try {
 			
-			
+			Language language = (Language)request.getAttribute("LANGUAGE");
 				
 		
 			MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
 			
-			List<Category> categories = categoryService.listByStore(store, language);
+			List<Category> categories = null;
+					
+			if(!StringUtils.isBlank(categoryName)) {
+				
+				
+				categories = categoryService.getByName(store, categoryName, language);
+				
+			} else {
+				
+				categories = categoryService.listByStore(store, language);
+				
+			}
+					
+					
 			
 			for(Category category : categories) {
 				
@@ -284,38 +288,7 @@ public class CategoryController {
 			
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
 			
-			//PojoMapper mapper
-			//ObjectMapper mapper = new ObjectMapper();
-			//mapper.writeValueAsString(value)
-			
-			
-			//get sub category & sub categories for input categoryId
-			
-			//get products using startRow and endRow
-			
-			//populate response object which has to be converted to JSON 
-			
-			//will receive name and sku as filter elements
-			
-			//List<Map<String,String> //List<Map<key,value>
-/*	
-			res.append("{ response:{     status:0,     startRow:" + startRow + ",     endRow:" + endRow + ",     totalRows:" + totalRows + ",     data:" +
-					"[           ");
-			
-					for(int i = 0; i < 4; i++) {
-						
-						
-						res.append("{categoryId : 1, name:\"category_" + i + "\",active:\"true\"}");
-						if(i < Integer.parseInt(totalRows)-1) {
-							res.append(",");
-						}
-					}
-	
-					res.append("]   } }");
-					
-				System.out.println(res.toString());*/
-	
-				//return res.toString();
+
 		
 		} catch (Exception e) {
 			LOGGER.error("Error while paging categories", e);
