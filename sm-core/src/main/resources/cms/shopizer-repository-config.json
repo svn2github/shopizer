@@ -1,0 +1,23 @@
+{
+    "name" : "DataRepository",
+    "jndiName" : "java:comp/env/DataRepository",
+    "workspaces" : {
+        "predefined" : ["otherWorkspace"],
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "storage" : {
+             "cacheName" : "DataRepository",
+             "cacheConfiguration" : "cms/infinispan_configuration.xml",         
+             "binaryStorage" : {             
+             	"type" : "file",             
+             	"directory" : "DataRepository/binaries"               
+             }     
+    }, 
+    "security" : {
+        "anonymous" : {
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        }
+    }
+}
