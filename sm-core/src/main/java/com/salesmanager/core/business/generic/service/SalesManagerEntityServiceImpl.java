@@ -63,6 +63,7 @@ public abstract class SalesManagerEntityServiceImpl<K extends Serializable & Com
 		createEntity(entity);
 	}
 	
+	
 	protected void createEntity(E entity) throws ServiceException {
 		save(entity);
 	}

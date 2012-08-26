@@ -1,12 +1,18 @@
 package com.salesmanager.core.business.catalog.product.model.image;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 
@@ -23,6 +29,10 @@ public class ProductImage extends SalesManagerEntity<Long, ProductImage> {
 	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "PRODUCT_IMG_SEQ_NEXT_VAL")
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "productImage", cascade = CascadeType.ALL)
+	private List<ProductImageDescription> descriptions = new ArrayList<ProductImageDescription>();
+
 	
 	@Column(name = "PRODUCT_IMAGE")
 	private String productImage;
@@ -92,4 +102,14 @@ public class ProductImage extends SalesManagerEntity<Long, ProductImage> {
 	public void setProduct(Product product) {
 		this.product = product;
 	}
+
+	public void setDescriptions(List<ProductImageDescription> descriptions) {
+		this.descriptions = descriptions;
+	}
+
+	public List<ProductImageDescription> getDescriptions() {
+		return descriptions;
+	}
+
+
 }

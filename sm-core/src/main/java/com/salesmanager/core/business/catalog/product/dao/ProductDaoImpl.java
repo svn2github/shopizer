@@ -1,6 +1,5 @@
 package com.salesmanager.core.business.catalog.product.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,11 +8,14 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
 import com.salesmanager.core.business.catalog.product.model.ProductList;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 
 @Repository("productDao")
@@ -25,9 +27,9 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 	
 	@SuppressWarnings("rawtypes")
 	@Override
-	public List<Product> getProductsForLocale(Set categoryIds, Language language, Locale locale) {
+	public List<Product> getProductsForLocale(MerchantStore store, Set categoryIds, Language language, Locale locale) {
 		
-		ProductList products = this.getProductsListForLocale(categoryIds, language, locale, 0, -1);
+		ProductList products = this.getProductsListForLocale(store, categoryIds, language, locale, 0, -1);
 		
 		return products.getProducts();
 	}
@@ -96,7 +98,147 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
     	return products;
 
 
-}
+	}
+	
+	/**
+	 * Used in the admin section
+	 * @param store
+	 * @param first
+	 * @param max
+	 * @return
+	 */
+	@Override
+	public ProductList listByStore(MerchantStore store, Language language, ProductCriteria criteria) {
+
+		ProductList productList = new ProductList();
+
+        
+		StringBuilder countBuilderSelect = new StringBuilder();
+		countBuilderSelect.append("select count(p) from Product as p ");
+		
+		StringBuilder countBuilderWhere = new StringBuilder();
+		countBuilderWhere.append(" where p.merchantSore.id=:mId");
+		
+		//"select count(p) from Product as p INNER JOIN p.availabilities pa INNER JOIN p.categories categs where p.merchantSore.id=:mId and categs.id in (:cid) and pa.region in (:lid) and p.available=1 and p.dateAvailable<=:dt");
+
+		if(!StringUtils.isBlank(criteria.getProductName())) {
+			countBuilderSelect.append(" INNER JOIN p.descriptions pd");
+			countBuilderWhere.append(" and pd.language.id=:lang and pd.name like : nm");
+		}
+		
+		
+		if(criteria.getCategoryIds()!=null && criteria.getCategoryIds().size()>0) {
+			countBuilderSelect.append(" INNER JOIN p.categories categs");
+			countBuilderWhere.append(" and categs.id in (:cid)");
+		}
+		
+		if(criteria.isAvailable()) {
+			countBuilderWhere.append(" and p.available=1 and p.dateAvailable<=:dt");
+		}
+	
+		Query countQ = super.getEntityManager().createQuery(
+				countBuilderSelect.toString() + countBuilderWhere.toString());
+
+		countQ.setParameter("mId", store.getId());
+		
+		if(criteria.getCategoryIds()!=null && criteria.getCategoryIds().size()>0) {
+			countQ.setParameter("cid", criteria.getCategoryIds());
+		}
+		
+		if(criteria.isAvailable()) {
+			countQ.setParameter("dt", new Date());
+		}
+		
+		if(!StringUtils.isBlank(criteria.getProductName())) {
+			countQ.setParameter("nm", "%" + criteria.getProductName() + "%");
+		}
+
+		Number count = (Number) countQ.getSingleResult ();
+
+		productList.setTotalCount(count.intValue());
+		
+        if(count.intValue()==0)
+        	return productList;
+
+		
+		StringBuilder qs = new StringBuilder();
+		qs.append("select p from Product as p ");
+		qs.append("join fetch p.availabilities pa ");
+		qs.append("join fetch pa.prices pap ");
+		
+		qs.append("join fetch p.descriptions pd ");
+		qs.append("join fetch p.categories categs ");
+		
+
+		
+		//images
+		qs.append("left join fetch p.images images ");
+		
+
+		//other lefts
+		qs.append("left join fetch p.manufacturer manuf ");
+		qs.append("left join fetch p.type type ");
+		qs.append("left join fetch p.taxClass tx ");
+
+		qs.append("where p.merchantStore.id=mId");
+		qs.append("and pd.language.id=:lang");
+		
+		if(criteria.getCategoryIds()!=null && criteria.getCategoryIds().size()>0) {
+			qs.append(" and categs.id in (:cid)");
+		}
+		
+		if(criteria.isAvailable()) {
+			qs.append(" and p.available=true and p.dateAvailable<=:dt");
+		}
+		
+		if(!StringUtils.isBlank(criteria.getProductName())) {
+			qs.append(" and pd.name like : nm");
+		}
+
+
+    	String hql = qs.toString();
+		Query q = super.getEntityManager().createQuery(hql);
+
+
+    	q.setParameter("lang", language.getId());
+    	q.setParameter("mId", store.getId());
+    	
+    	if(criteria.getCategoryIds()!=null && criteria.getCategoryIds().size()>0) {
+    		q.setParameter("cid", criteria.getCategoryIds());
+    	}
+    	
+		if(criteria.isAvailable()) {
+			q.setParameter("dt", new Date());
+		}
+		
+		if(!StringUtils.isBlank(criteria.getProductName())) {
+			q.setParameter("nm", "%" + criteria.getProductName() + "%");
+		}
+    	
+    	if(criteria.getMaxCount()>0) {
+    		
+    		
+	    	q.setFirstResult(criteria.getStartIndex());
+	    	if(criteria.getMaxCount()>0) {
+	    			int maxCount = criteria.getStartIndex() + criteria.getMaxCount();
+	    			if(maxCount < count.intValue()) {
+	    				q.setMaxResults(maxCount);
+	    			} else {
+	    				q.setMaxResults(count.intValue());
+	    			}
+	    	}
+    	}
+    	
+    	@SuppressWarnings("unchecked")
+		List<Product> products =  q.getResultList();
+    	productList.setProducts(products);
+    	
+    	return productList;
+
+		
+		
+		
+	}
 	
 	
 	
@@ -105,33 +247,38 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 	 * so the listing page can display everything related to all products
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private ProductList getProductsListForLocale(Set categoryIds, Language language, Locale locale, int first, int max) {
+	private ProductList getProductsListForLocale(MerchantStore store, Set categoryIds, Language language, Locale locale, int first, int max) {
 		
 
 				List regionList = new ArrayList();
 				regionList.add("*");
-				regionList.add(locale.getCountry());
+				if(locale!=null) {
+					regionList.add(locale.getCountry());
+				}
 				
 				ProductList productList = new ProductList();
 
 		        
 				Query countQ = super.getEntityManager().createQuery(
-							"select count(p) from Product as p INNER JOIN p.availabilities pa INNER JOIN p.categories categs where categs.id in (:cid) and pa.region in (:lid) and p.available=1 and p.dateAvailable<=:dt");
+							"select count(p) from Product as p INNER JOIN p.availabilities pa INNER JOIN p.categories categs where p.merchantSore.id=:mId and categs.id in (:cid) and pa.region in (:lid) and p.available=1 and p.dateAvailable<=:dt");
 							//"select p from Product as p join fetch p.availabilities pa join fetch p.categories categs where categs.id in (:cid) and pa.region in (:lid) and p.available=1 and p.dateAvailable<=:dt");
 				
 				countQ.setParameter("cid", categoryIds);
 				countQ.setParameter("lid", regionList);
 				countQ.setParameter("dt", new Date());
+				countQ.setParameter("mId", store.getId());
 				
 				//List<Product> ps =  countQ.getResultList();
 
 				Number count = (Number) countQ.getSingleResult ();
 
 				
-		        if(count.intValue()==0)
+				productList.setTotalCount(count.intValue());
+				
+				if(count.intValue()==0)
 		        	return productList;
 		        
-		        productList.setTotalCount(count.intValue());
+		        
 
 				
 				StringBuilder qs = new StringBuilder();
@@ -163,7 +310,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 				qs.append("left join fetch p.taxClass tx ");
 				
 				//qs.append("where pa.region in (:lid) ");
-				qs.append("where categs.id in (:cid) and pa.region in (:lid) ");
+				qs.append("where p.merchantStore.id=mId and categs.id in (:cid) and pa.region in (:lid) ");
 				qs.append("and p.available=true and p.dateAvailable<=:dt and pd.language.id=:lang");
 
 
@@ -174,10 +321,18 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		    	q.setParameter("lid", regionList);
 		    	q.setParameter("dt", new Date());
 		    	q.setParameter("lang", language.getId());
+		    	q.setParameter("mId", store.getId());
 		    	
+		    	
+		    	q.setFirstResult(first);
 		    	if(max>0) {
-		    		q.setFirstResult(first);
-		    		q.setMaxResults(max);
+		    			int maxCount = first + max;
+
+		    			if(maxCount < count.intValue()) {
+		    				q.setMaxResults(maxCount);
+		    			} else {
+		    				q.setMaxResults(count.intValue());
+		    			}
 		    	}
 		    	
 		    	List<Product> products =  q.getResultList();
@@ -238,12 +393,52 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 				return p;
 				
 	}
+	
+	@Override
+	public Product getById(long productId) {
+
+
+		StringBuilder qs = new StringBuilder();
+		qs.append("select distinct p from Product as p ");
+		qs.append("join fetch p.availabilities pa ");
+		qs.append("join fetch p.descriptions pd ");
+		qs.append("join fetch pa.prices pap ");
+		qs.append("join fetch pap.descriptions papd ");
+		//images
+		qs.append("left join fetch p.images images ");
+		//options
+		qs.append("left join fetch p.images images ");
+		qs.append("left join fetch p.attributes pattr ");
+		qs.append("left join fetch pattr.productOption po ");
+		qs.append("left join fetch po.descriptions pod ");
+		qs.append("left join fetch pattr.productOptionValue pov ");
+		qs.append("left join fetch pov.descriptions povd ");
+		//other lefts
+		qs.append("left join fetch p.manufacturer manuf ");
+		qs.append("left join fetch p.type type ");
+		qs.append("left join fetch p.taxClass tx ");
+		
+		qs.append("where p.id=:pid");
+
+
+    	String hql = qs.toString();
+		Query q = super.getEntityManager().createQuery(hql);
+
+    	q.setParameter("pid", productId);
+
+
+    	Product p = (Product)q.getSingleResult();
+
+
+		return p;
+		
+}
 
 	@Override
-	public ProductList getProductsForLocale(Set categoryIds, Language language,
+	public ProductList getProductsForLocale(MerchantStore store, Set categoryIds, Language language,
 			Locale locale, int startIndex, int maxCount) {
 		// TODO Auto-generated method stub
-		return this.getProductsListForLocale(categoryIds, language, locale, startIndex, maxCount);
+		return this.getProductsListForLocale(store, categoryIds, language, locale, startIndex, maxCount);
 	}
 
 	

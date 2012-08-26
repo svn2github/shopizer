@@ -34,6 +34,48 @@ public class ProductOptionServiceImpl extends
 		
 		
 	}
+	
+	@Override
+	public ProductOption getById(MerchantStore store, Long id) throws ServiceException {
+		
+		try {
+			return productOptionDao.getById(store, id);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
+	}
+	
+	@Override
+	public List<ProductOption> getByName(MerchantStore store, String name, Language language) throws ServiceException {
+		
+		try {
+			return productOptionDao.getByName(store, name, language);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
+		
+	}
+	
+	@Override
+	public void saveOrUpdate(ProductOption entity) throws ServiceException {
+		
+		
+		//save or update (persist and attach entities
+		if(entity.getId()!=null && entity.getId()>0) {
+
+			super.update(entity);
+			
+		} else {
+			
+			super.save(entity);
+			
+		}
+		
+	}
+	
+
 
 
 

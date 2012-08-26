@@ -56,7 +56,7 @@ public class AjaxResponse implements JSONAware {
 		returnString.append("{");
 		returnString.append("\"status\"").append(":").append(this.getStatus());
 		if(this.getStatusMessage()!=null && this.getStatus()!=0) {
-			returnString.append(",").append("\"statusMessag\"").append(":\"").append(JSONObject.escape(this.getStatusMessage())).append("\"");
+			returnString.append(",").append("\"statusMessage\"").append(":\"").append(JSONObject.escape(this.getStatusMessage())).append("\"");
 		}
 		return returnString.toString();
 		

@@ -4,11 +4,19 @@ import java.util.List;
 
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDao;
+import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 
 public interface ProductOptionDao extends SalesManagerEntityDao<Long, ProductOption> {
 
 	List<ProductOption> listByStore(MerchantStore store, Language language);
+
+	ProductOption getById(MerchantStore store, Long id);
+
+	List<ProductOption> getByName(MerchantStore store, String name,
+			Language language);
+
+	void saveOrUpdate(ProductOption entity) throws ServiceException;
 
 }

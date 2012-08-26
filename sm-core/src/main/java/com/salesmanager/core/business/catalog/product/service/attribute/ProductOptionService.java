@@ -13,4 +13,11 @@ public interface ProductOptionService extends SalesManagerEntityService<Long, Pr
 	List<ProductOption> listByStore(MerchantStore store, Language language)
 			throws ServiceException;
 
+	ProductOption getById(MerchantStore store, Long id) throws ServiceException;
+
+	List<ProductOption> getByName(MerchantStore store, String name,
+			Language language) throws ServiceException;
+
+	void saveOrUpdate(ProductOption entity) throws ServiceException;
+
 }

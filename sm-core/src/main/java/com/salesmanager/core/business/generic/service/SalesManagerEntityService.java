@@ -49,6 +49,7 @@ public interface SalesManagerEntityService<K extends Serializable & Comparable<K
 	 */
 	E refresh(E entity);
 	
+
 	/**
 	 * Retourne une entité à partir de son id.
 	 * 
