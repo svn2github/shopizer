@@ -28,7 +28,8 @@
 		<sm-core.junit.version>4.9</sm-core.junit.version>
 		<sm-core.spring.version>3.1.0.RELEASE</sm-core.spring.version>
 		<sm-core.org.springframework.version>3.1.0.RELEASE</sm-core.org.springframework.version>
-
+		<modeshape.version>3.0.0.Beta2</modeshape.version>
+		<jcr.version>2.0</jcr.version>	
 		<sm-core.c3p0.version>0.9.1.2</sm-core.c3p0.version>
 		<sm-core.querydsl.version>2.3.3</sm-core.querydsl.version>
 		<sm-core.jodatime.version>2.0</sm-core.jodatime.version>
@@ -258,6 +259,68 @@
 			<artifactId>usertype.core</artifactId>
 			<version>3.0.0.CR1</version>
 		</dependency>
+		
+		
+		
+		<!-- ModeShape -->
+        <dependency>
+            <groupId>javax.jcr</groupId>
+            <artifactId>jcr</artifactId>
+            <version>${jcr.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-jcr</artifactId>
+            <version>${modeshape.version}</version>
+            <scope>compile</scope>
+        </dependency>
+     	<dependency>
+    		<groupId>org.modeshape</groupId>
+    		<artifactId>modeshape-sequencer-images</artifactId>
+    		<version>${modeshape.version}</version>
+  		</dependency>
+  		<dependency>
+    		<groupId>org.modeshape</groupId>
+    		<artifactId>modeshape-sequencer-text</artifactId>
+    		<version>${modeshape.version}</version>
+  		</dependency>     
+        
+        
+        <!-- Infinispan -->
+        <dependency>
+            <groupId>org.modeshape</groupId>
+            <artifactId>modeshape-schematic</artifactId>
+    		<version>${modeshape.version}</version>
+        </dependency>
+
+  		<dependency>
+			<groupId>org.infinispan</groupId>
+    		<artifactId>infinispan-core</artifactId>
+    		<version>5.1.6.FINAL</version>
+  		</dependency>
+
+
+  		<dependency>
+    		<groupId>org.infinispan</groupId>
+    		<artifactId>infinispan-cachestore-bdbje</artifactId>
+    		<version>5.1.4.FINAL</version>
+  		</dependency>
+
+		<dependency>      
+			<groupId>org.infinispan</groupId>      
+			<artifactId>infinispan-cachestore-jdbc</artifactId>      
+			<version>5.1.4.FINAL</version>
+		</dependency> 
+		
+		<dependency>
+			<groupId>org.infinispan</groupId>
+			<artifactId>infinispan-tree</artifactId>
+			<version>5.1.6.FINAL</version>
+		</dependency>
+
+
+
 
 		<!-- Test dependencies -->
 		<dependency>
