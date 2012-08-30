@@ -15,10 +15,8 @@
 	<!-- CMS -->
 	<bean id="productFileManager"
 		class="com.salesmanager.core.modules.cms.ProductFileManagerImpl">
-		<property name="uploadImageWorkflow">
-			<list>
+		<property name="uploadImage">
 				<ref bean="cmsProductImage" />
-			</list>
 		</property>
 		<property name="getImage">
 				<ref bean="cmsProductImage" />
@@ -29,7 +27,7 @@
 	</bean>
 	
 	<bean id="cmsProductImage"
-				class="com.salesmanager.core.modules.cms.CmsImageFileManagerImpl" factory-method="getInstance" >
+				class="com.salesmanager.core.modules.cms.CmsImageFileManagerInfinispanImpl" factory-method="getInstance" >
 	</bean>
  
 
