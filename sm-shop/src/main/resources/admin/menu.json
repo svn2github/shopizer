@@ -56,6 +56,9 @@
 		[
 			{"menu":{
 				"code":"catalogue-options-list","url":"/admin/catalogue/options/options.html","roles":["admin","sub-admin"],"order":1
+			}},
+			{"menu":{
+				"code":"catalogue-options-create","url":"/admin/catalogue/options/option.html","roles":["admin","sub-admin"],"order":1
 			}}
 		]
 	}},
