@@ -33,6 +33,7 @@ import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.utils.CoreConfiguration;
 
 
 /**
@@ -245,7 +246,7 @@ public class CmsImageFileManagerModeShapeImpl implements ProductImagePut, Produc
 	 */
 
 	@Override
-	public void uploadProductImage(ProductImage productImage, InputContentImage contentImage)
+	public void uploadProductImage(CoreConfiguration configuration, ProductImage productImage, InputContentImage contentImage)
 			throws ServiceException {
 		
         Repository repository = null;

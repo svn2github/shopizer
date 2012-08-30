@@ -40,33 +40,7 @@ public interface ProductService extends SalesManagerEntityService<Long, Product>
 
 	List<Product> getProducts(List<Long> categoryIds) throws ServiceException;
 
-	/**
-	 * Add a ProductImage to the persistence and an entry to the CMS
-	 * @param product
-	 * @param productImage
-	 * @param file
-	 * @throws ServiceException
-	 */
-	void addProductImage(Product product, ProductImage productImage, File file)
-			throws ServiceException;
 
-	/**
-	 * Get the image ByteArrayOutputStream and content description from CMS
-	 * @param productImage
-	 * @return
-	 * @throws ServiceException
-	 */
-	OutputContentImage getProductImage(ProductImage productImage)
-			throws ServiceException;
-
-	/**
-	 * Returns all Images for a given product
-	 * @param product
-	 * @return
-	 * @throws ServiceException
-	 */
-	List<OutputContentImage> getProductImages(Product product)
-			throws ServiceException;
 
 	ProductList listByStore(MerchantStore store, Language language,
 			ProductCriteria criteria);

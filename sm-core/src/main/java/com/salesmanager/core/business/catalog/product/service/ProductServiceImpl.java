@@ -1,8 +1,5 @@
 package com.salesmanager.core.business.catalog.product.service;
 
-import java.io.File;
-import java.net.FileNameMap;
-import java.net.URLConnection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -21,15 +18,12 @@ import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
 import com.salesmanager.core.business.catalog.product.model.ProductList;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
-import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.service.image.ProductImageService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.modules.cms.InputContentImage;
-import com.salesmanager.core.modules.cms.OutputContentImage;
-import com.salesmanager.core.modules.cms.ProductFileManager;
+import com.salesmanager.core.utils.CoreConfiguration;
 
 @Service("productService")
 public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Product> implements ProductService {
@@ -41,11 +35,13 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	@Autowired
 	CategoryService categoryService;
 	
-	@Autowired
-	ProductFileManager productFileManager;
+
 	
 	@Autowired
 	ProductImageService productImageService;
+	
+	@Autowired
+	CoreConfiguration configuration;
 	
 	@Autowired
 	public ProductServiceImpl(ProductDao productDao) {
@@ -156,38 +152,6 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	
 	
 
-	@Override
-	public void addProductImage(Product product, ProductImage productImage, File file) throws ServiceException {
-		
-		productImage.setProduct(product);
-		
-		//upload the image in the CMS
-		InputContentImage contentImage = new InputContentImage();
-		contentImage.setFile(file);
-		contentImage.setDefaultImage(productImage.isDefaultImage());
-		contentImage.setImageName(productImage.getProductImage());
-		FileNameMap fileNameMap = URLConnection.getFileNameMap();
-		String contentType = fileNameMap.getContentTypeFor(file.getName());
-		contentImage.setImageContentType(contentType);
-		productFileManager.uploadProductImage(productImage, contentImage);
-		
-		//insert ProductImage
-		productImageService.create(productImage);
-		
-	}
-	
-	@Override
-	public OutputContentImage getProductImage(ProductImage productImage) throws ServiceException {
-		
-		OutputContentImage outputImage = productFileManager.getProductImage(productImage);
-		
-		return outputImage;
-		
-	}
-	
-	@Override
-	public List<OutputContentImage> getProductImages(Product product) throws ServiceException {
-		return productFileManager.getImages(product);
-	}
+
 	
 }

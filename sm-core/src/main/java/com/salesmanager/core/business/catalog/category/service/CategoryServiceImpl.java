@@ -3,6 +3,7 @@ package com.salesmanager.core.business.catalog.category.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,9 @@ import com.salesmanager.core.business.catalog.category.dao.CategoryDao;
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
+import com.salesmanager.core.business.catalog.product.service.image.ProductImageService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -33,6 +36,9 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	  
 	  @Autowired
 	  private ProductService productService;
+	  
+	  @Autowired
+	  private ProductImageService productImageService;
 	
 	@Autowired
 	public CategoryServiceImpl(CategoryDao categoryDao) {
@@ -194,6 +200,16 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 			
 			//remove product categories
 			product.setCategories(null);
+			
+			Set<ProductImage> images = product.getImages();
+			
+			for(ProductImage image : images) {
+				
+				productImageService.removeProductImage(image);
+				
+			}
+			
+			product.setImages(null);
 			
 			productService.delete(product);
 			

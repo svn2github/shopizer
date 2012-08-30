@@ -1,12 +1,15 @@
 package com.salesmanager.core.modules.cms;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.URL;
+import java.net.FileNameMap;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
-
-
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.infinispan.Cache;
@@ -16,7 +19,6 @@ import org.infinispan.tree.Fqn;
 import org.infinispan.tree.Node;
 import org.infinispan.tree.TreeCache;
 import org.infinispan.tree.TreeCacheFactory;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +26,7 @@ import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.utils.CoreConfiguration;
 
 
 /**
@@ -43,18 +46,13 @@ public class CmsImageFileManagerInfinispanImpl implements ProductImagePut, Produ
 	private String repositoryFileName = "cms/infinispan_configuration.xml";
 	
 	private EmbeddedCacheManager manager = null;
+	@SuppressWarnings("rawtypes")
 	private TreeCache treeCache = null;
 	
 
 	
-	private final static String PROPS = "props";
-	private final static String MIME_TYPE = "mimeType";
-	private final static String NAME = "name";
-	private final static String EXTENSION = "extension";
-	private final static String DEFAULT = "default";
-	private final static String ALT = "alt";
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void initFileManager() throws Exception {
 		
     	
@@ -133,35 +131,54 @@ public class CmsImageFileManagerInfinispanImpl implements ProductImagePut, Produ
 	 * 		-productFiles
 	 * 				-merchantId
 	 * 					     -productId
+	 * 								-<IMAGE NAME>
 	 */
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void uploadProductImage(ProductImage productImage, InputContentImage contentImage)
+	public void uploadProductImage(CoreConfiguration configuration, ProductImage productImage, InputContentImage contentImage)
 			throws ServiceException {
 		
-        //TODO validate null objects
-		
+        if(treeCache==null) {
+        	throw new ServiceException("CmsImageFileManagerInfinispan has a null treeCache");
+        }
+        InputStream input = null;
+        ByteArrayOutputStream output = null;
 		try {
         	
-        	
-        	
+
 			StringBuilder merchantPath = new StringBuilder();
 			merchantPath.append("/productFiles/")
-			.append(String.valueOf(productImage.getProduct().getMerchantSore().getId()));
-			//.append(String.valueOf(productImage.getProduct().getId())).append("/")
-			//.append(contentImage.getFile().getName());
-			
+			.append("merchant-").append(String.valueOf(productImage.getProduct().getMerchantSore().getId()));
+
 			Fqn merchantFiles = Fqn.fromString(merchantPath.toString());
 			
 			Node<String, Object> merchantFilesTree = treeCache.getRoot().getChild(merchantFiles);
 			
 			if(merchantFilesTree==null) {
 				treeCache.getRoot().addChild(merchantFiles);
+				merchantFilesTree = treeCache.getRoot().getChild(merchantFiles);
 			}
-				
 			
-			//LOGGER.info("Loading content node " + filePath.toString());
-			LOGGER.info("Content image " + contentImage.toString());
+			//merchantPath.append("/").append(String.valueOf(productImage.getProduct().getId()));
+			
+			Fqn productFiles = Fqn.fromString("product-"+ String.valueOf(productImage.getProduct().getId()));
+			
+			Node<String, Object> productFilesTree = merchantFilesTree.getChild(productFiles);
+			
+			if(productFilesTree==null) {
+				merchantFilesTree.addChild(productFiles);
+				productFilesTree = merchantFilesTree.getChild(productFiles);
+			}
+			
+            input = new BufferedInputStream(new FileInputStream(contentImage.getFile()));
+            output = new ByteArrayOutputStream(); 
+            IOUtils.copy(input, output);
+
+            byte[] imageBytes = output.toByteArray();
+            
+            productFilesTree.put(contentImage.getImageName(), imageBytes);
+
 	
         } catch(Exception e) {
         	
@@ -169,51 +186,129 @@ public class CmsImageFileManagerInfinispanImpl implements ProductImagePut, Produ
 	        
 		} finally {
 			
+			if(input!=null) {
+				try {
+					input.close();
+				} catch (Exception ignore) {}
+			}
+			
+			if(output!=null) {
+				try {
+					output.close();
+				} catch (Exception ignore) {}
+			}
+			
 		}
 
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public OutputContentImage getProductImage(ProductImage productImage) throws ServiceException {
 
-
+        if(treeCache==null) {
+        	throw new ServiceException("CmsImageFileManagerInfinispan has a null treeCache");
+        }
+        InputStream input = null;
+		OutputContentImage contentImage = new OutputContentImage();
 		try {
         	
 			StringBuilder filePath = new StringBuilder();
 			filePath.append("/productFiles/")
-			.append(String.valueOf(productImage.getProduct().getMerchantSore().getId())).append("/")
-			.append(String.valueOf(productImage.getProduct().getId())).append("/")
-			.append(productImage.getProductImage());
-
+			.append("merchant-").append(String.valueOf(productImage.getProduct().getMerchantSore().getId())).append("/")
+			.append("product-").append(String.valueOf(productImage.getProduct().getId()));
+			
+			Fqn productFiles = Fqn.fromString(filePath.toString());
+			
+			Node<String, Object> productFilesTree = treeCache.getRoot().getChild(productFiles);
+			
+			if(productFilesTree==null) {
+				return null;
+			}
+			
+			byte[] imageBytes = (byte[])productFilesTree.get(productImage.getProductImage());
+			
+			if(imageBytes==null) {
+				return null;
+			}
+			
+			input = new ByteArrayInputStream(imageBytes);
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			IOUtils.copy(input, output);
+			
+			FileNameMap fileNameMap = URLConnection.getFileNameMap();
+			String contentType = fileNameMap.getContentTypeFor(productImage.getProductImage());
+			
+			contentImage.setImage(output);
+			contentImage.setImageContentType(contentType);
+			contentImage.setImageName(productImage.getProductImage());
+			
 
         } catch(Exception e) {
         	throw new ServiceException(e);
 		} finally {
-			
+			if(input!=null) {
+				try {
+					input.close();
+				} catch (Exception ignore) {}
+			}
 		}
 		
-		return null;
+		return contentImage;
 
-         //return image;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<OutputContentImage> getImages(MerchantStore store) throws ServiceException {
-		
-		
 
-        
+        if(treeCache==null) {
+        	throw new ServiceException("CmsImageFileManagerInfinispan has a null treeCache");
+        }
 		List<OutputContentImage> images = new ArrayList<OutputContentImage>();
+		FileNameMap fileNameMap = URLConnection.getFileNameMap();
 
         try {
 
 
 			StringBuilder filePath = new StringBuilder();
 			filePath.append("/productFiles/")
-			.append(String.valueOf(store.getId())).append("/");
+			.append("mechant-").append(String.valueOf(store.getId()));
+			
+			Fqn merchantFiles = Fqn.fromString(filePath.toString());
+			
+			Node<String, Object> merchantFilesTree = treeCache.getRoot().getChild(merchantFiles);
+			
+			if(merchantFilesTree==null) {
+				return null;
+			}
+			
+			Set<Node<String, Object>> childNodes = merchantFilesTree.getChildren();
+			if(childNodes!=null) {
+				for(@SuppressWarnings("rawtypes") Node node : childNodes) {//productId
+					Set<String> names = node.getChildrenNames();//imageNames
+					if(names!=null && names.size()>0) {
+						for(String name : names) {
+							OutputContentImage contentImage = new OutputContentImage();
+							byte[] imageBytes = (byte[])node.get(name);
 
+							InputStream input = new ByteArrayInputStream(imageBytes);
+							ByteArrayOutputStream output = new ByteArrayOutputStream();
+							IOUtils.copy(input, output);
+							
+							String contentType = fileNameMap.getContentTypeFor(name);
+							
+							contentImage.setImage(output);
+							contentImage.setImageContentType(contentType);
+							contentImage.setImageName(name);
+							
+							images.add(contentImage);
+						}
+					}
+				}
+			}
 	        
-			//images = this.getContentImages(session, filePath.toString());
+			
 			
         } catch(Exception e) {
         	throw new ServiceException(e);
@@ -226,220 +321,181 @@ public class CmsImageFileManagerInfinispanImpl implements ProductImagePut, Produ
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<OutputContentImage> getImages(Product product)
 			throws ServiceException {
 
-
+        if(treeCache==null) {
+        	throw new ServiceException("CmsImageFileManagerInfinispan has a null treeCache");
+        }
 
 		List<OutputContentImage> images = new ArrayList<OutputContentImage>();
+		FileNameMap fileNameMap = URLConnection.getFileNameMap();
 
         try {
+
+
+			StringBuilder filePath = new StringBuilder();
+			filePath.append("/productFiles/")
+			.append("merchant-").append(String.valueOf(product.getMerchantSore().getId())).append("/")
+			.append("product-").append(String.valueOf(product.getId()));
+			
+			Fqn productFiles = Fqn.fromString(filePath.toString());
+			
+			Node<String, Object> productFilesTree = treeCache.getRoot().getChild(productFiles);
+			
+
+			
+			if(productFilesTree==null) {
+				return null;
+			}
+			
+
+
+			Set<String> names = productFilesTree.getKeys();//imageNames
+			if(names!=null && names.size()>0) {
+						
+						for(String name : names) {
+							OutputContentImage contentImage = new OutputContentImage();
+							byte[] imageBytes = (byte[])productFilesTree.get(name);
+
+							InputStream input = new ByteArrayInputStream(imageBytes);
+							ByteArrayOutputStream output = new ByteArrayOutputStream();
+							IOUtils.copy(input, output);
+							
+							String contentType = fileNameMap.getContentTypeFor(name);
+							
+							contentImage.setImage(output);
+							contentImage.setImageContentType(contentType);
+							contentImage.setImageName(name);
+							
+							images.add(contentImage);
+							
+						}
+
+			}
+	        
+			
+			
+        } catch(Exception e) {
+        	throw new ServiceException(e);
+		} finally {
+			
+		}
+		
+		return images;
+	}
+	
+
+
+
+
+	@Override
+	public void removeImages(MerchantStore store) throws ServiceException {
+        if(treeCache==null) {
+        	throw new ServiceException("CmsImageFileManagerInfinispan has a null treeCache");
+        }
+
+
+        try {
+
+
+			StringBuilder filePath = new StringBuilder();
+			filePath.append("/productFiles/")
+			.append("merchant-").append(String.valueOf(store.getId()));
+			
+			Fqn merchantFiles = Fqn.fromString(filePath.toString());
+			
+			
+			treeCache.removeNode(merchantFiles);
+			
 
 			
         } catch(Exception e) {
         	throw new ServiceException(e);
 		} finally {
-			//session.logout();
+			
 		}
-		
-		return images;
-	}
-	
-	
-	private List<OutputContentImage> getContentImages(String path) throws Exception {
 
-
-		List<OutputContentImage> images = new ArrayList<OutputContentImage>();
-        
-		Node files = null;
-		
-		try {
-			//files = session.getNode(path);
-		} catch (Exception e) {
-		}
-		
-
-/*         if(files!=null) {
-
-         	while(niter.hasNext()) {
-         		OutputContentImage c = new OutputContentImage();
-
-                InputStream in = content.getStream();
-                ByteArrayOutputStream out = new ByteArrayOutputStream(); 
-                IOUtils.copy(in, out);
-                c.setImage(out);
-                c.setImageContentType(contentType);
-                c.setDefaultImage(defaultImage);
-                c.setImageName(name);
-                images.add(c);
-                
-                content.dispose();
-         	}
-         }*/
-		
-		return images;
 		
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public void removeProductImage(ProductImage productImage)
+			throws ServiceException {
+		
+		
+        if(treeCache==null) {
+        	throw new ServiceException("CmsImageFileManagerInfinispan has a null treeCache");
+        }
+
+
+        try {
+
+
+			StringBuilder filePath = new StringBuilder();
+			filePath.append("/productFiles/")
+			.append("merchant-").append(String.valueOf(productImage.getProduct().getMerchantSore().getId())).append("/")
+			.append("product-").append(String.valueOf(productImage.getProduct().getId()));
+			
+			Fqn pi = Fqn.fromString(filePath.toString());
+			
+			Node<String, Object> productFilesTree = treeCache.getRoot().getChild(pi);
+			
+			
+			productFilesTree.remove(productImage.getProductImage());
+			
+
+			
+        } catch(Exception e) {
+        	throw new ServiceException(e);
+		} finally {
+			
+		}
+
+		
+	}
+
+	@Override
+	public void removeProductImages(Product product) throws ServiceException {
+		
+        if(treeCache==null) {
+        	throw new ServiceException("CmsImageFileManagerInfinispan has a null treeCache");
+        }
+
+
+        try {
+
+
+			StringBuilder filePath = new StringBuilder();
+			filePath.append("/productFiles/")
+			.append("merchant-").append(String.valueOf(product.getMerchantSore().getId())).append("/")
+			.append("product-").append(String.valueOf(product.getId()));
+			
+			Fqn productFiles = Fqn.fromString(filePath.toString());
+			
+			
+			treeCache.removeNode(productFiles);
+			
+
+			
+        } catch(Exception e) {
+        	throw new ServiceException(e);
+		} finally {
+			
+		}
+
+		
+	}
+	
 	public String getRepositoryFileName() {
 		return repositoryFileName;
 	}
 
 	public void setRepositoryFileName(String repositoryFileName) {
 		this.repositoryFileName = repositoryFileName;
-	}
-
-	@Override
-	public void removeImages(MerchantStore store) throws ServiceException {
-        /*Repository repository = null;
-        String repositoryName = null;
-        Session session = null;
-        
-        if(engine==null) {
-        	throw new ServiceException("updateProductImage has null CMS engine");
-        }
-
-        try {
-        	repositoryName = config.getName();
-        	repository = engine.getRepository(repositoryName);
-
-        	// Create a session ...
-        	session = repository.login("default");
-        	
-			StringBuilder filePath = new StringBuilder();
-			filePath.append("/productFiles/")
-			.append(String.valueOf(store.getId())).append("/");
-
-			Node imgs = null;
-			
-			try {
-				imgs = session.getNode(filePath.toString());
-			} catch (Exception e) {
-				//do not log
-			}
-			
-			
-			
-			if(imgs!=null) {
-
-				imgs.remove();
-            
-			}
-
-        } catch(Exception e) {
-        	throw new ServiceException(e);
-		} finally {
-			session.logout();
-		}
-*/
-		
-		
-		
-	}
-
-	@Override
-	public void removeProductImage(ProductImage productImage)
-			throws ServiceException {
-		
-		
-        /*Repository repository = null;
-        String repositoryName = null;
-        Session session = null;
-        
-        if(engine==null) {
-        	throw new ServiceException("updateProductImage has null CMS engine");
-        }
-
-        try {
-        	repositoryName = config.getName();
-        	repository = engine.getRepository(repositoryName);
-
-        	// Create a session ...
-        	session = repository.login("default");
-        	
-			StringBuilder filePath = new StringBuilder();
-			filePath.append("/productFiles/")
-			.append(String.valueOf(productImage.getProduct().getMerchantSore().getId())).append("/")
-			.append(String.valueOf(productImage.getProduct().getId())).append("/")
-			.append(productImage.getProductImage());
-
-
-			
-			Node img = null;
-			
-			try {
-				img = session.getNode(filePath.toString());
-			} catch (Exception e) {
-				//do not log
-			}
-			
-			
-			
-			if(img!=null) {
-
-				img.remove();
-            
-			}
-
-        } catch(Exception e) {
-        	throw new ServiceException(e);
-		} finally {
-			session.logout();
-		}
-*/
-		
-		
-	}
-
-	@Override
-	public void removeProductImages(Product product) throws ServiceException {
-        /*Repository repository = null;
-        String repositoryName = null;
-        Session session = null;
-        
-        if(engine==null) {
-        	throw new ServiceException("updateProductImage has null CMS engine");
-        }
-
-        try {
-        	repositoryName = config.getName();
-        	repository = engine.getRepository(repositoryName);
-
-        	// Create a session ...
-        	session = repository.login("default");
-        	
-
-			StringBuilder filePath = new StringBuilder();
-			filePath.append("/productFiles/")
-			.append(String.valueOf(product.getMerchantSore().getId())).append("/")
-			.append(String.valueOf(product.getId())).append("/");
-
-
-			
-			Node imgs = null;
-			
-			try {
-				imgs = session.getNode(filePath.toString());
-			} catch (Exception e) {
-				// do not log
-			}
-			
-			
-			
-			if(imgs!=null) {
-
-				imgs.remove();
-            
-			}
-
-        } catch(Exception e) {
-        	throw new ServiceException(e);
-		} finally {
-			session.logout();
-		}*/
-
-		
 	}
 
 
