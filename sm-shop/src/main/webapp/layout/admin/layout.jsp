@@ -148,6 +148,9 @@ response.setDateHeader ("Expires", -1);
 			$("#catalogue-options-list-link").click(function() {
   				window.location='<c:url value="/admin/options/options.html" />';
 			});
+			$("#catalogue-options-create-link").click(function() {
+  				window.location='<c:url value="/admin/options/option.html" />';
+			});
 			
 			
 
