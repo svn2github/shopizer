@@ -40,6 +40,7 @@
 										if (status != 0) {
 											if(status==9999) {//operation completed
 												//reload 
+												//categoriesList.fetchData();
 												window.location='<c:url value="/admin/categories/categories.html" />';
 											}
 

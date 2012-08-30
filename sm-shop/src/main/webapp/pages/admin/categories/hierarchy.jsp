@@ -36,16 +36,7 @@
 // User Interface
 // ---------------------------------------------------------------------
 
- 								//isc.RestDataSource.create({ 
-								//	ID:"hierarchy", 
-								//	dataFormat:"json", 
-								//	operationBindings:[ 
-								//		{operationType:"update", dataProtocol:"postParams",dataURL: "<c:url value="/admin/categories/moveCategory.html" />"} 
-								//	]
-								//}); 
 
-
- 
 								
 								//iterate from category objects to display data
       							isc.TreeGrid.create({
@@ -79,7 +70,6 @@
     								animateRowsMaxTime:750,
 									folderDrop: function (dragRecords, dropFolder, index, sourceWidget) {
 										var record=categoryTree.getSelectedRecord();
-										//alert(record.SysId + " will now go to " + dropFolder.SysId);
 										var newUnit=dropFolder.SysId;
 										var newRecord=record;
 										newRecord.ReportsTo=newUnit;
@@ -93,6 +83,9 @@
   											success: function(response) { 
   												var msg = isc.XMLTools.selectObjects(response, "/response/statusMessage");
   												var status = isc.XMLTools.selectObjects(response, "/response/status");
+  												alert(status);
+  												alert(msg);
+  												
   												if(status==0 || status ==9999) {
   													categoryTree.removeData(record);
   	  												categoryTree.data.addList([newRecord],dropFolder, index);
