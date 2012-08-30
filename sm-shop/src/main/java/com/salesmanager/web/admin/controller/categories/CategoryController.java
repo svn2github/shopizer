@@ -66,7 +66,7 @@ public class CategoryController {
 	
 	
 	
-	public String displayCategory(Long categoryId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private String displayCategory(Long categoryId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 
 
@@ -409,12 +409,18 @@ public class CategoryController {
 		String code = request.getParameter("code");
 
 
+
 		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
 		
 		AjaxResponse resp = new AjaxResponse();
 
-		
+	
 		try {
+			
+			if(StringUtils.isBlank(code)) {
+				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
+				return resp.toJSONString();
+			}
 
 			
 			Category category = categoryService.getByCode(store, code);
