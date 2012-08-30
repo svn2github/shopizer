@@ -1,5 +1,12 @@
 package com.salesmanager.test.isolated;
 
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.MessageFormat;
@@ -11,6 +18,23 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
+
+
+import org.infinispan.Cache;
+import org.infinispan.configuration.cache.CacheMode;
+import org.infinispan.configuration.cache.ConfigurationBuilder;
+import org.infinispan.configuration.global.GlobalConfigurationBuilder;
+import org.infinispan.manager.DefaultCacheManager;
+import org.infinispan.manager.EmbeddedCacheManager;
+import org.infinispan.tree.Fqn;
+import org.infinispan.tree.Node;
+import org.infinispan.tree.TreeCache;
+import org.infinispan.tree.TreeCacheFactory;
+import org.jgroups.util.Util;
+
+
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +50,8 @@ import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
+import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
+import com.salesmanager.core.business.catalog.product.model.image.ProductImageDescription;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
@@ -54,6 +80,13 @@ import com.salesmanager.core.business.reference.currency.service.CurrencyService
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
+import com.salesmanager.core.business.user.model.Group;
+import com.salesmanager.core.business.user.model.Permission;
+import com.salesmanager.core.business.user.model.User;
+import com.salesmanager.core.business.user.service.GroupService;
+import com.salesmanager.core.business.user.service.PermissionService;
+import com.salesmanager.core.business.user.service.UserService;
+import com.salesmanager.core.modules.cms.OutputContentImage;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.test.core.SalesManagerCoreTestExecutionListener;
 
@@ -121,6 +154,15 @@ public class IsolatedTestCase {
 
   @Autowired
   protected OrderService               orderService;
+  
+  @Autowired
+  protected GroupService               groupService;
+  
+  @Autowired
+  protected PermissionService               permissionService;
+  
+  @Autowired
+  protected UserService               userService;
 
   //@Autowired
   protected TestSupportFactory         testSupportFactory;
@@ -231,6 +273,181 @@ public class IsolatedTestCase {
 	  
 	  MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
 	  System.out.println("done");
+	  
+  }
+  
+  @Test
+  public void testCreateProductWithImage() throws ServiceException {
+	  
+	    Language en = languageService.getByCode("en");
+	    Language fr = languageService.getByCode("fr");
+	    Country ca = countryService.getByCode("CA");
+	    Currency currency = currencyService.getByCode("CAD");
+	    MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
+	    ProductType generalType = productTypeService.getProductType(ProductType.GENERAL_TYPE);
+	    
+	    
+	    Category book = categoryService.getByCode(store, "book");
+	    
+	    //TODO in product service
+	    Product product = productService.getById(1L);
+	    
+	    product.setMerchantSore(store);
+	    
+	    try {
+	    	
+	    	EmbeddedCacheManager manager = new DefaultCacheManager("cms/infinispan_configuration.xml");
+	    	//manager.getDefaultCacheConfiguration().invocationBatching().enabled();
+		    Cache defaultCache = manager.getCache("DataRepository");
+		    defaultCache.getCacheConfiguration().invocationBatching().enabled();
+		    
+		    TreeCacheFactory f = new TreeCacheFactory();
+		    
+		    TreeCache treeCache = f.createTreeCache(defaultCache);
+		    
+		    Fqn johnFqn = Fqn.fromString("persons/john");
+		    
+		    Node<String, Object> john = treeCache.getRoot().getChild(johnFqn);
+		    if(john==null) {
+		    	treeCache.getRoot().addChild(johnFqn);
+		    }
+		    
+		    byte[] bytes2 = (byte[]) john.get("JAP-LETTER.jpg");
+		    
+		    if(bytes2==null) {
+		    
+			    
+			    //john.put("surname", "Smith");
+			    
+			    File file1 = new File("/Users/csamson777/Documents/csti/JAP-LETTER.jpg");
+		        if (!file1.exists()|| !file1.canRead()) {
+		        	throw new ServiceException("Can't read" + file1.getAbsolutePath());
+		        }
+		        
+		        InputStream input = new BufferedInputStream(new FileInputStream(file1));
+		        ByteArrayOutputStream out = new ByteArrayOutputStream(); 
+	            IOUtils.copy(input, out);
+		        //input.
+		        
+		        byte[] bytes = out.toByteArray();
+	
+		        
+		        john.put("JAP-LETTER.jpg", bytes);
+	
+		        
+		        bytes2 = (byte[]) john.get("JAP-LETTER.jpg");
+		        
+		        ByteArrayInputStream bis = new ByteArrayInputStream(bytes2);
+		        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		        IOUtils.copy(bis, bos);
+
+	        
+		    }
+		    
+			InputStream in = new ByteArrayInputStream(bytes2);
+			BufferedImage bImageFromConvert = ImageIO.read(in);
+ 
+			ImageIO.write(bImageFromConvert, "jpg", new File(
+					"/Users/csamson777/Documents/csti/JAP-LETTER-2.jpg"));
+
+            
+            System.out.println("done");
+		    
+		    
+		    /*Fqn personsFqn = Fqn.fromString("persons");
+		    Fqn johnFqn = Fqn.fromRelative(personsFqn, Fqn.fromString("john"));
+		    Node<String, Object> john = treeCache.getRoot().addChild(johnFqn);
+		    john.put("surname", "Smith");*/
+		    
+		    /*Node<String, Object> john = ...
+		    		Node persons = john.getParent();*/
+		    
+		   // Set<Node<String, Object>> personsChildren = persons.getChildren();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	    
+	    
+	    
+	    
+/*        File file1 = new File("C:/doc/carl/Merchant.jpg");
+        if (!file1.exists()|| !file1.canRead()) {
+        	throw new ServiceException("Can't read" + file1.getAbsolutePath());
+        }
+        
+        File file2 = new File("C:/doc/carl/Recommendations.jpg");
+        if (!file2.exists()|| !file2.canRead()) {
+        	throw new ServiceException("Can't read" + file1.getAbsolutePath());
+        }
+	    
+
+	    
+        ProductImage productImage1 = new ProductImage();
+	    productImage1.setDefaultImage(true);
+	    productImage1.setProductImage(file1.getName());
+
+	    
+	    ProductImageDescription desc1 = new ProductImageDescription();
+        desc1.setLanguage(en);
+        desc1.setAltTag("ALT IMAGE 1 en");
+        desc1.setName("A beautifill Thing");
+        desc1.setProductImage(productImage1);
+        
+	    ProductImageDescription desc2 = new ProductImageDescription();
+        desc2.setLanguage(fr);
+        desc2.setAltTag("ALT IMAGE 1 fr");
+        desc2.setName("Superbe chose");
+        desc2.setProductImage(productImage1);
+        
+        List image1descriptions = new ArrayList();
+        image1descriptions.add(desc1);
+        image1descriptions.add(desc2);
+        
+        productImage1.setDescriptions(image1descriptions);
+        
+        productService.addProductImage(product, productImage1, file1);
+        
+        ProductImage productImage2 = new ProductImage();
+	    productImage2.setProductImage(file2.getName());
+	    productImage2.setDefaultImage(false);
+	    
+	    ProductImageDescription desc3 = new ProductImageDescription();
+	    desc3.setLanguage(en);
+	    desc3.setAltTag("ALT IMAGE 2 en");
+	    desc3.setName("la la en");
+	    desc3.setProductImage(productImage2);
+        
+	    ProductImageDescription desc4 = new ProductImageDescription();
+	    desc4.setLanguage(fr);
+	    desc4.setAltTag("ALT IMAGE 2 fr");
+	    desc4.setName("la la fr");
+	    desc4.setProductImage(productImage2);
+        
+        List image2descriptions = new ArrayList();
+        image2descriptions.add(desc3);
+        image2descriptions.add(desc4);
+        
+        productImage2.setDescriptions(image2descriptions);
+        
+        productService.addProductImage(product, productImage2, file2);*/
+        
+  }
+  
+  @Test
+  public void testGetImages() throws ServiceException {
+	  
+	  Product product = productService.getById(1L);
+	  
+	  List<OutputContentImage> images = productImageService.getProductImages(product);
+	  
+	  for(OutputContentImage image : images) {
+		  
+		  System.out.println(image.getImageName());
+		  System.out.println(image.getImageContentType());		  
+	  }
+	  
+	  
 	  
   }
 
@@ -670,6 +887,51 @@ public class IsolatedTestCase {
 
     productPriceService.create(dprice6);
 
+  }
+  
+  @Test
+  public void test3CreateUser() throws ServiceException {
+	  
+	  //need to create permission firts
+	  
+	  Permission userperm = new Permission("GRANT_USER");
+	  permissionService.create(userperm);
+	  Permission storeperm = new Permission("GRANT_STORE");
+	  permissionService.create(storeperm);
+	  Permission catalogperm = new Permission("GRANT_CATALOG");
+	  permissionService.create(catalogperm);
+	  Permission paymentperm = new Permission("GRANT_PAYMENT");
+	  permissionService.create(paymentperm);
+	  Permission shippingperm = new Permission("GRANT_SHIPPING");
+	  permissionService.create(shippingperm);
+	  Permission orderperm = new Permission("GRANT_ORDER");
+	  permissionService.create(orderperm);
+	  Permission configperm = new Permission("GRANT_CONFIG");
+	  permissionService.create(configperm);
+	  
+	  Group admin = new Group("ADMIN");
+	  
+	  admin.getPermissions().add(userperm);
+	  admin.getPermissions().add(storeperm);
+	  admin.getPermissions().add(catalogperm);
+	  admin.getPermissions().add(paymentperm);
+	  admin.getPermissions().add(shippingperm);
+	  admin.getPermissions().add(orderperm);
+	  admin.getPermissions().add(configperm);
+	  
+	  groupService.create(admin);
+	  
+	  User user = new User("admin","password","test@test.com");
+	  user.setFirstName("Test");
+	  user.setLastName("User");
+	  user.getGroups().add(admin);
+	  
+	  userService.create(user);
+	  
+	  
+	  
+	  
+	  
   }
 
   @Test
