@@ -70,6 +70,7 @@
     						      fields:[
 										{title:"<s:message code="label.entity.id" text="Id"/>", name:"categoryId", canFilter:false},
         								{title:"<s:message code="label.entity.name" text="Name"/>", name:"name"},
+        								{title:"<s:message code="label.entity.code" text="Code"/>", name:"code", canFiler:false},
         								{title:"<s:message code="label.entity.visible" text="Visible"/>", name:"visible", canFilter:false},
         								{title:"<s:message code="label.entity.details" text="Details"/>", name: "buttonField", align: "center",canFilter:false,canSort:false, canReorder:false}
 
@@ -89,15 +90,15 @@
         							if (fieldName == "buttonField") {  
 
 	        						
-	           						var button = isc.IButton.create({
+	           							var button = isc.IButton.create({
 	                						height: 18,
 	                						width: 65,
 	               					 		title: "<s:message code="label.entity.details" text="Details"/>",
 	                						click : function () {
 	                							window.location='<c:url value="/admin/categories/editCategory.html" />?id=' + record["categoryId"];
 	                						}
-	            					});
-	            					return button;  
+	            						});
+	            						return button;  
             				
             					}
 

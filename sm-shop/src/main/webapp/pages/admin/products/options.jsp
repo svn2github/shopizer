@@ -24,72 +24,7 @@
 				</h3>	
 				<br/>
 
-				<c:url var="optionSave" value="/admin/options/save.html"/>
 
-
-				<form:form method="POST" commandName="option" action="${optionSave}">
-
-      							
-      				<form:errors path="*" cssClass="alert alert-error" element="div" />
-					<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
-								
-                 <c:forEach items="${option.descriptions}" var="description" varStatus="counter">
-                  
-                 <div class="control-group">
-                        <label class="required"><s:message code="label.product.productoptions.name" text="Option name"/> (<c:out value="${description.language.code}"/>)</label>
-                        <div class="controls">
-                        			<form:input id="name${counter.index}" path="descriptions[${counter.index}].name"/>
-                        			<span class="help-inline"><form:errors path="descriptions[${counter.index}].name" cssClass="error" /></span>
-                        </div>
-
-                  </div>
-
-                  
-                  <form:hidden path="descriptions[${counter.index}].language.code" />
-                  <form:hidden path="descriptions[${counter.index}].id" />
-                  
-                  </c:forEach>
-
-      			  
-      			 <div class="control-group">
-                        <label><s:message code="label.product.productoptions.type" text="Option type"/></label>
-                        <div class="controls">
-                                   
-	                        <div class="controls">			
-	                        		<form:select path="productOptionType">
-	                        			<s:message code="label.product.productoption.type.text" text="Text" var="vText" />
-	                        			<s:message code="label.product.productoption.type.select" text="Select" var="vSelect"/>
-	                        			<s:message code="label.product.productoption.type.radio" text="Radio" var="vRadio"/>
-	                        			<s:message code="label.product.productoption.type.checkbox" text="Checkbox" var="vCheckbox"/>
-	                        			<form:option value="text" label="${vText}" />
-	                        			<form:option value="select" label="${vSelect}" />
-	                        			<form:option value="radio" label="${vRadio}" />
-	                        			<form:option value="checkbox" label="${vCheckbox}" />
-				       				</form:select>
-	                                <span class="help-inline"><form:errors path="productOptionType" cssClass="error" /></span>
-	                        </div>
-
-                        </div>
-                  </div>
-      			  
-                  
-                  <form:hidden path="id" />
-			
-			      <div class="form-actions">
-
-                  		<div class="pull-right">
-
-                  			<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>
-                  			
-
-                  		</div>
-
-            	 </div>
- 
-            	 </form:form>
-            	 
-            	 
-            	 <br/>
             	 
 
 
@@ -165,7 +100,7 @@
 	               					 		title: "<s:message code="label.entity.details" text="Details"/>",
 	                						click : function () {
 	                							//TODO fill details
-	                							window.location='<c:url value="/admin/categories/editCategory.html" />?id=' + record["optionId"];
+	                							window.location='<c:url value="/admin/options/editOption.html" />?id=' + record["optionId"];
 	                						}
 	            					});
 	            					return button;  

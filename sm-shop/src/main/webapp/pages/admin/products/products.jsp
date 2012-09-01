@@ -41,23 +41,28 @@
 								isc.RestDataSource.create({ 
 									ID:"products", 
 									dataFormat:"json", 
-									dataURL: "<c:url value="/admin/products/paging.html" />",
-									data : {
-										criteria: [
-											{fieldName: "categoryId", operator: "equals", value: "12345"}
-										]
-									}, 
 									operationBindings:[ 
-										{operationType:"fetch", dataProtocol:"postParams"} 
-									]
+										{operationType:"fetch", dataProtocol:"postParams",dataURL: "<c:url value="/admin/products/paging.html" />"},
+										{operationType:"remove", dataProtocol:"postParams",dataURL: "<c:url value="/admin/products/remove.html" />"}
+									],
+									transformResponse : function (dsResponse, dsRequest, jsonData) {
+										var status = isc.XMLTools.selectObjects(jsonData, "/response/status");
+										if (status != 0) {
+											if(status==9999) {//operation completed
+												//reload 
+												//categoriesList.fetchData();
+												window.location='<c:url value="/admin/products/products.html" />';
+											}
+
+											var msg = isc.XMLTools.selectObjects(jsonData, "/response/statusMessage");
+
+												alert("! " + msg);
+
+										}
+									}
 								}); 
 								
 
-								
-
-
-								
-								
 								//iterate from category objects to display data
       							isc.TreeGrid.create({
     								ID:"categoryTree",
@@ -69,12 +74,11 @@
         								idField: "categoryId",
         								parentIdField: "parentId",
         								data: [
-            							{categoryId:"4", parentId:"1", Name:"Books"},
-            							{categoryId:"188", parentId:"4", Name:"Novell"},
-            							{categoryId:"189", parentId:"4", Name:"Technology"},
-            							{categoryId:"265", parentId:"188", Name:"Romance"},
-            							{categoryId:"267", parentId:"188", Name:"Test1"},
-            							{categoryId:"264", parentId:"188", Name:"Fiction"}
+										{categoryId:"-1", parentId:"0", Name:"<s:message code="label.category.root" text="Root" />", isFolder: true},
+										<c:forEach items="${categories}" var="category" varStatus="status">
+            								{categoryId:'<c:out value="${category.id}" />', parentId:'<c:choose><c:when test="${category.parent!=null}"><c:out value="${category.parent.id}" /></c:when><c:otherwise>-1</c:otherwise></c:choose>', Name:'<c:out value="${category.descriptions[0].name}" />', isFolder: true}
+            								<c:if test="${status.count<fn:length(categories)}">,</c:if>
+            							</c:forEach>
         								]
     								}),
 
@@ -96,7 +100,7 @@
     								dataSource: "products",
     								showRecordComponents: true,    
     								showRecordComponentsByCell: true,
-    								
+    								canRemoveRecords: true,
     								autoFetchData: false,
     								showFilterEditor: true,
     								filterOnKeypress: true,
@@ -104,29 +108,38 @@
 
 
     						      fields:[
-        								{title:"Name", name:"name"},
-        								{title:"SKU", name:"sku"},
-        								{title:"Cost", name:"cost",canFilter:false},
-        								{title:"units", name:"units",canFilter:false},
-        								{title:"Info", name: "buttonField", align: "center",canFilter:false}
+    						              
+    						              
+										{title:"<s:message code="label.entity.id" text="Id"/>", name:"productId", canFilter:false},
+										{title:"<s:message code="label.entity.name" text="Name"/>", name:"name"},
+										{title:"<s:message code="label.product.sku" text="Sku"/>", name:"sku"},
+										{title:"<s:message code="label.product.available" text="Available"/>", name:"available"},
+										//{title:"<s:message code="label.quantity" text="Quantity"/>", name:"quantity", canFilter:false},
+										{title:"<s:message code="label.entity.details" text="Details"/>", name: "buttonField", align: "center",canFilter:false,canSort:false, canReorder:false}  
 
-    							],
-    							selectionType: "single",
-    							createRecordComponent : function (record, colNum) {  
+
+    							   ],
+	       						   selectionType: "single",
+								   removeData: function () {
+										if (confirm('<s:message code="label.entity.remove.confirm" text="Do you really want to remove this record ?" />')) {
+											return this.Super("removeData", arguments);
+										}
+								   },
+    							   createRecordComponent : function (record, colNum) {  
         
         							var fieldName = this.getFieldName(colNum);
         							if (fieldName == "buttonField") {  
 
 	        						
-	           						var button = isc.IButton.create({
+    	           						var button = isc.IButton.create({
 	                						height: 18,
 	                						width: 65,
-	               					 		title: "Info",
+	               					 		title: "<s:message code="label.entity.details" text="Details"/>",
 	                						click : function () {
-	                    					isc.say(record["name"] + " info button clicked.");
+	                							window.location='<c:url value="/admin/products/editProduct.html" />?id=' + record["productId"];
 	                						}
-	            					});
-	            					return button;  
+	            						});
+	            						return button;   
             				
             					}
  
@@ -134,65 +147,7 @@
 
 
 								});
-								
-								
-								isc.SearchForm.create({
-    								ID:"findForm",
-    								/**dataSource:"supplyItem",**/
-    								left:25,
-    								border:0,
-    								top:10,
-    								cellPadding:4,
-    								numCols:6,
-    								fields:[
-        								{name:"Product"}
-        								//{name:"itemName", editorType:"comboBox", optionDataSource:"supplyItem", 
-        								//		pickListWidth:250},
-        								//{name:"findInCategory", editorType:"checkbox", 
-            						//		title:"Use category", defaultValue:true, shouldSaveValue:false}
-    								],
-    
-    								// Function to actually find items
-    								findItems : function () {
 
-    								
-    									itemList.fetchData({searchTerm:this.getValues()})
-    								
-        								/**
-        								var findValues;
-								        if (this.getValue('findInCategory') && categoryTree.selection.anySelected()) {
-								            // use tree category and form values
-								            if (categoryName == null) categoryName = categoryTree.getSelectedRecord().categoryName;
-								            findValues = {category:categoryName};
-								            isc.addProperties(findValues, this.getValues());
-								            
-								        } else if (categoryName == null) {
-								            // use form values only
-								            findValues = this.getValues();
-								            
-								        } else {
-								            // use tree category only
-								            findValues = {category:categoryName};
-								        }
-								        
-								        itemList.filterData(findValues);
-								        
-								        itemDetailTabs.clearDetails();
-								        **/
-								    }
-									});
-									
-									
-									isc.IButton.create({
-    									ID:"findButton",
-    									title:"Find",
-    									left:250,
-    									top:16,
-    									width:80,
-    									click:"findForm.findItems()",
-    									/**icon:"demoApp/icon_find.png",**/
-    									iconWidth:24
-									});
 
 
 
@@ -214,7 +169,6 @@ isc.HLayout.create({
             animateSections:true,
             sections:[
                 {title:"Categories", autoShow:true, items:[categoryTree]}
-                /**{title:"Instructions", autoShow:true, items:[helpCanvas]}**/
             ]
         }),
         isc.SectionStack.create({
@@ -222,18 +176,7 @@ isc.HLayout.create({
             visibilityMode:"multiple",
             animateSections:true,
             sections:[
-                {title:"Find Items", autoShow:true, items:[
-                    isc.Canvas.create({
-                        ID:"findPane",
-                        height:60,
-                        border:0,
-                        overflow:"auto",
-                        styleName:"defaultBorder",
-                        children:[findForm,findButton]
-                    })                
-                ]},
                 {title:"Items", autoShow:true, items:[itemList]}
-                /**{title:"Item Details", autoShow:true, items:[itemDetailTabs]}**/
             ]
         })
     ]
