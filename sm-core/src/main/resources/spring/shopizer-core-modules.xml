@@ -14,7 +14,7 @@
 	
 	<!-- CMS -->
 	<bean id="productFileManager"
-		class="com.salesmanager.core.modules.cms.ProductFileManagerImpl">
+		class="com.salesmanager.core.modules.cms.product.ProductFileManagerImpl">
 		<property name="uploadImage">
 				<ref bean="cmsProductImage" />
 		</property>
@@ -27,7 +27,7 @@
 	</bean>
 	
 	<bean id="cmsProductImage"
-				class="com.salesmanager.core.modules.cms.CmsImageFileManagerInfinispanImpl" factory-method="getInstance" >
+				class="com.salesmanager.core.modules.cms.product.CmsImageFileManagerInfinispanImpl" factory-method="getInstance" >
 	</bean>
  
 
