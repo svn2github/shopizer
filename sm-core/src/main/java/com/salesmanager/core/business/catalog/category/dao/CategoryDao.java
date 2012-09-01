@@ -23,6 +23,6 @@ public interface CategoryDao extends SalesManagerEntityDao<Long, Category> {
 
 	List<Category> listByStore(MerchantStore store, Language language);
 
-	Category getById(MerchantStore store, Long id);
+	Category getById(Long id);
 
 }

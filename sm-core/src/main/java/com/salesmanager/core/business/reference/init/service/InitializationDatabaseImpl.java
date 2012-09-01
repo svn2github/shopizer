@@ -33,6 +33,12 @@ import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.system.service.SystemConfigurationService;
 import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 import com.salesmanager.core.business.tax.service.TaxClassService;
+import com.salesmanager.core.business.user.model.Group;
+import com.salesmanager.core.business.user.model.Permission;
+import com.salesmanager.core.business.user.model.User;
+import com.salesmanager.core.business.user.service.GroupService;
+import com.salesmanager.core.business.user.service.PermissionService;
+import com.salesmanager.core.business.user.service.UserService;
 import com.salesmanager.core.constants.SchemaConstant;
 
 @Service("initializationDatabase")
@@ -66,6 +72,15 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 	@Autowired
 	private TaxClassService taxClassService;
 	
+	@Autowired
+	UserService userService;
+	
+	@Autowired
+	protected PermissionService    permissionService;
+	
+	@Autowired
+	protected GroupService               groupService;
+	
 	private String name;
 	
 	public boolean isEmpty() {
@@ -82,7 +97,41 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		createCurrencies();
 		createSubReferences();
 		createMerchant();
+		createUser();
 
+	}
+	
+	private void createUser() throws ServiceException {
+		LOGGER.info(String.format("%s : Creating user ", name));
+		
+		
+		  Permission userperm = new Permission("GRANT_USER");
+		  permissionService.create(userperm);
+		  Permission storeperm = new Permission("GRANT_STORE");
+		  permissionService.create(storeperm);
+		  Permission catalogperm = new Permission("GRANT_CATALOG");
+		  permissionService.create(catalogperm);
+		  Permission orderperm = new Permission("GRANT_ORDER");
+		  permissionService.create(orderperm);
+		  Permission configperm = new Permission("GRANT_CONFIG");
+		  permissionService.create(configperm);
+		  
+		  Group admin = new Group("ADMIN");
+		  
+		  admin.getPermissions().add(userperm);
+		  admin.getPermissions().add(storeperm);
+		  admin.getPermissions().add(catalogperm);
+		  admin.getPermissions().add(orderperm);
+		  admin.getPermissions().add(configperm);
+		  
+		  groupService.create(admin);
+		  //TODO encrypt password
+		  User user = new User("admin","password","admin@shopizer.com");
+		  user.setFirstName("Administrator");
+		  user.setLastName("User");
+		  user.getGroups().add(admin);
+		  
+		  userService.create(user);
 	}
 
 	private void createCurrencies() throws ServiceException {

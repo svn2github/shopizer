@@ -1,4 +1,4 @@
-package com.salesmanager.core.modules.cms;
+package com.salesmanager.core.modules.cms.product;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -24,8 +24,11 @@ import org.slf4j.LoggerFactory;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
+import com.salesmanager.core.business.content.model.image.InputContentImage;
+import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.modules.cms.common.CmsFileManagerInfinispan;
 import com.salesmanager.core.utils.CoreConfiguration;
 
 
@@ -36,59 +39,13 @@ import com.salesmanager.core.utils.CoreConfiguration;
  * @author csamson
  *
  */
-public class CmsImageFileManagerInfinispanImpl implements ProductImagePut, ProductImageGet, ProductImageRemove {
+public class CmsImageFileManagerInfinispanImpl extends CmsFileManagerInfinispan implements ProductImagePut, ProductImageGet, ProductImageRemove {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CmsImageFileManagerInfinispanImpl.class);
 	
 	private static CmsImageFileManagerInfinispanImpl fileManager = null; 
 	
-	//get repository config
-	private String repositoryFileName = "cms/infinispan_configuration.xml";
-	
-	private EmbeddedCacheManager manager = null;
-	@SuppressWarnings("rawtypes")
-	private TreeCache treeCache = null;
-	
 
-	
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private void initFileManager() throws Exception {
-		
-    	
-		try {
-		
-			 manager = new DefaultCacheManager(repositoryFileName);
-			 Cache defaultCache = manager.getCache("DataRepository");
-			 defaultCache.getCacheConfiguration().invocationBatching().enabled();
-	    
-			 TreeCacheFactory f = new TreeCacheFactory();
-	    
-			 treeCache = f.createTreeCache(defaultCache);
-			 
-			 manager.start();
-			 
-			 Fqn productFiles = Fqn.fromString("productFiles");
-			 Node<String, Object> productFilesTree = treeCache.getRoot().getChild(productFiles);
-			 
-			 if(productFilesTree==null) {
-				 treeCache.getRoot().addChild(productFiles);
-			 }
-		
-			 
-	         
-	         LOGGER.debug("CMS started");
-
- 
-        } catch (Exception e) {
-        	LOGGER.error("Error while instantiating CmsImageFileManager",e);
-        } finally {
-            
-        }
-		
-		
-		
-	}
 	
 	/**
 	 *Requires to stop the engine
@@ -149,7 +106,7 @@ public class CmsImageFileManagerInfinispanImpl implements ProductImagePut, Produ
 
 			StringBuilder merchantPath = new StringBuilder();
 			merchantPath.append("/productFiles/")
-			.append("merchant-").append(String.valueOf(productImage.getProduct().getMerchantSore().getId()));
+			.append("merchant-").append(String.valueOf(productImage.getProduct().getMerchantStore().getId()));
 
 			Fqn merchantFiles = Fqn.fromString(merchantPath.toString());
 			
@@ -216,7 +173,7 @@ public class CmsImageFileManagerInfinispanImpl implements ProductImagePut, Produ
         	
 			StringBuilder filePath = new StringBuilder();
 			filePath.append("/productFiles/")
-			.append("merchant-").append(String.valueOf(productImage.getProduct().getMerchantSore().getId())).append("/")
+			.append("merchant-").append(String.valueOf(productImage.getProduct().getMerchantStore().getId())).append("/")
 			.append("product-").append(String.valueOf(productImage.getProduct().getId()));
 			
 			Fqn productFiles = Fqn.fromString(filePath.toString());
@@ -338,7 +295,7 @@ public class CmsImageFileManagerInfinispanImpl implements ProductImagePut, Produ
 
 			StringBuilder filePath = new StringBuilder();
 			filePath.append("/productFiles/")
-			.append("merchant-").append(String.valueOf(product.getMerchantSore().getId())).append("/")
+			.append("merchant-").append(String.valueOf(product.getMerchantStore().getId())).append("/")
 			.append("product-").append(String.valueOf(product.getId()));
 			
 			Fqn productFiles = Fqn.fromString(filePath.toString());
@@ -437,7 +394,7 @@ public class CmsImageFileManagerInfinispanImpl implements ProductImagePut, Produ
 
 			StringBuilder filePath = new StringBuilder();
 			filePath.append("/productFiles/")
-			.append("merchant-").append(String.valueOf(productImage.getProduct().getMerchantSore().getId())).append("/")
+			.append("merchant-").append(String.valueOf(productImage.getProduct().getMerchantStore().getId())).append("/")
 			.append("product-").append(String.valueOf(productImage.getProduct().getId()));
 			
 			Fqn pi = Fqn.fromString(filePath.toString());
@@ -471,7 +428,7 @@ public class CmsImageFileManagerInfinispanImpl implements ProductImagePut, Produ
 
 			StringBuilder filePath = new StringBuilder();
 			filePath.append("/productFiles/")
-			.append("merchant-").append(String.valueOf(product.getMerchantSore().getId())).append("/")
+			.append("merchant-").append(String.valueOf(product.getMerchantStore().getId())).append("/")
 			.append("product-").append(String.valueOf(product.getId()));
 			
 			Fqn productFiles = Fqn.fromString(filePath.toString());

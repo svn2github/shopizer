@@ -1,4 +1,4 @@
-package com.salesmanager.core.modules.cms;
+package com.salesmanager.core.modules.cms.common;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;

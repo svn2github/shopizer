@@ -78,7 +78,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 	}
 	
 	@Override
-	public Category getById(MerchantStore store, Long id) {
+	public Category getById(Long id) {
 		QCategory qCategory = QCategory.category;
 		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
 		
@@ -87,8 +87,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		query.from(qCategory)
 			.leftJoin(qCategory.descriptions, qDescription).fetch()
 			.leftJoin(qCategory.merchantSore).fetch()
-			.where(qCategory.id.eq(id)
-			.and(qCategory.merchantSore.id.eq(store.getId())));
+			.where(qCategory.id.eq(id));
 			//.orderBy(qDescription.language.id.desc());
 			//.orderBy(qDescription._super.title.desc(), qDescription._super.name.desc(), qDescription.language.id.desc());
 		

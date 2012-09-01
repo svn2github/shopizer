@@ -28,6 +28,13 @@ public interface ProductDao extends SalesManagerEntityDao<Long, Product> {
 
 	Product getById(long productId);
 
+	/**
+	 * Method to be used for getting a list of products in a given language based on one to many criteria
+	 * @param store
+	 * @param language
+	 * @param criteria
+	 * @return
+	 */
 	ProductList listByStore(MerchantStore store, Language language, ProductCriteria criteria);
 	
 }

@@ -89,7 +89,7 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
-	private MerchantStore merchantSore;
+	private MerchantStore merchantStore;
 	
 	@ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.REFRESH})
 	@JoinTable(name = "PRODUCT_CATEGORY", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
@@ -349,12 +349,12 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 		this.categories = categories;
 	}
 
-	public MerchantStore getMerchantSore() {
-		return merchantSore;
+	public MerchantStore getMerchantStore() {
+		return merchantStore;
 	}
 
-	public void setMerchantSore(MerchantStore merchantSore) {
-		this.merchantSore = merchantSore;
+	public void setMerchantSore(MerchantStore merchantStore) {
+		this.merchantStore = merchantStore;
 	}
 
 	public Boolean getAvailable() {

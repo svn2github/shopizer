@@ -1,4 +1,4 @@
-package com.salesmanager.core.modules.cms;
+package com.salesmanager.core.business.content.model.image;
 
 import java.io.ByteArrayOutputStream;
 

@@ -3,14 +3,15 @@ package com.salesmanager.core.business.catalog.product.model;
 import java.util.List;
 import java.util.Set;
 
-public class ProductCriteria {
+import com.salesmanager.core.business.common.model.Criteria;
+
+public class ProductCriteria extends Criteria {
 	
 	
 	private String productName;
-	private int startIndex;
-	private int maxCount;
+
 	
-	private boolean available = true;
+	private Boolean available = null;
 	
 	private Set<Long> categoryIds;
 	
@@ -24,21 +25,6 @@ public class ProductCriteria {
 		this.productName = productName;
 	}
 
-	public int getStartIndex() {
-		return startIndex;
-	}
-
-	public void setStartIndex(int startIndex) {
-		this.startIndex = startIndex;
-	}
-
-	public int getMaxCount() {
-		return maxCount;
-	}
-
-	public void setMaxCount(int maxCount) {
-		this.maxCount = maxCount;
-	}
 
 	public Set<Long> getCategoryIds() {
 		return categoryIds;
@@ -56,12 +42,13 @@ public class ProductCriteria {
 		this.availabilities = availabilities;
 	}
 
-	public boolean isAvailable() {
+	public Boolean getAvailable() {
 		return available;
 	}
 
-	public void setAvailable(boolean available) {
+	public void setAvailable(Boolean available) {
 		this.available = available;
 	}
+
 
 }

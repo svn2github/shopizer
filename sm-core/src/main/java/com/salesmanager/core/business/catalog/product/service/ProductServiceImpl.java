@@ -18,6 +18,7 @@ import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
 import com.salesmanager.core.business.catalog.product.model.ProductList;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
+import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.service.image.ProductImageService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
@@ -147,6 +148,35 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		ProductList productList = productDao.getProductsForLocale(category.getMerchantSore(), categoryIds, language, locale, startIndex, maxCount);
 		
 		return productList;
+		
+	}
+	
+	@Override
+	public Product getById(Long id) {
+		
+		
+		return productDao.getById(id);
+	}
+	
+	
+	@Override
+	public void removeProduct(Product product) throws ServiceException {
+		
+		
+		product.setCategories(null);
+		
+		Set<ProductImage> images = product.getImages();
+		
+		for(ProductImage image : images) {
+			
+			productImageService.removeProductImage(image);
+			
+		}
+		
+		product.setImages(null);
+		
+		this.delete(product);
+		
 		
 	}
 	

@@ -1,6 +1,5 @@
 package com.salesmanager.core.business.catalog.product.service;
 
-import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
@@ -9,12 +8,11 @@ import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
 import com.salesmanager.core.business.catalog.product.model.ProductList;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
-import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.modules.cms.OutputContentImage;
+
 
 public interface ProductService extends SalesManagerEntityService<Long, Product> {
 
@@ -44,4 +42,8 @@ public interface ProductService extends SalesManagerEntityService<Long, Product>
 
 	ProductList listByStore(MerchantStore store, Language language,
 			ProductCriteria criteria);
+
+	void removeProduct(Product product) throws ServiceException;
+	
+	//Product getById(Long id);
 }

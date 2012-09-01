@@ -1,4 +1,5 @@
-package com.salesmanager.core.modules.cms;
+package com.salesmanager.core.modules.cms.product;
+
 
 
 

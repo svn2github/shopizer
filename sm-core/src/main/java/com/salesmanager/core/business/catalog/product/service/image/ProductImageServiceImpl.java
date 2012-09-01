@@ -12,11 +12,11 @@ import com.salesmanager.core.business.catalog.product.dao.image.ProductImageDao;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.service.ProductImageEnum;
+import com.salesmanager.core.business.content.model.image.InputContentImage;
+import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
-import com.salesmanager.core.modules.cms.InputContentImage;
-import com.salesmanager.core.modules.cms.OutputContentImage;
-import com.salesmanager.core.modules.cms.ProductFileManager;
+import com.salesmanager.core.modules.cms.product.ProductFileManager;
 import com.salesmanager.core.utils.CoreConfiguration;
 
 @Service("productImage")
@@ -49,6 +49,7 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		String contentType = fileNameMap.getContentTypeFor(file.getName());
 		contentImage.setImageContentType(contentType);
 		productFileManager.uploadProductImage(configuration, productImage, contentImage);
+		//.uploadProductImage(configuration, productImage, contentImage);
 		
 		//insert ProductImage
 		this.create(productImage);

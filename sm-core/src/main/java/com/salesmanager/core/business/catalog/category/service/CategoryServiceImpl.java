@@ -119,13 +119,11 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	
 	
 	@Override
-	public Category getById(MerchantStore store, Long id) throws ServiceException {
+	public Category getById(Long id) {
 		
-		try {
-			return categoryDao.getById(store, id);
-		} catch (Exception e) {
-			throw new ServiceException(e);
-		}
+
+			return categoryDao.getById(id);
+
 		
 	}
 	
@@ -198,23 +196,9 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		
 		for(Product product : products) {
 			
-			//remove product categories
-			product.setCategories(null);
 			
-			Set<ProductImage> images = product.getImages();
-			
-			for(ProductImage image : images) {
-				
-				productImageService.removeProductImage(image);
-				
-			}
-			
-			product.setImages(null);
-			
-			productService.delete(product);
-			
-			
-			
+			productService.removeProduct(product);
+
 			//need to delete a few things
 			
 			//delete attributes
@@ -291,7 +275,7 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		
 		try {
 			
-			Category p = this.getById(parent.getMerchantSore(), parent.getId());
+			Category p = this.getById(parent.getId());
 			
 			List<Category> subCategories = listByLineage(child.getMerchantSore(), child.getLineage());
 

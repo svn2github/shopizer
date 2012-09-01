@@ -1,4 +1,4 @@
-package com.salesmanager.core.modules.cms;
+package com.salesmanager.core.modules.cms.product;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -12,6 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
+import com.salesmanager.core.business.content.model.image.InputContentImage;
+import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.utils.CoreConfiguration;

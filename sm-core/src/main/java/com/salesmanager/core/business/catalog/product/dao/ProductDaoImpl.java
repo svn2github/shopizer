@@ -53,6 +53,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		
 		StringBuilder qs = new StringBuilder();
 		qs.append("select p from Product as p ");
+		qs.append("join fetch p.merchantStore merch ");
 		qs.append("join fetch p.availabilities pa ");
 		qs.append("join fetch pa.prices pap ");
 		
@@ -114,10 +115,10 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 
         
 		StringBuilder countBuilderSelect = new StringBuilder();
-		countBuilderSelect.append("select count(p) from Product as p ");
+		countBuilderSelect.append("select count(p) from Product as p");
 		
 		StringBuilder countBuilderWhere = new StringBuilder();
-		countBuilderWhere.append(" where p.merchantSore.id=:mId");
+		countBuilderWhere.append(" where p.merchantStore.id=:mId");
 		
 		//"select count(p) from Product as p INNER JOIN p.availabilities pa INNER JOIN p.categories categs where p.merchantSore.id=:mId and categs.id in (:cid) and pa.region in (:lid) and p.available=1 and p.dateAvailable<=:dt");
 
@@ -132,8 +133,16 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 			countBuilderWhere.append(" and categs.id in (:cid)");
 		}
 		
-		if(criteria.isAvailable()) {
-			countBuilderWhere.append(" and p.available=1 and p.dateAvailable<=:dt");
+		if(!StringUtils.isBlank(criteria.getCode())) {
+			countBuilderWhere.append(" and p.sku = :sku");
+		}
+		
+		if(criteria.getAvailable()!=null) {
+			if(criteria.getAvailable().booleanValue()) {
+				countBuilderWhere.append(" and p.available=true and p.dateAvailable<=:dt");
+			} else {
+				countBuilderWhere.append(" and p.available=false or p.dateAvailable>:dt");
+			}
 		}
 	
 		Query countQ = super.getEntityManager().createQuery(
@@ -145,8 +154,13 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 			countQ.setParameter("cid", criteria.getCategoryIds());
 		}
 		
-		if(criteria.isAvailable()) {
+
+		if(criteria.getAvailable()!=null) {
 			countQ.setParameter("dt", new Date());
+		}
+		
+		if(!StringUtils.isBlank(criteria.getCode())) {
+			countQ.setParameter("sku", criteria.getCode());
 		}
 		
 		if(!StringUtils.isBlank(criteria.getProductName())) {
@@ -163,6 +177,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		
 		StringBuilder qs = new StringBuilder();
 		qs.append("select p from Product as p ");
+		qs.append("join fetch p.merchantStore merch ");
 		qs.append("join fetch p.availabilities pa ");
 		qs.append("join fetch pa.prices pap ");
 		
@@ -180,19 +195,29 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		qs.append("left join fetch p.type type ");
 		qs.append("left join fetch p.taxClass tx ");
 
-		qs.append("where p.merchantStore.id=mId");
-		qs.append("and pd.language.id=:lang");
+		qs.append("where merch.id=:mId");
+		qs.append(" and pd.language.id=:lang");
 		
 		if(criteria.getCategoryIds()!=null && criteria.getCategoryIds().size()>0) {
 			qs.append(" and categs.id in (:cid)");
 		}
 		
-		if(criteria.isAvailable()) {
-			qs.append(" and p.available=true and p.dateAvailable<=:dt");
+
+		
+		if(criteria.getAvailable()!=null) {
+			if(criteria.getAvailable().booleanValue()) {
+				qs.append(" and p.available=true and p.dateAvailable<=:dt");
+			} else {
+				qs.append(" and p.available=false and p.dateAvailable>:dt");
+			}
 		}
 		
 		if(!StringUtils.isBlank(criteria.getProductName())) {
-			qs.append(" and pd.name like : nm");
+			qs.append(" and pd.name like:nm");
+		}
+		
+		if(!StringUtils.isBlank(criteria.getCode())) {
+			qs.append(" and p.sku = :sku");
 		}
 
 
@@ -207,8 +232,14 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
     		q.setParameter("cid", criteria.getCategoryIds());
     	}
     	
-		if(criteria.isAvailable()) {
+
+		
+		if(criteria.getAvailable()!=null) {
 			q.setParameter("dt", new Date());
+		}
+		
+		if(!StringUtils.isBlank(criteria.getCode())) {
+			qs.append(" and p.sku = :sku");
 		}
 		
 		if(!StringUtils.isBlank(criteria.getProductName())) {
@@ -283,6 +314,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 				
 				StringBuilder qs = new StringBuilder();
 				qs.append("select p from Product as p ");
+				qs.append("join fetch p.merchantStore merch ");
 				qs.append("join fetch p.availabilities pa ");
 				qs.append("join fetch pa.prices pap ");
 				
@@ -401,6 +433,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		StringBuilder qs = new StringBuilder();
 		qs.append("select distinct p from Product as p ");
 		qs.append("join fetch p.availabilities pa ");
+		qs.append("join fetch p.merchantStore merch ");
 		qs.append("join fetch p.descriptions pd ");
 		qs.append("join fetch pa.prices pap ");
 		qs.append("join fetch pap.descriptions papd ");
