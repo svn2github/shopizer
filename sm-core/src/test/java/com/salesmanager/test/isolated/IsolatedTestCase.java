@@ -20,22 +20,15 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
-
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.infinispan.Cache;
-import org.infinispan.configuration.cache.CacheMode;
-import org.infinispan.configuration.cache.ConfigurationBuilder;
-import org.infinispan.configuration.global.GlobalConfigurationBuilder;
 import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.tree.Fqn;
 import org.infinispan.tree.Node;
 import org.infinispan.tree.TreeCache;
 import org.infinispan.tree.TreeCacheFactory;
-import org.jgroups.util.Util;
-
-
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,10 +41,10 @@ import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
+import com.salesmanager.core.business.catalog.product.model.ProductList;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
-import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
-import com.salesmanager.core.business.catalog.product.model.image.ProductImageDescription;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
@@ -66,6 +59,7 @@ import com.salesmanager.core.business.catalog.product.service.image.ProductImage
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
 import com.salesmanager.core.business.catalog.product.service.price.ProductPriceService;
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
+import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.util.EntityManagerUtils;
@@ -86,7 +80,6 @@ import com.salesmanager.core.business.user.model.User;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
 import com.salesmanager.core.business.user.service.UserService;
-import com.salesmanager.core.modules.cms.OutputContentImage;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.test.core.SalesManagerCoreTestExecutionListener;
 
@@ -233,40 +226,36 @@ public class IsolatedTestCase {
 
   }
   
+  
   @Test
-  public void testAjaxResponseObject() throws Exception {
+  public void testSearchProduct() throws ServiceException {
+	  
+	  MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
+	  Language en = languageService.getByCode("en");
+	  
+	  ProductCriteria criteria = new ProductCriteria();
+	  criteria.setStartIndex(0);
+	  criteria.setMaxCount(75);
+	  
+	  Set<Long> categoryIds = new HashSet<Long>();
+	  categoryIds.add(1L);
+	  categoryIds.add(2L);
+	  categoryIds.add(3L);
+	  categoryIds.add(5L);
+	  categoryIds.add(4L);
+	  
+	  criteria.setAvailable(new Boolean(false));
+	  
+	  criteria.setCategoryIds(categoryIds);
+	  
+	  ProductList l = productService.listByStore(store, en, criteria);
 	  
 	  
-
-		AjaxResponse resp = new AjaxResponse();
-		
-		Language en = languageService.getByCode("en");
-		MerchantStore store = merchantService.getMerchantStore(MerchantStore.DEFAULT_STORE);
-		
-		List<Category> categories = categoryService.listByStore(store,en);
-		
-		for(Category category : categories) {
-			
-			Map entry = new HashMap();
-			entry.put("categoryId", category.getId());
-			
-			CategoryDescription description = category.getDescriptions().get(0);
-			
-			entry.put("name", description.getName());
-			entry.put("visible", category.isVisible());
-			resp.addDataEntry(entry);
-			
-			
-		}
-		
-		resp.setStatus(0);
-		
-		System.out.println(resp.toJSONString());
-		
-
-	  
+	  System.out.println("done");
 	  
   }
+  
+
   
   @Test
   public void testGetMerchant() throws ServiceException {
