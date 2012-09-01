@@ -133,6 +133,9 @@ response.setDateHeader ("Expires", -1);
 			$("#catalogue-products-create-link").click(function() {
 				window.location='<c:url value="/admin/products/product.html" />';
 			});
+			$("#catalogue-link").click(function() {
+				window.location='<c:url value="/admin/products/products.html" />';
+			});
 			$("#catalogue-categories-list-link").click(function() {
 				window.location='<c:url value="/admin/categories/categories.html" />';
 			});
