@@ -1,43 +1,66 @@
 package com.salesmanager.web.admin.controller.products;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.category.model.Category;
+import com.salesmanager.core.business.catalog.category.service.CategoryService;
+import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
+import com.salesmanager.core.business.catalog.product.model.ProductList;
+import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
+import com.salesmanager.core.business.catalog.product.service.ProductService;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
+import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
 public class ProductsController {
 	
+	@Autowired
+	CategoryService categoryService;
+	
+	@Autowired
+	ProductService productService;
+	
+	@Autowired
+	LabelUtils messages;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProductsController.class);
 	
 	
 	@RequestMapping(value="/admin/products/products.html", method=RequestMethod.GET)
-	public String displayProducts(Model model, HttpServletRequest request, HttpServletResponse response) {
+	public String displayProducts(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		
-		//get categories
+		setMenu(model,request);
 		
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
 		
+		List<Category> categories = categoryService.listByStore(store, language);
 		
-		//display menu
-		Map<String,String> activeMenus = new HashMap<String,String>();
-		activeMenus.put("catalogue", "catalogue");
-		activeMenus.put("catalogue-products", "catalogue-products");
-		
-		Map menus = (Map)request.getAttribute("MENUMAP");
-		
-		Menu currentMenu = (Menu)menus.get("catalogue");
-		model.addAttribute("currentMenu",currentMenu);
-		model.addAttribute("activeMenus",activeMenus);
-		//
+		model.addAttribute("categories", categories);
 		
 		return "admin-products";
 		
@@ -45,48 +68,166 @@ public class ProductsController {
 
 	
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(value="/admin/products/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageProducts(HttpServletRequest request, HttpServletResponse response) {
+		
+		//TODO what if ROOT
+		
 		String categoryId = request.getParameter("categoryId");
+		String sku = request.getParameter("sku");
+		String available = request.getParameter("available");
 		String searchTerm = request.getParameter("searchTerm");
 		
-		String startRow = request.getParameter("_startRow");
-		String endRow = request.getParameter("_endRow");
 		
-		String totalRows = "180";
+		AjaxPageableResponse resp = new AjaxPageableResponse();
 		
-
+		try {
+			
 		
-		if(searchTerm!=null) {
-			totalRows="6";
-		}
-		//get sub category & sub categories for input categoryId
-		
-		//get products using startRow and endRow
-		
-		//populate response object which has to be converted to JSON 
-		
-		//will receive name and sku as filter elements
-		
-		
-		System.out.println(request.getParameter("categoryId"));
-
-		StringBuilder res = new StringBuilder().append("{ response:{     status:0,     startRow:" + startRow + ",     endRow:" + endRow + ",     totalRows:" + totalRows + ",     data:" +
-				"[           ");
-		
-				for(int i = Integer.parseInt(startRow); i < Integer.parseInt(endRow); i++) {
-					
-					
-					res.append("{name:\"" + i + "\",sku:\"1wsd5\",cost:\"$29.99\",units:12,categoryIds:[{categoryId:188,categoryId:264,categoryId:4}]}");
-					if(i < Integer.parseInt(endRow)) {
-						res.append(",");
+			int startRow = Integer.parseInt(request.getParameter("_startRow"));
+			int endRow = Integer.parseInt(request.getParameter("_endRow"));
+			
+			Language language = (Language)request.getAttribute("LANGUAGE");
+			MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+			
+			
+			if(!StringUtils.isBlank(categoryId)) {
+				
+				//get other filters
+				Long lcategoryId = 0L;
+				try {
+					lcategoryId = Long.parseLong(categoryId);
+				} catch (Exception e) {
+					LOGGER.error("Product page cannot parse categoryId " + categoryId );
+					resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+					String returnString = resp.toJSONString();
+					return returnString;
+				} 
+				
+				
+				ProductCriteria criteria = new ProductCriteria();
+				
+				criteria.setStartIndex(startRow);
+				criteria.setMaxCount(endRow);
+				
+				if(lcategoryId>0) {
+				
+					Category category = categoryService.getById(lcategoryId);
+	
+					if(category==null || category.getMerchantSore().getId()!=store.getId()) {
+						resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+						String returnString = resp.toJSONString();
+						return returnString;
 					}
+					
+					//get all sub categories
+					List<Category> categories = categoryService.listByLineage(store, category.getLineage());
+					
+					Set<Long> categoryIds = new HashSet<Long>();
+					
+					for(Category cat : categories) {
+						
+						categoryIds.add(cat.getId());
+					}
+					
+					criteria.setCategoryIds(categoryIds);
+				
+				}
+				
+				//TODO other possible filters (SKU, AVAILABLE)
+				
+				ProductList productList = productService.listByStore(store, language, criteria);
+				
+				List<Product> plist = productList.getProducts();
+				
+				for(Product product : plist) {
+					
+					Map entry = new HashMap();
+					entry.put("productId", product.getId());
+					
+					ProductDescription description = product.getDescriptions().iterator().next();
+					
+					entry.put("name", description.getName());
+					entry.put("sku", product.getSku());
+					entry.put("available", product.getAvailable());
+					resp.addDataEntry(entry);
+					
+					
+					
 				}
 
-				res.append("]   } }");
 				
+			}
 
-			return res.toString();
+			resp.setStatus(AjaxPageableResponse.RESPONSE_OPERATION_COMPLETED);
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while paging products", e);
+			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		return returnString;
+
+	}
+	
+	@RequestMapping(value="/admin/products/remove.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String deleteProduct(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		String sid = request.getParameter("productId");
+
+		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		
+		AjaxResponse resp = new AjaxResponse();
+
+		
+		try {
+			
+			Long id = Long.parseLong(sid);
+			
+			Product product = productService.getById(id);
+			
+			if(product==null || product.getMerchantStore().getId()!=store.getId()) {
+
+				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
+				
+			} else {
+				
+				productService.removeProduct(product);
+				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+				
+			}
+		
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while deleting category", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
+	}
+	
+	
+	private void setMenu(Model model, HttpServletRequest request) throws Exception {
+		
+		//display menu
+		Map<String,String> activeMenus = new HashMap<String,String>();
+		activeMenus.put("catalogue", "catalogue");
+		activeMenus.put("catalogue-products", "catalogue-products");
+		
+		@SuppressWarnings("unchecked")
+		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
+		
+		Menu currentMenu = (Menu)menus.get("catalogue");
+		model.addAttribute("currentMenu",currentMenu);
+		model.addAttribute("activeMenus",activeMenus);
+		//
+		
 	}
 	
 }

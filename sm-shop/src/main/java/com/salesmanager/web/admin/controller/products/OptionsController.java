@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -14,8 +15,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
@@ -45,6 +49,25 @@ public class OptionsController {
 		
 		setMenu(model,request);
 
+
+
+		
+		return "catalogue-options-list";
+		
+		
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value="/admin/options/editOption.html", method=RequestMethod.GET)
+	public @ResponseBody String displayOptionEdit(@RequestParam("id") long optionId, HttpServletRequest request, HttpServletResponse response) {
+
+
+		return null;
+		
+	}
+	
+	private String displayOption(Long optionId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		List<Language> languages = languageService.list();//TODO get supported languages from MerchantStore
 		//List<Language> languages = store.getLanguages();
 		
@@ -66,12 +89,77 @@ public class OptionsController {
 
 	
 		model.addAttribute("option", option);
+		
+		return null;
+		
+		
+	}
+		
+	
+	
+	@RequestMapping(value="/admin/options/save.html", method=RequestMethod.POST)
+	public String saveOption(@Valid @ModelAttribute("option") ProductOption option, BindingResult result, Model model, HttpServletRequest request) throws Exception {
+		
+		
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		
+		//display menu
+		setMenu(model,request);
+		
+		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+				
+
+		if(option.getId() != null && option.getId() >0) { //edit entry
+			
+			//get from DB
+			ProductOption currentEntity = productOptionService.getById(store,option.getId());
+			
+			if(currentEntity==null) {
+				return "catalogue-options-list";
+			}
+			
+
+			
+		}
+
+			
+		Map<String,Language> langs = languageService.getLanguagesMap();
+			
+
+		List<ProductOptionDescription> descriptions = option.getDescriptions();
+		if(descriptions!=null) {
+				
+				for(ProductOptionDescription description : descriptions) {
+					
+					String code = description.getLanguage().getCode();
+					Language l = langs.get(code);
+					description.setLanguage(l);
+					description.setProductOption(option);
+					
+					
+				}
+				
+		}
+			
+
+		option.setMerchantSore(store);
 
 		
-		return "catalogue-options";
+		if (result.hasErrors()) {
+			//TODO set message
+			return "catalogue-options-list";
+		}
+		
+
 		
 		
+		productOptionService.saveOrUpdate(option);
+
+
 		
+
+		model.addAttribute("success","success");
+		return "catalogue-options-list";
 	}
 
 	
@@ -97,8 +185,7 @@ public class OptionsController {
 					
 			if(!StringUtils.isBlank(optionName)) {
 				
-				//todo get options
-				//categoryService.getByName(store, categoryName);
+				productOptionService.getByName(store, optionName, language);
 				
 			} else {
 				
@@ -138,6 +225,9 @@ public class OptionsController {
 		
 		
 	}
+	
+	
+
 	
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {
 		

@@ -1,43 +1,37 @@
-package com.salesmanager.web.admin.controller.categories;
+package com.salesmanager.web.admin.controller.products;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
-import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
+import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
-import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
-public class CategoryController {
+public class ProductController {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(CategoryController.class);
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
 	
 	@Autowired
 	LanguageService languageService;
@@ -46,27 +40,30 @@ public class CategoryController {
 	CategoryService categoryService;
 	
 	@Autowired
+	ProductService productService;
+	
+	@Autowired
 	CountryService countryService;
 	
 	@Autowired
 	LabelUtils messages;
 
 	
-	@RequestMapping(value="/admin/categories/editCategory.html", method=RequestMethod.GET)
-	public String displayCategoryEdit(@RequestParam("id") long categoryId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return displayCategory(categoryId,model,request,response);
+	@RequestMapping(value="/admin/products/editProduct.html", method=RequestMethod.GET)
+	public String displayProductEdit(@RequestParam("id") long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return displayProduct(productId,model,request,response);
 
 	}
 	
-	@RequestMapping(value="/admin/categories/createCategory.html", method=RequestMethod.GET)
-	public String displayCategoryCreate(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return displayCategory(null,model,request,response);
+	@RequestMapping(value="/admin/products/createProduct.html", method=RequestMethod.GET)
+	public String displayProductCreate(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return displayProduct(null,model,request,response);
 
 	}
 	
 	
 	
-	private String displayCategory(Long categoryId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private String displayProduct(Long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 
 
@@ -83,17 +80,17 @@ public class CategoryController {
 		
 
 
-		Category category = new Category();
+/*		Category category = new Category();
 	
 
 		
 		
-		if(categoryId!=null && categoryId!=0) {//edit mode
+		if(productId!=null && productId!=0) {//edit mode
 			
 			//get from DB
-			category = categoryService.getById(categoryId);
+			category = categoryService.getById(store,categoryId);
 			
-			if(category==null || category.getMerchantSore().getId()!=store.getId()) {
+			if(category==null) {
 				return "catalogue-categories";
 			}
 
@@ -132,18 +129,17 @@ public class CategoryController {
 
 		
 		model.addAttribute("category", category);
-		model.addAttribute("categories", categories);
+		model.addAttribute("categories", categories);*/
 		
 
 		
 		return "catalogue-categories-category";
 	}
 	
-	
+/*	
 	@RequestMapping(value="/admin/categories/save.html", method=RequestMethod.POST)
 	public String saveCategory(@Valid @ModelAttribute("category") Category category, BindingResult result, Model model, HttpServletRequest request) throws Exception {
 		
-		//TODO Null Pointer exception
 		
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		
@@ -156,9 +152,9 @@ public class CategoryController {
 		if(category.getId() != null && category.getId() >0) { //edit entry
 			
 			//get from DB
-			Category currentCategory = categoryService.getById(category.getId());
+			Category currentCategory = categoryService.getById(store,category.getId());
 			
-			if(currentCategory==null || category.getMerchantSore().getId()!=store.getId()) {
+			if(currentCategory==null) {
 				return "catalogue-categories";
 			}
 			
@@ -226,9 +222,9 @@ public class CategoryController {
 		model.addAttribute("success","success");
 		return "catalogue-categories-category";
 	}
+	*/
 	
-	
-	//category list
+/*	//category list
 	@RequestMapping(value="/admin/categories/categories.html", method=RequestMethod.GET)
 	public String displayCategories(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -239,11 +235,13 @@ public class CategoryController {
 		//does nothing, ajax subsequent request
 		
 		return "catalogue-categories";
-	}
+	}*/
+	
+	/*
 	
 	@SuppressWarnings({ "unchecked"})
-	@RequestMapping(value="/admin/categories/paging.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String pageCategories(HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value="/admin/products/paging.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String pageProducts(HttpServletRequest request, HttpServletResponse response) {
 		String categoryName = request.getParameter("name");
 
 
@@ -281,7 +279,6 @@ public class CategoryController {
 				CategoryDescription description = category.getDescriptions().get(0);
 				
 				entry.put("name", description.getName());
-				entry.put("code", category.getCode());
 				entry.put("visible", category.isVisible());
 				resp.addDataEntry(entry);
 				
@@ -301,161 +298,14 @@ public class CategoryController {
 		
 		return returnString;
 	}
-	
-	@RequestMapping(value="/admin/categories/hierarchy.html", method=RequestMethod.GET)
-	public String displayCategoryHierarchy(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-		
-		
-		setMenu(model,request);
-		
-		//get the list of categories
-		Language language = (Language)request.getAttribute("LANGUAGE");
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
-		
-		List<Category> categories = categoryService.listByStore(store, language);
-		
-		model.addAttribute("categories", categories);
-		
-		return "catalogue-categories-hierarchy";
-	}
-	
-
-	@RequestMapping(value="/admin/categories/remove.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String deleteCategory(HttpServletRequest request, HttpServletResponse response, Locale locale) {
-		String sid = request.getParameter("categoryId");
-
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
-		
-		AjaxResponse resp = new AjaxResponse();
-
-		
-		try {
-			
-			Long id = Long.parseLong(sid);
-			
-			Category category = categoryService.getById(id);
-			
-			if(category==null || category.getMerchantSore().getId()!=store.getId()) {
-
-				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
-				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
-				
-			} else {
-				
-				categoryService.delete(category);
-				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
-				
-			}
-		
-		
-		} catch (Exception e) {
-			LOGGER.error("Error while deleting category", e);
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-			resp.setErrorMessage(e);
-		}
-		
-		String returnString = resp.toJSONString();
-		
-		return returnString;
-	}
-	
-	@RequestMapping(value="/admin/categories/moveCategory.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String moveCategory(HttpServletRequest request, HttpServletResponse response, Locale locale) {
-		String parentid = request.getParameter("parentId");
-		String childid = request.getParameter("childId");
-
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
-		
-		AjaxResponse resp = new AjaxResponse();
-
-		
-		try {
-			
-			Long parentId = Long.parseLong(parentid);
-			Long childId = Long.parseLong(childid);
-			
-			Category child = categoryService.getById(childId);
-			Category parent = categoryService.getById(parentId);
-			
-			//TODO move under ROOT
-			
-			if(child==null || parent==null || child.getMerchantSore().getId()!=store.getId() || parent.getMerchantSore().getId()!=store.getId()) {
-				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
-				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-				return resp.toJSONString();
-			}
-			
-			if(child.getMerchantSore().getId()!=store.getId() || parent.getMerchantSore().getId()!=store.getId()) {
-				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
-				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-				return resp.toJSONString();
-			}
-			
-
-			
-			categoryService.addChild(parent, child);
-			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
-
-		} catch (Exception e) {
-			LOGGER.error("Error while moving category", e);
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-			resp.setErrorMessage(e);
-		}
-		
-		String returnString = resp.toJSONString();
-		
-		return returnString;
-	}
-	
-	@RequestMapping(value="/admin/categories/checkCategoryCode.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String checkCategoryCode(HttpServletRequest request, HttpServletResponse response, Locale locale) {
-		String code = request.getParameter("code");
-
-
-
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
-		
-		AjaxResponse resp = new AjaxResponse();
-
-	
-		try {
-			
-			if(StringUtils.isBlank(code)) {
-				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
-				return resp.toJSONString();
-			}
-
-			
-			Category category = categoryService.getByCode(store, code);
-
-			if(category!=null) {
-				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
-				return resp.toJSONString();
-			}
-			
-
-			
-
-			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
-
-		} catch (Exception e) {
-			LOGGER.error("Error while getting category", e);
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-			resp.setErrorMessage(e);
-		}
-		
-		String returnString = resp.toJSONString();
-		
-		return returnString;
-	}
+	*/
 	
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {
 		
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("catalogue", "catalogue");
-		activeMenus.put("catalogue-categories", "catalogue-categories");
+		activeMenus.put("catalogue-products", "catalogue-products");
 		
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
@@ -466,5 +316,6 @@ public class CategoryController {
 		//
 		
 	}
+	
 
 }
