@@ -23,7 +23,7 @@ public class AjaxResponse implements JSONAware {
 	public void setStatus(int status) {
 		this.status = status;
 	}
-	public List<Map<String,String>> getData() {
+	protected List<Map<String,String>> getData() {
 		return data;
 	}
 	
@@ -64,7 +64,6 @@ public class AjaxResponse implements JSONAware {
 	
 	@Override
 	public String toJSONString() {
-		// TODO Auto-generated method stub
 		StringBuilder returnString = new StringBuilder();
 		
 		returnString.append(getJsonInfo());

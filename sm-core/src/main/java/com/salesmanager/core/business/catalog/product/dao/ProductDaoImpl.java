@@ -134,7 +134,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		}
 		
 		if(!StringUtils.isBlank(criteria.getCode())) {
-			countBuilderWhere.append(" and p.sku = :sku");
+			countBuilderWhere.append(" and p.sku like :sku");
 		}
 		
 		if(criteria.getAvailable()!=null) {
@@ -160,7 +160,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		}
 		
 		if(!StringUtils.isBlank(criteria.getCode())) {
-			countQ.setParameter("sku", criteria.getCode());
+			countQ.setParameter("sku", "%" + criteria.getCode() + "%");
 		}
 		
 		if(!StringUtils.isBlank(criteria.getProductName())) {
@@ -217,7 +217,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		}
 		
 		if(!StringUtils.isBlank(criteria.getCode())) {
-			qs.append(" and p.sku = :sku");
+			qs.append(" and p.sku like :sku");
 		}
 
 
@@ -239,7 +239,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		}
 		
 		if(!StringUtils.isBlank(criteria.getCode())) {
-			qs.append(" and p.sku = :sku");
+			q.setParameter("sku", "%" + criteria.getCode() + "%");
 		}
 		
 		if(!StringUtils.isBlank(criteria.getProductName())) {
@@ -250,14 +250,30 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
     		
     		
 	    	q.setFirstResult(criteria.getStartIndex());
-	    	if(criteria.getMaxCount()>0) {
-	    			int maxCount = criteria.getStartIndex() + criteria.getMaxCount();
-	    			if(maxCount < count.intValue()) {
-	    				q.setMaxResults(maxCount);
-	    			} else {
-	    				q.setMaxResults(count.intValue());
-	    			}
+	    	if(criteria.getMaxCount()<count.intValue()) {
+	    		q.setMaxResults(criteria.getMaxCount());
+	    		productList.setTotalCount(criteria.getMaxCount());
 	    	}
+	    	else {
+	    		q.setMaxResults(count.intValue());
+	    		productList.setTotalCount(count.intValue());
+	    	}
+	    	//if(criteria.getMaxCount()>0) {
+	    	//		int interval = criteria.getMaxCount() - criteria.getStartIndex();
+	    	//
+	    	//		if(count.intValue()<interval) {
+	    				
+	    	//			q.setMaxResults(count.intValue());
+	    	//		} else {
+	    				
+	    	//		}
+	    			//int maxCount = criteria.getStartIndex() + criteria.getMaxCount();
+	    			//if(maxCount < count.intValue()) {
+	    			//	q.setMaxResults(maxCount);
+	    			//} else {
+	    			//	q.setMaxResults(count.intValue());
+	    			//}
+	    	//}
     	}
     	
     	@SuppressWarnings("unchecked")

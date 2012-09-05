@@ -269,24 +269,40 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	public void addChild(Category parent, Category child) throws ServiceException {
 		
 		
-		if(parent==null || parent.getId()==null || child==null || child.getMerchantSore()==null) {
-			throw new ServiceException("Parent category, Child category and merchant store should not be null");
+		if(child==null || child.getMerchantSore()==null) {
+			throw new ServiceException("Child category and merchant store should not be null");
 		}
 		
 		try {
 			
-			Category p = this.getById(parent.getId());
+			if(parent==null) {
+				
+				//assign to root
+				child.setParent(null);
+				child.setDepth(0);
+				child.setLineage(new StringBuilder().append("/").append(child.getId()).append("/").toString());
+				
+			} else {
+				
+				Category p = this.getById(parent.getId());
+				
+				
+
+				
+				String lineage = p.getLineage();
+				int depth = p.getDepth();//TODO sometimes null
+				
+				child.setParent(p);
+				child.setDepth(depth+1);
+				child.setLineage(new StringBuilder().append(lineage).append(child.getId()).append("/").toString());
+				
+				
+			}
+			
+
+			update(child);
 			
 			List<Category> subCategories = listByLineage(child.getMerchantSore(), child.getLineage());
-
-			
-			String lineage = p.getLineage();
-			int depth = p.getDepth();//TODO sometimes null
-			
-			child.setParent(p);
-			child.setDepth(depth+1);
-			child.setLineage(new StringBuilder().append(lineage).append(child.getId()).append("/").toString());
-			update(child);
 			
 			
 			//ajust all sub categories lineages
