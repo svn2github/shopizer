@@ -47,12 +47,8 @@
 									],
 									transformResponse : function (dsResponse, dsRequest, jsonData) {
 										var status = isc.XMLTools.selectObjects(jsonData, "/response/status");
-										if (status != 0) {
-											if(status==9999) {//operation completed
-												//reload 
-												//categoriesList.fetchData();
-												window.location='<c:url value="/admin/products/products.html" />';
-											}
+
+										if (status != 0 && status !=9999) {
 
 											var msg = isc.XMLTools.selectObjects(jsonData, "/response/statusMessage");
 
@@ -113,7 +109,7 @@
 										{title:"<s:message code="label.entity.id" text="Id"/>", name:"productId", canFilter:false},
 										{title:"<s:message code="label.entity.name" text="Name"/>", name:"name"},
 										{title:"<s:message code="label.product.sku" text="Sku"/>", name:"sku"},
-										{title:"<s:message code="label.product.available" text="Available"/>", name:"available"},
+										{title:"<s:message code="label.product.available" text="Available"/>", name:"available",type:"boolean"},
 										//{title:"<s:message code="label.quantity" text="Quantity"/>", name:"quantity", canFilter:false},
 										{title:"<s:message code="label.entity.details" text="Details"/>", name: "buttonField", align: "center",canFilter:false,canSort:false, canReorder:false}  
 

@@ -83,8 +83,7 @@
   											success: function(response) { 
   												var msg = isc.XMLTools.selectObjects(response, "/response/statusMessage");
   												var status = isc.XMLTools.selectObjects(response, "/response/status");
-  												alert(status);
-  												alert(msg);
+
   												
   												if(status==0 || status ==9999) {
   													categoryTree.removeData(record);
