@@ -155,7 +155,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	public Product getById(Long id) {
 		
 		
-		return productDao.getById(id);
+		return productDao.getProductById(id);
 	}
 	
 	
@@ -163,6 +163,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	public void removeProduct(Product product) throws ServiceException {
 		
 		
+		product = this.getById(product.getId());//Prevents detached entity error
 		product.setCategories(null);
 		
 		Set<ProductImage> images = product.getImages();

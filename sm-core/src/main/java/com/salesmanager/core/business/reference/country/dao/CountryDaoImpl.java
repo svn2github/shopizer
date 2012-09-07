@@ -25,7 +25,8 @@ public class CountryDaoImpl extends SalesManagerEntityDaoImpl<Integer, Country> 
 		
 		query.from(qCountry)
 			.leftJoin(qCountry.descriptions, qDescription).fetch()
-			.where(qDescription.language.id.eq(language.getId()));
+			.where(qDescription.language.id.eq(language.getId()))
+			.orderBy(qDescription.name.asc());
 		
 
 		

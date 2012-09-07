@@ -443,7 +443,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 	}
 	
 	@Override
-	public Product getById(long productId) {
+	public Product getProductById(long productId) {
 
 
 		StringBuilder qs = new StringBuilder();

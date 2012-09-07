@@ -26,7 +26,7 @@ public interface ProductDao extends SalesManagerEntityDao<Long, Product> {
 	@SuppressWarnings("rawtypes")
 	List<Product> getProductsListByCategories(Set categoryIds);
 
-	Product getById(long productId);
+	Product getProductById(long productId);
 
 	/**
 	 * Method to be used for getting a list of products in a given language based on one to many criteria

@@ -9,6 +9,9 @@ import javax.persistence.criteria.Order;
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
+import com.salesmanager.core.business.reference.country.model.Country;
+import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.zone.model.Zone;
 
 
 /**
@@ -92,5 +95,7 @@ public interface SalesManagerEntityDao<K extends Serializable & Comparable<K>, E
 	<T extends E> List<T> list(Class<T> objectClass, Expression<Boolean> filter, Integer limit, Integer offset, Order... orders);
 
 	Long count(Expression<Boolean> filter);
+
+	
 
 }

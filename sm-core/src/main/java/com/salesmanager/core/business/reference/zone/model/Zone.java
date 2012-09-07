@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Transient;
 
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.reference.country.model.Country;
@@ -37,6 +38,10 @@ public class Zone extends SalesManagerEntity<Long, Zone>{
 	@ManyToOne
 	@JoinColumn(name="COUNTRY_ID", nullable = false)
 	private Country country;
+	
+	@Transient
+	private String name;
+	
 
 	
 	@Column(name = "ZONE_CODE", unique=true, nullable = false)
@@ -84,6 +89,14 @@ public class Zone extends SalesManagerEntity<Long, Zone>{
 
 	public void setDescriptons(List<ZoneDescription> descriptions) {
 		this.descriptions = descriptions;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }
