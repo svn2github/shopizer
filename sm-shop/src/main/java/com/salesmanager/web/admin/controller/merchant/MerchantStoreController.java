@@ -65,10 +65,6 @@ public class MerchantStoreController {
 		if (result.hasErrors()) {
 			return "admin/merchant/merchant";
 		}
-		
-
-		System.out.println(store.getStorename());
-		
 
 		
 		//model.addAttribute("store", store);

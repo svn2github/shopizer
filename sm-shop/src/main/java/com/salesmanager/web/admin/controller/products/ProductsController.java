@@ -91,8 +91,13 @@ public class ProductsController {
 			Language language = (Language)request.getAttribute("LANGUAGE");
 			MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
 			
+			ProductCriteria criteria = new ProductCriteria();
 			
-			if(!StringUtils.isBlank(categoryId)) {
+			criteria.setStartIndex(startRow);
+			criteria.setMaxCount(endRow);
+			
+			
+			if(!StringUtils.isBlank(categoryId) && !categoryId.equals("-1")) {
 				
 				//get other filters
 				Long lcategoryId = 0L;
@@ -106,11 +111,7 @@ public class ProductsController {
 				} 
 				
 				
-				ProductCriteria criteria = new ProductCriteria();
-				
-				criteria.setStartIndex(startRow);
-				criteria.setMaxCount(endRow);
-				
+
 				if(lcategoryId>0) {
 				
 					Category category = categoryService.getById(lcategoryId);
@@ -127,40 +128,51 @@ public class ProductsController {
 					Set<Long> categoryIds = new HashSet<Long>();
 					
 					for(Category cat : categories) {
-						
 						categoryIds.add(cat.getId());
 					}
-					
 					criteria.setCategoryIds(categoryIds);
 				
 				}
 				
-				//TODO other possible filters (SKU, AVAILABLE)
-				
-				ProductList productList = productService.listByStore(store, language, criteria);
-				
-				List<Product> plist = productList.getProducts();
-				
-				for(Product product : plist) {
-					
-					Map entry = new HashMap();
-					entry.put("productId", product.getId());
-					
-					ProductDescription description = product.getDescriptions().iterator().next();
-					
-					entry.put("name", description.getName());
-					entry.put("sku", product.getSku());
-					entry.put("available", product.getAvailable());
-					resp.addDataEntry(entry);
-					
-					
-					
-				}
+
 
 				
 			}
+			
+			if(!StringUtils.isBlank(sku)) {
+				criteria.setCode(sku);
+			}
+			
+			if(!StringUtils.isBlank(available)) {
+				if(available.equals("true")) {
+					criteria.setAvailable(new Boolean(true));
+				} else {
+					criteria.setAvailable(new Boolean(false));
+				}
+			}
+			
+			ProductList productList = productService.listByStore(store, language, criteria);
+			resp.setEndRow(productList.getTotalCount());
+			resp.setStartRow(startRow);
+			List<Product> plist = productList.getProducts();
+			
+			for(Product product : plist) {
+				
+				Map entry = new HashMap();
+				entry.put("productId", product.getId());
+				
+				ProductDescription description = product.getDescriptions().iterator().next();
+				
+				entry.put("name", description.getName());
+				entry.put("sku", product.getSku());
+				entry.put("available", product.getAvailable());
+				resp.addDataEntry(entry);
+				
+				
+				
+			}
 
-			resp.setStatus(AjaxPageableResponse.RESPONSE_OPERATION_COMPLETED);
+			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_SUCCESS);
 		
 		} catch (Exception e) {
 			LOGGER.error("Error while paging products", e);
@@ -170,6 +182,7 @@ public class ProductsController {
 		
 		String returnString = resp.toJSONString();
 		return returnString;
+
 
 	}
 	
@@ -187,7 +200,7 @@ public class ProductsController {
 			Long id = Long.parseLong(sid);
 			
 			Product product = productService.getById(id);
-			
+
 			if(product==null || product.getMerchantStore().getId()!=store.getId()) {
 
 				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
@@ -196,13 +209,13 @@ public class ProductsController {
 			} else {
 				
 				productService.removeProduct(product);
-				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
 				
 			}
 		
 		
 		} catch (Exception e) {
-			LOGGER.error("Error while deleting category", e);
+			LOGGER.error("Error while deleting product", e);
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 			resp.setErrorMessage(e);
 		}

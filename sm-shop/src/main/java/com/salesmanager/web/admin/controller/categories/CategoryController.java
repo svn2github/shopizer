@@ -378,18 +378,26 @@ public class CategoryController {
 			Category child = categoryService.getById(childId);
 			Category parent = categoryService.getById(parentId);
 			
-			//TODO move under ROOT
-			
-			if(child==null || parent==null || child.getMerchantSore().getId()!=store.getId() || parent.getMerchantSore().getId()!=store.getId()) {
-				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
-				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			if(child.getParent().getId()==parentId) {
+				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 				return resp.toJSONString();
 			}
+
+			if(parentId!=1) {
 			
-			if(child.getMerchantSore().getId()!=store.getId() || parent.getMerchantSore().getId()!=store.getId()) {
-				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
-				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-				return resp.toJSONString();
+				if(child==null || parent==null || child.getMerchantSore().getId()!=store.getId() || parent.getMerchantSore().getId()!=store.getId()) {
+					resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
+					
+					resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+					return resp.toJSONString();
+				}
+				
+				if(child.getMerchantSore().getId()!=store.getId() || parent.getMerchantSore().getId()!=store.getId()) {
+					resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
+					resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+					return resp.toJSONString();
+				}
+			
 			}
 			
 
