@@ -54,15 +54,23 @@ response.setDateHeader ("Expires", -1);
 
 	<div class="container"> 
 		<div class="row">
+
+  			<div class="span4"><a class="brand" href="#"><img src="<c:url value="/resources/img/shopizer_small.jpg" />"/></a></div>
+
+  			<div class="span4 offset4">
+
+					<div class="btn-group pull-right">
+						<c:url value="/j_spring_security_logout" var="logoutUrl"/>
+						<a href="${logoutUrl}"><s:message code="button.label.logout" text="Logout" /></a>
+					</div>
+
+  			</div>
+
+
+   
 		
-			<div class="span12">
-				<img src="<c:url value="/resources/img/shopizer_small.jpg" />"/>
-			
-			</div>
-			<div class="span12">
-				&nbsp;
-			</div>
-			
+		</div>
+		<div class="row">	
 		
 			<div class="span3">
 				<ul class="nav nav-list">
@@ -132,9 +140,6 @@ response.setDateHeader ("Expires", -1);
 			
 			$("#catalogue-products-create-link").click(function() {
 				window.location='<c:url value="/admin/products/product.html" />';
-			});
-			$("#catalogue-link").click(function() {
-				window.location='<c:url value="/admin/products/products.html" />';
 			});
 			$("#catalogue-categories-list-link").click(function() {
 				window.location='<c:url value="/admin/categories/categories.html" />';
