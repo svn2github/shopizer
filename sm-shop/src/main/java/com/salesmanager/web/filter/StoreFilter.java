@@ -26,6 +26,7 @@ import com.salesmanager.core.business.reference.language.service.LanguageService
 import com.salesmanager.core.business.system.model.SystemConfiguration;
 import com.salesmanager.core.business.system.service.SystemConfigurationService;
 import com.salesmanager.core.constants.SystemConstants;
+import com.salesmanager.web.admin.security.UserServicesImpl;
 import com.salesmanager.web.constants.ApplicationConstants;
 import com.salesmanager.web.utils.AppConfiguration;
 
@@ -59,6 +60,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	
 	@Autowired
 	private SystemConfigurationService systemConfigurationService;
+	
+	@Autowired
+	private UserServicesImpl userDetailsService;
 	
 
 
@@ -107,7 +111,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 					LOGGER.info(String.format("%s : Shopizer database is empty, populate it....", "sm-shop"));
 			
 					initializationDatabase.populate("sm-shop");
-					
+					userDetailsService.createDefaultAdmin();
 					loadData();
 	
 				}

@@ -21,6 +21,7 @@ import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.language.service.LanguageService;
 
 @Controller
 public class MerchantStoreController {
@@ -30,6 +31,9 @@ public class MerchantStoreController {
 	
 	@Autowired
 	CountryService countryService;
+	
+	@Autowired
+	LanguageService languageService;
 	
 	@RequestMapping(value="/admin/store/store.html", method=RequestMethod.GET)
 	public String displayMerchantStore(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -46,12 +50,15 @@ public class MerchantStoreController {
 		
 		model.addAttribute("store", store);
 		
+		List<Language> languages = languageService.getLanguages();
+		
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("store", "store");
 		
 		model.addAttribute("activeMenus",activeMenus);
 		model.addAttribute("countries", countries);
+		model.addAttribute("languages",languages);
 		
 		return "admin-store";
 	}
