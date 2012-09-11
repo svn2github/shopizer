@@ -44,6 +44,10 @@ public class User extends SalesManagerEntity<Long, User> implements Auditable {
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
 	
+	public User() {
+		
+	}
+	
 	public User(String userName,String password, String email) {
 		
 		this.adminName = userName;

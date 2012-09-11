@@ -5,6 +5,8 @@ import com.salesmanager.core.business.user.model.User;
 
 public interface UserDao extends SalesManagerEntityDao<Long, User> {
 
+	User getByUserName(String userName);
+
 
 
 }

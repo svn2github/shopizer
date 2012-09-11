@@ -72,14 +72,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 	@Autowired
 	private TaxClassService taxClassService;
 	
-	@Autowired
-	UserService userService;
-	
-	@Autowired
-	protected PermissionService    permissionService;
-	
-	@Autowired
-	protected GroupService               groupService;
+
 	
 	private String name;
 	
@@ -97,11 +90,11 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		createCurrencies();
 		createSubReferences();
 		createMerchant();
-		createUser();
+
 
 	}
 	
-	private void createUser() throws ServiceException {
+/*	private void createUser() throws ServiceException {
 		LOGGER.info(String.format("%s : Creating user ", name));
 		
 		
@@ -132,7 +125,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		  user.getGroups().add(admin);
 		  
 		  userService.create(user);
-	}
+	}*/
 
 	private void createCurrencies() throws ServiceException {
 		LOGGER.info(String.format("%s : Populating Currencies ", name));

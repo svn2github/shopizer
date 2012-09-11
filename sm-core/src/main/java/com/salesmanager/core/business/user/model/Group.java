@@ -43,6 +43,10 @@ public class Group extends SalesManagerEntity<Integer, Group> implements Auditab
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Integer id;
 	
+	public Group() {
+		
+	}
+	
 	@NotEmpty
 	@Column(name="GROUP_NAME", unique=true)
 	private String groupName;

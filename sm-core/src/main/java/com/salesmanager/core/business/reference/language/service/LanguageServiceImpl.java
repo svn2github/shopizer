@@ -11,9 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
-import com.salesmanager.core.business.reference.country.model.Country;
-import com.salesmanager.core.business.reference.country.model.CountryDescription;
-import com.salesmanager.core.business.reference.country.service.CountryServiceImpl;
 import com.salesmanager.core.business.reference.language.dao.LanguageDao;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.model.Language_;
@@ -36,7 +33,6 @@ public class LanguageServiceImpl extends SalesManagerEntityServiceImpl<Integer, 
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	public Map<String,Language> getLanguagesMap() throws ServiceException {
 		
 		List<Language> langs = this.getLanguages();

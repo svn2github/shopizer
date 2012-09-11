@@ -33,6 +33,10 @@ public class Permission extends SalesManagerEntity<Integer, Permission> implemen
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Integer id;
 	
+	public Permission() {
+		
+	}
+	
 	public Permission(String permissionName) {
 		this.permissionName = permissionName;
 	}
