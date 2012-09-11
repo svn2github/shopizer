@@ -158,6 +158,20 @@ function getZones(countryCode){
 	                                   			<span class="help-inline"></span>
 	                        </div>
 	                  </div>
+	                  
+	                  
+	                  
+	                  <div class="control-group">
+	                        <label><s:message code="label.supportedlanguages" text="Supported languages"/></label>
+	                        <div class="controls">
+
+	                        					<form:checkboxes items="${languages}" itemValue="id" itemLabel="code" path="languages" /> 
+	                                   			<span class="help-inline"></span>
+	                        </div>
+	                  </div>
+	                  
+	                  
+	                  <!-- weight, height in business since -->
 
 				
 				      <div class="form-actions">
