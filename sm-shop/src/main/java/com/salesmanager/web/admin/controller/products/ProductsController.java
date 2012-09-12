@@ -209,7 +209,7 @@ public class ProductsController {
 			} else {
 				
 				productService.removeProduct(product);
-				resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 				
 			}
 		
