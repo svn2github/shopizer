@@ -55,6 +55,12 @@
 												alert("! " + msg);
 
 										}
+										
+										
+										if(status == 9999) {
+											
+											window.location='<c:url value="/admin/products/products.html" />';
+										}
 									}
 								}); 
 								
