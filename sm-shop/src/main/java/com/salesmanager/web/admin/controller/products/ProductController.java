@@ -1,5 +1,6 @@
 package com.salesmanager.web.admin.controller.products;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
+import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.service.CountryService;
@@ -78,9 +81,48 @@ public class ProductController {
 		//get parent categories
 		List<Category> categories = categoryService.listByStore(store,language);
 		
+		//TODO need a local Product with an array list of descriptions etc...
+		Product product = new Product();
+		
+		if(productId!=null && productId!=0) {//edit mode
+			
+			//get from DB
+			//TODO getById
+			//product = categoryService.getById(store,productId);
+			
+			if(product==null) {
+				return "admin-products";
+			}
 
 
-/*		Category category = new Category();
+		
+			
+		} else {
+			
+			List<Language> languages = languageService.list();//TODO get supported languages from MerchantStore
+			
+
+			List<ProductDescription> descriptions = new ArrayList<ProductDescription>();
+
+			for(Language l : languages) {
+				
+				ProductDescription desc = new ProductDescription();
+				desc.setLanguage(l);
+				descriptions.add(desc);
+				
+			}
+			
+			
+			
+			product.setAvailable(true);
+			//product.setDescriptions(descriptions);
+		
+			
+			
+		}
+
+
+/*		
 	
 
 		
@@ -133,7 +175,7 @@ public class ProductController {
 		
 
 		
-		return "catalogue-categories-category";
+		return "admin-products-edit";
 	}
 	
 /*	

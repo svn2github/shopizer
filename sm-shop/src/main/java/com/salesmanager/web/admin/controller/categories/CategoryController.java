@@ -110,9 +110,7 @@ public class CategoryController {
 			//List<Language> languages = store.getLanguages();
 			
 			List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
-			
-			category = new Category();
-			
+
 			for(Language l : languages) {
 				
 				CategoryDescription desc = new CategoryDescription();
