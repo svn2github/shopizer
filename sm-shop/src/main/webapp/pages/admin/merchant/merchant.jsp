@@ -6,13 +6,15 @@
 <%@ page session="false" %>
 
 
+    <link href="<c:url value="/resources/css/bootstrap/css/datepicker.css" />" rel="stylesheet"></link>
+	<script src="<c:url value="/resources/js/bootstrap/bootstrap-datepicker.js" />"></script>
 
 
 <script>
 
 
 $(document).ready(function() {
-	
+
 	
 	<c:choose>
 	<c:when test="${store.storestateprovince!=null}">
@@ -25,15 +27,7 @@ $(document).ready(function() {
 		getZones('<c:out value="${store.country.isoCode}" />'); 
 	</c:otherwise>
 	</c:choose>
-	
 
-	//alert($(".country-list").val())
-	//$('.zone-list').hide();             
-	//$('#storestateprovince').show(); 
-	//set selected value if zone-list exist
-	//if($('.zone-list')) {
-	//	alert('zone list exist');
-	//}
 	$(".country-list").change(function() {
 
 		getZones($(this).val());
@@ -142,7 +136,6 @@ function getZones(countryCode){
 	                        <div class="controls">
 	                        					
 	                        					<form:select cssClass="country-list" path="country.isoCode">
-					  								<form:option value="-1" label="--- Select ---" />
 					  								<form:options items="${countries}" itemValue="isoCode" itemLabel="name"/>
 				       							</form:select>
 	                                   			<span class="help-inline"><form:errors path="country" cssClass="error" /></span>
@@ -171,9 +164,30 @@ function getZones(countryCode){
 	                  </div>
 	                  
 	                  
-	                  <!-- weight, height in business since -->
+	                  <div class="control-group">
+	                        <label><s:message code="label.store.inbusinesssince" text="Web site operating since"/></label>
+	                        <div class="controls">
 
-				
+	                        					<input id="inBusinessSince" value="${store.inBusinessSince}" class="small" type="text" data-datepicker="datepicker"> 
+	                                   			<span class="help-inline"></span>
+	                        </div>
+	                  </div>
+	                  
+	                  <div class="control-group">
+	                        <label><s:message code="label.store.baseurl" text="Store base url"/></label>
+	                        <div class="controls">
+	                                    <span class="add-on">
+											http://
+										</span>
+										<form:input cssClass="input-large" path="domainName" />
+	                                    <span class="help-inline"><form:errors path="domainName" cssClass="error" /></span>
+	                        </div>
+	                  </div>
+	                  
+	                  
+	                  
+
+
 				      <div class="form-actions">
 	                  		<div class="pull-right">
 	                  			<button type="submit" class="btn btn-action"><s:message code="button.label.submit2" text="Submit"/></button>
@@ -183,5 +197,15 @@ function getZones(countryCode){
 
       					
 				</form:form>
+				
+				
+				
+				
+
+				
+				
+				
+				
+
 
 </div>

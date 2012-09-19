@@ -37,6 +37,7 @@
 	<http auto-config="true" use-expressions="true">
 		<intercept-url pattern="/admin/logon.html*" access="permitAll" />
 		<intercept-url pattern="/admin/*.html" access="hasRole('ADMIN')" />
+		<intercept-url pattern="/admin/*/*.html" access="hasRole('ADMIN')" />
 		<form-login login-page="/admin/logon.html"
 			authentication-failure-url="/admin/logon.html?login_error=true"
 			default-target-url="/admin/home.html" />
