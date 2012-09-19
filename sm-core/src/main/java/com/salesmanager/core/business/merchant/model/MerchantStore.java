@@ -88,7 +88,7 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "IN_BUSINESS_SINCE")
-	private Date inBusinessSince;
+	private Date inBusinessSince = new Date();
 
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Language.class)
 	@JoinColumn(name = "LANGUAGE_ID", nullable=false)
