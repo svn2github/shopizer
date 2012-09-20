@@ -164,15 +164,14 @@
 															path : '/'
 														});
 											}
-
-											if ($('#j_username').val().trim() == '') {
+											if ($.trim($('#j_username').val()) == '') {
 												hasError = true;
 												$('#j_username_help')
 														.html(
 																"<font color='red' size='4'><strong>*</strong></font>");
 											}
 
-											if ($('#j_password').val().trim() == '') {
+											if ($.trim($('#j_password').val()) == '') {
 												hasError = true;
 												$('#j_password_help')
 														.html(
