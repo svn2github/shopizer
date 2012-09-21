@@ -4,7 +4,7 @@
 "code":"home", 
 "icon":"icon-home",
 "url":"/admin/home.html", 
-"roles":["admin","sub-admin"], 
+"roles":["AUTH"], 
 "order":0
 }},
 {
@@ -12,58 +12,80 @@
 "code":"store", 
 "icon":"icon-file",
 "url":"/admin/store/store.html", 
-"roles":["admin","sub-admin"],
+"roles":["AUTH"],
 "order":1
+}},
+{
+"menu":{
+"code":"profile", 
+"icon":"icon-file",
+"url":"/admin/user/user.html", 
+"roles":["AUTH"],
+"order":2,
+"menus":[
+	{"menu":{"code":"users","url":"","roles":["ADMIN"],"order":0}},
+	{"menu":{
+		"code":"security","url":"","roles":["SUPERADMIN"],"order":1,"menus":
+		[
+			{"menu":{
+				"code":"security-permissions","url":"/admin/user/permissions.html","roles":["SUPERADMIN"],"order":0
+			}},
+			{"menu":{
+				"code":"security-groups","url":"/admin/user/groups.html","roles":["SUPERADMIN"],"order":1
+			}}
+		]
+	}}
+]
 }},
 {
 "menu":{
 "code":"catalogue",
 "icon":"icon-tags", 
 "url":"/admin/products/products.html", 
-"roles":["admin","sub-admin"],
-"order":2,
+"roles":["AUTH"],
+"order":3,
 "menus":[
 	{"menu":{
-		"code":"catalogue-products","url":"","roles":["admin","sub-admin"],"order":0,"menus":
+		"code":"catalogue-products","url":"","roles":["AUTH"],"order":0,"menus":
 		[
 			{"menu":{
-				"code":"catalogue-products-create","url":"/admin/products/product.html","roles":["admin","sub-admin"],"order":0
+				"code":"catalogue-products-create","url":"/admin/products/product.html","roles":["AUTH"],"order":0
 			}},
 			{"menu":{
-				"code":"catalogue-products-categories","url":"/admin/products/product-categories.html","roles":["admin","sub-admin"],"order":1
+				"code":"catalogue-products-categories","url":"/admin/products/product-categories.html","roles":["AUTH"],"order":1
 			}},
 			{"menu":{
-				"code":"catalogue","url":"/admin/products/products.html","roles":["admin","sub-admin"],"order":2
+				"code":"catalogue","url":"/admin/products/products.html","roles":["AUTH"],"order":2
 			}}
 		]
 	}},
 	{"menu":{
-		"code":"catalogue-categories","url":"","roles":["admin","sub-admin"],"order":1,"menus":
+		"code":"catalogue-categories","url":"","roles":["AUTH"],"order":1,"menus":
 		[
 			{"menu":{
-				"code":"catalogue-categories-create","url":"/admin/categories/createCategory.html","roles":["admin","sub-admin"],"order":0
+				"code":"catalogue-categories-create","url":"/admin/categories/createCategory.html","roles":["AUTH"],"order":0
 			}},
 			{"menu":{
-				"code":"catalogue-categories-list","url":"/admin/categories/categories.html","roles":["admin","sub-admin"],"order":1
+				"code":"catalogue-categories-list","url":"/admin/categories/categories.html","roles":["AUTH"],"order":1
 			}},
 			{"menu":{
-				"code":"catalogue-categories-hierarchy","url":"/admin/categories/hierarchy.html","roles":["admin","sub-admin"],"order":2
+				"code":"catalogue-categories-hierarchy","url":"/admin/categories/hierarchy.html","roles":["AUTH"],"order":2
 			}}
 		]
 	}},
 	{"menu":{
-		"code":"catalogue-options","url":"","roles":["admin","sub-admin"],"order":2,"menus":
+		"code":"catalogue-options","url":"","roles":["AUTH"],"order":2,"menus":
 		[
 			{"menu":{
-				"code":"catalogue-options-list","url":"/admin/catalogue/options/options.html","roles":["admin","sub-admin"],"order":1
+				"code":"catalogue-options-list","url":"/admin/catalogue/options/options.html","roles":["AUTH"],"order":1
 			}},
 			{"menu":{
-				"code":"catalogue-options-create","url":"/admin/catalogue/options/option.html","roles":["admin","sub-admin"],"order":1
+				"code":"catalogue-options-create","url":"/admin/catalogue/options/option.html","roles":["AUTH"],"order":1
 			}}
 		]
 	}},
 	{"menu":{
-		"code":"catalogue-featured","url":"/admin/catalogue/featured/list.html","roles":["admin","sub-admin"],"order":0
+		"code":"catalogue-featured","url":"/admin/catalogue/featured/list.html","roles":["AUTH"],"order":0
 	}}
 ]
 }},
@@ -72,32 +94,32 @@
 "code":"shipping",
 "icon":"icon-plane", 
 "url":"/admin/shipping/list.html", 
-"roles":["admin","sub-admin"],
-"order":3
+"roles":["AUTH"],
+"order":4
 }},
 {
 "menu":{
 "code":"customer",
 "icon":"icon-user", 
 "url":"/admin/customers/list.html", 
-"roles":["admin","sub-admin"],
-"order":3
+"roles":["AUTH"],
+"order":5
 }},
 {
 "menu":{
 "code":"order",
 "icon":"icon-shopping-cart", 
 "url":"/admin/orders/list.html", 
-"roles":["admin","sub-admin"],
-"order":4
+"roles":["AUTH"],
+"order":6
 }},
 {
 "menu":{
 "code":"configuration",
 "icon":"icon-cog", 
 "url":"/admin/configurations/list.html", 
-"roles":["admin","sub-admin"],
-"order":3
+"roles":["AUTH"],
+"order":7
 }}
 ]}
 
