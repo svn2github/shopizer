@@ -18,7 +18,7 @@
 {
 "menu":{
 "code":"profile", 
-"icon":"icon-file",
+"icon":"icon-info-sign",
 "url":"/admin/user/user.html", 
 "roles":["AUTH"],
 "order":2,
