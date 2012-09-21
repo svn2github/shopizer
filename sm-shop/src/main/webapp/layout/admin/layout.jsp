@@ -169,6 +169,18 @@ response.setDateHeader ("Expires", -1);
 			});
 			
 			
+			
+			$("#users-link").click(function() {
+  				window.location='<c:url value="/admin/user/users.html" />';
+			});
+			$("#security-permissions-link").click(function() {
+  				window.location='<c:url value="/admin/user/permissions.html" />';
+			});
+			$("#security-groups-link").click(function() {
+  				window.location='<c:url value="/admin/user/groups.html" />';
+			});
+			
+			
 
 		}); 
 		
