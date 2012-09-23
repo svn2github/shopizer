@@ -23,7 +23,9 @@
 "roles":["AUTH"],
 "order":2,
 "menus":[
+	{"menu":{"code":"userinfo","url":"","roles":["AUTH"],"order":0}},
 	{"menu":{"code":"users","url":"","roles":["ADMIN"],"order":0}},
+	{"menu":{"code":"create-user","url":"","roles":["ADMIN"],"order":0}},
 	{"menu":{
 		"code":"security","url":"","roles":["SUPERADMIN"],"order":1,"menus":
 		[
@@ -93,7 +95,7 @@
 "menu":{
 "code":"shipping",
 "icon":"icon-plane", 
-"url":"/admin/shipping/list.html", 
+"url":"/admin/shipping/shippingMethods.html", 
 "roles":["AUTH"],
 "order":4
 }},
