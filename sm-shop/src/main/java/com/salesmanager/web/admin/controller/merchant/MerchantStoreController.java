@@ -64,20 +64,27 @@ public class MerchantStoreController {
 	}
 	
 	@RequestMapping(value="/admin/store/save.html", method=RequestMethod.POST)
-	public String saveMenrchantStore(@Valid @ModelAttribute("store") MerchantStore store, BindingResult result, Model model) {
+	public String saveMenrchantStore(@Valid @ModelAttribute("store") MerchantStore store, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		List<Language> languages = languageService.getLanguages();
 		
+		//get countries
+		List<Country> countries = countryService.getCountries(language);
 		
 		if (result.hasErrors()) {
-			return "admin/merchant/merchant";
+			return "admin-store";
 		}
+		
+		//merchantStoreService.update(store);
 
-		
-		//model.addAttribute("store", store);
+
 		model.addAttribute("success","success");
+		model.addAttribute("countries", countries);
+		model.addAttribute("languages",languages);
 		
-		return "admin/merchant/merchant";
+		return "admin-store";
 	}
 
 }

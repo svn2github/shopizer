@@ -15,8 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
-import com.salesmanager.core.business.user.model.Group;
-import com.salesmanager.core.business.user.model.Permission;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
 import com.salesmanager.core.business.user.service.UserService;
@@ -28,8 +26,8 @@ import com.salesmanager.core.business.user.service.UserService;
  *         http://stackoverflow.com/questions/5105776/spring-security-with
  *         -custom-user-details
  */
-@Service("userDetailsService")
-public class UserServicesImpl implements UserDetailsService{
+@Service("customerDetailsService")
+public class CustomerServicesImpl implements UserDetailsService{
 
 	@Autowired
 	private UserService userService;
@@ -95,44 +93,7 @@ public class UserServicesImpl implements UserDetailsService{
 		return user;
 	}
 	
-	
-	public void createDefaultAdmin() throws Exception {
-		
-		  //TODO create all groups and permissions
-		
-		  Permission userperm = new Permission("GRANT_USER");
-		  permissionService.create(userperm);
-		  Permission storeperm = new Permission("GRANT_STORE");
-		  permissionService.create(storeperm);
-		  Permission catalogperm = new Permission("GRANT_CATALOG");
-		  permissionService.create(catalogperm);
-		  Permission orderperm = new Permission("GRANT_ORDER");
-		  permissionService.create(orderperm);
-		  Permission configperm = new Permission("GRANT_CONFIG");
-		  permissionService.create(configperm);
-		  
-		  Group admin = new Group("ADMIN");
-		  
-		  admin.getPermissions().add(userperm);
-		  admin.getPermissions().add(storeperm);
-		  admin.getPermissions().add(catalogperm);
-		  admin.getPermissions().add(orderperm);
-		  admin.getPermissions().add(configperm);
-		  
-		  groupService.create(admin);
 
-		  String password = passwordEncoder.encodePassword("password", null);
-		  
-		  
-		  com.salesmanager.core.business.user.model.User user = new com.salesmanager.core.business.user.model.User("admin",password,"admin@shopizer.com");
-		  user.setFirstName("Administrator");
-		  user.setLastName("User");
-		  user.getGroups().add(admin);
-		  
-		  userService.create(user);
-		
-		
-	}
 
 
 

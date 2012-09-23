@@ -42,6 +42,7 @@ public class ProfileController {
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("profile", "profile");
+		activeMenus.put("userinfo", "userinfo");
 		
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
