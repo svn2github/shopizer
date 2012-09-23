@@ -29,8 +29,12 @@ import com.salesmanager.core.constants.SchemaConstant;
 @EntityListeners(value = AuditListener.class)
 @Table(name = "SYSTEM_NOTIFICATION", schema= SchemaConstant.SALESMANAGER_SCHEMA)
 public class SystemNotification extends SalesManagerEntity<Long, SystemNotification> implements Serializable, Auditable {
-	private static final long serialVersionUID = 6831573162350751684L;
-	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6269172313628887000L;
+
 	@Id
 	@Column(name = "SYSTEM_NOTIF_ID")
 	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "SYST_NOTIF_SEQ_NEXT_VAL")

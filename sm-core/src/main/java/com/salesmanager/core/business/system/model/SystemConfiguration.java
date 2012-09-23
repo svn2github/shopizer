@@ -18,6 +18,11 @@ import com.salesmanager.core.business.common.model.audit.Auditable;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.constants.SchemaConstant;
 
+/**
+ * Global system configuration information
+ * @author casams1
+ *
+ */
 @Entity
 @EntityListeners(value = AuditListener.class)
 @Table(name = "SYSTEM_CONFIGURATION", schema= SchemaConstant.SALESMANAGER_SCHEMA)
@@ -30,7 +35,7 @@ public class SystemConfiguration extends SalesManagerEntity<Long, SystemConfigur
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
 	
-	@Column(name="KEY", unique=true)
+	@Column(name="KEY")
 	private String key;
 	
 	@Column(name="VALUE")
