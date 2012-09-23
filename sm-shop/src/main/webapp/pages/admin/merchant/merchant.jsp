@@ -98,7 +98,7 @@ function getZones(countryCode){
 				<br/>
 
 
-				<c:url var="merchant" value="/admin/merchant/save.html"/>
+				<c:url var="merchant" value="/admin/store/save.html"/>
 
 
 				<form:form method="POST" commandName="store" action="${merchant}">
@@ -111,6 +111,14 @@ function getZones(countryCode){
 	                        <div class="controls">
 	                        		<form:input cssClass="input-large" path="storename" />
 	                                    <span class="help-inline"><form:errors path="storename" cssClass="error" /></span>
+	                        </div>
+	                  </div>
+	                  
+	                  <div class="control-group">
+	                        <label><s:message code="label.storecode" text="Store code"/></label>
+	                        <div class="controls">
+	                        		<form:input cssClass="input-large" path="code" />
+	                                    <span class="help-inline"><form:errors path="code" cssClass="error" /></span>
 	                        </div>
 	                  </div>
 	                  
@@ -128,6 +136,23 @@ function getZones(countryCode){
 	                        <div class="controls">
 	                                    <form:input cssClass="input-large" path="storeEmailAddress" />
 	                                    <span class="help-inline"><form:errors path="storeEmailAddress" cssClass="error" /></span>
+	                        </div>
+	                  </div>
+	                  
+	                  <div class="control-group">
+	                        <label><s:message code="label.storeaddress" text="Address"/></label>
+	                        <div class="controls">
+	                                    <form:input cssClass="input-large" path="storeaddress" />
+	                                    <span class="help-inline"><form:errors path="storeaddress" cssClass="error" /></span>
+	                        </div>
+	                  </div>
+	                  
+	                  
+	                  <div class="control-group">
+	                        <label><s:message code="label.storecity" text="City"/></label>
+	                        <div class="controls">
+	                                    <form:input cssClass="input-large" path="storecity" />
+	                                    <span class="help-inline"><form:errors path="storecity" cssClass="error" /></span>
 	                        </div>
 	                  </div>
 	                  

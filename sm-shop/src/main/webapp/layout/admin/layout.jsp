@@ -61,7 +61,7 @@ response.setDateHeader ("Expires", -1);
   			<div class="span4 offset4">
 
 					<div class="btn-group pull-right">
-						<c:url value="/j_spring_security_logout" var="logoutUrl"/>
+						<c:url value="/admin/j_spring_security_logout" var="logoutUrl"/>
 						<a href="${logoutUrl}"><s:message code="button.label.logout" text="Logout" /></a>
 					</div>
 

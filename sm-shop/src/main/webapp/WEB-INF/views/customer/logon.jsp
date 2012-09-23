@@ -164,14 +164,15 @@
 															path : '/'
 														});
 											}
-											if ($.trim($('#j_username').val()) == '') {
+
+											if ($('#j_username').val().trim() == '') {
 												hasError = true;
 												$('#j_username_help')
 														.html(
 																"<font color='red' size='4'><strong>*</strong></font>");
 											}
 
-											if ($.trim($('#j_password').val()) == '') {
+											if ($('#j_password').val().trim() == '') {
 												hasError = true;
 												$('#j_password_help')
 														.html(
@@ -234,7 +235,7 @@
 					<div class="row">
 						<div id="controls">
 
-							<form method="post" id="logonForm" class="form-horizontal" action="<c:url value="/admin/j_spring_security_check"/>">
+							<form method="post" id="logonForm" class="form-horizontal" action="<c:url value="/customer/j_spring_security_check"/>">
 								<div class="control-group">
 									<label class="control-label" for="inputUser">
 										<s:message code="label.username" text="Username" />

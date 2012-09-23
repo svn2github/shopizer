@@ -102,4 +102,8 @@
   		<put-attribute name="body" value="/pages/admin/profile/groups.jsp" /> 
   	</definition>
   	
+  	 <definition name="shipping-methods" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/shipping/shippingMethods.jsp" /> 
+  	</definition>
+  	
 </tiles-definitions>
