@@ -29,6 +29,48 @@
 	<bean id="cmsProductImage"
 				class="com.salesmanager.core.modules.cms.product.CmsImageFileManagerInfinispanImpl" factory-method="getInstance" >
 	</bean>
+	
+	
+	<!-- Email -->
+	<bean id="freemarkerMailConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
+                 <!-- Uses HTML with templates and freemarker template engine -->
+                 <property name="templateLoaderPath" value="/template/mail"/>
+    </bean>
+
+
+	<bean id="mailSender"
+		class="org.springframework.mail.javamail.JavaMailSenderImpl">
+
+		<!-- configured in systems.properties -->
+		<property name="protocol" value="${mailSender.protocol}" />
+		<property name="host" value="${mailSender.host}" />
+		<property name="port" value="${mailSender.port}" />
+
+		<property name="username">
+			<value>${mailSender.username}</value>
+		</property>
+
+		<property name="password">
+			<value>${mailSender.password}</value>
+		</property>
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">${mailSender.mail.smtp.auth}</prop>
+				<prop key="mail.smtp.starttls.enable">${mail.smtp.starttls.enable}</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="htmlEmailSender" class="com.salesmanager.core.modules.email.HtmlEmailSenderImpl" >
+             <property name="mailSender" ref="mailSender"/>
+             <property name="freemarkerMailConfiguration" ref="freemarkerMailConfiguration"/>
+ 	</bean>
+ 
+	
+ 
+ 
+ 
+	
  
 
 	

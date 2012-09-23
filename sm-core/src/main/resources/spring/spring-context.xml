@@ -87,8 +87,12 @@
 	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
 
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="location">
-			<value>classpath:database.properties</value>
+		<property name="ignoreUnresolvablePlaceholders" value="false"/>
+		<property name="locations">
+			<list>
+		    	<value>classpath:database.properties</value>
+				<value>classpath:email.properties</value>
+			</list>
 		</property>
 	</bean>
 </beans>
