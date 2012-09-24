@@ -30,7 +30,7 @@
 								
 				<h3>
 
-								Edit user //<s:message code="label.category.createcategory" text="Create category" />
+								<s:message code="label.profile.title" text="User profile" />
 
 					
 				</h3>	
