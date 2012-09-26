@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.reference.zone.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -41,8 +42,14 @@ public class ZoneServiceImpl extends SalesManagerEntityServiceImpl<Long, Zone> i
 
 	@Override
 	public void addDescription(Zone zone, ZoneDescription description) throws ServiceException {
-		if (!zone.getDescriptions().contains(description)) {
-			zone.getDescriptions().add(description);
+		if (zone.getDescriptions()!=null) {
+				if(!zone.getDescriptions().contains(description)) {
+					zone.getDescriptions().add(description);
+					update(zone);
+				}
+		} else {
+			List<ZoneDescription> descriptions = new ArrayList<ZoneDescription>();
+			descriptions.add(description);
 			update(zone);
 		}
 	}

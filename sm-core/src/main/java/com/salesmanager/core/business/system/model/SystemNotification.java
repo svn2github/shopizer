@@ -23,6 +23,7 @@ import com.salesmanager.core.business.common.model.audit.AuditSection;
 import com.salesmanager.core.business.common.model.audit.Auditable;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.user.model.User;
 import com.salesmanager.core.constants.SchemaConstant;
 
 @Entity
@@ -53,7 +54,7 @@ public class SystemNotification extends SalesManagerEntity<Long, SystemNotificat
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="USER_ID", nullable=true)
-	private MerchantStore user;
+	private User user;
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name = "START_DATE")
@@ -124,11 +125,11 @@ public class SystemNotification extends SalesManagerEntity<Long, SystemNotificat
 		return endDate;
 	}
 
-	public void setUser(MerchantStore user) {
+	public void setUser(User user) {
 		this.user = user;
 	}
 
-	public MerchantStore getUser() {
+	public User getUser() {
 		return user;
 	}
 }

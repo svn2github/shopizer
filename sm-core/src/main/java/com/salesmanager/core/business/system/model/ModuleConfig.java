@@ -7,6 +7,7 @@ public class ModuleConfig {
 	private String host;
 	private String port;
 	private String uri;
+	private String env;
 	public String getScheme() {
 		return scheme;
 	}
@@ -30,6 +31,12 @@ public class ModuleConfig {
 	}
 	public void setUri(String uri) {
 		this.uri = uri;
+	}
+	public void setEnv(String env) {
+		this.env = env;
+	}
+	public String getEnv() {
+		return env;
 	}
 	
 }

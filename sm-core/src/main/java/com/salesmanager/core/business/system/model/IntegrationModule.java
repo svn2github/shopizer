@@ -1,7 +1,9 @@
 package com.salesmanager.core.business.system.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -25,7 +27,7 @@ import com.salesmanager.core.constants.SchemaConstant;
 
 @Entity
 @EntityListeners(value = AuditListener.class)
-@Table(name = "INTEGRATION_MODULE", schema= SchemaConstant.SALESMANAGER_SCHEMA)
+@Table(name = "MODULE_CONFIGURATION", schema= SchemaConstant.SALESMANAGER_SCHEMA)
 public class IntegrationModule extends SalesManagerEntity<Long, IntegrationModule> implements Serializable, Auditable {
 
 	
@@ -35,17 +37,19 @@ public class IntegrationModule extends SalesManagerEntity<Long, IntegrationModul
 	private static final long serialVersionUID = -357523134800965997L;
 
 	@Id
-	@Column(name = "SYSTEM_NOTIF_ID")
-	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "INT_MOD_SEQ_NEXT_VAL")
+	@Column(name = "MODULE_CONF_ID")
+	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "MOD_CONF_SEQ_NEXT_VAL")
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
 	
 	
-	@Column(name="MODULE", unique=true, columnDefinition = "enum('PAYMENT','SHIPPING')") 
-	@Enumerated(EnumType.STRING) 
+	//TODO enum creates table not found
+	//@Column(name="MODULE", nullable=false, columnDefinition = "enum('PAYMENT','SHIPPING')") 
+	//@Enumerated(EnumType.STRING)
+	@Column(name="MODULE")
 	private String module;
 	
-	@Column(name="CODE", nullable=false)
+	@Column(name="CODE", nullable=false, unique=true)
 	private String code;
 	
 	@Column(name="REGIONS")
@@ -54,11 +58,17 @@ public class IntegrationModule extends SalesManagerEntity<Long, IntegrationModul
 	@Column(name="CONFIGURATION")
 	private String configuration;
 	
+	@Column(name="IMAGE")
+	private String image;
+	
 	@Transient
 	private Set<String> regionsSet = new HashSet<String>();
 	
+	/**
+	 * Contains a map of module config by environment (DEV,PROD)
+	 */
 	@Transient
-	private ModuleConfig moduleConfig = null;
+	private Map<String,ModuleConfig> moduleConfigs = new HashMap<String,ModuleConfig>();
 	
 
 	
@@ -157,15 +167,29 @@ public class IntegrationModule extends SalesManagerEntity<Long, IntegrationModul
 
 
 
-	public void setModuleConfig(ModuleConfig moduleConfig) {
-		this.moduleConfig = moduleConfig;
+	public void setModuleConfigs(Map<String,ModuleConfig> moduleConfigs) {
+		this.moduleConfigs = moduleConfigs;
 	}
 
 
 
-	public ModuleConfig getModuleConfig() {
-		return moduleConfig;
+	public Map<String,ModuleConfig> getModuleConfigs() {
+		return moduleConfigs;
 	}
+
+
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+
+
+	public String getImage() {
+		return image;
+	}
+
+
 
 
 }

@@ -1,6 +1,5 @@
 package com.salesmanager.core.business.reference.init.service;
 
-import java.io.InputStream;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,7 +7,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,16 +28,14 @@ import com.salesmanager.core.business.reference.language.service.LanguageService
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.model.ZoneDescription;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
+import com.salesmanager.core.business.system.model.IntegrationModule;
+import com.salesmanager.core.business.system.service.ModuleConfigurationService;
 import com.salesmanager.core.business.system.service.SystemConfigurationService;
 import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 import com.salesmanager.core.business.tax.service.TaxClassService;
-import com.salesmanager.core.business.user.model.Group;
-import com.salesmanager.core.business.user.model.Permission;
-import com.salesmanager.core.business.user.model.User;
-import com.salesmanager.core.business.user.service.GroupService;
-import com.salesmanager.core.business.user.service.PermissionService;
-import com.salesmanager.core.business.user.service.UserService;
 import com.salesmanager.core.constants.SchemaConstant;
+import com.salesmanager.core.utils.reference.IntegrationModulesLoader;
+import com.salesmanager.core.utils.reference.ZonesLoader;
 
 @Service("initializationDatabase")
 public class InitializationDatabaseImpl implements InitializationDatabase {
@@ -72,6 +68,15 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 	@Autowired
 	private TaxClassService taxClassService;
 	
+	@Autowired
+	private ZonesLoader zonesLoader;
+	
+	@Autowired
+	private IntegrationModulesLoader modulesLoader;
+	
+	@Autowired
+	private ModuleConfigurationService moduleConfigurationService;
+	
 
 	
 	private String name;
@@ -89,58 +94,41 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		createZones();
 		createCurrencies();
 		createSubReferences();
+		createModules();
 		createMerchant();
 
 
 	}
 	
-/*	private void createUser() throws ServiceException {
-		LOGGER.info(String.format("%s : Creating user ", name));
-		
-		
-		  Permission userperm = new Permission("GRANT_USER");
-		  permissionService.create(userperm);
-		  Permission storeperm = new Permission("GRANT_STORE");
-		  permissionService.create(storeperm);
-		  Permission catalogperm = new Permission("GRANT_CATALOG");
-		  permissionService.create(catalogperm);
-		  Permission orderperm = new Permission("GRANT_ORDER");
-		  permissionService.create(orderperm);
-		  Permission configperm = new Permission("GRANT_CONFIG");
-		  permissionService.create(configperm);
-		  
-		  Group admin = new Group("ADMIN");
-		  
-		  admin.getPermissions().add(userperm);
-		  admin.getPermissions().add(storeperm);
-		  admin.getPermissions().add(catalogperm);
-		  admin.getPermissions().add(orderperm);
-		  admin.getPermissions().add(configperm);
-		  
-		  groupService.create(admin);
-		  //TODO encrypt password
-		  User user = new User("admin","password","admin@shopizer.com");
-		  user.setFirstName("Administrator");
-		  user.setLastName("User");
-		  user.getGroups().add(admin);
-		  
-		  userService.create(user);
-	}*/
+
 
 	private void createCurrencies() throws ServiceException {
 		LOGGER.info(String.format("%s : Populating Currencies ", name));
+
+		//Locale [] locales = Locale.getAvailableLocales();
+		//Locale l = locales[0];
+		
 		for (String code : SchemaConstant.CURRENCY_MAP.keySet()) {
-			Currency currency = new Currency();
-			try {
-				currency.setCurrency(java.util.Currency.getInstance(code));
-				currency.setName(SchemaConstant.CURRENCY_MAP.get(code));
-				currencyService.create(currency);
-			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
-				LOGGER.info(String.format("%s : Populating Currencies : bad code : %s", name, code));
-			}
-			
-		}
+
+
+            try {
+            	java.util.Currency c = java.util.Currency.getInstance(code);
+            	if(c==null) {
+            		LOGGER.info(String.format("%s : Populating Currencies : no currency for code : %s", name, code));
+            	}
+            	
+            		//check if it exist
+            		
+	            	Currency currency = new Currency();
+	            	currency.setName(c.getCurrencyCode());
+	            	currency.setCurrency(c);
+	            	currencyService.create(currency);
+
+            //System.out.println(l.getCountry() + "   " + c.getSymbol() + "  " + c.getSymbol(l));
+            } catch (IllegalArgumentException e) {
+            	LOGGER.info(String.format("%s : Populating Currencies : no currency for code : %s", name, code));
+            }
+        }  
 	}
 
 	private void createCountries() throws ServiceException {
@@ -163,77 +151,10 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 	
 	private void createZones() throws ServiceException {
 		LOGGER.info(String.format("%s : Populating Zones ", name));
-		List<Language> languages = languageService.list();
-		
-		List<Country> countries = countryService.list();
-		Map<String,Country> countriesMap = new HashMap<String,Country>();
-		for(Country country : countries) {
-			
-			countriesMap.put(country.getIsoCode(), country);
-			
-		}
-		
-		ObjectMapper mapper = new ObjectMapper();
-
         try {
 
-              InputStream in =
-                    this.getClass().getClassLoader().getResourceAsStream("reference/zoneconfig.json");
-
-              @SuppressWarnings("unchecked")
-              Map<String,Object> data = mapper.readValue(in, Map.class);
-              
-              Map<String,Zone> zonesMap = new HashMap<String,Zone>();
-              Map<String,List<ZoneDescription>> zonesDescriptionsMap = new HashMap<String,List<ZoneDescription>>();
-              Map<String,String> zonesMark = new HashMap<String,String>();
-              
-              for(Language l : languages) {
-	              @SuppressWarnings("rawtypes")
-	              List langList = (List)data.get(l.getCode());
-	              if(langList!=null) {
-		              for(Object z : langList) {
-		                    @SuppressWarnings("unchecked")
-							Map<String,String> e = (Map<String,String>)z;
-		                    String zoneCode = e.get("zoneCode");
-		                    ZoneDescription zoneDescription = new ZoneDescription();
-		                    zoneDescription.setLanguage(l);
-		                    zoneDescription.setName(e.get("zoneName"));
-		                    Zone zone = null;
-		                    List<ZoneDescription> descriptions = null;
-		                    if(!zonesMap.containsKey(zoneCode)) {
-		                    	zone = new Zone();
-		                    	Country country = countriesMap.get(e.get("countryCode"));
-		                    	if(country==null) {
-		                    		LOGGER.warn("Country is null for " + zoneCode + " and country code " + e.get("countryCode"));
-		                    		continue;
-		                    	}
-			                    zone.setCountry(country);
-		                    	zonesMap.put(zoneCode, zone);
-		                    	zone.setCode(zoneCode);
-
-		                    }
-		                    
-		                    
-		                    if(zonesMark.containsKey(l.getCode() + "_" + zoneCode)) {
-	                    		LOGGER.warn("This zone seems to be a duplicate !  " + zoneCode + " and language code " + l.getCode());
-	                    		continue;
-		                    }
-		                    
-		                    zonesMark.put(l.getCode() + "_" + zoneCode, l.getCode() + "_" + zoneCode);
-		                    
-		                    if(zonesDescriptionsMap.containsKey(zoneCode)) {
-		                    	descriptions = zonesDescriptionsMap.get(zoneCode);
-		                    } else {
-		                    	descriptions = new ArrayList<ZoneDescription>();
-		                    	zonesDescriptionsMap.put(zoneCode, descriptions);
-		                    }
-		                    
-		                    descriptions.add(zoneDescription);
-
-		                }
-		             }
-
-              }
+    		  Map<String,Zone> zonesMap = new HashMap<String,Zone>();
+    		  zonesMap = zonesLoader.loadZones("reference/zoneconfig.json");
               
               for (Map.Entry<String, Zone> entry : zonesMap.entrySet()) {
             	    String key = entry.getKey();
@@ -244,19 +165,17 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
             	    	continue;
             	    }
             	    
-            	    
+            	    List<ZoneDescription> zoneDescriptions = value.getDescriptions();
+            	    value.setDescriptons(null);
+
             	    zoneService.create(value);
-            	    //get descriptions
-            	    List<ZoneDescription> descriptions = zonesDescriptionsMap.get(key);
-            	    for(ZoneDescription description : descriptions) {
+            	    
+            	    for(ZoneDescription description : zoneDescriptions) {
             	    	description.setZone(value);
             	    	zoneService.addDescription(value, description);
             	    }
               }
 
-
-              
-  			
   		} catch (Exception e) {
   			throw new ServiceException(e);
   		}
@@ -304,6 +223,23 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		taxclass.setMerchantSore(store);
 		
 		taxClassService.create(taxclass);
+		
+		
+	}
+
+	private void createModules() throws ServiceException {
+		
+		try {
+			
+			List<IntegrationModule> modules = modulesLoader.loadIntegrationModules("reference/integrationmodules.json");
+            for (IntegrationModule entry : modules) {
+        	    moduleConfigurationService.create(entry);
+          }
+			
+			
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
 		
 		
 	}

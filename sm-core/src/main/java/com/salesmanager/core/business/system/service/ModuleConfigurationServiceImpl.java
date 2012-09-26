@@ -1,7 +1,9 @@
 package com.salesmanager.core.business.system.service;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONArray;
@@ -49,6 +51,7 @@ public class ModuleConfigurationServiceImpl extends
 			if(modules==null) {
 				modules = integrationModuleDao.getModulesConfiguration(module);
 				//set json objects
+				ObjectMapper mapper = new ObjectMapper();
 				for(IntegrationModule mod : modules) {
 					
 					String regions = mod.getRegions();
@@ -61,12 +64,59 @@ public class ModuleConfigurationServiceImpl extends
 						}
 					}
 					
-					String config = mod.getConfiguration();
-					if(config!=null) {
+					String configs = mod.getConfiguration();
+					if(configs!=null) {
 						
-						ObjectMapper mapper = new ObjectMapper();
-						ModuleConfig conf = mapper.readValue(config, ModuleConfig.class);
-						mod.setModuleConfig(conf);
+						//Map objects = mapper.readValue(config, Map.class);
+
+						Object objConfigs=JSONValue.parse(configs); 
+						JSONArray arrayConfigs=(JSONArray)objConfigs;
+						
+						Map<String,ModuleConfig> moduleConfigs = new HashMap<String,ModuleConfig>();
+						
+						Iterator i = arrayConfigs.iterator();
+						while(i.hasNext()) {
+							
+							Map values = (Map)i.next();
+							String env = (String)values.get("env");
+		            		ModuleConfig config = new ModuleConfig();
+		            		config.setScheme((String)values.get("scheme"));
+		            		config.setHost((String)values.get("host"));
+		            		config.setPort((String)values.get("port"));
+		            		config.setUri((String)values.get("uri"));
+		            		config.setEnv((String)values.get("env"));
+		            		
+		            		moduleConfigs.put(env, config);
+		            		
+		            		
+							
+						}
+						
+						mod.setModuleConfigs(moduleConfigs);
+						
+						
+						
+/*						Object objConfigs=JSONValue.parse(config); 
+						JSONArray arrayConfigs=(JSONArray)objConfigs;
+						Iterator i = arrayConfigs.iterator();
+						while(i.hasNext()) {
+							
+							//String c = (String)i.next();
+							
+							Object o = i.next();
+							
+							System.out.println(o.getClass().getName());
+							
+							//ObjectMapper mapper = new ObjectMapper();
+							//ModuleConfig conf = mapper.readValue(c, ModuleConfig.class);
+							
+							//mod.getModuleConfigs().put(conf., value)
+						}*/
+						
+						
+						//ObjectMapper mapper = new ObjectMapper();
+						//ModuleConfig conf = mapper.readValue(config, ModuleConfig.class);
+						//mod.setModuleConfig(conf);
 					}
 
 
