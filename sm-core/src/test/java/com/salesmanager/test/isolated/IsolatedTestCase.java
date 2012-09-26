@@ -71,9 +71,12 @@ import com.salesmanager.core.business.reference.country.model.CountryDescription
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.currency.service.CurrencyService;
+import com.salesmanager.core.business.reference.init.service.InitializationDatabase;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
+import com.salesmanager.core.business.system.model.IntegrationModule;
+import com.salesmanager.core.business.system.service.ModuleConfigurationService;
 import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.business.user.model.Permission;
 import com.salesmanager.core.business.user.model.User;
@@ -156,6 +159,12 @@ public class IsolatedTestCase {
   
   @Autowired
   protected UserService               userService;
+  
+  @Autowired
+  protected InitializationDatabase                initializationDatabase;
+  
+  @Autowired
+  protected ModuleConfigurationService                moduleConfigurationService;
 
   //@Autowired
   protected TestSupportFactory         testSupportFactory;
@@ -164,8 +173,13 @@ public class IsolatedTestCase {
 
   @Test
   public void test1CreateReferences() throws ServiceException {
+	  
+	  
+	  
+	  
+	  initializationDatabase.populate("TEST");
 
-    Date date = new Date(System.currentTimeMillis());
+/*    Date date = new Date(System.currentTimeMillis());
 
     Language en = new Language();
     en.setCode("en");
@@ -222,7 +236,7 @@ public class IsolatedTestCase {
 
     ProductType generalType = new ProductType();
     generalType.setCode(ProductType.GENERAL_TYPE);
-    productTypeService.create(generalType);
+    productTypeService.create(generalType);*/
 
   }
   
@@ -1105,11 +1119,14 @@ public class IsolatedTestCase {
   }
 
   @Test
-  public void testGetCategory() throws ServiceException {
+  public void testGetModules() throws ServiceException {
 	  
-    MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
+    List<IntegrationModule> shippingModules = moduleConfigurationService.getIntegrationModules("SHIPPING");
 
-    Category category = categoryService.getByCode(store, "book");
+    for(IntegrationModule module : shippingModules) {
+    	
+    	System.out.println(module.getCode());
+    }
     System.out.println("Done");
 
   }
@@ -1191,6 +1208,7 @@ public class IsolatedTestCase {
     manufacturerService.delete(manufacturer);
 
   }
+  
 
   @Test
   public void testStoreRandomProducts() throws ServiceException {
