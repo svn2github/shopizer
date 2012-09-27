@@ -64,8 +64,9 @@ public class Content extends SalesManagerEntity<Long, Content> implements Serial
 	@Column(name = "VISIBLE")
 	private boolean visible;
 	
-	@Column(columnDefinition = "enum('BOX','PAGE')") 
-	@Enumerated(EnumType.STRING) 
+	//@Column(columnDefinition = "enum('BOX','PAGE')")//cannot create table with this 
+	//@Enumerated(EnumType.STRING) 
+	@Column(name = "CONTENT_TYPE")
 	private ContentType contentType; 
 	
 	@Override
