@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.business.user.model.Permission;
 import com.salesmanager.core.business.user.service.GroupService;
@@ -33,6 +35,10 @@ public class UserServicesImpl implements UserDetailsService{
 
 	@Autowired
 	private UserService userService;
+	
+	
+	@Autowired
+	private MerchantStoreService merchantStoreService;
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -100,34 +106,70 @@ public class UserServicesImpl implements UserDetailsService{
 		
 		  //TODO create all groups and permissions
 		
-		  Permission userperm = new Permission("GRANT_USER");
-		  permissionService.create(userperm);
-		  Permission storeperm = new Permission("GRANT_STORE");
-		  permissionService.create(storeperm);
-		  Permission catalogperm = new Permission("GRANT_CATALOG");
-		  permissionService.create(catalogperm);
-		  Permission orderperm = new Permission("GRANT_ORDER");
-		  permissionService.create(orderperm);
-		  Permission configperm = new Permission("GRANT_CONFIG");
-		  permissionService.create(configperm);
+		  MerchantStore store = merchantStoreService.getMerchantStore(MerchantStore.DEFAULT_STORE);
+		
+		  Permission auth = new Permission("AUTH");//Authenticated
+		  permissionService.create(auth);
 		  
-		  Group admin = new Group("ADMIN");
+		  Permission categories = new Permission("CATEGORIES");
+		  permissionService.create(categories);
+		  Permission products = new Permission("PRODUCTS");
+		  permissionService.create(products);
+		  Permission attributes = new Permission("ATTRIBUTES");
+		  permissionService.create(attributes);
+		  Permission featured = new Permission("FEATURED");
+		  permissionService.create(featured);
 		  
-		  admin.getPermissions().add(userperm);
-		  admin.getPermissions().add(storeperm);
-		  admin.getPermissions().add(catalogperm);
-		  admin.getPermissions().add(orderperm);
-		  admin.getPermissions().add(configperm);
+		  Permission content = new Permission("CONTENT");
+		  permissionService.create(content);
+		  Permission pstore = new Permission("STORE");
+		  permissionService.create(pstore);
+		  Permission tax = new Permission("TAX");
+		  permissionService.create(tax);
+		  Permission payment = new Permission("PAYMENT");
+		  permissionService.create(payment);
+		  Permission shipping = new Permission("SHIPPING");
+		  permissionService.create(shipping);
 		  
-		  groupService.create(admin);
+		  Permission superadmin = new Permission("SUPERADMIN");
+		  permissionService.create(superadmin);
+		  Permission admin = new Permission("ADMIN");
+		  permissionService.create(admin);
+		  
+		  //TODO to be continued
+		  
+		  
+
+		  
+		  Group gsuperadmin = new Group("SUPERADMIN");
+		  Group gadmin = new Group("ADMIN");
+		  Group gcatalogue = new Group("GROUP_CATALOGUE");
+		  Group gstore = new Group("GROUP_STORE");
+		  Group gorder = new Group("GROUP_ORDER");
+		  
+		  gsuperadmin.getPermissions().add(superadmin);
+		  gsuperadmin.getPermissions().add(admin);
+		  gsuperadmin.getPermissions().add(auth);
+		  gsuperadmin.getPermissions().add(categories);
+		  gsuperadmin.getPermissions().add(products);
+		  gsuperadmin.getPermissions().add(attributes);
+		  gsuperadmin.getPermissions().add(featured);
+		  gsuperadmin.getPermissions().add(content);
+		  gsuperadmin.getPermissions().add(pstore);
+		  gsuperadmin.getPermissions().add(tax);
+		  gsuperadmin.getPermissions().add(payment);
+		  gsuperadmin.getPermissions().add(shipping);
+		  
+		  groupService.create(gsuperadmin);
 
 		  String password = passwordEncoder.encodePassword("password", null);
 		  
-		  
+		  //creation of the super admin
 		  com.salesmanager.core.business.user.model.User user = new com.salesmanager.core.business.user.model.User("admin",password,"admin@shopizer.com");
 		  user.setFirstName("Administrator");
 		  user.setLastName("User");
-		  user.getGroups().add(admin);
+		  user.getGroups().add(gsuperadmin);
+
 		  
 		  userService.create(user);
 		
