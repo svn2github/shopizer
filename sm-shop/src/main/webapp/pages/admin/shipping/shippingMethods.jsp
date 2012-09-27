@@ -59,13 +59,41 @@
                   						</div>
 
             	 					</div>
-            	 </form:form>
+            	 			</form:form>
 								
 							
 							
 							<br/>
 							
-							List of shipping modules
+							<c:url var="shippingMethodsSave" value="/admin/shipping/saveShippingMethods.html"/>
+							<form:form method="POST" commandName="configuration" action="${shippingConfigurationSave}">
+
+      							
+      								<form:errors path="*" cssClass="alert alert-error" element="div" />
+									<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
+								
+
+
+      			  
+					      			  <div class="control-group">
+					                        <label><s:message code="label.shipping.methods" text="Shipping methods"/></label>
+					                        <div class="controls">
+					                                   
+						                        <div class="controls">
+
+						                                 <span class="help-inline"><form:errors path="mode" cssClass="error" /></span>
+						                        </div>
+					
+					                        </div>
+					                  </div>
+					                  
+					                  <div class="form-actions">
+                  						<div class="pull-right">
+                  							<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>
+                  						</div>
+
+            	 					</div>
+            	 			</form:form>
 							
 							
 

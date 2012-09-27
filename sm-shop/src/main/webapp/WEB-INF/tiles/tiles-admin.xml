@@ -106,4 +106,8 @@
   		<put-attribute name="body" value="/pages/admin/shipping/shippingMethods.jsp" /> 
   	</definition>
   	
+  	<definition name="payment-methods" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/payment/paymentMethods.jsp" /> 
+  	</definition>
+  	
 </tiles-definitions>

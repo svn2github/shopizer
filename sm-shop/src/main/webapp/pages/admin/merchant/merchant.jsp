@@ -215,7 +215,7 @@ function getZones(countryCode){
 
 				      <div class="form-actions">
 	                  		<div class="pull-right">
-	                  			<button type="submit" class="btn btn-action"><s:message code="button.label.submit2" text="Submit"/></button>
+	                  			<button type="submit" class="btn btn-success"><s:message code="button.label.submit2" text="Submit"/></button>
 	                  		</div>
 	            	 </div>
 
