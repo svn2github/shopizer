@@ -19,7 +19,7 @@
 
 
 								<div class="sm-ui-component">
-								<h3>Permissions //<s:message code="label.categories.title" text="Categories" /></h3>	
+								<h3>Permissions //<s:message code="label.permissions.title" text="Permissions" /></h3>	
 								<br/>
 
 			      			     <script>
@@ -29,10 +29,10 @@
 
 								
 								isc.RestDataSource.create({ 
-									ID:"categories", 
+									ID:"permissions", 
 									dataFormat:"json",  
 									operationBindings:[ 
-										{operationType:"fetch", dataProtocol:"postParams",dataURL: "<c:url value="/admin/categories/paging.html" />"},
+										{operationType:"fetch", dataProtocol:"postParams",dataURL: "<c:url value="/admin/permissions/paging.html" />"},
 										{operationType:"remove", dataProtocol:"postParams",dataURL: "<c:url value="/admin/categories/remove.html" />"},
 									],
 									transformResponse : function (dsResponse, dsRequest, jsonData) {
@@ -41,7 +41,7 @@
 											if(status==9999) {//operation completed
 												//reload 
 												//categoriesList.fetchData();
-												window.location='<c:url value="/admin/categories/categories.html" />';
+												window.location='<c:url value="/admin/permissions/permissions.html" />';
 											}
 
 											var msg = isc.XMLTools.selectObjects(jsonData, "/response/statusMessage");
@@ -55,9 +55,9 @@
 
 							  
 							  isc.ListGrid.create({
-    								ID: "categoriesList",
+    								ID: "permissionList",
     								border:1,
-    								dataSource: "categories",
+    								dataSource: "permissions",
     								showRecordComponents: true,    
     								showRecordComponentsByCell: true,
     								canRemoveRecords: true,
@@ -68,11 +68,8 @@
 
 
     						      fields:[
-										{title:"<s:message code="label.entity.id" text="Id"/>", name:"categoryId", canFilter:false},
-        								{title:"<s:message code="label.entity.name" text="Name"/>", name:"name"},
-        								{title:"<s:message code="label.entity.code" text="Code"/>", name:"code", canFiler:false},
-        								{title:"<s:message code="label.entity.visible" text="Visible"/>", name:"visible", canFilter:false},
-        								{title:"<s:message code="label.entity.details" text="Details"/>", name: "buttonField", align: "center",canFilter:false,canSort:false, canReorder:false}
+										{title:"<s:message code="label.entity.id" text="Id"/>", name:"permissionId", canFilter:false},
+        								{title:"<s:message code="label.entity.name" text="Name"/>", name:"name"}
 
     							],
     							selectionType: "single",
@@ -95,7 +92,7 @@
 	                						width: 65,
 	               					 		title: "<s:message code="label.entity.details" text="Details"/>",
 	                						click : function () {
-	                							window.location='<c:url value="/admin/categories/editCategory.html" />?id=' + record["categoryId"];
+	                							window.location='<c:url value="/admin/categories/editCategory.html" />?id=' + record["permissionId"];
 	                						}
 	            						});
 	            						return button;  
@@ -126,7 +123,7 @@ isc.HLayout.create({
             visibilityMode:"multiple",
             animateSections:true,
             sections:[
-                {title:"<s:message code="label.categories.title" text="Categories"/>", autoShow:true, items:[categoriesList]}
+                {title:"<s:message code="label.permissions.title" text="Permissions"/>", autoShow:true, items:[permissionList]}
             ]
         })
     ]
