@@ -50,6 +50,7 @@ public class ZoneServiceImpl extends SalesManagerEntityServiceImpl<Long, Zone> i
 		} else {
 			List<ZoneDescription> descriptions = new ArrayList<ZoneDescription>();
 			descriptions.add(description);
+			zone.setDescriptons(descriptions);
 			update(zone);
 		}
 	}
