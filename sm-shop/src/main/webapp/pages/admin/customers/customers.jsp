@@ -1,32 +1,32 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="s"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 
-<%@ page session="false" %>				
-				
+<%@ page session="false"%>
+
 
 
 
 <div class="tabbable">
 
-  					
-					<jsp:include page="/common/adminTabs.jsp" />
+
+	<jsp:include page="/common/adminTabs.jsp" />
 
 
 
-  					<div class="tab-content">
+	<div class="tab-content">
 
-    					<div class="tab-pane active" id="catalogue-section">
-
-								
-								
+		<div class="tab-pane active" id="catalogue-section">
 
 
-								<div class="sm-ui-component">
 
-      							
-			      			     <script>
+
+
+			<div class="sm-ui-component">
+
+
+				<script>
 
 ///isc.showConsole();
       			     
@@ -40,10 +40,9 @@
 								
 								isc.RestDataSource.create({ 
 									ID:"customers", 
-									dataFormat:"json", 
-									dataURL: "<c:url value="/admin/customers/page.html" />",
+									dataFormat:"json",
 									operationBindings:[ 
-										{operationType:"fetch", dataProtocol:"postParams"} 
+										{operationType:"fetch", dataProtocol:"postParams",dataURL: "<c:url value="/admin/customers/page.html" />"} 
 									]
 								}); 
 
@@ -79,10 +78,10 @@
 	           						var button = isc.IButton.create({
 	                						height: 18,
 	                						width: 65,
-	               					 		title: "Info",
-	                						click : function () {
-	                    					isc.say(record["name"] + " info button clicked.");
-	                						}
+	               					 		title: "<s:message code="label.entity.details" text="Details"/>",
+	               					 	click : function () {
+                							window.location='<c:url value="/admin/customers/customer.html" />?id=' + record["id"];
+                						}
 	            					});
 	            					return button;  
             				
@@ -114,27 +113,7 @@
     								
     									itemList.fetchData({searchTerm:this.getValues()})
     								
-        								/**
-        								var findValues;
-								        if (this.getValue('findInCategory') && categoryTree.selection.anySelected()) {
-								            // use tree category and form values
-								            if (categoryName == null) categoryName = categoryTree.getSelectedRecord().categoryName;
-								            findValues = {category:categoryName};
-								            isc.addProperties(findValues, this.getValues());
-								            
-								        } else if (categoryName == null) {
-								            // use form values only
-								            findValues = this.getValues();
-								            
-								        } else {
-								            // use tree category only
-								            findValues = {category:categoryName};
-								        }
-								        
-								        itemList.filterData(findValues);
-								        
-								        itemDetailTabs.clearDetails();
-								        **/
+        								
 								    }
 									});
 									
@@ -187,25 +166,25 @@ isc.Page.setEvent("load", "pageLayout.draw()");
 
 								
 								
-												</script>		
-      							
+												</script>
 
 
-      					</div>
-      					
 
-      			     
-      			     
+			</div>
 
 
-      			     
-      			     
-    
 
 
-   					</div>
 
 
-  					</div>
 
-				</div>
+
+
+
+
+		</div>
+
+
+	</div>
+
+</div>

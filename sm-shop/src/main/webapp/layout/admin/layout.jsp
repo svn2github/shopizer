@@ -184,7 +184,12 @@ response.setDateHeader ("Expires", -1);
 			$("#security-groups-link").click(function() {
   				window.location='<c:url value="/admin/user/groups.html" />';
 			});
-			
+			$("#customer-list-link").click(function() {
+  				window.location='<c:url value="/admin/customers/list.html" />';
+			});
+			$("#customer-create-link").click(function() {
+  				window.location='<c:url value="/admin/customers/customer.html" />';
+			});
 			
 
 		}); 

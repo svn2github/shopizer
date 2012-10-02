@@ -12,6 +12,20 @@
 
 
 				<jsp:include page="/common/adminTabs.jsp" />
+				
+				<h3>
+					<c:choose>
+						<c:when test="${customer.id!=null && customer.id>0}">
+								<s:message code="label.customer.editcustomer" text="Edit Customer" /> <c:out value="${category.code}"/>
+						</c:when>
+						<c:otherwise>
+								<s:message code="label.customer.createcustomer" text="Create Customer" />
+						</c:otherwise>
+					</c:choose>
+					
+				</h3>	
+				<br/>
+				
 
 
 				<c:url var="customer" value="/admin/customers/save.html"/>
@@ -20,35 +34,87 @@
 				<form:form method="POST" commandName="customer" action="${customer}">
 				
 					<form:errors path="*" cssClass="alert alert-error" element="div" />
-					<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
+					<div id="customer.success" class="alert alert-success" 
+							style="<c:choose>
+								<c:when test="${success!=null}">display:block;</c:when>
+								<c:otherwise>display:none;</c:otherwise></c:choose>">
+								<s:message code="message.success" text="Request successful"/>
+					</div>    
 				
 	      			<div class="control-group">
-	                        <label><s:message code="label.storename" text="Name"/></label>
+	                        <label><s:message code="label.customer.firstname" text="First Name"/></label>
 	                        <div class="controls">
-	                        		<form:input cssClass="input-large" path="storename" />
-	                                    <span class="help-inline"><form:errors path="storename" cssClass="error" /></span>
+	                        		<form:input cssClass="input-large" path="firstname" />
+	                                    <span class="help-inline"><form:errors path="firstname" cssClass="error" /></span>
 	                        </div>
 	                  </div>
 	                  
 	                  <div class="control-group">
-	                        <label><s:message code="label.storephone" text="Phone"/></label>
+	                        <label><s:message code="label.customer.lastname" text="Last Name"/></label>
 	                        <div class="controls">
-	                                    <form:input cssClass="input-large" path="storephone" />
-	                                    <span class="help-inline"><form:errors path="storephone" cssClass="error" /></span>
+	                                    <form:input cssClass="input-large" path="lastname" />
+	                                    <span class="help-inline"><form:errors path="lastname" cssClass="error" /></span>
 	                        </div>
 	
 	                  </div>
 	                  
 	                 <div class="control-group">
-	                        <label><s:message code="label.storeemailaddress" text="Email"/></label>
+	                        <label><s:message code="label.customer.email" text="Email"/></label>
 	                        <div class="controls">
-	                                    <form:input cssClass="input-large" path="storeEmailAddress" />
-	                                    <span class="help-inline"><form:errors path="storeEmailAddress" cssClass="error" /></span>
+	                                    <form:input cssClass="input-large" path="emailAddress" />
+	                                    <span class="help-inline"><form:errors path="emailAddress" cssClass="error" /></span>
+	                        </div>
+	                  </div>
+	                  
+	                   <div class="control-group">
+	                        <label><s:message code="label.customer.telephone" text="Phone"/></label>
+	                        <div class="controls">
+	                                    <form:input cssClass="input-large" path="telephone" />
+	                                    <span class="help-inline"><form:errors path="telephone" cssClass="error" /></span>
 	                        </div>
 	                  </div>
 	                  
 	                  <div class="control-group">
-	                        <label><s:message code="label.country" text="Country"/></label>
+	                        <label><s:message code="label.customer.streetaddress" text="StreetAddress"/></label>
+	                        <div class="controls">
+	                                    <form:input cssClass="input-large" path="streetAddress" />
+	                                    <span class="help-inline"><form:errors path="streetAddress" cssClass="error" /></span>
+	                        </div>
+	                  </div>
+	                  
+	                  <div class="control-group">
+	                        <label><s:message code="label.customer.city" text="City"/></label>
+	                        <div class="controls">
+	                                    <form:input cssClass="input-large" path="city" />
+	                                    <span class="help-inline"><form:errors path="city" cssClass="error" /></span>
+	                        </div>
+	                  </div>
+	                  
+	                  <div class="control-group">
+	                        <label><s:message code="label.customer.postalcode" text="Postalcode"/></label>
+	                        <div class="controls">
+	                                    <form:input cssClass="input-large" path="postalCode" />
+	                                    <span class="help-inline"><form:errors path="postalCode" cssClass="error" /></span>
+	                        </div>
+	                  </div>
+	                  
+	                  
+	                  
+	                  <div class="control-group">
+	                        <label><s:message code="label.customer.zone" text="State"/></label>
+	                        <div class="controls">
+	                        					
+	                        					<form:select path="zone.id">
+					  								<form:option value="-1" label="--- Select ---" />
+					  								<form:options items="${zones}" itemValue="id" itemLabel="code"/>
+				       							</form:select>
+	                                   			<span class="help-inline"><form:errors path="zone" cssClass="error" /></span>
+	                        </div>
+	                  </div>
+	                  
+	                  
+	                  <div class="control-group">
+	                        <label><s:message code="label.customer.country" text="Country"/></label>
 	                        <div class="controls">
 	                        					
 	                        					<form:select path="country.id">
@@ -61,7 +127,7 @@
 				
 				      <div class="form-actions">
 	                  		<div class="pull-right">
-	                  			<button type="submit" class="btn btn-action"><s:message code="button.label.submit2" text="Submit"/></button>
+	                  			<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>
 	                  		</div>
 	            	 </div>
 

@@ -1,6 +1,7 @@
 package com.salesmanager.web.admin.controller.customers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,12 +19,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
+import com.salesmanager.core.business.reference.country.model.Country;
+import com.salesmanager.core.business.reference.country.service.CountryService;
+import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.zone.model.Zone;
+import com.salesmanager.core.business.reference.zone.service.ZoneService;
+import com.salesmanager.web.admin.entity.web.Menu;
 
 @Controller
 public class CustomerController {
 	
 	@Autowired
 	CustomerService customerService;
+	
+	@Autowired
+	CountryService countryService;
+	
+	@Autowired
+	ZoneService zoneService;
 	
 	
 	/**
@@ -35,22 +48,42 @@ public class CustomerController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/admin/customers/customer.html", method=RequestMethod.GET)
-	public String displayCustomer(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-	
-
-		
+	public String displayCustomer(Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+			
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("customer", "customer");
-		model.addAttribute("activeMenus",activeMenus);
-		//
+		activeMenus.put("customer-create", "customer-create");
+		@SuppressWarnings("unchecked")
+		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
+		
+		Menu currentMenu = (Menu)menus.get("customer");
+		model.addAttribute("currentMenu",currentMenu);
+		model.addAttribute("activeMenus",activeMenus);		//
+		
+		Customer customer = null;
 		
 		//if request.attribute contains id then get this customer from customerService
-		
+		if(id!=null && id!=0) {//edit mode
+			
+			//get from DB
+			customer = customerService.getById(id);
+					
+			
+		} else {
+			 customer = new Customer();
+		}
 		//get list of countries (see merchant controller)
+		Language language = (Language)request.getAttribute("LANGUAGE");				
+		//get countries
+		List<Country> countries = countryService.getCountries(language);
 		
 		//get list of zones
+		List<Zone> zones = zoneService.list();
 		
+		model.addAttribute("zones", zones);
+		model.addAttribute("countries", countries);
+		model.addAttribute("customer", customer);
 		return "admin-customer";
 		
 		
@@ -59,19 +92,24 @@ public class CustomerController {
 	
 	
 	@RequestMapping(value="/admin/customers/save.html", method=RequestMethod.POST)
-	public String saveCustomer(@Valid @ModelAttribute("customer") Customer customer, BindingResult result, Model model, HttpServletRequest request) {
+	public String saveCustomer(@Valid @ModelAttribute("customer") Customer customer, BindingResult result, Model model, HttpServletRequest request) throws Exception{
 	
-
+		customerService.save(customer);
 		
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("customer", "customer");
-		
-
+		activeMenus.put("customer-create", "customer-create");
+		@SuppressWarnings("unchecked")
+		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
+				
+		Menu currentMenu = (Menu)menus.get("customer");
+		model.addAttribute("currentMenu",currentMenu);
 		model.addAttribute("activeMenus",activeMenus);
-		//
+		model.addAttribute("success","success");
 		
-		return "admin/products/products";
+		return "admin-customer";
+				
 		
 		
 		
@@ -85,14 +123,18 @@ public class CustomerController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/admin/customers/list.html", method=RequestMethod.GET)
-	public String displayCustomers(Model model) throws Exception {
+	public String displayCustomers(Model model,HttpServletRequest request) throws Exception {
 		
 		
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("customer", "customer");
+		activeMenus.put("customer-list", "customer-list");
+		@SuppressWarnings("unchecked")
+		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
 		
-
+		Menu currentMenu = (Menu)menus.get("customer");
+		model.addAttribute("currentMenu",currentMenu);
 		model.addAttribute("activeMenus",activeMenus);
 		//
 		
@@ -109,48 +151,45 @@ public class CustomerController {
 
 		String searchTerm = request.getParameter("searchTerm");// will be the name of the customer
 		
-		String startRow = request.getParameter("_startRow");
-		String endRow = request.getParameter("_endRow");
 		
-		String totalRows = "10";
-		
+		String totalRows = "0";
+		String endRow = "0";
 
 		
 		if(searchTerm!=null) {
 			totalRows="2";
 		}
-		//get sub category & sub categories for input categoryId
 		
-		//get products using startRow and endRow
-		
-		//populate response object which has to be converted to JSON 
-		
-		//will receive name and sku as filter elements
-		
-		//JSONListResponse r = new JSONListResponse()
-		//r.setStatus(0);
-		//JSONObject obj = new JSONObject();
-		//obj.put("response",r)
+		StringBuilder res = new StringBuilder().append("{ response:{     status:0,     startRow:0,     endRow:0,     totalRows:0 ,     data: [           ");
 		
 		
-		StringBuilder res = new StringBuilder().append("{ response:{     status:0,     startRow:0,     endRow:9,     totalRows:10,     data:" +
-				"[           ");
 		
-				
+		List<Customer> customers = customerService.list();		
 		
-		for(int i = 0; i < 10; i++) {
-					
-					
-					res.append("{id:" + i + ",name:\"customer_" + i + "\",country:\"CA\",active:\"true\"}");
-					if(i < Integer.parseInt(totalRows)-1) {
-						res.append(",");
+		if(customers !=null && customers.size() > 0){
+			totalRows = new Integer(customers.size()).toString();
+			endRow = new Integer(customers.size() -1).toString();
+			res = new StringBuilder().append("{ response:{     status:0,     startRow:0,     endRow:");
+			res.append(endRow);
+			res.append(" , totalRows:");
+			res.append(totalRows);
+			res.append(",     data: [           ");
+			int i = 0;
+			//@TODO
+			//fix the lazy loading issue when retrieving the country for the customer 
+			for(Customer customer:customers) {
+				res.append("{id:" + ++i + ",name:\'" + customer.getFirstname() + " " +customer.getLastname() + "\',country:\' CA \' ,active:\'true\'}");
+				if(i < Integer.parseInt(totalRows)) {
+					res.append(",");
 					}
-				}
+			}
+			
+			
+		}
 
-				res.append("]   } }");
+		res.append("]   } }");
 				
-
-			return res.toString();
+		return res.toString();
 	}
 	
 		

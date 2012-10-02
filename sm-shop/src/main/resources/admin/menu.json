@@ -105,7 +105,15 @@
 "icon":"icon-user", 
 "url":"/admin/customers/list.html", 
 "roles":["AUTH"],
-"order":5
+"order":5,
+"menus":[
+	{"menu":{
+		"code":"customer-list","url":"/admin/customers/list.html","roles":["admin","sub-admin"],"order":0
+	}},
+	{"menu":{
+		"code":"customer-create","url":"/admin/customers/customer.html","roles":["admin","sub-admin"],"order":1
+	}}
+]
 }},
 {
 "menu":{
