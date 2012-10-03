@@ -3,7 +3,6 @@ package com.salesmanager.web.admin.controller.user;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,10 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
-import com.salesmanager.core.business.catalog.category.service.CategoryService;
-import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
@@ -53,6 +49,113 @@ public class PermissionController {
 
 	@Autowired
 	LabelUtils messages;
+
+	
+	@RequestMapping(value="/admin/permissions/editPermission.html", method=RequestMethod.GET)
+	public String displayPermissionEdit(@RequestParam("id") Integer permissionId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return displayPermission(permissionId,model,request,response);
+
+	}
+	private String displayPermission(Integer permissionId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		//display menu
+		setMenu(model,request);
+		
+		Permission permission = new Permission();
+	
+		if(permissionId!=null && permissionId!=0) {//edit mode
+			
+			//get from DB
+			permission = permissionService.getById(permissionId);
+			
+			if(permission==null ) {
+				return "admin-user-permissions";
+			}
+
+			
+//			categories.remove(category); //remove current category from categories
+		
+			
+		} else {
+		
+			//create a category
+			
+			List<Language> languages = languageService.list();//TODO get supported languages from MerchantStore
+			
+			//List<Language> languages = store.getLanguages();
+			
+			List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
+
+			for(Language l : languages) {
+				
+				CategoryDescription desc = new CategoryDescription();
+				desc.setLanguage(l);
+				descriptions.add(desc);
+				
+			}
+			
+			
+			
+//			category.setVisible(true);
+//			category.setDescriptions(descriptions);
+		
+		}
+		
+
+
+		
+		model.addAttribute("permission", permission);
+//		model.addAttribute("categories", categories);
+		
+
+		
+		return "admin-user-permission";
+	}
+	
+	@RequestMapping(value="/admin/permission/save.html", method=RequestMethod.POST)
+	public String savePermission(@Valid @ModelAttribute("permission") Permission permission, BindingResult result, Model model, HttpServletRequest request) throws Exception {
+		
+		//TODO Null Pointer exception
+		
+//		Language language = (Language)request.getAttribute("LANGUAGE");
+		
+		//display menu
+		setMenu(model,request);
+		
+//		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+				
+
+		if(permission.getId() != null && permission.getId() >0) { //edit entry
+			
+			//get from DB
+			Permission currentPermission = permissionService.getById(permission.getId());
+
+			if(currentPermission==null) {
+				return "admin-user-permissions";
+			}
+			
+
+			
+		}
+
+			
+
+		
+		if (result.hasErrors()) {
+			return "admin-user-permission";
+		}
+		
+		
+		permissionService.saveOrUpdate(permission);
+
+			
+		//get parent categories
+		List<Permission> permissions = permissionService.list();
+		model.addAttribute("permissions", permissions);
+		
+
+		model.addAttribute("success","success");
+		return "admin-user-permissions";
+	}
 
 	// category list
 	@RequestMapping(value = "/admin/permissions/permissions.html", method = RequestMethod.GET)
@@ -84,7 +187,7 @@ public class PermissionController {
 				permissions = permissionService.getByName();
 
 			} else {
-				permissions = permissionService.listByStore();
+				permissions = permissionService.list();
 			}
 
 			for (Permission permission : permissions) {
@@ -114,14 +217,14 @@ public class PermissionController {
 
 		// display menu
 		Map<String, String> activeMenus = new HashMap<String, String>();
-		activeMenus.put("catalogue", "catalogue");
-		activeMenus.put("catalogue-categories", "catalogue-categories");
+		activeMenus.put("profile", "profile");
+		activeMenus.put("security", "security");
 
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>) request
 				.getAttribute("MENUMAP");
 
-		Menu currentMenu = (Menu) menus.get("catalogue");
+		Menu currentMenu = (Menu) menus.get("profile");
 		model.addAttribute("currentMenu", currentMenu);
 		model.addAttribute("activeMenus", activeMenus);
 		//
