@@ -1,5 +1,7 @@
 package com.salesmanager.web.admin.controller.merchant;
 
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +22,12 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
+import com.salesmanager.core.business.reference.currency.model.Currency;
+import com.salesmanager.core.business.reference.currency.service.CurrencyService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
+import com.salesmanager.core.business.reference.zone.model.Zone;
+import com.salesmanager.core.business.reference.zone.service.ZoneService;
 
 @Controller
 public class MerchantStoreController {
@@ -33,7 +39,14 @@ public class MerchantStoreController {
 	CountryService countryService;
 	
 	@Autowired
+	ZoneService zoneService;
+	
+	
+	@Autowired
 	LanguageService languageService;
+	
+	@Autowired
+	CurrencyService currencyService;
 	
 	@RequestMapping(value="/admin/store/store.html", method=RequestMethod.GET)
 	public String displayMerchantStore(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -52,6 +65,8 @@ public class MerchantStoreController {
 		
 		List<Language> languages = languageService.getLanguages();
 		
+		List<Currency> currencies = currencyService.list();
+		
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("store", "store");
@@ -59,6 +74,7 @@ public class MerchantStoreController {
 		model.addAttribute("activeMenus",activeMenus);
 		model.addAttribute("countries", countries);
 		model.addAttribute("languages",languages);
+		model.addAttribute("currencies",currencies);
 		
 		return "admin-store";
 	}
@@ -66,7 +82,17 @@ public class MerchantStoreController {
 	@RequestMapping(value="/admin/store/save.html", method=RequestMethod.POST)
 	public String saveMenrchantStore(@Valid @ModelAttribute("store") MerchantStore store, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
+		MerchantStore sessionStore = (MerchantStore)request.getAttribute("MERCHANT_STORE");
 
+		if(store.getId()>0) {
+			if(store.getId().intValue() != sessionStore.getId().intValue()) {
+				return "redirect:/admin/store/store.html";
+			}
+		}
+		
+		List<Currency> currencies = currencyService.list();
+		
+		
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		List<Language> languages = languageService.getLanguages();
 		
@@ -77,12 +103,66 @@ public class MerchantStoreController {
 			return "admin-store";
 		}
 		
-		//merchantStoreService.update(store);
+		//get country
+		Country country = store.getCountry();
+		country = countryService.getByCode(country.getIsoCode());
+		Zone zone = store.getZone();
+		if(zone!=null) {
+			zone = zoneService.getByCode(zone.getCode());
+		}
+		Currency currency = store.getCurrency();
+		currency = currencyService.getById(currency.getId());
+
+		List<Language> supportedLanguages = store.getLanguages();
+		List<Language> supportedLanguagesList = new ArrayList<Language>();
+		Map<String,Language> languagesMap = languageService.getLanguagesMap();
+		for(Language lang : supportedLanguages) {
+			
+			Language l = languagesMap.get(lang.getCode());
+			if(l!=null) {
+				
+				supportedLanguagesList.add(l);
+				
+			}
+			
+		}
+		
+		Language defaultLanguage = store.getDefaultLanguage();
+		defaultLanguage = languageService.getById(defaultLanguage.getId());
+		if(defaultLanguage!=null) {
+			store.setDefaultLanguage(defaultLanguage);
+		}
+		
+		if(!MerchantStore.DEFAULT_STORE.equals(sessionStore.getCode())) {
+			
+			sessionStore.setCode(store.getCode());
+			
+		}
+		
+
+		
+		sessionStore.setCountry(country);
+		sessionStore.setZone(zone);
+		sessionStore.setStorestateprovince(store.getStorestateprovince());
+		sessionStore.setCurrency(currency);
+		sessionStore.setDefaultLanguage(defaultLanguage);
+		sessionStore.setDomainName(store.getDomainName());
+		sessionStore.setInBusinessSince(store.getInBusinessSince());
+		sessionStore.setLanguages(supportedLanguagesList);
+		sessionStore.setStoreaddress(store.getStoreaddress());
+		sessionStore.setStorecity(store.getStorecity());
+		sessionStore.setStoreEmailAddress(store.getStoreEmailAddress());
+		
+		merchantStoreService.update(sessionStore);
+		//update session store
+		request.getSession().setAttribute("MERCHANT_STORE", sessionStore);
 
 
 		model.addAttribute("success","success");
 		model.addAttribute("countries", countries);
 		model.addAttribute("languages",languages);
+
+		model.addAttribute("currencies",currencies);
 		
 		return "admin-store";
 	}
