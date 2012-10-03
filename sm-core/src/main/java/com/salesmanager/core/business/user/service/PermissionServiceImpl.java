@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
@@ -39,12 +38,20 @@ public class PermissionServiceImpl extends
 	}
 
 	@Override
-	public List<Permission> listByStore() throws ServiceException {
-		try {
-			return permissionDao.listByStore();
-		} catch (Exception e) {
-			throw new ServiceException(e);
-		}
+	public List<Permission> list() {
+			return permissionDao.list();
+	}
+
+	@Override
+	public Permission getById(Integer permissionId) {
+		return permissionDao.getById(permissionId);
+
+	}
+
+	@Override
+	public void saveOrUpdate(Permission permission) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

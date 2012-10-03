@@ -15,7 +15,7 @@ public class PermissionDaoImpl extends SalesManagerEntityDaoImpl<Integer, Permis
 		PermissionDao {
 
 	@Override
-	public List<Permission> listByStore() {
+	public List<Permission> list() {
 		QPermission qPermission = QPermission.permission;
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
@@ -24,5 +24,17 @@ public class PermissionDaoImpl extends SalesManagerEntityDaoImpl<Integer, Permis
 		
 		return query.listDistinct(qPermission);
 		}
+
+	@Override
+	public Permission getById(Integer permissionId) {
+		QPermission qPermission = QPermission.permission;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qPermission)
+			.where(qPermission.id.eq(permissionId));
+		
+		return query.uniqueResult(qPermission);
+	}
 
 }
