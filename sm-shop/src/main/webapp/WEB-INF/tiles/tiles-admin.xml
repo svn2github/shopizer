@@ -97,7 +97,10 @@
   	 <definition name="admin-user-permissions" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/profile/permissions.jsp" /> 
   	</definition>
-  	
+   	 <definition name="admin-user-permission" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/profile/permission.jsp" /> 
+  	</definition>
+  	 	
   	 <definition name="admin-user-groups" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/profile/groups.jsp" /> 
   	</definition>

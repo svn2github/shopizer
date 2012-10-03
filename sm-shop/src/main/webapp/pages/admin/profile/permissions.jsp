@@ -19,7 +19,7 @@
 
 
 								<div class="sm-ui-component">
-								<h3>Permissions //<s:message code="label.permissions.title" text="Permissions" /></h3>	
+								<h3>Permissions <s:message code="label.permissions.title" text="Permissions" /></h3>	
 								<br/>
 
 			      			     <script>
@@ -69,7 +69,8 @@
 
     						      fields:[
 										{title:"<s:message code="label.entity.id" text="Id"/>", name:"permissionId", canFilter:false},
-        								{title:"<s:message code="label.entity.name" text="Name"/>", name:"name"}
+        								{title:"<s:message code="label.entity.name" text="Name"/>", name:"name"},
+        								{title:"<s:message code="label.entity.details" text="Details"/>", name: "buttonField", align: "center",canFilter:false,canSort:false, canReorder:false}
 
     							],
     							selectionType: "single",
@@ -92,7 +93,7 @@
 	                						width: 65,
 	               					 		title: "<s:message code="label.entity.details" text="Details"/>",
 	                						click : function () {
-	                							window.location='<c:url value="/admin/categories/editCategory.html" />?id=' + record["permissionId"];
+	                							window.location='<c:url value="/admin/permissions/editPermission.html" />?id=' + record["permissionId"];
 	                						}
 	            						});
 	            						return button;  
