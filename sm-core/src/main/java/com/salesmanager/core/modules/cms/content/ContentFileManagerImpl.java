@@ -37,7 +37,7 @@ public class ContentFileManagerImpl extends ContentFileManager {
 	}
 
 	@Override
-	public ContentImage getImage(MerchantStore store, String imageName) {
+	public OutputContentImage getImage(MerchantStore store, String imageName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
