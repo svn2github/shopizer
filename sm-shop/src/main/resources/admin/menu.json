@@ -13,7 +13,12 @@
 "icon":"icon-file",
 "url":"/admin/store/store.html", 
 "roles":["AUTH"],
-"order":1
+"order":1,
+"menus":[
+	{"menu":{"code":"store","url":"/admin/store/store.html","roles":["ADMIN","STORE"],"order":0}},
+	{"menu":{"code":"branding","url":"/admin/store/branding.html","roles":["ADMIN","STORE"],"order":1}},
+	{"menu":{"code":"storelanding","url":"/admin/store/storeLanding.html","roles":["ADMIN","STORE"],"order":2}}
+]
 }},
 {
 "menu":{
