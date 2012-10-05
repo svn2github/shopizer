@@ -3,6 +3,7 @@ package com.salesmanager.web.admin.controller.user;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,110 +51,108 @@ public class PermissionController {
 	@Autowired
 	LabelUtils messages;
 
-	
-	@RequestMapping(value="/admin/permissions/editPermission.html", method=RequestMethod.GET)
-	public String displayPermissionEdit(@RequestParam("id") Integer permissionId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return displayPermission(permissionId,model,request,response);
+	@RequestMapping(value = "/admin/permissions/editPermission.html", method = RequestMethod.GET)
+	public String displayPermissionEdit(
+			@RequestParam("id") Integer permissionId, Model model,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		return displayPermission(permissionId, model, request, response);
 
 	}
-	private String displayPermission(Integer permissionId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		//display menu
-		setMenu(model,request);
-		
+
+	private String displayPermission(Integer permissionId, Model model,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		// display menu
+		setMenu(model, request);
+
 		Permission permission = new Permission();
-	
-		if(permissionId!=null && permissionId!=0) {//edit mode
-			
-			//get from DB
+
+		if (permissionId != null && permissionId != 0) {// edit mode
+
+			// get from DB
 			permission = permissionService.getById(permissionId);
-			
-			if(permission==null ) {
+
+			if (permission == null) {
 				return "admin-user-permissions";
 			}
 
-			
-//			categories.remove(category); //remove current category from categories
-		
-			
+			// categories.remove(category); //remove current category from
+			// categories
+
 		} else {
-		
-			//create a category
-			
-			List<Language> languages = languageService.list();//TODO get supported languages from MerchantStore
-			
-			//List<Language> languages = store.getLanguages();
-			
+
+			// create a category
+
+			List<Language> languages = languageService.list();// TODO get
+																// supported
+																// languages
+																// from
+																// MerchantStore
+
+			// List<Language> languages = store.getLanguages();
+
 			List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
 
-			for(Language l : languages) {
-				
+			for (Language l : languages) {
+
 				CategoryDescription desc = new CategoryDescription();
 				desc.setLanguage(l);
 				descriptions.add(desc);
-				
+
 			}
-			
-			
-			
-//			category.setVisible(true);
-//			category.setDescriptions(descriptions);
-		
+
+			// category.setVisible(true);
+			// category.setDescriptions(descriptions);
+
 		}
-		
 
-
-		
 		model.addAttribute("permission", permission);
-//		model.addAttribute("categories", categories);
-		
+		// model.addAttribute("categories", categories);
 
-		
 		return "admin-user-permission";
 	}
-	
-	@RequestMapping(value="/admin/permission/save.html", method=RequestMethod.POST)
-	public String savePermission(@Valid @ModelAttribute("permission") Permission permission, BindingResult result, Model model, HttpServletRequest request) throws Exception {
-		
-		//TODO Null Pointer exception
-		
-//		Language language = (Language)request.getAttribute("LANGUAGE");
-		
-		//display menu
-		setMenu(model,request);
-		
-//		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
-				
 
-		if(permission.getId() != null && permission.getId() >0) { //edit entry
-			
-			//get from DB
-			Permission currentPermission = permissionService.getById(permission.getId());
+	@RequestMapping(value = "/admin/permission/save.html", method = RequestMethod.POST)
+	public String savePermission(
+			@Valid @ModelAttribute("permission") Permission permission,
+			BindingResult result, Model model, HttpServletRequest request)
+			throws Exception {
 
-			if(currentPermission==null) {
+		// TODO Null Pointer exception
+
+		// Language language = (Language)request.getAttribute("LANGUAGE");
+
+		// display menu
+		setMenu(model, request);
+
+		// MerchantStore store =
+		// (MerchantStore)request.getAttribute("MERCHANT_STORE");
+
+		if (permission.getId() != null && permission.getId() > 0) { // edit
+																	// entry
+
+			// get from DB
+			Permission currentPermission = permissionService.getById(permission
+					.getId());
+
+			if (currentPermission == null) {
 				return "admin-user-permissions";
 			}
-			
 
-			
 		}
 
-			
-
-		
 		if (result.hasErrors()) {
 			return "admin-user-permission";
 		}
-		
-		
+
 		permissionService.saveOrUpdate(permission);
 
-			
-		//get parent categories
+		// get parent categories
 		List<Permission> permissions = permissionService.list();
 		model.addAttribute("permissions", permissions);
-		
 
-		model.addAttribute("success","success");
+		model.addAttribute("success", "success");
 		return "admin-user-permissions";
 	}
 
@@ -205,6 +204,47 @@ public class PermissionController {
 		} catch (Exception e) {
 			LOGGER.error("Error while paging categories", e);
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+		}
+
+		String returnString = resp.toJSONString();
+
+		return returnString;
+	}
+
+	@RequestMapping(value = "/admin/permissions/remove.html", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	String deletePermission(HttpServletRequest request,
+			HttpServletResponse response, Locale locale) {
+		String sid = request.getParameter("permissionId");
+
+		// MerchantStore store =
+		// (MerchantStore)request.getAttribute("MERCHANT_STORE");
+
+		AjaxResponse resp = new AjaxResponse();
+
+		try {
+
+			int id = Integer.parseInt(sid);
+
+			Permission permission = permissionService.getById(id);
+
+			if (permission == null) {
+
+				resp.setStatusMessage(messages.getMessage(
+						"message.unauthorized", locale));
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+
+			} else {
+
+				permissionService.delete(permission);
+				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+
+			}
+
+		} catch (Exception e) {
+			LOGGER.error("Error while deleting permission", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
 		}
 
 		String returnString = resp.toJSONString();

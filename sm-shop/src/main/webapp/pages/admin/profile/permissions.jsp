@@ -33,7 +33,7 @@
 									dataFormat:"json",  
 									operationBindings:[ 
 										{operationType:"fetch", dataProtocol:"postParams",dataURL: "<c:url value="/admin/permissions/paging.html" />"},
-										{operationType:"remove", dataProtocol:"postParams",dataURL: "<c:url value="/admin/categories/remove.html" />"},
+										{operationType:"remove", dataProtocol:"postParams",dataURL: "<c:url value="/admin/permissions/remove.html" />"},
 									],
 									transformResponse : function (dsResponse, dsRequest, jsonData) {
 										var status = isc.XMLTools.selectObjects(jsonData, "/response/status");
