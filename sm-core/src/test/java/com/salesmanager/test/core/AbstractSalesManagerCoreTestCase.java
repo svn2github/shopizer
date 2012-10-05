@@ -55,6 +55,7 @@ import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.currency.service.CurrencyService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
+import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 
 @ContextConfiguration(locations = {
@@ -78,6 +79,8 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	protected static final String CAD_CURRENCY_CODE = "CAD";
 	
 	protected static final String CA_COUNTRY_CODE = "CA";
+	
+	protected static final String VT_ZONE_CODE = "VT";
 	
 	@Autowired
 	private EntityManagerUtils entityManagerUtils;
@@ -163,6 +166,7 @@ public abstract class AbstractSalesManagerCoreTestCase {
 		cleanMerchants();
 		cleanProductTypes();
 		cleanCurrencies();
+		cleanZones();
 		cleanCountries();
 		cleanLanguages();
 	}
@@ -201,6 +205,12 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	private void cleanProductAvailabilities() throws ServiceException {
 		for(ProductAvailability availability : productAvailabilityService.list()) {
 			productAvailabilityService.delete(availability);
+		}
+	}
+	
+	private void cleanZones() throws ServiceException {
+		for (Zone zone : zoneService.list()) {
+			zoneService.delete(zone);
 		}
 	}
 
@@ -354,5 +364,8 @@ public abstract class AbstractSalesManagerCoreTestCase {
 		
 		Country ca = new Country(CA_COUNTRY_CODE);
 		countryService.create(ca);
+		
+		Zone vt = new Zone(ca,VT_ZONE_CODE,VT_ZONE_CODE);
+		zoneService.create(vt);
 	}
 }
