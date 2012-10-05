@@ -12,6 +12,8 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.infinispan.tree.Fqn;
 import org.infinispan.tree.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.salesmanager.core.business.content.model.image.ContentImage;
 import com.salesmanager.core.business.content.model.image.InputContentImage;
@@ -25,6 +27,45 @@ import com.salesmanager.core.modules.cms.content.ImagePut;
 
 public class CmsContentFileManagerInfinispanImpl extends
 		CmsFileManagerInfinispan implements ImagePut, ContentImageGet, ContentImageRemove {
+	
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CmsContentFileManagerInfinispanImpl.class);
+	
+	private static CmsContentFileManagerInfinispanImpl fileManager = null; 
+	
+
+	
+	/**
+	 *Requires to stop the engine
+	 *when image servlet un-deploys
+	 */
+	public void stopFileManager() {
+		
+        try {
+        	manager.stop();
+            LOGGER.info("Stopping CMS");
+        } catch (Exception e) {
+        	LOGGER.error("Error while stopping CmsContentFileManager",e);
+        }
+	}
+	
+	
+	public static CmsContentFileManagerInfinispanImpl getInstance() {
+		
+		if(fileManager==null) {
+			fileManager = new CmsContentFileManagerInfinispanImpl();
+			try {
+				fileManager.initFileManager();
+			} catch (Exception e) {
+				LOGGER.error("Error while instantiating CmsContentFileManager",e);
+			}
+		}
+		
+		return fileManager;
+		
+		
+		
+	}
 
 	@Override
 	public List<OutputContentImage> getImages(MerchantStore store)
