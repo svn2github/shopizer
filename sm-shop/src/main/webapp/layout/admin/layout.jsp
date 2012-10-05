@@ -191,6 +191,18 @@ response.setDateHeader ("Expires", -1);
   				window.location='<c:url value="/admin/customers/customer.html" />';
 			});
 			
+			$("#store-link").click(function() {
+  				window.location='<c:url value="/admin/store/store.html" />';
+			});
+			
+			$("#branding-link").click(function() {
+  				window.location='<c:url value="/admin/store/storeBranding.html" />';
+			});
+			
+			$("#storelanding-link").click(function() {
+  				window.location='<c:url value="/admin/store/storeLanding.html" />';
+			});
+			
 
 		}); 
 		

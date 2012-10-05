@@ -26,9 +26,6 @@ $(document).ready(function() {
 		$('.zone-list').show();           
 		$('#storestateprovince').hide();
 		getZones('<c:out value="${store.country.isoCode}" />'); 
-		<c:if test="${store.zone!=null}">
-			$('.zone-list').val('<c:out value="${store.zone.code}"/>');
-		</c:if>
 	</c:otherwise>
 	</c:choose>
 
@@ -69,10 +66,15 @@ function getZones(countryCode){
 					$('.zone-list').show();  
 					$('#storestateprovince').hide();
 					$(".zone-list").addItems(data);
+					<c:if test="${store.zone!=null}">
+						$('.zone-list').val('<c:out value="${store.zone.code}"/>');
+					</c:if>
 				} else {
-					alert('This response');
 					$('.zone-list').hide();             
 					$('#storestateprovince').show();
+					<c:if test="${store.storestateprovince!=null}">
+						$('#storestateprovince').val('<c:out value="${store.storestateprovince}"/>');
+					</c:if>
 				}
 			} else {
 				$('.zone-list').hide();             

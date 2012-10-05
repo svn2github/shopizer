@@ -26,7 +26,10 @@
 	<http pattern="/admin/**" auto-config="true" use-expressions="true" authentication-manager-ref="user">
 		<intercept-url pattern="/admin/logon.html*" access="permitAll" />
 		<intercept-url pattern="/admin/denied.html" access="permitAll"/>
+		<intercept-url pattern="/admin" access="hasRole('ADMIN')" />
+		<intercept-url pattern="/admin/" access="hasRole('ADMIN')" />
 		<intercept-url pattern="/admin/*.html" access="hasRole('ADMIN')" />
+		<intercept-url pattern="/admin/*/*.html" access="hasRole('ADMIN')" />
 		
 		<form-login login-processing-url="/admin/j_spring_security_check" login-page="/admin/logon.html"
 			authentication-failure-url="/admin/logon.html?login_error=true"
@@ -40,7 +43,10 @@
 	<http pattern="/customer/**" auto-config="true" use-expressions="true" authentication-manager-ref="customer">
 		<intercept-url pattern="/customer/logon.html*" access="permitAll" />
 		<intercept-url pattern="/customer/denied.html" access="permitAll"/>
+		<intercept-url pattern="/customer" access="hasRole('CUSTOMER')" />
+		<intercept-url pattern="/customer/" access="hasRole('CUSTOMER')" />
 		<intercept-url pattern="/customer/*.html" access="hasRole('CUSTOMER')" />
+		<intercept-url pattern="/customer/*/*.html" access="hasRole('CUSTOMER')" />
 		
 		<form-login login-processing-url="/customer/j_spring_security_check" login-page="/customer/logon.html"
 			authentication-failure-url="/customer/logon.html?login_error=true"

@@ -30,7 +30,8 @@
 	<beans:bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
  			<beans:property name="definitions">
  				<beans:list>
-  					<beans:value>/WEB-INF/tiles/tiles-admin.xml</beans:value> 
+  					<beans:value>/WEB-INF/tiles/tiles-admin.xml</beans:value>
+  					<beans:value>/WEB-INF/tiles/tiles-shop.xml</beans:value>
   				</beans:list>
   			</beans:property>
   	</beans:bean>
