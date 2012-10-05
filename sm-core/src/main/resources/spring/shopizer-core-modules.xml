@@ -30,6 +30,23 @@
 				class="com.salesmanager.core.modules.cms.product.CmsImageFileManagerInfinispanImpl" factory-method="getInstance" >
 	</bean>
 	
+		<bean id="contentFileManager"
+		class="com.salesmanager.core.modules.cms.content.ContentFileManagerImpl">
+		<property name="uploadImage">
+				<ref bean="cmsContentImage" />
+		</property>
+		<property name="getImage">
+				<ref bean="cmsContentImage" />
+		</property>
+		<property name="removeImage">
+				<ref bean="cmsContentImage" />
+		</property>
+	</bean>
+	
+	<bean id="cmsContentImage"
+				class="com.salesmanager.core.modules.cms.product.CmsContentFileManagerInfinispanImpl" factory-method="getInstance" >
+	</bean>
+	
 	
 	<!-- Email -->
 	<bean id="freemarkerMailConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
