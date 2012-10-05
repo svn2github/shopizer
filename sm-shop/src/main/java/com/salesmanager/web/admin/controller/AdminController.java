@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class AdminController {
 	
-	@RequestMapping(value="/admin/home.html", method=RequestMethod.GET)
+	@RequestMapping(value={"/admin/home.html","/admin/","/admin"}, method=RequestMethod.GET)
 	public String displayDashboard(Model model) throws Exception {
 		
 		

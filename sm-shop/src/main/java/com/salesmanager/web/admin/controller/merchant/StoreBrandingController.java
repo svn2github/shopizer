@@ -31,7 +31,7 @@ import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.web.admin.entity.web.Menu;
 
 @Controller
-public class MerchantStoreController {
+public class StoreBrandingController {
 	
 	@Autowired
 	MerchantStoreService merchantStoreService;
@@ -49,8 +49,8 @@ public class MerchantStoreController {
 	@Autowired
 	CurrencyService currencyService;
 	
-	@RequestMapping(value="/admin/store/store.html", method=RequestMethod.GET)
-	public String displayMerchantStore(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value="/admin/store/storeBranding.html", method=RequestMethod.GET)
+	public String displayStoreBranding(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
 		
@@ -66,15 +66,12 @@ public class MerchantStoreController {
 		
 		model.addAttribute("store", store);
 		
+		
 		List<Language> languages = languageService.getLanguages();
 		
 		List<Currency> currencies = currencyService.list();
 		
-		//display menu
-		Map<String,String> activeMenus = new HashMap<String,String>();
-		activeMenus.put("store", "store");
-		
-		model.addAttribute("activeMenus",activeMenus);
+
 		model.addAttribute("countries", countries);
 		model.addAttribute("languages",languages);
 		model.addAttribute("currencies",currencies);
@@ -82,8 +79,8 @@ public class MerchantStoreController {
 		return "admin-store";
 	}
 	
-	@RequestMapping(value="/admin/store/save.html", method=RequestMethod.POST)
-	public String saveMenrchantStore(@Valid @ModelAttribute("store") MerchantStore store, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value="/admin/store/saveBranding.html", method=RequestMethod.POST)
+	public String saveStoreBranding(@Valid @ModelAttribute("store") MerchantStore store, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
 		
@@ -135,9 +132,6 @@ public class MerchantStoreController {
 		
 		Language defaultLanguage = store.getDefaultLanguage();
 		defaultLanguage = languageService.getById(defaultLanguage.getId());
-		if(defaultLanguage!=null) {
-			store.setDefaultLanguage(defaultLanguage);
-		}
 		
 		if(!MerchantStore.DEFAULT_STORE.equals(sessionStore.getCode())) {
 			
@@ -159,7 +153,7 @@ public class MerchantStoreController {
 		sessionStore.setStorecity(store.getStorecity());
 		sessionStore.setStoreEmailAddress(store.getStoreEmailAddress());
 		
-		merchantStoreService.update(sessionStore);
+		//merchantStoreService.update(sessionStore);
 		//update session store
 		request.getSession().setAttribute("MERCHANT_STORE", sessionStore);
 
@@ -167,7 +161,7 @@ public class MerchantStoreController {
 		model.addAttribute("success","success");
 		model.addAttribute("countries", countries);
 		model.addAttribute("languages",languages);
-
+		model.addAttribute("languages",languages);
 		model.addAttribute("currencies",currencies);
 		
 		return "admin-store";
@@ -178,6 +172,7 @@ public class MerchantStoreController {
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("store", "store");
+		activeMenus.put("branding", "branding");
 
 		
 		@SuppressWarnings("unchecked")
