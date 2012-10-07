@@ -236,7 +236,7 @@ public class PermissionController {
 
 			} else {
 
-				permissionService.delete(permission);
+				permissionService.removePermission(permission);
 				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 
 			}
