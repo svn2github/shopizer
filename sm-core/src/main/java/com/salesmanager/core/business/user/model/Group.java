@@ -56,21 +56,6 @@ public class Group extends SalesManagerEntity<Integer, Group> implements Auditab
 	}
 	
 	
-	@ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.REFRESH})
-	@JoinTable(name = "GROUP_PERMISSION", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
-			@JoinColumn(name = "GROUP_ID", nullable = false, updatable = false) }
-			, 
-			inverseJoinColumns = { @JoinColumn(name = "PERMISSION_ID", 
-					nullable = false, updatable = false) }
-	)
-	@Cascade({
-		org.hibernate.annotations.CascadeType.DETACH,
-		org.hibernate.annotations.CascadeType.LOCK,
-		org.hibernate.annotations.CascadeType.REFRESH,
-		org.hibernate.annotations.CascadeType.REPLICATE
-		
-	})
-	private List<Permission> permissions = new ArrayList<Permission>();
 	
 	@Embedded
 	private AuditSection auditSection = new AuditSection();
@@ -102,14 +87,6 @@ public class Group extends SalesManagerEntity<Integer, Group> implements Auditab
 
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
-	}
-
-	public void setPermissions(List<Permission> permissions) {
-		this.permissions = permissions;
-	}
-
-	public List<Permission> getPermissions() {
-		return permissions;
 	}
 
 }

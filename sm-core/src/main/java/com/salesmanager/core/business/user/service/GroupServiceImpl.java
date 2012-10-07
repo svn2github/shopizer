@@ -35,11 +35,6 @@ public class GroupServiceImpl extends SalesManagerEntityServiceImpl<Integer, Gro
 
 	@Override
 	public void removeGroup(Group group) throws ServiceException {
-		group = this.getById(group.getId());//Prevents detached entity error
-		group.setPermissions(null);
-		
-		
-		this.delete(group);		
 	}
 
 

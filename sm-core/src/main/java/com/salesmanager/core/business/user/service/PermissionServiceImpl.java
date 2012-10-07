@@ -3,12 +3,14 @@ package com.salesmanager.core.business.user.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
@@ -63,34 +65,12 @@ public class PermissionServiceImpl extends
 
 	}
 	//@Override
-	public void delete(Permission permission) throws ServiceException {
+	public void removePermission(Permission permission) throws ServiceException {
 		
 		permission = this.getById(permission.getId());//Prevents detached entity error
-	
+		permission.setGroups(null);
 		
-		Integer permissionId = permission.getId();
-
-			
-		List<Group> groups = groupService.getGroups(permissionId);
-		
-		for(Group group : groups) {
-			
-			group.getPermissions().remove(permission);	
-
-//			groupService.removeGroup(group);
-
-			//need to delete a few things
-			
-			//delete attributes
-			
-			//delete availabilities
-			
-			
-			
-		}
-		
-			
-			permissionDao.delete(permission);
+		this.delete(permission);
 
 	}
 
