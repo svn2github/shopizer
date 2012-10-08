@@ -1,9 +1,7 @@
 package com.salesmanager.web.servlet;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -14,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -59,13 +58,13 @@ public class ImageServlet extends HttpServlet {
 		System.out.println(requestUrl);
 		System.out.println(requestUri);
 		
-		//Should have /storecode/imageName.extension
+		//Should have /storecode/<LOGO>|<CONTENT>/imageName.extension
 		try {
 		
 			MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
 		
 		
-			OutputContentImage img = contentFileManager.getImage(store, store.getStoreLogo());
+			OutputContentImage img = contentFileManager.getImage(store, store.getStoreLogo(),ImageContentType.LOGO);
 			
 			
 			if(img!=null) {
