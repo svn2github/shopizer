@@ -12,6 +12,7 @@ import com.salesmanager.core.business.catalog.product.dao.image.ProductImageDao;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.service.ProductImageEnum;
+import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.InputContentImage;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -41,7 +42,7 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		productImage.setProduct(product);
 		
 		//upload the image in the CMS
-		InputContentImage contentImage = new InputContentImage();
+		InputContentImage contentImage = new InputContentImage(ImageContentType.PRODUCT);
 		contentImage.setFile(file);
 		contentImage.setDefaultImage(productImage.isDefaultImage());
 		contentImage.setImageName(productImage.getProductImage());
