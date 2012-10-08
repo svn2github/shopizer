@@ -12,13 +12,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
-import org.infinispan.Cache;
-import org.infinispan.manager.DefaultCacheManager;
-import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.tree.Fqn;
 import org.infinispan.tree.Node;
-import org.infinispan.tree.TreeCache;
-import org.infinispan.tree.TreeCacheFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,8 +81,8 @@ public class CmsImageFileManagerInfinispanImpl extends CmsFileManagerInfinispan 
 	/**
 	 * root
 	 * 		-productFiles
-	 * 				-merchantId
-	 * 					     -productId
+	 * 				-merchant-id
+	 * 					     -product-id
 	 * 								-<IMAGE NAME>
 	 */
 

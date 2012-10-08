@@ -7,7 +7,9 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.infinispan.tree.Fqn;
@@ -16,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.salesmanager.core.business.content.model.image.ContentImage;
+import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.InputContentImage;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -66,9 +69,78 @@ public class CmsContentFileManagerInfinispanImpl extends
 		
 		
 	}
-
+	
+	
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<OutputContentImage> getImages(MerchantStore store)
+	public List<String> getImageNames(MerchantStore store,
+			ImageContentType imageContentType) throws ServiceException {
+        if(treeCache==null) {
+        	throw new ServiceException("CmsImageFileManagerInfinispan has a null treeCache");
+        }
+
+		List<String> returnNames = new ArrayList<String>();
+		try {
+        	
+			StringBuilder filePath = new StringBuilder();
+			filePath.append("/contentFiles/")
+			.append("merchant-").append(String.valueOf(store.getId()));//.append("/")
+			
+			
+			//a logo or content
+			if(imageContentType.equals(ImageContentType.LOGO)) {
+				
+				filePath.append("/logo");
+
+			} else {
+			
+			//if(image.getContentType().equals(ImageContentType.CONTENT)) {
+				
+				filePath.append("/content");
+
+			}
+			
+			
+			Fqn imageFile = Fqn.fromString(filePath.toString());
+			
+			if(imageFile==null) {
+				return null;
+			}
+			
+			Node<String, Object> imageFileFileTree = treeCache.getRoot().getChild(imageFile);
+			
+			
+			if(imageFileFileTree==null) {
+				return null;
+			}
+			
+			Set<String> names = imageFileFileTree.getKeys();
+			
+			
+			
+			for(String name : names) {
+				
+				returnNames.add(name);
+				
+			}
+			
+			
+
+			
+
+        } catch(Exception e) {
+        	throw new ServiceException(e);
+		} 
+		
+		return returnNames;
+	}
+
+	
+	/**
+	 * Returns the physical files
+	 */
+	@Override
+	public List<OutputContentImage> getImages(MerchantStore store, ImageContentType imageContentType)
 			throws ServiceException {
 		// TODO Auto-generated method stub
 		return null;
@@ -86,9 +158,14 @@ public class CmsContentFileManagerInfinispanImpl extends
 		
 	}
 
+	
+	/**
+	 * Returns the physical file
+	 * 
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public OutputContentImage getImage(MerchantStore store, String imageName) throws ServiceException {
+	public OutputContentImage getImage(MerchantStore store, String imageName, ImageContentType imageContentType) throws ServiceException {
 		
 		
         if(treeCache==null) {
@@ -101,11 +178,30 @@ public class CmsContentFileManagerInfinispanImpl extends
 			StringBuilder filePath = new StringBuilder();
 			filePath.append("/contentFiles/")
 			.append("merchant-").append(String.valueOf(store.getId()));//.append("/")
-			//.append(imageName);
+			
+			
+			//a logo or content
+			if(imageContentType.equals(ImageContentType.LOGO)) {
+				
+				filePath.append("/logo");
+
+			} else {
+			
+			//if(image.getContentType().equals(ImageContentType.CONTENT)) {
+				
+				filePath.append("/content");
+
+			}
+			
 			
 			Fqn imageFile = Fqn.fromString(filePath.toString());
 			
+			if(imageFile==null) {
+				return null;
+			}
+			
 			Node<String, Object> imageFileFileTree = treeCache.getRoot().getChild(imageFile);
+			
 			
 			if(imageFileFileTree==null) {
 				return null;
@@ -143,7 +239,18 @@ public class CmsContentFileManagerInfinispanImpl extends
 		
 		
 	}
-
+	
+	
+	
+	/**
+	 * root
+	 * 		-contentFiles
+	 * 				-merchant-id
+	 * 					    -logo
+	 * 							<IMAGE NAME> 
+	 * 						-images
+	 * 							<IMAGE NAME>
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void addImage(MerchantStore store, InputContentImage image)
@@ -158,17 +265,49 @@ public class CmsContentFileManagerInfinispanImpl extends
 		try {
         	
 
-			StringBuilder merchantPath = new StringBuilder();
-			merchantPath.append("/contentFiles/")
+			StringBuilder contentPath = new StringBuilder();
+			contentPath.append("/contentFiles/")
 			.append("merchant-").append(String.valueOf(store.getId()));
 
-			Fqn merchantFiles = Fqn.fromString(merchantPath.toString());
+			Fqn merchantFiles = Fqn.fromString(contentPath.toString());
 			
 			Node<String, Object> merchantFilesTree = treeCache.getRoot().getChild(merchantFiles);
 			
 			if(merchantFilesTree==null) {
 				treeCache.getRoot().addChild(merchantFiles);
 				merchantFilesTree = treeCache.getRoot().getChild(merchantFiles);
+			}
+			
+			Node<String, Object> contentTree = null;
+			
+			//a logo or content
+			if(image.getContentType().equals(ImageContentType.LOGO)) {
+				
+				contentPath.append("/logo");
+				Fqn logoFiles = Fqn.fromString(contentPath.toString());
+				
+				Node<String, Object> logoFilesTree = treeCache.getRoot().getChild(logoFiles);
+				
+				if(logoFilesTree==null) {
+					treeCache.getRoot().addChild(logoFiles);
+				}
+				
+				
+				contentTree = treeCache.getRoot().getChild(logoFiles);
+			} else {
+			
+			//if(image.getContentType().equals(ImageContentType.CONTENT)) {
+				
+				contentPath.append("/content");
+				Fqn contentFiles = Fqn.fromString(contentPath.toString());
+				
+				Node<String, Object> contentFilesTree = treeCache.getRoot().getChild(contentFiles);
+				
+				if(contentFilesTree==null) {
+					treeCache.getRoot().addChild(contentFiles);
+				}
+				
+				contentTree = treeCache.getRoot().getChild(contentFiles);
 			}
 
 
@@ -178,7 +317,7 @@ public class CmsContentFileManagerInfinispanImpl extends
 
             byte[] imageBytes = output.toByteArray();
             
-            merchantFilesTree.put(image.getImageName(), imageBytes);
+            contentTree.put(image.getImageName(), imageBytes);
 
 	
         } catch(Exception e) {
@@ -204,5 +343,8 @@ public class CmsContentFileManagerInfinispanImpl extends
 		
 		
 	}
+
+
+
 
 }
