@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
+import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.InputContentImage;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -212,7 +213,7 @@ public class CmsImageFileManagerInfinispanImpl extends CmsFileManagerInfinispan 
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<OutputContentImage> getImages(MerchantStore store) throws ServiceException {
+	public List<OutputContentImage> getImages(MerchantStore store, ImageContentType imageContentType) throws ServiceException {
 
         if(treeCache==null) {
         	throw new ServiceException("CmsImageFileManagerInfinispan has a null treeCache");

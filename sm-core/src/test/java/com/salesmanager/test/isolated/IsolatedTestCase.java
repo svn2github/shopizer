@@ -921,6 +921,7 @@ public class IsolatedTestCase {
 	  
 	  Group admin = new Group("ADMIN");
 	  
+	  /**
 	  admin.getPermissions().add(userperm);
 	  admin.getPermissions().add(storeperm);
 	  admin.getPermissions().add(catalogperm);
@@ -928,6 +929,7 @@ public class IsolatedTestCase {
 	  admin.getPermissions().add(shippingperm);
 	  admin.getPermissions().add(orderperm);
 	  admin.getPermissions().add(configperm);
+	  **/
 	  
 	  groupService.create(admin);
 	  

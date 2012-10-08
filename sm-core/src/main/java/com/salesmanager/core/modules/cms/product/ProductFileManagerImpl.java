@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
+import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.InputContentImage;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -49,7 +50,7 @@ public class ProductFileManagerImpl extends ProductFileManager {
 				uploadImage.uploadProductImage(configuration, productImage, contentImage);
 	
 				//default large
-				InputContentImage largeContentImage = new InputContentImage();
+				InputContentImage largeContentImage = new InputContentImage(ImageContentType.PRODUCT);
 				largeContentImage.setFile(contentImage.getFile());
 				largeContentImage.setDefaultImage(productImage.isDefaultImage());
 				largeContentImage.setImageName(new StringBuilder().append("L-").append(productImage.getProductImage()).toString());
@@ -57,7 +58,7 @@ public class ProductFileManagerImpl extends ProductFileManager {
 				uploadImage.uploadProductImage(configuration, productImage, largeContentImage);
 				
 				//default small
-				InputContentImage smallContentImage = new InputContentImage();
+				InputContentImage smallContentImage = new InputContentImage(ImageContentType.PRODUCT);
 				smallContentImage.setFile(contentImage.getFile());
 				smallContentImage.setDefaultImage(productImage.isDefaultImage());
 				smallContentImage.setImageName(new StringBuilder().append("S-").append(productImage.getProductImage()).toString());
@@ -115,7 +116,7 @@ public class ProductFileManagerImpl extends ProductFileManager {
 						ImageIO.write(largeResizedImage, extension, tempLarge);
 						
 	
-						largeContentImage = new InputContentImage();
+						largeContentImage = new InputContentImage(ImageContentType.PRODUCT);
 						largeContentImage.setFile(tempLarge);
 						largeContentImage.setDefaultImage(false);
 						largeContentImage.setImageName(new StringBuilder().append("L-").append(productImage.getProductImage()).toString());
@@ -130,7 +131,7 @@ public class ProductFileManagerImpl extends ProductFileManager {
 						ImageIO.write(smallResizedImage, extension, tempSmall);
 						
 	
-						smallContentImage = new InputContentImage();
+						smallContentImage = new InputContentImage(ImageContentType.PRODUCT);
 						smallContentImage.setFile(tempSmall);
 						smallContentImage.setDefaultImage(false);
 						smallContentImage.setImageName(new StringBuilder().append("S-").append(productImage.getProductImage()).toString());
@@ -159,10 +160,10 @@ public class ProductFileManagerImpl extends ProductFileManager {
 	}
 
 	
-	public List<OutputContentImage> getImages(MerchantStore store)
+	public List<OutputContentImage> getImages(MerchantStore store, ImageContentType imageContentType)
 			throws ServiceException {
 		//will return original
-		return getImage.getImages(store);
+		return getImage.getImages(store,ImageContentType.PRODUCT);
 	}
 	
 	@Override

@@ -3,6 +3,7 @@ package com.salesmanager.core.modules.cms.content;
 import java.util.List;
 
 import com.salesmanager.core.business.content.model.image.ContentImage;
+import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.InputContentImage;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -28,7 +29,7 @@ public class ContentFileManagerImpl extends ContentFileManager {
 	}
 
 	@Override
-	public List<OutputContentImage> getImages(MerchantStore store)
+	public List<OutputContentImage> getImages(MerchantStore store, ImageContentType imageContentType)
 			throws ServiceException {
 		// TODO Auto-generated method stub
 		return null;
@@ -47,7 +48,7 @@ public class ContentFileManagerImpl extends ContentFileManager {
 	}
 
 	@Override
-	public OutputContentImage getImage(MerchantStore store, String imageName) {
+	public OutputContentImage getImage(MerchantStore store, String imageName, ImageContentType imageContentType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -74,6 +75,13 @@ public class ContentFileManagerImpl extends ContentFileManager {
 
 	public void setUploadImage(ImagePut uploadImage) {
 		this.uploadImage = uploadImage;
+	}
+
+	@Override
+	public List<String> getImageNames(MerchantStore store,
+			ImageContentType imageContentType) throws ServiceException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
