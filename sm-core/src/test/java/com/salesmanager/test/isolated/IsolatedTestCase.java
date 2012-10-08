@@ -45,6 +45,8 @@ import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
 import com.salesmanager.core.business.catalog.product.model.ProductList;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
+import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
+import com.salesmanager.core.business.catalog.product.model.image.ProductImageDescription;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
@@ -289,11 +291,11 @@ public class IsolatedTestCase {
 	    MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
 	    ProductType generalType = productTypeService.getProductType(ProductType.GENERAL_TYPE);
 	    
-	    
 	    Category book = categoryService.getByCode(store, "book");
-	    
-	    //TODO in product service
 	    Product product = productService.getById(1L);
+	    
+	    
+/*	    
 	    
 	    product.setMerchantSore(store);
 	    
@@ -357,24 +359,24 @@ public class IsolatedTestCase {
             System.out.println("done");
 		    
 		    
-		    /*Fqn personsFqn = Fqn.fromString("persons");
+		    Fqn personsFqn = Fqn.fromString("persons");
 		    Fqn johnFqn = Fqn.fromRelative(personsFqn, Fqn.fromString("john"));
 		    Node<String, Object> john = treeCache.getRoot().addChild(johnFqn);
-		    john.put("surname", "Smith");*/
+		    john.put("surname", "Smith");
 		    
-		    /*Node<String, Object> john = ...
-		    		Node persons = john.getParent();*/
+		    Node<String, Object> john = ...
+		    		Node persons = john.getParent();
 		    
 		   // Set<Node<String, Object>> personsChildren = persons.getChildren();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	    
 	    
 	    
 	    
-/*        File file1 = new File("C:/doc/carl/Merchant.jpg");
+        File file1 = new File("C:/doc/carl/Merchant.jpg");
         if (!file1.exists()|| !file1.canRead()) {
         	throw new ServiceException("Can't read" + file1.getAbsolutePath());
         }
@@ -409,7 +411,7 @@ public class IsolatedTestCase {
         
         productImage1.setDescriptions(image1descriptions);
         
-        productService.addProductImage(product, productImage1, file1);
+        productImageService.addProductImage(product, productImage1, file1);
         
         ProductImage productImage2 = new ProductImage();
 	    productImage2.setProductImage(file2.getName());
@@ -433,8 +435,13 @@ public class IsolatedTestCase {
         
         productImage2.setDescriptions(image2descriptions);
         
-        productService.addProductImage(product, productImage2, file2);*/
+        productImageService.addProductImage(product, productImage2, file2);
         
+  }
+  
+  
+  @Test void testAddImage() throws ServiceException {
+	  
   }
   
   @Test
