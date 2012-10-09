@@ -178,7 +178,7 @@ public class CustomerController {
 			//@TODO
 			//fix the lazy loading issue when retrieving the country for the customer 
 			for(Customer customer:customers) {
-				res.append("{id:" + ++i + ",name:\'" + customer.getFirstname() + " " +customer.getLastname() + "\',country:\' CA \' ,active:\'true\'}");
+				res.append("{id:" + ++i + ",name:\'" + customer.getFirstname() + " " +customer.getLastname() + "\',country:\' " + customer.getCountry().getIsoCode() + " \' ,active:\'true\'}");
 				if(i < Integer.parseInt(totalRows)) {
 					res.append(",");
 					}
