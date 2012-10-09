@@ -122,14 +122,17 @@ public class UserServicesImpl implements UserDetailsService{
 		  
 		  Permission auth = new Permission("AUTH");//Authenticated
 		  auth.getGroups().add(gsuperadmin);
+		  auth.getGroups().add(gadmin);
 		  permissionService.create(auth);
 		  
 		  Permission categories = new Permission("CATEGORIES");
 		  categories.getGroups().add(gsuperadmin);
+		  categories.getGroups().add(gadmin);
 		  permissionService.create(categories);
 		  
 		  Permission products = new Permission("PRODUCTS");
 		  products.getGroups().add(gsuperadmin);
+		  products.getGroups().add(gadmin);
 		  permissionService.create(products);
 		  
 		  Permission attributes = new Permission("ATTRIBUTES");
@@ -162,6 +165,7 @@ public class UserServicesImpl implements UserDetailsService{
 		  permissionService.create(superadmin);
 		  Permission admin = new Permission("ADMIN");
 		  admin.getGroups().add(gsuperadmin);
+		  admin.getGroups().add(gadmin);
 		  permissionService.create(admin);
 		  
 		  //TODO to be continued

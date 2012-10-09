@@ -27,20 +27,23 @@ import com.salesmanager.core.business.catalog.category.model.CategoryDescription
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
-import com.salesmanager.core.business.user.model.Permission;
-import com.salesmanager.core.business.user.service.PermissionService;
+import com.salesmanager.core.business.user.model.Group;
+import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
-public class PermissionController {
+public class GroupsController {
 
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(PermissionController.class);
+			.getLogger(GroupsController.class);
 
 	@Autowired
-	protected PermissionService permissionService;
+	LanguageService languageService;
+
+	@Autowired
+	protected GroupService groupService;
 
 	@Autowired
 	CountryService countryService;
@@ -48,80 +51,113 @@ public class PermissionController {
 	@Autowired
 	LabelUtils messages;
 
-	@RequestMapping(value = "/admin/permissions/editPermission.html", method = RequestMethod.GET)
-	public String displayPermissionEdit(
-			@RequestParam("id") Integer permissionId, Model model,
+	@RequestMapping(value = "/admin/groups/editGroup.html", method = RequestMethod.GET)
+	public String displayGroupEdit(
+			@RequestParam("id") Integer groupId, Model model,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		return displayPermission(permissionId, model, request, response);
+		return displayGroup(groupId, model, request, response);
 
 	}
 
-	private String displayPermission(Integer permissionId, Model model,
+	private String displayGroup(Integer groupId, Model model,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		// display menu
 		setMenu(model, request);
 
-		Permission permission = new Permission();
+		Group group = new Group();
 
-		if (permissionId != null && permissionId != 0) {// edit mode
+		if (groupId != null && groupId != 0) {// edit mode
 
 			// get from DB
-			permission = permissionService.getById(permissionId);
+			group = groupService.getById(groupId);
 
-			if (permission == null) {
-				return "admin-user-permissions";
+			if (group == null) {
+				return "admin-user-groups";
 			}
- 
+
+			// categories.remove(category); //remove current category from
+			// categories
+
+		} else {
+
+			// create a category
+
+			List<Language> languages = languageService.list();// TODO get
+																// supported
+																// languages
+																// from
+																// MerchantStore
+
+			// List<Language> languages = store.getLanguages();
+
+			List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
+
+			for (Language l : languages) {
+
+				CategoryDescription desc = new CategoryDescription();
+				desc.setLanguage(l);
+				descriptions.add(desc);
+
+			}
+
+			// category.setVisible(true);
+			// category.setDescriptions(descriptions);
+
 		}
 
-		model.addAttribute("permission", permission);
+		model.addAttribute("group", group);
 		// model.addAttribute("categories", categories);
 
-		return "admin-user-permission";
+		return "admin-user-group";
 	}
 
-	@RequestMapping(value = "/admin/permission/save.html", method = RequestMethod.POST)
-	public String savePermission(
-			@Valid @ModelAttribute("permission") Permission permission,
+	@RequestMapping(value = "/admin/group/save.html", method = RequestMethod.POST)
+	public String saveGroup(
+			@Valid @ModelAttribute("group") Group group,
 			BindingResult result, Model model, HttpServletRequest request)
 			throws Exception {
 
+		// TODO Null Pointer exception
+
+		// Language language = (Language)request.getAttribute("LANGUAGE");
 
 		// display menu
 		setMenu(model, request);
 
+		// MerchantStore store =
+		// (MerchantStore)request.getAttribute("MERCHANT_STORE");
 
-		if (permission.getId() != null && permission.getId() > 0) { // edit
+		if (group.getId() != null && group.getId() > 0) { // edit
 																	// entry
 
 			// get from DB
-			Permission currentPermission = permissionService.getById(permission
+			Group currentGroup = groupService.getById(group
 					.getId());
 
-			if (currentPermission == null) {
-				return "admin-user-permissions";
+			if (currentGroup == null) {
+				return "admin-user-groups";
 			}
 
 		}
 
 		if (result.hasErrors()) {
-			return "admin-user-permission";
+			return "admin-user-group";
 		}
 
-		permissionService.saveOrUpdate(permission);
+		groupService.saveOrUpdate(group);
 
 		// get parent categories
-		List<Permission> permissions = permissionService.list();
-		model.addAttribute("permissions", permissions);
+		List<Group> groups = groupService.list();
+		model.addAttribute("groups", groups);
 
 		model.addAttribute("success", "success");
-		return "admin-user-permissions";
+		return "admin-user-groups";
 	}
 
 	// category list
-	@RequestMapping(value = "/admin/permissions/permissions.html", method = RequestMethod.GET)
+	@RequestMapping(value = "/admin/groups/groups.html", method = RequestMethod.GET)
 	public String displayPermissions(Model model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
@@ -129,36 +165,36 @@ public class PermissionController {
 
 		// does nothing, ajax subsequent request
 
-		return "admin-user-permissions";
+		return "admin-user-groups";
 	}
 
 	// @SuppressWarnings({ "unchecked" })
-	@RequestMapping(value = "/admin/permissions/paging.html", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/admin/groups/paging.html", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	String pagePermissions(HttpServletRequest request,
 			HttpServletResponse response) {
-		String permissionName = request.getParameter("name");
+		String groupName = request.getParameter("name");
 
 		AjaxResponse resp = new AjaxResponse();
 
 		try {
 
-			List<Permission> permissions = null;
+			List<Group> groups = null;
 
-			if (!StringUtils.isBlank(permissionName)) {
+			if (!StringUtils.isBlank(groupName)) {
 
-				permissions = permissionService.getByName();
+				groups = groupService.getByName();
 
 			} else {
-				permissions = permissionService.list();
+				groups = groupService.list();
 			}
 
-			for (Permission permission : permissions) {
+			for (Group group : groups) {
 
 				@SuppressWarnings("rawtypes")
 				Map entry = new HashMap();
-				entry.put("permissionId", permission.getId());
-				entry.put("name", permission.getPermissionName());
+				entry.put("groupId", group.getId());
+				entry.put("name", group.getGroupName());
 				resp.addDataEntry(entry);
 
 			}
@@ -175,11 +211,11 @@ public class PermissionController {
 		return returnString;
 	}
 
-	@RequestMapping(value = "/admin/permissions/remove.html", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/admin/groups/remove.html", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	String deletePermission(HttpServletRequest request,
+	String deleteGroup(HttpServletRequest request,
 			HttpServletResponse response, Locale locale) {
-		String sid = request.getParameter("permissionId");
+		String sid = request.getParameter("groupId");
 
 		// MerchantStore store =
 		// (MerchantStore)request.getAttribute("MERCHANT_STORE");
@@ -190,22 +226,24 @@ public class PermissionController {
 
 			int id = Integer.parseInt(sid);
 
-			Permission permission = permissionService.getById(id);
+			Group group = groupService.getById(id);
 
-			if (permission == null) {
+			if (group == null) {
 
 				resp.setStatusMessage(messages.getMessage(
 						"message.unauthorized", locale));
 				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 
 			} else {
-				permissionService.removePermission(permission);
+
+				groupService.deleteGroup(group);
+//				groupService.removeGroup(group);
 				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 
 			}
 
 		} catch (Exception e) {
-			LOGGER.error("Error while deleting permission", e);
+			LOGGER.error("Error while deleting group", e);
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 			resp.setErrorMessage(e);
 		}

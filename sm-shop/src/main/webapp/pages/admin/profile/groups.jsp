@@ -19,7 +19,7 @@
 
 
 								<div class="sm-ui-component">
-								<h3>Groups //<s:message code="label.categories.title" text="Categories" /></h3>	
+								<h3>Groups <s:message code="label.groups.title" text="Groups" /></h3>	
 								<br/>
 
 			      			     <script>
@@ -29,11 +29,11 @@
 
 								
 								isc.RestDataSource.create({ 
-									ID:"categories", 
+									ID:"groups", 
 									dataFormat:"json",  
 									operationBindings:[ 
-										{operationType:"fetch", dataProtocol:"postParams",dataURL: "<c:url value="/admin/categories/paging.html" />"},
-										{operationType:"remove", dataProtocol:"postParams",dataURL: "<c:url value="/admin/categories/remove.html" />"},
+										{operationType:"fetch", dataProtocol:"postParams",dataURL: "<c:url value="/admin/groups/paging.html" />"},
+										{operationType:"remove", dataProtocol:"postParams",dataURL: "<c:url value="/admin/groups/remove.html" />"},
 									],
 									transformResponse : function (dsResponse, dsRequest, jsonData) {
 										var status = isc.XMLTools.selectObjects(jsonData, "/response/status");
@@ -41,7 +41,7 @@
 											if(status==9999) {//operation completed
 												//reload 
 												//categoriesList.fetchData();
-												window.location='<c:url value="/admin/categories/categories.html" />';
+												window.location='<c:url value="/admin/groups/groups.html" />';
 											}
 
 											var msg = isc.XMLTools.selectObjects(jsonData, "/response/statusMessage");
@@ -55,9 +55,9 @@
 
 							  
 							  isc.ListGrid.create({
-    								ID: "categoriesList",
+    								ID: "groupsList",
     								border:1,
-    								dataSource: "categories",
+    								dataSource: "groups",
     								showRecordComponents: true,    
     								showRecordComponentsByCell: true,
     								canRemoveRecords: true,
@@ -68,10 +68,8 @@
 
 
     						      fields:[
-										{title:"<s:message code="label.entity.id" text="Id"/>", name:"categoryId", canFilter:false},
+										{title:"<s:message code="label.entity.id" text="Id"/>", name:"groupId", canFilter:false},
         								{title:"<s:message code="label.entity.name" text="Name"/>", name:"name"},
-        								{title:"<s:message code="label.entity.code" text="Code"/>", name:"code", canFiler:false},
-        								{title:"<s:message code="label.entity.visible" text="Visible"/>", name:"visible", canFilter:false},
         								{title:"<s:message code="label.entity.details" text="Details"/>", name: "buttonField", align: "center",canFilter:false,canSort:false, canReorder:false}
 
     							],
@@ -95,7 +93,7 @@
 	                						width: 65,
 	               					 		title: "<s:message code="label.entity.details" text="Details"/>",
 	                						click : function () {
-	                							window.location='<c:url value="/admin/categories/editCategory.html" />?id=' + record["categoryId"];
+	                							window.location='<c:url value="/admin/groups/editGroup.html" />?id=' + record["groupId"];
 	                						}
 	            						});
 	            						return button;  
@@ -126,7 +124,7 @@ isc.HLayout.create({
             visibilityMode:"multiple",
             animateSections:true,
             sections:[
-                {title:"<s:message code="label.categories.title" text="Categories"/>", autoShow:true, items:[categoriesList]}
+                {title:"<s:message code="label.groups.title" text="Groups"/>", autoShow:true, items:[groupsList]}
             ]
         })
     ]
