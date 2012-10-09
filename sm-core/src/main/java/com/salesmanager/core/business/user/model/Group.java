@@ -1,5 +1,8 @@
 package com.salesmanager.core.business.user.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -7,6 +10,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 
@@ -45,8 +49,6 @@ public class Group extends SalesManagerEntity<Integer, Group> implements Auditab
 	public Group(String groupName) {
 		this.groupName = groupName;
 	}
-	
-	
 	
 	@Embedded
 	private AuditSection auditSection = new AuditSection();

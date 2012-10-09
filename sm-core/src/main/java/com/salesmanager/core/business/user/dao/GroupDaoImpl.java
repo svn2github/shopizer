@@ -1,6 +1,7 @@
 package com.salesmanager.core.business.user.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Query;
 
@@ -14,8 +15,9 @@ import com.salesmanager.core.business.user.model.Group;
 public class GroupDaoImpl extends SalesManagerEntityDaoImpl<Integer, Group> implements
 		GroupDao {
 
+	@SuppressWarnings("rawtypes")
 	@Override
-	public List<Group> getGroupsListByPermission(Integer permissionId) {
+	public List<Group> getGroupsListBypermissions(Set permissionIds) {
 		StringBuilder qs = new StringBuilder();
 		qs.append("select g from Group as g ");
 //		qs.append("join fetch p.merchantStore merch ");
@@ -46,15 +48,15 @@ public class GroupDaoImpl extends SalesManagerEntityDaoImpl<Integer, Group> impl
 //		qs.append("left join fetch p.taxClass tx ");
 		
 		//qs.append("where pa.region in (:lid) ");
-		qs.append("where perms.id =:gid");
-
+		qs.append("where perms.id in (:cid) ");
+//		qs.append("and g.groupName !=:gn" );
 
 
     	String hql = qs.toString();
 		Query q = super.getEntityManager().createQuery(hql);
 
-    	q.setParameter("gid", permissionId);
-
+    	q.setParameter("cid", permissionIds);
+ //   	q.setParameter("gn","SUPERADMIN");
 
     	
     	@SuppressWarnings("unchecked")

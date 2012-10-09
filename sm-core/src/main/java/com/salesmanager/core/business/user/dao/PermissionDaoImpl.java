@@ -1,11 +1,15 @@
 package com.salesmanager.core.business.user.dao;
 
 import java.util.List;
+import java.util.Set;
+
+import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
+import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.user.model.Permission;
 import com.salesmanager.core.business.user.model.QPermission;
@@ -35,6 +39,25 @@ public class PermissionDaoImpl extends SalesManagerEntityDaoImpl<Integer, Permis
 			.where(qPermission.id.eq(permissionId));
 		
 		return query.uniqueResult(qPermission);
+	}
+
+
+	@Override
+	public List<Permission> getPermissionsListByGroups(Set groupIds) {
+		StringBuilder qs = new StringBuilder();
+		qs.append("select p from Permission as p ");
+		qs.append("join fetch p.groups grous ");
+		qs.append("where grous.id in (:cid)");
+
+    	String hql = qs.toString();
+		Query q = super.getEntityManager().createQuery(hql);
+
+    	q.setParameter("cid", groupIds);
+    	
+    	@SuppressWarnings("unchecked")
+		List<Permission> permissions =  q.getResultList();
+    	
+    	return permissions;
 	}
 
 }

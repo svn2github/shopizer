@@ -2,6 +2,7 @@ package com.salesmanager.core.business.user.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -64,14 +65,22 @@ public class PermissionServiceImpl extends
 		// TODO Auto-generated method stub
 
 	}
-	//@Override
+
+	@Override
 	public void removePermission(Permission permission) throws ServiceException {
-		
 		permission = this.getById(permission.getId());//Prevents detached entity error
 		permission.setGroups(null);
 		
 		this.delete(permission);
+	}
+	
 
+	@Override
+	public List<Permission> getPermissions(List<Integer> groupIds)
+			throws ServiceException {
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		Set ids = new HashSet(groupIds);
+		return permissionDao.getPermissionsListByGroups(ids);
 	}
 
 

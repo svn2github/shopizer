@@ -9,8 +9,14 @@ import com.salesmanager.core.business.user.model.Permission;
 
 public interface GroupService extends SalesManagerEntityService<Integer, Group> {
 
-	List<Group> getGroups(Integer id);
+//	List<Group> getGroups(List<Integer> permissionIds) throws ServiceException;
 
 	void removeGroup(Group group) throws ServiceException;
+
+	void saveOrUpdate(Group group) throws ServiceException;
+
+	List<Group> getByName() throws ServiceException;
+
+	void deleteGroup(Group group) throws ServiceException;
 
 }

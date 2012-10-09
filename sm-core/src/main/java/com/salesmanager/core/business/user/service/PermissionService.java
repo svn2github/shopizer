@@ -16,7 +16,10 @@ public interface PermissionService extends SalesManagerEntityService<Integer, Pe
 
 	void saveOrUpdate(Permission permission);
 
-	void removePermission(Permission permission) throws ServiceException;
+//	void deletePermission(Permission permission) throws ServiceException;
 
+	List<Permission> getPermissions(List<Integer> groupIds) throws ServiceException;
+
+	void removePermission(Permission permission) throws ServiceException;
 
 }
