@@ -1,5 +1,7 @@
 package com.salesmanager.core.business.customer.dao;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.mysema.query.jpa.JPQLQuery;
@@ -17,6 +19,8 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		super();
 	}
 	
+	
+	@Override
 	public Customer getById(Long id){
 		QCustomer qCustomer = QCustomer.customer;
 		QCountry qCountry = QCountry.country;
@@ -30,6 +34,22 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.where(qCustomer.id.eq(id));
 		
 		return query.uniqueResult(qCustomer);
+	}
+	
+	@Override
+	public List<Customer> list(){
+		
+		QCustomer qCustomer = QCustomer.customer;
+		QCountry qCountry = QCountry.country;
+		QZone qZone = QZone.zone;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCustomer)
+			.leftJoin(qCustomer.country,qCountry).fetch();
+	
+		return (List<Customer>) query.list(qCustomer);
+		
 	}
 
 }
