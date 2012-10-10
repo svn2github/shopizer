@@ -106,6 +106,7 @@ public class MerchantStoreController {
 		List<Country> countries = countryService.getCountries(language);
 		
 		if (result.hasErrors()) {
+			model.addAttribute("store", store);
 			return "admin-store";
 		}
 		
@@ -158,6 +159,7 @@ public class MerchantStoreController {
 		sessionStore.setStoreaddress(store.getStoreaddress());
 		sessionStore.setStorecity(store.getStorecity());
 		sessionStore.setStoreEmailAddress(store.getStoreEmailAddress());
+		sessionStore.setLanguages(supportedLanguagesList);
 		
 		merchantStoreService.update(sessionStore);
 		//update session store
@@ -167,6 +169,7 @@ public class MerchantStoreController {
 		model.addAttribute("success","success");
 		model.addAttribute("countries", countries);
 		model.addAttribute("languages",languages);
+		model.addAttribute("store", sessionStore);
 
 		model.addAttribute("currencies",currencies);
 		
