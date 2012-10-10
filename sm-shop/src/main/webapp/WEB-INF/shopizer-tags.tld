@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+ 
+ <taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
+   <description><![CDATA["Shopizer tag libs"]]></description>
+   <display-name>"Shopizer Tags"</display-name>
+   <tlib-version>2.2</tlib-version>
+   <short-name>sm</short-name>
+   <uri>/shopizer-tags</uri>
+
+<tag>
+ 
+         <name>contentImage</name>
+         <tag-class>com.salesmanager.web.tags.ContentImageUrlTag</tag-class>
+         <body-content>scriptless</body-content>
+         <attribute>
+                 <name>merchant</name>
+                 <required>true</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>com.salesmanager.core.business.merchant.model.MerchantStore</type>
+         </attribute>
+ 
+         <attribute>
+                 <name>imageName</name>
+                 <required>true</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>String</type>
+         </attribute>
+
+ 
+</tag>
+
+</taglib>
+
+ 
