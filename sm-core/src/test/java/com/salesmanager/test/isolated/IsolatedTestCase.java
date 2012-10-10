@@ -903,35 +903,31 @@ public class IsolatedTestCase {
   public void test3CreateUser() throws ServiceException {
 	  
 	  //need to create permission firts
+	  Group admin = new Group("ADMIN");
+	  groupService.create(admin);
 	  
 	  Permission userperm = new Permission("GRANT_USER");
+	  userperm.getGroups().add(admin);
 	  permissionService.create(userperm);
 	  Permission storeperm = new Permission("GRANT_STORE");
+	  storeperm.getGroups().add(admin);
 	  permissionService.create(storeperm);
 	  Permission catalogperm = new Permission("GRANT_CATALOG");
+	  catalogperm.getGroups().add(admin);
 	  permissionService.create(catalogperm);
 	  Permission paymentperm = new Permission("GRANT_PAYMENT");
+	  paymentperm.getGroups().add(admin);
 	  permissionService.create(paymentperm);
 	  Permission shippingperm = new Permission("GRANT_SHIPPING");
+	  shippingperm.getGroups().add(admin);
 	  permissionService.create(shippingperm);
 	  Permission orderperm = new Permission("GRANT_ORDER");
+	  orderperm.getGroups().add(admin);
 	  permissionService.create(orderperm);
 	  Permission configperm = new Permission("GRANT_CONFIG");
+	  configperm.getGroups().add(admin);
 	  permissionService.create(configperm);
 	  
-	  Group admin = new Group("ADMIN");
-	  
-	  /**
-	  admin.getPermissions().add(userperm);
-	  admin.getPermissions().add(storeperm);
-	  admin.getPermissions().add(catalogperm);
-	  admin.getPermissions().add(paymentperm);
-	  admin.getPermissions().add(shippingperm);
-	  admin.getPermissions().add(orderperm);
-	  admin.getPermissions().add(configperm);
-	  **/
-	  
-	  groupService.create(admin);
 	  
 	  User user = new User("admin","password","test@test.com");
 	  user.setFirstName("Test");

@@ -1,6 +1,8 @@
 package com.salesmanager.core.business.user.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -50,6 +52,9 @@ public class Group extends SalesManagerEntity<Integer, Group> implements Auditab
 		this.groupName = groupName;
 	}
 	
+	@ManyToMany(mappedBy = "groups")
+	private List<Permission> permissions = new ArrayList<Permission>();	
+	
 	@Embedded
 	private AuditSection auditSection = new AuditSection();
 	
@@ -80,6 +85,14 @@ public class Group extends SalesManagerEntity<Integer, Group> implements Auditab
 
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
+	}
+
+	public List<Permission> getPermissions() {
+		return permissions;
+	}
+
+	public void setPermissions(List<Permission> permissions) {
+		this.permissions = permissions;
 	}
 
 }
