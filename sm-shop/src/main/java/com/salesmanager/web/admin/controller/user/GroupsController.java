@@ -236,8 +236,8 @@ public class GroupsController {
 
 			} else {
 
-				groupService.deleteGroup(group);
-//				groupService.removeGroup(group);
+//				groupService.deleteGroup(group);
+				groupService.removeGroup(group);
 				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 
 			}

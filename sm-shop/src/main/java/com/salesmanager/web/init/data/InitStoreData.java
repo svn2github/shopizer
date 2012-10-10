@@ -287,6 +287,8 @@ public class InitStoreData implements InitData {
 		    product.getDescriptions().add(description);
 
 		    product.getCategories().add(tech);
+		    product.getCategories().add(novell);
+		    product.getCategories().add(fiction);
 
 		    productService.create(product);
 
