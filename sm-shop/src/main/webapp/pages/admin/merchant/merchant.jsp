@@ -204,7 +204,7 @@ function getZones(countryCode){
 	                        <label class="required"><s:message code="label.supportedlanguages" text="Supported languages"/></label>
 	                        <div class="controls">
 
-	                        					<form:checkboxes items="${languages}" itemValue="id" itemLabel="code" path="languages" /> 
+	                        					<form:checkboxes items="${languages}" itemValue="code" itemLabel="code" path="languages" /> 
 	                                   			<span class="help-inline"></span>
 	                        </div>
 	                  </div>
