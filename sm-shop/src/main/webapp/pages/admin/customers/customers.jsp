@@ -93,42 +93,7 @@
 								});
 								
 								
-								isc.SearchForm.create({
-    								ID:"findForm",
-    								left:25,
-    								top:10,
-    								cellPadding:4,
-    								numCols:6,
-    								fields:[
-        								{name:"Name"}
-        								//{name:"itemName", editorType:"comboBox", optionDataSource:"supplyItem", 
-        								//		pickListWidth:250},
-        								//{name:"findInCategory", editorType:"checkbox", 
-            						//		title:"Use category", defaultValue:true, shouldSaveValue:false}
-    								],
-    
-    								// Function to actually find items
-    								findItems : function () {
-
-    								
-    									itemList.fetchData({searchTerm:this.getValues()})
-    								
-        								
-								    }
-									});
-									
-									
-									isc.IButton.create({
-    									ID:"findButton",
-    									title:"Find",
-    									left:250,
-    									top:16,
-    									width:80,
-    									click:"findForm.findItems()",
-    									iconWidth:24
-									});
-
-
+								
 
 
 // Define application layout
@@ -145,16 +110,7 @@ isc.HLayout.create({
             visibilityMode:"multiple",
             animateSections:true,
             sections:[
-                {title:"Find customer", autoShow:true, items:[
-                    isc.Canvas.create({
-                        ID:"findPane",
-                        height:60,
-                        overflow:"auto",
-                        styleName:"defaultBorder",
-                        children:[findForm,findButton]
-                    })                
-                ]},
-                {title:"Customers", autoShow:true, items:[customersList]}
+                   {title:"Customers", autoShow:true, items:[customersList]}
             ]
         })
     ]
