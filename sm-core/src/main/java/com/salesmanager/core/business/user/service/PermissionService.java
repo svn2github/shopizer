@@ -5,6 +5,8 @@ import java.util.List;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
 import com.salesmanager.core.business.user.model.Permission;
+import com.salesmanager.core.business.user.model.PermissionCriteria;
+import com.salesmanager.core.business.user.model.PermissionList;
 
 public interface PermissionService extends SalesManagerEntityService<Integer, Permission> {
 
@@ -21,5 +23,7 @@ public interface PermissionService extends SalesManagerEntityService<Integer, Pe
 	List<Permission> getPermissions(List<Integer> groupIds) throws ServiceException;
 
 	void removePermission(Permission permission) throws ServiceException;
+
+	PermissionList listByCriteria(PermissionCriteria criteria) throws ServiceException ;
 
 }

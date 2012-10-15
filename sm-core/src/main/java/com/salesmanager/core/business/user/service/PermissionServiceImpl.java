@@ -19,6 +19,8 @@ import com.salesmanager.core.business.reference.language.service.LanguageService
 import com.salesmanager.core.business.user.dao.PermissionDao;
 import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.business.user.model.Permission;
+import com.salesmanager.core.business.user.model.PermissionCriteria;
+import com.salesmanager.core.business.user.model.PermissionList;
 
 @Service("permissionService")
 public class PermissionServiceImpl extends
@@ -81,6 +83,12 @@ public class PermissionServiceImpl extends
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		Set ids = new HashSet(groupIds);
 		return permissionDao.getPermissionsListByGroups(ids);
+	}
+
+	@Override
+	public PermissionList listByCriteria(PermissionCriteria criteria)
+			throws ServiceException {
+		return permissionDao.listByCriteria(criteria);
 	}
 
 

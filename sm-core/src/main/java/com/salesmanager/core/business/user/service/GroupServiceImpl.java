@@ -50,5 +50,14 @@ public class GroupServiceImpl extends
 		return null;
 	}
 
+	@Override
+	public List<Group> listGroup() throws ServiceException {
+		try {
+			return groupDao.listGroup();
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	}
+
 
 }

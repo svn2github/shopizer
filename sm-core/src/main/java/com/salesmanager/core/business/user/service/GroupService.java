@@ -17,4 +17,6 @@ public interface GroupService extends SalesManagerEntityService<Integer, Group> 
 
 	List<Group> getByName() throws ServiceException;
 
+	List<Group> listGroup() throws ServiceException;
+
 }

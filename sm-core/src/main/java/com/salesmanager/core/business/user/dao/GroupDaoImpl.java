@@ -7,9 +7,14 @@ import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 
+import com.mysema.query.jpa.JPQLQuery;
+import com.mysema.query.jpa.impl.JPAQuery;
+import com.salesmanager.core.business.catalog.category.model.QCategory;
+import com.salesmanager.core.business.catalog.category.model.QCategoryDescription;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.user.model.Group;
+import com.salesmanager.core.business.user.model.QGroup;
 
 @Repository("groupDao")
 public class GroupDaoImpl extends SalesManagerEntityDaoImpl<Integer, Group> implements
@@ -64,6 +69,18 @@ public class GroupDaoImpl extends SalesManagerEntityDaoImpl<Integer, Group> impl
 
     	
     	return groups;
+	}
+
+	@Override
+	public List<Group> listGroup() {
+		QGroup qGroup = QGroup.group;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qGroup)
+			.orderBy(qGroup.id.asc());
+		
+		return query.listDistinct(qGroup);
 	}
 
 }
