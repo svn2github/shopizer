@@ -1,22 +1,30 @@
 package com.salesmanager.web.admin.controller.user;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.salesmanager.core.business.catalog.category.model.Category;
+import com.salesmanager.core.business.catalog.category.service.CategoryService;
+import com.salesmanager.core.business.user.model.Group;
+import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.web.admin.entity.web.Menu;
 
 @Controller
 public class SecurityController {
 	
-	
+	@Autowired
+	GroupService groupService;
+
 	@RequestMapping(value="/admin/user/permissions.html", method=RequestMethod.GET)
 	public String displayPermissions(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -31,6 +39,10 @@ public class SecurityController {
 	public String displayGroupss(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
+		List<Group> groups = groupService.listGroup();
+		
+		model.addAttribute("groups", groups);
+		
 		return "admin-user-groups";
 		
 		

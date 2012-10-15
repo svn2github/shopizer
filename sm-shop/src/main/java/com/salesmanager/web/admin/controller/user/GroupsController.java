@@ -2,9 +2,11 @@ package com.salesmanager.web.admin.controller.user;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,12 +25,24 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
+import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
+import com.salesmanager.core.business.catalog.product.model.ProductList;
+import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
+import com.salesmanager.core.business.catalog.product.service.ProductService;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.user.model.Group;
+import com.salesmanager.core.business.user.model.Permission;
+import com.salesmanager.core.business.user.model.PermissionCriteria;
+import com.salesmanager.core.business.user.model.PermissionList;
 import com.salesmanager.core.business.user.service.GroupService;
+import com.salesmanager.core.business.user.service.PermissionService;
+import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.utils.LabelUtils;
@@ -44,6 +58,9 @@ public class GroupsController {
 
 	@Autowired
 	protected GroupService groupService;
+	
+	@Autowired
+	PermissionService permissionService;
 
 	@Autowired
 	CountryService countryService;
@@ -173,41 +190,105 @@ public class GroupsController {
 	public @ResponseBody
 	String pagePermissions(HttpServletRequest request,
 			HttpServletResponse response) {
-		String groupName = request.getParameter("name");
+		String groupId = request.getParameter("groupId");
+//		String groupName = request.getParameter("name");
+//		String sku = request.getParameter("sku");
+//		String available = request.getParameter("available");
 
-		AjaxResponse resp = new AjaxResponse();
+		AjaxPageableResponse resp = new AjaxPageableResponse();
+//		AjaxResponse resp = new AjaxResponse();
 
 		try {
+			int startRow = Integer.parseInt(request.getParameter("_startRow"));
+			int endRow = Integer.parseInt(request.getParameter("_endRow"));
+			
+			
+			PermissionCriteria criteria = new PermissionCriteria();
+			
+			criteria.setStartIndex(startRow);
+			criteria.setMaxCount(endRow);
+			
+			
+			if(!StringUtils.isBlank(groupId) && !groupId.equals("-1")) {
+				
+				//get other filters
+				Integer IgroupId = 0;
+				try {
+					IgroupId = Integer.parseInt(groupId);
+				} catch (Exception e) {
+					LOGGER.error("Permission page cannot parse groupId " + groupId );
+					resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+					String returnString = resp.toJSONString();
+					return returnString;
+				} 
+				
+				
 
-			List<Group> groups = null;
-
-			if (!StringUtils.isBlank(groupName)) {
-
-				groups = groupService.getByName();
-
-			} else {
-				groups = groupService.list();
+				if(IgroupId>0) {
+				
+					Group group = groupService.getById(IgroupId);
+	
+					if(group==null ) {
+						resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+						String returnString = resp.toJSONString();
+						return returnString;
+					}
+					
+					//get all sub categories
+					List<Group> groups = new ArrayList<Group>();
+					groups.add(group);
+					
+					Set<Integer> groupIds = new HashSet<Integer>();
+					
+					for(Group gro : groups) {
+						groupIds.add(gro.getId());
+					}
+					criteria.setGroupIds(groupIds);
+				}
 			}
-
-			for (Group group : groups) {
-
-				@SuppressWarnings("rawtypes")
+			
+//			if(!StringUtils.isBlank(sku)) {
+//				criteria.setCode(sku);
+//			}
+//			
+//			if(!StringUtils.isBlank(available)) {
+//				if(available.equals("true")) {
+//					criteria.setAvailable(new Boolean(true));
+//				} else {
+//					criteria.setAvailable(new Boolean(false));
+//				}
+//			}
+			
+			PermissionList permissionList = permissionService.listByCriteria(criteria);
+			resp.setEndRow(permissionList.getTotalCount());
+			resp.setStartRow(startRow);
+			List<Permission> plist = permissionList.getPermissions();
+			
+			for(Permission permission : plist) {
+				
 				Map entry = new HashMap();
-				entry.put("groupId", group.getId());
-				entry.put("name", group.getGroupName());
+				entry.put("permissionId", permission.getId());
+				
+//				ProductDescription description = product.getDescriptions().iterator().next();
+				
+				entry.put("name", permission.getPermissionName());
+//				entry.put("sku", permission.getSku());
+//				entry.put("available", permission.getAvailable());
 				resp.addDataEntry(entry);
-
+				
+				
+				
 			}
 
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
-
+			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_SUCCESS);
+		
 		} catch (Exception e) {
-			LOGGER.error("Error while paging categories", e);
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			LOGGER.error("Error while paging permissions", e);
+			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
 		}
-
+		
 		String returnString = resp.toJSONString();
-
 		return returnString;
 	}
 
