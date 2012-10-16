@@ -12,8 +12,10 @@
 	
 
 	
-	$(function(){	
-		$('.btn').addClass('disabled');
+	$(function(){
+		if($("#code").val()=="") {
+			$('.btn').addClass('disabled');
+		}
 		<c:forEach items="${category.descriptions}" var="description" varStatus="counter">		
 			$("#name${counter.index}").friendurl({id : 'seUrl${counter.index}'});
 		</c:forEach>
@@ -24,12 +26,16 @@
 		$('#checkCodeStatus').html('<img src="<c:url value="/resources/img/ajax-loader.gif" />');
 		$('#checkCodeStatus').show();
 		var code = $("#code").val();
-		checkCode(code,'<c:url value="/admin/categories/checkCategoryCode.html" />');
+		var id = $("#id").val();
+		checkCode(code,id,'<c:url value="/admin/categories/checkCategoryCode.html" />');
 	}
 	
 	function callBackCheckCode(msg,code) {
 		
-		if(code==9999 || code==0) {
+		if(code==0) {
+			$('.btn').removeClass('disabled');
+		}
+		if(code==9999) {
 
 			$('#checkCodeStatus').html('<font color="green"><s:message code="message.code.available" text="This code is available"/></font>');
 			$('#checkCodeStatus').show();
@@ -113,9 +119,9 @@
                   </div>
                   
                   <div class="control-group">
-                        <label class="required"><s:message code="label.category.code" text="Category code"/></label>
+                        <label><s:message code="label.category.code" text="Category code"/></label>
 	                        <div class="controls">
-	                        		<form:input cssClass="input-large" path="code" onblur="validateCode()"/>
+	                        		<form:input cssClass="input-large highlight" path="code" onblur="validateCode()"/>
 	                                <span class="help-inline"><div id="checkCodeStatus" style="display:none;"></div><form:errors path="code" cssClass="error" /></span>
 	                        </div>
                   </div>
@@ -123,9 +129,9 @@
                  <c:forEach items="${category.descriptions}" var="description" varStatus="counter">
                   
                  <div class="control-group">
-                        <label class="required"><s:message code="label.productedit.categoryname" text="Category name"/> (<c:out value="${description.language.code}"/>)</label>
+                        <label><s:message code="label.productedit.categoryname" text="Category name"/> (<c:out value="${description.language.code}"/>)</label>
                         <div class="controls">
-                        			<form:input id="name${counter.index}" path="descriptions[${counter.index}].name"/>
+                        			<form:input cssClass="input-large highlight" id="name${counter.index}" path="descriptions[${counter.index}].name"/>
                         			<span class="help-inline"><form:errors path="descriptions[${counter.index}].name" cssClass="error" /></span>
                         </div>
 
