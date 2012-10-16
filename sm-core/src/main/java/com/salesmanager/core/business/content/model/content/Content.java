@@ -9,8 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -64,10 +62,10 @@ public class Content extends SalesManagerEntity<Long, Content> implements Serial
 	@Column(name = "VISIBLE")
 	private boolean visible;
 	
-	//@Column(columnDefinition = "enum('BOX','PAGE')")//cannot create table with this 
-	//@Enumerated(EnumType.STRING) 
+	//Used for grouping
+	//RIGHT_BOX, LEFT_BOX, PAGE
 	@Column(name = "CONTENT_TYPE")
-	private ContentType contentType; 
+	private String contentType; 
 	
 	@Override
 	public Long getId() {
@@ -112,13 +110,7 @@ public class Content extends SalesManagerEntity<Long, Content> implements Serial
 		this.visible = visible;
 	}
 
-	public ContentType getContentType() {
-		return contentType;
-	}
 
-	public void setContentType(ContentType contentType) {
-		this.contentType = contentType;
-	}
 
 	public List<ContentDescription> getDescriptions() {
 		return descriptions;
@@ -126,6 +118,14 @@ public class Content extends SalesManagerEntity<Long, Content> implements Serial
 
 	public void setDescriptions(List<ContentDescription> descriptions) {
 		this.descriptions = descriptions;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
+
+	public String getContentType() {
+		return contentType;
 	}
 
 }

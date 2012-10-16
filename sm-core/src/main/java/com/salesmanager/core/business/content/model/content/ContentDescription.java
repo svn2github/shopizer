@@ -29,15 +29,13 @@ public class ContentDescription extends Description implements Serializable {
 	 */
 	private static final long serialVersionUID = -1252756716545768599L;
 
-	@ManyToOne(targetEntity = Category.class)
+	@ManyToOne(targetEntity = Content.class)
 	@JoinColumn(name = "CONTENT_ID", nullable = false)
 	private Content content;
 
 	@Column(name="SEF_URL", length=120)
 	private String seUrl;
 
-	@Column(name="META_TITLE", length=120)
-	private String metatagTitle;
 	
 	@Column(name="META_KEYWORDS")
 	private String metatagKeywords;
@@ -70,13 +68,6 @@ public class ContentDescription extends Description implements Serializable {
 		this.seUrl = seUrl;
 	}
 
-	public String getMetatagTitle() {
-		return metatagTitle;
-	}
-
-	public void setMetatagTitle(String metatagTitle) {
-		this.metatagTitle = metatagTitle;
-	}
 
 	public String getMetatagKeywords() {
 		return metatagKeywords;
