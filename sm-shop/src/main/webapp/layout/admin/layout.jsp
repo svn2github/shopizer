@@ -147,7 +147,7 @@ response.setDateHeader ("Expires", -1);
 
 			
 			$("#catalogue-products-create-link").click(function() {
-				window.location='<c:url value="/admin/products/product.html" />';
+				window.location='<c:url value="/admin/products/createProduct.html" />';
 			});
 			$("#catalogue-categories-list-link").click(function() {
 				window.location='<c:url value="/admin/categories/categories.html" />';
@@ -155,6 +155,7 @@ response.setDateHeader ("Expires", -1);
 			$("#catalogue-products-categories-link").click(function() {
 				window.location='<c:url value="/admin/products/product-categories.html" />';
 			});
+			
 			$("#catalogue-categories-hierarchy-link").click(function() {
 				window.location='<c:url value="/admin/categories/hierarchy.html" />';
 			});
@@ -191,15 +192,15 @@ response.setDateHeader ("Expires", -1);
   				window.location='<c:url value="/admin/customers/customer.html" />';
 			});
 			
-			$("#store-link").click(function() {
+			$("#storeDetails-link").click(function() {
   				window.location='<c:url value="/admin/store/store.html" />';
 			});
 			
-			$("#branding-link").click(function() {
+			$("#storeBranding-link").click(function() {
   				window.location='<c:url value="/admin/store/storeBranding.html" />';
 			});
 			
-			$("#storelanding-link").click(function() {
+			$("#storeLanding-link").click(function() {
   				window.location='<c:url value="/admin/store/storeLanding.html" />';
 			});
 			
@@ -207,14 +208,19 @@ response.setDateHeader ("Expires", -1);
 		}); 
 		
 		
-		function checkCode(code, url) {
+		function checkCode(code, id, url) {
 			
 			
+			var params = "code="+ code;
+			if(id!=null && id!='') {
+				params = params + "&id=" + id;
+			}
+
 			$.ajax({
 					type: 'POST',
 					dataType: "json",
 					url: url,
-					data: "code="+ code,
+					data: params,
 					success: function(response) { 
 						var msg = isc.XMLTools.selectObjects(response, "/response/statusMessage");
 						var status = isc.XMLTools.selectObjects(response, "/response/status");
