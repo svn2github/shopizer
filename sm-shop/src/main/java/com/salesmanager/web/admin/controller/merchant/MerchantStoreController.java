@@ -3,6 +3,7 @@ package com.salesmanager.web.admin.controller.merchant;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -71,10 +73,7 @@ public class MerchantStoreController {
 		List<Currency> currencies = currencyService.list();
 		
 		//display menu
-		Map<String,String> activeMenus = new HashMap<String,String>();
-		activeMenus.put("store", "store");
-		
-		model.addAttribute("activeMenus",activeMenus);
+
 		model.addAttribute("countries", countries);
 		model.addAttribute("languages",languages);
 		model.addAttribute("currencies",currencies);
@@ -105,7 +104,28 @@ public class MerchantStoreController {
 		//get countries
 		List<Country> countries = countryService.getCountries(language);
 		
+		//TODO no supported languages
+		
 		if (result.hasErrors()) {
+			
+	        Map<String, String> errors = new LinkedHashMap<String, String>();
+	        for (FieldError error : result.getFieldErrors()) {            
+	        	//errors.put(error.getField(), error.getDefaultMessage());
+	        	if(error.getField().equals("languages")) {
+	        		
+	        		if(store.getLanguages()==null || store.getLanguages().size()==0) {
+	        			Language en = languageService.getByCode("en");
+	        			List<Language> langs = new ArrayList<Language>();
+	        			//langs.add(en);
+	        			//store.setLanguages(langs);
+	        		}
+	        		
+	        	}
+	        } 
+			
+			model.addAttribute("countries", countries);
+			model.addAttribute("languages",languages);
+			model.addAttribute("currencies",currencies);
 			model.addAttribute("store", store);
 			return "admin-store";
 		}
@@ -181,6 +201,7 @@ public class MerchantStoreController {
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("store", "store");
+		activeMenus.put("storeDetails", "storeDetails");
 
 		
 		@SuppressWarnings("unchecked")

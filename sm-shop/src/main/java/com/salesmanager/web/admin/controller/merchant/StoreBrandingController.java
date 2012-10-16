@@ -172,7 +172,7 @@ public class StoreBrandingController {
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("store", "store");
-		activeMenus.put("branding", "branding");
+		activeMenus.put("storeBranding", "storeBranding");
 
 		
 		@SuppressWarnings("unchecked")
