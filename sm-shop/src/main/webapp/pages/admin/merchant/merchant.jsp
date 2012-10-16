@@ -113,22 +113,22 @@ function getZones(countryCode){
 					<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
 				
 	      			<div class="control-group">
-	                        <label class="required"><s:message code="label.storename" text="Name"/></label>
+	                        <label><s:message code="label.storename" text="Name"/></label>
 	                        <div class="controls">
-	                        		<form:input cssClass="input-large" path="storename" />
+	                        		<form:input cssClass="input-large highlight" path="storename" />
 	                                    <span class="help-inline"><form:errors path="storename" cssClass="error" /></span>
 	                        </div>
 	                  </div>
 	                  
 	                  <div class="control-group">
-	                        <label class="required"><s:message code="label.storecode" text="Store code"/></label>
+	                        <label><s:message code="label.storecode" text="Store code"/></label>
 	                        <div class="controls">
 	                        			<c:choose>
 	                        				<c:when test="${store.code=='DEFAULT'}">
 	                        					<span class="input-large uneditable-input">${store.code}</span><form:hidden path="code" />
 	                        				</c:when>
 	                        				<c:otherwise>
-	                        					<form:input cssClass="input-large" path="code" />
+	                        					<form:input cssClass="input-large highlight" path="code" />
 	                        				</c:otherwise>
 	                        			</c:choose>
 	                                    <span class="help-inline"><form:errors path="code" cssClass="error" /></span>
@@ -136,9 +136,9 @@ function getZones(countryCode){
 	                  </div>
 	                  
 	                  <div class="control-group">
-	                        <label class="required"><s:message code="label.storephone" text="Phone"/></label>
+	                        <label><s:message code="label.storephone" text="Phone"/></label>
 	                        <div class="controls">
-	                                    <form:input cssClass="input-large" path="storephone" />
+	                                    <form:input cssClass="input-large highlight" path="storephone" />
 	                                    <span class="help-inline"><form:errors path="storephone" cssClass="error" /></span>
 	                        </div>
 	
@@ -147,13 +147,13 @@ function getZones(countryCode){
 	                 <div class="control-group">
 	                        <label><s:message code="label.storeemailaddress" text="Email"/></label>
 	                        <div class="controls">
-	                                    <form:input cssClass="input-large" path="storeEmailAddress" />
+	                                    <form:input cssClass="input-large highlight" path="storeEmailAddress" />
 	                                    <span class="help-inline"><form:errors path="storeEmailAddress" cssClass="error" /></span>
 	                        </div>
 	                  </div>
 	                  
 	                  <div class="control-group">
-	                        <label class="required"><s:message code="label.storeaddress" text="Address"/></label>
+	                        <label><s:message code="label.storeaddress" text="Address"/></label>
 	                        <div class="controls">
 	                                    <form:input cssClass="input-large" path="storeaddress" />
 	                                    <span class="help-inline"><form:errors path="storeaddress" cssClass="error" /></span>
@@ -162,18 +162,18 @@ function getZones(countryCode){
 	                  
 	                  
 	                  <div class="control-group">
-	                        <label class="required"><s:message code="label.storecity" text="City"/></label>
+	                        <label><s:message code="label.storecity" text="City"/></label>
 	                        <div class="controls">
-	                                    <form:input cssClass="input-large" path="storecity" />
+	                                    <form:input cssClass="input-large highlight" path="storecity" />
 	                                    <span class="help-inline"><form:errors path="storecity" cssClass="error" /></span>
 	                        </div>
 	                  </div>
 	                  
 	                  <div class="control-group">
-	                        <label class="required"><s:message code="label.storecountry" text="Store Country"/></label>
+	                        <label><s:message code="label.storecountry" text="Store Country"/></label>
 	                        <div class="controls">
 	                        					
-	                        					<form:select cssClass="country-list" path="country.isoCode">
+	                        					<form:select cssClass="country-list highlight" path="country.isoCode">
 					  								<form:options items="${countries}" itemValue="isoCode" itemLabel="name"/>
 				       							</form:select>
 	                                   			<span class="help-inline"><form:errors path="country" cssClass="error" /></span>
@@ -182,10 +182,10 @@ function getZones(countryCode){
 	                  
 
 	                 <div class="control-group">
-	                        <label class="required"><s:message code="label.storezone" text="Store state / province"/></label>
+	                        <label><s:message code="label.storezone" text="Store state / province"/></label>
 	                        <div class="controls">
-	                        					<form:select cssClass="zone-list" path="zone.code"/>
-	                        					<input type="text" id="storestateprovince" name="storestateprovince" value="${store.storestateprovince}" /> 
+	                        					<form:select cssClass="zone-list highlight" path="zone.code"/>
+	                        					<input type="text" class="input-large highlight" id="storestateprovince" name="storestateprovince" value="${store.storestateprovince}" /> 
 	                                   			<span class="help-inline"></span>
 	                        </div>
 	                  </div>
@@ -193,7 +193,7 @@ function getZones(countryCode){
 	                  <div class="control-group">
 	                        <label><s:message code="label.storepostalcode" text="Postal code"/></label>
 	                        <div class="controls">
-	                                    <form:input cssClass="input-large" path="storepostalcode" />
+	                                    <form:input cssClass="input-large highlight" path="storepostalcode" />
 	                                    <span class="help-inline"><form:errors path="storepostalcode" cssClass="error" /></span>
 	                        </div>
 	                  </div>
@@ -201,26 +201,26 @@ function getZones(countryCode){
 	                  
 	                  
 	                  <div class="control-group">
-	                        <label class="required"><s:message code="label.supportedlanguages" text="Supported languages"/></label>
+	                        <label><s:message code="label.supportedlanguages" text="Supported languages"/></label>
 	                        <div class="controls">
 
-	                        					<form:checkboxes items="${languages}" itemValue="code" itemLabel="code" path="languages" /> 
-	                                   			<span class="help-inline"></span>
+	                        					<form:checkboxes cssClass="highlight" items="${languages}" itemValue="code" itemLabel="code" path="languages" /> 
+	                                   			<span class="help-inline"><form:errors path="languages" cssClass="error" /></span>
 	                        </div>
 	                  </div>
 	                  
 	                  
 	                  <div class="control-group">
-	                        <label class="required"><s:message code="label.defaultlanguage" text="Default language"/></label>
+	                        <label><s:message code="label.defaultlanguage" text="Default language"/></label>
 	                        <div class="controls">
 
-	                        					<form:select items="${languages}" itemValue="id" itemLabel="code" path="defaultLanguage.id"/> 
+	                        					<form:select cssClass="" items="${languages}" itemValue="id" itemLabel="code" path="defaultLanguage.id"/> 
 	                                   			<span class="help-inline"></span>
 	                        </div>
 	                  </div>
 	                  
 	                  <div class="control-group">
-	                        <label class="required"><s:message code="label.currency" text="Currency"/></label>
+	                        <label><s:message code="label.currency" text="Currency"/></label>
 	                        <div class="controls">
 
 	                        					<form:select items="${currencies}" itemValue="id" itemLabel="code"  path="currency.id"/> 
@@ -239,12 +239,12 @@ function getZones(countryCode){
 	                  </div>
 	                  
 	                  <div class="control-group">
-	                        <label class="required"><s:message code="label.store.baseurl" text="Store base url"/></label>
+	                        <label><s:message code="label.store.baseurl" text="Store base url"/></label>
 	                        <div class="controls">
 	                                    <span class="add-on">
 											http://
 										</span>
-										<form:input cssClass="input-large" path="domainName" />
+										<form:input cssClass="input-large highlight" path="domainName" />
 	                                    <span class="help-inline"><form:errors path="domainName" cssClass="error" /></span>
 	                        </div>
 	                  </div>
