@@ -10,7 +10,7 @@ import com.salesmanager.core.business.user.model.PermissionList;
 
 public interface PermissionDao extends SalesManagerEntityDao<Integer, Permission> {
 
-	List<Permission> list();
+	List<Permission> listPermission();
 
 	Permission getById(Integer permissionId);
 

@@ -51,10 +51,6 @@ public class PermissionServiceImpl extends
 		return null;
 	}
 
-	@Override
-	public List<Permission> list() {
-		return permissionDao.list();
-	}
 
 	@Override
 	public Permission getById(Integer permissionId) {
@@ -69,7 +65,7 @@ public class PermissionServiceImpl extends
 	}
 
 	@Override
-	public void removePermission(Permission permission) throws ServiceException {
+	public void deletePermission(Permission permission) throws ServiceException {
 		permission = this.getById(permission.getId());//Prevents detached entity error
 		permission.setGroups(null);
 		
@@ -89,6 +85,21 @@ public class PermissionServiceImpl extends
 	public PermissionList listByCriteria(PermissionCriteria criteria)
 			throws ServiceException {
 		return permissionDao.listByCriteria(criteria);
+	}
+
+	@Override
+	public void removePermission(Permission permission,Group group) throws ServiceException {
+		permission = this.getById(permission.getId());//Prevents detached entity error
+	
+		permission.getGroups().remove(group);
+		
+		
+//		this.delete(permission);
+	}
+
+	@Override
+	public List<Permission> listPermission() throws ServiceException {
+		return permissionDao.listPermission();
 	}
 
 
