@@ -94,6 +94,7 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	@JoinColumn(name = "LANGUAGE_ID", nullable=false)
 	private Language defaultLanguage;
 
+	@NotEmpty
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "MERCHANT_LANGUAGE")
 	private List<Language> languages = new ArrayList<Language>();
