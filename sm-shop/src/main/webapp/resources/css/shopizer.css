@@ -59,11 +59,9 @@ body {
 }
 
 
-
-.required:after  
-{ 
-    content: "*"; 
-    font-weight: bold; 
-    color: red;  
+input.highlight, select.highlight, checkbox.highlight, textarea.highlight {
+            background-color: #FFC;
 }
+
+
 
