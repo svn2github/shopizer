@@ -36,7 +36,7 @@
 			      												dataFormat:"json", 
 			      												operationBindings:[ 
 			      													{operationType:"fetch", dataProtocol:"postParams",dataURL: "<c:url value="/admin/groups/paging.html" />"},
-			      													{operationType:"remove", dataProtocol:"postParams",dataURL: "<c:url value="/admin/products/remove.html" />"}
+			      													{operationType:"remove", dataProtocol:"postParams",dataURL: "<c:url value="/admin/permissions/removePermission.html" />"}
 			      												],
 			      												transformResponse : function (dsResponse, dsRequest, jsonData) {
 			      													var status = isc.XMLTools.selectObjects(jsonData, "/response/status");
@@ -52,7 +52,7 @@
 			      													
 			      													if(status == 9999) {
 			      														
-			      														window.location='<c:url value="/admin/user/groups.html" />';
+			      														window.location='<c:url value="/admin/groups/groups.html" />';
 			      													}
 			      												}
 			      											}); 
@@ -107,7 +107,7 @@
 			      			    						              
 			      													{title:"<s:message code="label.entity.id" text="Id"/>", name:"permissionId", canFilter:false},
 			      													{title:"<s:message code="label.entity.name" text="Name"/>", name:"name"},
-			      											//		{title:"<s:message code="label.product.sku" text="Sku"/>", name:"sku"},
+			      													{title:"<s:message code="label.group.groupId" text="GroupId"/>", name:"groupId",showIf:"false"},
 			      											//		{title:"<s:message code="label.product.available" text="Available"/>", name:"available",type:"boolean"},
 			      													//{title:"<s:message code="label.quantity" text="Quantity"/>", name:"quantity", canFilter:false},
 			      													{title:"<s:message code="label.entity.details" text="Details"/>", name: "buttonField", align: "center",canFilter:false,canSort:false, canReorder:false}  

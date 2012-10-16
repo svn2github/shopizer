@@ -191,12 +191,8 @@ public class GroupsController {
 	String pagePermissions(HttpServletRequest request,
 			HttpServletResponse response) {
 		String groupId = request.getParameter("groupId");
-//		String groupName = request.getParameter("name");
-//		String sku = request.getParameter("sku");
-//		String available = request.getParameter("available");
 
 		AjaxPageableResponse resp = new AjaxPageableResponse();
-//		AjaxResponse resp = new AjaxResponse();
 
 		try {
 			int startRow = Integer.parseInt(request.getParameter("_startRow"));
@@ -247,18 +243,7 @@ public class GroupsController {
 				}
 			}
 			
-//			if(!StringUtils.isBlank(sku)) {
-//				criteria.setCode(sku);
-//			}
-//			
-//			if(!StringUtils.isBlank(available)) {
-//				if(available.equals("true")) {
-//					criteria.setAvailable(new Boolean(true));
-//				} else {
-//					criteria.setAvailable(new Boolean(false));
-//				}
-//			}
-			
+		
 			PermissionList permissionList = permissionService.listByCriteria(criteria);
 			resp.setEndRow(permissionList.getTotalCount());
 			resp.setStartRow(startRow);
@@ -269,10 +254,8 @@ public class GroupsController {
 				Map entry = new HashMap();
 				entry.put("permissionId", permission.getId());
 				
-//				ProductDescription description = product.getDescriptions().iterator().next();
-				
 				entry.put("name", permission.getPermissionName());
-//				entry.put("sku", permission.getSku());
+				entry.put("groupId", groupId);
 //				entry.put("available", permission.getAvailable());
 				resp.addDataEntry(entry);
 				

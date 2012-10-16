@@ -27,7 +27,9 @@ import com.salesmanager.core.business.catalog.category.model.CategoryDescription
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
+import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.business.user.model.Permission;
+import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
@@ -41,6 +43,9 @@ public class PermissionController {
 
 	@Autowired
 	protected PermissionService permissionService;
+
+	@Autowired
+	protected GroupService groupService;
 
 	@Autowired
 	CountryService countryService;
@@ -150,7 +155,7 @@ public class PermissionController {
 				permissions = permissionService.getByName();
 
 			} else {
-				permissions = permissionService.list();
+				permissions = permissionService.listPermission();
 			}
 
 			for (Permission permission : permissions) {
@@ -199,7 +204,7 @@ public class PermissionController {
 				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 
 			} else {
-				permissionService.removePermission(permission);
+				permissionService.deletePermission(permission);
 				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 
 			}
@@ -215,6 +220,46 @@ public class PermissionController {
 		return returnString;
 	}
 
+	@RequestMapping(value = "/admin/permissions/removePermission.html", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	String removePermission(HttpServletRequest request,
+			HttpServletResponse response, Locale locale) {
+		String sid = request.getParameter("permissionId");
+		String gid = request.getParameter("groupId");
+	
+		AjaxResponse resp = new AjaxResponse();
+
+		try {
+
+			int id = Integer.parseInt(sid);
+			int groupId=Integer.parseInt(gid);
+
+			Permission permission = permissionService.getById(id);
+			Group group=groupService.getById(groupId);
+
+			if (permission == null) {
+
+				resp.setStatusMessage(messages.getMessage(
+						"message.unauthorized", locale));
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+
+			} else {
+				permissionService.removePermission(permission,group);
+				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+
+			}
+
+		} catch (Exception e) {
+			LOGGER.error("Error while deleting permission", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+
+		String returnString = resp.toJSONString();
+
+		return returnString;
+	}
+	
 	private void setMenu(Model model, HttpServletRequest request)
 			throws Exception {
 

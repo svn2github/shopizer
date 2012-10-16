@@ -43,11 +43,11 @@
 												//categoriesList.fetchData();
 												window.location='<c:url value="/admin/permissions/permissions.html" />';
 											}
-
-											var msg = isc.XMLTools.selectObjects(jsonData, "/response/statusMessage");
+											if (status != 0 && status !=9999) {
+												var msg = isc.XMLTools.selectObjects(jsonData, "/response/statusMessage");
 
 												alert("! " + msg);
-
+											}
 										}
 									}
 								}); 
