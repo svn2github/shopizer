@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
+import com.salesmanager.core.business.content.model.content.ContentDescription;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -69,8 +70,6 @@ public class CategoryController {
 	private String displayCategory(Long categoryId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 
-
-		
 		//display menu
 		setMenu(model,request);
 		
@@ -82,51 +81,51 @@ public class CategoryController {
 		List<Category> categories = categoryService.listByStore(store,language);
 		
 
-
+		List<Language> languages = store.getLanguages();
 		Category category = new Category();
-	
-
-		
 		
 		if(categoryId!=null && categoryId!=0) {//edit mode
-			
-			//get from DB
 			category = categoryService.getById(categoryId);
+		
+			
 			
 			if(category==null || category.getMerchantSore().getId()!=store.getId()) {
 				return "catalogue-categories";
 			}
-
-			
-			categories.remove(category); //remove current category from categories
-		
-			
 		} else {
-		
-			//create a category
-			
-			List<Language> languages = languageService.list();//TODO get supported languages from MerchantStore
-			
-			//List<Language> languages = store.getLanguages();
-			
-			List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
-
-			for(Language l : languages) {
-				
-				CategoryDescription desc = new CategoryDescription();
-				desc.setLanguage(l);
-				descriptions.add(desc);
-				
-			}
-			
-			
 			
 			category.setVisible(true);
-			category.setDescriptions(descriptions);
-		
+			
 		}
 		
+		List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
+		
+		for(Language l : languages) {
+			
+			CategoryDescription description = null;
+			if(category!=null) {
+				for(CategoryDescription desc : category.getDescriptions()) {
+					
+					
+					if(desc.getLanguage().getCode().equals(l.getCode())) {
+						description = desc;
+					}
+					
+					
+				}
+			}
+			
+			if(description==null) {
+				description = new CategoryDescription();
+				description.setLanguage(l);
+			}
+			
+			descriptions.add(description);
 
+		}
+		
+		category.setDescriptions(descriptions);
+	
 
 		
 		model.addAttribute("category", category);
@@ -140,33 +139,29 @@ public class CategoryController {
 	
 	@RequestMapping(value="/admin/categories/save.html", method=RequestMethod.POST)
 	public String saveCategory(@Valid @ModelAttribute("category") Category category, BindingResult result, Model model, HttpServletRequest request) throws Exception {
-		
-		//TODO Null Pointer exception
-		
+
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		
 		//display menu
 		setMenu(model,request);
 		
 		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
-				
 
 		if(category.getId() != null && category.getId() >0) { //edit entry
 			
 			//get from DB
 			Category currentCategory = categoryService.getById(category.getId());
 			
-			if(currentCategory==null || category.getMerchantSore().getId()!=store.getId()) {
+			if(currentCategory==null || currentCategory.getMerchantSore().getId()!=store.getId()) {
 				return "catalogue-categories";
 			}
-			
 
-			
 		}
 
 			
 			Map<String,Language> langs = languageService.getLanguagesMap();
 			
+
 
 			List<CategoryDescription> descriptions = category.getDescriptions();
 			if(descriptions!=null) {
@@ -417,23 +412,45 @@ public class CategoryController {
 	@RequestMapping(value="/admin/categories/checkCategoryCode.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String checkCategoryCode(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String code = request.getParameter("code");
-
+		String id = request.getParameter("id");
 
 
 		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
 		
+		
 		AjaxResponse resp = new AjaxResponse();
+		
+		try {
+			
+		Category category = categoryService.getByCode(store, code);
+		
+		
+		if(id!=null) {
+			try {
+				Long lid = Long.parseLong(id);
+				
+				if(category.getCode().equals(code) && category.getId()==lid) {
+					resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+					return resp.toJSONString();
+				}
+			} catch (Exception e) {
+				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
+				return resp.toJSONString();
+			}
+
+		}
+		
+		
+		
+		
 
 	
-		try {
+		
 			
 			if(StringUtils.isBlank(code)) {
 				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
 				return resp.toJSONString();
 			}
-
-			
-			Category category = categoryService.getByCode(store, code);
 
 			if(category!=null) {
 				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
