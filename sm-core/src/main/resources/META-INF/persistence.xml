@@ -33,6 +33,9 @@
 		
 		<class>com.salesmanager.core.business.catalog.category.model.Category</class>
 		<class>com.salesmanager.core.business.catalog.category.model.CategoryDescription</class>
+			   
+		<class>com.salesmanager.core.business.content.model.content.Content</class>
+		<class>com.salesmanager.core.business.content.model.content.ContentDescription</class>
 		
 		<class>com.salesmanager.core.business.catalog.product.model.Product</class>
 		<class>com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute</class>
