@@ -16,6 +16,8 @@ public interface ContentService extends SalesManagerEntityService<Long, Content>
 	Content getByCode(String code, MerchantStore store)
 			throws ServiceException;
 	void saveOrUpdate(Content content) throws ServiceException;
+	Content getByCode(String code, MerchantStore store, Language language)
+			throws ServiceException;
 
 
 

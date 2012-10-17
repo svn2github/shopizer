@@ -19,6 +19,9 @@ public interface ContentDao extends SalesManagerEntityDao<Long, Content> {
 	Content getByCode(String code, MerchantStore store)
 			throws ServiceException;
 
+	Content getByCode(String code, MerchantStore store, Language language)
+			throws ServiceException;
+
 
 
 }

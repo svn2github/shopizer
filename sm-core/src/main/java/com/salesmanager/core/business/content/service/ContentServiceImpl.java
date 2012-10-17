@@ -64,6 +64,12 @@ public class ContentServiceImpl extends SalesManagerEntityServiceImpl<Long, Cont
 		
 	}
 	
+	@Override
+	public Content getByCode(String code, MerchantStore store, Language language)
+			throws ServiceException {
+		return contentDao.getByCode(code, store, language);
+	}
+	
 
 
 }
