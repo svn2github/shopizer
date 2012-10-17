@@ -15,9 +15,14 @@ response.setDateHeader ("Expires", -1);
 
 	<div class="row">
 
-  		<div class="span4"><a class="brand" href="#"><h1>Project name</h1></a></div>
+  		<div class="span4"><a class="brand" href="#"><h1>Store name</h1></a></div>
   		<div class="span4 offset4">
 	    <div class="btn-group pull-right">
+
+	    	French | English
+
+	    
+	    
 		<i class="icon-shopping-cart icon-white"></i>
 		<a id="open-cart" class="open noboxshadow dropdown-toggle" data-toggle="dropdown" href="#" style="box-shadow:none;">My Cart</a> 
 		<span id="cartinfo">
@@ -26,12 +31,7 @@ response.setDateHeader ("Expires", -1);
 		<!--<a id="close-cart" style="display: none;" class="close" href="#">Close Panel</a>-->
             <ul class="dropdown-menu minicart">
               <li>
-			<!--
-			<div class="box-content clearfix"  >
-				<div class="box-title"><h1>Shopping Cart</h1></div> 
-				<div class="leftfull" id="shoppingcart">Empty Cart <br/><br/> </div> 
-			</div>
-			--> 
+
 
 			<div class="cartbox">
 			<div id="shoppingcart">
