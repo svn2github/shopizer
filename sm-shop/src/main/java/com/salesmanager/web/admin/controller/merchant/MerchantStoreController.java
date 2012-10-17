@@ -44,7 +44,6 @@ public class MerchantStoreController {
 	@Autowired
 	ZoneService zoneService;
 	
-	
 	@Autowired
 	LanguageService languageService;
 	
