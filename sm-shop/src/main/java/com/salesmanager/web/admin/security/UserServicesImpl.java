@@ -160,13 +160,13 @@ public class UserServicesImpl implements UserDetailsService{
 		  shipping.getGroups().add(gsuperadmin);
 		  permissionService.create(shipping);
 		  
-		  Permission superadmin = new Permission("SUPERADMIN");
-		  superadmin.getGroups().add(gsuperadmin);
-		  permissionService.create(superadmin);
-		  Permission admin = new Permission("ADMIN");
-		  admin.getGroups().add(gsuperadmin);
-		  admin.getGroups().add(gadmin);
-		  permissionService.create(admin);
+//		  Permission superadmin = new Permission("SUPERADMIN");
+//		  superadmin.getGroups().add(gsuperadmin);
+//		  permissionService.create(superadmin);
+//		  Permission admin = new Permission("ADMIN");
+//		  admin.getGroups().add(gsuperadmin);
+//		  admin.getGroups().add(gadmin);
+//		  permissionService.create(admin);
 		  
 		  //TODO to be continued
 		  

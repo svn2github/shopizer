@@ -52,7 +52,7 @@
 			      													
 			      													if(status == 9999) {
 			      														
-			      														window.location='<c:url value="/admin/groups/groups.html" />';
+			      														window.location="<c:url value="/admin/groups/groups.html" />";
 			      													}
 			      												}
 			      											}); 

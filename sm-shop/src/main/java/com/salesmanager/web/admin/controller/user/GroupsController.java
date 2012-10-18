@@ -175,11 +175,14 @@ public class GroupsController {
 
 	// category list
 	@RequestMapping(value = "/admin/groups/groups.html", method = RequestMethod.GET)
-	public String displayPermissions(Model model, HttpServletRequest request,
+	public String displayGroups(Model model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
 		setMenu(model, request);
 
+		List<Group> groups = groupService.listGroup();
+		
+		model.addAttribute("groups", groups);
 		// does nothing, ajax subsequent request
 
 		return "admin-user-groups";
