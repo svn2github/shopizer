@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
 
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
@@ -42,14 +43,15 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 	@Column(name = "PRODUCT_PRICE_TYP_ID")
 	private Integer productPriceTypeId;
 
+	@NotNull
 	@Column(name = "PRODUCT_PRICE_AMOUNT")
-	private BigDecimal productPriceAmount;
+	private BigDecimal productPriceAmount = new BigDecimal(0);;
 
 	@Column(name = "PRODUCT_PRICE_MOD_NM", length=20)
 	private String productPriceModuleName;
 
 	@Column(name = "DEFAULT_PRICE")
-	private Boolean defaultPrice;
+	private Boolean defaultPrice = false;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "PRODUCT_PRICE_SPECIAL_ST_DATE")

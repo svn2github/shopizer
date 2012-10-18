@@ -25,6 +25,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Cascade;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
@@ -154,6 +155,7 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 	@Column(name = "QUANTITY_ORDERED")
 	private Integer productOrdered;
 
+	@NotEmpty
 	@Column(name = "SKU")
 	private String sku;
 

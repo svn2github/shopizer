@@ -1,9 +1,7 @@
 package com.salesmanager.core.business.catalog.product.model.availability;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -21,6 +19,7 @@ import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
@@ -47,8 +46,9 @@ public class ProductAvailability extends SalesManagerEntity<Long, ProductAvailab
 	@JoinColumn(name = "PRODUCT_ID", nullable = false)
 	private Product product;
 	
+	@NotNull
 	@Column(name="QUANTITY")
-	private Integer productQuantity;
+	private Integer productQuantity = 0;
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name="DATE_AVAILABLE")
@@ -67,10 +67,10 @@ public class ProductAvailability extends SalesManagerEntity<Long, ProductAvailab
 	private boolean productIsAlwaysFreeShipping;
 	
 	@Column(name="QUANTITY_ORD_MIN")
-	private Integer productQuantityOrderMin;
+	private Integer productQuantityOrderMin = 0;
 	
 	@Column(name="QUANTITY_ORD_MAX")
-	private Integer productQuantityOrderMax;
+	private Integer productQuantityOrderMax = 0;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="productPriceAvailability", cascade = CascadeType.REMOVE)	
 	private Set<ProductPrice> prices = new HashSet<ProductPrice>();
