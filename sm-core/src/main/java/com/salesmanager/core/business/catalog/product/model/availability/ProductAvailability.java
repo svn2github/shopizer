@@ -1,7 +1,9 @@
 package com.salesmanager.core.business.catalog.product.model.availability;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -18,6 +20,7 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
@@ -71,6 +74,17 @@ public class ProductAvailability extends SalesManagerEntity<Long, ProductAvailab
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="productPriceAvailability", cascade = CascadeType.REMOVE)	
 	private Set<ProductPrice> prices = new HashSet<ProductPrice>();
+	
+	@Transient
+	public ProductPrice defaultPrice() {
+		
+		for(ProductPrice price : prices) {
+			if(price.isDefaultPrice()) {
+				return price;
+			}
+		}
+		return new ProductPrice();
+	}
 	
 	public ProductAvailability() {
 	}
@@ -157,6 +171,8 @@ public class ProductAvailability extends SalesManagerEntity<Long, ProductAvailab
 	public void setProduct(Product product) {
 		this.product = product;
 	}
+
+
 
 	public Set<ProductPrice> getPrices() {
 		return prices;

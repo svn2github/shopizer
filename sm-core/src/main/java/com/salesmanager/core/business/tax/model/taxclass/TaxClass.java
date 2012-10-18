@@ -65,7 +65,7 @@ public class TaxClass extends SalesManagerEntity<Long, TaxClass> {
 	private Set<MerchantStore> stores = new HashSet<MerchantStore>();*/
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="MERCHANT_ID", nullable=false)
+	@JoinColumn(name="MERCHANT_ID", nullable=true)
 	private MerchantStore merchantSore;
 
 	
