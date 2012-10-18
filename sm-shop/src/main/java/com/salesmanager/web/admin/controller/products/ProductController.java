@@ -8,12 +8,15 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -213,9 +216,9 @@ public class ProductController {
 		return "admin-products-edit";
 	}
 	
-/*	
-	@RequestMapping(value="/admin/categories/save.html", method=RequestMethod.POST)
-	public String saveCategory(@Valid @ModelAttribute("category") Category category, BindingResult result, Model model, HttpServletRequest request) throws Exception {
+
+	@RequestMapping(value="/admin/products/save.html", method=RequestMethod.POST)
+	public String saveProduct(@Valid @ModelAttribute("product") com.salesmanager.web.entity.catalog.Product  product, BindingResult result, Model model, HttpServletRequest request) throws Exception {
 		
 		
 		Language language = (Language)request.getAttribute("LANGUAGE");
@@ -226,80 +229,14 @@ public class ProductController {
 		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
 				
 
-		if(category.getId() != null && category.getId() >0) { //edit entry
-			
-			//get from DB
-			Category currentCategory = categoryService.getById(store,category.getId());
-			
-			if(currentCategory==null) {
-				return "catalogue-categories";
-			}
-			
-
-			
-		}
-
-			
-			Map<String,Language> langs = languageService.getLanguagesMap();
-			
-
-			List<CategoryDescription> descriptions = category.getDescriptions();
-			if(descriptions!=null) {
-				
-				for(CategoryDescription description : descriptions) {
-					
-					String code = description.getLanguage().getCode();
-					Language l = langs.get(code);
-					description.setLanguage(l);
-					description.setCategory(category);
-					
-					
-				}
-				
-			}
-			
-			//save to DB
-			category.setMerchantSore(store);
-		//}
-		
 		if (result.hasErrors()) {
 			return "catalogue-categories-category";
 		}
 		
-		//check parent
-		if(category.getParent()!=null) {
-			if(category.getParent().getId()==-1) {//this is a root category
-				category.setParent(null);
-				category.setLineage("/");
-				category.setDepth(0);
-			}
-		}
-		
-		
-		categoryService.saveOrUpdate(category);
 
-			
-		//ajust lineage and depth
-		if(category.getParent()!=null && category.getParent().getId()!=-1) { 
-		
-			Category parent = new Category();
-			parent.setId(category.getParent().getId());
-			parent.setMerchantSore(store);
-			
-			categoryService.addChild(parent, category);
-		
-		}
-		
-		
-		//get parent categories
-		List<Category> categories = categoryService.listByStore(store,language);
-		model.addAttribute("categories", categories);
-		
-
-		model.addAttribute("success","success");
 		return "catalogue-categories-category";
 	}
-	*/
+	
 	
 /*	//category list
 	@RequestMapping(value="/admin/categories/categories.html", method=RequestMethod.GET)
