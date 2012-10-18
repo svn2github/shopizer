@@ -38,8 +38,8 @@
 				<br/>
 			
 
-      					<c:url var="productSave" value="/admin/product/save.html"/>
-                        <form:form method="POST" commandName="product" action="${productSave}">
+      					<c:url var="productSave" value="/admin/products/save.html"/>
+                        <form:form method="POST" enctype="multipart/form-data" commandName="product" action="${productSave}">
 
                             <form:errors path="*" cssClass="alert alert-error" element="div" />
                             <div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>   
@@ -133,7 +133,7 @@
                         			 </textarea>
                               </div>
                        </div>
-à                      
+                      
 
                         <div class="control-group">
                               <label class="required"><s:message code="label.product.title" text="Product title"/> (<c:out value="${description.language.code}"/>)</label>
@@ -182,7 +182,6 @@
                                     <form:input cssClass="highlight" path="availability.productQuantity"/>
                                     <span class="help-inline"><form:errors path="availability.productQuantity" cssClass="error" /></span>
                         </div>
-
                   </div>
 
                  
@@ -208,15 +207,54 @@
 
 
                  <form:hidden path="availability.region" />
+                 
+                 
+                 <div class="control-group">
+                        <label><s:message code="label.product.weight" text="Weight"/></label>
+                        <div class="controls">
+                                    <form:input cssClass="" path="product.productWeight"/>
+                                    <span class="help-inline"><form:errors path="product.productWeight" cssClass="error" /></span>
+                        </div>
+                  </div>
 
+                 <div class="control-group">
+                        <label><s:message code="label.product.height" text="Height"/></label>
+                        <div class="controls">
+                                    <form:input cssClass="" path="product.productHeight"/>
+                                    <span class="help-inline"><form:errors path="product.productHeight" cssClass="error" /></span>
+                        </div>
+                  </div>
+     
+     
+                 <div class="control-group">
+                        <label><s:message code="label.product.width" text="Width"/></label>
+                        <div class="controls">
+                                    <form:input cssClass="" path="product.productWidth"/>
+                                    <span class="help-inline"><form:errors path="product.productWidth" cssClass="error" /></span>
+                        </div>
+                  </div>
+                  
+                  <div class="control-group">
+                        <label><s:message code="label.product.length" text="Length"/></label>
+                        <div class="controls">
+                                    <form:input cssClass="" path="product.productLength"/>
+                                    <span class="help-inline"><form:errors path="product.productLength" cssClass="error" /></span>
+                        </div>
+                  </div>          
                  
 
                   <!-- hidden when creating the product -->
 
                   <div class="control-group">
-                        <label><s:message code="label.product.uploadimage" text="Image"/></label>
+                        <label><s:message code="label.product.image" text="Image"/></label>
                         <div class="controls">
-                                    <input class="input-file" id="fileInput" type="file">
+                        			
+                        			<c:if test="${imageFileName==null}">
+                        			
+                        
+                                    <input class="input-file" id="image" name="image" type="file">
+                                    
+                                    </c:if>
                         </div>
                   </div>
                   
