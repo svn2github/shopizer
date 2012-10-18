@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,7 @@ import com.salesmanager.core.business.reference.language.service.LanguageService
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
 public class MerchantStoreController {
@@ -50,12 +52,14 @@ public class MerchantStoreController {
 	@Autowired
 	CurrencyService currencyService;
 	
+	@Autowired
+	LabelUtils messages;
+	
 	@RequestMapping(value="/admin/store/store.html", method=RequestMethod.GET)
-	public String displayMerchantStore(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String displayMerchantStore(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		setMenu(model,request);
-		
-		//TODO place key in constant
+
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		
 		//get countries
@@ -71,11 +75,23 @@ public class MerchantStoreController {
 		
 		List<Currency> currencies = currencyService.list();
 		
+		List<String> weights = new ArrayList<String>();
+		weights.add(messages.getMessage("label.generic.weightunit.LB", locale));
+		weights.add(messages.getMessage("label.generic.weightunit.KG", locale));
+		
+		List<String> sizes = new ArrayList<String>();
+		sizes.add(messages.getMessage("label.generic.sizeunit.CM", locale));
+		sizes.add(messages.getMessage("label.generic.sizeunit.IN", locale));
+		
 		//display menu
 
 		model.addAttribute("countries", countries);
 		model.addAttribute("languages",languages);
 		model.addAttribute("currencies",currencies);
+		
+		model.addAttribute("weights",weights);
+		model.addAttribute("sizes",sizes);
+		
 		
 		return "admin-store";
 	}
@@ -179,6 +195,8 @@ public class MerchantStoreController {
 		sessionStore.setStorecity(store.getStorecity());
 		sessionStore.setStoreEmailAddress(store.getStoreEmailAddress());
 		sessionStore.setLanguages(supportedLanguagesList);
+		sessionStore.setWeightunitcode(store.getWeightunitcode());
+		sessionStore.setSeizeunitcode(store.getSeizeunitcode());
 		
 		merchantStoreService.update(sessionStore);
 		//update session store

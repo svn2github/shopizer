@@ -227,6 +227,26 @@ function getZones(countryCode){
 	                                   			<span class="help-inline"></span>
 	                        </div>
 	                  </div>
+	  
+	  
+	  	               <div class="control-group">
+	                        <label><s:message code="label.store.weightunit" text="Weight units"/></label>
+	                        <div class="controls">
+
+	                        					<form:select items="${weights}" path="weightunitcode"/> 
+	                                   			<span class="help-inline"></span>
+	                        </div>
+	                  </div>
+	                  
+	                  
+	                  <div class="control-group">
+	                        <label><s:message code="label.store.sizeunit" text="Size units"/></label>
+	                        <div class="controls">
+
+	                        					<form:select items="${sizes}" path="seizeunitcode"/> 
+	                                   			<span class="help-inline"></span>
+	                        </div>
+	                  </div>
 	                  
 	                  
 	                  <div class="control-group">

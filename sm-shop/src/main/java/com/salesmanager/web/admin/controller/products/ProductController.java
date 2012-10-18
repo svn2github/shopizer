@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,17 +17,24 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
+import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
+import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
+import com.salesmanager.core.business.catalog.product.model.type.ProductType;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
+import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
+import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
+import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
+import com.salesmanager.core.business.tax.service.TaxClassService;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.utils.LabelUtils;
 
@@ -46,7 +54,18 @@ public class ProductController {
 	ProductService productService;
 	
 	@Autowired
+	ManufacturerService manufacturerService;
+	
+	@Autowired
+	ProductTypeService productTypeService;
+	
+	@Autowired
 	CountryService countryService;
+	
+	@Autowired
+	TaxClassService taxClassService;
+	
+
 	
 	@Autowired
 	LabelUtils messages;
@@ -69,8 +88,6 @@ public class ProductController {
 	private String displayProduct(Long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 
-
-		
 		//display menu
 		setMenu(model,request);
 		
@@ -78,31 +95,90 @@ public class ProductController {
 		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		
-		//get parent categories
+		//associate product to category
 		List<Category> categories = categoryService.listByStore(store,language);
 		
-		//TODO need a local Product with an array list of descriptions etc...
-		Product product = new Product();
+		List<Manufacturer> manufacturers = manufacturerService.listByStore(store, language);
 		
+		List<ProductType> productTypes = productTypeService.list();
+		
+		List<TaxClass> taxClasses = taxClassService.listByStore(store);
+		
+		List<Language> languages = store.getLanguages();
+		
+
+		
+		com.salesmanager.web.entity.catalog.Product product = new com.salesmanager.web.entity.catalog.Product();
+		List<ProductDescription> descriptions = new ArrayList<ProductDescription>();
+
 		if(productId!=null && productId!=0) {//edit mode
 			
-			//get from DB
-			//TODO getById
-			//product = categoryService.getById(store,productId);
+
+			Product dbProduct = productService.getById(productId);
 			
-			if(product==null) {
+			if(dbProduct==null) {
 				return "admin-products";
 			}
-
-
-		
 			
+			product.setProduct(dbProduct);
+			Set<ProductDescription> productDescriptions = dbProduct.getDescriptions();
+			
+			for(Language l : languages) {
+				
+				ProductDescription productDesc = null;
+				for(ProductDescription desc : productDescriptions) {
+					
+					Language lang = desc.getLanguage();
+					if(lang.getCode().equals(l.getCode())) {
+						productDesc = desc;
+					}
+
+				}
+				
+				if(productDesc==null) {
+					productDesc = new ProductDescription();
+					productDesc.setLanguage(l);
+				}
+
+				descriptions.add(productDesc);
+				
+			}
+			
+			
+			ProductAvailability productAvailability = null;
+			ProductPrice productPrice = null;
+			
+			Set<ProductAvailability> availabilities = dbProduct.getAvailabilities();
+			if(availabilities!=null && availabilities.size()>0) {
+				
+				for(ProductAvailability availability : availabilities) {
+					if(availability.getRegion().equals(ProductAvailability.DEFAULT_AVAILABILITY)) {
+						productAvailability = availability;
+						Set<ProductPrice> prices = availability.getPrices();
+						for(ProductPrice price : prices) {
+							if(price.isDefaultPrice()) {
+								productPrice = price;
+							}
+						}
+					}
+				}
+			}
+			
+			if(productAvailability==null) {
+				productAvailability = new ProductAvailability();
+			}
+			
+			if(productPrice==null) {
+				productPrice = new ProductPrice();
+			}
+			
+			product.setAvailability(productAvailability);
+			product.setPrice(productPrice);
+			product.setDescriptions(descriptions);
+
+
 		} else {
-			
-			List<Language> languages = languageService.list();//TODO get supported languages from MerchantStore
-			
 
-			List<ProductDescription> descriptions = new ArrayList<ProductDescription>();
 
 			for(Language l : languages) {
 				
@@ -112,69 +188,28 @@ public class ProductController {
 				
 			}
 			
+			Product prod = new Product();
 			
+			prod.setAvailable(true);
 			
-			product.setAvailable(true);
-			//product.setDescriptions(descriptions);
-		
-			
-			
-		}
+			ProductAvailability productAvailability = new ProductAvailability();
+			ProductPrice price = new ProductPrice();
+			product.setPrice(price);
+			product.setAvailability(productAvailability);
+			product.setProduct(prod);
+			product.setDescriptions(descriptions);
 
 
-/*		
-	
-
-		
-		
-		if(productId!=null && productId!=0) {//edit mode
-			
-			//get from DB
-			category = categoryService.getById(store,categoryId);
-			
-			if(category==null) {
-				return "catalogue-categories";
-			}
-
-			
-			categories.remove(category); //remove current category from categories
-		
-			
-		} else {
-		
-			//create a category
-			
-			List<Language> languages = languageService.list();//TODO get supported languages from MerchantStore
-			
-			//List<Language> languages = store.getLanguages();
-			
-			List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
-			
-			category = new Category();
-			
-			for(Language l : languages) {
-				
-				CategoryDescription desc = new CategoryDescription();
-				desc.setLanguage(l);
-				descriptions.add(desc);
-				
-			}
-			
-			
-			
-			category.setVisible(true);
-			category.setDescriptions(descriptions);
-		
 		}
 		
 
 
 		
-		model.addAttribute("category", category);
-		model.addAttribute("categories", categories);*/
-		
-
-		
+		model.addAttribute("product",product);
+		model.addAttribute("manufacturers", manufacturers);
+		model.addAttribute("productTypes", productTypes);
+		model.addAttribute("taxClasses", taxClasses);
+		model.addAttribute("categories", categories);
 		return "admin-products-edit";
 	}
 	
