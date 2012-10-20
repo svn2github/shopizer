@@ -178,6 +178,10 @@ response.setDateHeader ("Expires", -1);
 			$("#users-link").click(function() {
   				window.location='<c:url value="/admin/user/users.html" />';
 			});
+
+			$("#create-user-link").click(function() {
+  				window.location='<c:url value="/admin/users/createUser.html" />';
+			});
 			
 			$("#security-permissions-link").click(function() {
   				window.location='<c:url value="/admin/user/permissions.html" />';
