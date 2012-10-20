@@ -1,10 +1,14 @@
 package com.salesmanager.core.business.user.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.user.dao.UserDao;
 import com.salesmanager.core.business.user.model.User;
 
@@ -27,6 +31,15 @@ public class UserServiceImpl extends SalesManagerEntityServiceImpl<Long, User>
 		
 		return userDao.getByUserName(userName);
 		
+	}
+
+	@Override
+	public List<User> listUser() throws ServiceException {
+		try {
+			return userDao.listUser();
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
 	}
 
 }
