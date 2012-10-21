@@ -98,9 +98,7 @@ public class ProductController {
 		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		
-		//associate product to category
-		List<Category> categories = categoryService.listByStore(store,language);
-		
+
 		List<Manufacturer> manufacturers = manufacturerService.listByStore(store, language);
 		
 		List<ProductType> productTypes = productTypeService.list();
@@ -212,7 +210,6 @@ public class ProductController {
 		model.addAttribute("manufacturers", manufacturers);
 		model.addAttribute("productTypes", productTypes);
 		model.addAttribute("taxClasses", taxClasses);
-		model.addAttribute("categories", categories);
 		return "admin-products-edit";
 	}
 	
@@ -227,14 +224,83 @@ public class ProductController {
 		setMenu(model,request);
 		
 		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		
+		List<Manufacturer> manufacturers = manufacturerService.listByStore(store, language);
+		
+		List<ProductType> productTypes = productTypeService.list();
+		
+		List<TaxClass> taxClasses = taxClassService.listByStore(store);
 				
 
+		
+		model.addAttribute("manufacturers", manufacturers);
+		model.addAttribute("productTypes", productTypes);
+		model.addAttribute("taxClasses", taxClasses);
+		
 		if (result.hasErrors()) {
-			return "catalogue-categories-category";
+			return "admin-products-edit";
 		}
 		
+		Product newProduct = product.getProduct();
+		
+		ProductAvailability newProductAvailability = null;
+		
+		ProductPrice newProductPrice = null;
+		
+		
+		if(product.getProduct().getId()!=null && product.getProduct().getId()>0) {
+		
+		
+			//get actual product
+			newProduct = productService.getById(product.getProduct().getId());
+			if(newProduct!=null && newProduct.getMerchantStore().getId()!=store.getId()) {
+				return "redirect:/admin/products/product-categories.html";
+			}
+			
+			Set<ProductAvailability> availabilities = newProduct.getAvailabilities();
+			if(availabilities !=null && availabilities.size()>0) {
+				
+				for(ProductAvailability availability : availabilities) {
+					if(availability.getRegion().equals(ProductAvailability.DEFAULT_AVAILABILITY)) {
+						
+						newProductAvailability = availability;
 
-		return "catalogue-categories-category";
+						ProductPrice price = newProductAvailability.defaultPrice();
+						if(price!=null) {
+							newProductPrice = price;
+						}
+					}
+				}
+			}
+		}
+		
+		if(newProductPrice==null) {
+			newProductPrice = new ProductPrice();
+		}
+		
+		if(newProductAvailability==null) {
+			newProductAvailability = new ProductAvailability();
+		}
+		
+		newProductAvailability.setProductQuantity(product.getAvailability().getProductQuantity());
+		newProductAvailability.setProductQuantityOrderMin(product.getAvailability().getProductQuantityOrderMin());
+		newProductAvailability.setProductQuantityOrderMax(product.getAvailability().getProductQuantityOrderMax());
+		
+		
+		if(product.getImage()!=null) {
+			
+			productService.saveOrUpdate(newProduct);
+			
+		} else {
+			
+			//productService.saveOrUpdate(newProduct,product.getImage());
+			
+		}
+		
+		
+		
+		
+		return "admin-products-edit";
 	}
 	
 	
