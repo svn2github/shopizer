@@ -66,7 +66,7 @@ public class ProductAttribute extends SalesManagerEntity<Long, ProductAttribute>
 	@JoinColumn(name="OPTION_ID", nullable=false)
 	private ProductOption productOption;
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="OPTION_VALUE_ID", nullable=false)
 	private ProductOptionValue productOptionValue;
 	

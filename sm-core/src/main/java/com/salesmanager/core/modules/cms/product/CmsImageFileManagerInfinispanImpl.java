@@ -122,7 +122,7 @@ public class CmsImageFileManagerInfinispanImpl extends CmsFileManagerInfinispan 
 			if(productFilesTree==null) {
 				merchantFilesTree.addChild(productFiles);
 				productFilesTree = merchantFilesTree.getChild(productFiles);
-			}
+			} 
 			
             input = new BufferedInputStream(new FileInputStream(contentImage.getFile()));
             output = new ByteArrayOutputStream(); 

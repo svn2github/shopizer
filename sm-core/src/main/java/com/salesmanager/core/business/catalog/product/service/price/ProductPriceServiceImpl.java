@@ -6,10 +6,8 @@ import org.springframework.stereotype.Service;
 import com.salesmanager.core.business.catalog.product.dao.price.ProductPriceDao;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDescription;
-import com.salesmanager.core.business.common.model.Description;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
-import com.salesmanager.core.business.reference.language.model.Language;
 
 @Service("productPrice")
 public class ProductPriceServiceImpl extends SalesManagerEntityServiceImpl<Long, ProductPrice> 
@@ -28,15 +26,20 @@ public class ProductPriceServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		update(price);
 	}
 	
+	
 	@Override
-	public Description getDescription(
-			ProductPrice price, Language language) {
-		//for (Description description : price.getDescriptions()) {
-			//if (description.getLanguage().equals(language)) {
-			//	return description;
-			//}
-		//}
-		return null;
+	public void saveOrUpdate(ProductPrice price) throws ServiceException {
+		
+		if(price.getId()!=null && price.getId()>0) {
+			this.update(price);
+		} else {
+			this.create(price);
+		}
+		
+		
+		
 	}
+	
+
 
 }

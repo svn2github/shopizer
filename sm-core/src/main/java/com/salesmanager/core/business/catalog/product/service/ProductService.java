@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.catalog.product.service;
 
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 
@@ -44,6 +45,11 @@ public interface ProductService extends SalesManagerEntityService<Long, Product>
 			ProductCriteria criteria);
 
 	void removeProduct(Product product) throws ServiceException;
+
+	void saveOrUpdate(Product product, File productImage)
+			throws ServiceException;
+
+	void saveOrUpdate(Product product) throws ServiceException;
 	
 	//Product getById(Long id);
 }

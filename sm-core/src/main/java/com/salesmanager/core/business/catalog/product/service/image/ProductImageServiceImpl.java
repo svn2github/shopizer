@@ -49,11 +49,17 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		FileNameMap fileNameMap = URLConnection.getFileNameMap();
 		String contentType = fileNameMap.getContentTypeFor(file.getName());
 		contentImage.setImageContentType(contentType);
-		productFileManager.uploadProductImage(configuration, productImage, contentImage);
-		//.uploadProductImage(configuration, productImage, contentImage);
+	
 		
+		productFileManager.uploadProductImage(configuration, productImage, contentImage);
+
 		//insert ProductImage
-		this.create(productImage);
+		if(productImage.getId()!=null && productImage.getId()>0) {
+			this.update(productImage);
+		} else {
+			this.create(productImage);
+		}
+		
 		
 	}
 	

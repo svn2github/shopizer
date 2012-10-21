@@ -1,5 +1,7 @@
 package com.salesmanager.core.business.catalog.product.service;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -17,9 +19,17 @@ import com.salesmanager.core.business.catalog.product.dao.ProductDao;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
 import com.salesmanager.core.business.catalog.product.model.ProductList;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
+import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
+import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
+import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationship;
+import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
+import com.salesmanager.core.business.catalog.product.service.availability.ProductAvailabilityService;
 import com.salesmanager.core.business.catalog.product.service.image.ProductImageService;
+import com.salesmanager.core.business.catalog.product.service.price.ProductPriceService;
+import com.salesmanager.core.business.catalog.product.service.relationship.ProductRelationshipService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -35,6 +45,18 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	
 	@Autowired
 	CategoryService categoryService;
+	
+	@Autowired
+	ProductAvailabilityService productAvailabilityService;
+	
+	@Autowired
+	ProductPriceService productPriceService;
+	
+	@Autowired
+	ProductAttributeService productAttributeService;
+	
+	@Autowired
+	ProductRelationshipService productRelationshipService;
 	
 
 	
@@ -177,6 +199,84 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		product.setImages(null);
 		
 		this.delete(product);
+		
+		
+	}
+	
+	@Override
+	public void saveOrUpdate(Product product, File productImage) throws ServiceException {
+		this.saveOrUpdateProduct(product,productImage);
+	}
+	
+	@Override
+	public void saveOrUpdate(Product product) throws ServiceException {
+		this.saveOrUpdateProduct(product,null);
+	}
+	
+	
+	private void saveOrUpdateProduct(Product product, File file) throws ServiceException {
+		
+		
+
+		
+		if(product.getId()!=null && product.getId()>0) {
+			super.update(product);
+		} else {
+			super.create(product);
+		}
+		
+
+		
+		//get availabilities
+		Set<ProductAvailability> availabilities = product.getAvailabilities();
+		
+		if(availabilities!=null && availabilities.size()>0) {
+			for(ProductAvailability availability : availabilities) {
+				availability.setProduct(product);
+				productAvailabilityService.saveOrUpdate(availability);
+				//check prices
+				Set<ProductPrice> prices = availability.getPrices();
+				if(prices!=null && prices.size()>0) {
+
+					for(ProductPrice price : prices) {
+						price.setProductPriceAvailability(availability);
+						productPriceService.saveOrUpdate(price);
+					}
+				}	
+			}
+		}
+		
+
+		if(file!=null) {
+			//get images
+			Set<ProductImage> images = product.getImages();
+			if(images!=null && images.size()>0) {
+				for(ProductImage image : images) {
+					productImageService.addProductImage(product, image, file);
+				}
+			}
+		}
+		
+		if(product.getAttributes()!=null && product.getAttributes().size()>0) {
+			Set<ProductAttribute> attributes = product.getAttributes();
+			for(ProductAttribute attribute : attributes) {
+				
+				productAttributeService.saveOrUpdate(attribute);
+				
+				
+			}
+		}
+		
+		
+		if(product.getRelationships()!=null && product.getRelationships().size()>0) {
+			Set<ProductRelationship> relationships = product.getRelationships();
+			for(ProductRelationship relationship : relationships) {
+				
+				productRelationshipService.saveOrUpdate(relationship);
+				
+				
+			}
+		}
 		
 		
 	}
