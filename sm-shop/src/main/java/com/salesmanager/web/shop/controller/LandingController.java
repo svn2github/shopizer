@@ -45,8 +45,9 @@ public class LandingController {
 		
 		
 		//get last 10 orders
-		
-		model.addAttribute("page",content.getDescriptions().get(0));
+		if(content!=null) {
+			model.addAttribute("page",content.getDescriptions().get(0));
+		}
 		
 		return "landing.bootstrap";
 	}
