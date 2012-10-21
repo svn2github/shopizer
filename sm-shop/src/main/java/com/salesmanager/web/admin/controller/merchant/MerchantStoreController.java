@@ -31,6 +31,8 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
+import com.salesmanager.web.admin.entity.reference.Size;
+import com.salesmanager.web.admin.entity.reference.Weight;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.utils.LabelUtils;
 
@@ -75,13 +77,13 @@ public class MerchantStoreController {
 		
 		List<Currency> currencies = currencyService.list();
 		
-		List<String> weights = new ArrayList<String>();
-		weights.add(messages.getMessage("label.generic.weightunit.LB", locale));
-		weights.add(messages.getMessage("label.generic.weightunit.KG", locale));
+		List<Weight> weights = new ArrayList<Weight>();
+		weights.add(new Weight("LB",messages.getMessage("label.generic.weightunit.LB", locale)));
+		weights.add(new Weight("KG",messages.getMessage("label.generic.weightunit.KG", locale)));
 		
-		List<String> sizes = new ArrayList<String>();
-		sizes.add(messages.getMessage("label.generic.sizeunit.CM", locale));
-		sizes.add(messages.getMessage("label.generic.sizeunit.IN", locale));
+		List<Size> sizes = new ArrayList<Size>();
+		sizes.add(new Size("CM",messages.getMessage("label.generic.sizeunit.CM", locale)));
+		sizes.add(new Size("IN",messages.getMessage("label.generic.sizeunit.IN", locale)));
 		
 		//display menu
 
@@ -97,7 +99,7 @@ public class MerchantStoreController {
 	}
 	
 	@RequestMapping(value="/admin/store/save.html", method=RequestMethod.POST)
-	public String saveMenrchantStore(@Valid @ModelAttribute("store") MerchantStore store, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String saveMenrchantStore(@Valid @ModelAttribute("store") MerchantStore store, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		setMenu(model,request);
 		
@@ -119,6 +121,14 @@ public class MerchantStoreController {
 		//get countries
 		List<Country> countries = countryService.getCountries(language);
 		
+		List<Weight> weights = new ArrayList<Weight>();
+		weights.add(new Weight("LB",messages.getMessage("label.generic.weightunit.LB", locale)));
+		weights.add(new Weight("KG",messages.getMessage("label.generic.weightunit.KG", locale)));
+		
+		List<Size> sizes = new ArrayList<Size>();
+		sizes.add(new Size("CM",messages.getMessage("label.generic.sizeunit.CM", locale)));
+		sizes.add(new Size("IN",messages.getMessage("label.generic.sizeunit.IN", locale)));
+		
 		//TODO no supported languages
 		
 		if (result.hasErrors()) {
@@ -137,6 +147,9 @@ public class MerchantStoreController {
 	        		
 	        	}
 	        } 
+	        
+			model.addAttribute("weights",weights);
+			model.addAttribute("sizes",sizes);
 			
 			model.addAttribute("countries", countries);
 			model.addAttribute("languages",languages);
@@ -207,6 +220,9 @@ public class MerchantStoreController {
 		model.addAttribute("countries", countries);
 		model.addAttribute("languages",languages);
 		model.addAttribute("store", sessionStore);
+		
+		model.addAttribute("weights",weights);
+		model.addAttribute("sizes",sizes);
 
 		model.addAttribute("currencies",currencies);
 		
