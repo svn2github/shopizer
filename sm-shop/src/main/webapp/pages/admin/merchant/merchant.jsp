@@ -233,7 +233,7 @@ function getZones(countryCode){
 	                        <label><s:message code="label.store.weightunit" text="Weight units"/></label>
 	                        <div class="controls">
 
-	                        					<form:select items="${weights}" path="weightunitcode"/> 
+	                        					<form:select items="${weights}" path="weightunitcode" itemValue="code" itemLabel="name"/> 
 	                                   			<span class="help-inline"></span>
 	                        </div>
 	                  </div>
@@ -243,7 +243,7 @@ function getZones(countryCode){
 	                        <label><s:message code="label.store.sizeunit" text="Size units"/></label>
 	                        <div class="controls">
 
-	                        					<form:select items="${sizes}" path="seizeunitcode"/> 
+	                        					<form:select items="${sizes}" path="seizeunitcode" itemValue="code" itemLabel="name"/> 
 	                                   			<span class="help-inline"></span>
 	                        </div>
 	                  </div>
