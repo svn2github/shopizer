@@ -3,7 +3,6 @@
 	<name>sm-shop</name>
 	<comment>NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
 	<projects>
-		<project>sm-core-bak</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

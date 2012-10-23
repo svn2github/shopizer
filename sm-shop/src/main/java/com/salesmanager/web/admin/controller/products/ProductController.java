@@ -1,5 +1,6 @@
 package com.salesmanager.web.admin.controller.products;
 
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
@@ -293,7 +293,7 @@ public class ProductController {
 			
 		} else {
 			
-			//productService.saveOrUpdate(newProduct,product.getImage());
+			productService.saveOrUpdate(newProduct,(FileInputStream) product.getImage().getInputStream());
 			
 		}
 		
