@@ -1,6 +1,7 @@
 package com.salesmanager.core.business.catalog.product.service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -204,7 +205,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	}
 	
 	@Override
-	public void saveOrUpdate(Product product, File productImage) throws ServiceException {
+	public void saveOrUpdate(Product product, FileInputStream productImage) throws ServiceException {
 		this.saveOrUpdateProduct(product,productImage);
 	}
 	
@@ -214,7 +215,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	}
 	
 	
-	private void saveOrUpdateProduct(Product product, File file) throws ServiceException {
+	private void saveOrUpdateProduct(Product product, FileInputStream file) throws ServiceException {
 		
 		
 

@@ -1,7 +1,10 @@
 package com.salesmanager.core.modules.cms.product;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.List;
@@ -115,9 +118,11 @@ public class ProductFileManagerImpl extends ProductFileManager {
 						File tempLarge = File.createTempFile(new StringBuilder().append(productImage.getProduct().getId()).append("tmpLarge").toString(), "." + extension );
 						ImageIO.write(largeResizedImage, extension, tempLarge);
 						
+						FileInputStream isLarge = new FileInputStream(tempLarge);
+						
 	
 						largeContentImage = new InputContentImage(ImageContentType.PRODUCT);
-						largeContentImage.setFile(tempLarge);
+						largeContentImage.setFile(isLarge);
 						largeContentImage.setDefaultImage(false);
 						largeContentImage.setImageName(new StringBuilder().append("L-").append(productImage.getProductImage()).toString());
 						
@@ -130,9 +135,10 @@ public class ProductFileManagerImpl extends ProductFileManager {
 						File tempSmall = File.createTempFile(new StringBuilder().append(productImage.getProduct().getId()).append("tmpSmall").toString(), "." + extension );
 						ImageIO.write(smallResizedImage, extension, tempSmall);
 						
+						FileInputStream isSmall = new FileInputStream(tempSmall);
 	
 						smallContentImage = new InputContentImage(ImageContentType.PRODUCT);
-						smallContentImage.setFile(tempSmall);
+						smallContentImage.setFile(isSmall);
 						smallContentImage.setDefaultImage(false);
 						smallContentImage.setImageName(new StringBuilder().append("S-").append(productImage.getProductImage()).toString());
 						

@@ -124,7 +124,7 @@ public class CmsImageFileManagerInfinispanImpl extends CmsFileManagerInfinispan 
 				productFilesTree = merchantFilesTree.getChild(productFiles);
 			} 
 			
-            input = new BufferedInputStream(new FileInputStream(contentImage.getFile()));
+            input = contentImage.getFile();
             output = new ByteArrayOutputStream(); 
             IOUtils.copy(input, output);
 

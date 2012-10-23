@@ -311,7 +311,7 @@ public class CmsContentFileManagerInfinispanImpl extends
 			}
 
 
-            input = new BufferedInputStream(new FileInputStream(image.getFile()));
+            input = image.getFile();
             output = new ByteArrayOutputStream(); 
             IOUtils.copy(input, output);
 

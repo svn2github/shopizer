@@ -1,6 +1,7 @@
 package com.salesmanager.core.business.catalog.product.service.image;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.List;
@@ -37,7 +38,7 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	
 	
 	@Override
-	public void addProductImage(Product product, ProductImage productImage, File file) throws ServiceException {
+	public void addProductImage(Product product, ProductImage productImage, FileInputStream file) throws ServiceException {
 		
 		productImage.setProduct(product);
 		
@@ -47,7 +48,7 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		contentImage.setDefaultImage(productImage.isDefaultImage());
 		contentImage.setImageName(productImage.getProductImage());
 		FileNameMap fileNameMap = URLConnection.getFileNameMap();
-		String contentType = fileNameMap.getContentTypeFor(file.getName());
+		String contentType = fileNameMap.getContentTypeFor(productImage.getProductImage());
 		contentImage.setImageContentType(contentType);
 	
 		

@@ -1,6 +1,7 @@
 package com.salesmanager.core.business.catalog.product.service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 import java.util.Locale;
 
@@ -46,7 +47,7 @@ public interface ProductService extends SalesManagerEntityService<Long, Product>
 
 	void removeProduct(Product product) throws ServiceException;
 
-	void saveOrUpdate(Product product, File productImage)
+	void saveOrUpdate(Product product, FileInputStream productImage)
 			throws ServiceException;
 
 	void saveOrUpdate(Product product) throws ServiceException;

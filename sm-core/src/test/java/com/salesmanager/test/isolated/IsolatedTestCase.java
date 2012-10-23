@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -282,7 +283,7 @@ public class IsolatedTestCase {
   }
   
   @Test
-  public void testCreateProductWithImage() throws ServiceException {
+  public void testCreateProductWithImage() throws ServiceException, FileNotFoundException {
 	  
 	    Language en = languageService.getByCode("en");
 	    Language fr = languageService.getByCode("fr");
@@ -386,7 +387,8 @@ public class IsolatedTestCase {
         	throw new ServiceException("Can't read" + file1.getAbsolutePath());
         }
 	    
-
+        FileInputStream is1 = new FileInputStream(file1);
+        FileInputStream is2 = new FileInputStream(file2);
 	    
         ProductImage productImage1 = new ProductImage();
 	    productImage1.setDefaultImage(true);
@@ -411,7 +413,7 @@ public class IsolatedTestCase {
         
         productImage1.setDescriptions(image1descriptions);
         
-        productImageService.addProductImage(product, productImage1, file1);
+        productImageService.addProductImage(product, productImage1, is1);
         
         ProductImage productImage2 = new ProductImage();
 	    productImage2.setProductImage(file2.getName());
@@ -435,7 +437,7 @@ public class IsolatedTestCase {
         
         productImage2.setDescriptions(image2descriptions);
         
-        productImageService.addProductImage(product, productImage2, file2);
+        productImageService.addProductImage(product, productImage2, is2);
         
   }
   

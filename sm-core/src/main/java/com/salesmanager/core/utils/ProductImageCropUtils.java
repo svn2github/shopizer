@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.FileInputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 
@@ -31,12 +32,12 @@ public class ProductImageCropUtils {
 	private double cropAreaWidth = 0;
 	private double cropAreaHeight = 0;
 	
-	private File originalFile = null;
+	private FileInputStream originalFile = null;
 
 
 
 
-	public ProductImageCropUtils(File file, int largeImageWidth, int largeImageHeight) {
+	public ProductImageCropUtils(FileInputStream file, int largeImageWidth, int largeImageHeight) {
 		
 		
 	
