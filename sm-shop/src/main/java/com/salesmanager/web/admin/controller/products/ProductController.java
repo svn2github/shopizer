@@ -1,8 +1,11 @@
 package com.salesmanager.web.admin.controller.products;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -230,8 +233,8 @@ public class ProductController {
 		List<ProductType> productTypes = productTypeService.list();
 		
 		List<TaxClass> taxClasses = taxClassService.listByStore(store);
-				
-
+		
+		List<Language> languages = store.getLanguages();
 		
 		model.addAttribute("manufacturers", manufacturers);
 		model.addAttribute("productTypes", productTypes);
@@ -247,6 +250,13 @@ public class ProductController {
 		
 		ProductPrice newProductPrice = null;
 		
+		//get tax class
+		//TaxClass taxClass = newProduct.getTaxClass();
+		//TaxClass dbTaxClass = taxClassService.getById(taxClass.getId());
+		Set<ProductPrice> prices = new HashSet<ProductPrice>();
+		Set<ProductAvailability> availabilities = new HashSet<ProductAvailability>();	
+
+		
 		
 		if(product.getProduct().getId()!=null && product.getProduct().getId()>0) {
 		
@@ -257,18 +267,69 @@ public class ProductController {
 				return "redirect:/admin/products/product-categories.html";
 			}
 			
-			Set<ProductAvailability> availabilities = newProduct.getAvailabilities();
-			if(availabilities !=null && availabilities.size()>0) {
+
+			newProduct.setSku(product.getProduct().getSku());
+			newProduct.setAvailable(product.getProduct().getAvailable());
+			newProduct.setDateAvailable(product.getProduct().getDateAvailable());
+			newProduct.setManufacturer(product.getProduct().getManufacturer());
+			newProduct.setType(product.getProduct().getType());
+			newProduct.setProductHeight(product.getProduct().getProductHeight());
+			newProduct.setProductLength(product.getProduct().getProductLength());
+			newProduct.setProductWeight(product.getProduct().getProductWeight());
+			newProduct.setProductWidth(product.getProduct().getProductWidth());
+			
+/*			Set<ProductDescription> descriptions = newProduct.getDescriptions();
+			Set<ProductDescription> productDescriptions = new HashSet<ProductDescription>();
+			Set<ProductDescription> submitedDescriptions = product.getProduct().getDescriptions();*/
+			
+/*			for(Language l : languages) {
 				
-				for(ProductAvailability availability : availabilities) {
+				
+				for(ProductDescription desc : submitedDescriptions) {
+					
+					Language lang = desc.getLanguage();
+					if(lang.getCode().equals(l.getCode())) {
+						ProductDescription productDesc = null;
+						if(descriptions!=null && descriptions.size()>0) {
+							for(ProductDescription savedDesc : descriptions) {
+								
+								if(savedDesc.getLanguage().getCode().equals(desc.getLanguage().getCode())) {
+									productDesc = savedDesc;
+								}
+								
+							}
+							if(productDesc!=null) {
+
+							}
+						}
+					}
+				}
+			}*/
+			
+			
+			
+			Set<ProductAvailability> avails = newProduct.getAvailabilities();
+			if(avails !=null && avails.size()>0) {
+				
+				for(ProductAvailability availability : avails) {
 					if(availability.getRegion().equals(ProductAvailability.DEFAULT_AVAILABILITY)) {
 						
 						newProductAvailability = availability;
-
-						ProductPrice price = newProductAvailability.defaultPrice();
-						if(price!=null) {
-							newProductPrice = price;
+						
+						Set<ProductPrice> productPrices = availability.getPrices();
+						
+						for(ProductPrice price : productPrices) {
+							if(price.isDefaultPrice()) {
+								newProductPrice = price;
+								newProductPrice.setProductPriceAmount(product.getPrice().getProductPriceAmount());
+							} else {
+								prices.add(price);
+							}	
 						}
+					} else {
+						
+						availabilities.add(availability);
+						
 					}
 				}
 			}
@@ -276,24 +337,52 @@ public class ProductController {
 		
 		if(newProductPrice==null) {
 			newProductPrice = new ProductPrice();
+			newProductPrice.setProductPriceAmount(product.getPrice().getProductPriceAmount());
 		}
+		
+		newProduct.setMerchantSore(store);
 		
 		if(newProductAvailability==null) {
 			newProductAvailability = new ProductAvailability();
 		}
 		
+		
 		newProductAvailability.setProductQuantity(product.getAvailability().getProductQuantity());
 		newProductAvailability.setProductQuantityOrderMin(product.getAvailability().getProductQuantityOrderMin());
 		newProductAvailability.setProductQuantityOrderMax(product.getAvailability().getProductQuantityOrderMax());
+		newProductAvailability.setProduct(newProduct);
+		newProductAvailability.setPrices(prices);
+		availabilities.add(newProductAvailability);
+		
+		newProductPrice.setProductPriceAvailability(newProductAvailability);
+		prices.add(newProductPrice);
+		
+		newProduct.setAvailabilities(availabilities);
+		
+		Set<ProductDescription> descriptions = new HashSet<ProductDescription>();
+		if(product.getDescriptions()!=null && product.getDescriptions().size()>0) {
+			
+			for(ProductDescription description : product.getDescriptions()) {
+				
+				descriptions.add(description);
+				
+			}
+		}
+		
+		newProduct.setDescriptions(descriptions);
 		
 		
 		if(product.getImage()!=null) {
 			
-			productService.saveOrUpdate(newProduct);
+			
+			InputStream is = product.getImage().getInputStream();
+			
+			productService.saveOrUpdate(newProduct,is);
+			
 			
 		} else {
 			
-			productService.saveOrUpdate(newProduct,(FileInputStream) product.getImage().getInputStream());
+			productService.saveOrUpdate(newProduct);
 			
 		}
 		

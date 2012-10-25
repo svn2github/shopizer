@@ -155,8 +155,8 @@
 
                       
 
-                         <form:hidden path="descriptions[${counter.index}].language.code" />
-
+                         <form:hidden path="descriptions[${counter.index}].language.id" />
+						 <form:hidden path="descriptions[${counter.index}].id" />
                  
 
                   </c:forEach>
@@ -261,7 +261,7 @@
                   <div class="control-group">
                         	<label><s:message code="label.taxclass" text="Tax class"/></label>
                           	<div class="controls">
-                          		      <form:select items="${taxClasses}" itemValue="code" itemLabel="code"  path="product.taxClass.code"/> 
+                          		      <form:select items="${taxClasses}" itemValue="id" itemLabel="code"  path="product.taxClass.id"/> 
 	                                  <span class="help-inline"></span>
                           	</div>
                    </div>
