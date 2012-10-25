@@ -1,8 +1,6 @@
 package com.salesmanager.core.business.catalog.product.service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -205,7 +203,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	}
 	
 	@Override
-	public void saveOrUpdate(Product product, FileInputStream productImage) throws ServiceException {
+	public void saveOrUpdate(Product product, InputStream productImage) throws ServiceException {
 		this.saveOrUpdateProduct(product,productImage);
 	}
 	
@@ -215,15 +213,22 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	}
 	
 	
-	private void saveOrUpdateProduct(Product product, FileInputStream file) throws ServiceException {
+	private void saveOrUpdateProduct(Product product, InputStream file) throws ServiceException {
+		
+		Set<ProductDescription> productDescriptions = product.getDescriptions();
 		
 		
+		product.setDescriptions(null);
 
 		
 		if(product.getId()!=null && product.getId()>0) {
 			super.update(product);
 		} else {
 			super.create(product);
+		}
+		
+		for(ProductDescription productDescription : productDescriptions) {
+			addProductDescription(product,productDescription);
 		}
 		
 
@@ -247,16 +252,6 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 			}
 		}
 		
-
-		if(file!=null) {
-			//get images
-			Set<ProductImage> images = product.getImages();
-			if(images!=null && images.size()>0) {
-				for(ProductImage image : images) {
-					productImageService.addProductImage(product, image, file);
-				}
-			}
-		}
 		
 		if(product.getAttributes()!=null && product.getAttributes().size()>0) {
 			Set<ProductAttribute> attributes = product.getAttributes();
@@ -276,6 +271,16 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 				productRelationshipService.saveOrUpdate(relationship);
 				
 				
+			}
+		}
+		
+		if(file!=null) {
+			//get images
+			Set<ProductImage> images = product.getImages();
+			if(images!=null && images.size()>0) {
+				for(ProductImage image : images) {
+					productImageService.addProductImage(product, image, file);
+				}
 			}
 		}
 		

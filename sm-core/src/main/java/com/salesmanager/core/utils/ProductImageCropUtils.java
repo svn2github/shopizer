@@ -1,12 +1,10 @@
 package com.salesmanager.core.utils;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 
@@ -32,12 +30,12 @@ public class ProductImageCropUtils {
 	private double cropAreaWidth = 0;
 	private double cropAreaHeight = 0;
 	
-	private FileInputStream originalFile = null;
+	private InputStream originalFile = null;
 
 
 
 
-	public ProductImageCropUtils(FileInputStream file, int largeImageWidth, int largeImageHeight) {
+	public ProductImageCropUtils(InputStream file, int largeImageWidth, int largeImageHeight) {
 		
 		
 	

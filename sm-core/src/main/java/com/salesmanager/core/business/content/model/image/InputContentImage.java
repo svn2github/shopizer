@@ -1,6 +1,6 @@
 package com.salesmanager.core.business.content.model.image;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 
 public class InputContentImage extends ContentImage {
 
@@ -10,12 +10,12 @@ public class InputContentImage extends ContentImage {
 		this.setContentType(contentType);
 	}
 	
-	private FileInputStream file;
+	private InputStream file;
 	
-	public FileInputStream getFile() {
+	public InputStream getFile() {
 		return file;
 	}
-	public void setFile(FileInputStream file) {
+	public void setFile(InputStream file) {
 		this.file = file;
 	}
 	public ImageContentType getContentType() {

@@ -2,6 +2,7 @@ package com.salesmanager.core.modules.cms.product;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
@@ -118,6 +120,8 @@ public class ProductFileManagerImpl extends ProductFileManager {
 						File tempLarge = File.createTempFile(new StringBuilder().append(productImage.getProduct().getId()).append("tmpLarge").toString(), "." + extension );
 						ImageIO.write(largeResizedImage, extension, tempLarge);
 						
+						//byte[] il = IOUtils.toByteArray(new FileInputStream(tempLarge));
+						
 						FileInputStream isLarge = new FileInputStream(tempLarge);
 						
 	
@@ -135,7 +139,10 @@ public class ProductFileManagerImpl extends ProductFileManager {
 						File tempSmall = File.createTempFile(new StringBuilder().append(productImage.getProduct().getId()).append("tmpSmall").toString(), "." + extension );
 						ImageIO.write(smallResizedImage, extension, tempSmall);
 						
+						//byte[] is = IOUtils.toByteArray(new FileInputStream(tempSmall));
+						
 						FileInputStream isSmall = new FileInputStream(tempSmall);
+						
 	
 						smallContentImage = new InputContentImage(ImageContentType.PRODUCT);
 						smallContentImage.setFile(isSmall);
