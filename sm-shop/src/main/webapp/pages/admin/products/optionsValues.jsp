@@ -20,23 +20,25 @@
 								
 								
 				<h3>
-						<s:message code="label.product.productoptions.title" text="Option management" />
+						<s:message code="label.product.productoptionsvalues.title" text="Product options values" />
 				</h3>	
 				<br/>
-
-				 <!-- Listing grid include -->
-				 <c:set value="/admin/options/paging.html" var="pagingUrl" scope="request"/>
-				 <c:set value="/admin/options/remove.html" var="removeUrl" scope="request"/>
-				 <c:set value="/admin/options/editOption.html" var="editUrl" scope="request"/>
-				 <c:set value="/admin/options/options.html" var="afterRemoveUrl" scope="request"/>
-				 <c:set var="entityId" value="optionId" scope="request"/>
-				 <c:set var="componentTitleKey" value="label.product.productoptions.list" scope="request"/>
-				 <c:set var="gridHeader" value="/pages/admin/products/options-gridHeader.jsp" scope="request"/>
+				
+				
+				
+				<!-- Listing grid include -->
+				 <c:set value="/admin/optionsvalues/paging.html" var="pagingUrl" scope="request"/>
+				 <c:set value="/admin/optionsvalues/remove.html" var="removeUrl" scope="request"/>
+				 <c:set value="/admin/options/editOptionValue.html" var="editUrl" scope="request"/>
+				 <c:set value="/admin/options/optionsValues.html" var="afterRemoveUrl" scope="request"/>
+				 <c:set var="entityId" value="optionValueId" scope="request"/>
+				 <c:set var="componentTitleKey" value="label.product.productoptionsvalues.list" scope="request"/>
+				 <c:set var="gridHeader" value="/pages/admin/products/optionsValues-gridHeader.jsp" scope="request"/>
 				 <c:set var="canRemoveEntry" value="true" scope="request"/>
+
 
             	 <jsp:include page="/pages/admin/components/list.jsp"></jsp:include> 
 				 <!-- End listing grid include -->
-
 
 			      			     
             	 

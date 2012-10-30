@@ -27,7 +27,7 @@
 				<h3>
 					<c:choose>
 						<c:when test="${option.id!=null && option.id>0}">
-								<s:message code="label.product.productoptions.edit.title" text="Edit option" /> <c:out value="${option.descriptions[0].name}"/>
+								<s:message code="label.product.productoptions.edit.title" text="Edit option" /> <c:out value="${option.descriptionsList[0].name}"/>
 						</c:when>
 						<c:otherwise>
 								<s:message code="label.product.productoptions.create.title" text="Create option" />
