@@ -1,8 +1,5 @@
 package com.salesmanager.web.admin.controller.products;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +26,8 @@ import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
+import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
+import com.salesmanager.core.business.catalog.product.model.image.ProductImageDescription;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.model.type.ProductType;
@@ -374,10 +373,28 @@ public class ProductController {
 		
 		if(product.getImage()!=null) {
 			
+			String imageName = product.getImage().getName();
 			
-			InputStream is = product.getImage().getInputStream();
+			List<ProductImageDescription> imagesDescriptions = new ArrayList<ProductImageDescription>();
+
+			for(Language l : languages) {
+				
+				ProductImageDescription imageDescription = new ProductImageDescription();
+				imageDescription.setName(imageName);
+				imageDescription.setLanguage(language);
+				imagesDescriptions.add(imageDescription);
+				
+			}
 			
-			productService.saveOrUpdate(newProduct,is);
+			ProductImage productImage = new ProductImage();
+			productImage.setDefaultImage(true);
+			productImage.setImage(product.getImage().getInputStream());
+			productImage.setProductImage(imageName);
+			productImage.setDescriptions(imagesDescriptions);
+			
+			newProduct.getImages().add(productImage);
+			
+			productService.saveOrUpdate(newProduct);
 			
 			
 		} else {

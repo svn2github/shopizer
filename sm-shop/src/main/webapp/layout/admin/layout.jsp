@@ -166,7 +166,13 @@ response.setDateHeader ("Expires", -1);
   				window.location='<c:url value="/admin/options/options.html" />';
 			});
 			$("#catalogue-options-create-link").click(function() {
-  				window.location='<c:url value="/admin/options/option.html" />';
+  				window.location='<c:url value="/admin/options/createOption.html" />';
+			});
+			$("#catalogue-optionsvalues-list-link").click(function() {
+  				window.location='<c:url value="/admin/options/optionvalues.html" />';
+			});
+			$("#catalogue-optionsvalues-create-link").click(function() {
+  				window.location='<c:url value="/admin/options/createOptionValue.html" />';
 			});
 			
 			
@@ -177,10 +183,6 @@ response.setDateHeader ("Expires", -1);
 			
 			$("#users-link").click(function() {
   				window.location='<c:url value="/admin/user/users.html" />';
-			});
-
-			$("#create-user-link").click(function() {
-  				window.location='<c:url value="/admin/users/createUser.html" />';
 			});
 			
 			$("#security-permissions-link").click(function() {
@@ -212,19 +214,14 @@ response.setDateHeader ("Expires", -1);
 		}); 
 		
 		
-		function checkCode(code, id, url) {
+		function checkCode(code, url) {
 			
 			
-			var params = "code="+ code;
-			if(id!=null && id!='') {
-				params = params + "&id=" + id;
-			}
-
 			$.ajax({
 					type: 'POST',
 					dataType: "json",
 					url: url,
-					data: params,
+					data: "code="+ code,
 					success: function(response) { 
 						var msg = isc.XMLTools.selectObjects(response, "/response/statusMessage");
 						var status = isc.XMLTools.selectObjects(response, "/response/status");

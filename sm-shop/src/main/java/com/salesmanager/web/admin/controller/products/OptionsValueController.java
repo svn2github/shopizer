@@ -25,9 +25,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionDescription;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValueDescription;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionService;
+import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionValueService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
@@ -36,42 +40,44 @@ import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
-public class OptionsController {
+public class OptionsValueController {
 	
 	@Autowired
 	LanguageService languageService;
 	
+
 	@Autowired
-	ProductOptionService productOptionService;
+	ProductOptionValueService productOptionValueService;
 	
 	@Autowired
 	LabelUtils messages;
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(OptionsController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(OptionsValueController.class);
 	
 	
 	
-	@RequestMapping(value="/admin/options/options.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/options/optionvalues.html", method=RequestMethod.GET)
 	public String displayOptions(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
 		
 		setMenu(model,request);
 
-
+		//subsequent ajax call
 
 		
-		return "catalogue-options-list";
+		return "catalogue-optionsvalues-list";
 		
 		
 		
 	}
 	
 
-	@RequestMapping(value="/admin/options/editOption.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/options/editOptionValue.html", method=RequestMethod.GET)
 	public String displayOptionEdit(@RequestParam("id") long optionId, HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
 		return displayOption(optionId,request,response,model,locale);
 	}
 	
-	@RequestMapping(value="/admin/options/createOption.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/options/createOptionValue.html", method=RequestMethod.GET)
 	public String displayOption(HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
 		return displayOption(null,request,response,model,locale);
 	}
@@ -84,31 +90,31 @@ public class OptionsController {
 		
 		List<Language> languages = store.getLanguages();
 
-		Set<ProductOptionDescription> descriptions = new HashSet<ProductOptionDescription>();
+		Set<ProductOptionValueDescription> descriptions = new HashSet<ProductOptionValueDescription>();
 		
-		ProductOption option = new ProductOption();
+		ProductOptionValue option = new ProductOptionValue();
 		
 		if(optionId!=null && optionId!=0) {//edit mode
 			
 			
-			option = productOptionService.getById(store, optionId);
+			option = productOptionValueService.getById(store, optionId);
 			
 			
 			if(option==null) {
-				return "redirect:/admin/options/options.html";
+				return "redirect:/admin/options/optionsvalues.html";
 			}
 			
-			Set<ProductOptionDescription> optionDescriptions = option.getDescriptions();
+			Set<ProductOptionValueDescription> optionDescriptions = option.getDescriptions();
 			
 			
 			
 			for(Language l : languages) {
 			
-				ProductOptionDescription optionDescription = null;
+				ProductOptionValueDescription optionDescription = null;
 				
 				if(optionDescriptions!=null) {
 					
-					for(ProductOptionDescription description : optionDescriptions) {
+					for(ProductOptionValueDescription description : optionDescriptions) {
 						
 						String code = description.getLanguage().getCode();
 						if(code.equals(l.getCode())) {
@@ -120,7 +126,7 @@ public class OptionsController {
 				}
 				
 				if(optionDescription==null) {
-					optionDescription = new ProductOptionDescription();
+					optionDescription = new ProductOptionValueDescription();
 					optionDescription.setLanguage(l);
 				}
 				
@@ -132,7 +138,7 @@ public class OptionsController {
 			
 			for(Language l : languages) {
 				
-				ProductOptionDescription desc = new ProductOptionDescription();
+				ProductOptionValueDescription desc = new ProductOptionValueDescription();
 				desc.setLanguage(l);
 				descriptions.add(desc);
 				
@@ -143,30 +149,30 @@ public class OptionsController {
 
 		option.setDescriptions(descriptions);
 		model.addAttribute("option", option);
-		return "catalogue-options-details";
+		return "catalogue-optionsvalues-details";
 		
 		
 	}
 		
 	
 	
-	@RequestMapping(value="/admin/options/save.html", method=RequestMethod.POST)
-	public String saveOption(@Valid @ModelAttribute("option") ProductOption option, BindingResult result, Model model, HttpServletRequest request) throws Exception {
+	@RequestMapping(value="/admin/options/saveOptionValue.html", method=RequestMethod.POST)
+	public String saveOption(@Valid @ModelAttribute("optionValue") ProductOptionValue optionValue, BindingResult result, Model model, HttpServletRequest request) throws Exception {
 		
 
 		//display menu
 		setMenu(model,request);
 		
 		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
-		ProductOption dbEntity =	null;	
+		ProductOptionValue dbEntity =	null;	
 
-		if(option.getId() != null && option.getId() >0) { //edit entry
+		if(optionValue.getId() != null && optionValue.getId() >0) { //edit entry
 			
 			//get from DB
-			dbEntity = productOptionService.getById(store,option.getId());
+			dbEntity = productOptionValueService.getById(store,optionValue.getId());
 			
 			if(dbEntity==null) {
-				return "redirect:/admin/options/options.html";
+				return "redirect:/admin/options/optionsvalues.html";
 			}
 		}
 
@@ -174,45 +180,45 @@ public class OptionsController {
 		Map<String,Language> langs = languageService.getLanguagesMap();
 			
 
-		List<ProductOptionDescription> descriptions = option.getDescriptionsList();
-		
+		Set<ProductOptionValueDescription> descriptions = optionValue.getDescriptions();
 		if(descriptions!=null) {
 				
-				for(ProductOptionDescription description : descriptions) {
+				for(ProductOptionValueDescription description : descriptions) {
 					
 					String code = description.getLanguage().getCode();
 					Language l = langs.get(code);
 					description.setLanguage(l);
-					description.setProductOption(option);
-	
+					description.setProductOptionValue(optionValue);
+					
+					
 				}
 				
 		}
 			
-		option.setDescriptions(new HashSet<ProductOptionDescription>(descriptions));
-		option.setMerchantSore(store);
+
+		optionValue.setMerchantSore(store);
 
 		
 		if (result.hasErrors()) {
-			return "catalogue-options-details";
+			return "catalogue-optionsvalues-details";
 		}
 		
 
 		
 		
-		productOptionService.saveOrUpdate(option);
+		productOptionValueService.saveOrUpdate(optionValue);
 
 
 		
 
 		model.addAttribute("success","success");
-		return "catalogue-options-details";
+		return "catalogue-optionsvalues-details";
 	}
 
 	
 	
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value="/admin/options/paging.html", method=RequestMethod.POST, produces="application/json")
+	@RequestMapping(value="/admin/optionsvalues/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageOptions(HttpServletRequest request, HttpServletResponse response) {
 		
 		String optionName = request.getParameter("name");
@@ -228,30 +234,30 @@ public class OptionsController {
 		
 			MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
 			
-			List<ProductOption> options = null;
+			List<ProductOptionValue> options = null;
 					
 			if(!StringUtils.isBlank(optionName)) {
 				
-				options = productOptionService.getByName(store, optionName, language);
+				//productOptionValueService.getByName(store, optionName, language);
 				
 			} else {
 				
-				options = productOptionService.listByStore(store, language);
+				options = productOptionValueService.listByStore(store, language);
 				
 			}
 					
 					
-
-			for(ProductOption option : options) {
+			
+			for(ProductOptionValue option : options) {
 				
 				@SuppressWarnings("rawtypes")
 				Map entry = new HashMap();
 				entry.put("optionId", option.getId());
 				
-				ProductOptionDescription description = option.getDescriptions().iterator().next();
+				ProductOptionValueDescription description = option.getDescriptions().iterator().next();
 				
 				entry.put("name", description.getName());
-				entry.put("type", option.getProductOptionType());//TODO resolve with option type label
+				entry.put("image", option.getProductOptionValueImage());//TODO resolve with option type label
 				resp.addDataEntry(entry);
 				
 				
@@ -273,29 +279,9 @@ public class OptionsController {
 		
 	}
 	
-	
-
-	
-	private void setMenu(Model model, HttpServletRequest request) throws Exception {
-		
-		//display menu
-		Map<String,String> activeMenus = new HashMap<String,String>();
-		activeMenus.put("catalogue", "catalogue");
-		activeMenus.put("catalogue-options", "catalogue-options");
-		
-		@SuppressWarnings("unchecked")
-		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
-		
-		Menu currentMenu = (Menu)menus.get("catalogue");
-		model.addAttribute("currentMenu",currentMenu);
-		model.addAttribute("activeMenus",activeMenus);
-		//
-		
-	}
-	
-	@RequestMapping(value="/admin/options/remove.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String deleteOption(HttpServletRequest request, HttpServletResponse response, Locale locale) {
-		String sid = request.getParameter("optionId");
+	@RequestMapping(value="/admin/optionsvalues/remove.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String deleteOptionValue(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		String sid = request.getParameter("optionValueId");
 
 		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
 		
@@ -306,7 +292,7 @@ public class OptionsController {
 			
 			Long id = Long.parseLong(sid);
 			
-			ProductOption entity = productOptionService.getById(store, id);
+			ProductOptionValue entity = productOptionValueService.getById(store, id);
 
 			if(entity==null || entity.getMerchantSore().getId().intValue()!=store.getId().intValue()) {
 
@@ -315,7 +301,7 @@ public class OptionsController {
 				
 			} else {
 				
-				productOptionService.delete(entity);
+				productOptionValueService.delete(entity);
 				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 				
 			}
@@ -330,6 +316,26 @@ public class OptionsController {
 		String returnString = resp.toJSONString();
 		
 		return returnString;
+	}
+	
+	
+
+	
+	private void setMenu(Model model, HttpServletRequest request) throws Exception {
+		
+		//display menu
+		Map<String,String> activeMenus = new HashMap<String,String>();
+		activeMenus.put("catalogue", "catalogue");
+		activeMenus.put("catalogue-options-values", "catalogue-options-values");
+		
+		@SuppressWarnings("unchecked")
+		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
+		
+		Menu currentMenu = (Menu)menus.get("catalogue");
+		model.addAttribute("currentMenu",currentMenu);
+		model.addAttribute("activeMenus",activeMenus);
+		//
+		
 	}
 
 }

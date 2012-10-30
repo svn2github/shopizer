@@ -30,7 +30,7 @@
 "menus":[
 	{"menu":{"code":"userinfo","url":"","roles":["AUTH"],"order":0}},
 	{"menu":{"code":"users","url":"","roles":["ADMIN"],"order":0}},
-	{"menu":{"code":"create-user","url":"/admin/users/createUser.html","roles":["ADMIN"],"order":0}},
+	{"menu":{"code":"create-user","url":"","roles":["ADMIN"],"order":0}},
 	{"menu":{
 		"code":"security","url":"","roles":["SUPERADMIN"],"order":1,"menus":
 		[
@@ -88,6 +88,12 @@
 			}},
 			{"menu":{
 				"code":"catalogue-options-create","url":"/admin/catalogue/options/option.html","roles":["AUTH"],"order":1
+			}},
+			{"menu":{
+				"code":"catalogue-optionsvalues-list","url":"/admin/catalogue/options/optionsvalues.html","roles":["AUTH"],"order":1
+			}},
+			{"menu":{
+				"code":"catalogue-optionsvalues-create","url":"/admin/options/createOptionValue.html","roles":["AUTH"],"order":1
 			}}
 		]
 	}},
