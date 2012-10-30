@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.catalog.product.dao.attribute.ProductOptionDao;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
@@ -18,6 +19,9 @@ public class ProductOptionServiceImpl extends
 
 	
 	private ProductOptionDao productOptionDao;
+	
+	@Autowired
+	private ProductAttributeService productAttributeService;
 	
 	@Autowired
 	public ProductOptionServiceImpl(
@@ -64,16 +68,31 @@ public class ProductOptionServiceImpl extends
 		
 		//save or update (persist and attach entities
 		if(entity.getId()!=null && entity.getId()>0) {
-
 			super.update(entity);
-			
 		} else {
-			
 			super.save(entity);
-			
 		}
 		
 	}
+	
+	@Override
+	public void delete(ProductOption entity) throws ServiceException {
+		
+		//remove all attributes having this option
+		List<ProductAttribute> attributes = productAttributeService.getById(entity.getMerchantSore(), entity);
+		
+		for(ProductAttribute attribute : attributes) {
+			productAttributeService.delete(attribute);
+		}
+		
+		ProductOption option = this.getById(entity.getMerchantSore(), entity.getId());
+		
+		//remove option
+		super.delete(option);
+		
+	}
+	
+
 	
 
 

@@ -171,6 +171,11 @@
 			<artifactId>spring-orm</artifactId>
 			<version>${sm-core.org.springframework.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${sm-core.org.springframework.version}</version>
+		</dependency>
 		
 		<!-- JSR 303 with Hibernate Validator -->
 		<dependency>

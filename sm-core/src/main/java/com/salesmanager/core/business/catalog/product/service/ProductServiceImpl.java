@@ -1,6 +1,5 @@
 package com.salesmanager.core.business.catalog.product.service;
 
-import java.io.InputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -74,6 +73,12 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	@Override
 	public void addProductDescription(Product product, ProductDescription description)
 			throws ServiceException {
+		
+		
+		if(product.getDescriptions()==null) {
+			product.setDescriptions(new HashSet<ProductDescription>());
+		}
+		
 		product.getDescriptions().add(description);
 		description.setProduct(product);
 		update(product);
@@ -120,7 +125,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		//Get the category list
 		StringBuilder lineage = new StringBuilder().append(category.getLineage()).append(category.getId()).append("/");
 		List<Category> categories = categoryService.listByLineage(category.getMerchantSore(),lineage.toString());
-		Set categoryIds = new HashSet();
+		Set<Long> categoryIds = new HashSet<Long>();
 		for(Category c : categories) {
 			
 			categoryIds.add(c.getId());
@@ -156,7 +161,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		//Get the category list
 		StringBuilder lineage = new StringBuilder().append(category.getLineage()).append(category.getId()).append("/");
 		List<Category> categories = categoryService.listByLineage(category.getMerchantSore(),lineage.toString());
-		Set categoryIds = new HashSet();
+		Set<Long> categoryIds = new HashSet<Long>();
 		for(Category c : categories) {
 			
 			categoryIds.add(c.getId());
@@ -202,22 +207,15 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		
 	}
 	
-	@Override
-	public void saveOrUpdate(Product product, InputStream productImage) throws ServiceException {
-		this.saveOrUpdateProduct(product,productImage);
-	}
+
 	
-	@Override
+	@Override	
 	public void saveOrUpdate(Product product) throws ServiceException {
-		this.saveOrUpdateProduct(product,null);
-	}
-	
-	
-	private void saveOrUpdateProduct(Product product, InputStream file) throws ServiceException {
 		
 		Set<ProductDescription> productDescriptions = product.getDescriptions();
 		
 		
+		LOGGER.debug("Creating description");
 		product.setDescriptions(null);
 
 		
@@ -227,11 +225,12 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 			super.create(product);
 		}
 		
+		
 		for(ProductDescription productDescription : productDescriptions) {
 			addProductDescription(product,productDescription);
 		}
 		
-
+		LOGGER.debug("Creating availabilities");
 		
 		//get availabilities
 		Set<ProductAvailability> availabilities = product.getAvailabilities();
@@ -253,6 +252,8 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		}
 		
 		
+		LOGGER.debug("Creating attributes");
+		
 		if(product.getAttributes()!=null && product.getAttributes().size()>0) {
 			Set<ProductAttribute> attributes = product.getAttributes();
 			for(ProductAttribute attribute : attributes) {
@@ -264,6 +265,8 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		}
 		
 		
+		LOGGER.debug("Creating relationships");
+		
 		if(product.getRelationships()!=null && product.getRelationships().size()>0) {
 			Set<ProductRelationship> relationships = product.getRelationships();
 			for(ProductRelationship relationship : relationships) {
@@ -274,15 +277,22 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 			}
 		}
 		
-		if(file!=null) {
-			//get images
-			Set<ProductImage> images = product.getImages();
-			if(images!=null && images.size()>0) {
-				for(ProductImage image : images) {
-					productImageService.addProductImage(product, image, file);
+		
+		LOGGER.debug("Creating images");
+
+		//get images
+		Set<ProductImage> images = product.getImages();
+		if(images!=null && images.size()>0) {
+			for(ProductImage image : images) {
+				if(image.getImage()!=null && (image.getId()==null || image.getId()==0L)) {
+					image.setProduct(product);
+					productImageService.addProductImage(product, image);
+				} else {
+					productImageService.update(image);
 				}
 			}
 		}
+		
 		
 		
 	}

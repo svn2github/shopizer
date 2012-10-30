@@ -1,9 +1,12 @@
 package com.salesmanager.core.business.catalog.product.service.image;
 
-import java.io.InputStream;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,27 +40,57 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	
 	
 	@Override
-	public void addProductImage(Product product, ProductImage productImage, InputStream file) throws ServiceException {
+	public void addProductImage(Product product, ProductImage productImage) throws ServiceException {
+		
+		
+		
 		
 		productImage.setProduct(product);
 		
-		//upload the image in the CMS
-		InputContentImage contentImage = new InputContentImage(ImageContentType.PRODUCT);
-		contentImage.setFile(file);
-		contentImage.setDefaultImage(productImage.isDefaultImage());
-		contentImage.setImageName(productImage.getProductImage());
-		FileNameMap fileNameMap = URLConnection.getFileNameMap();
-		String contentType = fileNameMap.getContentTypeFor(productImage.getProductImage());
-		contentImage.setImageContentType(contentType);
-	
+		ByteArrayOutputStream baos = null;
+		try {
+			
 		
-		productFileManager.uploadProductImage(configuration, productImage, contentImage);
+			//upload the image in the CMS
+			InputContentImage contentImage = new InputContentImage(ImageContentType.PRODUCT);
+			contentImage.setFile(productImage.getImage());
+			contentImage.setDefaultImage(productImage.isDefaultImage());
+			contentImage.setImageName(productImage.getProductImage());
+			FileNameMap fileNameMap = URLConnection.getFileNameMap();
+			String contentType = fileNameMap.getContentTypeFor(productImage.getProductImage());
+			contentImage.setImageContentType(contentType);
+			
 
-		//insert ProductImage
-		if(productImage.getId()!=null && productImage.getId()>0) {
-			this.update(productImage);
-		} else {
-			this.create(productImage);
+			String extension = contentType.substring(contentType.indexOf("/")+1,contentType.length());
+			BufferedImage image = ImageIO.read(productImage.getImage());
+			baos = new ByteArrayOutputStream();
+			ImageIO.write( image, extension, baos );
+			contentImage.setBufferedImage(image);
+			
+			//baos.flush();
+			//byte[] imageInByte = baos.toByteArray();
+			//baos.close();
+		
+			
+			productFileManager.uploadProductImage(configuration, productImage, contentImage, baos);
+	
+			//insert ProductImage
+			if(productImage.getId()!=null && productImage.getId()>0) {
+				this.update(productImage);
+			} else {
+				this.create(productImage);
+				//TODO fails with ProductImageDscription
+			}
+		
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		} finally {
+			try {
+				baos.flush();
+				baos.close();
+			} catch(Exception e) {
+				
+			}
 		}
 		
 		

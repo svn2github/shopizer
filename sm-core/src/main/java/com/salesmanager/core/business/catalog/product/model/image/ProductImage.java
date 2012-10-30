@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.catalog.product.model.image;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Transient;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
@@ -49,6 +51,9 @@ public class ProductImage extends SalesManagerEntity<Long, ProductImage> {
 	@ManyToOne(targetEntity = Product.class)
 	@JoinColumn(name = "PRODUCT_ID", nullable = false)
 	private Product product;
+	
+	@Transient
+	private InputStream image = null;
 
 	public ProductImage(){
 	}
@@ -110,6 +115,16 @@ public class ProductImage extends SalesManagerEntity<Long, ProductImage> {
 	public List<ProductImageDescription> getDescriptions() {
 		return descriptions;
 	}
+
+	public InputStream getImage() {
+		return image;
+	}
+
+	public void setImage(InputStream image) {
+		this.image = image;
+	}
+
+
 
 
 }

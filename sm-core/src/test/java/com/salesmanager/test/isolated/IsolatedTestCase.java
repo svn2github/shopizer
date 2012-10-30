@@ -1,36 +1,20 @@
 package com.salesmanager.test.isolated;
 
-import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
-
-import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.infinispan.Cache;
-import org.infinispan.manager.DefaultCacheManager;
-import org.infinispan.manager.EmbeddedCacheManager;
-import org.infinispan.tree.Fqn;
-import org.infinispan.tree.Node;
-import org.infinispan.tree.TreeCache;
-import org.infinispan.tree.TreeCacheFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +55,6 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.country.model.Country;
-import com.salesmanager.core.business.reference.country.model.CountryDescription;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.currency.service.CurrencyService;
@@ -87,7 +70,6 @@ import com.salesmanager.core.business.user.model.User;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
 import com.salesmanager.core.business.user.service.UserService;
-import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.test.core.SalesManagerCoreTestExecutionListener;
 
 
@@ -378,25 +360,19 @@ public class IsolatedTestCase {
 	    
 	    
 	    
-        File file1 = new File("C:/doc/carl/Merchant.jpg");
+        File file1 = new File("/Users/csamson777/Documents/csti/cocoacart/ktm.png");
         if (!file1.exists()|| !file1.canRead()) {
         	throw new ServiceException("Can't read" + file1.getAbsolutePath());
         }
         
-        File file2 = new File("C:/doc/carl/Recommendations.jpg");
-        if (!file2.exists()|| !file2.canRead()) {
-        	throw new ServiceException("Can't read" + file1.getAbsolutePath());
-        }
+
 	    
         //FileInputStream is1 = new FileInputStream(file1);
         //FileInputStream is2 = new FileInputStream(file2);
         
 		byte[] is = IOUtils.toByteArray(new FileInputStream(file1));
 		ByteArrayInputStream is1 = new ByteArrayInputStream(is);
-		
-		is = IOUtils.toByteArray(new FileInputStream(file2));
-		ByteArrayInputStream is2 = new ByteArrayInputStream(is);
-	    
+
         ProductImage productImage1 = new ProductImage();
 	    productImage1.setDefaultImage(true);
 	    productImage1.setProductImage(file1.getName());
@@ -419,37 +395,114 @@ public class IsolatedTestCase {
         image1descriptions.add(desc2);
         
         productImage1.setDescriptions(image1descriptions);
+        productImage1.setImage(is1);
         
-        productImageService.addProductImage(product, productImage1, is1);
+        productImageService.addProductImage(product, productImage1);
         
-        ProductImage productImage2 = new ProductImage();
-	    productImage2.setProductImage(file2.getName());
-	    productImage2.setDefaultImage(false);
-	    
-	    ProductImageDescription desc3 = new ProductImageDescription();
-	    desc3.setLanguage(en);
-	    desc3.setAltTag("ALT IMAGE 2 en");
-	    desc3.setName("la la en");
-	    desc3.setProductImage(productImage2);
-        
-	    ProductImageDescription desc4 = new ProductImageDescription();
-	    desc4.setLanguage(fr);
-	    desc4.setAltTag("ALT IMAGE 2 fr");
-	    desc4.setName("la la fr");
-	    desc4.setProductImage(productImage2);
-        
-        List image2descriptions = new ArrayList();
-        image2descriptions.add(desc3);
-        image2descriptions.add(desc4);
-        
-        productImage2.setDescriptions(image2descriptions);
-        
-        productImageService.addProductImage(product, productImage2, is2);
+
         
   }
   
   
-  @Test void testAddImage() throws ServiceException {
+  @Test 
+  public void createProduct() throws Exception {
+	  
+	  
+	  
+	    Language en = languageService.getByCode("en");
+	    Language fr = languageService.getByCode("fr");
+	    Country ca = countryService.getByCode("CA");
+	    Currency currency = currencyService.getByCode("CAD");
+	    MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
+	    ProductType generalType = productTypeService.getProductType(ProductType.GENERAL_TYPE);
+	    
+	    //Category book = categoryService.getByCode(store, "book");
+	  
+	    //Manufacturer manufacturer = manufacturerService.getById(1L);
+	  
+	    // PRODUCT 1
+
+	    Product product = new Product();
+	    product.setProductHeight(new BigDecimal(4));
+	    product.setProductLength(new BigDecimal(3));
+	    product.setProductWidth(new BigDecimal(1));
+	    product.setSku("XYZTEST");
+	    //product.setManufacturer(manufacturer);
+	    product.setType(generalType);
+	    product.setMerchantSore(store);
+
+	    // Product description
+	    ProductDescription description = new ProductDescription();
+	    description.setName("Test with image");
+	    description.setLanguage(en);
+	    description.setProduct(product);
+
+	    product.getDescriptions().add(description);
+	    //product.getCategories().add(book);
+
+	    
+	    Set<ProductAvailability> availabilities = new HashSet<ProductAvailability>();
+	    
+	    
+	    ProductPrice dprice = new ProductPrice();
+	    dprice.setDefaultPrice(true);
+	    dprice.setProductPriceAmount(new BigDecimal(29.99));
+
+
+	    Set<ProductPrice> prices = new HashSet<ProductPrice>();
+	    prices.add(dprice);
+	    
+	    // Availability
+	    ProductAvailability availability = new ProductAvailability();
+	    availability.setProductDateAvailable(date);
+	    availability.setProductQuantity(100);
+	    availability.setRegion("*");
+	    
+	    availability.setPrices(prices);
+
+	    availabilities.add(availability);
+
+	    product.setAvailabilities(availabilities);
+
+	    
+        File file1 = new File("/Users/csamson777/Documents/csti/cocoacart/ktm.png");
+        if (!file1.exists()|| !file1.canRead()) {
+        	throw new ServiceException("Can't read" + file1.getAbsolutePath());
+        }
+
+        //FileInputStream is1 = new FileInputStream(file1);
+
+        
+		byte[] is = IOUtils.toByteArray(new FileInputStream(file1));
+		ByteArrayInputStream is1 = new ByteArrayInputStream(is);
+		
+
+        ProductImage productImage = new ProductImage();
+	    productImage.setDefaultImage(true);
+	    productImage.setProductImage(file1.getName());
+
+	    
+	    ProductImageDescription desc1 = new ProductImageDescription();
+        desc1.setLanguage(en);
+        desc1.setAltTag("ALT IMAGE 1 en");
+        desc1.setName("Product image");
+
+	    ProductImageDescription desc2 = new ProductImageDescription();
+        desc2.setLanguage(fr);
+        desc2.setAltTag("ALT IMAGE 1 fr");
+        desc2.setName("Image du produit");
+        
+        List<ProductImageDescription> imagedescriptions = new ArrayList<ProductImageDescription>();
+        imagedescriptions.add(desc1);
+        imagedescriptions.add(desc2);
+        
+        productImage.setDescriptions(imagedescriptions);
+        productImage.setImage(is1);
+
+
+	    product.getImages().add(productImage);
+	    
+	    productService.saveOrUpdate(product);
 	  
   }
   

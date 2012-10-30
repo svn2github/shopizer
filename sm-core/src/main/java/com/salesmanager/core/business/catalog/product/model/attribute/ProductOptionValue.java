@@ -1,6 +1,8 @@
 package com.salesmanager.core.business.catalog.product.model.attribute;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -11,12 +13,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Transient;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -40,8 +43,15 @@ public class ProductOptionValue extends SalesManagerEntity<Long, ProductOptionVa
 	@Column(name="PRODUCT_OPT_VAL_IMAGE")
 	private String productOptionValueImage;
 	
+	@Transient
+	private MultipartFile image = null;
+
+	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "productOptionValue")
 	private Set<ProductOptionValueDescription> descriptions = new HashSet<ProductOptionValueDescription>();
+	
+	@Transient
+	private List<ProductOptionValueDescription> descriptionsList = new ArrayList<ProductOptionValueDescription>();
 	
 /*	@ManyToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "MERCHANT_PRD_OPT_VAL", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
@@ -97,6 +107,29 @@ public class ProductOptionValue extends SalesManagerEntity<Long, ProductOptionVa
 
 	public void setMerchantSore(MerchantStore merchantSore) {
 		this.merchantSore = merchantSore;
+	}
+
+	public void setDescriptionsList(List<ProductOptionValueDescription> descriptionsList) {
+		this.descriptionsList = descriptionsList;
+	}
+
+	public List<ProductOptionValueDescription> getDescriptionsList() {
+		return descriptionsList; 
+	}
+	
+	public List<ProductOptionValueDescription> getDescriptionsSettoList() {
+		if(descriptionsList==null || descriptionsList.size()==0) {
+			descriptionsList = new ArrayList<ProductOptionValueDescription>(this.getDescriptions());
+		} 
+		return descriptionsList;
+	}
+
+	public void setImage(MultipartFile image) {
+		this.image = image;
+	}
+
+	public MultipartFile getImage() {
+		return image;
 	}
 
 

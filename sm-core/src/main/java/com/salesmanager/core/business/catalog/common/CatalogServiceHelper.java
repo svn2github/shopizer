@@ -31,9 +31,9 @@ public class CatalogServiceHelper {
 			for(ProductAttribute attribute : attributes) {
 
 				ProductOption po = attribute.getProductOption();
-				List<ProductOptionDescription> spod = po.getDescriptions();
+				Set<ProductOptionDescription> spod = po.getDescriptions();
 				if(spod!=null) {
-					List<ProductOptionDescription> podDescriptions = new ArrayList<ProductOptionDescription>();
+					Set<ProductOptionDescription> podDescriptions = new HashSet<ProductOptionDescription>();
 					for(ProductOptionDescription pod : spod) {
 						//System.out.println("    ProductOptionDescription : " + pod.getProductOptionName());
 						if(pod.getLanguage().getId()==language) {
@@ -44,6 +44,8 @@ public class CatalogServiceHelper {
 				}
 				
 				ProductOptionValue pov = attribute.getProductOptionValue();
+				
+				
 				Set<ProductOptionValueDescription> spovd = pov.getDescriptions();
 				if(spovd!=null) {
 					Set<ProductOptionValueDescription> povdDescriptions = new HashSet();

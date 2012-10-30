@@ -138,7 +138,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		dpriceSet.add(dpd);
 		dpriceSet.add(dpdfr);
 		
-		dprice.setDescriptions(dpriceSet);
+		//TODO dprice.setDescriptions(dpriceSet);
 		
 		//Create price
 		productPriceService.create(dprice);
@@ -163,7 +163,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		dpricecaSet.add(dpdcaen);
 		dpricecaSet.add(dpdcafr);
 		
-		dpriceca.setDescriptions(dpricecaSet);
+		//TODO dpriceca.setDescriptions(dpricecaSet);
 		
 		productPriceService.create(dpriceca);
 		
@@ -186,7 +186,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		dpriceca2Set.add(dpdcaen2);
 		dpriceca2Set.add(dpdcafr2);
 		
-		dpriceca2.setDescriptions(dpriceca2Set);
+		//TODO dpriceca2.setDescriptions(dpriceca2Set);
 		
 		productPriceService.create(dpriceca2);
 
@@ -227,7 +227,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		po2.setLanguage(FRENCH);
 		po2.setProductOption(option);
 		
-		List<ProductOptionDescription> optSet = new ArrayList<ProductOptionDescription>();
+		Set<ProductOptionDescription> optSet = new HashSet<ProductOptionDescription>();
 		optSet.add(po1);
 		optSet.add(po2);
 		
@@ -253,7 +253,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		po4.setLanguage(FRENCH);
 		po4.setProductOption(option2);
 		
-		List<ProductOptionDescription> optSet2 = new ArrayList<ProductOptionDescription>();
+		Set<ProductOptionDescription> optSet2 = new HashSet<ProductOptionDescription>();
 		optSet2.add(po3);
 		optSet2.add(po4);
 		
@@ -285,7 +285,8 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		Set<ProductOptionValueDescription> optionsValueSet1 = new HashSet<ProductOptionValueDescription>();
 		optionsValueSet1.add(optionValueDescription1);
 		optionsValueSet1.add(optionValueDescription2);
-		optionValue1.setDescriptions(optionsValueSet1);
+		
+		//optionValue1.setDescriptions(optionsValueSet1);
 		
 		optionValue1.setMerchantSore(store);
 
@@ -311,7 +312,9 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		Set<ProductOptionValueDescription> optionsValueSet2 = new HashSet<ProductOptionValueDescription>();
 		optionsValueSet2.add(optionValueDescription3);
 		optionsValueSet2.add(optionValueDescription4);
-		optionValue2.setDescriptions(optionsValueSet2);
+		
+		
+		//optionValue2.setDescriptions(optionsValueSet2);
 		
 		optionValue2.setMerchantSore(store);
 		
@@ -336,7 +339,9 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		Set<ProductOptionValueDescription> optionsValueSet3 = new HashSet<ProductOptionValueDescription>();
 		optionsValueSet3.add(optionValueDescription5);
 		optionsValueSet3.add(optionValueDescription6);
-		optionValue3.setDescriptions(optionsValueSet3);
+		
+		
+		//optionValue3.setDescriptions(optionsValueSet3);
 		
 		
 		

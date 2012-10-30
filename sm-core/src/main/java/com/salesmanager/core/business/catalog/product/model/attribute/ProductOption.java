@@ -13,12 +13,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Transient;
 
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -43,7 +42,12 @@ public class ProductOption extends SalesManagerEntity<Long, ProductOption> {
 	private String productOptionType;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "productOption")
-	private List<ProductOptionDescription> descriptions = new ArrayList<ProductOptionDescription>();
+	private Set<ProductOptionDescription> descriptions = new HashSet<ProductOptionDescription>();
+	
+	@Transient
+	private List<ProductOptionDescription> descriptionsList = new ArrayList<ProductOptionDescription>();
+	
+	
 	
 /*	@ManyToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "MERCHANT_PRD_OPTION", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
@@ -59,7 +63,7 @@ public class ProductOption extends SalesManagerEntity<Long, ProductOption> {
 	public ProductOption() {
 	}
 	
-	public int getProductOptionSortOrder() {
+	public Integer getProductOptionSortOrder() {
 		return productOptionSortOrder;
 	}
 	
@@ -75,11 +79,11 @@ public class ProductOption extends SalesManagerEntity<Long, ProductOption> {
 		this.productOptionType = productOptionType;
 	}
 	
-	public List<ProductOptionDescription> getDescriptions() {
+	public Set<ProductOptionDescription> getDescriptions() {
 		return descriptions;
 	}
 
-	public void setDescriptions(List<ProductOptionDescription> descriptions) {
+	public void setDescriptions(Set<ProductOptionDescription> descriptions) {
 		this.descriptions = descriptions;
 	}
 
@@ -101,5 +105,22 @@ public class ProductOption extends SalesManagerEntity<Long, ProductOption> {
 
 	public void setMerchantSore(MerchantStore merchantSore) {
 		this.merchantSore = merchantSore;
+	}
+
+	public void setDescriptionsList(List<ProductOptionDescription> descriptionsList) {
+		this.descriptionsList = descriptionsList;
+	}
+
+	public List<ProductOptionDescription> getDescriptionsList() {
+		return descriptionsList;
+	}
+	
+
+	public List<ProductOptionDescription> getDescriptionsSettoList() {
+		if(descriptionsList==null || descriptionsList.size()==0) {
+			descriptionsList = new ArrayList<ProductOptionDescription>(this.getDescriptions());
+		} 
+		return descriptionsList;
+
 	}
 }

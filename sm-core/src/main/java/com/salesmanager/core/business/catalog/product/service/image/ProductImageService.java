@@ -1,6 +1,5 @@
 package com.salesmanager.core.business.catalog.product.service.image;
 
-import java.io.InputStream;
 import java.util.List;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
@@ -22,7 +21,7 @@ public interface ProductImageService extends SalesManagerEntityService<Long, Pro
 	 * @param file
 	 * @throws ServiceException
 	 */
-	void addProductImage(Product product, ProductImage productImage, InputStream file)
+	void addProductImage(Product product, ProductImage productImage)
 			throws ServiceException;
 
 	/**

@@ -4,7 +4,6 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 
@@ -30,12 +29,12 @@ public class ProductImageCropUtils {
 	private double cropAreaWidth = 0;
 	private double cropAreaHeight = 0;
 	
-	private InputStream originalFile = null;
+	//private InputStream originalFile = null;
+	private BufferedImage originalFile = null;
 
 
 
-
-	public ProductImageCropUtils(InputStream file, int largeImageWidth, int largeImageHeight) {
+	public ProductImageCropUtils(BufferedImage file, int largeImageWidth, int largeImageHeight) {
 		
 		
 	
@@ -46,9 +45,9 @@ public class ProductImageCropUtils {
 				
 				/** Original Image **/
 				// get original image size
-				BufferedImage originalImage = ImageIO.read(file);
-				int width = originalImage.getWidth();
-				int height = originalImage.getHeight();
+
+				int width = originalFile.getWidth();
+				int height = originalFile.getHeight();
 		
 				/*** determine if image can be cropped ***/
 				determineCropeable(width, largeImageWidth, height, largeImageHeight);
@@ -178,20 +177,20 @@ public class ProductImageCropUtils {
 
 			//out if croppedArea == 0 or file is null
 		
-			BufferedImage bi = ImageIO.read(originalFile);
+
 
 		
 			Rectangle goal = new Rectangle( (int)this.getCropAreaWidth(), (int) this.getCropAreaHeight()); 
 			
 			//Then intersect it with the dimensions of your image:
 
-			Rectangle clip = goal.intersection(new Rectangle(bi.getWidth(), bi.getHeight())); 
+			Rectangle clip = goal.intersection(new Rectangle(originalFile.getWidth(), originalFile.getHeight())); 
 			
 			//Now, clip corresponds to the portion of bi that will fit within your goal. In this case 100 x50.
 
 			//Now get the subImage using the value of clip.
 
-			BufferedImage clippedImg = bi.getSubimage(clip.x, clip.y, clip.width, clip.height); 
+			BufferedImage clippedImg = originalFile.getSubimage(clip.x, clip.y, clip.width, clip.height); 
 			
 
 			return clippedImg;
