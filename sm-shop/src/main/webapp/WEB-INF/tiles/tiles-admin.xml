@@ -90,8 +90,12 @@
   		<put-attribute name="body" value="/pages/admin/products/option.jsp" /> 
   	</definition>
   	
-  	 <definition name="catalogue-options-values" template="/layout/admin/layout.jsp">
+  	 <definition name="catalogue-optionsvalues-list" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/products/optionsValues.jsp" /> 
+  	</definition>
+  	
+  	<definition name="catalogue-optionsvalues-details" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/products/optionValue.jsp" /> 
   	</definition>
   	
   	<definition name="admin-user-profile" template="/layout/admin/layout.jsp">
