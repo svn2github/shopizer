@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.content.service;
 
+import java.io.InputStream;
 import java.util.List;
 
 import com.salesmanager.core.business.content.model.content.Content;
@@ -17,6 +18,8 @@ public interface ContentService extends SalesManagerEntityService<Long, Content>
 			throws ServiceException;
 	void saveOrUpdate(Content content) throws ServiceException;
 	Content getByCode(String code, MerchantStore store, Language language)
+			throws ServiceException;
+	void addContentImage(MerchantStore store, InputStream inputStream)
 			throws ServiceException;
 
 

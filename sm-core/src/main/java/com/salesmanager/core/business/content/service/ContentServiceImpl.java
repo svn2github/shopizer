@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.content.service;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +12,15 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.modules.cms.content.ContentFileManager;
 
 @Service("contentService")
 public class ContentServiceImpl extends SalesManagerEntityServiceImpl<Long, Content> implements ContentService {
 	
 	private ContentDao contentDao;
+	
+	@Autowired
+	ContentFileManager contentFileManager;
 	
 
 	
@@ -68,6 +73,16 @@ public class ContentServiceImpl extends SalesManagerEntityServiceImpl<Long, Cont
 	public Content getByCode(String code, MerchantStore store, Language language)
 			throws ServiceException {
 		return contentDao.getByCode(code, store, language);
+	}
+	
+	@Override
+	public void addContentImage(MerchantStore store, InputStream inputStream) throws ServiceException {
+		
+		//TODO look at ProductImageServiceImpl to create an InputContentImage from the stream
+		//and invoke
+		
+		//contentFileManager.addImage(store, image)
+		
 	}
 	
 

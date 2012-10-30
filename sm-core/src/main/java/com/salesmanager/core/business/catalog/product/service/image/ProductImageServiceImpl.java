@@ -53,7 +53,7 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		
 			//upload the image in the CMS
 			InputContentImage contentImage = new InputContentImage(ImageContentType.PRODUCT);
-			contentImage.setFile(productImage.getImage());
+			//contentImage.setFile(productImage.getImage());
 			contentImage.setDefaultImage(productImage.isDefaultImage());
 			contentImage.setImageName(productImage.getProductImage());
 			FileNameMap fileNameMap = URLConnection.getFileNameMap();
@@ -66,13 +66,11 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 			baos = new ByteArrayOutputStream();
 			ImageIO.write( image, extension, baos );
 			contentImage.setBufferedImage(image);
-			
-			//baos.flush();
-			//byte[] imageInByte = baos.toByteArray();
-			//baos.close();
+			contentImage.setFile(baos);
+
 		
 			
-			productFileManager.uploadProductImage(configuration, productImage, contentImage, baos);
+			productFileManager.uploadProductImage(configuration, productImage, contentImage);
 	
 			//insert ProductImage
 			if(productImage.getId()!=null && productImage.getId()>0) {

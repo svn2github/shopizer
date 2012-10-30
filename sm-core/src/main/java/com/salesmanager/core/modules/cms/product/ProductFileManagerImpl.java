@@ -47,7 +47,7 @@ public class ProductFileManagerImpl extends ProductFileManager {
 	}
 
 
-	public void uploadProductImage(CoreConfiguration configuration, ProductImage productImage, InputContentImage contentImage, ByteArrayOutputStream bytes)
+	public void uploadProductImage(CoreConfiguration configuration, ProductImage productImage, InputContentImage contentImage)
 			throws ServiceException {
 			
 			
@@ -62,11 +62,11 @@ public class ProductFileManagerImpl extends ProductFileManager {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				ImageIO.write( image, extension, baos );*/
 
-				
+				ByteArrayOutputStream bytes = contentImage.getFile();
 
 
 				//upload original
-				uploadImage.uploadProductImage(configuration, productImage, contentImage, bytes);
+				uploadImage.uploadProductImage(configuration, productImage, contentImage);
 	
 				//default large
 				InputContentImage largeContentImage = new InputContentImage(ImageContentType.PRODUCT);
@@ -75,7 +75,7 @@ public class ProductFileManagerImpl extends ProductFileManager {
 				largeContentImage.setImageName(new StringBuilder().append("L-").append(productImage.getProductImage()).toString());
 
 				
-				uploadImage.uploadProductImage(configuration, productImage, largeContentImage, bytes);
+				uploadImage.uploadProductImage(configuration, productImage, largeContentImage);
 				
 				//default small
 				InputContentImage smallContentImage = new InputContentImage(ImageContentType.PRODUCT);
@@ -83,7 +83,7 @@ public class ProductFileManagerImpl extends ProductFileManager {
 				smallContentImage.setDefaultImage(productImage.isDefaultImage());
 				smallContentImage.setImageName(new StringBuilder().append("S-").append(productImage.getProductImage()).toString());
 				
-				uploadImage.uploadProductImage(configuration, productImage, smallContentImage, bytes);
+				uploadImage.uploadProductImage(configuration, productImage, smallContentImage);
 				
 				
 				//get template properties file
@@ -147,14 +147,14 @@ public class ProductFileManagerImpl extends ProductFileManager {
 						
 	
 						largeContentImage = new InputContentImage(ImageContentType.PRODUCT);
-						largeContentImage.setFile(isLarge);
+						largeContentImage.setFile(output);
 						largeContentImage.setDefaultImage(false);
 						largeContentImage.setImageName(new StringBuilder().append("L-").append(productImage.getProductImage()).toString());
 						
 						
 						
 						
-						uploadImage.uploadProductImage(configuration, productImage, largeContentImage,output);
+						uploadImage.uploadProductImage(configuration, productImage, largeContentImage);
 						
 						output.flush();
 						output.close();
@@ -175,11 +175,11 @@ public class ProductFileManagerImpl extends ProductFileManager {
 						
 	
 						smallContentImage = new InputContentImage(ImageContentType.PRODUCT);
-						smallContentImage.setFile(isSmall);
+						smallContentImage.setFile(output);
 						smallContentImage.setDefaultImage(false);
 						smallContentImage.setImageName(new StringBuilder().append("S-").append(productImage.getProductImage()).toString());
 						
-						uploadImage.uploadProductImage(configuration, productImage, smallContentImage, output);
+						uploadImage.uploadProductImage(configuration, productImage, smallContentImage);
 						
 						output.flush();
 						output.close();
