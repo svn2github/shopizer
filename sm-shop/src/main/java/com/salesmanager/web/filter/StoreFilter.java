@@ -82,6 +82,11 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			Language language = (Language) request.getSession().getAttribute("LANGUAGE");
 			
 			if(language==null) {
+				
+				//TODO get the Locale from Spring API, is it simply request.getLocale() ???
+				//if so then based on the Locale language locale.getLanguage() get the appropriate Language
+				//object as represented below
+				
 				language = languageService.getByCode("en");
 				request.getSession().setAttribute("LANGUAGE", language);
 			}
