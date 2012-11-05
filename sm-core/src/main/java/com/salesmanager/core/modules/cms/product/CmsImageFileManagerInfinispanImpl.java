@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 
+import org.apache.commons.io.IOUtils;
 import org.infinispan.tree.Fqn;
 import org.infinispan.tree.Node;
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.modules.cms.common.CacheAttribute;
 import com.salesmanager.core.modules.cms.common.CmsFileManagerInfinispan;
 import com.salesmanager.core.utils.CoreConfiguration;
-import com.salesmanager.core.utils.IOUtils;
+
 
 
 /**
@@ -41,6 +42,8 @@ public class CmsImageFileManagerInfinispanImpl extends CmsFileManagerInfinispan 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CmsImageFileManagerInfinispanImpl.class);
 	
 	private static CmsImageFileManagerInfinispanImpl fileManager = null; 
+	
+	private final static String PRODUCT_FILES = "productFiles";
 	
 
 	
@@ -64,7 +67,7 @@ public class CmsImageFileManagerInfinispanImpl extends CmsFileManagerInfinispan 
 		if(fileManager==null) {
 			fileManager = new CmsImageFileManagerInfinispanImpl();
 			try {
-				fileManager.initFileManager();
+				fileManager.initFileManager(PRODUCT_FILES);
 			} catch (Exception e) {
 				LOGGER.error("Error while instantiating CmsImageFileManager",e);
 			}

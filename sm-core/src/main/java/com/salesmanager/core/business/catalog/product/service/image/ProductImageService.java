@@ -43,5 +43,7 @@ public interface ProductImageService extends SalesManagerEntityService<Long, Pro
 			throws ServiceException;
 
 	void removeProductImage(ProductImage productImage) throws ServiceException;
+
+	void saveOrUpdate(ProductImage productImage) throws ServiceException;
 	
 }

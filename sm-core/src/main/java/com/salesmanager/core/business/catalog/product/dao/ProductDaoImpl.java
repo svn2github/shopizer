@@ -416,6 +416,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 				qs.append("left join fetch po.descriptions pod ");
 				qs.append("left join fetch pattr.productOptionValue pov ");
 				qs.append("left join fetch pov.descriptions povd ");
+				qs.append("left join fetch p.relationships pr ");
 				//other lefts
 				qs.append("left join fetch p.manufacturer manuf ");
 				qs.append("left join fetch p.type type ");
@@ -462,6 +463,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		qs.append("left join fetch po.descriptions pod ");
 		qs.append("left join fetch pattr.productOptionValue pov ");
 		qs.append("left join fetch pov.descriptions povd ");
+		qs.append("left join fetch p.relationships pr ");
 		//other lefts
 		qs.append("left join fetch p.manufacturer manuf ");
 		qs.append("left join fetch p.type type ");

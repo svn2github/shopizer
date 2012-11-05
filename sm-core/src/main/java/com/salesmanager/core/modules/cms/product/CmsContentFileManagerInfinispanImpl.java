@@ -1,15 +1,9 @@
 package com.salesmanager.core.modules.cms.product;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.net.FileNameMap;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.IOUtils;
 import org.infinispan.tree.Fqn;
 import org.infinispan.tree.Node;
 import org.slf4j.Logger;
@@ -37,6 +31,8 @@ public class CmsContentFileManagerInfinispanImpl extends
 	
 	private final static String IMAGE_CONTENT = "IMAGE_CONTENT";
 	
+	private final static String CONTENT_FILES = "contentFiles";
+	
 
 	
 	/**
@@ -59,7 +55,7 @@ public class CmsContentFileManagerInfinispanImpl extends
 		if(fileManager==null) {
 			fileManager = new CmsContentFileManagerInfinispanImpl();
 			try {
-				fileManager.initFileManager();
+				fileManager.initFileManager(CONTENT_FILES);
 			} catch (Exception e) {
 				LOGGER.error("Error while instantiating CmsContentFileManager",e);
 			}
@@ -172,69 +168,15 @@ public class CmsContentFileManagerInfinispanImpl extends
         if(treeCache==null) {
         	throw new ServiceException("CmsImageFileManagerInfinispan has a null treeCache");
         }
-        InputStream input = null;
+
 		OutputContentImage contentImage = new OutputContentImage();
 		try {
         	
-			StringBuilder filePath = new StringBuilder();
-			filePath.append("/contentFiles/")
-			.append("merchant-").append(String.valueOf(store.getId()));//.append("/")
-			
-			
-			//a logo or content
-			if(imageContentType.equals(ImageContentType.LOGO)) {
-				
-				filePath.append("/logo");
-
-			} else {
-			
-			//if(image.getContentType().equals(ImageContentType.CONTENT)) {
-				
-				filePath.append("/content");
-
-			}
-			
-			
-			Fqn imageFile = Fqn.fromString(filePath.toString());
-			
-			if(imageFile==null) {
-				return null;
-			}
-			
-			Node<String, Object> imageFileFileTree = treeCache.getRoot().getChild(imageFile);
-			
-			
-			if(imageFileFileTree==null) {
-				return null;
-			}
-			
-			byte[] imageBytes = (byte[])imageFileFileTree.get(imageName);
-			
-			if(imageBytes==null) {
-				return null;
-			}
-			
-			input = new ByteArrayInputStream(imageBytes);
-			ByteArrayOutputStream output = new ByteArrayOutputStream();
-			IOUtils.copy(input, output);
-			
-			FileNameMap fileNameMap = URLConnection.getFileNameMap();
-			String contentType = fileNameMap.getContentTypeFor(imageName);
-			
-			contentImage.setImage(output);
-			contentImage.setImageContentType(contentType);
-			contentImage.setImageName(imageName);
-			
+		//TODO to be implemented
 
         } catch(Exception e) {
         	throw new ServiceException(e);
-		} finally {
-			if(input!=null) {
-				try {
-					input.close();
-				} catch (Exception ignore) {}
-			}
-		}
+		} 
 		
 		return contentImage;
 		

@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.salesmanager.core.business.catalog.product.dao.image.ProductImageDao;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
+import com.salesmanager.core.business.catalog.product.model.image.ProductImageDescription;
 import com.salesmanager.core.business.catalog.product.service.ProductImageEnum;
 import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.InputContentImage;
@@ -68,17 +70,12 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 			contentImage.setBufferedImage(image);
 			contentImage.setFile(baos);
 
-		
+
 			
 			productFileManager.uploadProductImage(configuration, productImage, contentImage);
 	
 			//insert ProductImage
-			if(productImage.getId()!=null && productImage.getId()>0) {
-				this.update(productImage);
-			} else {
-				this.create(productImage);
-				//TODO fails with ProductImageDscription
-			}
+			this.saveOrUpdate(productImage);
 		
 		} catch (Exception e) {
 			throw new ServiceException(e);
@@ -92,6 +89,46 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		}
 		
 		
+	}
+	
+	@Override
+	public void saveOrUpdate(ProductImage productImage) throws ServiceException {
+		
+		
+		//save or update (persist and attach entities
+		if(productImage.getId()!=null && productImage.getId()>0) {
+
+			super.update(productImage);
+			
+		} else {
+			
+			List<ProductImageDescription> descriptions = productImage.getDescriptions();
+			productImage.setDescriptions(null);
+			super.save(productImage);
+			
+			if(descriptions!=null && descriptions.size()>0) {
+				for(ProductImageDescription description : descriptions) {
+					this.addProductImageDescription(productImage, description);
+				}
+			}
+			
+		}
+		
+	}
+	
+	public void addProductImageDescription(ProductImage productImage, ProductImageDescription description)
+	throws ServiceException {
+
+		
+			if(productImage.getDescriptions()==null) {
+				productImage.setDescriptions(new ArrayList<ProductImageDescription>());
+			}
+			
+			productImage.getDescriptions().add(description);
+			description.setProductImage(productImage);
+			update(productImage);
+
+
 	}
 	
 	//TODO get default product image

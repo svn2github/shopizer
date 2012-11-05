@@ -27,7 +27,7 @@ public abstract class CmsFileManagerInfinispan {
 	
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected void initFileManager() throws Exception {
+	protected void initFileManager(String baseCms) throws Exception {
 		
     	
 		try {
@@ -42,7 +42,7 @@ public abstract class CmsFileManagerInfinispan {
 			 
 			 manager.start();
 			 
-			 Fqn productFiles = Fqn.fromString("productFiles");
+			 Fqn productFiles = Fqn.fromString(baseCms);
 			 Node<String, Object> productFilesTree = treeCache.getRoot().getChild(productFiles);
 			 
 			 if(productFilesTree==null) {

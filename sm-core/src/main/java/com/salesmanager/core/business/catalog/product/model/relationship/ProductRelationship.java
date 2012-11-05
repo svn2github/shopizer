@@ -33,12 +33,12 @@ public class ProductRelationship extends SalesManagerEntity<Long, ProductRelatio
 	private MerchantStore store;
 	
 	@ManyToOne(targetEntity = Product.class)
-	@JoinColumn(name="PRODUCT_ID",insertable=false,updatable=false,nullable=false) 
-	private Product product;
+	@JoinColumn(name="PRODUCT_ID",insertable=false,updatable=false,nullable=true) 
+	private Product product = null;
 	
 	@ManyToOne(targetEntity = Product.class)
 	@JoinColumn(name="PRODUCT_ID",insertable=false,updatable=false,nullable=false) 
-	private Product relatedProduct;
+	private Product relatedProduct = null;
 	
 	@Column(name="CODE")
 	private String code;
