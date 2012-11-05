@@ -16,8 +16,8 @@
 		<!-- The active file to log to -->
 	<param name="File" value="/sm-core.log" />
 	<param name="MaxFileSize" value="10000KB"/>
-	<param name="Tppend" value="true" />
-	<param name="Tncoding" value="UTF-8" />
+	<param name="Append" value="true" />
+	<param name="Encoding" value="UTF-8" />
 	<param name="Threshold" value="debug" />
 	<layout class="org.apache.log4j.PatternLayout">
 		<!-- The log message pattern -->
