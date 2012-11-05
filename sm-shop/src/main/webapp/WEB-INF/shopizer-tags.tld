@@ -8,7 +8,7 @@
    <uri>/shopizer-tags</uri>
 
 <tag>
- 
+ 		 <!-- Builds the image URL -->
          <name>contentImage</name>
          <tag-class>com.salesmanager.web.tags.ContentImageUrlTag</tag-class>
          <body-content>scriptless</body-content>
@@ -21,6 +21,13 @@
  
          <attribute>
                  <name>imageName</name>
+                 <required>true</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>String</type>
+         </attribute>
+         
+         <attribute>
+                 <name>imageType</name>
                  <required>true</required>
                  <rtexprvalue>true</rtexprvalue>
                  <type>String</type>

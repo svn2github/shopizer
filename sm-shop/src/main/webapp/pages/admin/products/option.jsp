@@ -46,20 +46,20 @@
       				<form:errors path="*" cssClass="alert alert-error" element="div" />
 					<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
 								
-                 <c:forEach items="${option.descriptions}" var="description" varStatus="counter">
+                 <c:forEach items="${option.descriptionsSettoList}" var="description" varStatus="counter">
                   
                  <div class="control-group">
                         <label class="required"><s:message code="label.product.productoptions.name" text="Option name"/> (<c:out value="${description.language.code}"/>)</label>
                         <div class="controls">
-                        			<form:input id="name${counter.index}" path="descriptions[${counter.index}].name"/>
-                        			<span class="help-inline"><form:errors path="descriptions[${counter.index}].name" cssClass="error" /></span>
+                        			<form:input id="name${counter.index}" path="descriptionsList[${counter.index}].name"/>
+                        			<span class="help-inline"><form:errors path="descriptionsList[${counter.index}].name" cssClass="error" /></span>
                         </div>
 
                   </div>
 
                   
-                  <form:hidden path="descriptions[${counter.index}].language.code" />
-                  <form:hidden path="descriptions[${counter.index}].id" />
+                  <form:hidden path="descriptionsList[${counter.index}].language.code" />
+                  <form:hidden path="descriptionsList[${counter.index}].id" />
                   
                   </c:forEach>
 

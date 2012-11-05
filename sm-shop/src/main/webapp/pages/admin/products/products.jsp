@@ -170,7 +170,7 @@ isc.HLayout.create({
             visibilityMode:"multiple",
             animateSections:true,
             sections:[
-                {title:"Categories", autoShow:true, items:[categoryTree]}
+                {title:"<s:message code="label.categories.title" text="Categories" />", autoShow:true, items:[categoryTree]}
             ]
         }),
         isc.SectionStack.create({
@@ -178,7 +178,7 @@ isc.HLayout.create({
             visibilityMode:"multiple",
             animateSections:true,
             sections:[
-                {title:"Items", autoShow:true, items:[itemList]}
+                {title:"<s:message code="menu.catalogue-products" text="Products" />", autoShow:true, items:[itemList]}
             ]
         })
     ]

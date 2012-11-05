@@ -174,7 +174,9 @@ response.setDateHeader ("Expires", -1);
 			$("#catalogue-optionsvalues-create-link").click(function() {
   				window.location='<c:url value="/admin/options/createOptionValue.html" />';
 			});
-			
+			$("#catalogue-featured-link").click(function() {
+  				window.location='<c:url value="/admin/catalogue/featured/list.html" />';
+			});
 			
 			
 			$("#userinfo-link").click(function() {

@@ -58,12 +58,14 @@ public class ImageServlet extends HttpServlet {
 		System.out.println(requestUrl);
 		System.out.println(requestUri);
 		
-		//Should have /storecode/<LOGO>|<CONTENT>/imageName.extension
+		//Should have /static/storecode/LOGO|CONTENT|PROPERTY|PRODUCT-ID/imageName.extension
 		try {
+			
+			//TODO parse URI and extract ContentType (LOGO, CONTENT, PROPERTY...)
 		
 			MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
 		
-		
+			//TODO or productFileManager
 			OutputContentImage img = contentFileManager.getImage(store, store.getStoreLogo(),ImageContentType.LOGO);
 			
 			

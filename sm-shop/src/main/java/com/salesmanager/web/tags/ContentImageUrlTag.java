@@ -25,6 +25,7 @@ public class ContentImageUrlTag extends TagSupport {
 
 	private MerchantStore merchantStore;
 	private String imageName;
+	private String imageType;
 
 
 	public int doStartTag() throws JspException {
@@ -39,7 +40,9 @@ public class ContentImageUrlTag extends TagSupport {
 
 			StringBuilder imagePath = new StringBuilder();
 			
-			//http://domain/static/merchantid/imageName
+			//TODO domain from merchant, else from global config, else from property (localhost)
+			
+			//http://domain/static/merchantid/imageType/imageName
 			
 			@SuppressWarnings("unchecked")
 			Map<String,String> configurations = (Map<String, String>)session.getAttribute("STORECONFIGURATION");
@@ -50,7 +53,8 @@ public class ContentImageUrlTag extends TagSupport {
 			}
 			
 			imagePath.append(scheme).append("://").append(merchantStore.getDomainName()).append(STATIC_URI)
-				.append(merchantStore.getCode()).append("/").append(this.getImageName());
+				.append(merchantStore.getCode()).append("/").append(this.getImageName())
+				.append("/").append(this.getImageName());
 			
 
 			pageContext.getOut().print(imagePath.toString());
@@ -81,6 +85,14 @@ public class ContentImageUrlTag extends TagSupport {
 
 	public String getImageName() {
 		return imageName;
+	}
+
+	public void setImageType(String imageType) {
+		this.imageType = imageType;
+	}
+
+	public String getImageType() {
+		return imageType;
 	}
 
 

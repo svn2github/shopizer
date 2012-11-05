@@ -373,7 +373,7 @@ public class ProductController {
 		
 		if(product.getImage()!=null) {
 			
-			String imageName = product.getImage().getName();
+			String imageName = product.getImage().getOriginalFilename();
 			
 			List<ProductImageDescription> imagesDescriptions = new ArrayList<ProductImageDescription>();
 
@@ -381,7 +381,7 @@ public class ProductController {
 				
 				ProductImageDescription imageDescription = new ProductImageDescription();
 				imageDescription.setName(imageName);
-				imageDescription.setLanguage(language);
+				imageDescription.setLanguage(l);
 				imagesDescriptions.add(imageDescription);
 				
 			}

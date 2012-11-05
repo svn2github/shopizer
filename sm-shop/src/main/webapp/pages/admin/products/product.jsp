@@ -52,6 +52,7 @@
 	                        </div>
                   		</div>
 
+						<form:hidden path="product.id" />
                  
 
                   		<div class="control-group">
