@@ -7,12 +7,10 @@ import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 
-public interface ImageGet {
-	
-	
-	
+public interface ImageGet
+{
 
-	public List<OutputContentImage> getImages(MerchantStore store, ImageContentType imageContentType)
-			throws ServiceException;
+    public List<OutputContentImage> getImages( MerchantStore store, ImageContentType imageContentType )
+        throws ServiceException;
 
 }
