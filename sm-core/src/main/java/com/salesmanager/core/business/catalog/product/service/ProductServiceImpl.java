@@ -212,23 +212,28 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	@Override	
 	public void saveOrUpdate(Product product) throws ServiceException {
 		
-		Set<ProductDescription> productDescriptions = product.getDescriptions();
-		
+
 		
 		LOGGER.debug("Creating description");
-		product.setDescriptions(null);
+		
 
 		
 		if(product.getId()!=null && product.getId()>0) {
 			super.update(product);
 		} else {
+			
+			Set<ProductDescription> productDescriptions = product.getDescriptions();
+			product.setDescriptions(null);
+			
 			super.create(product);
+			
+			for(ProductDescription productDescription : productDescriptions) {
+				addProductDescription(product,productDescription);
+			}
 		}
 		
 		
-		for(ProductDescription productDescription : productDescriptions) {
-			addProductDescription(product,productDescription);
-		}
+
 		
 		LOGGER.debug("Creating availabilities");
 		
