@@ -194,14 +194,14 @@ public class IsolatedTestCase
         throws ServiceException
     {
 
-        MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        Language en = languageService.getByCode( "en" );
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        final Language en = languageService.getByCode( "en" );
 
-        ProductCriteria criteria = new ProductCriteria();
+        final ProductCriteria criteria = new ProductCriteria();
         criteria.setStartIndex( 0 );
         criteria.setMaxCount( 75 );
 
-        Set<Long> categoryIds = new HashSet<Long>();
+        final Set<Long> categoryIds = new HashSet<Long>();
         categoryIds.add( 1L );
         categoryIds.add( 2L );
         categoryIds.add( 3L );
@@ -212,7 +212,7 @@ public class IsolatedTestCase
 
         criteria.setCategoryIds( categoryIds );
 
-        ProductList l = productService.listByStore( store, en, criteria );
+        final ProductList l = productService.listByStore( store, en, criteria );
 
         System.out.println( "done" );
 
@@ -223,7 +223,7 @@ public class IsolatedTestCase
         throws ServiceException
     {
 
-        MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
         System.out.println( "done" );
 
     }
@@ -233,15 +233,15 @@ public class IsolatedTestCase
         throws ServiceException, IOException
     {
 
-        Language en = languageService.getByCode( "en" );
-        Language fr = languageService.getByCode( "fr" );
-        Country ca = countryService.getByCode( "CA" );
-        Currency currency = currencyService.getByCode( "CAD" );
-        MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        ProductType generalType = productTypeService.getProductType( ProductType.GENERAL_TYPE );
+        final Language en = languageService.getByCode( "en" );
+        final Language fr = languageService.getByCode( "fr" );
+        final Country ca = countryService.getByCode( "CA" );
+        final Currency currency = currencyService.getByCode( "CAD" );
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        final ProductType generalType = productTypeService.getProductType( ProductType.GENERAL_TYPE );
 
-        Category book = categoryService.getByCode( store, "book" );
-        Product product = productService.getById( 1L );
+        final Category book = categoryService.getByCode( store, "book" );
+        final Product product = productService.getById( 1L );
 
         /*
          * product.setMerchantSore(store); try { EmbeddedCacheManager manager = new
@@ -267,7 +267,7 @@ public class IsolatedTestCase
          * (Exception e) { e.printStackTrace(); }
          */
 
-        File file1 = new File( "/Users/csamson777/Documents/csti/cocoacart/ktm.png" );
+        final File file1 = new File( "/Users/csamson777/Documents/csti/cocoacart/ktm.png" );
         if ( !file1.exists() || !file1.canRead() )
         {
             throw new ServiceException( "Can't read" + file1.getAbsolutePath() );
@@ -276,26 +276,26 @@ public class IsolatedTestCase
         // FileInputStream is1 = new FileInputStream(file1);
         // FileInputStream is2 = new FileInputStream(file2);
 
-        byte[] is = IOUtils.toByteArray( new FileInputStream( file1 ) );
-        ByteArrayInputStream is1 = new ByteArrayInputStream( is );
+        final byte[] is = IOUtils.toByteArray( new FileInputStream( file1 ) );
+        final ByteArrayInputStream is1 = new ByteArrayInputStream( is );
 
-        ProductImage productImage1 = new ProductImage();
+        final ProductImage productImage1 = new ProductImage();
         productImage1.setDefaultImage( true );
         productImage1.setProductImage( file1.getName() );
 
-        ProductImageDescription desc1 = new ProductImageDescription();
+        final ProductImageDescription desc1 = new ProductImageDescription();
         desc1.setLanguage( en );
         desc1.setAltTag( "ALT IMAGE 1 en" );
         desc1.setName( "A beautifill Thing" );
         desc1.setProductImage( productImage1 );
 
-        ProductImageDescription desc2 = new ProductImageDescription();
+        final ProductImageDescription desc2 = new ProductImageDescription();
         desc2.setLanguage( fr );
         desc2.setAltTag( "ALT IMAGE 1 fr" );
         desc2.setName( "Superbe chose" );
         desc2.setProductImage( productImage1 );
 
-        List image1descriptions = new ArrayList();
+        final List image1descriptions = new ArrayList();
         image1descriptions.add( desc1 );
         image1descriptions.add( desc2 );
 
@@ -311,12 +311,12 @@ public class IsolatedTestCase
         throws Exception
     {
 
-        Language en = languageService.getByCode( "en" );
-        Language fr = languageService.getByCode( "fr" );
-        Country ca = countryService.getByCode( "CA" );
-        Currency currency = currencyService.getByCode( "CAD" );
-        MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        ProductType generalType = productTypeService.getProductType( ProductType.GENERAL_TYPE );
+        final Language en = languageService.getByCode( "en" );
+        final Language fr = languageService.getByCode( "fr" );
+        final Country ca = countryService.getByCode( "CA" );
+        final Currency currency = currencyService.getByCode( "CAD" );
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        final ProductType generalType = productTypeService.getProductType( ProductType.GENERAL_TYPE );
 
         // Category book = categoryService.getByCode(store, "book");
 
@@ -324,7 +324,7 @@ public class IsolatedTestCase
 
         // PRODUCT 1
 
-        Product product = new Product();
+        final Product product = new Product();
         product.setProductHeight( new BigDecimal( 4 ) );
         product.setProductLength( new BigDecimal( 3 ) );
         product.setProductWidth( new BigDecimal( 1 ) );
@@ -334,7 +334,7 @@ public class IsolatedTestCase
         product.setMerchantSore( store );
 
         // Product description
-        ProductDescription description = new ProductDescription();
+        final ProductDescription description = new ProductDescription();
         description.setName( "Test with image" );
         description.setLanguage( en );
         description.setProduct( product );
@@ -342,17 +342,17 @@ public class IsolatedTestCase
         product.getDescriptions().add( description );
         // product.getCategories().add(book);
 
-        Set<ProductAvailability> availabilities = new HashSet<ProductAvailability>();
+        final Set<ProductAvailability> availabilities = new HashSet<ProductAvailability>();
 
-        ProductPrice dprice = new ProductPrice();
+        final ProductPrice dprice = new ProductPrice();
         dprice.setDefaultPrice( true );
         dprice.setProductPriceAmount( new BigDecimal( 29.99 ) );
 
-        Set<ProductPrice> prices = new HashSet<ProductPrice>();
+        final Set<ProductPrice> prices = new HashSet<ProductPrice>();
         prices.add( dprice );
 
         // Availability
-        ProductAvailability availability = new ProductAvailability();
+        final ProductAvailability availability = new ProductAvailability();
         availability.setProductDateAvailable( date );
         availability.setProductQuantity( 100 );
         availability.setRegion( "*" );
@@ -363,7 +363,7 @@ public class IsolatedTestCase
 
         product.setAvailabilities( availabilities );
 
-        File file1 = new File( "/Users/csamson777/Documents/csti/cocoacart/ktm.png" );
+        final File file1 = new File( "/Users/csamson777/Documents/csti/cocoacart/ktm.png" );
         if ( !file1.exists() || !file1.canRead() )
         {
             throw new ServiceException( "Can't read" + file1.getAbsolutePath() );
@@ -371,24 +371,24 @@ public class IsolatedTestCase
 
         // FileInputStream is1 = new FileInputStream(file1);
 
-        byte[] is = IOUtils.toByteArray( new FileInputStream( file1 ) );
-        ByteArrayInputStream is1 = new ByteArrayInputStream( is );
+        final byte[] is = IOUtils.toByteArray( new FileInputStream( file1 ) );
+        final ByteArrayInputStream is1 = new ByteArrayInputStream( is );
 
-        ProductImage productImage = new ProductImage();
+        final ProductImage productImage = new ProductImage();
         productImage.setDefaultImage( true );
         productImage.setProductImage( file1.getName() );
 
-        ProductImageDescription desc1 = new ProductImageDescription();
+        final ProductImageDescription desc1 = new ProductImageDescription();
         desc1.setLanguage( en );
         desc1.setAltTag( "ALT IMAGE 1 en" );
         desc1.setName( "Product image" );
 
-        ProductImageDescription desc2 = new ProductImageDescription();
+        final ProductImageDescription desc2 = new ProductImageDescription();
         desc2.setLanguage( fr );
         desc2.setAltTag( "ALT IMAGE 1 fr" );
         desc2.setName( "Image du produit" );
 
-        List<ProductImageDescription> imagedescriptions = new ArrayList<ProductImageDescription>();
+        final List<ProductImageDescription> imagedescriptions = new ArrayList<ProductImageDescription>();
         imagedescriptions.add( desc1 );
         imagedescriptions.add( desc2 );
 
@@ -406,19 +406,33 @@ public class IsolatedTestCase
         throws ServiceException, FileNotFoundException, IOException
     {
 
-        MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        File file1 = new File( "/Umesh/contentimage/test_image1.jpg" );
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        final File file1 = new File( "/Umesh/contentimage/test_image1.jpg" );
         if ( !file1.exists() || !file1.canRead() )
         {
             throw new ServiceException( "Can't read" + file1.getAbsolutePath() );
         }
 
-        byte[] is = IOUtils.toByteArray( new FileInputStream( file1 ) );
-        ByteArrayInputStream inputStream = new ByteArrayInputStream( is );
-        CMSContentImage cmsContentImage = new CMSContentImage();
+        final byte[] is = IOUtils.toByteArray( new FileInputStream( file1 ) );
+        final ByteArrayInputStream inputStream = new ByteArrayInputStream( is );
+        final CMSContentImage cmsContentImage = new CMSContentImage();
         cmsContentImage.setImageName( "demoCmsImage" );
         cmsContentImage.setFile( inputStream );
         contentService.addContentImage( store, cmsContentImage );
+
+    }
+
+    @Test
+    public void getContentImage()
+        throws ServiceException, FileNotFoundException, IOException
+    {
+
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        final String imageName = "demoCmsImage";
+
+        final OutputContentImage outputContentImage = contentService.getContentImage( store, imageName );
+        System.out.println( outputContentImage.getImageContentType() );
+        System.out.println( outputContentImage.getImageName() );
 
     }
 
@@ -427,11 +441,11 @@ public class IsolatedTestCase
         throws ServiceException
     {
 
-        Product product = productService.getById( 1L );
+        final Product product = productService.getById( 1L );
 
-        List<OutputContentImage> images = productImageService.getProductImages( product );
+        final List<OutputContentImage> images = productImageService.getProductImages( product );
 
-        for ( OutputContentImage image : images )
+        for ( final OutputContentImage image : images )
         {
 
             System.out.println( image.getImageName() );
@@ -445,28 +459,28 @@ public class IsolatedTestCase
         throws ServiceException
     {
 
-        Language en = languageService.getByCode( "en" );
-        Language fr = languageService.getByCode( "fr" );
-        Country ca = countryService.getByCode( "CA" );
-        Currency currency = currencyService.getByCode( "CAD" );
-        MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        ProductType generalType = productTypeService.getProductType( ProductType.GENERAL_TYPE );
+        final Language en = languageService.getByCode( "en" );
+        final Language fr = languageService.getByCode( "fr" );
+        final Country ca = countryService.getByCode( "CA" );
+        final Currency currency = currencyService.getByCode( "CAD" );
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        final ProductType generalType = productTypeService.getProductType( ProductType.GENERAL_TYPE );
 
-        Category book = new Category();
+        final Category book = new Category();
         book.setMerchantSore( store );
         book.setCode( "book" );
 
-        CategoryDescription bookEnglishDescription = new CategoryDescription();
+        final CategoryDescription bookEnglishDescription = new CategoryDescription();
         bookEnglishDescription.setName( "Book" );
         bookEnglishDescription.setCategory( book );
         bookEnglishDescription.setLanguage( en );
 
-        CategoryDescription bookFrenchDescription = new CategoryDescription();
+        final CategoryDescription bookFrenchDescription = new CategoryDescription();
         bookFrenchDescription.setName( "Livre" );
         bookFrenchDescription.setCategory( book );
         bookFrenchDescription.setLanguage( fr );
 
-        List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
+        final List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
         descriptions.add( bookEnglishDescription );
         descriptions.add( bookFrenchDescription );
 
@@ -474,21 +488,21 @@ public class IsolatedTestCase
 
         categoryService.create( book );
 
-        Category music = new Category();
+        final Category music = new Category();
         music.setMerchantSore( store );
         music.setCode( "music" );
 
-        CategoryDescription musicEnglishDescription = new CategoryDescription();
+        final CategoryDescription musicEnglishDescription = new CategoryDescription();
         musicEnglishDescription.setName( "Music" );
         musicEnglishDescription.setCategory( music );
         musicEnglishDescription.setLanguage( en );
 
-        CategoryDescription musicFrenchDescription = new CategoryDescription();
+        final CategoryDescription musicFrenchDescription = new CategoryDescription();
         musicFrenchDescription.setName( "Musique" );
         musicFrenchDescription.setCategory( music );
         musicFrenchDescription.setLanguage( fr );
 
-        List<CategoryDescription> descriptions2 = new ArrayList<CategoryDescription>();
+        final List<CategoryDescription> descriptions2 = new ArrayList<CategoryDescription>();
         descriptions2.add( musicEnglishDescription );
         descriptions2.add( musicFrenchDescription );
 
@@ -496,21 +510,21 @@ public class IsolatedTestCase
 
         categoryService.create( music );
 
-        Category novell = new Category();
+        final Category novell = new Category();
         novell.setMerchantSore( store );
         novell.setCode( "novell" );
 
-        CategoryDescription novellEnglishDescription = new CategoryDescription();
+        final CategoryDescription novellEnglishDescription = new CategoryDescription();
         novellEnglishDescription.setName( "Novell" );
         novellEnglishDescription.setCategory( novell );
         novellEnglishDescription.setLanguage( en );
 
-        CategoryDescription novellFrenchDescription = new CategoryDescription();
+        final CategoryDescription novellFrenchDescription = new CategoryDescription();
         novellFrenchDescription.setName( "Roman" );
         novellFrenchDescription.setCategory( novell );
         novellFrenchDescription.setLanguage( fr );
 
-        List<CategoryDescription> descriptions3 = new ArrayList<CategoryDescription>();
+        final List<CategoryDescription> descriptions3 = new ArrayList<CategoryDescription>();
         descriptions3.add( novellEnglishDescription );
         descriptions3.add( novellFrenchDescription );
 
@@ -521,21 +535,21 @@ public class IsolatedTestCase
         categoryService.create( novell );
         categoryService.addChild( book, novell );
 
-        Category tech = new Category();
+        final Category tech = new Category();
         tech.setMerchantSore( store );
         tech.setCode( "tech" );
 
-        CategoryDescription techEnglishDescription = new CategoryDescription();
+        final CategoryDescription techEnglishDescription = new CategoryDescription();
         techEnglishDescription.setName( "Technology" );
         techEnglishDescription.setCategory( tech );
         techEnglishDescription.setLanguage( en );
 
-        CategoryDescription techFrenchDescription = new CategoryDescription();
+        final CategoryDescription techFrenchDescription = new CategoryDescription();
         techFrenchDescription.setName( "Technologie" );
         techFrenchDescription.setCategory( tech );
         techFrenchDescription.setLanguage( fr );
 
-        List<CategoryDescription> descriptions4 = new ArrayList<CategoryDescription>();
+        final List<CategoryDescription> descriptions4 = new ArrayList<CategoryDescription>();
         descriptions4.add( techFrenchDescription );
         descriptions4.add( techFrenchDescription );
 
@@ -546,21 +560,21 @@ public class IsolatedTestCase
         categoryService.create( tech );
         categoryService.addChild( book, tech );
 
-        Category fiction = new Category();
+        final Category fiction = new Category();
         fiction.setMerchantSore( store );
         fiction.setCode( "fiction" );
 
-        CategoryDescription fictionEnglishDescription = new CategoryDescription();
+        final CategoryDescription fictionEnglishDescription = new CategoryDescription();
         fictionEnglishDescription.setName( "Fiction" );
         fictionEnglishDescription.setCategory( fiction );
         fictionEnglishDescription.setLanguage( en );
 
-        CategoryDescription fictionFrenchDescription = new CategoryDescription();
+        final CategoryDescription fictionFrenchDescription = new CategoryDescription();
         fictionFrenchDescription.setName( "Sc Fiction" );
         fictionFrenchDescription.setCategory( fiction );
         fictionFrenchDescription.setLanguage( fr );
 
-        List<CategoryDescription> fictiondescriptions = new ArrayList<CategoryDescription>();
+        final List<CategoryDescription> fictiondescriptions = new ArrayList<CategoryDescription>();
         fictiondescriptions.add( fictionEnglishDescription );
         fictiondescriptions.add( fictionFrenchDescription );
 
@@ -574,10 +588,10 @@ public class IsolatedTestCase
         // Add products
         // ProductType generalType = productTypeService.
 
-        Manufacturer oreilley = new Manufacturer();
+        final Manufacturer oreilley = new Manufacturer();
         oreilley.setMerchantSore( store );
 
-        ManufacturerDescription oreilleyd = new ManufacturerDescription();
+        final ManufacturerDescription oreilleyd = new ManufacturerDescription();
         oreilleyd.setLanguage( en );
         oreilleyd.setName( "O\'reilley" );
         oreilleyd.setManufacturer( oreilley );
@@ -585,10 +599,10 @@ public class IsolatedTestCase
 
         manufacturerService.create( oreilley );
 
-        Manufacturer packed = new Manufacturer();
+        final Manufacturer packed = new Manufacturer();
         packed.setMerchantSore( store );
 
-        ManufacturerDescription packedd = new ManufacturerDescription();
+        final ManufacturerDescription packedd = new ManufacturerDescription();
         packedd.setLanguage( en );
         packedd.setManufacturer( packed );
         packedd.setName( "Packed publishing" );
@@ -596,10 +610,10 @@ public class IsolatedTestCase
 
         manufacturerService.create( packed );
 
-        Manufacturer novells = new Manufacturer();
+        final Manufacturer novells = new Manufacturer();
         novells.setMerchantSore( store );
 
-        ManufacturerDescription novellsd = new ManufacturerDescription();
+        final ManufacturerDescription novellsd = new ManufacturerDescription();
         novellsd.setLanguage( en );
         novellsd.setManufacturer( novells );
         novellsd.setName( "Novells publishing" );
@@ -609,7 +623,7 @@ public class IsolatedTestCase
 
         // PRODUCT 1
 
-        Product product = new Product();
+        final Product product = new Product();
         product.setProductHeight( new BigDecimal( 4 ) );
         product.setProductLength( new BigDecimal( 3 ) );
         product.setProductWidth( new BigDecimal( 1 ) );
@@ -631,7 +645,7 @@ public class IsolatedTestCase
         productService.create( product );
 
         // Availability
-        ProductAvailability availability = new ProductAvailability();
+        final ProductAvailability availability = new ProductAvailability();
         availability.setProductDateAvailable( date );
         availability.setProductQuantity( 100 );
         availability.setRegion( "*" );
@@ -639,7 +653,7 @@ public class IsolatedTestCase
 
         productAvailabilityService.create( availability );
 
-        ProductPrice dprice = new ProductPrice();
+        final ProductPrice dprice = new ProductPrice();
         dprice.setDefaultPrice( true );
         dprice.setProductPriceAmount( new BigDecimal( 29.99 ) );
         dprice.setProductPriceAvailability( availability );
@@ -655,7 +669,7 @@ public class IsolatedTestCase
 
         // PRODUCT 2
 
-        Product product2 = new Product();
+        final Product product2 = new Product();
         product2.setProductHeight( new BigDecimal( 4 ) );
         product2.setProductLength( new BigDecimal( 3 ) );
         product2.setProductWidth( new BigDecimal( 1 ) );
@@ -676,7 +690,7 @@ public class IsolatedTestCase
         productService.create( product2 );
 
         // Availability
-        ProductAvailability availability2 = new ProductAvailability();
+        final ProductAvailability availability2 = new ProductAvailability();
         availability2.setProductDateAvailable( date );
         availability2.setProductQuantity( 100 );
         availability2.setRegion( "*" );
@@ -684,7 +698,7 @@ public class IsolatedTestCase
 
         productAvailabilityService.create( availability2 );
 
-        ProductPrice dprice2 = new ProductPrice();
+        final ProductPrice dprice2 = new ProductPrice();
         dprice2.setDefaultPrice( true );
         dprice2.setProductPriceAmount( new BigDecimal( 39.99 ) );
         dprice2.setProductPriceAvailability( availability2 );
@@ -700,7 +714,7 @@ public class IsolatedTestCase
 
         // PRODUCT 3
 
-        Product product3 = new Product();
+        final Product product3 = new Product();
         product3.setProductHeight( new BigDecimal( 4 ) );
         product3.setProductLength( new BigDecimal( 3 ) );
         product3.setProductWidth( new BigDecimal( 1 ) );
@@ -721,7 +735,7 @@ public class IsolatedTestCase
         productService.create( product3 );
 
         // Availability
-        ProductAvailability availability3 = new ProductAvailability();
+        final ProductAvailability availability3 = new ProductAvailability();
         availability3.setProductDateAvailable( date );
         availability3.setProductQuantity( 100 );
         availability3.setRegion( "*" );
@@ -729,7 +743,7 @@ public class IsolatedTestCase
 
         productAvailabilityService.create( availability3 );
 
-        ProductPrice dprice3 = new ProductPrice();
+        final ProductPrice dprice3 = new ProductPrice();
         dprice3.setDefaultPrice( true );
         dprice3.setProductPriceAmount( new BigDecimal( 19.99 ) );
         dprice3.setProductPriceAvailability( availability3 );
@@ -745,7 +759,7 @@ public class IsolatedTestCase
 
         // PRODUCT 4
 
-        Product product4 = new Product();
+        final Product product4 = new Product();
         product4.setProductHeight( new BigDecimal( 4 ) );
         product4.setProductLength( new BigDecimal( 3 ) );
         product4.setProductWidth( new BigDecimal( 1 ) );
@@ -766,7 +780,7 @@ public class IsolatedTestCase
         productService.create( product4 );
 
         // Availability
-        ProductAvailability availability4 = new ProductAvailability();
+        final ProductAvailability availability4 = new ProductAvailability();
         availability4.setProductDateAvailable( date );
         availability4.setProductQuantity( 100 );
         availability4.setRegion( "*" );
@@ -774,7 +788,7 @@ public class IsolatedTestCase
 
         productAvailabilityService.create( availability4 );
 
-        ProductPrice dprice4 = new ProductPrice();
+        final ProductPrice dprice4 = new ProductPrice();
         dprice4.setDefaultPrice( true );
         dprice4.setProductPriceAmount( new BigDecimal( 18.99 ) );
         dprice4.setProductPriceAvailability( availability4 );
@@ -790,7 +804,7 @@ public class IsolatedTestCase
 
         // PRODUCT 5
 
-        Product product5 = new Product();
+        final Product product5 = new Product();
         product5.setProductHeight( new BigDecimal( 4 ) );
         product5.setProductLength( new BigDecimal( 3 ) );
         product5.setProductWidth( new BigDecimal( 1 ) );
@@ -811,7 +825,7 @@ public class IsolatedTestCase
         productService.create( product5 );
 
         // Availability
-        ProductAvailability availability5 = new ProductAvailability();
+        final ProductAvailability availability5 = new ProductAvailability();
         availability5.setProductDateAvailable( date );
         availability5.setProductQuantity( 100 );
         availability5.setRegion( "*" );
@@ -819,7 +833,7 @@ public class IsolatedTestCase
 
         productAvailabilityService.create( availability5 );
 
-        ProductPrice dprice5 = new ProductPrice();
+        final ProductPrice dprice5 = new ProductPrice();
         dprice5.setDefaultPrice( true );
         dprice5.setProductPriceAmount( new BigDecimal( 18.99 ) );
         dprice5.setProductPriceAvailability( availability5 );
@@ -835,7 +849,7 @@ public class IsolatedTestCase
 
         // PRODUCT 6
 
-        Product product6 = new Product();
+        final Product product6 = new Product();
         product6.setProductHeight( new BigDecimal( 4 ) );
         product6.setProductLength( new BigDecimal( 3 ) );
         product6.setProductWidth( new BigDecimal( 1 ) );
@@ -856,7 +870,7 @@ public class IsolatedTestCase
         productService.create( product6 );
 
         // Availability
-        ProductAvailability availability6 = new ProductAvailability();
+        final ProductAvailability availability6 = new ProductAvailability();
         availability6.setProductDateAvailable( date );
         availability6.setProductQuantity( 100 );
         availability6.setRegion( "*" );
@@ -864,7 +878,7 @@ public class IsolatedTestCase
 
         productAvailabilityService.create( availability6 );
 
-        ProductPrice dprice6 = new ProductPrice();
+        final ProductPrice dprice6 = new ProductPrice();
         dprice6.setDefaultPrice( true );
         dprice6.setProductPriceAmount( new BigDecimal( 18.99 ) );
         dprice6.setProductPriceAvailability( availability6 );
@@ -886,32 +900,32 @@ public class IsolatedTestCase
     {
 
         // need to create permission firts
-        Group admin = new Group( "ADMIN" );
+        final Group admin = new Group( "ADMIN" );
         groupService.create( admin );
 
-        Permission userperm = new Permission( "GRANT_USER" );
+        final Permission userperm = new Permission( "GRANT_USER" );
         userperm.getGroups().add( admin );
         permissionService.create( userperm );
-        Permission storeperm = new Permission( "GRANT_STORE" );
+        final Permission storeperm = new Permission( "GRANT_STORE" );
         storeperm.getGroups().add( admin );
         permissionService.create( storeperm );
-        Permission catalogperm = new Permission( "GRANT_CATALOG" );
+        final Permission catalogperm = new Permission( "GRANT_CATALOG" );
         catalogperm.getGroups().add( admin );
         permissionService.create( catalogperm );
-        Permission paymentperm = new Permission( "GRANT_PAYMENT" );
+        final Permission paymentperm = new Permission( "GRANT_PAYMENT" );
         paymentperm.getGroups().add( admin );
         permissionService.create( paymentperm );
-        Permission shippingperm = new Permission( "GRANT_SHIPPING" );
+        final Permission shippingperm = new Permission( "GRANT_SHIPPING" );
         shippingperm.getGroups().add( admin );
         permissionService.create( shippingperm );
-        Permission orderperm = new Permission( "GRANT_ORDER" );
+        final Permission orderperm = new Permission( "GRANT_ORDER" );
         orderperm.getGroups().add( admin );
         permissionService.create( orderperm );
-        Permission configperm = new Permission( "GRANT_CONFIG" );
+        final Permission configperm = new Permission( "GRANT_CONFIG" );
         configperm.getGroups().add( admin );
         permissionService.create( configperm );
 
-        User user = new User( "admin", "password", "test@test.com" );
+        final User user = new User( "admin", "password", "test@test.com" );
         user.setFirstName( "Test" );
         user.setLastName( "User" );
         user.getGroups().add( admin );
@@ -925,11 +939,11 @@ public class IsolatedTestCase
         throws ServiceException
     {
 
-        Language language = languageService.getByCode( "en" );
+        final Language language = languageService.getByCode( "en" );
 
-        Locale locale = new Locale( "en", "CA" );
+        final Locale locale = new Locale( "en", "CA" );
 
-        Product p = productService.getProductForLocale( 1L, language, locale );
+        final Product p = productService.getProductForLocale( 1L, language, locale );
 
         if ( p != null )
         {
@@ -944,19 +958,19 @@ public class IsolatedTestCase
     public void testGetProducts()
         throws ServiceException
     {
-        Language language = languageService.getByCode( "en" );
-        Locale locale = new Locale( "en", "CA" );
+        final Language language = languageService.getByCode( "en" );
+        final Locale locale = new Locale( "en", "CA" );
 
-        MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
 
-        Category category = categoryService.getByCode( store, "book" );
+        final Category category = categoryService.getByCode( store, "book" );
 
-        int nrOfIterations = 1;
+        final int nrOfIterations = 1;
 
         for ( int i = 1; i <= nrOfIterations; i++ )
         {
-            List<Product> products = productService.getProductsForLocale( category, language, locale );
-            for ( Product product : products )
+            final List<Product> products = productService.getProductsForLocale( category, language, locale );
+            for ( final Product product : products )
             {
                 log.info( MessageFormat.format( "product found:{0}:iteration{1}", product.getId(), i ) );
             }
@@ -967,13 +981,13 @@ public class IsolatedTestCase
     public void testGetProductsByCategories()
         throws ServiceException
     {
-        Language language = languageService.getByCode( "en" );
-        Locale locale = new Locale( "en", "CA" );
-        MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        final Language language = languageService.getByCode( "en" );
+        final Locale locale = new Locale( "en", "CA" );
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
 
         // Category category = categoryService.getByCode(store, "novell");
 
-        Category category = categoryService.getByCode( store, "book" );
+        final Category category = categoryService.getByCode( store, "book" );
 
         categoryService.delete( category );
 
@@ -995,29 +1009,29 @@ public class IsolatedTestCase
          * Creates a category hierarchy Music Books Novell Science-Fiction Technology Business
          */
 
-        Language en = languageService.getByCode( "en" );
-        Language fr = languageService.getByCode( "fr" );
-        Country ca = countryService.getByCode( "CA" );
-        Currency currency = currencyService.getByCode( "CAD" );
-        MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        final Language en = languageService.getByCode( "en" );
+        final Language fr = languageService.getByCode( "fr" );
+        final Country ca = countryService.getByCode( "CA" );
+        final Currency currency = currencyService.getByCode( "CAD" );
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
 
-        Category book = new Category();
+        final Category book = new Category();
         book.setDepth( 0 );
         book.setLineage( "/" );
         book.setMerchantSore( store );
         book.setCode( "book" );
 
-        CategoryDescription bookEnglishDescription = new CategoryDescription();
+        final CategoryDescription bookEnglishDescription = new CategoryDescription();
         bookEnglishDescription.setName( "Book" );
         bookEnglishDescription.setCategory( book );
         bookEnglishDescription.setLanguage( en );
 
-        CategoryDescription bookFrenchDescription = new CategoryDescription();
+        final CategoryDescription bookFrenchDescription = new CategoryDescription();
         bookFrenchDescription.setName( "Livre" );
         bookFrenchDescription.setCategory( book );
         bookFrenchDescription.setLanguage( fr );
 
-        List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
+        final List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
         descriptions.add( bookEnglishDescription );
         descriptions.add( bookFrenchDescription );
 
@@ -1025,23 +1039,23 @@ public class IsolatedTestCase
 
         categoryService.create( book );
 
-        Category music = new Category();
+        final Category music = new Category();
         music.setDepth( 0 );
         music.setLineage( "/" );
         music.setMerchantSore( store );
         music.setCode( "music" );
 
-        CategoryDescription musicEnglishDescription = new CategoryDescription();
+        final CategoryDescription musicEnglishDescription = new CategoryDescription();
         musicEnglishDescription.setName( "Music" );
         musicEnglishDescription.setCategory( music );
         musicEnglishDescription.setLanguage( en );
 
-        CategoryDescription musicFrenchDescription = new CategoryDescription();
+        final CategoryDescription musicFrenchDescription = new CategoryDescription();
         musicFrenchDescription.setName( "Musique" );
         musicFrenchDescription.setCategory( music );
         musicFrenchDescription.setLanguage( fr );
 
-        List<CategoryDescription> descriptions2 = new ArrayList<CategoryDescription>();
+        final List<CategoryDescription> descriptions2 = new ArrayList<CategoryDescription>();
         descriptions2.add( musicEnglishDescription );
         descriptions2.add( musicFrenchDescription );
 
@@ -1049,23 +1063,23 @@ public class IsolatedTestCase
 
         categoryService.create( music );
 
-        Category novell = new Category();
+        final Category novell = new Category();
         novell.setDepth( 1 );
         novell.setLineage( "/" + book.getId() + "/" );
         novell.setMerchantSore( store );
         novell.setCode( "novell" );
 
-        CategoryDescription novellEnglishDescription = new CategoryDescription();
+        final CategoryDescription novellEnglishDescription = new CategoryDescription();
         novellEnglishDescription.setName( "Novell" );
         novellEnglishDescription.setCategory( novell );
         novellEnglishDescription.setLanguage( en );
 
-        CategoryDescription novellFrenchDescription = new CategoryDescription();
+        final CategoryDescription novellFrenchDescription = new CategoryDescription();
         novellFrenchDescription.setName( "Roman" );
         novellFrenchDescription.setCategory( novell );
         novellFrenchDescription.setLanguage( fr );
 
-        List<CategoryDescription> descriptions3 = new ArrayList<CategoryDescription>();
+        final List<CategoryDescription> descriptions3 = new ArrayList<CategoryDescription>();
         descriptions3.add( novellEnglishDescription );
         descriptions3.add( novellFrenchDescription );
 
@@ -1074,23 +1088,23 @@ public class IsolatedTestCase
         categoryService.create( novell );
         categoryService.addChild( book, novell );
 
-        Category tech = new Category();
+        final Category tech = new Category();
         tech.setDepth( 1 );
         tech.setLineage( "/" + book.getId() + "/" );
         tech.setMerchantSore( store );
         tech.setCode( "tech" );
 
-        CategoryDescription techEnglishDescription = new CategoryDescription();
+        final CategoryDescription techEnglishDescription = new CategoryDescription();
         techEnglishDescription.setName( "Technology" );
         techEnglishDescription.setCategory( tech );
         techEnglishDescription.setLanguage( en );
 
-        CategoryDescription techFrenchDescription = new CategoryDescription();
+        final CategoryDescription techFrenchDescription = new CategoryDescription();
         techFrenchDescription.setName( "Technologie" );
         techFrenchDescription.setCategory( tech );
         techFrenchDescription.setLanguage( fr );
 
-        List<CategoryDescription> descriptions4 = new ArrayList<CategoryDescription>();
+        final List<CategoryDescription> descriptions4 = new ArrayList<CategoryDescription>();
         descriptions4.add( techFrenchDescription );
         descriptions4.add( techFrenchDescription );
 
@@ -1106,9 +1120,9 @@ public class IsolatedTestCase
         throws ServiceException
     {
 
-        List<IntegrationModule> shippingModules = moduleConfigurationService.getIntegrationModules( "SHIPPING" );
+        final List<IntegrationModule> shippingModules = moduleConfigurationService.getIntegrationModules( "SHIPPING" );
 
-        for ( IntegrationModule module : shippingModules )
+        for ( final IntegrationModule module : shippingModules )
         {
 
             System.out.println( module.getCode() );
@@ -1122,34 +1136,34 @@ public class IsolatedTestCase
         throws ServiceException
     {
 
-        Language english = new Language();
+        final Language english = new Language();
         english.setCode( "en" );
         languageService.create( english );
 
-        Language french = new Language();
+        final Language french = new Language();
         french.setCode( "fr" );
         languageService.create( french );
 
-        Currency euro = new Currency();
+        final Currency euro = new Currency();
         euro.setCurrency( java.util.Currency.getInstance( "EUR" ) );
         currencyService.create( euro );
 
-        Currency cad = new Currency();
+        final Currency cad = new Currency();
         cad.setCurrency( java.util.Currency.getInstance( "CAD" ) );
         currencyService.create( cad );
 
-        Country fr = new Country( "FR" );
+        final Country fr = new Country( "FR" );
         countryService.create( fr );
 
-        Country ca = new Country( "CA" );
+        final Country ca = new Country( "CA" );
         countryService.create( ca );
 
-        Language DEFAULT_LANGUAGE = languageService.getByCode( "en" );
-        Language FRENCH = languageService.getByCode( "fr" );
-        Currency currency = currencyService.getByCode( "CAD" );
+        final Language DEFAULT_LANGUAGE = languageService.getByCode( "en" );
+        final Language FRENCH = languageService.getByCode( "fr" );
+        final Currency currency = currencyService.getByCode( "CAD" );
 
         // create a merchant
-        MerchantStore store = new MerchantStore();
+        final MerchantStore store = new MerchantStore();
         store.setCountry( ca );
         store.setCurrency( currency );
         store.setDefaultLanguage( DEFAULT_LANGUAGE );
@@ -1158,7 +1172,7 @@ public class IsolatedTestCase
         store.setStoreEmailAddress( "test@test.com" );
         merchantService.create( store );
 
-        Manufacturer manufacturer = new Manufacturer();
+        final Manufacturer manufacturer = new Manufacturer();
         // store.getManufacturers().add(manufacturer);
 
         // merchantService.update(store);
@@ -1166,17 +1180,17 @@ public class IsolatedTestCase
         // Manufacturer manufacturer = new Manufacturer();
         manufacturer.setMerchantSore( store );
 
-        ManufacturerDescription fd = new ManufacturerDescription();
+        final ManufacturerDescription fd = new ManufacturerDescription();
         fd.setLanguage( FRENCH );
         fd.setName( "Sony french" );
         fd.setManufacturer( manufacturer );
 
-        ManufacturerDescription ed = new ManufacturerDescription();
+        final ManufacturerDescription ed = new ManufacturerDescription();
         ed.setLanguage( DEFAULT_LANGUAGE );
         ed.setName( "Sony english" );
         ed.setManufacturer( manufacturer );
 
-        Set descriptions = new HashSet();
+        final Set descriptions = new HashSet();
         descriptions.add( fd );
         descriptions.add( ed );
 
@@ -1194,7 +1208,7 @@ public class IsolatedTestCase
         throws ServiceException
     {
 
-        Manufacturer manufacturer = manufacturerService.getById( 1L );
+        final Manufacturer manufacturer = manufacturerService.getById( 1L );
         manufacturerService.delete( manufacturer );
 
     }
@@ -1204,34 +1218,34 @@ public class IsolatedTestCase
         throws ServiceException
     {
 
-        Language en = testSupportFactory.createLanguage( "en" );
+        final Language en = testSupportFactory.createLanguage( "en" );
         languageService.save( en );
 
-        Language fr = testSupportFactory.createLanguage( "fr" );
+        final Language fr = testSupportFactory.createLanguage( "fr" );
         languageService.save( fr );
 
-        Language[] languages = { en, fr };
+        final Language[] languages = { en, fr };
 
-        ProductType generalType = testSupportFactory.createProductType();
+        final ProductType generalType = testSupportFactory.createProductType();
         productTypeService.save( generalType );
 
-        Country country = testSupportFactory.createCountry( en );
+        final Country country = testSupportFactory.createCountry( en );
         countryService.save( country );
 
-        Currency currency = testSupportFactory.createCurrency();
+        final Currency currency = testSupportFactory.createCurrency();
         currencyService.save( currency );
 
-        MerchantStore store =
+        final MerchantStore store =
             testSupportFactory.createMerchantStore( MerchantStore.DEFAULT_STORE, country, currency, en );
         merchantService.save( store );
 
-        Manufacturer manufacturer = testSupportFactory.createRandomManufacturer( store, en );
+        final Manufacturer manufacturer = testSupportFactory.createRandomManufacturer( store, en );
         manufacturerService.save( manufacturer );
 
-        Category category = testSupportFactory.createCategory( null, store, languages );
+        final Category category = testSupportFactory.createCategory( null, store, languages );
         categoryService.save( category );
 
-        int nrOfProducts = 300;
+        final int nrOfProducts = 300;
 
         for ( int i = 1; i <= nrOfProducts; i++ )
         {
