@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
 import com.salesmanager.core.business.content.model.image.ContentImage;
 import com.salesmanager.core.business.content.model.image.ImageContentType;
@@ -82,8 +81,6 @@ public class ContentFileManagerImpl
     public OutputContentImage getImage( MerchantStore store, String imageName, ImageContentType imageContentType )
         throws ServiceException
     {
-        Assert.notNull( store, "Merchant store can not be null." );
-        Assert.notNull( imageName, "Image name can not be null." );
         return getImage.getImage( store, imageName, imageContentType );
     }
 

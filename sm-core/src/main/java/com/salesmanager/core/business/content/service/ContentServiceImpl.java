@@ -16,6 +16,7 @@ import com.salesmanager.core.business.content.dao.ContentDao;
 import com.salesmanager.core.business.content.model.content.Content;
 import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.InputContentImage;
+import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -128,5 +129,24 @@ public class ContentServiceImpl
         LOG.info( "Adding content image for merchant...." );
         contentFileManager.addImage( store, contentImage );
 
+    }
+
+    /**
+     * Implementation for getContentImage method defined in {@link ContentService} interface. Methods will return
+     * Content image with given image name for the Merchant store or will return null if no image with given name found
+     * for requested Merchant Store in Infinispan tree cache.
+     * 
+     * @param store Merchant store
+     * @param imageName name of requested image
+     * @return {@link OutputContentImage}
+     * @throws ServiceException
+     */
+    @Override
+    public OutputContentImage getContentImage( MerchantStore store, String imageName )
+        throws ServiceException
+    {
+        Assert.notNull( store, "Merchant store can not be null" );
+        Assert.notNull( imageName, "CMSContent image can not be null" );
+        return contentFileManager.getImage( store, imageName, ImageContentType.CONTENT );
     }
 }

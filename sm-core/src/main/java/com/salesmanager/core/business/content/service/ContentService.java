@@ -3,6 +3,7 @@ package com.salesmanager.core.business.content.service;
 import java.util.List;
 
 import com.salesmanager.core.business.content.model.content.Content;
+import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -37,6 +38,19 @@ public interface ContentService
      * @throws ServiceException
      */
     void addContentImage( MerchantStore store, CMSContentImage contentImage )
+        throws ServiceException;
+
+    /**
+     * Method responsible for fetching particular content image for a given merchant store. Requested image will be
+     * search in Infinispan tree cache and OutputContentImage will be sent, in case no image is found null will
+     * returned.
+     * 
+     * @param store
+     * @param imageName
+     * @return {@link OutputContentImage}
+     * @throws ServiceException
+     */
+    public OutputContentImage getContentImage( final MerchantStore store, final String imageName )
         throws ServiceException;
 
 }
