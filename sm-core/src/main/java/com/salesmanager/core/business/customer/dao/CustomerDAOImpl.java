@@ -51,5 +51,20 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		return (List<Customer>) query.list(qCustomer);
 		
 	}
+	
+	public List<Customer> getByName(String name){
+		QCustomer qCustomer = QCustomer.customer;
+		QCountry qCountry = QCountry.country;
+		QZone qZone = QZone.zone;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCustomer)
+			.leftJoin(qCustomer.country,qCountry).fetch()
+			.leftJoin(qCustomer.zone,qZone).fetch()
+			.where(qCustomer.firstname.eq(name));
+		
+		return query.list(qCustomer);
+	}
 
 }

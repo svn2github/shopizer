@@ -1,5 +1,7 @@
 package com.salesmanager.core.business.customer.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +23,8 @@ public class CustomerServiceImpl extends SalesManagerEntityServiceImpl<Long, Cus
 	}
 
 	@Override
-	public Customer getByName(String firstName) {
-		return getByField(Customer_.firstname, firstName);
+	public List<Customer> getByName(String firstName) {
+		return customerDAO.getByName(firstName);
 	}
 	
 	@Override
