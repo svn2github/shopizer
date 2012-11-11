@@ -1,5 +1,6 @@
 package com.salesmanager.web.admin.controller.customers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
@@ -147,48 +150,51 @@ public class CustomerController {
 	
 	
 	@RequestMapping(value="/admin/customers/page.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String pageCustomers(HttpServletRequest request, HttpServletResponse response) {
+	public @ResponseBody
+	String pageCustomers(HttpServletRequest request,HttpServletResponse response) {
 
-		String searchTerm = request.getParameter("searchTerm");// will be the name of the customer
-		
-		
+		String searchTerm = request.getParameter("name");// will be the name of the customer
+
+		List<Customer> customers = new ArrayList<Customer>();
 		String totalRows = "0";
 		String endRow = "0";
 
-		
-		if(searchTerm!=null) {
-			totalRows="2";
+		StringBuilder res = new StringBuilder().append("{ response:{     status:0,     startRow:0,     endRow:0,     totalRows:0 ,     data: [           ");		
+
+		if (!StringUtils.isBlank(searchTerm)) {
+
+			customers = customerService.getByName(searchTerm);
+			
+		} else {
+			customers = customerService.list();
 		}
-		
-		StringBuilder res = new StringBuilder().append("{ response:{     status:0,     startRow:0,     endRow:0,     totalRows:0 ,     data: [           ");
-		
-		
-		
-		List<Customer> customers = customerService.list();		
-		
-		if(customers !=null && customers.size() > 0){
+
+		if (customers != null && customers.size() > 0) {
 			totalRows = new Integer(customers.size()).toString();
-			endRow = new Integer(customers.size() -1).toString();
+			endRow = new Integer(customers.size() - 1).toString();
 			res = new StringBuilder().append("{ response:{     status:0,     startRow:0,     endRow:");
 			res.append(endRow);
 			res.append(" , totalRows:");
 			res.append(totalRows);
 			res.append(",     data: [           ");
 			int i = 0;
-			//@TODO
-			//fix the lazy loading issue when retrieving the country for the customer 
-			for(Customer customer:customers) {
-				res.append("{id:" + ++i + ",name:\'" + customer.getFirstname() + " " +customer.getLastname() + "\',country:\' " + customer.getCountry().getIsoCode() + " \' ,active:\'true\'}");
-				if(i < Integer.parseInt(totalRows)) {
+			
+			for (Customer customer : customers) {
+				
+				res.append("{id:" + ++i + ",name:\'" + customer.getFirstname()
+						+ " " + customer.getLastname() + "\',country:\' "
+						+ customer.getCountry().getIsoCode()
+						+ " \' ,active:\'true\'}");
+				
+				if (i < Integer.parseInt(totalRows)) {
 					res.append(",");
-					}
+				}
 			}
-			
-			
+
 		}
 
 		res.append("]   } }");
-				
+
 		return res.toString();
 	}
 	
