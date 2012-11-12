@@ -3,32 +3,25 @@ package com.salesmanager.test.catalog;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.junit.Assert;
+import junit.framework.Assert;
+
 import org.junit.Test;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionDescription;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValueDescription;
+import com.salesmanager.core.business.catalog.product.model.ProductList;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
-import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
+import com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDescription;
 import com.salesmanager.core.business.catalog.product.model.type.ProductType;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.reference.country.model.Country;
-import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;
 
@@ -37,515 +30,448 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 	private static final Date date = new Date(System.currentTimeMillis());
 
 	@Test
-	public void createProduct() throws ServiceException {
-		Language DEFAULT_LANGUAGE = languageService.getByCode("en");
-		Language FRENCH = languageService.getByCode("fr");
-		Country ca = super.countryService.getByCode("CA");
-		Currency currency = currencyService.getByCode("CAD");
+	public void testCatalog() throws ServiceException {
 
-		//create a merchant
-		MerchantStore store = new MerchantStore();
-		store.setCountry(ca);
-		store.setCurrency(currency);
-		store.setDefaultLanguage(DEFAULT_LANGUAGE);
-		store.setInBusinessSince(date);
-		store.setStorename("store name");
-		store.setCode("STORE");
-		store.setStoreEmailAddress("test@test.com");
-		merchantService.create(store);
-		
-		//create a Manufacturer
-		Manufacturer manufacturer = new Manufacturer();
-		manufacturer.setMerchantSore(store);
-		
-		manufacturerService.create(manufacturer);
-		
-		//create a product type
-		ProductType productType = new ProductType();
-		productType.setCode("GENERAL");
-		
-		productTypeService.create(productType);
-		
-		Product product = new Product();
-		product.getAuditSection().setDateCreated(date);
-		product.setProductHeight(new BigDecimal(2));
-		product.setSku("TEST");
-		product.setManufacturer(manufacturer);
-		product.setType(productType);
-		product.setMerchantSore(store);
-		
-		
-		//Product description
-		ProductDescription description = new ProductDescription();
-		description.setName("english description");
-		Language language = languageService.getByCode(ENGLISH_LANGUAGE_CODE);
-		description.setLanguage(language);
-		description.setProduct(product);
-		
-		ProductDescription descriptionfr = new ProductDescription();
-		descriptionfr.setName("french description");
-		descriptionfr.setLanguage(FRENCH);
-		descriptionfr.setProduct(product);
-		
-		Set<ProductDescription> descriptions = new HashSet<ProductDescription>();
-		descriptions.add(description);
-		descriptions.add(descriptionfr);
-		
-		product.setDescriptions(descriptions);
-		
-		productService.create(product);
-		
-		//Availability
-		ProductAvailability availability = new ProductAvailability();
-		availability.setProductDateAvailable(date);
-		availability.setProductQuantity(100);
-		availability.setRegion("*");
-		availability.setProduct(product);
-		
-		productAvailabilityService.create(availability);
-		
-		ProductAvailability availabilityCa = new ProductAvailability();
-		availabilityCa.setProductDateAvailable(date);
-		availabilityCa.setProductQuantity(100);
-		availabilityCa.setRegion("CA");
-		availabilityCa.setProduct(product);
-		
-		productAvailabilityService.create(availabilityCa);
-				
-		
-		//Prices
-		/**
-		 * Contains a Base Price for regions (availability) *
-		 * and a base price for availability canada
-		 * for canada there is also an activation price
-		 */
-		ProductPrice dprice = new ProductPrice();
-		dprice.setDefaultPrice(true);
-		dprice.setProductPriceAmount(new BigDecimal(100));
-		dprice.setProductPriceAvailability(availability);
+	    Language en = languageService.getByCode("en");
+	    Language fr = languageService.getByCode("fr");
 
-		ProductPriceDescription dpd = new ProductPriceDescription();
-		dpd.setName("Base price");
-		dpd.setProductPrice(dprice);
-		dpd.setLanguage(DEFAULT_LANGUAGE);
-		
-		ProductPriceDescription dpdfr = new ProductPriceDescription();
-		dpdfr.setName("Prix de base");
-		dpdfr.setProductPrice(dprice);
-		dpdfr.setLanguage(FRENCH);
-		
-		Set<ProductPriceDescription> dpriceSet = new HashSet<ProductPriceDescription>();
-		dpriceSet.add(dpd);
-		dpriceSet.add(dpdfr);
-		
-		//TODO dprice.setDescriptions(dpriceSet);
-		
-		//Create price
-		productPriceService.create(dprice);
-		
-		//another price for canada
-		ProductPrice dpriceca = new ProductPrice();
-		dpriceca.setDefaultPrice(true);
-		dpriceca.setProductPriceAmount(new BigDecimal(105));
-		dpriceca.setProductPriceAvailability(availabilityCa);
+	    MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
+	    ProductType generalType = productTypeService.getProductType(ProductType.GENERAL_TYPE);
 
-		ProductPriceDescription dpdcaen = new ProductPriceDescription();
-		dpdcaen.setName("Base price");
-		dpdcaen.setProductPrice(dpriceca);
-		dpdcaen.setLanguage(DEFAULT_LANGUAGE);
-		
-		ProductPriceDescription dpdcafr = new ProductPriceDescription();
-		dpdcafr.setName("Prix de base");
-		dpdcafr.setProductPrice(dpriceca);
-		dpdcafr.setLanguage(FRENCH);
-		
-		Set<ProductPriceDescription> dpricecaSet = new HashSet<ProductPriceDescription>();
-		dpricecaSet.add(dpdcaen);
-		dpricecaSet.add(dpdcafr);
-		
-		//TODO dpriceca.setDescriptions(dpricecaSet);
-		
-		productPriceService.create(dpriceca);
-		
-		ProductPrice dpriceca2 = new ProductPrice();
-		dpriceca2.setDefaultPrice(false);
-		dpriceca2.setProductPriceAmount(new BigDecimal(10));
-		dpriceca2.setProductPriceAvailability(availabilityCa);
+	    Category book = new Category();
+	    book.setMerchantSore(store);
+	    book.setCode("book");
 
-		ProductPriceDescription dpdcaen2 = new ProductPriceDescription();
-		dpdcaen2.setName("Activation price");
-		dpdcaen2.setProductPrice(dpriceca2);
-		dpdcaen2.setLanguage(DEFAULT_LANGUAGE);
-		
-		ProductPriceDescription dpdcafr2 = new ProductPriceDescription();
-		dpdcafr2.setName("Prix d'activation");
-		dpdcafr2.setProductPrice(dpriceca2);
-		dpdcafr2.setLanguage(FRENCH);
-		
-		Set<ProductPriceDescription> dpriceca2Set = new HashSet<ProductPriceDescription>();
-		dpriceca2Set.add(dpdcaen2);
-		dpriceca2Set.add(dpdcafr2);
-		
-		//TODO dpriceca2.setDescriptions(dpriceca2Set);
-		
-		productPriceService.create(dpriceca2);
+	    CategoryDescription bookEnglishDescription = new CategoryDescription();
+	    bookEnglishDescription.setName("Book");
+	    bookEnglishDescription.setCategory(book);
+	    bookEnglishDescription.setLanguage(en);
 
-		
+	    CategoryDescription bookFrenchDescription = new CategoryDescription();
+	    bookFrenchDescription.setName("Livre");
+	    bookFrenchDescription.setCategory(book);
+	    bookFrenchDescription.setLanguage(fr);
 
-		//2 Images
-		ProductImage imagex = new ProductImage();
-		imagex.setDefaultImage(true);
-		imagex.setImageType(1);
-		imagex.setProductImage("/usr/temp/files/images/testx.gif");
-		imagex.setProduct(product);
-		
-		productImageService.create(imagex);
-		
-		ProductImage imagesmallx = new ProductImage();
-		imagesmallx.setImageType(2);
-		imagesmallx.setProductImage("/usr/temp/files/images/test-cartx.gif");
-		imagesmallx.setProduct(product);
-		
-		productImageService.create(imagesmallx);
-		
+	    List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
+	    descriptions.add(bookEnglishDescription);
+	    descriptions.add(bookFrenchDescription);
 
-		/******* ********/
-		//Product Options 
-		
-		//Color option
-		ProductOption option = new ProductOption();
-		option.setProductOptionSortOrder(0);
-		option.setProductOptionType("OPT");
-		
-		ProductOptionDescription po1 = new ProductOptionDescription();
-		po1.setName("Color");
-		po1.setLanguage(DEFAULT_LANGUAGE);
-		po1.setProductOption(option);
-		
-		ProductOptionDescription po2 = new ProductOptionDescription();
-		po2.setName("Couleur");
-		po2.setLanguage(FRENCH);
-		po2.setProductOption(option);
-		
-		Set<ProductOptionDescription> optSet = new HashSet<ProductOptionDescription>();
-		optSet.add(po1);
-		optSet.add(po2);
-		
-		option.setDescriptions(optSet);
-		
-		option.setMerchantSore(store);
-		//create option
-		productOptionService.create(option);
-		
-		
-		//Size option
-		ProductOption option2 = new ProductOption();
-		option2.setProductOptionSortOrder(1);
-		option2.setProductOptionType("OPT");
-		
-		ProductOptionDescription po3 = new ProductOptionDescription();
-		po3.setName("Size");
-		po3.setLanguage(DEFAULT_LANGUAGE);
-		po3.setProductOption(option2);
-		
-		ProductOptionDescription po4 = new ProductOptionDescription();
-		po4.setName("Grandeur");
-		po4.setLanguage(FRENCH);
-		po4.setProductOption(option2);
-		
-		Set<ProductOptionDescription> optSet2 = new HashSet<ProductOptionDescription>();
-		optSet2.add(po3);
-		optSet2.add(po4);
-		
-		option2.setDescriptions(optSet2);
-		
-		option2.setMerchantSore(store);
-		//create option
-		productOptionService.create(option2);
-		
+	    book.setDescriptions(descriptions);
 
-		//options values
-		//values for color
-		//black
-		ProductOptionValue optionValue1 = new ProductOptionValue();
-		optionValue1.setProductOptionValueSortOrder(0);
-		
-		ProductOptionValueDescription optionValueDescription1 = new 
-				ProductOptionValueDescription();
-		optionValueDescription1.setLanguage(DEFAULT_LANGUAGE);
-		optionValueDescription1.setName("Black");
-		optionValueDescription1.setProductOptionValue(optionValue1);
-		
-		ProductOptionValueDescription optionValueDescription2 = new 
-				ProductOptionValueDescription();
-		optionValueDescription2.setLanguage(FRENCH);
-		optionValueDescription2.setName("Noir");
-		optionValueDescription2.setProductOptionValue(optionValue1);
-		
-		Set<ProductOptionValueDescription> optionsValueSet1 = new HashSet<ProductOptionValueDescription>();
-		optionsValueSet1.add(optionValueDescription1);
-		optionsValueSet1.add(optionValueDescription2);
-		
-		//optionValue1.setDescriptions(optionsValueSet1);
-		
-		optionValue1.setMerchantSore(store);
+	    categoryService.create(book);
 
-		//create option value black
-		productOptionValueService.create(optionValue1);
-		
-		//white
-		ProductOptionValue optionValue2 = new ProductOptionValue();
-		optionValue2.setProductOptionValueSortOrder(1);
-		
-		ProductOptionValueDescription optionValueDescription3 = new 
-				ProductOptionValueDescription();
-		optionValueDescription3.setLanguage(DEFAULT_LANGUAGE);
-		optionValueDescription3.setName("White");
-		optionValueDescription3.setProductOptionValue(optionValue2);
-		
-		ProductOptionValueDescription optionValueDescription4 = new 
-				ProductOptionValueDescription();
-		optionValueDescription4.setLanguage(FRENCH);
-		optionValueDescription4.setName("Blanc");
-		optionValueDescription4.setProductOptionValue(optionValue2);
-		
-		Set<ProductOptionValueDescription> optionsValueSet2 = new HashSet<ProductOptionValueDescription>();
-		optionsValueSet2.add(optionValueDescription3);
-		optionsValueSet2.add(optionValueDescription4);
-		
-		
-		//optionValue2.setDescriptions(optionsValueSet2);
-		
-		optionValue2.setMerchantSore(store);
-		
-		//create option value white
-		productOptionValueService.create(optionValue2);
-		
-		ProductOptionValue optionValue3 = new ProductOptionValue();
-		optionValue3.setProductOptionValueSortOrder(0);
-		
-		ProductOptionValueDescription optionValueDescription5 = new 
-				ProductOptionValueDescription();
-		optionValueDescription5.setLanguage(DEFAULT_LANGUAGE);
-		optionValueDescription5.setName("Large");
-		optionValueDescription5.setProductOptionValue(optionValue3);
-		
-		ProductOptionValueDescription optionValueDescription6 = new 
-				ProductOptionValueDescription();
-		optionValueDescription6.setLanguage(FRENCH);
-		optionValueDescription6.setName("Grand");
-		optionValueDescription6.setProductOptionValue(optionValue3);
-		
-		Set<ProductOptionValueDescription> optionsValueSet3 = new HashSet<ProductOptionValueDescription>();
-		optionsValueSet3.add(optionValueDescription5);
-		optionsValueSet3.add(optionValueDescription6);
-		
-		
-		//optionValue3.setDescriptions(optionsValueSet3);
-		
-		
-		
-		optionValue3.setMerchantSore(store);
-		
-		//create option value large
-		productOptionValueService.create(optionValue3);
-		
-		
-		Set<ProductAttribute> attributes = new HashSet<ProductAttribute>();
-		
-		ProductAttribute black = new ProductAttribute();
-		black.setProduct(product);
-		black.setProductOption(option);//color
-		black.setProductOptionValue(optionValue1);//black
-		
-		productAttributeService.create(black);
-		
-		attributes.add(black);
-		
-		ProductAttribute white = new ProductAttribute();
-		white.setProduct(product);
-		white.setProductOption(option);//color
-		white.setProductOptionValue(optionValue2);//white
-		
-		productAttributeService.create(white);
-		
-		attributes.add(white);
-		
-		ProductAttribute large = new ProductAttribute();
-		large.setProduct(product);
-		large.setProductOption(option2);//size
-		large.setProductOptionValue(optionValue3);//large
-		
-		productAttributeService.create(large);
-		
-		attributes.add(large);
-		
-		Assert.assertTrue(productService.count() == 1);
-		
-		System.out.println(product.getSku());
-		System.out.println(product.getAttributes().size());
-		System.out.println(product.getAvailabilities().size());
-		System.out.println(product.getImages().size());
+	    Category music = new Category();
+	    music.setMerchantSore(store);
+	    music.setCode("music");
+
+	    CategoryDescription musicEnglishDescription = new CategoryDescription();
+	    musicEnglishDescription.setName("Music");
+	    musicEnglishDescription.setCategory(music);
+	    musicEnglishDescription.setLanguage(en);
+
+	    CategoryDescription musicFrenchDescription = new CategoryDescription();
+	    musicFrenchDescription.setName("Musique");
+	    musicFrenchDescription.setCategory(music);
+	    musicFrenchDescription.setLanguage(fr);
+
+	    List<CategoryDescription> descriptions2 = new ArrayList<CategoryDescription>();
+	    descriptions2.add(musicEnglishDescription);
+	    descriptions2.add(musicFrenchDescription);
+
+	    music.setDescriptions(descriptions2);
+
+	    categoryService.create(music);
+
+	    Category novell = new Category();
+	    novell.setMerchantSore(store);
+	    novell.setCode("novell");
+
+	    CategoryDescription novellEnglishDescription = new CategoryDescription();
+	    novellEnglishDescription.setName("Novell");
+	    novellEnglishDescription.setCategory(novell);
+	    novellEnglishDescription.setLanguage(en);
+
+	    CategoryDescription novellFrenchDescription = new CategoryDescription();
+	    novellFrenchDescription.setName("Roman");
+	    novellFrenchDescription.setCategory(novell);
+	    novellFrenchDescription.setLanguage(fr);
+
+	    List<CategoryDescription> descriptions3 = new ArrayList<CategoryDescription>();
+	    descriptions3.add(novellEnglishDescription);
+	    descriptions3.add(novellFrenchDescription);
+
+	    novell.setDescriptions(descriptions3);
+	    
+	    novell.setParent(book);
+
+	    categoryService.create(novell);
+	    categoryService.addChild(book, novell);
+
+	    Category tech = new Category();
+	    tech.setMerchantSore(store);
+	    tech.setCode("tech");
+
+	    CategoryDescription techEnglishDescription = new CategoryDescription();
+	    techEnglishDescription.setName("Technology");
+	    techEnglishDescription.setCategory(tech);
+	    techEnglishDescription.setLanguage(en);
+
+	    CategoryDescription techFrenchDescription = new CategoryDescription();
+	    techFrenchDescription.setName("Technologie");
+	    techFrenchDescription.setCategory(tech);
+	    techFrenchDescription.setLanguage(fr);
+
+	    List<CategoryDescription> descriptions4 = new ArrayList<CategoryDescription>();
+	    descriptions4.add(techFrenchDescription);
+	    descriptions4.add(techFrenchDescription);
+
+	    tech.setDescriptions(descriptions4);
+	    
+	    tech.setParent(book);
+
+	    categoryService.create(tech);
+	    categoryService.addChild(book, tech);
+
+	    Category fiction = new Category();
+	    fiction.setMerchantSore(store);
+	    fiction.setCode("fiction");
+
+	    CategoryDescription fictionEnglishDescription = new CategoryDescription();
+	    fictionEnglishDescription.setName("Fiction");
+	    fictionEnglishDescription.setCategory(fiction);
+	    fictionEnglishDescription.setLanguage(en);
+
+	    CategoryDescription fictionFrenchDescription = new CategoryDescription();
+	    fictionFrenchDescription.setName("Sc Fiction");
+	    fictionFrenchDescription.setCategory(fiction);
+	    fictionFrenchDescription.setLanguage(fr);
+
+	    List<CategoryDescription> fictiondescriptions = new ArrayList<CategoryDescription>();
+	    fictiondescriptions.add(fictionEnglishDescription);
+	    fictiondescriptions.add(fictionFrenchDescription);
+
+	    fiction.setDescriptions(fictiondescriptions);
+	    
+	    fiction.setParent(novell);
+
+	    categoryService.create(fiction);
+	    categoryService.addChild(book, fiction);
+
+	    // Add products
+	    // ProductType generalType = productTypeService.
+
+	    Manufacturer oreilley = new Manufacturer();
+	    oreilley.setMerchantSore(store);
+
+	    ManufacturerDescription oreilleyd = new ManufacturerDescription();
+	    oreilleyd.setLanguage(en);
+	    oreilleyd.setName("O\'reilley");
+	    oreilleyd.setManufacturer(oreilley);
+	    oreilley.getDescriptions().add(oreilleyd);
+
+	    manufacturerService.create(oreilley);
+
+	    Manufacturer packed = new Manufacturer();
+	    packed.setMerchantSore(store);
+
+	    ManufacturerDescription packedd = new ManufacturerDescription();
+	    packedd.setLanguage(en);
+	    packedd.setManufacturer(packed);
+	    packedd.setName("Packed publishing");
+	    packed.getDescriptions().add(packedd);
+
+	    manufacturerService.create(packed);
+
+	    Manufacturer novells = new Manufacturer();
+	    novells.setMerchantSore(store);
+
+	    ManufacturerDescription novellsd = new ManufacturerDescription();
+	    novellsd.setLanguage(en);
+	    novellsd.setManufacturer(novells);
+	    novellsd.setName("Novells publishing");
+	    novells.getDescriptions().add(novellsd);
+
+	    manufacturerService.create(novells);
+
+	    // PRODUCT 1
+
+	    Product product = new Product();
+	    product.setProductHeight(new BigDecimal(4));
+	    product.setProductLength(new BigDecimal(3));
+	    product.setProductWidth(new BigDecimal(1));
+	    product.setSku("TB12345");
+	    product.setManufacturer(oreilley);
+	    product.setType(generalType);
+	    product.setMerchantSore(store);
+
+	    // Product description
+	    ProductDescription description = new ProductDescription();
+	    description.setName("Spring in Action");
+	    description.setLanguage(en);
+	    description.setProduct(product);
+
+	    product.getDescriptions().add(description);
+
+	    product.getCategories().add(tech);
+
+	    productService.create(product);
+
+	    // Availability
+	    ProductAvailability availability = new ProductAvailability();
+	    availability.setProductDateAvailable(date);
+	    availability.setProductQuantity(100);
+	    availability.setRegion("*");
+	    availability.setProduct(product);// associate with product
+
+	    productAvailabilityService.create(availability);
+
+	    ProductPrice dprice = new ProductPrice();
+	    dprice.setDefaultPrice(true);
+	    dprice.setProductPriceAmount(new BigDecimal(29.99));
+	    dprice.setProductPriceAvailability(availability);
+
+	    ProductPriceDescription dpd = new ProductPriceDescription();
+	    dpd.setName("Base price");
+	    dpd.setProductPrice(dprice);
+	    dpd.setLanguage(en);
+
+	    dprice.getDescriptions().add(dpd);
+
+	    productPriceService.create(dprice);
+
+	    // PRODUCT 2
+
+	    Product product2 = new Product();
+	    product2.setProductHeight(new BigDecimal(4));
+	    product2.setProductLength(new BigDecimal(3));
+	    product2.setProductWidth(new BigDecimal(1));
+	    product2.setSku("TB2468");
+	    product2.setManufacturer(packed);
+	    product2.setType(generalType);
+	    product2.setMerchantSore(store);
+
+	    // Product description
+	    description = new ProductDescription();
+	    description.setName("This is Node.js");
+	    description.setLanguage(en);
+	    description.setProduct(product2);
+
+	    product2.getDescriptions().add(description);
+
+	    product2.getCategories().add(tech);
+	    productService.create(product2);
+
+	    // Availability
+	    ProductAvailability availability2 = new ProductAvailability();
+	    availability2.setProductDateAvailable(date);
+	    availability2.setProductQuantity(100);
+	    availability2.setRegion("*");
+	    availability2.setProduct(product2);// associate with product
+
+	    productAvailabilityService.create(availability2);
+
+	    ProductPrice dprice2 = new ProductPrice();
+	    dprice2.setDefaultPrice(true);
+	    dprice2.setProductPriceAmount(new BigDecimal(39.99));
+	    dprice2.setProductPriceAvailability(availability2);
+
+	    dpd = new ProductPriceDescription();
+	    dpd.setName("Base price");
+	    dpd.setProductPrice(dprice2);
+	    dpd.setLanguage(en);
+
+	    dprice2.getDescriptions().add(dpd);
+
+	    productPriceService.create(dprice2);
+
+	    // PRODUCT 3
+
+	    Product product3 = new Product();
+	    product3.setProductHeight(new BigDecimal(4));
+	    product3.setProductLength(new BigDecimal(3));
+	    product3.setProductWidth(new BigDecimal(1));
+	    product3.setSku("NB1111");
+	    product3.setManufacturer(packed);
+	    product3.setType(generalType);
+	    product3.setMerchantSore(store);
+
+	    // Product description
+	    description = new ProductDescription();
+	    description.setName("A nice book for you");
+	    description.setLanguage(en);
+	    description.setProduct(product3);
+
+	    product3.getDescriptions().add(description);
+
+	    product3.getCategories().add(novell);
+	    productService.create(product3);
+
+	    // Availability
+	    ProductAvailability availability3 = new ProductAvailability();
+	    availability3.setProductDateAvailable(date);
+	    availability3.setProductQuantity(100);
+	    availability3.setRegion("*");
+	    availability3.setProduct(product3);// associate with product
+
+	    productAvailabilityService.create(availability3);
+
+	    ProductPrice dprice3 = new ProductPrice();
+	    dprice3.setDefaultPrice(true);
+	    dprice3.setProductPriceAmount(new BigDecimal(19.99));
+	    dprice3.setProductPriceAvailability(availability3);
+
+	    dpd = new ProductPriceDescription();
+	    dpd.setName("Base price");
+	    dpd.setProductPrice(dprice3);
+	    dpd.setLanguage(en);
+
+	    dprice3.getDescriptions().add(dpd);
+
+	    productPriceService.create(dprice3);
+
+	    // PRODUCT 4
+
+	    Product product4 = new Product();
+	    product4.setProductHeight(new BigDecimal(4));
+	    product4.setProductLength(new BigDecimal(3));
+	    product4.setProductWidth(new BigDecimal(1));
+	    product4.setSku("SF333345");
+	    product4.setManufacturer(packed);
+	    product4.setType(generalType);
+	    product4.setMerchantSore(store);
+
+	    // Product description
+	    description = new ProductDescription();
+	    description.setName("Battle of the worlds");
+	    description.setLanguage(en);
+	    description.setProduct(product4);
+
+	    product4.getDescriptions().add(description);
+
+	    product4.getCategories().add(fiction);
+	    productService.create(product4);
+
+	    // Availability
+	    ProductAvailability availability4 = new ProductAvailability();
+	    availability4.setProductDateAvailable(date);
+	    availability4.setProductQuantity(100);
+	    availability4.setRegion("*");
+	    availability4.setProduct(product4);// associate with product
+
+	    productAvailabilityService.create(availability4);
+
+	    ProductPrice dprice4 = new ProductPrice();
+	    dprice4.setDefaultPrice(true);
+	    dprice4.setProductPriceAmount(new BigDecimal(18.99));
+	    dprice4.setProductPriceAvailability(availability4);
+
+	    dpd = new ProductPriceDescription();
+	    dpd.setName("Base price");
+	    dpd.setProductPrice(dprice4);
+	    dpd.setLanguage(en);
+
+	    dprice4.getDescriptions().add(dpd);
+
+	    productPriceService.create(dprice4);
+
+	    // PRODUCT 5
+
+	    Product product5 = new Product();
+	    product5.setProductHeight(new BigDecimal(4));
+	    product5.setProductLength(new BigDecimal(3));
+	    product5.setProductWidth(new BigDecimal(1));
+	    product5.setSku("SF333346");
+	    product5.setManufacturer(packed);
+	    product5.setType(generalType);
+	    product5.setMerchantSore(store);
+
+	    // Product description
+	    description = new ProductDescription();
+	    description.setName("Battle of the worlds 2");
+	    description.setLanguage(en);
+	    description.setProduct(product5);
+
+	    product5.getDescriptions().add(description);
+
+	    product5.getCategories().add(fiction);
+	    productService.create(product5);
+
+	    // Availability
+	    ProductAvailability availability5 = new ProductAvailability();
+	    availability5.setProductDateAvailable(date);
+	    availability5.setProductQuantity(100);
+	    availability5.setRegion("*");
+	    availability5.setProduct(product5);// associate with product
+
+	    productAvailabilityService.create(availability5);
+
+	    ProductPrice dprice5 = new ProductPrice();
+	    dprice5.setDefaultPrice(true);
+	    dprice5.setProductPriceAmount(new BigDecimal(18.99));
+	    dprice5.setProductPriceAvailability(availability5);
+
+	    dpd = new ProductPriceDescription();
+	    dpd.setName("Base price");
+	    dpd.setProductPrice(dprice5);
+	    dpd.setLanguage(en);
+
+	    dprice5.getDescriptions().add(dpd);
+
+	    productPriceService.create(dprice5);
+
+	    // PRODUCT 6
+
+	    Product product6 = new Product();
+	    product6.setProductHeight(new BigDecimal(4));
+	    product6.setProductLength(new BigDecimal(3));
+	    product6.setProductWidth(new BigDecimal(1));
+	    product6.setSku("LL333444");
+	    product6.setManufacturer(packed);
+	    product6.setType(generalType);
+	    product6.setMerchantSore(store);
+
+	    // Product description
+	    description = new ProductDescription();
+	    description.setName("Life book");
+	    description.setLanguage(en);
+	    description.setProduct(product6);
+
+	    product6.getDescriptions().add(description);
+
+	    product6.getCategories().add(novell);
+	    productService.create(product6);
+
+	    // Availability
+	    ProductAvailability availability6 = new ProductAvailability();
+	    availability6.setProductDateAvailable(date);
+	    availability6.setProductQuantity(100);
+	    availability6.setRegion("*");
+	    availability6.setProduct(product6);// associate with product
+
+	    productAvailabilityService.create(availability6);
+
+	    ProductPrice dprice6 = new ProductPrice();
+	    dprice6.setDefaultPrice(true);
+	    dprice6.setProductPriceAmount(new BigDecimal(18.99));
+	    dprice6.setProductPriceAvailability(availability6);
+
+	    dpd = new ProductPriceDescription();
+	    dpd.setName("Base price");
+	    dpd.setProductPrice(dprice6);
+	    dpd.setLanguage(en);
+
+	    dprice6.getDescriptions().add(dpd);
+
+	    productPriceService.create(dprice6);
+	    
+	    
+	    //Test get products
+	    ProductList productList = productService.listByStore(store, en, null);
+	    
+	    List<Product> products = productList.getProducts();
+	    Assert.assertNotNull(products);
+	    
 	}
 
-	
-	@Test
-	// TODO : redo : this is not the way we add description
-	public void testCreateCategory() throws ServiceException {
-		
-		/**
-		 * Creates a category hierarchy
-		 * Music
-		 * Books
-		 * 		Novell
-		 * 			Science-Fiction
-		 * 		Technology
-		 * 		Business
-		 */
-		
-		Language en = languageService.getByCode("en");
-		Language fr = languageService.getByCode("fr");
-		Country ca = super.countryService.getByCode("CA");
-		Currency currency = currencyService.getByCode("CAD");
-		
-		//create a merchant
-		MerchantStore store = new MerchantStore();
-		store.setCountry(ca);
-		store.setCurrency(currency);
-		store.setDefaultLanguage(en);
-		store.setInBusinessSince(date);
-		store.setStorename("store name");
-		store.setCode("STORE");
-		store.setStoreEmailAddress("test@test.com");
-		
-		merchantService.create(store);
-		
-		
-		Category book = new Category();
-		book.setDepth(0);
-		book.setLineage("/");
-		book.setMerchantSore(store);
-		book.setCode("book");
-		
-		CategoryDescription bookEnglishDescription = new CategoryDescription();
-		bookEnglishDescription.setName("Book");
-		bookEnglishDescription.setCategory(book);
-		bookEnglishDescription.setLanguage(en);
-		
-		CategoryDescription bookFrenchDescription = new CategoryDescription();
-		bookFrenchDescription.setName("Livre");
-		bookFrenchDescription.setCategory(book);
-		bookFrenchDescription.setLanguage(fr);
-		
-		List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
-		descriptions.add(bookEnglishDescription);
-		descriptions.add(bookFrenchDescription);
-		
-		book.setDescriptions(descriptions);
-		
-		categoryService.create(book);
-		
-		
-		Category music = new Category();
-		music.setDepth(0);
-		music.setLineage("/");
-		music.setMerchantSore(store);
-		music.setCode("music");
-		
-		CategoryDescription musicEnglishDescription = new CategoryDescription();
-		musicEnglishDescription.setName("Music");
-		musicEnglishDescription.setCategory(music);
-		musicEnglishDescription.setLanguage(en);
-		
-		CategoryDescription musicFrenchDescription = new CategoryDescription();
-		musicFrenchDescription.setName("Musique");
-		musicFrenchDescription.setCategory(music);
-		musicFrenchDescription.setLanguage(fr);
-		
-		List<CategoryDescription> descriptions2 = new ArrayList<CategoryDescription>();
-		descriptions2.add(musicEnglishDescription);
-		descriptions2.add(musicFrenchDescription);
-		
-		music.setDescriptions(descriptions2);
-		
-		categoryService.create(music);
-		
-		Category novell = new Category();
-		novell.setDepth(1);
-		novell.setLineage("/" + book.getId() + "/");
-		novell.setMerchantSore(store);
-		novell.setCode("novell");
-		
-		CategoryDescription novellEnglishDescription = new CategoryDescription();
-		novellEnglishDescription.setName("Novell");
-		novellEnglishDescription.setCategory(novell);
-		novellEnglishDescription.setLanguage(en);
-		
-		CategoryDescription novellFrenchDescription = new CategoryDescription();
-		novellFrenchDescription.setName("Roman");
-		novellFrenchDescription.setCategory(novell);
-		novellFrenchDescription.setLanguage(fr);
-		
-		List<CategoryDescription> descriptions3 = new ArrayList<CategoryDescription>();
-		descriptions3.add(novellEnglishDescription);
-		descriptions3.add(novellFrenchDescription);
-		
-		novell.setDescriptions(descriptions3);
-		
-		categoryService.create(novell);
-		categoryService.addChild(book, novell);
-		
-		Category tech = new Category();
-		tech.setDepth(1);
-		tech.setLineage("/" + book.getId() + "/");
-		tech.setMerchantSore(store);
-		tech.setCode("tech");
-		
-		CategoryDescription techEnglishDescription = new CategoryDescription();
-		techEnglishDescription.setName("Technology");
-		techEnglishDescription.setCategory(tech);
-		techEnglishDescription.setLanguage(en);
-		
-		CategoryDescription techFrenchDescription = new CategoryDescription();
-		techFrenchDescription.setName("Technologie");
-		techFrenchDescription.setCategory(tech);
-		techFrenchDescription.setLanguage(fr);
-		
-		List<CategoryDescription> descriptions4 = new ArrayList<CategoryDescription>();
-		descriptions4.add(techFrenchDescription);
-		descriptions4.add(techFrenchDescription);
-		
-		tech.setDescriptions(descriptions4);
-		
-		categoryService.create(tech);
-		categoryService.addChild(book, tech);
-		
-		
-		Category fiction = new Category();
-		fiction.setDepth(2);
-		fiction.setLineage("/" + book.getId() + "/" + novell.getId() + "/");
-		fiction.setMerchantSore(store);
-		fiction.setCode("fiction");
-		
-		CategoryDescription fictionEnglishDescription = new CategoryDescription();
-		fictionEnglishDescription.setName("Fiction");
-		fictionEnglishDescription.setCategory(fiction);
-		fictionEnglishDescription.setLanguage(en);
-		
-		CategoryDescription fictionFrenchDescription = new CategoryDescription();
-		fictionFrenchDescription.setName("Sc Fiction");
-		fictionFrenchDescription.setCategory(fiction);
-		fictionFrenchDescription.setLanguage(fr);
-		
-		List<CategoryDescription> fictiondescriptions = new ArrayList<CategoryDescription>();
-		fictiondescriptions.add(fictionEnglishDescription);
-		fictiondescriptions.add(fictionFrenchDescription);
-		
-		fiction.setDescriptions(fictiondescriptions);
-		
-		categoryService.create(fiction);
-		categoryService.addChild(book, fiction);
-		
-		Assert.assertTrue(categoryService.count() == 5);
-	}
+
 }
