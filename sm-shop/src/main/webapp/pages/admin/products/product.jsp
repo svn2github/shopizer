@@ -10,6 +10,53 @@
 	<script src="<c:url value="/resources/js/bootstrap/bootstrap-datepicker.js" />"></script>
 	<script src="<c:url value="/resources/js/ckeditor/ckeditor.js" />"></script>
 	
+	
+	
+		<script type="text/javascript">
+	
+
+	
+	$(function(){
+		//if($("#code").val()=="") {
+		//	$('.btn').addClass('disabled');
+		//}
+		<c:forEach items="${product.descriptions}" var="description" varStatus="counter">		
+			$("#name${counter.index}").friendurl({id : 'seUrl${counter.index}'});
+		</c:forEach>
+	});
+	
+	
+	function validateCode() {
+		$('#checkCodeStatus').html('<img src="<c:url value="/resources/img/ajax-loader.gif" />');
+		$('#checkCodeStatus').show();
+		var code = $("#code").val();
+		var id = $("#id").val();
+		checkCode(code,id,'<c:url value="/admin/categories/checkCategoryCode.html" />');
+	}
+	
+	function callBackCheckCode(msg,code) {
+		
+		if(code==0) {
+			$('.btn').removeClass('disabled');
+		}
+		if(code==9999) {
+
+			$('#checkCodeStatus').html('<font color="green"><s:message code="message.code.available" text="This code is available"/></font>');
+			$('#checkCodeStatus').show();
+			$('.btn').removeClass('disabled');
+		}
+		if(code==9998) {
+
+			$('#checkCodeStatus').html('<font color="red"><s:message code="message.code.exist" text="This code already exist"/></font>');
+			$('#checkCodeStatus').show();
+			$('.btn').addClass('disabled');
+		}
+		
+	}
+	
+	
+	</script>
+	
 				
 <div class="tabbable">
 
@@ -100,7 +147,7 @@
 
                               <label class="required"><s:message code="label.productedit.productname" text="Product name"/> (<c:out value="${description.language.code}"/>)</label>
                               <div class="controls">
-                                          <form:input cssClass="input-large highlight" path="descriptions[${counter.index}].name"/>
+                                          <form:input cssClass="input-large highlight" id="name${counter.index}" path="descriptions[${counter.index}].name"/>
                                           <span class="help-inline"><form:errors path="descriptions[${counter.index}].name" cssClass="error" /></span>
                               </div>
 
@@ -110,7 +157,7 @@
                         <div class="control-group">
                               <label class="required"><s:message code="label.sefurl" text="Search engine friendly url"/> (<c:out value="${description.language.code}"/>)</label>
                               <div class="controls">
-                                          <form:input cssClass="input-large" path="descriptions[${counter.index}].seUrl"/>
+                                          <form:input id="seUrl${counter.index}" cssClass="input-large" path="descriptions[${counter.index}].seUrl"/>
                                           <span class="help-inline"><form:errors path="descriptions[${counter.index}].seUrl" cssClass="error" /></span>
                               </div>
                        </div>
@@ -157,7 +204,9 @@
                       
 
                          <form:hidden path="descriptions[${counter.index}].language.id" />
+                         <form:hidden path="descriptions[${counter.index}].language.code" />
 						 <form:hidden path="descriptions[${counter.index}].id" />
+
                  
 
                   </c:forEach>
@@ -208,7 +257,8 @@
 
 
                  <form:hidden path="availability.region" />
-                 
+                 <form:hidden path="availability.id" />
+                 <form:hidden path="price.id" />
                  
                  <div class="control-group">
                         <label><s:message code="label.product.weight" text="Weight"/></label>

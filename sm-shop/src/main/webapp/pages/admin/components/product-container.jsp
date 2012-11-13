@@ -120,7 +120,7 @@
 											if (confirm('<s:message code="label.entity.remove.confirm" text="Do you really want to remove this record ?" />')) {
 												return this.Super("removeData", arguments);
 											}
-								   		}
+								   		},
 								   		//recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
 											//alert(dropRecords.length);
 											//alert(dropRecords.length);

@@ -216,14 +216,15 @@ response.setDateHeader ("Expires", -1);
 		}); 
 		
 		
-		function checkCode(code, url) {
+		function checkCode(code, id, url) {
 			
+
 			
 			$.ajax({
 					type: 'POST',
 					dataType: "json",
 					url: url,
-					data: "code="+ code,
+					data: "code="+ code + "&id=" + id,
 					success: function(response) { 
 						var msg = isc.XMLTools.selectObjects(response, "/response/statusMessage");
 						var status = isc.XMLTools.selectObjects(response, "/response/status");

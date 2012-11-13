@@ -30,6 +30,7 @@ import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImageDescription;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
+import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDescription;
 import com.salesmanager.core.business.catalog.product.model.type.ProductType;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
@@ -249,6 +250,8 @@ public class ProductController {
 		
 		ProductPrice newProductPrice = null;
 		
+		Set<ProductPriceDescription> productPriceDescriptions = null;
+		
 		//get tax class
 		//TaxClass taxClass = newProduct.getTaxClass();
 		//TaxClass dbTaxClass = taxClassService.getById(taxClass.getId());
@@ -257,13 +260,13 @@ public class ProductController {
 
 		
 		
-		if(product.getProduct().getId()!=null && product.getProduct().getId()>0) {
+		if(product.getProduct().getId()!=null && product.getProduct().getId().longValue()>0) {
 		
 		
 			//get actual product
 			newProduct = productService.getById(product.getProduct().getId());
-			if(newProduct!=null && newProduct.getMerchantStore().getId()!=store.getId()) {
-				return "redirect:/admin/products/product-categories.html";
+			if(newProduct!=null && newProduct.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+				return "redirect:/admin/products/products.html";
 			}
 			
 
@@ -276,37 +279,7 @@ public class ProductController {
 			newProduct.setProductLength(product.getProduct().getProductLength());
 			newProduct.setProductWeight(product.getProduct().getProductWeight());
 			newProduct.setProductWidth(product.getProduct().getProductWidth());
-			
-/*			Set<ProductDescription> descriptions = newProduct.getDescriptions();
-			Set<ProductDescription> productDescriptions = new HashSet<ProductDescription>();
-			Set<ProductDescription> submitedDescriptions = product.getProduct().getDescriptions();*/
-			
-/*			for(Language l : languages) {
-				
-				
-				for(ProductDescription desc : submitedDescriptions) {
-					
-					Language lang = desc.getLanguage();
-					if(lang.getCode().equals(l.getCode())) {
-						ProductDescription productDesc = null;
-						if(descriptions!=null && descriptions.size()>0) {
-							for(ProductDescription savedDesc : descriptions) {
-								
-								if(savedDesc.getLanguage().getCode().equals(desc.getLanguage().getCode())) {
-									productDesc = savedDesc;
-								}
-								
-							}
-							if(productDesc!=null) {
 
-							}
-						}
-					}
-				}
-			}*/
-			
-			
-			
 			Set<ProductAvailability> avails = newProduct.getAvailabilities();
 			if(avails !=null && avails.size()>0) {
 				
@@ -320,6 +293,7 @@ public class ProductController {
 						for(ProductPrice price : productPrices) {
 							if(price.isDefaultPrice()) {
 								newProductPrice = price;
+								productPriceDescriptions = price.getDescriptions();
 								newProductPrice.setProductPriceAmount(product.getPrice().getProductPriceAmount());
 							} else {
 								prices.add(price);
@@ -337,6 +311,16 @@ public class ProductController {
 		if(newProductPrice==null) {
 			newProductPrice = new ProductPrice();
 			newProductPrice.setProductPriceAmount(product.getPrice().getProductPriceAmount());
+		}
+		
+		if(productPriceDescriptions==null) {
+			productPriceDescriptions = new HashSet<ProductPriceDescription>();
+			for(ProductDescription description : product.getDescriptions()) {
+				ProductPriceDescription ppd = new ProductPriceDescription();
+				ppd.setProductPrice(newProductPrice);
+				ppd.setLanguage(description.getLanguage());
+				ppd.setName(ProductPriceDescription.DEFAULT_PRICE_DESCRIPTION);
+			}
 		}
 		
 		newProduct.setMerchantSore(store);
@@ -362,7 +346,7 @@ public class ProductController {
 		if(product.getDescriptions()!=null && product.getDescriptions().size()>0) {
 			
 			for(ProductDescription description : product.getDescriptions()) {
-				
+				description.setProduct(newProduct);
 				descriptions.add(description);
 				
 			}
@@ -371,7 +355,9 @@ public class ProductController {
 		newProduct.setDescriptions(descriptions);
 		
 		
-		if(product.getImage()!=null) {
+		if(product.getImage()!=null && !product.getImage().isEmpty()) {
+			
+			
 			
 			String imageName = product.getImage().getOriginalFilename();
 			
@@ -403,8 +389,8 @@ public class ProductController {
 			
 		}
 		
-		
-		
+
+		model.addAttribute("success","success");
 		
 		return "admin-products-edit";
 	}

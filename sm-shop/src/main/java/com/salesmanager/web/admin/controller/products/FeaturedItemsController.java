@@ -22,6 +22,7 @@ import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationship;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationshipType;
+import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.relationship.ProductRelationshipService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -37,6 +38,9 @@ public class FeaturedItemsController {
 	
 	@Autowired
 	CategoryService categoryService;
+	
+	@Autowired
+	ProductService productService;
 	
 	@Autowired
 	ProductRelationshipService productRelationshipService;
@@ -115,12 +119,31 @@ public class FeaturedItemsController {
 		try {
 			
 
+			Long lProductId = Long.parseLong(productId);
 			
 			Language language = (Language)request.getAttribute("LANGUAGE");
 			MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
 			
+			Product product = productService.getById(lProductId);
+			
+			if(product==null) {
+				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			if(product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
 
-			//TODO add item
+
+			ProductRelationship relationship = new ProductRelationship();
+			relationship.setActive(true);
+			relationship.setCode(ProductRelationshipType.FEATURED_ITEM.name());
+			relationship.setStore(store);
+			relationship.setProduct(product);
+			
+			productRelationshipService.create(relationship);
 			
 
 			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_SUCCESS);

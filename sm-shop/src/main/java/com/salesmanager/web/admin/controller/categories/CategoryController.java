@@ -89,7 +89,7 @@ public class CategoryController {
 		
 			
 			
-			if(category==null || category.getMerchantSore().getId()!=store.getId()) {
+			if(category==null || category.getMerchantSore().getId().intValue()!=store.getId().intValue()) {
 				return "catalogue-categories";
 			}
 		} else {
@@ -425,7 +425,7 @@ public class CategoryController {
 		Category category = categoryService.getByCode(store, code);
 		
 		
-		if(id!=null) {
+		if(!StringUtils.isBlank(id)) {
 			try {
 				Long lid = Long.parseLong(id);
 				
