@@ -20,6 +20,8 @@ import com.salesmanager.core.constants.SchemaConstant;
 public class ProductPriceDescription extends Description {
 	private static final long serialVersionUID = 270521409645392808L;
 	
+	public final static String DEFAULT_PRICE_DESCRIPTION = "DEFAULT";
+	
 	@ManyToOne(targetEntity = ProductPrice.class)
 	@JoinColumn(name = "PRODUCT_PRICE_ID", nullable = false)
 	private ProductPrice productPrice;
