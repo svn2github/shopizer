@@ -30,9 +30,9 @@ public class ProductRelationshipDaoImpl extends SalesManagerEntityDaoImpl<Long, 
 		
 		query.from(qEntity)
 			.join(qEntity.store).fetch()
-			.join(qEntity.product,qProduct).fetch()
-			.leftJoin(qEntity.relatedProduct,qRelatedProduct).fetch()
-			//.leftJoin(qProduct.descriptions).fetch()
+			.join(qEntity.relatedProduct,qRelatedProduct).fetch()
+			.leftJoin(qEntity.product,qProduct).fetch()
+			//.leftJoin(qProduct.descriptions,qProductDescription).fetch()
 			.leftJoin(qRelatedProduct.descriptions,qRelatedProductDescription).fetch()
 			.where(qEntity.store.id.eq(store.getId())
 					.and(qRelatedProductDescription.language.id.eq(language.getId()))
