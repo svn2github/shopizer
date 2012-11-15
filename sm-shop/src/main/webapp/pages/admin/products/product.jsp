@@ -68,7 +68,13 @@
     					<div class="tab-pane active" id="catalogue-section">
 
 
-								<div class="sm-ui-component">	
+								<div class="sm-ui-component">
+								
+								
+								<c:if test="${product.product.id!=null && product.product.id>0}">
+									<c:set value="${product.product.id}" var="productId" scope="request"/>
+									<jsp:include page="/pages/admin/products/product-menu.jsp" />
+								</c:if>	
 								
 								
 				<h3>

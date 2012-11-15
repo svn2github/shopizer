@@ -143,7 +143,7 @@ public class FeaturedItemsController {
 			relationship.setStore(store);
 			relationship.setProduct(product);
 			
-			productRelationshipService.create(relationship);
+			productRelationshipService.saveOrUpdate(relationship);
 			
 
 			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_SUCCESS);

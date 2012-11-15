@@ -30,9 +30,10 @@
 										if (status != 0 && status !=9999) {
 											var msg = isc.XMLTools.selectObjects(jsonData, "/response/statusMessage");
 												alert("! " + msg);
+												window.location='<c:url value="${reloadUrl}" />';
 										}
 										if(status == 9999) {
-											window.location='<c:url value="${afterRemoveUrl}" />';
+											window.location='<c:url value="${reloadUrl}" />';
 										}
 									}
 								});  

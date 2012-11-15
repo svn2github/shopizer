@@ -57,6 +57,14 @@
   		<put-attribute name="body" value="/pages/admin/products/product.jsp" /> 
   	</definition>
   	
+  	<definition name="admin-products-prices" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/products/prices.jsp" /> 
+  	</definition>
+  	
+  	<definition name="admin-products-price" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/products/price.jsp" /> 
+  	</definition>
+  	
   	<definition name="admin-products-related" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/products/related.jsp" /> 
   	</definition>

@@ -43,7 +43,7 @@
 				 <c:set value="/admin/catalogue/featured/addItem.html" var="containerAddUrl" scope="request"/>
 				 <c:set value="/admin/catalogue/featured/update.html" var="containerUpdateUrl" scope="request"/>
 				 <c:set value="/admin/products/editProduct.html" var="editUrl" scope="request"/>
-				 <c:set value="/admin/catalogue/featured/list.html" var="afterRemoveUrl" scope="request"/>
+				 <c:set value="/admin/catalogue/featured/list.html" var="reloadUrl" scope="request"/>
 				 <c:set var="componentTitleKey" value="menu.catalogue-featured" scope="request"/>
 				 <c:set var="gridHeader" value="/pages/admin/products/featured-gridHeader.jsp" scope="request"/>
 				 <c:set var="gridHeaderContainer" value="/pages/admin/products/featured-gridHeader-items.jsp" scope="request"/>

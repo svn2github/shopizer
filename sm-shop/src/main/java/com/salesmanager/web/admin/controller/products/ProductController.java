@@ -310,6 +310,7 @@ public class ProductController {
 		
 		if(newProductPrice==null) {
 			newProductPrice = new ProductPrice();
+			newProductPrice.setDefaultPrice(true);
 			newProductPrice.setProductPriceAmount(product.getPrice().getProductPriceAmount());
 		}
 		
@@ -320,6 +321,7 @@ public class ProductController {
 				ppd.setProductPrice(newProductPrice);
 				ppd.setLanguage(description.getLanguage());
 				ppd.setName(ProductPriceDescription.DEFAULT_PRICE_DESCRIPTION);
+				productPriceDescriptions.add(ppd);
 			}
 		}
 		
