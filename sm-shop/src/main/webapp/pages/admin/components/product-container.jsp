@@ -33,7 +33,7 @@
 												window.location='<c:url value="${reloadUrl}" />';
 										}
 										if(status == 9999) {
-											window.location='<c:url value="${reloadUrl}" />';
+											//window.location='<c:url value="${reloadUrl}" />';
 										}
 									}
 								});  
@@ -109,7 +109,7 @@
     									dataSource: "container",
     									canAcceptDroppedRecords: true,
     									canRemoveRecords: true,
-    									canReorderRecords: true,
+    									canReorderRecords: false,
     									alternateRecordStyles: true,    
     									autoFetchData: true,
     									preventDuplicates: true,

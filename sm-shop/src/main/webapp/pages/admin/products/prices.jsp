@@ -22,6 +22,11 @@
 								<h3><s:message code="label.product.prices" text="Product prices" /></h3>[TODO add product name]	
 								<br/>
 								
+									<c:if test="${product.product.id!=null && product.product.id>0}">
+										<c:set value="${product.product.id}" var="productId" scope="request"/>
+										<jsp:include page="/pages/admin/products/product-menu.jsp" />
+									</c:if>
+								
 								    <ul class="nav nav-pills">
     									<li class="enabled"><a href="NEED A URL"><s:message code="label.product.price.create" text="Create price" /></a></li>
     								</ul>

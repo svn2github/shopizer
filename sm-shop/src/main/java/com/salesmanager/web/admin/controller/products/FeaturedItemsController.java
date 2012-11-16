@@ -141,7 +141,7 @@ public class FeaturedItemsController {
 			relationship.setActive(true);
 			relationship.setCode(ProductRelationshipType.FEATURED_ITEM.name());
 			relationship.setStore(store);
-			relationship.setProduct(product);
+			relationship.setRelatedProduct(product);
 			
 			productRelationshipService.saveOrUpdate(relationship);
 			
