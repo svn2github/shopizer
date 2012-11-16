@@ -2,14 +2,11 @@ package com.salesmanager.core.business.catalog.product.dao.relationship;
 
 import java.util.List;
 
+import javax.persistence.Query;
+
 import org.springframework.stereotype.Repository;
 
-import com.mysema.query.jpa.JPQLQuery;
-import com.mysema.query.jpa.impl.JPAQuery;
-import com.salesmanager.core.business.catalog.product.model.QProduct;
-import com.salesmanager.core.business.catalog.product.model.description.QProductDescription;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationship;
-import com.salesmanager.core.business.catalog.product.model.relationship.QProductRelationship;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -20,26 +17,34 @@ public class ProductRelationshipDaoImpl extends SalesManagerEntityDaoImpl<Long, 
 	
 	@Override
 	public List<ProductRelationship> getByType(MerchantStore store, String type, Language language) {
-		QProductRelationship qEntity = QProductRelationship.productRelationship;
-		QProduct qProduct = QProduct.product;
-		QProduct qRelatedProduct = QProduct.product;
-		//QProductDescription qProductDescription = QProductDescription.productDescription;
-		QProductDescription qRelatedProductDescription = QProductDescription.productDescription;
+		//QDSL cannot interpret the following query, that is why it is in native format
 		
-		JPQLQuery query = new JPAQuery (getEntityManager());
-		
-		query.from(qEntity)
-			.join(qEntity.store).fetch()
-			.join(qEntity.relatedProduct,qRelatedProduct).fetch()
-			.leftJoin(qEntity.product,qProduct).fetch()
-			//.leftJoin(qProduct.descriptions,qProductDescription).fetch()
-			.leftJoin(qRelatedProduct.descriptions,qRelatedProductDescription).fetch()
-			.where(qEntity.store.id.eq(store.getId())
-					.and(qRelatedProductDescription.language.id.eq(language.getId()))
-					.and(qEntity.code.eq(type)));
+		StringBuilder qs = new StringBuilder();
+		qs.append("select pr from ProductRelationship as pr ");
+		qs.append("left join fetch pr.product p ");
+		qs.append("join fetch pr.relatedProduct rp ");
+		qs.append("left join fetch rp.descriptions rpd ");
 
+		qs.append("where pr.code=:code ");
+		qs.append("and rpd.language.id=:langId");
+
+
+
+    	String hql = qs.toString();
+		Query q = super.getEntityManager().createQuery(hql);
+
+    	q.setParameter("code", type);
+    	q.setParameter("langId", language.getId());
+
+
+    	
+    	@SuppressWarnings("unchecked")
+		List<ProductRelationship> relations =  q.getResultList();
+
+    	
+    	return relations;
 		
-		return query.list(qEntity);
+
 	}
 
 
