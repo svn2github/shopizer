@@ -5,9 +5,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.infinispan.tree.Fqn;
 import org.infinispan.tree.Node;
@@ -143,14 +146,69 @@ public class CmsContentFileManagerInfinispanImpl
     }
 
     /**
-     * Returns the physical files
+     * Method to return all images for a given merchant store.Content images are being stored Infinispan cache tree.
+     * Based on the Merchant store id,it will try to return all content images associated with Merchant store. In case
+     * no content image(s) are associated with the given Merchant store, an empty list will be returned.
+     * 
+     * @param store Merchant store for which associated images will be returned.
+     * @param imageContentType
+     * @return list of {@link OutputContentImage} or empty list
+     * @throws ServiceException
      */
     @Override
     public List<OutputContentImage> getImages( final MerchantStore store, final ImageContentType imageContentType )
         throws ServiceException
     {
-        // TODO Auto-generated method stub
-        return null;
+        if ( treeCache == null )
+        {
+            LOGGER.error( "Unable to find treeCache in Infinispan.." );
+            throw new ServiceException( "CmsImageFileManagerInfinispan has a null treeCache" );
+        }
+
+        OutputContentImage contentImage = null;
+        InputStream input = null;
+        List<OutputContentImage> contentImagesList = null;
+        try
+        {
+            final Node<String, Object> merchantNode = getMerchantNode( store.getId() );
+            if ( merchantNode == null )
+            {
+                LOGGER.warn( "merchant node is null" );
+                return Collections.<OutputContentImage> emptyList();
+            }
+            final CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( IMAGE_CONTENT );
+
+            if ( contentAttribute == null )
+            {
+                LOGGER.warn( "Unable to find content attribute for given merchant" );
+                return Collections.<OutputContentImage> emptyList();
+            }
+
+            if ( MapUtils.isEmpty( contentAttribute.getEntities() ) )
+            {
+                LOGGER.warn( "No Content image for merchant with {}", store.getId() );
+                return Collections.<OutputContentImage> emptyList();
+            }
+
+            contentImagesList = new ArrayList<OutputContentImage>();
+            for ( Map.Entry<String, byte[]> entry : contentAttribute.getEntities().entrySet() )
+            {
+                input = new ByteArrayInputStream( entry.getValue() );
+                final ByteArrayOutputStream output = new ByteArrayOutputStream();
+                IOUtils.copy( input, output );
+                contentImage = new OutputContentImage();
+                contentImage.setImage( output );
+                contentImage.setImageContentType( URLConnection.guessContentTypeFromStream( input ) );
+                contentImage.setImageName( entry.getKey() );
+                contentImagesList.add( contentImage );
+       }
+        }
+        catch ( final Exception e )
+        {
+            LOGGER.error( "Error while fetching content image for {} merchant ", store.getId() );
+            throw new ServiceException( e );
+        }
+        return contentImagesList != null ? contentImagesList : Collections.<OutputContentImage> emptyList();
     }
 
     @Override

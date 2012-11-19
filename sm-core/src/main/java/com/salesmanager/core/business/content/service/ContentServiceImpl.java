@@ -32,13 +32,13 @@ public class ContentServiceImpl
 
     private static final Logger LOG = LoggerFactory.getLogger( ContentServiceImpl.class );
 
-    private ContentDao contentDao;
+    private final ContentDao contentDao;
 
     @Autowired
     ContentFileManager contentFileManager;
 
     @Autowired
-    public ContentServiceImpl( ContentDao contentDao )
+    public ContentServiceImpl( final ContentDao contentDao )
     {
         super( contentDao );
 
@@ -46,7 +46,7 @@ public class ContentServiceImpl
     }
 
     @Override
-    public List<Content> listByType( String contentType, MerchantStore store, Language language )
+    public List<Content> listByType( final String contentType, final MerchantStore store, final Language language )
         throws ServiceException
     {
 
@@ -54,7 +54,7 @@ public class ContentServiceImpl
     }
 
     @Override
-    public List<Content> listByType( List<String> contentType, MerchantStore store, Language language )
+    public List<Content> listByType( final List<String> contentType, final MerchantStore store, final Language language )
         throws ServiceException
     {
 
@@ -62,7 +62,7 @@ public class ContentServiceImpl
     }
 
     @Override
-    public Content getByCode( String code, MerchantStore store )
+    public Content getByCode( final String code, final MerchantStore store )
         throws ServiceException
     {
 
@@ -71,7 +71,7 @@ public class ContentServiceImpl
     }
 
     @Override
-    public void saveOrUpdate( Content content )
+    public void saveOrUpdate( final Content content )
         throws ServiceException
     {
 
@@ -88,14 +88,14 @@ public class ContentServiceImpl
     }
 
     @Override
-    public Content getByCode( String code, MerchantStore store, Language language )
+    public Content getByCode( final String code, final MerchantStore store, final Language language )
         throws ServiceException
     {
         return contentDao.getByCode( code, store, language );
     }
 
     @Override
-    public void addContentImage( MerchantStore store, CMSContentImage cmsContentImage )
+    public void addContentImage( final MerchantStore store, final CMSContentImage cmsContentImage )
         throws ServiceException
     {
         Assert.notNull( store, "Merchant store can not be null" );
@@ -142,11 +142,29 @@ public class ContentServiceImpl
      * @throws ServiceException
      */
     @Override
-    public OutputContentImage getContentImage( MerchantStore store, String imageName )
+    public OutputContentImage getContentImage( final MerchantStore store, final String imageName )
         throws ServiceException
     {
         Assert.notNull( store, "Merchant store can not be null" );
         Assert.notNull( imageName, "CMSContent image can not be null" );
         return contentFileManager.getImage( store, imageName, ImageContentType.CONTENT );
+    }
+
+    
+    /**
+     * Implementation for getContentImages method defined in {@link ContentService} interface. Methods will return list of all
+     * Content image associated with given  Merchant store or will return empty list if no image is associated with
+     * given Merchant Store in Infinispan tree cache.
+     * 
+     * @param store Merchant store
+     * @return list of {@link OutputContentImage}
+     * @throws ServiceException
+     */
+    @Override
+    public List<OutputContentImage> getContentImages( final MerchantStore store, final ImageContentType imageContentType )
+        throws ServiceException
+    {
+        Assert.notNull( store, "Merchant store can not be null" );
+        return contentFileManager.getImages( store, imageContentType );
     }
 }

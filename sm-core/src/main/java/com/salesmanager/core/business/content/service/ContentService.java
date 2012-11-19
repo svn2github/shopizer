@@ -3,6 +3,7 @@ package com.salesmanager.core.business.content.service;
 import java.util.List;
 
 import com.salesmanager.core.business.content.model.content.Content;
+import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
@@ -52,5 +53,16 @@ public interface ContentService
      */
     public OutputContentImage getContentImage( final MerchantStore store, final String imageName )
         throws ServiceException;
+    
+    
+    /**
+     * Method to get list of all images associated with a given merchant store.In case of no image method will return an empty list.
+     * @param store
+     * @param imageContentType
+     * @return list of {@link OutputContentImage}
+     * @throws ServiceException
+     */
+    public List<OutputContentImage> getContentImages( MerchantStore store, ImageContentType imageContentType )
+                    throws ServiceException;
 
 }

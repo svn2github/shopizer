@@ -36,7 +36,7 @@ public class ContentFileManagerImpl
      * @throws ServiceException
      */
     @Override
-    public void addImage( MerchantStore store, InputContentImage image )
+    public void addImage( final MerchantStore store, final InputContentImage image )
         throws ServiceException
     {
 
@@ -44,16 +44,26 @@ public class ContentFileManagerImpl
 
     }
 
+    /**
+     * Implementation for get images method. This method will called respected get images method of underlying
+     * CMSContentManager. For CMS Content images {@link CmsContentFileManagerInfinispanImpl} will take care of fetching all images
+     * for given merchant from Infinispan cache.
+     * 
+     * @param store merchant store.
+     * @param image Input content image
+     * @return list {@link OutputContentImage}
+     * @throws ServiceException
+     */
     @Override
-    public List<OutputContentImage> getImages( MerchantStore store, ImageContentType imageContentType )
+    public List<OutputContentImage> getImages( final MerchantStore store, final ImageContentType imageContentType )
         throws ServiceException
     {
-        // TODO Auto-generated method stub
-        return null;
+        return getImage.getImages( store, imageContentType );
+        
     }
 
     @Override
-    public void removeImage( ContentImage contentImage )
+    public void removeImage( final ContentImage contentImage )
         throws ServiceException
     {
         // TODO Auto-generated method stub
@@ -61,7 +71,7 @@ public class ContentFileManagerImpl
     }
 
     @Override
-    public void removeImages( MerchantStore store )
+    public void removeImages( final MerchantStore store )
         throws ServiceException
     {
         // TODO Auto-generated method stub
@@ -78,7 +88,7 @@ public class ContentFileManagerImpl
      * @throws ServiceException
      */
     @Override
-    public OutputContentImage getImage( MerchantStore store, String imageName, ImageContentType imageContentType )
+    public OutputContentImage getImage( final MerchantStore store, final String imageName, final ImageContentType imageContentType )
         throws ServiceException
     {
         return getImage.getImage( store, imageName, imageContentType );
@@ -89,7 +99,7 @@ public class ContentFileManagerImpl
         return removeImage;
     }
 
-    public void setRemoveImage( ImageRemove removeImage )
+    public void setRemoveImage( final ImageRemove removeImage )
     {
         this.removeImage = removeImage;
     }
@@ -99,7 +109,7 @@ public class ContentFileManagerImpl
         return getImage;
     }
 
-    public void setGetImage( ContentImageGet getImage )
+    public void setGetImage( final ContentImageGet getImage )
     {
         this.getImage = getImage;
     }
@@ -109,13 +119,13 @@ public class ContentFileManagerImpl
         return uploadImage;
     }
 
-    public void setUploadImage( ImagePut uploadImage )
+    public void setUploadImage( final ImagePut uploadImage )
     {
         this.uploadImage = uploadImage;
     }
 
     @Override
-    public List<String> getImageNames( MerchantStore store, ImageContentType imageContentType )
+    public List<String> getImageNames( final MerchantStore store, final ImageContentType imageContentType )
         throws ServiceException
     {
         // TODO Auto-generated method stub
