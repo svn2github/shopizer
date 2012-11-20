@@ -28,15 +28,22 @@ import com.salesmanager.core.business.catalog.product.service.image.ProductImage
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
 import com.salesmanager.core.business.catalog.product.service.price.ProductPriceService;
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
+import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
+import com.salesmanager.core.business.order.model.Billing;
+import com.salesmanager.core.business.order.model.Delivery;
+import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
 import com.salesmanager.core.business.order.service.OrderService;
+import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.currency.service.CurrencyService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
+import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 
 @Component
@@ -105,7 +112,8 @@ public class InitStoreData implements InitData {
 		Language en = languageService.getByCode("en");
 		Language fr = languageService.getByCode("fr");
 		
-
+		Country canada = countryService.getByCode("CA");
+		Zone zone = zoneService.getByCode("QC");
 		
 		//create a merchant
 		MerchantStore store = merchantService.getMerchantStore(MerchantStore.DEFAULT_STORE);
@@ -539,7 +547,60 @@ public class InitStoreData implements InitData {
 		    dprice6.getDescriptions().add(dpd);
 
 		    productPriceService.create(dprice6);
-		
+		    
+/*		    //create a customer
+		    Customer customer = new Customer();
+			customer.setFirstname("John");
+			customer.setLastname("Doe");
+			customer.setCity("city");
+			customer.setEmailAddress("test@test.com");
+			customer.setGender("M");
+			customer.setTelephone("444-555-6666");
+			customer.setAnonymous(true);
+			customer.setCompany("ifactory");
+			customer.setDateOfBirth(new java.util.Date());
+			customer.setFax("555-666-7777");
+			customer.setPassword("123456");
+			customer.setPostalCode("123456");
+			customer.setState("state");
+			customer.setStreetAddress("Street 1");
+			customer.setCountry(canada);
+			customer.setZone(zone);
+			
+			customerService.create(customer);
+			
+			//create an order
+			Billing billing = new Billing();
+			billing.setName(customer.getFirstname() + " " + customer.getLastname());
+			billing.setAddress(customer.getStreetAddress());
+			billing.setCity(customer.getCity());
+			billing.setCompany(customer.getCompany());
+			billing.setCountryCode(canada.getIsoCode());
+			billing.setPostalCode(customer.getPostalCode());
+			billing.setState(zone.getName());
+			
+			Delivery delivery = new Delivery();
+			delivery.setName(customer.getFirstname() + " " + customer.getLastname());
+			delivery.setAddress(customer.getStreetAddress());
+			delivery.setCity(customer.getCity());
+			delivery.setCompany(customer.getCompany());
+			delivery.setCountryCode(canada.getIsoCode());
+			delivery.setPostalCode(customer.getPostalCode());
+			delivery.setState(zone.getName());
+			
+			//create an OrderProduct
+			
+			//OrderProductPrice
+			//TODO remove Product from PrderProduct
+			
+			OrderProduct orderProduct = new OrderProduct();
+			//orderProduct.s
+			
+			Order order = new Order();
+			order.setBilling(billing);
+			order.setDelivery(delivery);
+			//order.
+*/		
 		
 	}
 

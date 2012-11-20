@@ -57,14 +57,6 @@
   		<put-attribute name="body" value="/pages/admin/products/product.jsp" /> 
   	</definition>
   	
-  	<definition name="admin-products-prices" template="/layout/admin/layout.jsp">
-  		<put-attribute name="body" value="/pages/admin/products/prices.jsp" /> 
-  	</definition>
-  	
-  	<definition name="admin-products-price" template="/layout/admin/layout.jsp">
-  		<put-attribute name="body" value="/pages/admin/products/price.jsp" /> 
-  	</definition>
-  	
   	<definition name="admin-products-related" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/products/related.jsp" /> 
   	</definition>
@@ -125,12 +117,24 @@
   		<put-attribute name="body" value="/pages/admin/profile/groups.jsp" /> 
   	</definition>
   	
+  	<definition name="shipping-configs" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/shipping/shippingConfig.jsp" /> 
+  	</definition>
+  	
   	 <definition name="shipping-methods" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/shipping/shippingMethods.jsp" /> 
   	</definition>
   	
   	<definition name="payment-methods" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/payment/paymentMethods.jsp" /> 
+  	</definition>
+  	
+  	<definition name="admin-orders" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/orders/orders.jsp" /> 
+  	</definition>
+  	
+  	<definition name="admin-content-images" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/content/contentImages.jsp" /> 
   	</definition>
   	
 </tiles-definitions>

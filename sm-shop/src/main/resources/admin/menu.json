@@ -104,11 +104,38 @@
 }},
 {
 "menu":{
+"code":"content",
+"icon":"icon-pencil", 
+"url":"/admin/content/contentManagement.html", 
+"roles":["CONTENT"],
+"order":4,
+"menus":[
+	{"menu":{"code":"content-pages","url":"","roles":["CONTENT"],"order":0}},
+	{"menu":{"code":"content-boxes","url":"","roles":["CONTENT"],"order":0}},
+	{"menu":{"code":"content-images","url":"","roles":["CONTENT"],"order":0}},
+	{"menu":{"code":"content-files","url":"","roles":["CONTENT"],"order":0}}
+]
+}},
+{
+"menu":{
 "code":"shipping",
 "icon":"icon-plane", 
-"url":"/admin/shipping/shippingMethods.html", 
-"roles":["AUTH"],
-"order":4
+"url":"/admin/shipping/shippingConfigs.html", 
+"roles":["SHIPPING"],
+"order":4,
+"menus":[
+	{"menu":{"code":"shipping-configs","url":"","roles":["SHIPPING"],"order":0}},
+	{"menu":{"code":"shipping-methods","url":"","roles":["SHIPPING"],"order":0}},
+	{"menu":{"code":"shipping-options","url":"","roles":["SHIPPING"],"order":0}}
+]
+}},
+{
+"menu":{
+"code":"payment",
+"icon":"icon-cog", 
+"url":"/admin/payment/paymentMethods.html", 
+"roles":["PAYMENT"],
+"order":5
 }},
 {
 "menu":{
@@ -116,7 +143,7 @@
 "icon":"icon-user", 
 "url":"/admin/customers/list.html", 
 "roles":["AUTH"],
-"order":5,
+"order":6,
 "menus":[
 	{"menu":{
 		"code":"customer-list","url":"/admin/customers/list.html","roles":["admin","sub-admin"],"order":0
@@ -130,17 +157,25 @@
 "menu":{
 "code":"order",
 "icon":"icon-shopping-cart", 
-"url":"/admin/orders/list.html", 
-"roles":["AUTH"],
-"order":6
+"url":"/admin/orders/orders.html", 
+"roles":["ORDER"],
+"order":7
+}},
+{
+"menu":{
+"code":"tax",
+"icon":"icon-book", 
+"url":"/admin/tax/taxes.html", 
+"roles":["ORDER"],
+"order":7
 }},
 {
 "menu":{
 "code":"configuration",
-"icon":"icon-cog", 
+"icon":"icon-wrench", 
 "url":"/admin/configurations/list.html", 
 "roles":["AUTH"],
-"order":7
+"order":8
 }}
 ]}
 

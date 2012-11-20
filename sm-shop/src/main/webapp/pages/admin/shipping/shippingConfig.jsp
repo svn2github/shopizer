@@ -26,14 +26,12 @@
 								<div class="sm-ui-component">
 								<h3><s:message code="label.shipping.title" text="Shipping configuration" /></h3>	
 								<br/>
-								
-								
-								
 
 
-							
-							<c:url var="shippingMethodsSave" value="/admin/shipping/saveShippingMethods.html"/>
-							<form:form method="POST" commandName="configuration" action="${shippingConfigurationSave}">
+								<c:url var="shippingConfigurationSave" value="/admin/shipping/saveShippingMode.html"/>
+
+
+								<form:form method="POST" commandName="configuration" action="${shippingConfigurationSave}">
 
       							
       								<form:errors path="*" cssClass="alert alert-error" element="div" />
@@ -43,11 +41,12 @@
 
       			  
 					      			  <div class="control-group">
-					                        <label><s:message code="label.shipping.methods" text="Shipping methods"/></label>
+					                        <label><s:message code="label.shipping.mode" text="Shipping mode"/></label>
 					                        <div class="controls">
 					                                   
 						                        <div class="controls">
-
+						                        		 <form:radiobutton path="mode" value="NATIONAL"/>&nbsp;<s:message code="label.shipping.national" text="National" />			
+														 <form:radiobutton path="mode" value="INTERNATIONAL"/>&nbsp;<s:message code="label.shipping.international" text="International" />
 						                                 <span class="help-inline"><form:errors path="mode" cssClass="error" /></span>
 						                        </div>
 					
@@ -61,7 +60,23 @@
 
             	 					</div>
             	 			</form:form>
+								
 							
+							
+							<br/>
+							
+
+							<!-- Listing grid include -->
+				 			<c:set value="/admin/shipping/countries/paging.html" var="pagingUrl" scope="request"/>
+				 			<c:set value="/admin/shipping/countries/update.html" var="updateUrl" scope="request"/>
+				 			<c:set value="/admin/shipping/shippingConfigs.html" var="afterRemoveUrl" scope="request"/>
+				 			<c:set var="entityId" value="code" scope="request"/>
+							<c:set var="componentTitleKey" value="label.shipping.countries" scope="request"/>
+				 			<c:set var="gridHeader" value="/pages/admin/shipping/shipping-countries-gridHeader.jsp" scope="request"/>
+							<c:set var="canRemoveEntry" value="false" scope="request"/>
+
+            	 			<jsp:include page="/pages/admin/components/list.jsp"></jsp:include> 
+				 			<!-- End listing grid include -->
 							
 
 

@@ -143,6 +143,10 @@ public class UserServicesImpl implements UserDetailsService{
 		  featured.getGroups().add(gsuperadmin);
 		  permissionService.create(featured);
 		  
+		  Permission order = new Permission("ORDER");
+		  order.getGroups().add(gsuperadmin);
+		  permissionService.create(order);
+		  
 		  Permission content = new Permission("CONTENT");
 		  content.getGroups().add(gsuperadmin);
 		  permissionService.create(content);

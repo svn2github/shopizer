@@ -212,6 +212,23 @@ response.setDateHeader ("Expires", -1);
   				window.location='<c:url value="/admin/store/storeLanding.html" />';
 			});
 			
+			$("#content-link").click(function() {
+  				window.location='<c:url value="/admin/content/contentImages.html" />';
+			});
+			
+			$("#content-pages-link").click(function() {
+  				window.location='<c:url value="/admin/content/contentPages.html" />';
+			});
+			$("#content-boxes-link").click(function() {
+  				window.location='<c:url value="/admin/content/contentBoxes.html" />';
+			});
+			$("#content-files-link").click(function() {
+  				window.location='<c:url value="/admin/content/contentFiles.html" />';
+			});
+			$("#content-images-link").click(function() {
+  				window.location='<c:url value="/admin/content/contentImages.html" />';
+			});
+			
 
 		}); 
 		

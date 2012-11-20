@@ -16,17 +16,21 @@
 									operationBindings:[ 
 										{operationType:"fetch", dataProtocol:"postParams",dataURL: "<c:url value="${pagingUrl}" />"},
 										{operationType:"remove", dataProtocol:"postParams",dataURL: "<c:url value="${removeUrl}" />"},
+										{operationType:"update", dataProtocol:"postParams",dataURL: "<c:url value="${updateUrl}" />"},
 									],
 									transformResponse : function (dsResponse, dsRequest, jsonData) {
 										var status = isc.XMLTools.selectObjects(jsonData, "/response/status");
 										if (status != 0) {
 											if(status==9999) {//operation completed
 												//reload 
-												window.location='<c:url value="${afterRemoveUrl}" />';
-											}
+												<c:if test="afterRemoveUrl!=null || refreshUrl!=null">
+													window.location='<c:url value="${afterRemoveUrl}" />';
+												</c:if>
+											} else {
 
-											var msg = isc.XMLTools.selectObjects(jsonData, "/response/statusMessage");
+												var msg = isc.XMLTools.selectObjects(jsonData, "/response/statusMessage");
 												alert("! " + msg);
+											}
 										}
 									}
 								}); 
@@ -44,12 +48,17 @@
     								showFilterEditor: true,
     								filterOnKeypress: true,
 									dataFetchMode:"paged",
+									
+									
+									canEdit:true,
+									editByCell: true,
+									editEvent: "click",
 
 
     						      fields:[
     						      		<jsp:include page="${gridHeader}"></jsp:include>
     							],
-    							selectionType: "single",
+    							selectionType: "multiple",
 								removeData: function () {
 									if (confirm('<s:message code="label.entity.remove.confirm" text="Do you really want to remove this record ?" />')) {
 										return this.Super("removeData", arguments);
@@ -59,7 +68,6 @@
 									return this.Super("fetchData", arguments);
 								},
     							createRecordComponent : function (record, colNum) {  
-        
         							var fieldName = this.getFieldName(colNum);
         							if (fieldName == "buttonField") {  
 
@@ -81,6 +89,8 @@
 
 
 								});
+								
+								
 
 
 

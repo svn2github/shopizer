@@ -1,31 +1,44 @@
 package com.salesmanager.web.admin.controller.shipping;
 
-import java.util.Locale;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.system.model.MerchantConfiguration;
+import com.salesmanager.core.business.reference.country.service.CountryService;
+import com.salesmanager.core.business.shipping.service.ShippingService;
+import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
-import com.salesmanager.core.constants.ShippingConstants;
-import com.salesmanager.web.admin.entity.shipping.ShippingConfiguration;
+import com.salesmanager.web.admin.entity.web.Menu;
 
 @Controller
 public class ShippingMethodsController {
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ShippingMethodsController.class);
+	
+	
 	@Autowired
-	MerchantConfigurationService merchantConfigurationService;
+	private MerchantConfigurationService merchantConfigurationService;
+	
+	@Autowired
+	private ShippingService shippingService;
+	
+	@Autowired
+	private CountryService countryService;
 	
 	/**
-	 * Configures the shipping mode, shows shipping methods
+	 * Configures the shipping shows shipping methods
 	 * @param request
 	 * @param response
 	 * @param locale
@@ -36,47 +49,40 @@ public class ShippingMethodsController {
 	public String getShippingMethods(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 
-		ShippingConfiguration shippingConfiguration = new ShippingConfiguration();
-		
-		
+		this.setMenu(model, request);
 		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
 		
-		
-		//get key SHP_ZONES_SHIPPING (NATIONAL/INTERNATIONAL) from MerchantConfiguration for the current merchant
-		MerchantConfiguration modeConfiguration =  merchantConfigurationService.getMerchantConfiguration(ShippingConstants.SHIPPING_MODE, store);
-		
-		if(modeConfiguration!=null) {
-			shippingConfiguration.setMode(modeConfiguration.getValue());
-		}
+		//get shipping methods
+		List<IntegrationModule> modules = shippingService.getShippingMethods(store);
 
-		
-		
-		//get integrations modules from ModuleConfiguration module SHIPPING // TO BE DONE
-		
-		//get shipping modules configured from MerchantConfiguration //TO BE DONE
-		
-		model.addAttribute("configuration", shippingConfiguration);
+		//get configured shipping methods
+
+
+
+		model.addAttribute("modules", modules);
+	
 		
 		return "shipping-methods";
 		
 		
 	}
 	
-	@RequestMapping(value="/admin/shipping/saveShippingMode.html", method=RequestMethod.POST)
-	public String saveShippingMode(@ModelAttribute("configuration") ShippingConfiguration configuration, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	private void setMenu(Model model, HttpServletRequest request) throws Exception {
 		
+		//display menu
+		Map<String,String> activeMenus = new HashMap<String,String>();
+		activeMenus.put("shipping", "shipping");
+		activeMenus.put("shipping-methods", "shipping-methods");
 		
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		@SuppressWarnings("unchecked")
+		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
 		
-		MerchantConfiguration modeConfiguration =  merchantConfigurationService.getMerchantConfiguration(ShippingConstants.SHIPPING_MODE, store);
-		
-		if(modeConfiguration!=null) {
-			//overwrite with submited value
-		}
-		
-		return "shipping-methods";
+		Menu currentMenu = (Menu)menus.get("shipping");
+		model.addAttribute("currentMenu",currentMenu);
+		model.addAttribute("activeMenus",activeMenus);
+		//
 		
 	}
-	
+
 
 }
