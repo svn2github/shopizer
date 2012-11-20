@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.junit.Test;
@@ -421,6 +422,11 @@ public class IsolatedTestCase
         cmsContentImage.setImageName( "demoCmsImage" );
         cmsContentImage.setFile( inputStream );
         contentService.addContentImage( store, cmsContentImage );
+        
+        final CMSContentImage cmsContentImage1 = new CMSContentImage();
+        cmsContentImage1.setImageName( "demoCmsImage2" );
+        cmsContentImage1.setFile( inputStream );
+        contentService.addContentImage( store, cmsContentImage1 );
 
     }
 
@@ -433,10 +439,27 @@ public class IsolatedTestCase
         final String imageName = "demoCmsImage";
 
         final OutputContentImage outputContentImage = contentService.getContentImage( store, imageName );
-        System.out.println( outputContentImage.getImageContentType() );
+        //final OutputContentImage outputContentImage = contentService.getContentImage( store, "" );
+        System.out.println( outputContentImage.getImage() );
         System.out.println( outputContentImage.getImageName() );
 
     }
+    
+    @Test
+    public void getAllContentImages() throws ServiceException{
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        List<OutputContentImage> contentImagesList= contentService.getContentImages( store, null );
+        if(CollectionUtils.isNotEmpty( contentImagesList )){
+            System.out.println("Total " + contentImagesList.size()+ " Images found");
+           for(OutputContentImage outputContentImage :contentImagesList){
+               System.out.println(outputContentImage.getImageName());
+           }
+        }
+        else{
+            System.out.println("No image found for given merchant store");
+        }
+    }
+    
 
     @Test
     public void testGetImages()
