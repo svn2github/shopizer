@@ -41,6 +41,16 @@ public interface ContentService
     void addContentImage( MerchantStore store, CMSContentImage contentImage )
         throws ServiceException;
 
+   
+    /**
+     * Method responsible for storing list of content image for given Store.Images for given merchant store will be stored in
+     * Infinispan.
+     * 
+     * @param store merchant store whose content images are being saved.
+     * @param contentImagesList list of content images being stored.
+     * @throws ServiceException
+     */
+    void addContentImages(MerchantStore store,List<CMSContentImage> contentImagesList) throws ServiceException;
     /**
      * Method responsible for fetching particular content image for a given merchant store. Requested image will be
      * search in Infinispan tree cache and OutputContentImage will be sent, in case no image is found null will
@@ -65,7 +75,8 @@ public interface ContentService
     public List<OutputContentImage> getContentImages( MerchantStore store, ImageContentType imageContentType )
                     throws ServiceException;
 
-	List<String> getContentImagesNames(MerchantStore store,
+	
+    List<String> getContentImagesNames(MerchantStore store,
 			ImageContentType imageContentType) throws ServiceException;
 
 }

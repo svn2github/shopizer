@@ -100,7 +100,7 @@ public class ContentServiceImpl
     {
         Assert.notNull( store, "Merchant store can not be null" );
         Assert.notNull( cmsContentImage, "CMSContent image can not be null" );
-        InputContentImage contentImage = new InputContentImage( ImageContentType.CONTENT );
+        final InputContentImage contentImage = new InputContentImage( ImageContentType.CONTENT );
         contentImage.setImageName( cmsContentImage.getImageName() );
 
         try
@@ -115,11 +115,11 @@ public class ContentServiceImpl
                 contentImage.setImageContentType( cmsContentImage.getContentType() );
             }
 
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            final ByteArrayOutputStream output = new ByteArrayOutputStream();
             IOUtils.copy( cmsContentImage.getFile(), output );
             contentImage.setFile( output );
         }
-        catch ( IOException e )
+        catch ( final IOException e )
         {
             LOG.error( "Error while trying to convert input stream to buffered image", e );
             throw new ServiceException( e );
@@ -131,6 +131,24 @@ public class ContentServiceImpl
 
     }
 
+    
+    /**
+     * Method responsible for adding list of content images for given merchant store in underlying Infinispan tree
+     * cache. It will take list of {@link CMSContentImage} and will store them for given merchant store.
+     * 
+     * @param store Merchant store
+     * @param contentImagesList list of {@link CMSContentImage} being stored
+     * @throws ServiceException service exception
+     */
+    @Override
+    public void addContentImages( final MerchantStore store, final List<CMSContentImage> contentImagesList )
+        throws ServiceException
+    {
+        // TODO Auto-generated method stub
+
+    }
+    
+    
     /**
      * Implementation for getContentImage method defined in {@link ContentService} interface. Methods will return
      * Content image with given image name for the Merchant store or will return null if no image with given name found
@@ -182,4 +200,5 @@ public class ContentServiceImpl
             Assert.notNull( store, "Merchant store can not be null" );
             return contentFileManager.getImageNames(store, imageContentType);
         }
+
 }

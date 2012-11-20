@@ -124,12 +124,22 @@ public class ContentFileManagerImpl
         this.uploadImage = uploadImage;
     }
 
+    /**
+     * Method to get names of all images being associated for a given merchant store.
+     * Image name will be used to build UI content to manage content images.
+     * 
+     * Names of the images will be retrieved from Infinispan cache.
+     * 
+     * @param store merchant store
+     * @param imageContentType image content type
+     * @throws ServiceException
+     */
     @Override
     public List<String> getImageNames( final MerchantStore store, final ImageContentType imageContentType )
         throws ServiceException
     {
-        // TODO Auto-generated method stub
-        return null;
+       
+        return getImage.getImageNames( store, imageContentType );
     }
 
 }

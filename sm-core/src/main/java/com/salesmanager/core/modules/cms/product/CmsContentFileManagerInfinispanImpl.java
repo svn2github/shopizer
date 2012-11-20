@@ -191,7 +191,7 @@ public class CmsContentFileManagerInfinispanImpl
             }
 
             contentImagesList = new ArrayList<OutputContentImage>();
-            for ( Map.Entry<String, byte[]> entry : contentAttribute.getEntities().entrySet() )
+            for ( final Map.Entry<String, byte[]> entry : contentAttribute.getEntities().entrySet() )
             {
                 input = new ByteArrayInputStream( entry.getValue() );
                 final ByteArrayOutputStream output = new ByteArrayOutputStream();
