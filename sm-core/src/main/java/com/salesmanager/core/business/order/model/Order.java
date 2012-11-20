@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -55,6 +56,9 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@Column (name ="LAST_MODIFIED")
 	private Date lastModified;
 	
+	@Column (name ="CUSTOMER_ID")
+	private Long customerId;//the customer object can be detached. An order can exist and the customer deleted
+	
 	@Temporal(TemporalType.DATE)
 	@Column (name ="DATE_PURCHASED")
 	private Date datePurchased;
@@ -78,7 +82,7 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@Column (name ="CHANNEL")
 	private int channel;
 	
-	// TODO : Order : replace by a credit card object
+
 	@Column (name ="CARD_TYPE")
 	private String cardType;
 	
@@ -97,79 +101,26 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@Column (name ="DISPLAY_INVOICE_PAYMENTS")
 	private boolean displayInvoicePayments;	
 	
-	// TODO : Order : Replace by a payment object
+
 	@Column (name ="PAYMENT_METHOD")
 	private String paymentMethod;
 	
 	@Column (name ="PAYMENT_MODULE_CODE")
 	private String paymentModuleCode;
 	
-	// TODO : Order : replace by a shiping object
+
 	@Column (name ="SHIPPING_METHOD")
 	private String shippingMethod;
 	
 	@Column (name ="SHIPPING_MODULE_CODE")
 	private String shippingModuleCode;
 
-	// TODO : Order : replace by a delivery object
-	@Column (name ="DELIVERY_NAME")
-	private String deliveryName;
+	@Embedded
+	private Delivery delivery = null;
 	
-	@Column (name ="DELIVERY_COMPANY")
-	private String deliveryCompany;
-	
-	@Column (name ="DELIVERY_STREET_ADDRESS")
-	private String deliveryStreetAddress;
-	
-	@Column (name ="DELIVERY_SUBURB")
-	private String deliverySuburb;
-	
-	@Column (name ="DELIVERY_CITY")
-	private String deliveryCity;
-	
-	@Column (name ="DELIVERY_POSTCODE")
-	private String deliveryPostcode;
-	
-	@Column (name ="DELIVERY_STATE")
-	private String deliveryState;
-	
-	@Column (name ="DELIVERY_COUNTRY")
-	private String deliveryCountry;
-	
-	@Column (name ="DELIVERY_ADDRESS_FORMAT_ID")
-	private int deliveryAddressFormatId;
-	
-	// TODO : Order : replace by a billing object
-	@Column (name ="BILLING_NAME")
-	private String billingName;
-	
-	@Column (name ="BILLING_COMPANY")
-	private String billingCompany;
-	
-	@Column (name ="BILLING_STREET_ADDRESS")
-	private String billingStreetAddress;
-	
-	@Column (name ="BILLING_SUBURB")
-	private String billingSuburb;
-	
-	@Column (name ="BILLING_CITY")
-	private String billingCity;
-	
-	@Column (name ="BILLING_POSTCODE")
-	private String billingPostcode;
-	
-	@Column (name ="BILLING_STATE")
-	private String billingState;
-	
-	@Column (name ="BILLING_COUNTRY")
-	private String billingCountry;
-	
-	@Column (name ="BILLING_ADDRESS_FORMAT_ID")
-	private int billingAddressFormatId;
-	
-	@ManyToOne(targetEntity = Customer.class)
-	@JoinColumn(name="CUSTOMER_ID" )
-	private Customer customer;
+	@Embedded
+	private Billing billing = null;
+
 	
 	@ManyToOne(targetEntity = Currency.class)
 	@JoinColumn(name = "CURRENCY_ID")
@@ -364,157 +315,7 @@ public class Order extends SalesManagerEntity<Long, Order> {
 		this.shippingModuleCode = shippingModuleCode;
 	}
 
-	public String getDeliveryName() {
-		return deliveryName;
-	}
 
-	public void setDeliveryName(String deliveryName) {
-		this.deliveryName = deliveryName;
-	}
-
-	public String getDeliveryCompany() {
-		return deliveryCompany;
-	}
-
-	public void setDeliveryCompany(String deliveryCompany) {
-		this.deliveryCompany = deliveryCompany;
-	}
-
-	public String getDeliveryStreetAddress() {
-		return deliveryStreetAddress;
-	}
-
-	public void setDeliveryStreetAddress(String deliveryStreetAddress) {
-		this.deliveryStreetAddress = deliveryStreetAddress;
-	}
-
-	public String getDeliverySuburb() {
-		return deliverySuburb;
-	}
-
-	public void setDeliverySuburb(String deliverySuburb) {
-		this.deliverySuburb = deliverySuburb;
-	}
-
-	public String getDeliveryCity() {
-		return deliveryCity;
-	}
-
-	public void setDeliveryCity(String deliveryCity) {
-		this.deliveryCity = deliveryCity;
-	}
-
-	public String getDeliveryPostcode() {
-		return deliveryPostcode;
-	}
-
-	public void setDeliveryPostcode(String deliveryPostcode) {
-		this.deliveryPostcode = deliveryPostcode;
-	}
-
-	public String getDeliveryState() {
-		return deliveryState;
-	}
-
-	public void setDeliveryState(String deliveryState) {
-		this.deliveryState = deliveryState;
-	}
-
-	public String getDeliveryCountry() {
-		return deliveryCountry;
-	}
-
-	public void setDeliveryCountry(String deliveryCountry) {
-		this.deliveryCountry = deliveryCountry;
-	}
-
-	public int getDeliveryAddressFormatId() {
-		return deliveryAddressFormatId;
-	}
-
-	public void setDeliveryAddressFormatId(int deliveryAddressFormatId) {
-		this.deliveryAddressFormatId = deliveryAddressFormatId;
-	}
-
-	public String getBillingName() {
-		return billingName;
-	}
-
-	public void setBillingName(String billingName) {
-		this.billingName = billingName;
-	}
-
-	public String getBillingCompany() {
-		return billingCompany;
-	}
-
-	public void setBillingCompany(String billingCompany) {
-		this.billingCompany = billingCompany;
-	}
-
-	public String getBillingStreetAddress() {
-		return billingStreetAddress;
-	}
-
-	public void setBillingStreetAddress(String billingStreetAddress) {
-		this.billingStreetAddress = billingStreetAddress;
-	}
-
-	public String getBillingSuburb() {
-		return billingSuburb;
-	}
-
-	public void setBillingSuburb(String billingSuburb) {
-		this.billingSuburb = billingSuburb;
-	}
-
-	public String getBillingCity() {
-		return billingCity;
-	}
-
-	public void setBillingCity(String billingCity) {
-		this.billingCity = billingCity;
-	}
-
-	public String getBillingPostcode() {
-		return billingPostcode;
-	}
-
-	public void setBillingPostcode(String billingPostcode) {
-		this.billingPostcode = billingPostcode;
-	}
-
-	public String getBillingState() {
-		return billingState;
-	}
-
-	public void setBillingState(String billingState) {
-		this.billingState = billingState;
-	}
-
-	public String getBillingCountry() {
-		return billingCountry;
-	}
-
-	public void setBillingCountry(String billingCountry) {
-		this.billingCountry = billingCountry;
-	}
-
-	public int getBillingAddressFormatId() {
-		return billingAddressFormatId;
-	}
-
-	public void setBillingAddressFormatId(int billingAddressFormatId) {
-		this.billingAddressFormatId = billingAddressFormatId;
-	}
-
-	public Customer getCustomer() {
-		return customer;
-	}
-
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
 
 	public Currency getCurrency() {
 		return currency;
@@ -562,5 +363,29 @@ public class Order extends SalesManagerEntity<Long, Order> {
 
 	public void setOrderAccounts(Set<OrderAccount> orderAccounts) {
 		this.orderAccounts = orderAccounts;
+	}
+
+	public void setDelivery(Delivery delivery) {
+		this.delivery = delivery;
+	}
+
+	public Delivery getDelivery() {
+		return delivery;
+	}
+
+	public void setBilling(Billing billing) {
+		this.billing = billing;
+	}
+
+	public Billing getBilling() {
+		return billing;
+	}
+
+	public Long getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
 	}
 }

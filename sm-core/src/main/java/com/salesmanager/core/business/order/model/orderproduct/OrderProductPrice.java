@@ -31,20 +31,19 @@ public class OrderProductPrice implements Serializable {
 	@JoinColumn(name = "ORDER_PRODUCT_ID", nullable = false)
 	private OrderProduct orderProduct;
 
-	@Column(name = "PRODUCT_PRICE_TYPE_ID", nullable = false)
-	private int productPriceTypeId;
 
-	@Column(name = "PRODUCT_PRICE_MODULE_NAME", nullable = false , length=64 )
-	private String productPriceModuleName;
+	@Column(name = "PRODUCT_PRICE_CODE", nullable = false , length=64 )
+	private String productPriceCode;
 
 	@Column(name = "PRODUCT_PRICE_AMOUNT", nullable = false ,  precision=15 )
 	private BigDecimal productPriceAmount;
+	
+	@Column(name = "PRODUCT_PRICE_SPECIAL_AMOUNT")
+	private BigDecimal productPriceSpecialAmount;
 
 	@Column(name = "DEFAULT_PRICE", nullable = false)
 	private Boolean defaultPrice;
 
-	@Column(name = "PRODUCT_HAS_TAX", nullable = false)
-	private Boolean productHasTax;
 
 	@Column(name = "PRODUCT_PRICE_NAME", nullable = false)
 	private String productPriceName;
@@ -58,22 +57,6 @@ public class OrderProductPrice implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public int getProductPriceTypeId() {
-		return productPriceTypeId;
-	}
-
-	public void setProductPriceTypeId(int productPriceTypeId) {
-		this.productPriceTypeId = productPriceTypeId;
-	}
-
-	public String getProductPriceModuleName() {
-		return productPriceModuleName;
-	}
-
-	public void setProductPriceModuleName(String productPriceModuleName) {
-		this.productPriceModuleName = productPriceModuleName;
 	}
 
 	public BigDecimal getProductPriceAmount() {
@@ -92,14 +75,6 @@ public class OrderProductPrice implements Serializable {
 		this.defaultPrice = defaultPrice;
 	}
 
-	public Boolean getProductHasTax() {
-		return productHasTax;
-	}
-
-	public void setProductHasTax(Boolean productHasTax) {
-		this.productHasTax = productHasTax;
-	}
-
 	public String getProductPriceName() {
 		return productPriceName;
 	}
@@ -114,5 +89,21 @@ public class OrderProductPrice implements Serializable {
 
 	public void setOrderProduct(OrderProduct orderProduct) {
 		this.orderProduct = orderProduct;
+	}
+
+	public void setProductPriceCode(String productPriceCode) {
+		this.productPriceCode = productPriceCode;
+	}
+
+	public String getProductPriceCode() {
+		return productPriceCode;
+	}
+
+	public void setProductPriceSpecialAmount(BigDecimal productPriceSpecialAmount) {
+		this.productPriceSpecialAmount = productPriceSpecialAmount;
+	}
+
+	public BigDecimal getProductPriceSpecialAmount() {
+		return productPriceSpecialAmount;
 	}
 }

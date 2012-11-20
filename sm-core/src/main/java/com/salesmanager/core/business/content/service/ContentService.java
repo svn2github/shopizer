@@ -65,4 +65,7 @@ public interface ContentService
     public List<OutputContentImage> getContentImages( MerchantStore store, ImageContentType imageContentType )
                     throws ServiceException;
 
+	List<String> getContentImagesNames(MerchantStore store,
+			ImageContentType imageContentType) throws ServiceException;
+
 }

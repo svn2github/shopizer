@@ -40,15 +40,13 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "productPrice", cascade = CascadeType.ALL)
 	private Set<ProductPriceDescription> descriptions = new HashSet<ProductPriceDescription>();
 
-	@Column(name = "PRODUCT_PRICE_TYP_ID")
-	private Integer productPriceTypeId;
-
 	@NotNull
 	@Column(name = "PRODUCT_PRICE_AMOUNT")
-	private BigDecimal productPriceAmount = new BigDecimal(0);;
+	private BigDecimal productPriceAmount = new BigDecimal(0);
 
-	@Column(name = "PRODUCT_PRICE_MOD_NM", length=20)
-	private String productPriceModuleName;
+
+	@Column(name = "PRODUCT_PRICE_CODE", length=20)
+	private String productPriceCode;
 
 	@Column(name = "DEFAULT_PRICE")
 	private Boolean defaultPrice = false;
@@ -86,13 +84,7 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 	}
 
 
-	public Integer getProductPriceTypeId() {
-		return productPriceTypeId;
-	}
 
-	public void setProductPriceTypeId(Integer productPriceTypeId) {
-		this.productPriceTypeId = productPriceTypeId;
-	}
 
 	public BigDecimal getProductPriceAmount() {
 		return productPriceAmount;
@@ -102,13 +94,7 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 		this.productPriceAmount = productPriceAmount;
 	}
 
-	public String getProductPriceModuleName() {
-		return productPriceModuleName;
-	}
 
-	public void setProductPriceModuleName(String productPriceModuleName) {
-		this.productPriceModuleName = productPriceModuleName;
-	}
 
 	public Boolean isDefaultPrice() {
 		return defaultPrice;
@@ -175,6 +161,14 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 
 	public void setProductPriceAvailability(ProductAvailability productPriceAvailability) {
 		this.productPriceAvailability = productPriceAvailability;
+	}
+
+	public void setProductPriceCode(String productPriceCode) {
+		this.productPriceCode = productPriceCode;
+	}
+
+	public String getProductPriceCode() {
+		return productPriceCode;
 	}
 
 }

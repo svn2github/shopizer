@@ -167,4 +167,19 @@ public class ContentServiceImpl
         Assert.notNull( store, "Merchant store can not be null" );
         return contentFileManager.getImages( store, imageContentType );
     }
+    
+    /**
+     * Returns the image names for a given merchant and store
+     * @param store
+     * @param imageContentType
+     * @return
+     * @throws ServiceException
+     */
+    @Override
+    public List<String> getContentImagesNames( final MerchantStore store, final ImageContentType imageContentType )
+            throws ServiceException
+        {
+            Assert.notNull( store, "Merchant store can not be null" );
+            return contentFileManager.getImageNames(store, imageContentType);
+        }
 }

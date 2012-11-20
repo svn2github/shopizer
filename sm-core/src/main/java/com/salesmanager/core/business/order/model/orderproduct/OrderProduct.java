@@ -19,10 +19,8 @@ import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.order.model.Order;
-import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 import com.salesmanager.core.constants.SchemaConstant;
 import com.salesmanager.core.utils.CloneUtils;
 
@@ -49,9 +47,8 @@ public class OrderProduct extends SalesManagerEntity<Long, OrderProduct> {
 	@Column (name="ONETIME_CHARGES" , precision=15, scale=4, nullable=false )
 	private BigDecimal onetimeCharge;//
 
-	// TODO : Order : Replace by a special price object
-	@Column (name="PRODUCT_SPECIAL_NEW_PRICE" , precision=15, scale=4 )
-	private BigDecimal productSpecialNewPrice;
+	@Column (name="PRODUCT_SPECIAL_PRICE" , precision=15, scale=4 )
+	private BigDecimal productSpecialPrice;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column (name="PRODUCT_SPECIAL_DATE_AVAILABLE" , length=0)
@@ -61,21 +58,13 @@ public class OrderProduct extends SalesManagerEntity<Long, OrderProduct> {
 	@Column (name="PRODUCT_SPECIAL_DATE_EXPIRE" , length=0 )
 	private Date productSpecialDateExpire;
 	
-	@Column (name="SOLD_PRICE" , precision=15, scale=4, nullable=false )
-	private BigDecimal soldPrice;
+	@Column (name="FINAL_PRICE" , precision=15, scale=4, nullable=false )
+	private BigDecimal finalPrice;
 	
 	@ManyToOne(targetEntity = Order.class)
 	@JoinColumn(name = "ORDER_ID", nullable = false)
 	private Order order;
-	
-	@ManyToOne(targetEntity = Product.class)
-	@JoinColumn(name = "PRODUCT_ID", nullable = false)
-	private Product product;
-	
-	@ManyToOne(targetEntity = TaxClass.class)
-	@JoinColumn(name = "TAX_ID", nullable = false)
-	private TaxClass tax;
-		
+
 	@OneToMany(mappedBy = "orderProduct", cascade = CascadeType.ALL)
 	private Set<OrderProductAttribute> orderAttributes = new HashSet<OrderProductAttribute>();
 
@@ -128,13 +117,7 @@ public class OrderProduct extends SalesManagerEntity<Long, OrderProduct> {
 		this.onetimeCharge = onetimeCharge;
 	}
 
-	public BigDecimal getProductSpecialNewPrice() {
-		return productSpecialNewPrice;
-	}
 
-	public void setProductSpecialNewPrice(BigDecimal productSpecialNewPrice) {
-		this.productSpecialNewPrice = productSpecialNewPrice;
-	}
 
 	public Date getProductSpecialDateAvailable() {
 		return CloneUtils.clone(productSpecialDateAvailable);
@@ -152,13 +135,7 @@ public class OrderProduct extends SalesManagerEntity<Long, OrderProduct> {
 		this.productSpecialDateExpire = CloneUtils.clone(productSpecialDateExpire);
 	}
 
-	public BigDecimal getSoldPrice() {
-		return soldPrice;
-	}
 
-	public void setSoldPrice(BigDecimal soldPrice) {
-		this.soldPrice = soldPrice;
-	}
 
 	public Order getOrder() {
 		return order;
@@ -168,21 +145,6 @@ public class OrderProduct extends SalesManagerEntity<Long, OrderProduct> {
 		this.order = order;
 	}
 
-	public Product getProduct() {
-		return product;
-	}
-
-	public void setProduct(Product product) {
-		this.product = product;
-	}
-
-	public TaxClass getTax() {
-		return tax;
-	}
-
-	public void setTax(TaxClass tax) {
-		this.tax = tax;
-	}
 
 	public Set<OrderProductAttribute> getOrderAttributes() {
 		return orderAttributes;
@@ -206,6 +168,22 @@ public class OrderProduct extends SalesManagerEntity<Long, OrderProduct> {
 
 	public void setDownloads(Set<OrderProductDownload> downloads) {
 		this.downloads = downloads;
+	}
+
+	public void setProductSpecialPrice(BigDecimal productSpecialPrice) {
+		this.productSpecialPrice = productSpecialPrice;
+	}
+
+	public BigDecimal getProductSpecialPrice() {
+		return productSpecialPrice;
+	}
+
+	public void setFinalPrice(BigDecimal finalPrice) {
+		this.finalPrice = finalPrice;
+	}
+
+	public BigDecimal getFinalPrice() {
+		return finalPrice;
 	}
 	
 }

@@ -13,5 +13,5 @@ public interface OrderService extends SalesManagerEntityService<Long, Order> {
 	
 	public List<Order> getMerchantOrders(MerchantStore merchantStore);
 	
-	public List<Order> getCustomerOrders(Customer customer);
+
 }

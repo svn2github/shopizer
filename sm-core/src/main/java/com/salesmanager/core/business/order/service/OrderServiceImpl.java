@@ -31,9 +31,7 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		return listByField(Order_.merchant, merchantStore);
 	}
 	
-	public List<Order> getCustomerOrders(Customer customer) {
-		return listByField(Order_.customer, customer);
-	}
+
 	
 	public void addOrderStatusHistory(Order order, OrderStatusHistory history) throws ServiceException {
 		order.getOrderHistory().add(history);
