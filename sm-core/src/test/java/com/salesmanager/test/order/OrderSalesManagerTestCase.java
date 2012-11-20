@@ -71,7 +71,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 
 		order.setDatePurchased(new Date());
 
-		order.setCustomer(customer);
+		//order.setCustomer(customer);
 		order.setCurrency(currency);
 		order.setMerchant(merchant);
 		order.setLastModified(new Date());
