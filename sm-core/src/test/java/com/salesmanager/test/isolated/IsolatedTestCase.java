@@ -407,13 +407,9 @@ public class IsolatedTestCase
         throws ServiceException, FileNotFoundException, IOException
     {
 
-<<<<<<< .mine
         MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
         File file1 = new File( "/Users/csamson777/Documents/csti/cocoacart/preview_2.png" );
-=======
-        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        final File file1 = new File( "/Umesh/contentimage/test_image1.jpg" );
->>>>>>> .r939
+
         if ( !file1.exists() || !file1.canRead() )
         {
             throw new ServiceException( "Can't read" + file1.getAbsolutePath() );
@@ -905,45 +901,20 @@ public class IsolatedTestCase
         throws ServiceException
     {
 
-<<<<<<< .mine
 		  MerchantStore store = merchantService.getMerchantStore(MerchantStore.DEFAULT_STORE);
-=======
-        // need to create permission firts
-        final Group admin = new Group( "ADMIN" );
-        groupService.create( admin );
->>>>>>> .r939
 
-<<<<<<< .mine
 		  Group gsuperadmin = new Group("SUPERADMIN");
 		  Group gadmin = new Group("ADMIN");
 		  Group gcatalogue = new Group("GROUP_CATALOGUE");
 		  Group gstore = new Group("GROUP_STORE");
 		  Group gorder = new Group("GROUP_ORDER");
-=======
-        final Permission userperm = new Permission( "GRANT_USER" );
-        userperm.getGroups().add( admin );
-        permissionService.create( userperm );
-        final Permission storeperm = new Permission( "GRANT_STORE" );
-        storeperm.getGroups().add( admin );
-        permissionService.create( storeperm );
-        final Permission catalogperm = new Permission( "GRANT_CATALOG" );
-        catalogperm.getGroups().add( admin );
-        permissionService.create( catalogperm );
-        final Permission paymentperm = new Permission( "GRANT_PAYMENT" );
-        paymentperm.getGroups().add( admin );
-        permissionService.create( paymentperm );
-        final Permission shippingperm = new Permission( "GRANT_SHIPPING" );
-        shippingperm.getGroups().add( admin );
-        permissionService.create( shippingperm );
-        final Permission orderperm = new Permission( "GRANT_ORDER" );
-        orderperm.getGroups().add( admin );
-        permissionService.create( orderperm );
-        final Permission configperm = new Permission( "GRANT_CONFIG" );
-        configperm.getGroups().add( admin );
-        permissionService.create( configperm );
->>>>>>> .r939
 
-<<<<<<< .mine
+		  groupService.create(gsuperadmin);
+		  groupService.create(gadmin);
+		  groupService.create(gcatalogue);
+		  groupService.create(gstore);
+		  groupService.create(gorder);
+
 		  groupService.create(gsuperadmin);
 		  groupService.create(gadmin);
 		  groupService.create(gcatalogue);
@@ -994,12 +965,6 @@ public class IsolatedTestCase
 		  shipping.getGroups().add(gsuperadmin);
 		  permissionService.create(shipping);
 		  
-=======
-        final User user = new User( "admin", "password", "test@test.com" );
-        user.setFirstName( "Test" );
-        user.setLastName( "User" );
-        user.getGroups().add( admin );
->>>>>>> .r939
 
 
     }
