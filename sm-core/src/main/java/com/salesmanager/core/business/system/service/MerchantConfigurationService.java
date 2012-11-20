@@ -10,4 +10,6 @@ public interface MerchantConfigurationService extends
 	
 	MerchantConfiguration getMerchantConfiguration(String key, MerchantStore store) throws ServiceException;
 
+	public void saveOrUpdate(MerchantConfiguration entity) throws ServiceException;
+
 }

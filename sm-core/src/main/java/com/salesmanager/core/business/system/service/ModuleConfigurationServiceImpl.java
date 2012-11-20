@@ -51,7 +51,6 @@ public class ModuleConfigurationServiceImpl extends
 			if(modules==null) {
 				modules = integrationModuleDao.getModulesConfiguration(module);
 				//set json objects
-				ObjectMapper mapper = new ObjectMapper();
 				for(IntegrationModule mod : modules) {
 					
 					String regions = mod.getRegions();
