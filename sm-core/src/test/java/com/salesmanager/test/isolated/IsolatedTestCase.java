@@ -429,6 +429,37 @@ public class IsolatedTestCase
         contentService.addContentImage( store, cmsContentImage1 );
 
     }
+    
+    @Test
+    public void createContentImages()
+        throws ServiceException, FileNotFoundException, IOException
+    {
+
+        final List<CMSContentImage> contentImagesList=new ArrayList<CMSContentImage>();
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        final File file1 = new File( "/Umesh/contentimage/destination.png" );
+
+        if ( !file1.exists() || !file1.canRead() )
+        {
+            throw new ServiceException( "Can't read" + file1.getAbsolutePath() );
+        }
+
+        final byte[] is = IOUtils.toByteArray( new FileInputStream( file1 ) );
+        final ByteArrayInputStream inputStream = new ByteArrayInputStream( is );
+        final CMSContentImage cmsContentImage = new CMSContentImage();
+        cmsContentImage.setImageName( "demoCmsImage3" );
+        cmsContentImage.setFile( inputStream );
+        contentImagesList.add( cmsContentImage);
+        
+        final CMSContentImage cmsContentImage1 = new CMSContentImage();
+        cmsContentImage1.setImageName( "demoCmsImage4" );
+        cmsContentImage1.setFile( inputStream );
+        
+        contentImagesList.add( cmsContentImage1);
+        
+        contentService.addContentImages( store, contentImagesList );
+
+    }
 
     @Test
     public void getContentImage()
