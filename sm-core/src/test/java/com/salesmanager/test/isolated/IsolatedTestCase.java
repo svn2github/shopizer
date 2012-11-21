@@ -408,8 +408,8 @@ public class IsolatedTestCase
         throws ServiceException, FileNotFoundException, IOException
     {
 
-        MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        File file1 = new File( "/Users/csamson777/Documents/csti/cocoacart/preview_2.png" );
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        final File file1 = new File( "/Umesh/contentimage/test_image1.jpg" );
 
         if ( !file1.exists() || !file1.canRead() )
         {
@@ -448,16 +448,22 @@ public class IsolatedTestCase
     @Test
     public void getAllContentImages() throws ServiceException{
         final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        List<OutputContentImage> contentImagesList= contentService.getContentImages( store, null );
+        final List<OutputContentImage> contentImagesList= contentService.getContentImages( store, null );
         if(CollectionUtils.isNotEmpty( contentImagesList )){
             System.out.println("Total " + contentImagesList.size()+ " Images found");
-           for(OutputContentImage outputContentImage :contentImagesList){
+           for(final OutputContentImage outputContentImage :contentImagesList){
                System.out.println(outputContentImage.getImageName());
            }
         }
         else{
             System.out.println("No image found for given merchant store");
         }
+    }
+    
+    @Test
+    public void removeAllContentImages() throws ServiceException{
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        contentService.removeImages( store );
     }
     
 
@@ -924,13 +930,13 @@ public class IsolatedTestCase
         throws ServiceException
     {
 
-		  MerchantStore store = merchantService.getMerchantStore(MerchantStore.DEFAULT_STORE);
+		  final MerchantStore store = merchantService.getMerchantStore(MerchantStore.DEFAULT_STORE);
 
-		  Group gsuperadmin = new Group("SUPERADMIN");
-		  Group gadmin = new Group("ADMIN");
-		  Group gcatalogue = new Group("GROUP_CATALOGUE");
-		  Group gstore = new Group("GROUP_STORE");
-		  Group gorder = new Group("GROUP_ORDER");
+		  final Group gsuperadmin = new Group("SUPERADMIN");
+		  final Group gadmin = new Group("ADMIN");
+		  final Group gcatalogue = new Group("GROUP_CATALOGUE");
+		  final Group gstore = new Group("GROUP_STORE");
+		  final Group gorder = new Group("GROUP_ORDER");
 
 		  groupService.create(gsuperadmin);
 		  groupService.create(gadmin);
@@ -944,47 +950,47 @@ public class IsolatedTestCase
 		  groupService.create(gstore);
 		  groupService.create(gorder);
 		  
-		  Permission auth = new Permission("AUTH");//Authenticated
+		  final Permission auth = new Permission("AUTH");//Authenticated
 		  auth.getGroups().add(gsuperadmin);
 		  auth.getGroups().add(gadmin);
 		  permissionService.create(auth);
 		  
-		  Permission categories = new Permission("CATEGORIES");
+		  final Permission categories = new Permission("CATEGORIES");
 		  categories.getGroups().add(gsuperadmin);
 		  categories.getGroups().add(gadmin);
 		  permissionService.create(categories);
 		  
-		  Permission products = new Permission("PRODUCTS");
+		  final Permission products = new Permission("PRODUCTS");
 		  products.getGroups().add(gsuperadmin);
 		  products.getGroups().add(gadmin);
 		  permissionService.create(products);
 		  
-		  Permission attributes = new Permission("ATTRIBUTES");
+		  final Permission attributes = new Permission("ATTRIBUTES");
 		  attributes.getGroups().add(gsuperadmin);
 		  permissionService.create(attributes);
 		  
-		  Permission featured = new Permission("FEATURED");
+		  final Permission featured = new Permission("FEATURED");
 		  featured.getGroups().add(gsuperadmin);
 		  permissionService.create(featured);
 		  
-		  Permission order = new Permission("ORDER");
+		  final Permission order = new Permission("ORDER");
 		  order.getGroups().add(gsuperadmin);
 		  permissionService.create(order);
 		  
-		  Permission content = new Permission("CONTENT");
+		  final Permission content = new Permission("CONTENT");
 		  content.getGroups().add(gsuperadmin);
 		  permissionService.create(content);
-		  Permission pstore = new Permission("STORE");
+		  final Permission pstore = new Permission("STORE");
 		  pstore.getGroups().add(gsuperadmin);
 		  permissionService.create(pstore);
 		  
-		  Permission tax = new Permission("TAX");
+		  final Permission tax = new Permission("TAX");
 		  tax.getGroups().add(gsuperadmin);
 		  permissionService.create(tax);
-		  Permission payment = new Permission("PAYMENT");
+		  final Permission payment = new Permission("PAYMENT");
 		  payment.getGroups().add(gsuperadmin);
 		  permissionService.create(payment);
-		  Permission shipping = new Permission("SHIPPING");
+		  final Permission shipping = new Permission("SHIPPING");
 		  shipping.getGroups().add(gsuperadmin);
 		  permissionService.create(shipping);
 		  
@@ -1002,7 +1008,7 @@ public class IsolatedTestCase
         final Locale locale = new Locale( "en", "CA" );
 
 
-        Product p = productService.getById(50L);
+        final Product p = productService.getById(50L);
 
         //final Product p = productService.getProductForLocale( 1L, language, locale );
 
