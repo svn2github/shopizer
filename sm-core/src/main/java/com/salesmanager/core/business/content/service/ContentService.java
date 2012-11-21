@@ -12,6 +12,17 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.modules.cms.common.CMSContentImage;
 
+
+/**
+ * 
+ * Interface defining methods responsible for CMSContentService.
+ * ContentServive will be be entry point for CMS and take care of following functionalities.
+ * <li>Adding,removing Content images for given merchant store</li>
+ * <li>Get,Save,Update Content data for given merchant store</li>
+ *  
+ * @author Umesh Awasthhi
+ *
+ */
 public interface ContentService
     extends SalesManagerEntityService<Long, Content>
 {
