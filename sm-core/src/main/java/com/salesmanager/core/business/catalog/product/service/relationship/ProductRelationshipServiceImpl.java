@@ -42,6 +42,15 @@ public class ProductRelationshipServiceImpl extends
 		
 	}
 	
+	public void delete(ProductRelationship relationship) throws ServiceException {
+		
+		//throws detached exception so need to query first
+		relationship = this.getById(relationship.getId());
+		super.delete(relationship);
+		
+		
+	}
+	
 	@Override
 	public List<ProductRelationship> getByType(MerchantStore store, Product product, ProductRelationshipType type, Language language) throws ServiceException {
 		
