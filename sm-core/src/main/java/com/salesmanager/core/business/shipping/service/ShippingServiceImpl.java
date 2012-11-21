@@ -1,8 +1,10 @@
 package com.salesmanager.core.business.shipping.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +18,7 @@ import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
@@ -49,6 +52,20 @@ public class ShippingServiceImpl implements ShippingService {
 		}
 		
 		return returnModules;
+	}
+	
+	public Map<String,IntegrationConfiguration> getShippingModulesConfigured(MerchantStore store) throws ServiceException {
+		
+		Map<String,IntegrationConfiguration> modules = new HashMap<String,IntegrationConfiguration>();
+		MerchantConfiguration configuration = merchantConfigurationService.getMerchantConfiguration(SHIPPING_MODULES, store);
+		if(configuration!=null) {
+			if(!StringUtils.isBlank(configuration.getValue())) {
+				
+				
+				
+			}
+		}
+		return modules;
 	}
 	
 	
@@ -99,14 +116,23 @@ public class ShippingServiceImpl implements ShippingService {
 			} 
 			
 			configuration.setValue(value);
-			
-			//TODO save or update
+
 			merchantConfigurationService.saveOrUpdate(configuration);
 			
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}
 
+	}
+	
+	private Map<String,IntegrationConfiguration> parseConfiguration(String value) throws Exception {
+		
+		Map<String,IntegrationConfiguration> modules = new HashMap<String,IntegrationConfiguration>();
+		
+		
+		return modules;
+		
+		
 	}
 	
 
