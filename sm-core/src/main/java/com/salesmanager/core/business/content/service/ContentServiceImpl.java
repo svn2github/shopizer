@@ -3,6 +3,7 @@ package com.salesmanager.core.business.content.service;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -148,8 +149,37 @@ public class ContentServiceImpl
     {
         Assert.notNull( store, "Merchant store can not be null" );
         Assert.notEmpty( contentImagesList, "Images list can not be empty" );
+        LOG.info( "Adding total {} images for given merchant",contentImagesList.size() );
+        final List<InputContentImage> inputContentImagesList=new ArrayList<InputContentImage>();
+        for(final CMSContentImage cmsContentImage:contentImagesList){
+            final InputContentImage contentImage = new InputContentImage( ImageContentType.CONTENT );
+            contentImage.setImageName( cmsContentImage.getImageName() );
+            try
+            {
+                if ( cmsContentImage.getContentType() == null )
+                {
+                    contentImage.setImageContentType( URLConnection.guessContentTypeFromStream( cmsContentImage.getFile() ) );
+                }
+                else
+                {
+                    contentImage.setImageContentType( cmsContentImage.getContentType() );
+                }
 
-    }
+                final ByteArrayOutputStream output = new ByteArrayOutputStream();
+                IOUtils.copy( cmsContentImage.getFile(), output );
+                contentImage.setFile( output );
+                inputContentImagesList.add(contentImage);
+            }
+            catch ( final IOException e )
+            {
+                LOG.error( "Error while trying to convert input stream to buffered image", e );
+                throw new ServiceException( e );
+
+            }
+        }
+        LOG.info( "Adding content images for merchant...." );
+        contentFileManager.addImagees( store, inputContentImagesList );
+   }
     
     
 

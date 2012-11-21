@@ -371,6 +371,60 @@ public class CmsContentFileManagerInfinispanImpl
         }
 
     }
+    
+    /**
+     * <p>
+     * Method to add images for given store.Content Images will be stored in Infinispan and will be retrieved based on
+     * the storeID. Following steps will be performed to store content images
+     * </p>
+     * <li>Merchant Node will be retrieved from the cacheTree if it exists else new node will be created.</li> <li>
+     * Images will be stored in CacheAttribute , which eventually will be stored in Infinispan</li>
+     * 
+     * @param store Merchant store for which images is getting stored in Infinispan.
+     * @param imagesList input content images list which will get {@link InputContentImage} stored
+     * @throws ServiceException if content image storing process fail.
+     * @see InputContentImage
+     * @see CacheAttribute
+     * @see CmsFileManagerInfinispan
+     */
+    @Override
+    public void addImagees( final MerchantStore store, final List<InputContentImage> imagesList )
+        throws ServiceException
+    {
+        if ( treeCache == null )
+        {
+            LOGGER.error( "Unable to find treeCache in Infinispan.." );
+            throw new ServiceException( "CmsImageFileManagerInfinispan has a null treeCache" );
+        }
+
+        try
+        {
+
+            final Node<String, Object> merchantNode = getMerchantNode( store.getId() );
+            // object for a given merchant containing all images
+            CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( IMAGE_CONTENT );
+
+            if ( contentAttribute == null )
+            {
+                contentAttribute = new CacheAttribute();
+               
+            }
+
+            for(final InputContentImage image:imagesList){
+                contentAttribute.getEntities().put( image.getImageName(), image.getFile().toByteArray() );
+            }
+            merchantNode.put( IMAGE_CONTENT, contentAttribute );
+            LOGGER.info( "Total {} content images added successfully.",imagesList.size() );
+
+        }
+        catch ( final Exception e )
+        {
+            LOGGER.error( "Error while saving content image", e );
+            throw new ServiceException( e );
+
+        }
+        
+    }
 
     @SuppressWarnings( "unchecked" )
     private Node<String, Object> getMerchantNode( final Integer storeId )
@@ -400,5 +454,7 @@ public class CmsContentFileManagerInfinispanImpl
 
         return merchantNode;
     }
+
+   
 
 }

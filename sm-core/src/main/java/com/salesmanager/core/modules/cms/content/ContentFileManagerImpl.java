@@ -43,6 +43,22 @@ public class ContentFileManagerImpl
         uploadImage.addImage( store, image );
 
     }
+    /**
+     * Implementation for add images. This method will called respected add image method of underlying
+     * CMSContentManager. For CMS Content images {@link CmsContentFileManagerInfinispanImpl} will take care of adding
+     * given content images with Infinispan cache.
+     * 
+     * @param store merchant store.
+     * @param imagesList Input content images
+     * @throws ServiceException
+     */
+    @Override
+    public void addImagees( final MerchantStore store, final List<InputContentImage> imagesList )
+        throws ServiceException
+    {
+        uploadImage.addImagees( store, imagesList );
+        
+    }
 
     /**
      * Implementation for get images method. This method will called respected get images method of underlying
@@ -150,5 +166,7 @@ public class ContentFileManagerImpl
        
         return getImage.getImageNames( store, imageContentType );
     }
+
+    
 
 }
