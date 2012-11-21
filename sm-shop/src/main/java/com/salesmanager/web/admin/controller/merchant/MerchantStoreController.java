@@ -34,6 +34,7 @@ import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.web.admin.entity.reference.Size;
 import com.salesmanager.web.admin.entity.reference.Weight;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
@@ -69,7 +70,7 @@ public class MerchantStoreController {
 		
 		
 		//TODO use multiple store
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		model.addAttribute("store", store);
 		
@@ -104,7 +105,7 @@ public class MerchantStoreController {
 		setMenu(model,request);
 		
 		
-		MerchantStore sessionStore = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore sessionStore = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
 		if(store.getId()>0) {
 			if(store.getId().intValue() != sessionStore.getId().intValue()) {
@@ -213,7 +214,7 @@ public class MerchantStoreController {
 		
 		merchantStoreService.update(sessionStore);
 		//update session store
-		request.getSession().setAttribute("MERCHANT_STORE", sessionStore);
+		request.getSession().setAttribute(Constants.ADMIN_STORE, sessionStore);
 
 
 		model.addAttribute("success","success");

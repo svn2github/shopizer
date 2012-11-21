@@ -21,6 +21,7 @@ import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.constants.Constants;
 
 @Controller
 public class ShippingMethodsController {
@@ -50,7 +51,7 @@ public class ShippingMethodsController {
 
 
 		this.setMenu(model, request);
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		//get shipping methods
 		List<IntegrationModule> modules = shippingService.getShippingMethods(store);

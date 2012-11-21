@@ -81,7 +81,7 @@ public class UserController {
 		setMenu(model,request);
 		
 		
-//		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+//		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 //		Language language = (Language)request.getAttribute("LANGUAGE");
 		
 		//get groups
@@ -114,7 +114,7 @@ public class UserController {
 		String id = request.getParameter("id");
 
 
-//		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+//		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		
 		AjaxResponse resp = new AjaxResponse();
@@ -180,7 +180,7 @@ public class UserController {
 //		//display menu
 //		setMenu(model,request);
 //		
-//		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+//		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 //
 //		if(category.getId() != null && category.getId() >0) { //edit entry
 //			

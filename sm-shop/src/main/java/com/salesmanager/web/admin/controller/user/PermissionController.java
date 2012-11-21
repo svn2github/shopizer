@@ -187,7 +187,7 @@ public class PermissionController {
 		String sid = request.getParameter("permissionId");
 
 		// MerchantStore store =
-		// (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		// (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
 		AjaxResponse resp = new AjaxResponse();
 

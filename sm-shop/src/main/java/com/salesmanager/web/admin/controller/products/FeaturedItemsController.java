@@ -29,6 +29,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.constants.Constants;
 
 
 @Controller
@@ -52,7 +53,7 @@ public class FeaturedItemsController {
 		setMenu(model,request);
 		
 		Language language = (Language)request.getAttribute("LANGUAGE");
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		List<Category> categories = categoryService.listByStore(store,language);
 		
@@ -66,7 +67,7 @@ public class FeaturedItemsController {
 	@RequestMapping(value="/admin/catalogue/featured/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageProducts(HttpServletRequest request, HttpServletResponse response) {
 		
-		String productId = request.getParameter("productId");
+		
 		AjaxResponse resp = new AjaxResponse();
 		
 		try {
@@ -74,7 +75,7 @@ public class FeaturedItemsController {
 
 			
 			Language language = (Language)request.getAttribute("LANGUAGE");
-			MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
 
 			List<ProductRelationship> relationships = productRelationshipService.getByType(store, null, ProductRelationshipType.FEATURED_ITEM, language);
@@ -83,6 +84,7 @@ public class FeaturedItemsController {
 				
 				Product product = relationship.getRelatedProduct();
 				Map entry = new HashMap();
+				entry.put("relationshipId", relationship.getId());
 				entry.put("productId", product.getId());
 				
 				ProductDescription description = product.getDescriptions().iterator().next();
@@ -109,7 +111,7 @@ public class FeaturedItemsController {
 
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+
 	@RequestMapping(value="/admin/catalogue/featured/addItem.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String addItem(HttpServletRequest request, HttpServletResponse response) {
 		
@@ -120,9 +122,8 @@ public class FeaturedItemsController {
 			
 
 			Long lProductId = Long.parseLong(productId);
-			
-			Language language = (Language)request.getAttribute("LANGUAGE");
-			MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
 			Product product = productService.getById(lProductId);
 			
@@ -144,6 +145,63 @@ public class FeaturedItemsController {
 			relationship.setRelatedProduct(product);
 			
 			productRelationshipService.saveOrUpdate(relationship);
+			
+
+			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_SUCCESS);
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while paging products", e);
+			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		return returnString;
+		
+	}
+	
+	@RequestMapping(value="/admin/catalogue/featured/removeItem.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String removeItem(HttpServletRequest request, HttpServletResponse response) {
+		
+		String productId = request.getParameter("productId");
+		String removeEntity = request.getParameter("removeEntity");
+		AjaxResponse resp = new AjaxResponse();
+		
+		try {
+			
+
+			Long lproductId = Long.parseLong(productId);
+
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+			
+			Product product = productService.getById(lproductId);
+			
+			if(product==null) {
+				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			if(product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			ProductRelationship relationship = productRelationshipService.getByType(store, product, ProductRelationshipType.FEATURED_ITEM);
+			
+			if(relationship==null) {
+				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			if(relationship.getStore().getId().intValue()!=store.getId().intValue()) {
+				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+
+
+			
+			
+			productRelationshipService.delete(relationship);
 			
 
 			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_SUCCESS);

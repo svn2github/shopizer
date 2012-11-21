@@ -33,6 +33,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
@@ -80,7 +81,7 @@ public class OptionsController {
 
 		
 		this.setMenu(model, request);
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		List<Language> languages = store.getLanguages();
 
@@ -157,7 +158,7 @@ public class OptionsController {
 		//display menu
 		setMenu(model,request);
 		
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		ProductOption dbEntity =	null;	
 
 		if(option.getId() != null && option.getId() >0) { //edit entry
@@ -226,7 +227,7 @@ public class OptionsController {
 			
 			Language language = (Language)request.getAttribute("LANGUAGE");	
 		
-			MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
 			List<ProductOption> options = null;
 					
@@ -297,7 +298,7 @@ public class OptionsController {
 	public @ResponseBody String deleteOption(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String sid = request.getParameter("optionId");
 
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		AjaxResponse resp = new AjaxResponse();
 

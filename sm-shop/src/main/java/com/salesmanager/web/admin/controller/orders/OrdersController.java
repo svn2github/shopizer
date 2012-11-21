@@ -23,6 +23,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
 
 
@@ -52,7 +53,7 @@ public class OrdersController {
 		setMenu(model,request);
 		
 		Language language = (Language)request.getAttribute("LANGUAGE");
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		//the list of orders is from page method
 		
@@ -81,7 +82,7 @@ public class OrdersController {
 			int endRow = Integer.parseInt(request.getParameter("_endRow"));
 			
 			Language language = (Language)request.getAttribute("LANGUAGE");
-			MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
 
 			

@@ -144,7 +144,7 @@ public class GroupsController {
 		setMenu(model, request);
 
 		// MerchantStore store =
-		// (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		// (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
 		if (group.getId() != null && group.getId() > 0) { // edit
 																	// entry
@@ -285,7 +285,7 @@ public class GroupsController {
 		String sid = request.getParameter("groupId");
 
 		// MerchantStore store =
-		// (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		// (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
 		AjaxResponse resp = new AjaxResponse();
 

@@ -22,6 +22,7 @@ import com.salesmanager.core.business.system.service.SystemConfigurationService;
 import com.salesmanager.core.constants.SystemConstants;
 import com.salesmanager.web.admin.security.UserServicesImpl;
 import com.salesmanager.web.constants.ApplicationConstants;
+import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.AppConfiguration;
 
 
@@ -117,7 +118,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	
 				
 				
-				MerchantStore store = (MerchantStore)request.getSession().getAttribute("MERCHANT_STORE");
+				MerchantStore store = (MerchantStore)request.getSession().getAttribute(Constants.MERCHANT_STORE);
 				if(store==null) {
 					//MerchantStoreService merchantService = (MerchantStoreService) ContextLoader.getCurrentWebApplicationContext().getBean(
 					//		"merchantService");
@@ -126,12 +127,12 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 						System.out.println("*** MerchantService is null ***");
 					} else {
 						store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
-						request.getSession().setAttribute("MERCHANT_STORE", store);
+						request.getSession().setAttribute(Constants.MERCHANT_STORE, store);
 						
 					}
 				}
 				
-				request.setAttribute("MERCHANT_STORE", store);
+				request.setAttribute(Constants.MERCHANT_STORE, store);
 			
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

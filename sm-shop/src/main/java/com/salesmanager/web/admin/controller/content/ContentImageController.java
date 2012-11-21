@@ -22,6 +22,7 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.constants.Constants;
 
 
 @Controller
@@ -44,7 +45,7 @@ public class ContentImageController {
 	public String getContentImages(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		this.setMenu(model, request);
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		
 		
@@ -61,7 +62,7 @@ public class ContentImageController {
 		try {
 			
 
-			MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
 			List<String> imageNames = contentService.getContentImagesNames(store,ImageContentType.CONTENT);
 			

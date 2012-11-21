@@ -33,6 +33,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
@@ -74,7 +75,7 @@ public class CategoryController {
 		setMenu(model,request);
 		
 		
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		
 		//get parent categories
@@ -145,7 +146,7 @@ public class CategoryController {
 		//display menu
 		setMenu(model,request);
 		
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
 		if(category.getId() != null && category.getId() >0) { //edit entry
 			
@@ -248,7 +249,7 @@ public class CategoryController {
 			Language language = (Language)request.getAttribute("LANGUAGE");
 				
 		
-			MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
 			List<Category> categories = null;
 					
@@ -304,7 +305,7 @@ public class CategoryController {
 		
 		//get the list of categories
 		Language language = (Language)request.getAttribute("LANGUAGE");
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		List<Category> categories = categoryService.listByStore(store, language);
 		
@@ -318,7 +319,7 @@ public class CategoryController {
 	public @ResponseBody String deleteCategory(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String sid = request.getParameter("categoryId");
 
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		AjaxResponse resp = new AjaxResponse();
 
@@ -358,7 +359,7 @@ public class CategoryController {
 		String parentid = request.getParameter("parentId");
 		String childid = request.getParameter("childId");
 
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		AjaxResponse resp = new AjaxResponse();
 
@@ -415,7 +416,7 @@ public class CategoryController {
 		String id = request.getParameter("id");
 
 
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		
 		AjaxResponse resp = new AjaxResponse();

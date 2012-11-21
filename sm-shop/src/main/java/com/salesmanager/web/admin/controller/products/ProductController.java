@@ -42,6 +42,7 @@ import com.salesmanager.core.business.reference.language.service.LanguageService
 import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 import com.salesmanager.core.business.tax.service.TaxClassService;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
@@ -98,7 +99,7 @@ public class ProductController {
 		setMenu(model,request);
 		
 		
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		
 
@@ -226,7 +227,7 @@ public class ProductController {
 		//display menu
 		setMenu(model,request);
 		
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		List<Manufacturer> manufacturers = manufacturerService.listByStore(store, language);
 		
@@ -427,7 +428,7 @@ public class ProductController {
 			Language language = (Language)request.getAttribute("LANGUAGE");
 				
 		
-			MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
 			List<Category> categories = null;
 					

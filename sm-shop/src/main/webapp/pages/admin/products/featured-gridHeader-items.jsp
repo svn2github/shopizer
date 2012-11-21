@@ -6,5 +6,6 @@
 
 
 
+        	{title:"<s:message code="label.entity.id" text="Id"/>", name: "productId"},
         	{title:"<s:message code="label.entity.name" text="Name"/>", name: "name", width: "70%"},
-        	{title:"<s:message code="label.product.sku" text="Sku"/>", name: "sku", width: "30%"}
+        	{title:"<s:message code="label.product.sku" text="Sku"/>", name: "sku"}

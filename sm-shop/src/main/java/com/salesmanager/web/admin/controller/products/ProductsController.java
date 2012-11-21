@@ -32,6 +32,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
@@ -56,7 +57,7 @@ public class ProductsController {
 		setMenu(model,request);
 		
 		Language language = (Language)request.getAttribute("LANGUAGE");
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		List<Category> categories = categoryService.listByStore(store, language);
 		
@@ -89,7 +90,7 @@ public class ProductsController {
 			int endRow = Integer.parseInt(request.getParameter("_endRow"));
 			
 			Language language = (Language)request.getAttribute("LANGUAGE");
-			MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
 			ProductCriteria criteria = new ProductCriteria();
 			
@@ -190,7 +191,7 @@ public class ProductsController {
 	public @ResponseBody String deleteProduct(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String sid = request.getParameter("productId");
 
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		AjaxResponse resp = new AjaxResponse();
 

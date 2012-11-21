@@ -29,6 +29,7 @@ import com.salesmanager.core.business.reference.language.service.LanguageService
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.constants.Constants;
 
 @Controller
 public class StoreBrandingController {
@@ -62,7 +63,7 @@ public class StoreBrandingController {
 		
 		
 		//TODO use multiple store
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		model.addAttribute("store", store);
 		
@@ -85,7 +86,7 @@ public class StoreBrandingController {
 		setMenu(model,request);
 		
 		
-		MerchantStore sessionStore = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore sessionStore = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
 		if(store.getId()>0) {
 			if(store.getId().intValue() != sessionStore.getId().intValue()) {
@@ -155,7 +156,7 @@ public class StoreBrandingController {
 		
 		//merchantStoreService.update(sessionStore);
 		//update session store
-		request.getSession().setAttribute("MERCHANT_STORE", sessionStore);
+		request.getSession().setAttribute(Constants.ADMIN_STORE, sessionStore);
 
 
 		model.addAttribute("success","success");

@@ -39,7 +39,8 @@
       			<!-- Listing grid include -->
 				 <c:set value="/admin/products/paging.html" var="pagingUrl" scope="request"/>
 				 <c:set value="/admin/catalogue/featured/paging.html" var="containerFetchUrl" scope="request"/>
-				 <c:set value="/admin/catalogue/featured/remove.html" var="containerRemoveUrl" scope="request"/>
+				 <c:set value="/admin/catalogue/featured/removeItem.html" var="containerRemoveUrl" scope="request"/>
+				 <c:set value="FEATURED" var="removeEntity" scope="request"/>
 				 <c:set value="/admin/catalogue/featured/addItem.html" var="containerAddUrl" scope="request"/>
 				 <c:set value="/admin/catalogue/featured/update.html" var="containerUpdateUrl" scope="request"/>
 				 <c:set value="/admin/products/editProduct.html" var="editUrl" scope="request"/>

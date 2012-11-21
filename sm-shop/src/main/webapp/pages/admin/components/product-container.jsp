@@ -20,7 +20,7 @@
 									ID:"container", 
 									dataFormat:"json", 
 									operationBindings:[ 
-										{operationType:"remove", dataProtocol:"postParams",dataURL: "<c:url value="${containerRemoveUrl}" />"},
+										{operationType:"remove", dataProtocol:"postParams",dataURL: "<c:url value="${containerRemoveUrl}" />?removeEntity=<c:out value="${removeEntity}" />"},
 										{operationType:"fetch", dataProtocol:"postParams",dataURL: "<c:url value="${containerFetchUrl}" />"},
 										{operationType:"add", dataProtocol:"postParams",dataURL: "<c:url value="${containerAddUrl}" />"},
 										{operationType:"update", dataProtocol:"postParams",dataURL: "<c:url value="${containerUpdateUrl}" />"}
@@ -33,7 +33,7 @@
 												window.location='<c:url value="${reloadUrl}" />';
 										}
 										if(status == 9999) {
-											//window.location='<c:url value="${reloadUrl}" />';
+											window.location='<c:url value="${reloadUrl}" />';
 										}
 									}
 								});  

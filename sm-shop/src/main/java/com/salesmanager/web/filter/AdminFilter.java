@@ -15,16 +15,23 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.constants.Constants;
 
 
 public class AdminFilter extends HandlerInterceptorAdapter {
 	
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AdminFilter.class);
+	
+	@Autowired
+	private MerchantStoreService merchantService;
 	
 	public boolean preHandle(
             HttpServletRequest request,
@@ -38,7 +45,22 @@ public class AdminFilter extends HandlerInterceptorAdapter {
 		
 
 		
+		//TODO merchant store matches user store
+		MerchantStore store = (MerchantStore)request.getSession().getAttribute(Constants.ADMIN_STORE);
+		if(store==null) {
+			//MerchantStoreService merchantService = (MerchantStoreService) ContextLoader.getCurrentWebApplicationContext().getBean(
+			//		"merchantService");
+			
 
+				store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
+				request.getSession().setAttribute(Constants.ADMIN_STORE, store);
+
+		}
+		
+		request.setAttribute(Constants.ADMIN_STORE, store);
+		
+		
+		
 		if(menus==null) {
 			
 			InputStream in = null;

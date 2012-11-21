@@ -31,6 +31,7 @@ import com.salesmanager.core.constants.ShippingConstants;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.shipping.ShippingConfiguration;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.constants.Constants;
 
 
 @Controller
@@ -63,7 +64,7 @@ public class ShippingConfigsController {
 		ShippingConfiguration shippingConfiguration = new ShippingConfiguration();
 		
 		
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 
 		//get key SHP_ZONES_SHIPPING (NATIONAL/INTERNATIONAL) from MerchantConfiguration for the current merchant
@@ -85,7 +86,7 @@ public class ShippingConfigsController {
 	public String saveShippingMode(@ModelAttribute("configuration") ShippingConfiguration configuration, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		this.setMenu(model, request);
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		MerchantConfiguration modeConfiguration =  merchantConfigurationService.getMerchantConfiguration(ShippingConstants.SHIPPING_MODE, store);
 		
@@ -106,7 +107,7 @@ public class ShippingConfigsController {
 		try {
 			
 			Language language = (Language)request.getAttribute("LANGUAGE");
-			MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
 			//get list of countries
 			Map<String,Country> countries = countryService.getCountriesMap(language);
@@ -139,7 +140,7 @@ public class ShippingConfigsController {
 				}
 			}
 			
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 
 		} catch (Exception e) {
 			LOGGER.error("Error while paging categories", e);
@@ -172,7 +173,7 @@ public class ShippingConfigsController {
 			String countryCode = (String)conf.get("code");
 			
 			Language language = (Language)request.getAttribute("LANGUAGE");
-			MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
 			//get list of countries
 			List<String> includedCountries = shippingService.getSupportedCountries(store);

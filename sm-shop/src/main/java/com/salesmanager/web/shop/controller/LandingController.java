@@ -13,6 +13,7 @@ import com.salesmanager.core.business.content.model.content.Content;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.web.constants.Constants;
 
 @Controller
 public class LandingController {
@@ -26,7 +27,7 @@ public class LandingController {
 		
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		
 		//store.getStorename();
 		//store.getLanguages();

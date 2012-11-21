@@ -16,6 +16,7 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.constants.Constants;
 
 @Controller
 public class ProductPriceController {
@@ -51,7 +52,7 @@ public class ProductPriceController {
 			
 			Language language = (Language)request.getAttribute("LANGUAGE");	
 		
-			MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
 
 			//List<ProductPrice> prices = productPriceService.getByStore(store,language);

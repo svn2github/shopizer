@@ -28,6 +28,7 @@ import com.salesmanager.core.business.reference.language.service.LanguageService
 import com.salesmanager.web.admin.entity.merchant.StoreLanding;
 import com.salesmanager.web.admin.entity.merchant.StoreLandingDescription;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.constants.Constants;
 
 @Controller
 public class StoreLandingController {
@@ -46,7 +47,7 @@ public class StoreLandingController {
 		
 		setMenu(model,request);
 
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		List<Language> languages = store.getLanguages();
 		
@@ -97,7 +98,7 @@ public class StoreLandingController {
 		
 		setMenu(model,request);
 		
-		MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
 		
 		if (result.hasErrors()) {
