@@ -215,9 +215,32 @@ public class CmsContentFileManagerInfinispanImpl
     public void removeImages( final MerchantStore store )
         throws ServiceException
     {
-        // TODO Auto-generated method stub
+        LOGGER.info( "Removing all images for {} merchant ",store.getId() );
+        if ( treeCache == null )
+        {
+            LOGGER.error( "Unable to find treeCache in Infinispan.." );
+            throw new ServiceException( "CmsImageFileManagerInfinispan has a null treeCache" );
+        }
+        
+        try
+        {
+            final Node<String, Object> merchantNode = getMerchantNode( store.getId() );
+            if ( merchantNode == null )
+            {
+                LOGGER.warn( "merchant node is null" );
+                throw new ServiceException("unable to get merchant node for CmsImageFileManagerInfinispan");
+            } 
+            
+            merchantNode.clearData();
+            LOGGER.info( "All images for merchant {} removed from cache",store.getId() );
 
-    }
+        }
+        catch ( final Exception e )
+        {
+            LOGGER.error( "Error while deleting content image for {} merchant ", store.getId() );
+            throw new ServiceException( e );
+        }
+   }
 
     @Override
     public void removeImage( final ContentImage contentImage )

@@ -3,6 +3,7 @@ package com.salesmanager.core.business.content.service;
 import java.util.List;
 
 import com.salesmanager.core.business.content.model.content.Content;
+import com.salesmanager.core.business.content.model.image.ContentImage;
 import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -51,6 +52,26 @@ public interface ContentService
      * @throws ServiceException
      */
     void addContentImages(MerchantStore store,List<CMSContentImage> contentImagesList) throws ServiceException;
+    
+    
+    /**
+     * Method to remove given content image.Images are stored in underlying system based on there name.
+     * Name will be used to search given image for removal
+     * @param contentImage
+     * @throws ServiceException
+     */
+    public void removeImage( final ContentImage contentImage ) throws ServiceException;
+    
+    
+    /**
+     * Method to remove all images for a given merchant.It will take merchant store as an input and will
+     * remove all images associated with given merchant store.
+     * 
+     * @param store
+     * @throws ServiceException
+     */
+    public void removeImages( final MerchantStore store ) throws ServiceException;
+    
     /**
      * Method responsible for fetching particular content image for a given merchant store. Requested image will be
      * search in Infinispan tree cache and OutputContentImage will be sent, in case no image is found null will

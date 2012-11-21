@@ -70,11 +70,20 @@ public class ContentFileManagerImpl
 
     }
 
+    /**
+     * Method responsible for removing all associated images for given merchant store.
+     * Content images for a merchant store are being stored in Infinispan cache tree and they will be removed from
+     * cache tree.
+     * 
+     *  @param store Merchant store whose associated images will be removed
+     *  @throws ServiceException
+     *  
+     */
     @Override
     public void removeImages( final MerchantStore store )
         throws ServiceException
     {
-        // TODO Auto-generated method stub
+        removeImage.removeImages( store );
 
     }
 

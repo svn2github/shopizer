@@ -14,6 +14,7 @@ import org.springframework.util.Assert;
 
 import com.salesmanager.core.business.content.dao.ContentDao;
 import com.salesmanager.core.business.content.model.content.Content;
+import com.salesmanager.core.business.content.model.image.ContentImage;
 import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.InputContentImage;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
@@ -128,6 +129,7 @@ public class ContentServiceImpl
 
         LOG.info( "Adding content image for merchant...." );
         contentFileManager.addImage( store, contentImage );
+       
 
     }
 
@@ -144,10 +146,43 @@ public class ContentServiceImpl
     public void addContentImages( final MerchantStore store, final List<CMSContentImage> contentImagesList )
         throws ServiceException
     {
-        // TODO Auto-generated method stub
+        Assert.notNull( store, "Merchant store can not be null" );
+        Assert.notEmpty( contentImagesList, "Images list can not be empty" );
 
     }
     
+    
+
+    /**
+     * Method to remove given content image.Images are stored in underlying system based on there name.
+     * Name will be used to search given image for removal
+     * @param contentImage
+     * @throws ServiceException
+     */
+    @Override
+    public void removeImage( final ContentImage contentImage )
+        throws ServiceException
+    {
+        Assert.notNull( contentImage, "Content Image can not be null" );
+        
+    }
+    
+    /**
+     * Method to remove all images for a given merchant.It will take merchant store as an input and will
+     * remove all images associated with given merchant store.
+     * 
+     * @param store
+     * @throws ServiceException
+     */
+    @Override
+    public void removeImages( final MerchantStore store )
+        throws ServiceException
+    {
+        Assert.notNull( store, "Merchant Store can not be null" );
+        contentFileManager.removeImages( store );
+        
+    }
+
     
     /**
      * Implementation for getContentImage method defined in {@link ContentService} interface. Methods will return
@@ -200,5 +235,8 @@ public class ContentServiceImpl
             Assert.notNull( store, "Merchant store can not be null" );
             return contentFileManager.getImageNames(store, imageContentType);
         }
+
+   
+   
 
 }
