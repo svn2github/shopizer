@@ -57,7 +57,7 @@ public class ShippingMethodsController {
 		List<IntegrationModule> modules = shippingService.getShippingMethods(store);
 
 		//get configured shipping methods
-
+		//merchantConfigurationService.
 
 
 		model.addAttribute("modules", modules);
