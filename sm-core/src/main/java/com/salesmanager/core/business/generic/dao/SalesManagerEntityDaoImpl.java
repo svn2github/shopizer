@@ -3,6 +3,7 @@ package com.salesmanager.core.business.generic.dao;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Order;
 import javax.persistence.metamodel.SingularAttribute;
@@ -91,5 +92,11 @@ public abstract class SalesManagerEntityDaoImpl<K extends Serializable & Compara
 	
 	public Long count(Expression<Boolean> filter) {
 		return super.countEntity(getObjectClass(), filter);
+	}
+	
+	
+	@Override
+	public EntityManager getEntityManager() {
+		return super.getEntityManager();
 	}
 }

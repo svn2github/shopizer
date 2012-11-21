@@ -26,6 +26,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import com.salesmanager.core.business.common.model.audit.AuditListener;
 import com.salesmanager.core.business.common.model.audit.AuditSection;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.common.model.audit.Auditable;
 import com.salesmanager.core.constants.SchemaConstant;
@@ -83,6 +84,10 @@ public class User extends SalesManagerEntity<Long, User> implements Auditable {
 	@NotEmpty
 	@Column(name="ADMIN_PASSWORD", length=50)
 	private String adminPassword;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="MERCHANT_ID", nullable=false)
+	private MerchantStore merchantSore;
 	
 	
 	@Column(name="ADMIN_FIRST_NAME")
@@ -244,6 +249,14 @@ public class User extends SalesManagerEntity<Long, User> implements Auditable {
 
 	public List<Group> getGroups() {
 		return groups;
+	}
+
+	public MerchantStore getMerchantSore() {
+		return merchantSore;
+	}
+
+	public void setMerchantSore(MerchantStore merchantSore) {
+		this.merchantSore = merchantSore;
 	}
 
 }

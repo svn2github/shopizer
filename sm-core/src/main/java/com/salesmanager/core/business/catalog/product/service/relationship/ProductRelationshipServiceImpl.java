@@ -52,6 +52,15 @@ public class ProductRelationshipServiceImpl extends
 		}
 		
 	}
+	
+	@Override
+	public ProductRelationship getByType(MerchantStore store, Product product, ProductRelationshipType type) throws ServiceException {
+		
+
+		return productRelationshipDao.getByType(store, type.name(), product.getId().longValue());
+				
+		
+	}
 
 
 

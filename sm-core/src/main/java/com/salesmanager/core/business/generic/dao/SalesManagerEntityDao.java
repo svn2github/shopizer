@@ -3,6 +3,7 @@ package com.salesmanager.core.business.generic.dao;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Order;
@@ -95,6 +96,8 @@ public interface SalesManagerEntityDao<K extends Serializable & Comparable<K>, E
 	<T extends E> List<T> list(Class<T> objectClass, Expression<Boolean> filter, Integer limit, Integer offset, Order... orders);
 
 	Long count(Expression<Boolean> filter);
+	
+	EntityManager getEntityManager();
 
 	
 

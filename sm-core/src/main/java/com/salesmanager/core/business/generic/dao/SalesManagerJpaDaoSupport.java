@@ -87,6 +87,10 @@ public class SalesManagerJpaDaoSupport {
 	}
 	
 	protected <T> void delete(T entity) {
+		if (!getEntityManager().contains(entity)) {
+			getEntityManager().merge(entity);
+			//throw new PersistenceException("Failed to delete a detached entity");
+		}
 		getEntityManager().remove(entity);
 	}
 	
