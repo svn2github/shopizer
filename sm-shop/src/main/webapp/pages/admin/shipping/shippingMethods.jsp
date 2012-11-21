@@ -32,34 +32,23 @@
 
 
 							
-							<c:url var="shippingMethodsSave" value="/admin/shipping/saveShippingMethods.html"/>
-							<form:form method="POST" commandName="configuration" action="${shippingConfigurationSave}">
+							<c:url var="saveShippingMethods" value="/admin/shipping/saveShippingMethods.html"/>
+							<form:form method="POST" commandName="configuration" action="${saveShippingMethods}">
 
       							
       								<form:errors path="*" cssClass="alert alert-error" element="div" />
 									<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
 								
 
-
+									  <c:forEach items="${modules}" var="module">
       			  
 					      			  <div class="control-group">
-					                        <label><s:message code="label.shipping.methods" text="Shipping methods"/></label>
-					                        <div class="controls">
-					                                   
-						                        <div class="controls">
-
-						                                 <span class="help-inline"><form:errors path="mode" cssClass="error" /></span>
-						                        </div>
-					
-					                        </div>
+					                        <c:choose><c:when></c:when><c:otherwise></c:otherwise></c:choose><label><s:message code="label.shipping.module.${module.code}" text="Shipping method"/></label>
 					                  </div>
 					                  
-					                  <div class="form-actions">
-                  						<div class="pull-right">
-                  							<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>
-                  						</div>
+					                  </c:forEach>
+					                  
 
-            	 					</div>
             	 			</form:form>
 							
 							
