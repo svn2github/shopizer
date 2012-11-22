@@ -49,6 +49,8 @@ import com.salesmanager.core.business.catalog.product.service.image.ProductImage
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
 import com.salesmanager.core.business.catalog.product.service.price.ProductPriceService;
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
+import com.salesmanager.core.business.content.model.image.ImageContentType;
+import com.salesmanager.core.business.content.model.image.InputContentImage;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.customer.service.CustomerService;
@@ -489,6 +491,15 @@ public class IsolatedTestCase
         else{
             System.out.println("No image found for given merchant store");
         }
+    }
+    
+    @Test
+    public void removeContentImage() throws ServiceException{
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        final InputContentImage contentImage = new InputContentImage( ImageContentType.CONTENT );
+        contentImage.setImageName("demoCmsImage");
+        contentService.removeImage( store, contentImage );
+        
     }
     
     @Test
