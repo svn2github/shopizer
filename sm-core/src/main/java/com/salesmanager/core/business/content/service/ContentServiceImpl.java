@@ -96,6 +96,14 @@ public class ContentServiceImpl
         return contentDao.getByCode( code, store, language );
     }
 
+    /**
+     * Method responsible for adding content image for given merchant store in underlying Infinispan tree
+     * cache. It will take  {@link CMSContentImage} and will store image for given merchant store.
+     * 
+     * @param store Merchant store
+     * @param cmsContentImage {@link CMSContentImage} being stored
+     * @throws ServiceException service exception
+     */
     @Override
     public void addContentImage( final MerchantStore store, final CMSContentImage cmsContentImage )
         throws ServiceException
@@ -178,7 +186,7 @@ public class ContentServiceImpl
             }
         }
         LOG.info( "Adding content images for merchant...." );
-        contentFileManager.addImagees( store, inputContentImagesList );
+        contentFileManager.addImages( store, inputContentImagesList );
    }
     
     
@@ -187,15 +195,17 @@ public class ContentServiceImpl
      * Method to remove given content image.Images are stored in underlying system based on there name.
      * Name will be used to search given image for removal
      * @param contentImage
+     * @param store merchant store
      * @throws ServiceException
      */
     @Override
-    public void removeImage( final ContentImage contentImage )
+    public void removeImage( final MerchantStore store,final ContentImage contentImage )
         throws ServiceException
     {
+        Assert.notNull( store, "Merchant Store can not be null" );
         Assert.notNull( contentImage, "Content Image can not be null" );
-        
-    }
+        contentFileManager.removeImage( store, contentImage );
+ }
     
     /**
      * Method to remove all images for a given merchant.It will take merchant store as an input and will
@@ -266,7 +276,6 @@ public class ContentServiceImpl
             return contentFileManager.getImageNames(store, imageContentType);
         }
 
-   
    
 
 }

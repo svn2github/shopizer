@@ -211,6 +211,13 @@ public class CmsContentFileManagerInfinispanImpl
         return contentImagesList != null ? contentImagesList : Collections.<OutputContentImage> emptyList();
     }
 
+    /**
+     * Method to remove all images for a given merchant store.
+     * This method will take care of removing all images associated for a given merchant store from underlying Infinispan cache tree.
+     * @param store merchant store whose associated images will be removed
+     * @throws ServiceException
+     * 
+     */
     @Override
     public void removeImages( final MerchantStore store )
         throws ServiceException
@@ -242,13 +249,53 @@ public class CmsContentFileManagerInfinispanImpl
         }
    }
 
+    /**
+     * It will take care of removing given content image associated with merchant store from the 
+     * Infinispan tree cache.
+     * In case no such images is associated with the given merchant store {@link ServiceException} will be thrown.
+     * 
+     * @param store merchant store
+     * @param contentImage content images intended for removal
+     * @throws ServiceException
+     */
     @Override
-    public void removeImage( final ContentImage contentImage )
+    public void removeImage(final MerchantStore store, final ContentImage contentImage )
         throws ServiceException
     {
-        // TODO Auto-generated method stub
+        LOGGER.info( "Removing image {}  for {} merchant ",contentImage.getImageName(),store.getId() );
+        
+        if ( treeCache == null )
+        {
+            LOGGER.error( "Unable to find treeCache in Infinispan.." );
+            throw new ServiceException( "CmsImageFileManagerInfinispan has a null treeCache" );
+        }
+        try
+        {
+            final Node<String, Object> merchantNode = getMerchantNode( store.getId() );
+            if ( merchantNode == null )
+            {
+                LOGGER.warn( "merchant node is null" );
+                throw new ServiceException("unable to get merchant node for CmsImageFileManagerInfinispan");
+            } 
+            
+            final CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( IMAGE_CONTENT );
+            if(contentAttribute ==null){
+                LOGGER.warn( "No Content data found for given merchant" );
+                return ;
+            }
+            
+            contentAttribute.getEntities().remove( contentImage.getImageName() );
+            merchantNode.put( IMAGE_CONTENT, contentAttribute );
+            LOGGER.info( "Content image added successfully." );
+            LOGGER.info( "All images for merchant {} removed from cache",store.getId() );
 
-    }
+        }
+        catch ( final Exception e )
+        {
+            LOGGER.error( "Error while deleting content image for {} merchant ", store.getId() );
+            throw new ServiceException( e );
+        }
+}
 
     /**
      * Method to return physical image for given Merchant store based on the imageName. Content image will be searched
@@ -388,7 +435,7 @@ public class CmsContentFileManagerInfinispanImpl
      * @see CmsFileManagerInfinispan
      */
     @Override
-    public void addImagees( final MerchantStore store, final List<InputContentImage> imagesList )
+    public void addImages( final MerchantStore store, final List<InputContentImage> imagesList )
         throws ServiceException
     {
         if ( treeCache == null )

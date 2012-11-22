@@ -10,6 +10,6 @@ public interface ImagePut {
 	
 	
 	public void addImage(MerchantStore store, InputContentImage image) throws ServiceException;
-	public void addImagees(MerchantStore store, List<InputContentImage> imagesList) throws ServiceException;
+	public void addImages(MerchantStore store, List<InputContentImage> imagesList) throws ServiceException;
 
 }

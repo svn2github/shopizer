@@ -2,16 +2,12 @@ package com.salesmanager.core.modules.cms.content;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.salesmanager.core.business.content.model.image.ContentImage;
 import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.InputContentImage;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.modules.cms.common.ImageRemove;
 import com.salesmanager.core.modules.cms.product.CmsContentFileManagerInfinispanImpl;
 
 public class ContentFileManagerImpl
@@ -22,9 +18,7 @@ public class ContentFileManagerImpl
 
     private ContentImageGet getImage;
 
-    private ImageRemove removeImage;
-
-    private final static Logger LOG = LoggerFactory.getLogger( ContentFileManagerImpl.class );
+    private ContentImageRemove removeImage;
 
     /**
      * Implementation for add image method. This method will called respected add image method of underlying
@@ -53,10 +47,10 @@ public class ContentFileManagerImpl
      * @throws ServiceException
      */
     @Override
-    public void addImagees( final MerchantStore store, final List<InputContentImage> imagesList )
+    public void addImages( final MerchantStore store, final List<InputContentImage> imagesList )
         throws ServiceException
     {
-        uploadImage.addImagees( store, imagesList );
+        uploadImage.addImages( store, imagesList );
         
     }
 
@@ -78,13 +72,21 @@ public class ContentFileManagerImpl
         
     }
 
+    /**
+     * Method to remove a specific content image from merchant store.
+     * Images will be searched in Infinispan cache based on there name and 
+     * will be removed if any image with given name is found for associated merchant cache.
+     * 
+     * @param store Merchant store
+     * @param contentImage content image which will be removed
+     * @throws ServiceException
+     */
     @Override
-    public void removeImage( final ContentImage contentImage )
+    public void removeImage(final MerchantStore store, final ContentImage contentImage )
         throws ServiceException
     {
-        // TODO Auto-generated method stub
-
-    }
+      removeImage.removeImage( store, contentImage );
+   }
 
     /**
      * Method responsible for removing all associated images for given merchant store.
@@ -119,12 +121,12 @@ public class ContentFileManagerImpl
         return getImage.getImage( store, imageName, imageContentType );
     }
 
-    public ImageRemove getRemoveImage()
+    public ContentImageRemove getRemoveImage()
     {
         return removeImage;
     }
 
-    public void setRemoveImage( final ImageRemove removeImage )
+    public void setRemoveImage( final ContentImageRemove removeImage )
     {
         this.removeImage = removeImage;
     }

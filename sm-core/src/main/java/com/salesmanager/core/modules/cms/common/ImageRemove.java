@@ -9,6 +9,4 @@ public interface ImageRemove {
 	
 	public void removeImages(MerchantStore store) throws ServiceException;
 	
-
-
 }
