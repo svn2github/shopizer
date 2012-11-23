@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -40,6 +41,9 @@ public class Product implements Serializable {
 	private MultipartFile image = null;
 	
 	private String imageFileName = null;
+	
+	@NotEmpty
+	private String productPrice = "0";
 
 	
 	
@@ -79,6 +83,12 @@ public class Product implements Serializable {
 	}
 	public void setImageFileName(String imageFileName) {
 		this.imageFileName = imageFileName;
+	}
+	public void setProductPrice(String productPrice) {
+		this.productPrice = productPrice;
+	}
+	public String getProductPrice() {
+		return productPrice;
 	}
 	
 

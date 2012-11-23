@@ -1,5 +1,6 @@
 package com.salesmanager.web.admin.controller.products;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Qualifier;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,6 +44,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 import com.salesmanager.core.business.tax.service.TaxClassService;
+import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
@@ -51,26 +55,24 @@ public class ProductController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
 	
-	@Autowired
-	LanguageService languageService;
+
 	
 	@Autowired
-	CategoryService categoryService;
+	private ProductService productService;
 	
 	@Autowired
-	ProductService productService;
+	private ManufacturerService manufacturerService;
 	
 	@Autowired
-	ManufacturerService manufacturerService;
+	private ProductTypeService productTypeService;
+	
+
 	
 	@Autowired
-	ProductTypeService productTypeService;
+	private TaxClassService taxClassService;
 	
 	@Autowired
-	CountryService countryService;
-	
-	@Autowired
-	TaxClassService taxClassService;
+	private ProductPriceUtils priceUtil;
 	
 
 	
@@ -163,6 +165,7 @@ public class ProductController {
 						for(ProductPrice price : prices) {
 							if(price.isDefaultPrice()) {
 								productPrice = price;
+								product.setProductPrice(priceUtil.getAdminFormatedAmount(store, productPrice.getProductPriceAmount()));
 							}
 						}
 					}
@@ -241,6 +244,15 @@ public class ProductController {
 		model.addAttribute("productTypes", productTypes);
 		model.addAttribute("taxClasses", taxClasses);
 		
+		//validate price
+		BigDecimal submitedPrice = null;
+		try {
+			submitedPrice = priceUtil.getAmount(product.getProductPrice());
+		} catch (Exception e) {
+			ObjectError error = new ObjectError("productPrice","Hey en must be present");
+			result.addError(error);
+		}
+		
 		if (result.hasErrors()) {
 			return "admin-products-edit";
 		}
@@ -294,6 +306,7 @@ public class ProductController {
 						for(ProductPrice price : productPrices) {
 							if(price.isDefaultPrice()) {
 								newProductPrice = price;
+								newProductPrice.setProductPriceAmount(submitedPrice);
 								productPriceDescriptions = price.getDescriptions();
 								newProductPrice.setProductPriceAmount(product.getPrice().getProductPriceAmount());
 							} else {
@@ -312,7 +325,7 @@ public class ProductController {
 		if(newProductPrice==null) {
 			newProductPrice = new ProductPrice();
 			newProductPrice.setDefaultPrice(true);
-			newProductPrice.setProductPriceAmount(product.getPrice().getProductPriceAmount());
+			newProductPrice.setProductPriceAmount(submitedPrice);
 		}
 		
 		if(productPriceDescriptions==null) {
