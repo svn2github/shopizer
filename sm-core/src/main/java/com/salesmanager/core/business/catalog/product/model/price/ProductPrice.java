@@ -40,8 +40,8 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "productPrice", cascade = CascadeType.ALL)
 	private Set<ProductPriceDescription> descriptions = new HashSet<ProductPriceDescription>();
 
-	@NotNull
-	@Column(name = "PRODUCT_PRICE_AMOUNT")
+
+	@Column(name = "PRODUCT_PRICE_AMOUNT", nullable=false)
 	private BigDecimal productPriceAmount = new BigDecimal(0);
 
 
