@@ -91,6 +91,28 @@ public class CmsContentFileManagerInfinispanImpl
         }
 
         final List<String> returnNames = new ArrayList<String>();
+        if(imageContentType.equals( ImageContentType.CONTENT )){
+            final Node<String, Object> merchantNode = getMerchantNode( store.getId() );
+            if ( merchantNode == null )
+            {
+                LOGGER.warn( "merchant node is null" );
+                return Collections.<String> emptyList();
+            }
+            final CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( IMAGE_CONTENT );
+
+            if ( contentAttribute == null )
+            {
+                LOGGER.warn( "Unable to find content attribute for given merchant" );
+                return Collections.<String> emptyList();
+            }
+            if ( MapUtils.isEmpty( contentAttribute.getEntities() ) )
+            {
+                LOGGER.warn( "No Content image for merchant with {}", store.getId() );
+                return Collections.<String> emptyList();
+            }
+            
+             return new ArrayList<String>(contentAttribute.getEntities().keySet());
+        }
         try
         {
 
@@ -489,7 +511,7 @@ public class CmsContentFileManagerInfinispanImpl
             contentFilesNode = treeCache.getRoot().getChild( contentFiles );
 
         }
-
+        
         Node<String, Object> merchantNode = contentFilesNode.getChild( Fqn.fromString( merchantPath.toString() ) );
 
         if ( merchantNode == null )
