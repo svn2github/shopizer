@@ -6,12 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.catalog.product.dao.attribute.ProductAttributeDao;
+import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.reference.language.model.Language;
 
 @Service("productAttributeService")
 public class ProductAttributeServiceImpl extends
@@ -41,12 +43,26 @@ public class ProductAttributeServiceImpl extends
 		return productAttributeDao.getByOptionValueId(store, optionValue);
 		
 	}
+	
+	/**
+	 * Returns all product attributes
+	 */
+	@Override
+	public List<ProductAttribute> getByProductId(MerchantStore store,
+			Product product, Language language) throws ServiceException {
+		return productAttributeDao.getByProduct(store, product, language);
+		
+	}
 
 
 	@Override
 	public void saveOrUpdate(ProductAttribute productAttribute)
 			throws ServiceException {
-		// TODO Auto-generated method stub
+		if(productAttribute.getId()!=null && productAttribute.getId()>0) {
+			productAttributeDao.update(productAttribute);
+		} else {
+			productAttributeDao.save(productAttribute);
+		}
 		
 	}
 
