@@ -25,7 +25,7 @@
 				<br/>
 
 				 <!-- Listing grid include -->
-				 <c:set value="/admin/attributes/paging.html" var="pagingUrl" scope="request"/>
+				 <c:set value="/admin/attributes/paging.html?productId=${product.id}" var="pagingUrl" scope="request"/>
 				 <c:set value="/admin/attributes/remove.html" var="removeUrl" scope="request"/>
 				 <c:set value="/admin/attributes/editAttribute.html" var="editUrl" scope="request"/>
 				 <c:set value="/admin/attributes/attributes.html" var="afterRemoveUrl" scope="request"/>

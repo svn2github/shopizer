@@ -1,15 +1,12 @@
 package com.salesmanager.web.admin.controller.products;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +14,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
-import com.salesmanager.core.business.catalog.product.model.ProductList;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
-import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
+import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -43,15 +38,36 @@ public class ProductAttributeController {
 	private ProductAttributeService productAttributeService;
 	
 	@Autowired
+	private ProductService productService;
+	
+	@Autowired
 	private ProductPriceUtils priceUtil;
 	
 	@RequestMapping(value="/admin/products/attributes/list.html", method=RequestMethod.GET)
-	public String displayProductAttributes(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String displayProductAttributes(@RequestParam("id") long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		
 		setMenu(model,request);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
+		Product product = null;
+		
+		try {
+			product = productService.getById(productId);
+		} catch (Exception e) {
 
+			return "forward:/admin/products/products.html";
+		}
+		
+		if(product==null) {
+			return "forward:/admin/products/products.html";
+		}
+		
+		if(product.getMerchantStore().getId().intValue() != store.getId().intValue()){
+			return "forward:/admin/products/products.html";
+		}
+		
+		model.addAttribute("product",product);
 		return "admin-product-attributes";
 		
 	}
@@ -62,19 +78,36 @@ public class ProductAttributeController {
 	@RequestMapping(value="/admin/products/attributes/page.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageAttributes(HttpServletRequest request, HttpServletResponse response) {
 
-		String attribute = request.getParameter("attribute");
-
+		//String attribute = request.getParameter("attribute");
+		String sProductId = request.getParameter("productId");
 		
 		
 		AjaxResponse resp = new AjaxResponse();
 		
+		Long productId;
+		Product product = null;
+		
+		try {
+			productId = Long.parseLong(sProductId);
+		} catch (Exception e) {
+			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorString("Product id is not valid");
+			String returnString = resp.toJSONString();
+			return returnString;
+		}
+
+		
 		try {
 			
+			
+			product = productService.getById(productId);
+			
+
 
 			Language language = (Language)request.getAttribute("LANGUAGE");
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
-			List<ProductAttribute> attributes = null;//productAttributeService.
+			List<ProductAttribute> attributes = productAttributeService.getByProductId(store, product, language);
 			
 			for(ProductAttribute attr : attributes) {
 				
@@ -103,6 +136,33 @@ public class ProductAttributeController {
 		return returnString;
 
 
+	}
+	
+	@RequestMapping(value="/admin/products/attributes/editAttribute.html", method=RequestMethod.GET)
+	public String displayAttributeEdit(@RequestParam("id") long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return displayAttribute(id,model,request,response);
+
+	}
+	
+	@RequestMapping(value="/admin/products/attribute/createAttribute.html", method=RequestMethod.GET)
+	public String displayAttributeCreate(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		return displayAttribute(null,model,request,response);
+
+	}
+	
+	private String displayAttribute(Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+
+		//display menu
+		setMenu(model,request);
+		
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		
+		
+		
+		return "admin-product-attribute-details";
 	}
 
 	
