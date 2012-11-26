@@ -35,6 +35,10 @@ public class AjaxResponse implements JSONAware {
 		this.setStatusMessage(t.getMessage());
 	}
 	
+	public void setErrorString(String t) {
+		this.setStatusMessage(t);
+	}
+	
 
 	
 	private String statusMessage = null;
