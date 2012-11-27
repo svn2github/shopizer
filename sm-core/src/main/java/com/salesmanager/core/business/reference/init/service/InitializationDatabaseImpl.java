@@ -113,6 +113,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 
             try {
             	java.util.Currency c = java.util.Currency.getInstance(code);
+            	
             	if(c==null) {
             		LOGGER.info(String.format("%s : Populating Currencies : no currency for code : %s", name, code));
             	}
