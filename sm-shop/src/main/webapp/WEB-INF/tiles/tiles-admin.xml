@@ -64,6 +64,10 @@
   	<definition name="admin-products-bundles" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/products/bundles.jsp" /> 
   	</definition>
+  	
+  	 <definition name="admin-products-prices" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/products/prices.jsp" /> 
+  	</definition>
   	  	
   	<definition name="catalogue-products-categories" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/products/productsCategories.jsp" /> 

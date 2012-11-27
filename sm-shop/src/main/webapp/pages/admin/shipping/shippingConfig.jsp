@@ -69,7 +69,7 @@
 							<!-- Listing grid include -->
 				 			<c:set value="/admin/shipping/countries/paging.html" var="pagingUrl" scope="request"/>
 				 			<c:set value="/admin/shipping/countries/update.html" var="updateUrl" scope="request"/>
-				 			<c:set value="/admin/shipping/shippingConfigs.html" var="afterRemoveUrl" scope="request"/>
+				 			<c:set value="/admin/shipping/shippingConfigs.html" var="refreshUrl" scope="request"/>
 				 			<c:set var="entityId" value="code" scope="request"/>
 							<c:set var="componentTitleKey" value="label.shipping.countries" scope="request"/>
 				 			<c:set var="gridHeader" value="/pages/admin/shipping/shipping-countries-gridHeader.jsp" scope="request"/>

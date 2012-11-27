@@ -4,7 +4,7 @@
 "code":"home", 
 "icon":"icon-home",
 "url":"/admin/home.html", 
-"roles":["AUTH"], 
+"role":"AUTH", 
 "order":0
 }},
 {
@@ -12,12 +12,12 @@
 "code":"store", 
 "icon":"icon-file",
 "url":"/admin/store/store.html", 
-"roles":["AUTH"],
+"role":"STORE",
 "order":1,
 "menus":[
-	{"menu":{"code":"storeDetails","url":"/admin/store/store.html","roles":["ADMIN","STORE"],"order":0}},
-	{"menu":{"code":"storeBranding","url":"/admin/store/branding.html","roles":["ADMIN","STORE"],"order":1}},
-	{"menu":{"code":"storeLanding","url":"/admin/store/storeLanding.html","roles":["ADMIN","STORE"],"order":2}}
+	{"menu":{"code":"storeDetails","url":"/admin/store/store.html","role":"STORE","order":0}},
+	{"menu":{"code":"storeBranding","url":"/admin/store/branding.html","role":"STORE","order":1}},
+	{"menu":{"code":"storeLanding","url":"/admin/store/storeLanding.html","role":"STORE","order":2}}
 ]
 }},
 {
@@ -25,20 +25,20 @@
 "code":"profile", 
 "icon":"icon-info-sign",
 "url":"/admin/user/user.html", 
-"roles":["AUTH"],
+"role":"AUTH",
 "order":2,
 "menus":[
-	{"menu":{"code":"userinfo","url":"","roles":["AUTH"],"order":0}},
-	{"menu":{"code":"users","url":"","roles":["ADMIN"],"order":0}},
-	{"menu":{"code":"create-user","url":"","roles":["ADMIN"],"order":0}},
+	{"menu":{"code":"userinfo","url":"","role":"AUTH","order":0}},
+	{"menu":{"code":"users","url":"","role":"ADMIN","order":0}},
+	{"menu":{"code":"create-user","url":"","role":"ADMIN","order":0}},
 	{"menu":{
-		"code":"security","url":"","roles":["SUPERADMIN"],"order":1,"menus":
+		"code":"security","url":"","role":"SUPERADMIN","order":1,"menus":
 		[
 			{"menu":{
-				"code":"security-permissions","url":"/admin/user/permissions.html","roles":["SUPERADMIN"],"order":0
+				"code":"security-permissions","url":"/admin/user/permissions.html","role":"SUPERADMIN","order":0
 			}},
 			{"menu":{
-				"code":"security-groups","url":"/admin/user/groups.html","roles":["SUPERADMIN"],"order":1
+				"code":"security-groups","url":"/admin/user/groups.html","role":"SUPERADMIN","order":1
 			}}
 		]
 	}}
@@ -49,56 +49,56 @@
 "code":"catalogue",
 "icon":"icon-tags", 
 "url":"/admin/products/products.html", 
-"roles":["AUTH"],
+"role":"PRODUCTS",
 "order":3,
 "menus":[
 	{"menu":{
-		"code":"catalogue-products","url":"","roles":["AUTH"],"order":0,"menus":
+		"code":"catalogue-products","url":"","role":"PRODUCTS","order":0,"menus":
 		[
 			{"menu":{
-				"code":"catalogue-products-create","url":"/admin/products/product.html","roles":["AUTH"],"order":0
+				"code":"catalogue-products-create","url":"/admin/products/product.html","role":"PRODUCTS","order":0
 			}},
 			{"menu":{
-				"code":"catalogue-products-categories","url":"/admin/products/product-categories.html","roles":["AUTH"],"order":1
+				"code":"catalogue-products-categories","url":"/admin/products/product-categories.html","role":"PRODUCTS","order":1
 			}},
 			{"menu":{
-				"code":"catalogue","url":"/admin/products/products.html","roles":["AUTH"],"order":2
+				"code":"catalogue","url":"/admin/products/products.html","role":"PRODUCTS","order":2
 			}}
 		]
 	}},
 	{"menu":{
-		"code":"catalogue-categories","url":"","roles":["AUTH"],"order":1,"menus":
+		"code":"catalogue-categories","url":"","role":"PRODUCTS","order":1,"menus":
 		[
 			{"menu":{
-				"code":"catalogue-categories-create","url":"/admin/categories/createCategory.html","roles":["AUTH"],"order":0
+				"code":"catalogue-categories-create","url":"/admin/categories/createCategory.html","role":"PRODUCTS","order":0
 			}},
 			{"menu":{
-				"code":"catalogue-categories-list","url":"/admin/categories/categories.html","roles":["AUTH"],"order":1
+				"code":"catalogue-categories-list","url":"/admin/categories/categories.html","role":"PRODUCTS","order":1
 			}},
 			{"menu":{
-				"code":"catalogue-categories-hierarchy","url":"/admin/categories/hierarchy.html","roles":["AUTH"],"order":2
+				"code":"catalogue-categories-hierarchy","url":"/admin/categories/hierarchy.html","role":"PRODUCTS","order":2
 			}}
 		]
 	}},
 	{"menu":{
-		"code":"catalogue-options","url":"","roles":["AUTH"],"order":2,"menus":
+		"code":"catalogue-options","url":"","role":"PRODUCTS","order":2,"menus":
 		[
 			{"menu":{
-				"code":"catalogue-options-list","url":"/admin/catalogue/options/options.html","roles":["AUTH"],"order":1
+				"code":"catalogue-options-list","url":"/admin/catalogue/options/options.html","role":"PRODUCTS","order":1
 			}},
 			{"menu":{
-				"code":"catalogue-options-create","url":"/admin/catalogue/options/option.html","roles":["AUTH"],"order":1
+				"code":"catalogue-options-create","url":"/admin/catalogue/options/option.html","role":"PRODUCTS","order":1
 			}},
 			{"menu":{
-				"code":"catalogue-optionsvalues-list","url":"/admin/catalogue/options/optionsvalues.html","roles":["AUTH"],"order":1
+				"code":"catalogue-optionsvalues-list","url":"/admin/catalogue/options/optionsvalues.html","role":"PRODUCTS","order":1
 			}},
 			{"menu":{
-				"code":"catalogue-optionsvalues-create","url":"/admin/options/createOptionValue.html","roles":["AUTH"],"order":1
+				"code":"catalogue-optionsvalues-create","url":"/admin/options/createOptionValue.html","role":"PRODUCTS","order":1
 			}}
 		]
 	}},
 	{"menu":{
-		"code":"catalogue-featured","url":"/admin/catalogue/featured/list.html","roles":["AUTH"],"order":0
+		"code":"catalogue-featured","url":"/admin/catalogue/featured/list.html","role":"PRODUCTS","order":0
 	}}
 ]
 }},
@@ -107,13 +107,13 @@
 "code":"content",
 "icon":"icon-pencil", 
 "url":"/admin/content/contentManagement.html", 
-"roles":["CONTENT"],
+"role":"CONTENT",
 "order":4,
 "menus":[
-	{"menu":{"code":"content-pages","url":"","roles":["CONTENT"],"order":0}},
-	{"menu":{"code":"content-boxes","url":"","roles":["CONTENT"],"order":0}},
-	{"menu":{"code":"content-images","url":"","roles":["CONTENT"],"order":0}},
-	{"menu":{"code":"content-files","url":"","roles":["CONTENT"],"order":0}}
+	{"menu":{"code":"content-pages","url":"","role":"CONTENT","order":0}},
+	{"menu":{"code":"content-boxes","url":"","role":"CONTENT","order":0}},
+	{"menu":{"code":"content-images","url":"","role":"CONTENT","order":0}},
+	{"menu":{"code":"content-files","url":"","role":"CONTENT","order":0}}
 ]
 }},
 {
@@ -121,12 +121,12 @@
 "code":"shipping",
 "icon":"icon-plane", 
 "url":"/admin/shipping/shippingConfigs.html", 
-"roles":["SHIPPING"],
+"role":"SHIPPING",
 "order":4,
 "menus":[
-	{"menu":{"code":"shipping-configs","url":"","roles":["SHIPPING"],"order":0}},
-	{"menu":{"code":"shipping-methods","url":"","roles":["SHIPPING"],"order":0}},
-	{"menu":{"code":"shipping-options","url":"","roles":["SHIPPING"],"order":0}}
+	{"menu":{"code":"shipping-configs","url":"","role":"SHIPPING","order":0}},
+	{"menu":{"code":"shipping-methods","url":"","role":"SHIPPING","order":0}},
+	{"menu":{"code":"shipping-options","url":"","role":"SHIPPING","order":0}}
 ]
 }},
 {
@@ -134,7 +134,7 @@
 "code":"payment",
 "icon":"icon-cog", 
 "url":"/admin/payment/paymentMethods.html", 
-"roles":["PAYMENT"],
+"role":"PAYMENT",
 "order":5
 }},
 {
@@ -142,14 +142,14 @@
 "code":"customer",
 "icon":"icon-user", 
 "url":"/admin/customers/list.html", 
-"roles":["AUTH"],
+"role":"CUSTOMER",
 "order":6,
 "menus":[
 	{"menu":{
-		"code":"customer-list","url":"/admin/customers/list.html","roles":["admin","sub-admin"],"order":0
+		"code":"customer-list","url":"/admin/customers/list.html","role":"CUSTOMER","order":0
 	}},
 	{"menu":{
-		"code":"customer-create","url":"/admin/customers/customer.html","roles":["admin","sub-admin"],"order":1
+		"code":"customer-create","url":"/admin/customers/customer.html","role":"CUSTOMER","order":1
 	}}
 ]
 }},
@@ -158,7 +158,7 @@
 "code":"order",
 "icon":"icon-shopping-cart", 
 "url":"/admin/orders/orders.html", 
-"roles":["ORDER"],
+"role":"ORDER",
 "order":7
 }},
 {
@@ -166,7 +166,7 @@
 "code":"tax",
 "icon":"icon-book", 
 "url":"/admin/tax/taxes.html", 
-"roles":["ORDER"],
+"role":"TAX",
 "order":7
 }},
 {
@@ -174,7 +174,7 @@
 "code":"configuration",
 "icon":"icon-wrench", 
 "url":"/admin/configurations/list.html", 
-"roles":["AUTH"],
+"role":"AUTH",
 "order":8
 }}
 ]}

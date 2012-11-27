@@ -10,9 +10,9 @@ public class Menu {
 	private String code;
 	private String url;
 	private String icon;
-	private List<String> roles = new ArrayList();
+	private String role;
 	private int order;
-	private List<Menu> menus = new ArrayList();
+	private List<Menu> menus = new ArrayList<Menu>();
 	public String getCode() {
 		return code;
 	}
@@ -27,13 +27,9 @@ public class Menu {
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	public List<String> getRoles() {
-		return roles;
-	}
-	@JsonProperty("roles")  
-	public void setRoles(List<String> roles) {
-		this.roles = roles;
-	}
+
+	 
+
 	public int getOrder() {
 		return order;
 	}
@@ -53,6 +49,13 @@ public class Menu {
 	}
 	public String getIcon() {
 		return icon;
+	}
+	public String getRole() {
+		return role;
+	}
+	@JsonProperty("role") 
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 }

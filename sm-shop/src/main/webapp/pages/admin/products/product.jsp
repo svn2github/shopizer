@@ -10,13 +10,21 @@
 	<script src="<c:url value="/resources/js/bootstrap/bootstrap-datepicker.js" />"></script>
 	<script src="<c:url value="/resources/js/ckeditor/ckeditor.js" />"></script>
 	
+
+	
 	
 	
 		<script type="text/javascript">
+
+
 	
 
 	
 	$(function(){
+		
+		
+
+		
 		//if($("#code").val()=="") {
 		//	$('.btn').addClass('disabled');
 		//}
@@ -224,7 +232,7 @@
                         <label class="required"><s:message code="label.product.price" text="Price"/></label>
 
                         <div class="controls">
-                                    <form:input cssClass="highlight" path="price.productPriceAmount"/>
+                                    <form:input id="productPriceAmount" cssClass="highlight" path="price.productPriceAmount"/>
                                     <span class="help-inline"><form:errors path="price.productPriceAmount" cssClass="error" /></span>
                         </div>
                   </div>

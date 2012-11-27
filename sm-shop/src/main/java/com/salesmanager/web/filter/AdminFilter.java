@@ -133,7 +133,7 @@ public class AdminFilter extends HandlerInterceptorAdapter {
 		
 		m.setUrl((String)menu.get("url"));
 		m.setIcon((String)menu.get("icon"));
-		m.setRoles((List)menu.get("roles"));
+		m.setRole((String)menu.get("role"));
 		
 		List menus = (List)menu.get("menus");
 		if(menus!=null) {

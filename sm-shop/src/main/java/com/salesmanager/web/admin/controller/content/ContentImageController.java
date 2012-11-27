@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +42,7 @@ public class ContentImageController {
 	 * @return
 	 * @throws Exception
 	 */
+	@Secured("CONTENT")
 	@RequestMapping(value={"/admin/content/contentImages.html","/admin/content/contentManagement.html"}, method=RequestMethod.GET)
 	public String getContentImages(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -55,8 +57,9 @@ public class ContentImageController {
 	
 	
 	@SuppressWarnings({ "unchecked"})
+	@Secured("CONTENT")
 	@RequestMapping(value="/admin/content/images/paging.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String pageCountries(HttpServletRequest request, HttpServletResponse response) {
+	public @ResponseBody String pageImages(HttpServletRequest request, HttpServletResponse response) {
 		AjaxResponse resp = new AjaxResponse();
 
 		try {

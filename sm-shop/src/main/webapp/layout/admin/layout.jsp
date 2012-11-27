@@ -9,6 +9,7 @@ response.setDateHeader ("Expires", -1);
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
  
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
@@ -76,12 +77,14 @@ response.setDateHeader ("Expires", -1);
 			<div class="span3">
 				<ul class="nav nav-list">
 					  <c:forEach items="${requestScope.MENULIST}" var="menu">
+					  			<sec:authorize access="hasRole('${menu.role}') and fullyAuthenticated">
 					  			<li <c:if test="${activeMenus[menu.code]!=null}"> class="active"</c:if>>
 									<a href="<c:url value="${menu.url}" />">
 										<i class="${menu.icon}"></i>
 											<s:message code="menu.${menu.code}" text="${menu.code}"/>
 									</a>
 					  			</li>
+					  			</sec:authorize>
 					  </c:forEach>
 				</ul>
 			</div><!-- end span 3 -->

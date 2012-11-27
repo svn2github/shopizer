@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 <%@ page session="false" %>
 
@@ -10,6 +11,7 @@
 						
   						<ul class="nav nav-tabs">
   						<c:forEach items="${currentMenu.menus}" var="menu">
+  							<sec:authorize access="hasRole('${menu.role}') and fullyAuthenticated">
   							<c:choose>
   							    <c:when test="${fn:length(menu.menus)==0}">
   									<li id="${menu.code}-tab" <c:if test="${activeMenus[menu.code]!=null}"> class="active"</c:if>><a href="#" id="${menu.code}-link" data-toggle="tab"><s:message code="menu.${menu.code}" text="${menu.code}"/></a></li>
@@ -25,6 +27,7 @@
   									</li>
   							    </c:otherwise>
   							</c:choose>
+  							</sec:authorize>
   						</c:forEach>
   						</ul>
   						

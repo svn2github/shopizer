@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,6 +37,7 @@ import com.salesmanager.web.admin.entity.reference.Weight;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
+import javax.annotation.security.RolesAllowed;
 
 @Controller
 public class MerchantStoreController {
@@ -57,7 +59,8 @@ public class MerchantStoreController {
 	
 	@Autowired
 	LabelUtils messages;
-	
+
+	@RolesAllowed("STORE")
 	@RequestMapping(value="/admin/store/store.html", method=RequestMethod.GET)
 	public String displayMerchantStore(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		

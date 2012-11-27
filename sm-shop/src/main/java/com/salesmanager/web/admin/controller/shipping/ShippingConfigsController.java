@@ -140,7 +140,7 @@ public class ShippingConfigsController {
 				}
 			}
 			
-			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
 
 		} catch (Exception e) {
 			LOGGER.error("Error while paging categories", e);
@@ -189,7 +189,7 @@ public class ShippingConfigsController {
 			
 			shippingService.setSupportedCountries(store, includedCountries);
 			
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 			
 
 		

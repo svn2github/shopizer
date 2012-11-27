@@ -264,7 +264,7 @@ function getZones(countryCode){
 	                                    <span class="add-on">
 											http://
 										</span>
-										<form:input cssClass="input-large highlight" path="domainName" />
+										<form:input cssClass="input-medium highlight" path="domainName" />
 	                                    <span class="help-inline"><form:errors path="domainName" cssClass="error" /></span>
 	                        </div>
 	                  </div>

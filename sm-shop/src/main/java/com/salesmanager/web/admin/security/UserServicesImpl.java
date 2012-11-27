@@ -53,6 +53,7 @@ public class UserServicesImpl implements UserDetailsService{
 	
 	
 	
+	@SuppressWarnings("deprecation")
 	public UserDetails loadUserByUsername(String userName)
 			throws UsernameNotFoundException, DataAccessException {
 		//UserDetails userDetails = new UserDetails();
@@ -92,9 +93,27 @@ public class UserServicesImpl implements UserDetailsService{
 		
 		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		
-		@SuppressWarnings("deprecation")
+
 		GrantedAuthority role = new GrantedAuthorityImpl("ADMIN");
 		authorities.add(role);
+		//TODO - get from DB
+		
+		
+		GrantedAuthority auth = new GrantedAuthorityImpl("AUTH");
+		GrantedAuthority prd = new GrantedAuthorityImpl("PRODUCTS");
+		GrantedAuthority ord = new GrantedAuthorityImpl("ORDER");
+		GrantedAuthority content = new GrantedAuthorityImpl("CONTENT");
+		GrantedAuthority store = new GrantedAuthorityImpl("STORE");
+		GrantedAuthority tax = new GrantedAuthorityImpl("TAX");
+		GrantedAuthority shp = new GrantedAuthorityImpl("SHIPPING");
+		
+		authorities.add(auth);
+		authorities.add(prd);
+		authorities.add(ord);
+		authorities.add(content);
+		authorities.add(store);
+		authorities.add(tax);
+		authorities.add(shp);
 		
 		User user = new User(userName, myUser.getAdminPassword(), true, true,
 				true, true, authorities);
@@ -110,58 +129,79 @@ public class UserServicesImpl implements UserDetailsService{
 
 		  Group gsuperadmin = new Group("SUPERADMIN");
 		  Group gadmin = new Group("ADMIN");
-		  Group gcatalogue = new Group("GROUP_CATALOGUE");
-		  Group gstore = new Group("GROUP_STORE");
-		  Group gorder = new Group("GROUP_ORDER");
+		  Group gcatalogue = new Group("ADMIN_CATALOGUE");
+		  Group gstore = new Group("ADMIN_STORE");
+		  Group gorder = new Group("ADMIN_ORDER");
+		  Group gcontent = new Group("ADMIN_CONTENT");
 
 		  groupService.create(gsuperadmin);
 		  groupService.create(gadmin);
 		  groupService.create(gcatalogue);
 		  groupService.create(gstore);
 		  groupService.create(gorder);
+		  groupService.create(gcontent);
+		  
+
 		  
 		  Permission auth = new Permission("AUTH");//Authenticated
 		  auth.getGroups().add(gsuperadmin);
 		  auth.getGroups().add(gadmin);
+		  auth.getGroups().add(gcatalogue);
+		  auth.getGroups().add(gstore);
+		  auth.getGroups().add(gorder);
 		  permissionService.create(auth);
 		  
-		  Permission categories = new Permission("CATEGORIES");
+/*		  Permission categories = new Permission("CATEGORIES");
 		  categories.getGroups().add(gsuperadmin);
 		  categories.getGroups().add(gadmin);
-		  permissionService.create(categories);
+		  permissionService.create(categories);*/
 		  
 		  Permission products = new Permission("PRODUCTS");
 		  products.getGroups().add(gsuperadmin);
 		  products.getGroups().add(gadmin);
+		  products.getGroups().add(gcatalogue);
 		  permissionService.create(products);
-		  
-		  Permission attributes = new Permission("ATTRIBUTES");
-		  attributes.getGroups().add(gsuperadmin);
-		  permissionService.create(attributes);
-		  
-		  Permission featured = new Permission("FEATURED");
-		  featured.getGroups().add(gsuperadmin);
-		  permissionService.create(featured);
+
 		  
 		  Permission order = new Permission("ORDER");
 		  order.getGroups().add(gsuperadmin);
+		  order.getGroups().add(gorder);
+		  order.getGroups().add(gadmin);
 		  permissionService.create(order);
 		  
 		  Permission content = new Permission("CONTENT");
 		  content.getGroups().add(gsuperadmin);
+		  content.getGroups().add(gadmin);
+		  content.getGroups().add(gcontent);
 		  permissionService.create(content);
+		  
+		  
+		  
 		  Permission pstore = new Permission("STORE");
 		  pstore.getGroups().add(gsuperadmin);
+		  pstore.getGroups().add(gstore);
+		  pstore.getGroups().add(gadmin);
 		  permissionService.create(pstore);
 		  
 		  Permission tax = new Permission("TAX");
 		  tax.getGroups().add(gsuperadmin);
+		  tax.getGroups().add(gstore);
+		  tax.getGroups().add(gadmin);
 		  permissionService.create(tax);
+		  
+		  
 		  Permission payment = new Permission("PAYMENT");
 		  payment.getGroups().add(gsuperadmin);
+		  payment.getGroups().add(gstore);
+		  payment.getGroups().add(gadmin);
 		  permissionService.create(payment);
+		  
+		  
 		  Permission shipping = new Permission("SHIPPING");
 		  shipping.getGroups().add(gsuperadmin);
+		  shipping.getGroups().add(gadmin);
+		  shipping.getGroups().add(gstore);
+		  
 		  permissionService.create(shipping);
 		  
 //		  Permission superadmin = new Permission("SUPERADMIN");

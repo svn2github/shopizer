@@ -93,7 +93,7 @@ public class ProductPriceController {
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("catalogue", "catalogue");
-		activeMenus.put("catalogue-featured", "catalogue-featured");
+		activeMenus.put("catalogue-products", "catalogue-products");
 		
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
