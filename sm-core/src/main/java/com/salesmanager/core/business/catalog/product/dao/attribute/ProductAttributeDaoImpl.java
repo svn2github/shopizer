@@ -9,8 +9,6 @@ import com.mysema.query.jpa.impl.JPAQuery;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.QProduct;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.business.catalog.product.model.attribute.QProductAttribute;
 import com.salesmanager.core.business.catalog.product.model.attribute.QProductOption;
 import com.salesmanager.core.business.catalog.product.model.attribute.QProductOptionValue;
@@ -23,8 +21,9 @@ import com.salesmanager.core.business.reference.language.model.Language;
 public class ProductAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, ProductAttribute> 
 	implements ProductAttributeDao {
 	
+	
 	@Override
-	public List<ProductAttribute> getByOptionId(MerchantStore store, ProductOption option) {
+	public ProductAttribute getById(Long id) {
 		QProductAttribute qEntity = QProductAttribute.productAttribute;
 		QProductOption qProductOption = QProductOption.productOption;
 		
@@ -34,14 +33,30 @@ public class ProductAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Pro
 		query.from(qEntity)
 			.leftJoin(qEntity.productOption, qProductOption).fetch()
 			.leftJoin(qProductOption.merchantSore).fetch()
-			.where(qProductOption.id.eq(option.getId())
+			.where(qEntity.id.eq(id));
+		
+		return query.uniqueResult(qEntity);
+	}
+	
+	@Override
+	public List<ProductAttribute> getByOptionId(MerchantStore store, Long id) {
+		QProductAttribute qEntity = QProductAttribute.productAttribute;
+		QProductOption qProductOption = QProductOption.productOption;
+		
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qEntity)
+			.leftJoin(qEntity.productOption, qProductOption).fetch()
+			.leftJoin(qProductOption.merchantSore).fetch()
+			.where(qProductOption.id.eq(id)
 			.and(qProductOption.merchantSore.id.eq(store.getId())));
 		
 		return query.list(qEntity);
 	}
 	
 	@Override
-	public List<ProductAttribute> getByOptionValueId(MerchantStore store, ProductOptionValue optionValue) {
+	public List<ProductAttribute> getByOptionValueId(MerchantStore store, Long id) {
 		QProductAttribute qEntity = QProductAttribute.productAttribute;
 		QProductOptionValue qProductOptionValue = QProductOptionValue.productOptionValue;
 		
@@ -51,7 +66,7 @@ public class ProductAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Pro
 		query.from(qEntity)
 			.leftJoin(qEntity.productOptionValue, qProductOptionValue).fetch()
 			.leftJoin(qProductOptionValue.merchantSore).fetch()
-			.where(qProductOptionValue.id.eq(optionValue.getId())
+			.where(qProductOptionValue.id.eq(id)
 			.and(qProductOptionValue.merchantSore.id.eq(store.getId())));
 		
 		return query.list(qEntity);
