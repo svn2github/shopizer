@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import com.salesmanager.core.business.catalog.product.dao.attribute.ProductAttributeDao;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -27,20 +25,27 @@ public class ProductAttributeServiceImpl extends
 		this.productAttributeDao = productAttributeDao;
 	}
 	
+	@Override
+	public ProductAttribute getById(Long id) {
+		
+		return productAttributeDao.getById(id);
+		
+	}
+	
 	
 	@Override
-	public List<ProductAttribute> getById(MerchantStore store,
-			ProductOption option) throws ServiceException {
+	public List<ProductAttribute> getByOptionId(MerchantStore store,
+			Long id) throws ServiceException {
 		
-		return productAttributeDao.getByOptionId(store, option);
+		return productAttributeDao.getByOptionId(store, id);
 		
 	}
 	
 	@Override
 	public List<ProductAttribute> getByOptionValueId(MerchantStore store,
-			ProductOptionValue optionValue) throws ServiceException {
+			Long id) throws ServiceException {
 		
-		return productAttributeDao.getByOptionValueId(store, optionValue);
+		return productAttributeDao.getByOptionValueId(store, id);
 		
 	}
 	
