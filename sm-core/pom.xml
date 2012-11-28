@@ -259,7 +259,6 @@
 			<version>1.4.0</version>
 		</dependency>
 		
-		
 		<dependency>
   			<groupId>org.jboss.cache</groupId>
   			<artifactId>jbosscache-core</artifactId>
