@@ -23,6 +23,15 @@
 						<s:message code="label.product.attributes" text="Option management" />
 				</h3>	
 				<br/>
+				
+									<c:if test="${product.id!=null && product.id>0}">
+										<c:set value="${product.id}" var="productId" scope="request"/>
+										<jsp:include page="/pages/admin/products/product-menu.jsp" />
+									</c:if>
+								
+								    <ul class="nav nav-pills">
+    									<li class="enabled"><a href="<c:url value="/admin/products/attribute/createAttribute.html" />"><s:message code="label.product.attribute.create" text="Create attribute" /></a></li>
+    								</ul>
 
 				 <!-- Listing grid include -->
 				 <c:set value="/admin/attributes/paging.html?productId=${product.id}" var="pagingUrl" scope="request"/>

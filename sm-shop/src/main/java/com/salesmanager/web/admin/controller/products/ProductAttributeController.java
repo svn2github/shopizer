@@ -1,8 +1,10 @@
 package com.salesmanager.web.admin.controller.products;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,8 +21,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValueDescription;
+import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
+import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionService;
+import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionValueService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.ProductPriceUtils;
@@ -43,6 +51,14 @@ public class ProductAttributeController {
 	@Autowired
 	private ProductPriceUtils priceUtil;
 	
+	@Autowired
+	ProductOptionService productOptionService;
+	
+	@Autowired
+	ProductOptionValueService productOptionValueService;
+	
+
+	
 	@RequestMapping(value="/admin/products/attributes/list.html", method=RequestMethod.GET)
 	public String displayProductAttributes(@RequestParam("id") long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -55,7 +71,7 @@ public class ProductAttributeController {
 		try {
 			product = productService.getById(productId);
 		} catch (Exception e) {
-
+			LOGGER.error("Cannot get product " + productId, e);
 			return "forward:/admin/products/products.html";
 		}
 		
@@ -68,7 +84,7 @@ public class ProductAttributeController {
 		}
 		
 		model.addAttribute("product",product);
-		return "admin-product-attributes";
+		return "admin-products-attributes";
 		
 	}
 	
@@ -160,9 +176,41 @@ public class ProductAttributeController {
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		
+		List<Language> languages = store.getLanguages();
 		
+		ProductAttribute attribute = null;
 		
-		return "admin-product-attribute-details";
+		//get Options
+		List<ProductOption> options = productOptionService.listByStore(store, language);
+		//get OptionsValues
+		List<ProductOptionValue> optionsValues = productOptionValueService.listByStore(store, language);
+		
+		if(id!=null && id.intValue()!=0) {//edit mode
+			
+			attribute = productAttributeService.getById(id);
+			
+		} else {
+			
+			attribute = new ProductAttribute();
+			ProductOptionValue value = new ProductOptionValue();
+			Set<ProductOptionValueDescription> descriptions = new HashSet<ProductOptionValueDescription>();
+			for(Language l : languages) {
+				
+				ProductOptionValueDescription desc = new ProductOptionValueDescription();
+				desc.setLanguage(l);
+				descriptions.add(desc);
+				
+				
+			}
+			
+			value.setDescriptions(descriptions);
+			attribute.setProductOptionValue(value);
+		}
+		
+		model.addAttribute("optionsValues",optionsValues);
+		model.addAttribute("options",options);
+		model.addAttribute("attribute",attribute);
+		return "admin-products-attribute-details";
 	}
 
 	

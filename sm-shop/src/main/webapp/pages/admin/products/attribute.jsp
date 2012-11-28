@@ -26,6 +26,7 @@
 
 				<br/>
 
+
 				<c:url var="attributeSave" value="/admin/attributes/attribute/save.html"/>
 
 
@@ -47,49 +48,104 @@
 	                                <span class="help-inline"><form:errors path="productOption.id" cssClass="error" /></span>
 	                        </div>
                         </div>
+                 </div>	
+                 
+                 
+                 <div class="control-group">
+                        <label><s:message code="label.product.productoptiosvalue.title" text="Option value name"/></label>
+                        <div class="controls">    
+	                        <div class="controls">		
+	                        		<form:select path="productOptionValue.id">
+					  					<form:options items="${optionsValues}" itemValue="id" itemLabel="descriptionsSettoList[0].name"/>
+				       				</form:select>
+	                                <span class="help-inline"><form:errors path="productOptionValue.id" cssClass="error" /></span>
+	                        </div>
+                        </div>
                  </div>		
 						
-								
-                 <c:forEach items="${option.descriptionsSettoList}" var="description" varStatus="counter">
+				 <div class="control-group">
+                        <label><s:message code="label.product.productoptions.price" text="Price"/></label>
+                        <div class="controls">
+                                    <form:input path="priceText"/>
+                                    <span class="help-inline"><form:errors path="priceText" cssClass="error" /></span>
+                        </div>
+                  </div>
+                  
+                  <div class="control-group well">
+                        <label class="required"><s:message code="label.entity.order" text="Order"/></label>
+                        <div class="controls">
+                                    <form:input cssClass="highlight" path="productOptionSortOrder"/>
+                                    <span class="help-inline"><form:errors path="productOptionSortOrder" cssClass="error" /></span>
+
+                        </div>
+                  </div>	
+                  
+                  <div class="well">	
+                  
+                  
+                     <c:forEach items="${optionValue.descriptionsSettoList}" var="description" varStatus="counter">
+                  
+	                 <div class="control-group">
+	                        <label class="required"><s:message code="label.product.productoptions.name" text="Option name"/> (<c:out value="${description.language.code}"/>)</label>
+	                        <div class="controls">
+	                        			<form:input id="name${counter.index}" path="descriptionsList[${counter.index}].name"/>
+	                        			<span class="help-inline"><form:errors path="descriptionsList[${counter.index}].name" cssClass="error" /></span>
+	                        </div>
+	
+	                  </div>
+	
+	                  
+	                  <form:hidden path="descriptionsList[${counter.index}].language.code" />
+	                  <form:hidden path="descriptionsList[${counter.index}].id" />
+                  
+                  	</c:forEach>
+                  
+                  </div>	
+                  
+                  <div class="control-group">
+                        <label><s:message code="label.product.attribute.default" text="Default"/></label>
+                        <div class="controls">
+                                   <form:radiobutton path="attributeDefault" value="true"/>
+    								<spring:message code="label.generic.yes"/>
+									<form:radiobutton path="attributeDefault" value="false"/>
+    								<spring:message code="label.generic.no"/>	
+                                    <span class="help-inline"><form:errors path="attributeDefault" cssClass="error" /></span>
+                        </div>
+                  </div>
                   
                  <div class="control-group">
-                        <label class="required"><s:message code="label.product.productoptions.name" text="Option name"/> (<c:out value="${description.language.code}"/>)</label>
+                        <label><s:message code="label.product.attribute.required" text="Required"/></label>
                         <div class="controls">
-                        			<form:input id="name${counter.index}" path="descriptionsList[${counter.index}].name"/>
-                        			<span class="help-inline"><form:errors path="descriptionsList[${counter.index}].name" cssClass="error" /></span>
-                        </div>
-
-                  </div>
-
-                  
-                  <form:hidden path="descriptionsList[${counter.index}].language.code" />
-                  <form:hidden path="descriptionsList[${counter.index}].id" />
-                  
-                  </c:forEach>
-
-      			  
-      			 <div class="control-group">
-                        <label><s:message code="label.product.productoptions.type" text="Option type"/></label>
-                        <div class="controls">
-                                   
-	                        <div class="controls">			
-	                        		<form:select path="productOptionType">
-	                        			<s:message code="label.product.productoption.type.text" text="Text" var="vText" />
-	                        			<s:message code="label.product.productoption.type.select" text="Select" var="vSelect"/>
-	                        			<s:message code="label.product.productoption.type.radio" text="Radio" var="vRadio"/>
-	                        			<s:message code="label.product.productoption.type.checkbox" text="Checkbox" var="vCheckbox"/>
-	                        			<form:option value="text" label="${vText}" />
-	                        			<form:option value="select" label="${vSelect}" />
-	                        			<form:option value="radio" label="${vRadio}" />
-	                        			<form:option value="checkbox" label="${vCheckbox}" />
-				       				</form:select>
-	                                <span class="help-inline"><form:errors path="productOptionType" cssClass="error" /></span>
-	                        </div>
-
+                                   <form:radiobutton path="attributeRequired" value="true"/>
+    								<spring:message code="label.generic.yes"/>
+									<form:radiobutton path="attributeRequired" value="false"/>
+    								<spring:message code="label.generic.no"/>	
+                                    <span class="help-inline"><form:errors path="attributeRequired" cssClass="error" /></span>
                         </div>
                   </div>
-      			  
                   
+                  <div class="control-group">
+                        <label><s:message code="label.product.attribute.display" text="Display only"/></label>
+                        <div class="controls">
+                                   <form:radiobutton path="attributeDisplayOnly" value="true"/>
+    								<spring:message code="label.generic.yes"/>
+									<form:radiobutton path="attributeDisplayOnly" value="false"/>
+    								<spring:message code="label.generic.no"/>	
+                                    <span class="help-inline"><form:errors path="attributeDisplayOnly" cssClass="error" /></span>
+                        </div>
+                  </div>
+                  
+                  <div class="control-group well">
+                        <label class="required"><s:message code="label.product.attribute.otherweight" text="Additional weight"/></label>
+                        <div class="controls">
+                                    <form:input cssClass="highlight" path="productAttributeWeight"/>
+                                    <span class="help-inline"><form:errors path="productAttributeWeight" cssClass="error" /></span>
+
+                        </div>
+                  </div>                 
+
+
+
                   <form:hidden path="id" />
 			
 			      <div class="form-actions">
