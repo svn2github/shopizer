@@ -102,27 +102,31 @@
 	}}
 ]
 }},
+
+
+
+
 {
 "menu":{
 "code":"content",
 "icon":"icon-pencil", 
 "url":"/admin/content/contentManagement.html", 
-"roles":["CONTENT"],
+"roles":"CONTENT",
 "order":4,
 "menus":[
-	{"menu":{"code":"content-pages","url":"","roles":["CONTENT"],"order":0}},
-	{"menu":{"code":"content-boxes","url":"","roles":["CONTENT"],"order":1}},
+	{"menu":{"code":"content-pages","url":"","roles":"CONTENT","order":0}},
+	{"menu":{"code":"content-boxes","url":"","roles":"CONTENT","order":1}},
 	{"menu":{
-	   "code":"content-images","url":"","roles":["CONTENT"],"order":0,"menus":
+	   "code":"content-images","url":"","roles":"CONTENT","order":0,"menus":
 	   [
 	   	{"menu":{
-				"code":"content-images-create","url":"/admin/content/image.html","roles":["CONTENT"],"order":1
+				"code":"content-images-create","url":"/admin/content/image.html","roles":"CONTENT","order":1
 		}}
 	   ]
 	   
 	 }
 	 },
-	{"menu":{"code":"content-files","url":"","roles":["CONTENT"],"order":2}}
+	{"menu":{"code":"content-files","url":"","roles":"CONTENT","order":2}}
 ]
 }},
 {
@@ -131,7 +135,7 @@
 "icon":"icon-plane", 
 "url":"/admin/shipping/shippingConfigs.html", 
 "role":"SHIPPING",
-"order":4,
+"order":5,
 "menus":[
 	{"menu":{"code":"shipping-configs","url":"","role":"SHIPPING","order":0}},
 	{"menu":{"code":"shipping-methods","url":"","role":"SHIPPING","order":0}},
@@ -144,7 +148,7 @@
 "icon":"icon-cog", 
 "url":"/admin/payment/paymentMethods.html", 
 "role":"PAYMENT",
-"order":5
+"order":6
 }},
 {
 "menu":{
@@ -152,7 +156,7 @@
 "icon":"icon-user", 
 "url":"/admin/customers/list.html", 
 "role":"CUSTOMER",
-"order":6,
+"order":7,
 "menus":[
 	{"menu":{
 		"code":"customer-list","url":"/admin/customers/list.html","role":"CUSTOMER","order":0
@@ -168,7 +172,7 @@
 "icon":"icon-shopping-cart", 
 "url":"/admin/orders/orders.html", 
 "role":"ORDER",
-"order":7
+"order":8
 }},
 {
 "menu":{
@@ -176,7 +180,7 @@
 "icon":"icon-book", 
 "url":"/admin/tax/taxes.html", 
 "role":"TAX",
-"order":7
+"order":9
 }},
 {
 "menu":{
@@ -184,7 +188,7 @@
 "icon":"icon-wrench", 
 "url":"/admin/configurations/list.html", 
 "role":"AUTH",
-"order":8
+"order":10
 }}
 ]}
 
