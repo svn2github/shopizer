@@ -60,7 +60,7 @@ public class ContentFileManagerImpl
      * for given merchant from Infinispan cache.
      * 
      * @param store merchant store.
-     * @param image Input content image
+     * @param imageContentType Input content image
      * @return list {@link OutputContentImage}
      * @throws ServiceException
      */

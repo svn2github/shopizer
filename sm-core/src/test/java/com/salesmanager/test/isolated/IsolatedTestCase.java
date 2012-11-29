@@ -510,6 +510,15 @@ public class IsolatedTestCase
     
 
     @Test
+    public void getContentImagesNames() throws Exception{
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        final List<String> imageNames = contentService.getContentImagesNames(store,ImageContentType.CONTENT);
+        for(final String imageName:imageNames){
+            System.out.println(imageName);
+        }
+    }
+    
+    @Test
     public void testGetImages()
         throws ServiceException
     {
