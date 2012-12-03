@@ -24,21 +24,6 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
   
-  
-  <servlet>
-    <description></description>
-    <display-name>ImageServlet</display-name>
-    <servlet-name>ImageServlet</servlet-name>
-    <servlet-class>com.salesmanager.web.servlet.ImageServlet</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>ImageServlet</servlet-name>
-    <url-pattern>/static/*</url-pattern>
- </servlet-mapping>
-  
-  
-  
   <servlet-mapping>
     <servlet-name>appServlet</servlet-name>
     <url-pattern>/</url-pattern>
