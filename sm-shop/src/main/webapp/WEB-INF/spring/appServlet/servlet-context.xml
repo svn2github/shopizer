@@ -15,6 +15,19 @@
 		<argument-resolvers>
 			<beans:bean class="org.springframework.samples.mvc.data.custom.CustomArgumentResolver"/>
 		</argument-resolvers>
+		
+		<message-converters>
+	        <beans:bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter">
+	            <beans:property name="supportedMediaTypes">
+	                <beans:list>
+	                    <beans:value>image/jpeg</beans:value>
+	                    <beans:value>image/gif</beans:value>
+	                    <beans:value>image/png</beans:value>
+	                </beans:list>
+	            </beans:property>
+	        </beans:bean>
+    	</message-converters>
+
 	</annotation-driven>
 
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources/ directory -->
