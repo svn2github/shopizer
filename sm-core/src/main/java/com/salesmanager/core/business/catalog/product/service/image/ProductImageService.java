@@ -45,5 +45,17 @@ public interface ProductImageService extends SalesManagerEntityService<Long, Pro
 	void removeProductImage(ProductImage productImage) throws ServiceException;
 
 	void saveOrUpdate(ProductImage productImage) throws ServiceException;
+
+	/**
+	 * Returns an image file from required identifier. This method is
+	 * used by the image servlet
+	 * @param storeId
+	 * @param productId
+	 * @param fileName
+	 * @return
+	 * @throws ServiceException
+	 */
+	OutputContentImage getProductImage(Integer storeId, Long productId,
+			String fileName) throws ServiceException;
 	
 }
