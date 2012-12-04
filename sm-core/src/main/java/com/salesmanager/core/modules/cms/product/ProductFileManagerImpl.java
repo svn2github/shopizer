@@ -57,7 +57,6 @@ public class ProductFileManagerImpl extends ProductFileManager {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				ImageIO.write( image, extension, baos );*/
 
-				ByteArrayOutputStream bytes = contentImage.getFile();
 
 
 				//upload original
@@ -279,6 +278,13 @@ public class ProductFileManagerImpl extends ProductFileManager {
 
 	public void setGetImage(ProductImageGet getImage) {
 		this.getImage = getImage;
+	}
+
+
+	@Override
+	public OutputContentImage getProductImage(Integer merchantStoreId,
+			Long productId, String imageName) throws ServiceException {
+		return getImage.getProductImage(merchantStoreId, productId, imageName);
 	}
 
 

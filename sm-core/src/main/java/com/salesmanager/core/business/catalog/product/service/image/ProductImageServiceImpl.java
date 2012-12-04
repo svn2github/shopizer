@@ -159,9 +159,7 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	
 	@Override
 	public OutputContentImage getProductImage(final Integer storeId, final Long productId, final String fileName) throws ServiceException {
-		//TODO the CMS module and manager requires methods to accept ids
-		OutputContentImage outputImage = null; //productFileManager.getProductImage(pi);
-		
+		OutputContentImage outputImage = productFileManager.getProductImage(storeId,productId,fileName);
 		return outputImage;
 		
 	}

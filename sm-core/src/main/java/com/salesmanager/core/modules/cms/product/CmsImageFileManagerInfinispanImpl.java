@@ -147,170 +147,21 @@ public class CmsImageFileManagerInfinispanImpl
 
     }
 
-    @SuppressWarnings( "unchecked" )
     @Override
     public OutputContentImage getProductImage( ProductImage productImage )
         throws ServiceException
     {
 
-        if ( treeCache == null )
-        {
-            throw new ServiceException( "CmsImageFileManagerInfinispan has a null treeCache" );
-        }
-        InputStream input = null;
-        OutputContentImage contentImage = new OutputContentImage();
-        try
-        {
-
-            StringBuilder merchantPath = new StringBuilder()
-            // filePath.append("/productFiles/")
-            .append( "merchant-" ).append( String.valueOf( productImage.getProduct().getMerchantStore().getId() ) );
-            // .append("product-").append(String.valueOf(productImage.getProduct().getId()));
-
-            String productPath = String.valueOf( productImage.getProduct().getId() );
-
-            // Fqn productFiles = Fqn.fromString(filePath.toString());
-
-            // Node<String, Object> productFilesTree = treeCache.getRoot().getChild(productFiles);
-
-            Node<String, Object> productFilesNode = treeCache.getRoot().getChild( Fqn.fromString( "productFiles" ) );
-
-            Node<String, Object> merchantNode = productFilesNode.getChild( Fqn.fromString( merchantPath.toString() ) );
-
-            if ( merchantNode == null )
-            {
-                return null;
-            }
-
-            CacheAttribute productAttribute = (CacheAttribute) merchantNode.get( productPath );
-
-            if ( productAttribute == null )
-            {
-                return null;
-            }
-
-            byte[] imageBytes = (byte[]) productAttribute.getEntities().get( productImage.getProductImage() );
-
-            if ( imageBytes == null )
-            {
-                return null;
-            }
-
-            input = new ByteArrayInputStream( imageBytes );
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            IOUtils.copy( input, output );
-
-            FileNameMap fileNameMap = URLConnection.getFileNameMap();
-            String contentType = fileNameMap.getContentTypeFor( productImage.getProductImage() );
-
-            contentImage.setImage( output );
-            contentImage.setImageContentType( contentType );
-            contentImage.setImageName( productImage.getProductImage() );
-
-        }
-        catch ( Exception e )
-        {
-            throw new ServiceException( e );
-        }
-        finally
-        {
-            if ( input != null )
-            {
-                try
-                {
-                    input.close();
-                }
-                catch ( Exception ignore )
-                {
-                }
-            }
-        }
-
-        return contentImage;
+       return getProductImage(productImage.getProduct().getMerchantStore().getId(),productImage.getProduct().getId(),productImage.getProductImage());
 
     }
 
-    @SuppressWarnings( "unchecked" )
+
     public List<OutputContentImage> getImages( MerchantStore store, ImageContentType imageContentType )
         throws ServiceException
     {
 
-        if ( treeCache == null )
-        {
-            throw new ServiceException( "CmsImageFileManagerInfinispan has a null treeCache" );
-        }
-        List<OutputContentImage> images = new ArrayList<OutputContentImage>();
-        FileNameMap fileNameMap = URLConnection.getFileNameMap();
-
-        try
-        {
-
-            StringBuilder merchantPath =
-                new StringBuilder().append( "merchant-" ).append( String.valueOf( store.getId() ) );
-
-            Node<String, Object> productFilesNode = treeCache.getRoot().getChild( Fqn.fromString( "productFiles" ) );
-
-            Node<String, Object> merchantNode = productFilesNode.addChild( Fqn.fromString( merchantPath.toString() ) );
-
-            if ( merchantNode == null )
-            {
-                return null;
-            }
-
-            Set<String> keys = merchantNode.getKeys();
-            for ( String key : keys )
-            {
-                // Product
-                CacheAttribute productAttribute = (CacheAttribute) merchantNode.get( key );
-
-                Map<String, byte[]> imgs = productAttribute.getEntities();
-                Set<String> imageNames = imgs.keySet();
-                for ( String imageName : imageNames )
-                {
-
-                    byte[] imageBytes = imgs.get( imageName );
-
-                    OutputContentImage contentImage = new OutputContentImage();
-
-                    InputStream input = new ByteArrayInputStream( imageBytes );
-                    ByteArrayOutputStream output = new ByteArrayOutputStream();
-                    IOUtils.copy( input, output );
-
-                    String contentType = fileNameMap.getContentTypeFor( imageName );
-
-                    contentImage.setImage( output );
-                    contentImage.setImageContentType( contentType );
-                    contentImage.setImageName( imageName );
-
-                    images.add( contentImage );
-
-                }
-
-            }
-
-            /*
-             * Set<Node<String, Object>> childNodes = merchantNode.getChildren(); if(childNodes!=null) {
-             * for(@SuppressWarnings("rawtypes") Node node : childNodes) {//productId //Set<String> names =
-             * node.getChildrenNames();//imageNames //if(names!=null && names.size()>0) { //for(String name : names) {
-             * //CacheAttribute productAttribute OutputContentImage contentImage = new OutputContentImage(); byte[]
-             * imageBytes = (byte[])node.get(name); InputStream input = new ByteArrayInputStream(imageBytes);
-             * ByteArrayOutputStream output = new ByteArrayOutputStream(); IOUtils.copy(input, output); String
-             * contentType = fileNameMap.getContentTypeFor(name); contentImage.setImage(output);
-             * contentImage.setImageContentType(contentType); contentImage.setImageName(name); images.add(contentImage);
-             * //} //} //} }
-             */
-
-        }
-        catch ( Exception e )
-        {
-            throw new ServiceException( e );
-        }
-        finally
-        {
-
-        }
-
-        return images;
+         return getImages(store.getId(),imageContentType);
 
     }
 
@@ -499,7 +350,153 @@ public class CmsImageFileManagerInfinispanImpl
 	public List<OutputContentImage> getImages(Integer merchantStoreId,
 			ImageContentType imageContentType) throws ServiceException {
 		// TODO Need to see since this should be part of product image interface
-		return null;
+        if ( treeCache == null )
+        {
+            throw new ServiceException( "CmsImageFileManagerInfinispan has a null treeCache" );
+        }
+        List<OutputContentImage> images = new ArrayList<OutputContentImage>();
+        FileNameMap fileNameMap = URLConnection.getFileNameMap();
+
+        try
+        {
+
+            StringBuilder merchantPath =
+                new StringBuilder().append( "merchant-" ).append( String.valueOf( merchantStoreId ) );
+
+            @SuppressWarnings("unchecked")
+			Node<String, Object> productFilesNode = treeCache.getRoot().getChild( Fqn.fromString( "productFiles" ) );
+
+            Node<String, Object> merchantNode = productFilesNode.addChild( Fqn.fromString( merchantPath.toString() ) );
+
+            if ( merchantNode == null )
+            {
+                return null;
+            }
+
+            Set<String> keys = merchantNode.getKeys();
+            for ( String key : keys )
+            {
+                // Product
+                CacheAttribute productAttribute = (CacheAttribute) merchantNode.get( key );
+
+                Map<String, byte[]> imgs = productAttribute.getEntities();
+                Set<String> imageNames = imgs.keySet();
+                for ( String imageName : imageNames )
+                {
+
+                    byte[] imageBytes = imgs.get( imageName );
+
+                    OutputContentImage contentImage = new OutputContentImage();
+
+                    InputStream input = new ByteArrayInputStream( imageBytes );
+                    ByteArrayOutputStream output = new ByteArrayOutputStream();
+                    IOUtils.copy( input, output );
+
+                    String contentType = fileNameMap.getContentTypeFor( imageName );
+
+                    contentImage.setImage( output );
+                    contentImage.setImageContentType( contentType );
+                    contentImage.setImageName( imageName );
+
+                    images.add( contentImage );
+
+                }
+
+            }
+
+
+        }
+        catch ( Exception e )
+        {
+            throw new ServiceException( e );
+        }
+        finally
+        {
+
+        }
+
+        return images;
+	}
+
+	@Override
+	public OutputContentImage getProductImage(Integer merchantStoreId,
+			Long productId, String imageName) throws ServiceException {
+		// TODO Auto-generated method stub
+        if ( treeCache == null )
+        {
+            throw new ServiceException( "CmsImageFileManagerInfinispan has a null treeCache" );
+        }
+        InputStream input = null;
+        OutputContentImage contentImage = new OutputContentImage();
+        try
+        {
+
+            StringBuilder merchantPath = new StringBuilder()
+            // filePath.append("/productFiles/")
+            .append( "merchant-" ).append( String.valueOf( merchantStoreId ) );
+            // .append("product-").append(String.valueOf(productImage.getProduct().getId()));
+
+            String productPath = String.valueOf( productId );
+
+            // Fqn productFiles = Fqn.fromString(filePath.toString());
+
+            // Node<String, Object> productFilesTree = treeCache.getRoot().getChild(productFiles);
+
+            @SuppressWarnings("unchecked")
+			Node<String, Object> productFilesNode = treeCache.getRoot().getChild( Fqn.fromString( "productFiles" ) );
+
+            Node<String, Object> merchantNode = productFilesNode.getChild( Fqn.fromString( merchantPath.toString() ) );
+
+            if ( merchantNode == null )
+            {
+                return null;
+            }
+
+            CacheAttribute productAttribute = (CacheAttribute) merchantNode.get( productPath );
+
+            if ( productAttribute == null )
+            {
+                return null;
+            }
+
+            byte[] imageBytes = (byte[]) productAttribute.getEntities().get( imageName );
+
+            if ( imageBytes == null )
+            {
+                return null;
+            }
+
+            input = new ByteArrayInputStream( imageBytes );
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            IOUtils.copy( input, output );
+
+            FileNameMap fileNameMap = URLConnection.getFileNameMap();
+            String contentType = fileNameMap.getContentTypeFor( imageName );
+
+            contentImage.setImage( output );
+            contentImage.setImageContentType( contentType );
+            contentImage.setImageName( imageName );
+
+        }
+        catch ( Exception e )
+        {
+            throw new ServiceException( e );
+        }
+        finally
+        {
+            if ( input != null )
+            {
+                try
+                {
+                    input.close();
+                }
+                catch ( Exception ignore )
+                {
+                }
+            }
+        }
+
+        return contentImage;
 	}
 
 }
