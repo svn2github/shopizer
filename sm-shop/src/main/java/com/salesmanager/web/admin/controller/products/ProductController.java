@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.inject.Qualifier;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
@@ -39,9 +37,7 @@ import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 import com.salesmanager.core.business.tax.service.TaxClassService;
 import com.salesmanager.core.utils.ProductPriceUtils;
@@ -151,6 +147,14 @@ public class ProductController {
 				
 			}
 			
+			for(ProductImage image : dbProduct.getImages()) {
+				if(image.isDefaultImage()) {
+					product.setImageFileName(image.getProductImage());
+					break;
+				}
+
+			}
+			
 			
 			ProductAvailability productAvailability = null;
 			ProductPrice productPrice = null;
@@ -183,6 +187,8 @@ public class ProductController {
 			product.setAvailability(productAvailability);
 			product.setPrice(productPrice);
 			product.setDescriptions(descriptions);
+			
+			
 
 
 		} else {
