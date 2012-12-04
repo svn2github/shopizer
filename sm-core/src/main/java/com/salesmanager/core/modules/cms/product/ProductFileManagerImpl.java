@@ -1,13 +1,9 @@
 package com.salesmanager.core.modules.cms.product;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.List;
@@ -23,7 +19,6 @@ import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.InputContentImage;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
-import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.core.utils.ProductImageCropUtils;
 import com.salesmanager.core.utils.ProductImageSizeUtils;
@@ -210,10 +205,11 @@ public class ProductFileManagerImpl extends ProductFileManager {
 	}
 
 	
-	public List<OutputContentImage> getImages(MerchantStore store, ImageContentType imageContentType)
+	@Override
+	public List<OutputContentImage> getImages(final Integer merchantStoreId, ImageContentType imageContentType)
 			throws ServiceException {
 		//will return original
-		return getImage.getImages(store,ImageContentType.PRODUCT);
+		return getImage.getImages(merchantStoreId,ImageContentType.PRODUCT);
 	}
 	
 	@Override
@@ -257,9 +253,9 @@ public class ProductFileManagerImpl extends ProductFileManager {
 
 
 	@Override
-	public void removeImages(MerchantStore store) throws ServiceException {
+	public void removeImages(Integer merchantStoreId) throws ServiceException {
 		
-		this.removeImage.removeImages(store);
+		this.removeImage.removeImages(merchantStoreId);
 		
 	}
 

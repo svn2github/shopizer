@@ -423,12 +423,11 @@ public class IsolatedTestCase
         final CMSContentImage cmsContentImage = new CMSContentImage();
         cmsContentImage.setImageName( "demoCmsImage" );
         cmsContentImage.setFile( inputStream );
-        contentService.addContentImage( store, cmsContentImage );
-        
+        contentService.addContentImage( store.getId(), cmsContentImage );
         final CMSContentImage cmsContentImage1 = new CMSContentImage();
         cmsContentImage1.setImageName( "demoCmsImage2" );
         cmsContentImage1.setFile( inputStream );
-        contentService.addContentImage( store, cmsContentImage1 );
+        contentService.addContentImage(store.getId(), cmsContentImage1 );
 
     }
     
@@ -459,7 +458,7 @@ public class IsolatedTestCase
         
         contentImagesList.add( cmsContentImage1);
         
-        contentService.addContentImages( store, contentImagesList );
+        contentService.addContentImages( store.getId(), contentImagesList );
 
     }
 
@@ -471,7 +470,7 @@ public class IsolatedTestCase
         final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
         final String imageName = "demoCmsImage";
 
-        final OutputContentImage outputContentImage = contentService.getContentImage( store, imageName );
+        final OutputContentImage outputContentImage = contentService.getContentImage( store.getId(), imageName );
         //final OutputContentImage outputContentImage = contentService.getContentImage( store, "" );
         System.out.println( outputContentImage.getImage() );
         System.out.println( outputContentImage.getImageName() );
@@ -481,7 +480,7 @@ public class IsolatedTestCase
     @Test
     public void getAllContentImages() throws ServiceException{
         final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        final List<OutputContentImage> contentImagesList= contentService.getContentImages( store, null );
+        final List<OutputContentImage> contentImagesList= contentService.getContentImages( store.getId(), null );
         if(CollectionUtils.isNotEmpty( contentImagesList )){
             System.out.println("Total " + contentImagesList.size()+ " Images found");
            for(final OutputContentImage outputContentImage :contentImagesList){
@@ -498,21 +497,21 @@ public class IsolatedTestCase
         final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
         final InputContentImage contentImage = new InputContentImage( ImageContentType.CONTENT );
         contentImage.setImageName("demoCmsImage");
-        contentService.removeImage( store, contentImage );
+        contentService.removeImage( store.getId(), contentImage );
         
     }
     
     @Test
     public void removeAllContentImages() throws ServiceException{
         final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        contentService.removeImages( store );
+        contentService.removeImages( store.getId() );
     }
     
 
     @Test
     public void getContentImagesNames() throws Exception{
         final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        final List<String> imageNames = contentService.getContentImagesNames(store,ImageContentType.CONTENT);
+        final List<String> imageNames = contentService.getContentImagesNames(store.getId(),ImageContentType.CONTENT);
         for(final String imageName:imageNames){
             System.out.println(imageName);
         }

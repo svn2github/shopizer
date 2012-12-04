@@ -387,7 +387,7 @@ public class CmsImageFileManagerInfinispanImpl
     }
 
     @Override
-    public void removeImages( MerchantStore store )
+    public void removeImages( final Integer merchantStoreId )
         throws ServiceException
     {
         if ( treeCache == null )
@@ -399,7 +399,7 @@ public class CmsImageFileManagerInfinispanImpl
         {
 
             StringBuilder filePath = new StringBuilder();
-            filePath.append( "/productFiles/" ).append( "merchant-" ).append( String.valueOf( store.getId() ) );
+            filePath.append( "/productFiles/" ).append( "merchant-" ).append( String.valueOf(merchantStoreId ) );
 
             Fqn merchantFiles = Fqn.fromString( filePath.toString() );
 
@@ -493,5 +493,13 @@ public class CmsImageFileManagerInfinispanImpl
     {
         this.repositoryFileName = repositoryFileName;
     }
+
+	
+    @Override
+	public List<OutputContentImage> getImages(Integer merchantStoreId,
+			ImageContentType imageContentType) throws ServiceException {
+		// TODO Need to see since this should be part of product image interface
+		return null;
+	}
 
 }
