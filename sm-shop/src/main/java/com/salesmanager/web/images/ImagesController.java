@@ -41,10 +41,7 @@ public class ImagesController {
 	@SuppressWarnings("unused")
 	@RequestMapping("/static/{storeId}/{imageType}/{imageName}.{extension}")
 	public @ResponseBody byte[] printImage(@PathVariable final Integer storeId, @PathVariable final String imageType, @PathVariable final String imageName, @PathVariable final String extension) throws IOException, ServiceException {
-	    //For testing
-		//InputStream in = servletContext.getResourceAsStream("/images/test.jpg");
-	    //return IOUtils.toByteArray(in);
-		
+
 		// example -> /static/1/CONTENT/myImage.png
 		
 		ImageContentType imgType = null;
@@ -70,11 +67,9 @@ public class ImagesController {
 	}
 	
 	@SuppressWarnings("unused")
-	@RequestMapping("/static/{storeId}/{imageType}/{productId}/{imageName}")
-	public @ResponseBody byte[] printImage(@PathVariable final Integer storeId, @PathVariable final Long productId, @PathVariable final String imageType, @PathVariable final String imageName) throws IOException {
-	    //For testing
-		//InputStream in = servletContext.getResourceAsStream("/images/test.jpg");
-	    //return IOUtils.toByteArray(in);
+	@RequestMapping("/static/{storeId}/{imageType}/{productId}/{imageName}.{extension}")
+	public @ResponseBody byte[] printImage(@PathVariable final Integer storeId, @PathVariable final Long productId, @PathVariable final String imageType, @PathVariable final String imageName, @PathVariable final String extension) throws IOException {
+
 		
 		// example -> /static/1/PRODUCT/120/product1.jpg
 		
@@ -90,7 +85,7 @@ public class ImagesController {
 		
 		OutputContentImage image = null;
 		try {
-			image = productImageService.getProductImage(storeId, productId, imageName);
+			image = productImageService.getProductImage(storeId, productId, new StringBuilder().append(imageName).append(".").append(extension).toString());
 		} catch (ServiceException e) {
 			LOGGER.error("Cannot retrieve image " + imageName, e);
 		}
