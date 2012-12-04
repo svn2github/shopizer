@@ -2,6 +2,8 @@ package com.salesmanager.web.images;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +18,9 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 
 @Controller
 public class ImagesController {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ImagesController.class);
+	
 
 	
 	@Autowired
@@ -34,8 +39,8 @@ public class ImagesController {
 	 * @throws ServiceException 
 	 */
 	@SuppressWarnings("unused")
-	@RequestMapping("/static/{storeId}/{imageType}/{imageName}")
-	public @ResponseBody byte[] printImage(@PathVariable final Integer storeId, @PathVariable final String imageType, @PathVariable final String imageName) throws IOException, ServiceException {
+	@RequestMapping("/static/{storeId}/{imageType}/{imageName}.{extension}")
+	public @ResponseBody byte[] printImage(@PathVariable final Integer storeId, @PathVariable final String imageType, @PathVariable final String imageName, @PathVariable final String extension) throws IOException, ServiceException {
 	    //For testing
 		//InputStream in = servletContext.getResourceAsStream("/images/test.jpg");
 	    //return IOUtils.toByteArray(in);
@@ -52,7 +57,7 @@ public class ImagesController {
 			imgType = ImageContentType.CONTENT;
 		}
 		
-		OutputContentImage image =contentService.getContentImage(storeId, imageName);
+		OutputContentImage image =contentService.getContentImage(storeId, new StringBuilder().append(imageName).append(".").append(extension).toString());
 		
 		
 		if(image!=null) {
@@ -83,7 +88,12 @@ public class ImagesController {
 			imgType = ImageContentType.PROPERTY;
 		}
 		
-		OutputContentImage image = null;//productImageService.getProductImage(storeId, productId, imageName);//TODO service required for property
+		OutputContentImage image = null;
+		try {
+			image = productImageService.getProductImage(storeId, productId, imageName);
+		} catch (ServiceException e) {
+			LOGGER.error("Cannot retrieve image " + imageName, e);
+		}
 		if(image!=null) {
 			return image.getImage().toByteArray();
 		} else {

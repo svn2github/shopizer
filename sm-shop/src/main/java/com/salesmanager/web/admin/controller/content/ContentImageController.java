@@ -43,6 +43,8 @@ public class ContentImageController {
 	@Autowired
 	private ContentService contentService;
 	
+	
+	
 	/**
 	 * Get images for a given merchant store
 	 * @param model
@@ -81,8 +83,9 @@ public class ContentImageController {
 
 					@SuppressWarnings("rawtypes")
 					Map entry = new HashMap();
-					entry.put("picture", name);
+					entry.put("picture", new StringBuilder().append(store.getId()).append("/").append(Constants.CONTENT_IMAGE).append("/").append(name).toString());
 					entry.put("name", name);
+					resp.addDataEntry(entry);
 
 				}
 			
