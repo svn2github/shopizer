@@ -35,13 +35,14 @@
 							  
 								isc.TileGrid.create({
 								    ID:"imageList",
-								    //tileWidth:150,
-								    //tileHeight:205,
+								    tileWidth:150,
+								    tileHeight:200,
 								    dataSource:"dataSource",
 								    autoFetchData:true,
+								    showAllRecords:true,
 								    animateTileChange:true,
 								    fields: [
-								        {name:"picture", type:"image", imageURLPrefix:"<c:url value='/static/1/CONTENT/'/>"},
+								        {name:"picture", type:"image", imageWidth:150, imageURLPrefix:"<c:url value='/static/'/>"},
 								        {name:"name", cellStyle: "name"}
 								    ],
 
