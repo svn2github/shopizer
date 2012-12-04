@@ -11,33 +11,35 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.web.constants.Constants;
 
-public class ContentImageUrlTag extends TagSupport {
+public class ProductImageUrlTag extends TagSupport {
 	
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6319855234657139862L;
-	private static final Logger LOGGER = LoggerFactory.getLogger(ContentImageUrlTag.class);
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProductImageUrlTag.class);
 
-	private MerchantStore merchantStore;
+
 	private String imageName;
 	private String imageType;
+	private Product product;
 
 
 	public int doStartTag() throws JspException {
 		try {
 
-
+			// example -> /static/1/CONTENT/myImage.png
 
 			HttpServletRequest request = (HttpServletRequest) pageContext
 					.getRequest();
 			
 			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-			
 			
 			HttpSession session = request.getSession();
 
@@ -45,7 +47,7 @@ public class ContentImageUrlTag extends TagSupport {
 			
 			//TODO domain from merchant, else from global config, else from property (localhost)
 			
-			//http://domain/static/merchantid/imageType/imageName
+			// example -> /static/1/PRODUCT/120/product1.jpg
 			
 			@SuppressWarnings("unchecked")
 			Map<String,String> configurations = (Map<String, String>)session.getAttribute("STORECONFIGURATION");
@@ -55,9 +57,13 @@ public class ContentImageUrlTag extends TagSupport {
 				scheme = "http";
 			}
 			
-			imagePath.append(scheme).append("://").append(merchantStore.getDomainName()).append(Constants.STATIC_URI)
-				.append(merchantStore.getCode()).append("/").append(this.getImageName())
-				.append("/").append(this.getImageName());
+			imagePath
+			
+			//.append(scheme).append("://").append(merchantStore.getDomainName())
+				.append(Constants.STATIC_URI)
+				.append(merchantStore.getId()).append("/PRODUCT/")
+				.append(this.getProduct().getId()).append("/").append(this.getImageName());
+
 			
 
 			pageContext.getOut().print(imagePath.toString());
@@ -74,13 +80,6 @@ public class ContentImageUrlTag extends TagSupport {
 		return EVAL_PAGE;
 	}
 
-	public void setMerchantStore(MerchantStore merchantStore) {
-		this.merchantStore = merchantStore;
-	}
-
-	public MerchantStore getMerchantStore() {
-		return merchantStore;
-	}
 
 	public void setImageName(String imageName) {
 		this.imageName = imageName;
@@ -96,6 +95,14 @@ public class ContentImageUrlTag extends TagSupport {
 
 	public String getImageType() {
 		return imageType;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public Product getProduct() {
+		return product;
 	}
 
 

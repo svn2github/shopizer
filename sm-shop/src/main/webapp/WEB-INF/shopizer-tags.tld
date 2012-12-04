@@ -12,12 +12,7 @@
          <name>contentImage</name>
          <tag-class>com.salesmanager.web.tags.ContentImageUrlTag</tag-class>
          <body-content>scriptless</body-content>
-         <attribute>
-                 <name>merchant</name>
-                 <required>true</required>
-                 <rtexprvalue>true</rtexprvalue>
-                 <type>com.salesmanager.core.business.merchant.model.MerchantStore</type>
-         </attribute>
+
  
          <attribute>
                  <name>imageName</name>
@@ -32,8 +27,36 @@
                  <rtexprvalue>true</rtexprvalue>
                  <type>String</type>
          </attribute>
+</tag>
+
+
+<tag>
+ 		 <!-- Builds the product image URL -->
+         <name>productImage</name>
+         <tag-class>com.salesmanager.web.tags.ProductImageUrlTag</tag-class>
+         <body-content>scriptless</body-content>
 
  
+         <attribute>
+                 <name>imageName</name>
+                 <required>true</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>String</type>
+         </attribute>
+         
+         <attribute>
+                 <name>product</name>
+                 <required>true</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>com.salesmanager.core.business.catalog.product.model.Product</type>
+         </attribute>
+         
+         <attribute>
+                 <name>imageType</name>
+                 <required>true</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>String</type>
+         </attribute>
 </tag>
 
 </taglib>

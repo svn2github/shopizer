@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %>
 
 <%@ page session="false" %>			
 
@@ -313,13 +314,15 @@
                   <div class="control-group">
                         <label><s:message code="label.product.image" text="Image"/></label>
                         <div class="controls">
-                        			
-                        			<c:if test="${imageFileName==null}">
-                        			
-                        
-                                    <input class="input-file" id="image" name="image" type="file">
-                                    
-                                    </c:if>
+                        		<c:choose>
+	                        		<c:when test="${imageFileName==null}">
+	                                    <input class="input-file" id="image" name="image" type="file">
+	                                </c:when>
+	                                <c:otherwise>
+	                                	<img src="<%=request.getContextPath()%>/<sm:productImage imageName="${imageFileName}" product="${product}"/>" width="200"><br/>
+	                                	delete
+	                                </c:otherwise>
+                                </c:choose>
                         </div>
                   </div>
                   

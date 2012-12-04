@@ -8,4 +8,6 @@ public class Constants {
 	
 	
 	public final static String CONTENT_IMAGE = "CONTENT";
+	
+	public final static String STATIC_URI = "/static";
 }
