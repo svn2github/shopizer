@@ -12,6 +12,7 @@ import com.salesmanager.core.business.catalog.product.service.image.ProductImage
 import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.content.service.ContentService;
+import com.salesmanager.core.business.generic.exception.ServiceException;
 
 @Controller
 public class ImagesController {
@@ -30,10 +31,11 @@ public class ImagesController {
 	 * @param imageName
 	 * @return
 	 * @throws IOException
+	 * @throws ServiceException 
 	 */
 	@SuppressWarnings("unused")
 	@RequestMapping("/static/{storeId}/{imageType}/{imageName}")
-	public @ResponseBody byte[] printImage(@PathVariable final Integer storeId, @PathVariable final String imageType, @PathVariable final String imageName) throws IOException {
+	public @ResponseBody byte[] printImage(@PathVariable final Integer storeId, @PathVariable final String imageType, @PathVariable final String imageName) throws IOException, ServiceException {
 	    //For testing
 		//InputStream in = servletContext.getResourceAsStream("/images/test.jpg");
 	    //return IOUtils.toByteArray(in);
@@ -50,7 +52,9 @@ public class ImagesController {
 			imgType = ImageContentType.CONTENT;
 		}
 		
-		OutputContentImage image = null;//contentService.getContentImage(storeId, imageName);
+		OutputContentImage image =contentService.getContentImage(storeId, imageName);
+		
+		
 		if(image!=null) {
 			return image.getImage().toByteArray();
 		} else {

@@ -73,7 +73,7 @@ public class ContentImageController {
 
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
-			List<String> imageNames = contentService.getContentImagesNames(store,ImageContentType.CONTENT);
+			List<String> imageNames = contentService.getContentImagesNames(store.getId(),ImageContentType.CONTENT);
 			
 			if(imageNames!=null) {
 
@@ -91,7 +91,7 @@ public class ContentImageController {
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
 
 		} catch (Exception e) {
-			LOGGER.error("Error while paging categories", e);
+			LOGGER.error("Error while paging content images", e);
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 		}
 		
@@ -157,7 +157,7 @@ public class ContentImageController {
             }
             
             if(CollectionUtils.isNotEmpty( contentImagesList )){
-                contentService.addContentImages( store, contentImagesList );
+                contentService.addContentImages( store.getId(), contentImagesList );
             }
             else{
                 // show error message on UI
