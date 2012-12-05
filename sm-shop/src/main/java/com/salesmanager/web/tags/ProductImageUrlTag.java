@@ -49,19 +49,19 @@ public class ProductImageUrlTag extends TagSupport {
 			
 			// example -> /static/1/PRODUCT/120/product1.jpg
 			
-			@SuppressWarnings("unchecked")
-			Map<String,String> configurations = (Map<String, String>)session.getAttribute("STORECONFIGURATION");
-			String scheme = (String)configurations.get("scheme");
+			//@SuppressWarnings("unchecked")
+			//Map<String,String> configurations = (Map<String, String>)session.getAttribute("STORECONFIGURATION");
+			//String scheme = (String)configurations.get("scheme");
 			
-			if(StringUtils.isBlank(scheme)) {
-				scheme = "http";
-			}
+			//if(StringUtils.isBlank(scheme)) {
+			//	scheme = "http";
+			//}
 			
 			imagePath
 			
 			//.append(scheme).append("://").append(merchantStore.getDomainName())
 				.append(Constants.STATIC_URI)
-				.append(merchantStore.getId()).append("/PRODUCT/")
+				.append("/").append(merchantStore.getId()).append("/PRODUCT/")
 				.append(this.getProduct().getId()).append("/").append(this.getImageName());
 
 			

@@ -326,6 +326,16 @@ public class ProductController {
 					}
 				}
 			}
+			
+			
+			for(ProductImage image : newProduct.getImages()) {
+				
+				if(image.isDefaultImage()) {
+					product.setImageFileName(image.getProductImage());
+				}
+				
+			}
+			
 		}
 		
 		if(newProductPrice==null) {
@@ -403,6 +413,8 @@ public class ProductController {
 			newProduct.getImages().add(productImage);
 			
 			productService.saveOrUpdate(newProduct);
+			
+			product.setImageFileName(imageName);
 			
 			
 		} else {
