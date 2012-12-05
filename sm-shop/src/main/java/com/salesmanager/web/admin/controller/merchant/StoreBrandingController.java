@@ -1,6 +1,8 @@
 package com.salesmanager.web.admin.controller.merchant;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +19,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.country.model.Country;
@@ -28,6 +32,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
+import com.salesmanager.core.modules.cms.common.CMSContentImage;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 
@@ -50,122 +55,51 @@ public class StoreBrandingController {
 	@Autowired
 	CurrencyService currencyService;
 	
+	@Autowired
+	private ContentService contentService;
+	
 	@RequestMapping(value="/admin/store/storeBranding.html", method=RequestMethod.GET)
 	public String displayStoreBranding(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
-		
-		//TODO place key in constant
-		Language language = (Language)request.getAttribute("LANGUAGE");
-		
-		//get countries
-		List<Country> countries = countryService.getCountries(language);
-		
-		
-		//TODO use multiple store
+
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		model.addAttribute("store", store);
 		
-		
-		List<Language> languages = languageService.getLanguages();
-		
-		List<Currency> currencies = currencyService.list();
-		
 
-		model.addAttribute("countries", countries);
-		model.addAttribute("languages",languages);
-		model.addAttribute("currencies",currencies);
 		
-		return "admin-store";
+		return "admin-store-branding";
 	}
 	
 	@RequestMapping(value="/admin/store/saveBranding.html", method=RequestMethod.POST)
-	public String saveStoreBranding(@Valid @ModelAttribute("store") MerchantStore store, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String saveStoreBranding(@ModelAttribute("image") MultipartFile logo, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
-		
-		
-		MerchantStore sessionStore = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
-		if(store.getId()>0) {
-			if(store.getId().intValue() != sessionStore.getId().intValue()) {
-				return "redirect:/admin/store/store.html";
-			}
-		}
-		
-		List<Currency> currencies = currencyService.list();
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		
-		Language language = (Language)request.getAttribute("LANGUAGE");
-		List<Language> languages = languageService.getLanguages();
-		
-		//get countries
-		List<Country> countries = countryService.getCountries(language);
-		
-		if (result.hasErrors()) {
-			return "admin-store";
-		}
-		
-		//get country
-		Country country = store.getCountry();
-		country = countryService.getByCode(country.getIsoCode());
-		Zone zone = store.getZone();
-		if(zone!=null) {
-			zone = zoneService.getByCode(zone.getCode());
-		}
-		Currency currency = store.getCurrency();
-		currency = currencyService.getById(currency.getId());
+		if(logo!=null && !logo.isEmpty()) {
 
-		List<Language> supportedLanguages = store.getLanguages();
-		List<Language> supportedLanguagesList = new ArrayList<Language>();
-		Map<String,Language> languagesMap = languageService.getLanguagesMap();
-		for(Language lang : supportedLanguages) {
+			String imageName = logo.getOriginalFilename();
+            InputStream inputStream = logo.getInputStream();
+            CMSContentImage cmsContentImage = new CMSContentImage();
+            cmsContentImage.setImageName(imageName);
+            cmsContentImage.setContentType( logo.getContentType() );
+            cmsContentImage.setFile( inputStream );
+            contentService.addLogo(store.getId(), cmsContentImage);
 			
-			Language l = languagesMap.get(lang.getCode());
-			if(l!=null) {
-				
-				supportedLanguagesList.add(l);
-				
-			}
-			
+            //Update store
+            store.setStoreLogo(imageName);
+            merchantStoreService.update(store);
+  
 		}
 		
-		Language defaultLanguage = store.getDefaultLanguage();
-		defaultLanguage = languageService.getById(defaultLanguage.getId());
-		
-		if(!MerchantStore.DEFAULT_STORE.equals(sessionStore.getCode())) {
-			
-			sessionStore.setCode(store.getCode());
-			
-		}
-		
+		model.addAttribute("store", store);
 
 		
-		sessionStore.setCountry(country);
-		sessionStore.setZone(zone);
-		sessionStore.setStorestateprovince(store.getStorestateprovince());
-		sessionStore.setCurrency(currency);
-		sessionStore.setDefaultLanguage(defaultLanguage);
-		sessionStore.setDomainName(store.getDomainName());
-		sessionStore.setInBusinessSince(store.getInBusinessSince());
-		sessionStore.setLanguages(supportedLanguagesList);
-		sessionStore.setStoreaddress(store.getStoreaddress());
-		sessionStore.setStorecity(store.getStorecity());
-		sessionStore.setStoreEmailAddress(store.getStoreEmailAddress());
-		
-		//merchantStoreService.update(sessionStore);
-		//update session store
-		request.getSession().setAttribute(Constants.ADMIN_STORE, sessionStore);
-
-
-		model.addAttribute("success","success");
-		model.addAttribute("countries", countries);
-		model.addAttribute("languages",languages);
-		model.addAttribute("languages",languages);
-		model.addAttribute("currencies",currencies);
-		
-		return "admin-store";
+		return "admin-store-branding";
 	}
 	
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {

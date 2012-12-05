@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
@@ -34,6 +36,7 @@ import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDescription;
 import com.salesmanager.core.business.catalog.product.model.type.ProductType;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
+import com.salesmanager.core.business.catalog.product.service.image.ProductImageService;
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -41,6 +44,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 import com.salesmanager.core.business.tax.service.TaxClassService;
 import com.salesmanager.core.utils.ProductPriceUtils;
+import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
@@ -61,6 +65,10 @@ public class ProductController {
 	
 	@Autowired
 	private ProductTypeService productTypeService;
+	
+	
+	@Autowired
+	private ProductImageService productImageService;
 	
 
 	
@@ -149,7 +157,7 @@ public class ProductController {
 			
 			for(ProductImage image : dbProduct.getImages()) {
 				if(image.isDefaultImage()) {
-					product.setImageFileName(image.getProductImage());
+					product.setProductImage(image);
 					break;
 				}
 
@@ -230,7 +238,7 @@ public class ProductController {
 	@RequestMapping(value="/admin/products/save.html", method=RequestMethod.POST)
 	public String saveProduct(@Valid @ModelAttribute("product") com.salesmanager.web.entity.catalog.Product  product, BindingResult result, Model model, HttpServletRequest request) throws Exception {
 		
-		
+		//TODO TaxClass
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		
 		//display menu
@@ -264,9 +272,7 @@ public class ProductController {
 		}
 		
 		Product newProduct = product.getProduct();
-		
 		ProductAvailability newProductAvailability = null;
-		
 		ProductPrice newProductPrice = null;
 		
 		Set<ProductPriceDescription> productPriceDescriptions = null;
@@ -277,8 +283,6 @@ public class ProductController {
 		Set<ProductPrice> prices = new HashSet<ProductPrice>();
 		Set<ProductAvailability> availabilities = new HashSet<ProductAvailability>();	
 
-		
-		
 		if(product.getProduct().getId()!=null && product.getProduct().getId().longValue()>0) {
 		
 		
@@ -306,7 +310,6 @@ public class ProductController {
 					if(availability.getRegion().equals(ProductAvailability.DEFAULT_AVAILABILITY)) {
 						
 						newProductAvailability = availability;
-						
 						Set<ProductPrice> productPrices = availability.getPrices();
 						
 						for(ProductPrice price : productPrices) {
@@ -320,22 +323,17 @@ public class ProductController {
 							}	
 						}
 					} else {
-						
 						availabilities.add(availability);
-						
 					}
 				}
 			}
 			
 			
 			for(ProductImage image : newProduct.getImages()) {
-				
 				if(image.isDefaultImage()) {
-					product.setImageFileName(image.getProductImage());
+					product.setProductImage(image);
 				}
-				
 			}
-			
 		}
 		
 		if(newProductPrice==null) {
@@ -414,7 +412,7 @@ public class ProductController {
 			
 			productService.saveOrUpdate(newProduct);
 			
-			product.setImageFileName(imageName);
+			product.setProductImage(productImage);
 			
 			
 		} else {
@@ -427,6 +425,50 @@ public class ProductController {
 		model.addAttribute("success","success");
 		
 		return "admin-products-edit";
+	}
+	
+	/**
+	 * Removes a product image based on the productimage id
+	 * @param request
+	 * @param response
+	 * @param locale
+	 * @return
+	 */
+	@RequestMapping(value="/admin/products/product/removeImage.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String removeImage(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		String iid = request.getParameter("imageId");
+
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		AjaxResponse resp = new AjaxResponse();
+
+		
+		try {
+			
+			Long id = Long.parseLong(iid);
+			ProductImage productImage = productImageService.getById(id);
+			if(productImage==null || productImage.getProduct().getMerchantStore().getId()!=store.getId()) {
+
+				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
+				
+			} else {
+				
+				productImageService.removeProductImage(productImage);
+				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+				
+			}
+		
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while deleting product", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
 	}
 	
 	
