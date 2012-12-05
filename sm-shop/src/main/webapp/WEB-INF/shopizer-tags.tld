@@ -18,14 +18,14 @@
                  <name>imageName</name>
                  <required>true</required>
                  <rtexprvalue>true</rtexprvalue>
-                 <type>String</type>
+                 <type>java.lang.String</type>
          </attribute>
          
          <attribute>
                  <name>imageType</name>
                  <required>true</required>
                  <rtexprvalue>true</rtexprvalue>
-                 <type>String</type>
+                 <type>java.lang.String</type>
          </attribute>
 </tag>
 
@@ -41,7 +41,7 @@
                  <name>imageName</name>
                  <required>true</required>
                  <rtexprvalue>true</rtexprvalue>
-                 <type>String</type>
+                 <type>java.lang.String</type>
          </attribute>
          
          <attribute>
@@ -51,12 +51,7 @@
                  <type>com.salesmanager.core.business.catalog.product.model.Product</type>
          </attribute>
          
-         <attribute>
-                 <name>imageType</name>
-                 <required>true</required>
-                 <rtexprvalue>true</rtexprvalue>
-                 <type>String</type>
-         </attribute>
+
 </tag>
 
 </taglib>

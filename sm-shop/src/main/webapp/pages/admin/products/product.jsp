@@ -312,15 +312,16 @@
                   <!-- hidden when creating the product -->
 
                   <div class="control-group">
-                        <label><s:message code="label.product.image" text="Image"/></label>
+                        <label><s:message code="label.product.image" text="Image"/></label>&nbsp;<c:if test="${product.imageFileName!=null}"> - <a href="#"><s:message code="label.generic.remove" text="Remove"/></a></c:if>
                         <div class="controls">
+                        		
                         		<c:choose>
-	                        		<c:when test="${imageFileName==null}">
+	                        		<c:when test="${product.imageFileName==null}">
 	                                    <input class="input-file" id="image" name="image" type="file">
 	                                </c:when>
 	                                <c:otherwise>
-	                                	<img src="<%=request.getContextPath()%>/<sm:productImage imageName="${imageFileName}" product="${product}"/>" width="200"><br/>
-	                                	delete
+	                                	<img src="<%=request.getContextPath()%>/<sm:productImage imageName="${product.imageFileName}" product="${product.product}"/>" width="200"/><br/>
+	                                	
 	                                </c:otherwise>
                                 </c:choose>
                         </div>
