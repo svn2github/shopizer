@@ -112,4 +112,13 @@ public interface ContentService
     List<String> getContentImagesNames(final Integer merchantStoreId,
 			ImageContentType imageContentType) throws ServiceException;
 
+    /**
+     * Add the store logo
+     * @param merchantStoreId
+     * @param cmsContentImage
+     * @throws ServiceException
+     */
+	void addLogo(Integer merchantStoreId, CMSContentImage cmsContentImage)
+			throws ServiceException;
+
 }

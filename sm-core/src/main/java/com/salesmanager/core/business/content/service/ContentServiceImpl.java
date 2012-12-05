@@ -113,33 +113,54 @@ public class ContentServiceImpl
         final InputContentImage contentImage = new InputContentImage( ImageContentType.CONTENT );
         contentImage.setImageName( cmsContentImage.getImageName() );
 
-        try
-        {
-            LOG.info( "Adding content image for merchant id {}", merchantStoreId);
-            if ( cmsContentImage.getContentType() == null )
-            {
-                contentImage.setImageContentType( URLConnection.guessContentTypeFromStream( cmsContentImage.getFile() ) );
-            }
-            else
-            {
-                contentImage.setImageContentType( cmsContentImage.getContentType() );
-            }
-
-            final ByteArrayOutputStream output = new ByteArrayOutputStream();
-            IOUtils.copy( cmsContentImage.getFile(), output );
-            contentImage.setFile( output );
-        }
-        catch ( final IOException e )
-        {
-            LOG.error( "Error while trying to convert input stream to buffered image", e );
-            throw new ServiceException( e );
-
-        }
-
-        LOG.info( "Adding content image for merchant...." );
-        contentFileManager.addImage( merchantStoreId, contentImage );
+        addImage(merchantStoreId,cmsContentImage,contentImage);
        
 
+    }
+    
+    @Override
+    public void addLogo( final Integer merchantStoreId, final CMSContentImage cmsContentImage )
+    throws ServiceException {
+    	
+    	
+		    Assert.notNull( merchantStoreId, "Merchant store Id can not be null" );
+		    Assert.notNull( cmsContentImage, "CMSContent image can not be null" );
+		    final InputContentImage contentImage = new InputContentImage( ImageContentType.LOGO );
+		    contentImage.setImageName( cmsContentImage.getImageName() );
+		
+		    addImage(merchantStoreId,cmsContentImage,contentImage);
+		   
+
+    }
+    
+    
+    private void addImage(Integer merchantStoreId, CMSContentImage cmsContentImage, InputContentImage contentImage ) throws ServiceException {
+    	
+    	try
+	    {
+	        LOG.info( "Adding content image for merchant id {}", merchantStoreId);
+	        if ( contentImage.getContentType() == null ){
+	            contentImage.setImageContentType( URLConnection.guessContentTypeFromStream( cmsContentImage.getFile() ) );
+	        }else{
+	            contentImage.setImageContentType( cmsContentImage.getContentType() );
+	        }
+	
+	        ByteArrayOutputStream output = new ByteArrayOutputStream();
+	        IOUtils.copy( cmsContentImage.getFile(), output );
+	        contentImage.setFile( output );
+	        
+	        contentFileManager.addImage( merchantStoreId, contentImage );
+	        
+	    } catch ( Exception e )
+		 {
+		        LOG.error( "Error while trying to convert input stream to buffered image", e );
+		        throw new ServiceException( e );
+		
+		 }
+
+	    
+    	
+    	
     }
 
     
