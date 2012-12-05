@@ -23,6 +23,23 @@
 	
 	$(function(){
 		
+		//currency https://github.com/gilbitron/jQuery-Currency
+		
+		
+		
+		//$('#number').currency({
+    	//	region: 'USD', // The 3 digit ISO code you want to display your currency in
+    	//	thousands: ',', // Thousands separator
+    	//	decimal: '.',   // Decimal separator
+    	//	decimals: 2, // How many decimals to show
+    	//	hidePrefix: false, // Hide any prefix
+    	//	hidePostfix: false, // Hide any postfix
+    	//	convertFrom: '', // If converting, the 3 digit ISO code you want to convert from,
+    	//	convertLoading: '(Converting...)', // Loading message appended to values while converting
+    	//	convertLocation: 'convert.php' // Location of convert.php file
+		//});
+
+		
 		
 
 		
@@ -233,8 +250,8 @@
                         <label class="required"><s:message code="label.product.price" text="Price"/></label>
 
                         <div class="controls">
-                                    <form:input id="productPriceAmount" cssClass="highlight" path="price.productPriceAmount"/>
-                                    <span class="help-inline"><form:errors path="price.productPriceAmount" cssClass="error" /></span>
+                                    <form:input id="productPriceAmount" cssClass="highlight" path="productPrice"/>
+                                    <span class="help-inline"><form:errors path="productPrice" cssClass="error" /></span>
                         </div>
                   </div>
 
