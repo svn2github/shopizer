@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
+import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 
 public class Product implements Serializable {
@@ -40,7 +41,7 @@ public class Product implements Serializable {
 	
 	private MultipartFile image = null;
 	
-	private String imageFileName = null;
+	private ProductImage productImage = null;
 	
 	@NotEmpty
 	private String productPrice = "0";
@@ -78,17 +79,18 @@ public class Product implements Serializable {
 	public void setImage(MultipartFile image) {
 		this.image = image;
 	}
-	public String getImageFileName() {
-		return imageFileName;
-	}
-	public void setImageFileName(String imageFileName) {
-		this.imageFileName = imageFileName;
-	}
+
 	public void setProductPrice(String productPrice) {
 		this.productPrice = productPrice;
 	}
 	public String getProductPrice() {
 		return productPrice;
+	}
+	public void setProductImage(ProductImage productImage) {
+		this.productImage = productImage;
+	}
+	public ProductImage getProductImage() {
+		return productImage;
 	}
 	
 
