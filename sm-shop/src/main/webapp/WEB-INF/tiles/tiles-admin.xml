@@ -33,6 +33,10 @@
   		<put-attribute name="body" value="/pages/admin/merchant/merchant.jsp" /> 
   	</definition>
   	
+  	<definition name="admin-store-branding" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/merchant/branding.jsp" /> 
+  	</definition>
+  	
   	 <definition name="admin-store-landing" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/merchant/storeLanding.jsp" /> 
   	</definition>

@@ -15,7 +15,7 @@
 	
 	
 	
-		<script type="text/javascript">
+<script type="text/javascript">
 
 
 	
@@ -27,61 +27,58 @@
 		
 		
 		
-		//$('#number').currency({
-    	//	region: 'USD', // The 3 digit ISO code you want to display your currency in
-    	//	thousands: ',', // Thousands separator
-    	//	decimal: '.',   // Decimal separator
-    	//	decimals: 2, // How many decimals to show
-    	//	hidePrefix: false, // Hide any prefix
-    	//	hidePostfix: false, // Hide any postfix
-    	//	convertFrom: '', // If converting, the 3 digit ISO code you want to convert from,
-    	//	convertLoading: '(Converting...)', // Loading message appended to values while converting
-    	//	convertLocation: 'convert.php' // Location of convert.php file
-		//});
+		$('#productPriceAmount').currency({
+    		region: 'USD', // The 3 digit ISO code you want to display your currency in
+    		thousands: ',', // Thousands separator
+    		decimal: '.',   // Decimal separator
+    		decimals: 2, // How many decimals to show
+    		hidePrefix: true, // Hide any prefix
+    		hidePostfix: true, // Hide any postfix
+		});
 
 		
-		
 
-		
-		//if($("#code").val()=="") {
-		//	$('.btn').addClass('disabled');
-		//}
 		<c:forEach items="${product.descriptions}" var="description" varStatus="counter">		
 			$("#name${counter.index}").friendurl({id : 'seUrl${counter.index}'});
 		</c:forEach>
 	});
+
 	
-	
-	function validateCode() {
-		$('#checkCodeStatus').html('<img src="<c:url value="/resources/img/ajax-loader.gif" />');
-		$('#checkCodeStatus').show();
-		var code = $("#code").val();
-		var id = $("#id").val();
-		checkCode(code,id,'<c:url value="/admin/categories/checkCategoryCode.html" />');
+	function removeImage(imageId){
+			$("#store.error").show();
+			$.ajax({
+			  type: 'POST',
+			  url: '<c:url value="/admin/products/product/removeImage.html"/>',
+			  data: 'imageId=' + imageId,
+			  dataType: 'json',
+			  success: function(response){
+		
+					var status = isc.XMLTools.selectObjects(response, "/response/status");
+					if(status==0 || status ==9999) {
+						
+						//remove delete
+						$("#imageControlRemove").html('');
+						//add field
+						$("#imageControl").html('<input class=\"input-file\" id=\"image\" name=\"image\" type=\"file\">');
+						
+						
+					} else {
+						
+						//display message
+						$("#store.error").show();
+					}
+		
+			  
+			  },
+			  error: function(xhr, textStatus, errorThrown) {
+			  	alert('error ' + errorThrown);
+			  }
+			  
+			});
 	}
 	
-	function callBackCheckCode(msg,code) {
-		
-		if(code==0) {
-			$('.btn').removeClass('disabled');
-		}
-		if(code==9999) {
-
-			$('#checkCodeStatus').html('<font color="green"><s:message code="message.code.available" text="This code is available"/></font>');
-			$('#checkCodeStatus').show();
-			$('.btn').removeClass('disabled');
-		}
-		if(code==9998) {
-
-			$('#checkCodeStatus').html('<font color="red"><s:message code="message.code.exist" text="This code already exist"/></font>');
-			$('#checkCodeStatus').show();
-			$('.btn').addClass('disabled');
-		}
-		
-	}
 	
-	
-	</script>
+</script>
 	
 				
 <div class="tabbable">
@@ -122,6 +119,7 @@
 
                             <form:errors path="*" cssClass="alert alert-error" element="div" />
                             <div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>   
+                            <div id="store.error" class="alert alert-error" style="display:none;"><s:message code="message.error" text="An error occured"/></div>
 
                         <div class="control-group">
 	                        <label><s:message code="label.product.sku" text="Sku"/></label>
@@ -326,19 +324,16 @@
                   </div>          
                  
 
-                  <!-- hidden when creating the product -->
 
                   <div class="control-group">
-                        <label><s:message code="label.product.image" text="Image"/></label>&nbsp;<c:if test="${product.imageFileName!=null}"> - <a href="#"><s:message code="label.generic.remove" text="Remove"/></a></c:if>
-                        <div class="controls">
-                        		
+                        <label><s:message code="label.product.image" text="Image"/></label>&nbsp;<c:if test="${product.productImage.productImage!=null}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage('${product.productImage.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if>
+                        <div class="controls" id="imageControl">
                         		<c:choose>
-	                        		<c:when test="${product.imageFileName==null}">
+	                        		<c:when test="${product.productImage.productImage==null}">
 	                                    <input class="input-file" id="image" name="image" type="file">
 	                                </c:when>
 	                                <c:otherwise>
-	                                	<img src="<%=request.getContextPath()%>/<sm:productImage imageName="${product.imageFileName}" product="${product.product}"/>" width="200"/><br/>
-	                                	
+	                                	<img src="<%=request.getContextPath()%>/<sm:productImage imageName="${product.productImage.productImage}" product="${product.product}"/>" width="200"/>
 	                                </c:otherwise>
                                 </c:choose>
                         </div>

@@ -180,16 +180,12 @@ response.setDateHeader ("Expires", -1);
 			$("#catalogue-featured-link").click(function() {
   				window.location='<c:url value="/admin/catalogue/featured/list.html" />';
 			});
-			
-			
 			$("#userinfo-link").click(function() {
   				window.location='<c:url value="/admin/user/user.html" />';
 			});
-			
 			$("#users-link").click(function() {
   				window.location='<c:url value="/admin/user/users.html" />';
 			});
-			
 			$("#security-permissions-link").click(function() {
   				window.location='<c:url value="/admin/user/permissions.html" />';
 			});

@@ -24,29 +24,26 @@
 
 
 				<c:choose>
-				
-					<c:when test="${store.storeLogo!=null && store.storeLogo!=''}">
-						<a href="<sm:contentImage imageName="${store.storeLogo}" merchant="${store}"/>"/ width="200">
-						<br/>
-						Delete control
-					</c:when>
-					<c:otherwise>
-					
-					
+
 						<c:url var="merchant" value="/admin/store/saveBranding.html"/>
 						<form:form method="POST" commandName="store" action="${merchant}">
 				
 							<form:errors path="*" cssClass="alert alert-error" element="div" />
 
-	      					<div class="control-group">
-	                        	<label class="required"><s:message code="label.storelogo" text="Logo"/></label>
-	                        	<div class="controls">
-	                        			<input type="file" id="file" > 
-	                                    <span class="help-inline">
-	                                    <form:errors path="storeLogo" cssClass="error" /></span>
-	                       		 </div>
-	                  		</div>
-	                  	                  
+			                  <div class="control-group">
+			                        <label><s:message code="label.storelogo" text="Store logo"/></label>&nbsp;<c:if test="${store.storeLogo!=null}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage('${store.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if>
+			                        <div class="controls" id="imageControl">
+			                        		<c:choose>
+				                        		<c:when test="${store.storeLogo==null}">
+				                                    <input class="input-file" id="image" name="image" type="file">
+				                                </c:when>
+				                                <c:otherwise>
+				                                	<img src="<%=request.getContextPath()%>/<sm:contentImage imageName="${store.storeLogo}" imageType="LOGO"/>"/>
+				                                </c:otherwise>
+			                                </c:choose>
+			                        </div>
+			                  </div>
+				                  	                  
 	                  		<form:hidden path="id" />
 				      		<div class="form-actions">
 	                  			<div class="pull-right">

@@ -30,9 +30,7 @@ $(document).ready(function() {
 	</c:choose>
 
 	$(".country-list").change(function() {
-
 		getZones($(this).val());
-        
     })
 
 
@@ -84,7 +82,7 @@ function getZones(countryCode){
 	  
 	  },
 	  error: function(xhr, textStatus, errorThrown) {
-	  	alert('fail ' + errorThrown);
+	  	alert('error ' + errorThrown);
 	  }
 	  
 	});
