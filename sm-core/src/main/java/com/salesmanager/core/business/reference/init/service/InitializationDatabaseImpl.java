@@ -199,6 +199,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		Language en = languageService.getByCode("en");
 		Country ca = countryService.getByCode("CA");
 		Currency currency = currencyService.getByCode("CAD");
+		Zone qc = zoneService.getByCode("QC");
 		
 		List<Language> supportedLanguages = new ArrayList<Language>();
 		supportedLanguages.add(en);
@@ -209,6 +210,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		store.setCurrency(currency);
 		store.setDefaultLanguage(en);
 		store.setInBusinessSince(date);
+		store.setZone(qc);
 		store.setStorename("default store");
 		store.setStorephone("888-888-8888");
 		store.setCode(MerchantStore.DEFAULT_STORE);
