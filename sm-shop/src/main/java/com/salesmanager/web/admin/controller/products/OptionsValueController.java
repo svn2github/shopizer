@@ -1,5 +1,6 @@
 package com.salesmanager.web.admin.controller.products;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,10 +33,13 @@ import com.salesmanager.core.business.catalog.product.model.attribute.ProductOpt
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValueDescription;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionValueService;
+import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
+import com.salesmanager.core.modules.cms.common.CMSContentImage;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
+import com.salesmanager.web.admin.entity.merchant.ContentImages;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
@@ -52,6 +56,9 @@ public class OptionsValueController {
 	
 	@Autowired
 	LabelUtils messages;
+	
+	@Autowired
+	private ContentService contentService;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(OptionsValueController.class);
 	
@@ -145,11 +152,13 @@ public class OptionsValueController {
 				
 			}
 			
+			option.setDescriptions(descriptions);
+			
 		}
 		
 
-		option.setDescriptions(descriptions);
-		model.addAttribute("option", option);
+		
+		model.addAttribute("optionValue", option);
 		return "catalogue-optionsvalues-details";
 		
 		
@@ -181,15 +190,18 @@ public class OptionsValueController {
 		Map<String,Language> langs = languageService.getLanguagesMap();
 			
 
-		Set<ProductOptionValueDescription> descriptions = optionValue.getDescriptions();
-		if(descriptions!=null) {
-				
+		List<ProductOptionValueDescription> descriptions = optionValue.getDescriptionsList();
+		if(descriptions!=null && descriptions.size()>0) {
+			
+				Set<ProductOptionValueDescription> descs = new HashSet<ProductOptionValueDescription>();
+				optionValue.setDescriptions(descs);
 				for(ProductOptionValueDescription description : descriptions) {
 					
 					String code = description.getLanguage().getCode();
 					Language l = langs.get(code);
 					description.setLanguage(l);
 					description.setProductOptionValue(optionValue);
+					descs.add(description);
 					
 					
 				}
@@ -205,7 +217,19 @@ public class OptionsValueController {
 		}
 		
 
-		
+		if(optionValue.getImage()!=null && !optionValue.getImage().isEmpty()) {
+
+			String imageName = optionValue.getImage().getOriginalFilename();
+            InputStream inputStream = optionValue.getImage().getInputStream();
+            CMSContentImage cmsContentImage = new CMSContentImage();
+            cmsContentImage.setImageName(imageName);
+            cmsContentImage.setContentType( optionValue.getImage().getContentType() );
+            cmsContentImage.setFile( inputStream );
+            contentService.addProperty(store.getId(), cmsContentImage);
+            
+            optionValue.setProductOptionValueImage(imageName);
+
+		}
 		
 		productOptionValueService.saveOrUpdate(optionValue);
 

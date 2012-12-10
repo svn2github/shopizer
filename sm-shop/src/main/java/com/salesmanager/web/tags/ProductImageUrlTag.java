@@ -34,7 +34,6 @@ public class ProductImageUrlTag extends TagSupport {
 	public int doStartTag() throws JspException {
 		try {
 
-			// example -> /static/1/CONTENT/myImage.png
 
 			HttpServletRequest request = (HttpServletRequest) pageContext
 					.getRequest();

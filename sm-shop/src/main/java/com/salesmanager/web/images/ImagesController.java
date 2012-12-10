@@ -66,12 +66,14 @@ public class ImagesController {
 
 	}
 	
-	@SuppressWarnings("unused")
+
 	@RequestMapping("/static/{storeId}/{imageType}/{productId}/{imageName}.{extension}")
 	public @ResponseBody byte[] printImage(@PathVariable final Integer storeId, @PathVariable final Long productId, @PathVariable final String imageType, @PathVariable final String imageName, @PathVariable final String extension) throws IOException {
 
-		
+		// product image
 		// example -> /static/1/PRODUCT/120/product1.jpg
+		
+		// 
 		
 		ImageContentType imgType = null;
 		
