@@ -6,7 +6,11 @@
 
 	xmlns="urn:infinispan:config:5.1">
 
-	<global />
+	<global>
+	
+		 <globalJmxStatistics enabled="false" jmxDomain="infinispan"/>
+	
+	</global>
 
 	<default />
 
@@ -49,9 +53,9 @@
 					<property name="timestampColumnTypeForStrings" value="BIGINT" />
 					<property name="timestampColumnTypeForBinary" value="BIGINT" />
 					<property name="connectionFactoryClass"
-						value="org.infinispan.loaders.jdbc.connectionfactory.PooledConnectionFactory" />
+						value="org.infinispan.loaders.jdbc.connectionfactory.SimpleConnectionFactory" />
 					<property name="connectionUrl"
-						value="jdbc:h2:file:shopizer_infinispan_mixed_cs;DB_CLOSE_DELAY=-1" />
+						value="jdbc:h2:file:c:/shopizer_infinispan_mixed_cs;DB_CLOSE_DELAY=-1" />
 					<property name="userName" value="sa" />
 					<property name="driverClass" value="org.h2.Driver" />
 					<property name="idColumnTypeForStrings" value="VARCHAR(255)" />
