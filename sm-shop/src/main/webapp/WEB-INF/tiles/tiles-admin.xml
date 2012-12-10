@@ -160,4 +160,11 @@
   		<put-attribute name="body" value="/pages/admin/content/addContentImages.jsp" /> 
   	</definition>
   	
+  	
+  	
+  	
+  	 <definition name="admin-content-filebrowser" template="/layout/admin/noSkinLayout.jsp"> 
+  		<put-attribute name="body" value="/pages/admin/components/fileBrowser.jsp" /> 
+  	</definition>
+  	
 </tiles-definitions>
