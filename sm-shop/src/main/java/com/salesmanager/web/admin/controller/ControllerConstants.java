@@ -17,6 +17,7 @@ public interface ControllerConstants
         interface ContentImages{
             final String addContentImages="admin-contentImages-add";
             final String contentImages="admin-content-images";
+            final String fileBrowser="admin-content-filebrowser";
         }
         
     }

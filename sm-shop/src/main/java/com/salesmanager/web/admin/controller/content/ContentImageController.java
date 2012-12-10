@@ -43,6 +43,24 @@ public class ContentImageController {
 	@Autowired
 	private ContentService contentService;
 	
+	/**
+	 * Entry point for the file browser used from the javascript
+	 * content editor
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@Secured("CONTENT")
+	@RequestMapping(value={"/admin/content/fileBrowser.html"}, method=RequestMethod.GET)
+	public String displayFileBrowser(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+
+		return ControllerConstants.Tiles.ContentImages.fileBrowser;
+		
+	}
+	
 	
 	
 	/**

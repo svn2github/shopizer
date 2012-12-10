@@ -33,6 +33,7 @@ import com.salesmanager.core.business.reference.language.service.LanguageService
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.modules.cms.common.CMSContentImage;
+import com.salesmanager.web.admin.entity.merchant.ContentImages;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 
@@ -73,20 +74,20 @@ public class StoreBrandingController {
 	}
 	
 	@RequestMapping(value="/admin/store/saveBranding.html", method=RequestMethod.POST)
-	public String saveStoreBranding(@ModelAttribute("image") MultipartFile logo, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String saveStoreBranding(@ModelAttribute(value="contentImages") @Valid final ContentImages contentImages, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		
-		if(logo!=null && !logo.isEmpty()) {
+		if(contentImages.getImage()!=null && contentImages.getImage().size()>0) {
 
-			String imageName = logo.getOriginalFilename();
-            InputStream inputStream = logo.getInputStream();
+			String imageName = contentImages.getImage().get(0).getOriginalFilename();
+            InputStream inputStream = contentImages.getImage().get(0).getInputStream();
             CMSContentImage cmsContentImage = new CMSContentImage();
             cmsContentImage.setImageName(imageName);
-            cmsContentImage.setContentType( logo.getContentType() );
+            cmsContentImage.setContentType( contentImages.getImage().get(0).getContentType() );
             cmsContentImage.setFile( inputStream );
             contentService.addLogo(store.getId(), cmsContentImage);
 			

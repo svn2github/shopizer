@@ -206,10 +206,45 @@
                         <div class="control-group">
                               <label class="required"><s:message code="label.productedit.productdesc" text="Product description"/> (<c:out value="${description.language.code}"/>)</label>
                               <div class="controls">
-                              	     <textarea cols="30" id="descriptions[${counter.index}].description" class="ckeditor" name="descriptions[${counter.index}].description">
+                              	     <textarea cols="30" id="descriptions[${counter.index}].description" name="descriptions[${counter.index}].description">
                         				<c:out value="${descriptions[counter.index].description}"/>
                         			 </textarea>
                               </div>
+                              
+                              
+                              
+                        <script type="text/javascript">
+						//<![CDATA[
+
+							CKEDITOR.replace('descriptions[${counter.index}].description',
+							{
+								skin : 'office2003',
+								toolbar : 
+								[
+									['Source','-','Save','NewPage','Preview'], 
+									['Cut','Copy','Paste','PasteText','-','Print'], 
+									['Undo','Redo','-','Find','-','SelectAll','RemoveFormat'], '/', 
+									['Bold','Italic','Underline','Strike','-','Subscript','Superscript'], 
+									['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'], 
+									['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'], 
+									['Link','Unlink','Anchor'], 
+									['Image','Flash','Table','HorizontalRule','SpecialChar','PageBreak'], '/', 
+									['Styles','Format','Font','FontSize'], ['TextColor','BGColor'], 
+									['Maximize', 'ShowBlocks'] 
+								],
+								//filebrowserBrowseUrl : '<%=request.getContextPath()%>/merchantstore/displayFileBrowser.action',
+								filebrowserWindowWidth : '400',
+        						filebrowserWindowHeight : '400',
+								filebrowserImageBrowseUrl :    '<c:url value="/admin/content/fileBrowser.html"/>'
+								//filebrowserFlashBrowseUrl: '<%=request.getContextPath()%>//merchantstore/displayFileBrowser.action?Type=Flash'
+
+							});
+
+						//]]>
+						</script>
+                              
+                              
+                              
                        </div>
                       
 
