@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %>
 <%@ page session="false" %>				
 				
 
@@ -16,7 +17,7 @@
 				<h3>
 					<c:choose>
 						<c:when test="${optionValue.id!=null && optionValue.id>0}">
-								<s:message code="label.product.productoptionvalue.edit.title" text="Edit option value" /> <c:out value="${optionValue.descriptions[0].name}"/>
+								<s:message code="label.product.productoptionvalue.edit.title" text="Edit option value" /> 
 						</c:when>
 						<c:otherwise>
 								<s:message code="label.product.productoptionvalue.create.title" text="Create option value" />
@@ -25,10 +26,10 @@
 				</h3>
 				<br/>
 
-				<c:url var="optionSave" value="/admin/optionvalue/save.html"/>
+				<c:url var="optionSave" value="/admin/options/saveOptionValue.html"/>
 
 
-				<form:form method="POST" commandName="optionValue" action="${optionSave}">
+				<form:form method="POST" enctype="multipart/form-data" commandName="optionValue" action="${optionSave}">
 
       							
       				<form:errors path="*" cssClass="alert alert-error" element="div" />
@@ -51,14 +52,21 @@
                   
                   </c:forEach>
                   
-                  <div class="control-group">
-                        <label><s:message code="label.product.productoptionvalue" text="Option value image"/></label>
-                        <div class="controls">
-                        			<input class="input-file" id="image" name="image" type="file">
-                        			<span class="help-inline"><form:errors path="productOptionValueImage" cssClass="error" /></span>
+
+                 <div class="control-group">
+                        <label><s:message code="label.product.image" text="Image"/></label>&nbsp;<c:if test="${optionValue.productOptionValueImage!=null}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage('${optionValue.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if>
+                        <div class="controls" id="imageControl">
+                        		<c:choose>
+	                        		<c:when test="${optionValue.productOptionValueImage==null}">
+	                                    <input class="input-file" id="image" name="image" type="file">
+	                                </c:when>
+	                                <c:otherwise>
+	                                	<img src="<%=request.getContextPath()%>/<sm:contentImage imageName="${optionValue.productOptionValueImage}" imageType="PROPERTY"/>
+	                                </c:otherwise>
+                                </c:choose>
                         </div>
                   </div>
-
+                  
                   <form:hidden path="id" />
 			
 			      <div class="form-actions">

@@ -51,7 +51,7 @@
                  </div>	
                  
                  
-                 <div class="control-group">
+                 <div class="control-group" id="optionValue" style="<c:choose><c:when test="productOption.productOptionType!='TEXT'">block;</c:when><c:otherwise>none;</c:otherwise></c:choose>">
                         <label><s:message code="label.product.productoptiosvalue.title" text="Option value name"/></label>
                         <div class="controls">    
 	                        <div class="controls">		
@@ -62,6 +62,25 @@
 	                        </div>
                         </div>
                  </div>		
+                 
+                 <div class="control-group" id="optionValueText">
+                 <c:forEach items="${attribute.optionValue.descriptionsSettoList}" var="description" varStatus="counter">
+	                  
+		                 
+		                        <label class="required"><s:message code="label.product.productoptions.name" text="Option name"/> (<c:out value="${description.language.code}"/>)</label>
+		                        <div class="controls">
+		                        			<form:input id="name${counter.index}" path="optionValue.descriptionsList[${counter.index}].description"/>
+		                        			<span class="help-inline"><form:errors path="optionValue.descriptionsList[${counter.index}].description" cssClass="error" /></span>
+		                        </div>
+		
+		                  
+		
+		                  
+		                  		<form:hidden path="optionValue.descriptionsList[${counter.index}].language.code" />
+		                  		<form:hidden path="optionValue.descriptionsList[${counter.index}].id" />
+	                  
+	               </c:forEach>
+                   </div>
 						
 				 <div class="control-group">
                         <label><s:message code="label.product.productoptions.price" text="Price"/></label>
@@ -71,7 +90,8 @@
                         </div>
                   </div>
                   
-                  <div class="control-group well">
+                  
+                  <div class="control-group">
                         <label class="required"><s:message code="label.entity.order" text="Order"/></label>
                         <div class="controls">
                                     <form:input cssClass="highlight" path="productOptionSortOrder"/>
@@ -79,28 +99,9 @@
 
                         </div>
                   </div>	
-                  
-                  <div class="well">	
-                  
-                  
-                     <c:forEach items="${optionValue.descriptionsSettoList}" var="description" varStatus="counter">
-                  
-	                 <div class="control-group">
-	                        <label class="required"><s:message code="label.product.productoptions.name" text="Option name"/> (<c:out value="${description.language.code}"/>)</label>
-	                        <div class="controls">
-	                        			<form:input id="name${counter.index}" path="descriptionsList[${counter.index}].name"/>
-	                        			<span class="help-inline"><form:errors path="descriptionsList[${counter.index}].name" cssClass="error" /></span>
-	                        </div>
-	
-	                  </div>
-	
-	                  
-	                  <form:hidden path="descriptionsList[${counter.index}].language.code" />
-	                  <form:hidden path="descriptionsList[${counter.index}].id" />
-                  
-                  	</c:forEach>
-                  
-                  </div>	
+
+
+
                   
                   <div class="control-group">
                         <label><s:message code="label.product.attribute.default" text="Default"/></label>

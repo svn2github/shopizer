@@ -6,7 +6,7 @@
 
 
 
-	{title:"<s:message code="label.entity.id" text="Id"/>", name:"optionValueId", canFilter:false},
+	{title:"<s:message code="label.entity.id" text="Id"/>", name:"optionId", canFilter:false},
     {title:"<s:message code="label.entity.name" text="Name"/>", name:"name"},
-    {title:"<s:message code="label.entity.type" text="Image"/>", name:"image", canFilter:false},
+    {title:"<s:message code="label.product.image" text="Image"/>", name:"image", canFilter:false},
     {title:"<s:message code="label.entity.details" text="Details"/>", name: "buttonField", align: "center",canFilter:false,canSort:false, canReorder:false}
