@@ -45,8 +45,8 @@ public class ProductOptionValue extends SalesManagerEntity<Long, ProductOptionVa
 	
 	@Transient
 	private MultipartFile image = null;
-
 	
+
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "productOptionValue")
 	private Set<ProductOptionValueDescription> descriptions = new HashSet<ProductOptionValueDescription>();
 	
@@ -131,7 +131,6 @@ public class ProductOptionValue extends SalesManagerEntity<Long, ProductOptionVa
 	public MultipartFile getImage() {
 		return image;
 	}
-
 
 
 

@@ -133,6 +133,21 @@ public class ContentServiceImpl
 
     }
     
+    @Override
+    public void addProperty( final Integer merchantStoreId, final CMSContentImage cmsContentImage )
+    throws ServiceException {
+    	
+    	
+		    Assert.notNull( merchantStoreId, "Merchant store Id can not be null" );
+		    Assert.notNull( cmsContentImage, "CMSContent image can not be null" );
+		    final InputContentImage contentImage = new InputContentImage( ImageContentType.PROPERTY );
+		    contentImage.setImageName( cmsContentImage.getImageName() );
+		
+		    addImage(merchantStoreId,cmsContentImage,contentImage);
+		   
+
+    }
+    
     
     private void addImage(Integer merchantStoreId, CMSContentImage cmsContentImage, InputContentImage contentImage ) throws ServiceException {
     	

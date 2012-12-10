@@ -97,7 +97,7 @@ public class CmsContentFileManagerInfinispanImpl
                 LOGGER.warn( "merchant node is null" );
                 return Collections.<String> emptyList();
             }
-            final CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( IMAGE_CONTENT );
+            final CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( imageContentType.name() );
 
             if ( contentAttribute == null )
             {
@@ -197,7 +197,7 @@ public class CmsContentFileManagerInfinispanImpl
                 LOGGER.warn( "merchant node is null" );
                 return Collections.<OutputContentImage> emptyList();
             }
-            final CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( IMAGE_CONTENT );
+            final CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( imageContentType.name() );
 
             if ( contentAttribute == null )
             {
@@ -299,14 +299,14 @@ public class CmsContentFileManagerInfinispanImpl
                 throw new ServiceException("unable to get merchant node for CmsImageFileManagerInfinispan");
             } 
             
-            final CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( IMAGE_CONTENT );
+            final CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( contentImage.getContentType().name());
             if(contentAttribute ==null){
                 LOGGER.warn( "No Content data found for given merchant" );
                 return ;
             }
             
             contentAttribute.getEntities().remove( contentImage.getImageName() );
-            merchantNode.put( IMAGE_CONTENT, contentAttribute );
+            merchantNode.put( contentImage.getContentType().name(), contentAttribute );
             LOGGER.info( "Content image added successfully." );
             LOGGER.info( "All images for merchant {} removed from cache",merchantStoreId);
 
@@ -353,7 +353,7 @@ public class CmsContentFileManagerInfinispanImpl
                 return null;
             }
 
-            final CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( IMAGE_CONTENT );
+            final CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( imageContentType.name());
 
             if ( contentAttribute == null )
             {
@@ -418,7 +418,7 @@ public class CmsContentFileManagerInfinispanImpl
 
             final Node<String, Object> merchantNode = getMerchantNode(merchantStoreId);
             // object for a given merchant containing all images
-            CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( IMAGE_CONTENT );
+            CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( image.getContentType().name() );
 
             if ( contentAttribute == null )
             {
@@ -427,7 +427,7 @@ public class CmsContentFileManagerInfinispanImpl
             }
 
             contentAttribute.getEntities().put( image.getImageName(), image.getFile().toByteArray() );
-            merchantNode.put( IMAGE_CONTENT, contentAttribute );
+            merchantNode.put( image.getContentType().name(), contentAttribute );
             LOGGER.info( "Content image added successfully." );
 
         }
@@ -478,10 +478,12 @@ public class CmsContentFileManagerInfinispanImpl
                
             }
 
+            String cmsType = IMAGE_CONTENT;
             for(final InputContentImage image:imagesList){
                 contentAttribute.getEntities().put( image.getImageName(), image.getFile().toByteArray() );
+                cmsType = image.getContentType().name();
             }
-            merchantNode.put( IMAGE_CONTENT, contentAttribute );
+            merchantNode.put( cmsType, contentAttribute );
             LOGGER.info( "Total {} content images added successfully.",imagesList.size() );
 
         }

@@ -6,17 +6,17 @@ public abstract class ContentImage {
 	
 	
 	private boolean defaultImage;
-	
+	private ImageContentType imageContentType;
 	
 	
 	private String imageName;
-	private String imageContentType;
+	private String fileContentType;
 
     public String getImageContentType() {
-		return imageContentType;
+		return fileContentType;
 	}
 	public void setImageContentType(String imageContentType) {
-		this.imageContentType = imageContentType;
+		this.fileContentType = imageContentType;
 	}
 
 	public void setDefaultImage(boolean defaultImage) {
@@ -35,11 +35,17 @@ public abstract class ContentImage {
 	public String toString() {
 		
 		StringBuilder t = new StringBuilder();
-		t.append("imageName : ").append(imageName).append(" contentType : ").append(imageContentType)
+		t.append("imageName : ").append(imageName).append(" contentType : ").append(fileContentType)
 		.append(" defaultImage : ").append(defaultImage);
 		
 		return t.toString();
 		
+	}
+	public void setContentType(ImageContentType contentType) {
+		this.imageContentType = contentType;
+	}
+	public ImageContentType getContentType() {
+		return imageContentType;
 	}
 
 }

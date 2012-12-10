@@ -121,4 +121,13 @@ public interface ContentService
 	void addLogo(Integer merchantStoreId, CMSContentImage cmsContentImage)
 			throws ServiceException;
 
+	/**
+	 * Adds a property (option) image
+	 * @param merchantStoreId
+	 * @param cmsContentImage
+	 * @throws ServiceException
+	 */
+	void addProperty(Integer merchantStoreId, CMSContentImage cmsContentImage)
+			throws ServiceException;
+
 }
