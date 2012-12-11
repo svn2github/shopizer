@@ -470,20 +470,26 @@ public class CmsContentFileManagerInfinispanImpl
 
             final Node<String, Object> merchantNode = getMerchantNode(merchantStoreId);
             // object for a given merchant containing all images
-            CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( IMAGE_CONTENT );
 
-            if ( contentAttribute == null )
-            {
-                contentAttribute = new CacheAttribute();
-               
-            }
 
-            String cmsType = IMAGE_CONTENT;
             for(final InputContentImage image:imagesList){
+            	
+            	String cmsType = cmsType = image.getContentType().name();
+            	
+                CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( cmsType );
+
+                if ( contentAttribute == null )
+                {
+                    contentAttribute = new CacheAttribute();
+                   
+                }
+            	
                 contentAttribute.getEntities().put( image.getImageName(), image.getFile().toByteArray() );
-                cmsType = image.getContentType().name();
+                
+                
+                merchantNode.put( cmsType, contentAttribute );
             }
-            merchantNode.put( cmsType, contentAttribute );
+            
             LOGGER.info( "Total {} content images added successfully.",imagesList.size() );
 
         }

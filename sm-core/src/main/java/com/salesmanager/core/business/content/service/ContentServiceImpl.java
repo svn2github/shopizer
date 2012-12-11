@@ -271,12 +271,12 @@ public class ContentServiceImpl
      * @throws ServiceException
      */
     @Override
-    public OutputContentImage getContentImage(final Integer merchantStoreId, final String imageName )
+    public OutputContentImage getContentImage(final Integer merchantStoreId,  final ImageContentType imageContentType, final String imageName )
         throws ServiceException
     {
         Assert.notNull( merchantStoreId, "Merchant store ID can not be null" );
         Assert.notNull( imageName, "CMSContent image can not be null" );
-        return contentFileManager.getImage( merchantStoreId, imageName, ImageContentType.CONTENT );
+        return contentFileManager.getImage( merchantStoreId, imageName, imageContentType );
     }
 
     

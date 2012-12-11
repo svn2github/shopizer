@@ -94,7 +94,7 @@ public interface ContentService
      * @return {@link OutputContentImage}
      * @throws ServiceException
      */
-    public OutputContentImage getContentImage( final Integer merchantStoreId, final String imageName )
+    public OutputContentImage getContentImage( final Integer merchantStoreId, final ImageContentType imageContentType, final String imageName )
         throws ServiceException;
     
     
