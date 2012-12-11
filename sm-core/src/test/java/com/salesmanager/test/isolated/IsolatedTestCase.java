@@ -470,7 +470,7 @@ public class IsolatedTestCase
         final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
         final String imageName = "demoCmsImage";
 
-        final OutputContentImage outputContentImage = contentService.getContentImage( store.getId(), imageName );
+        final OutputContentImage outputContentImage = contentService.getContentImage( store.getId(), ImageContentType.CONTENT, imageName );
         //final OutputContentImage outputContentImage = contentService.getContentImage( store, "" );
         System.out.println( outputContentImage.getImage() );
         System.out.println( outputContentImage.getImageName() );
