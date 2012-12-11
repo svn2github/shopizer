@@ -110,6 +110,11 @@ public class ContentServiceImpl
     {
         Assert.notNull( merchantStoreId, "Merchant store Id can not be null" );
         Assert.notNull( cmsContentImage, "CMSContent image can not be null" );
+        
+        
+        //validate formats
+        
+        
         final InputContentImage contentImage = new InputContentImage( ImageContentType.CONTENT );
         contentImage.setImageName( cmsContentImage.getImageName() );
 
@@ -312,6 +317,6 @@ public class ContentServiceImpl
             return contentFileManager.getImageNames(merchantStoreId, imageContentType);
         }
 
-   
+    
 
 }

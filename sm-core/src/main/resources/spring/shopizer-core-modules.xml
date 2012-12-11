@@ -24,13 +24,15 @@
 		<property name="removeImage">
 				<ref bean="cmsProductImage" />
 		</property>
+
+		
 	</bean>
 	
 	<bean id="cmsProductImage"
 				class="com.salesmanager.core.modules.cms.product.CmsImageFileManagerInfinispanImpl" factory-method="getInstance" >
 	</bean>
 	
-		<bean id="contentFileManager"
+	<bean id="contentFileManager"
 		class="com.salesmanager.core.modules.cms.content.ContentFileManagerImpl">
 		<property name="uploadImage">
 				<ref bean="cmsContentImage" />
@@ -41,6 +43,8 @@
 		<property name="removeImage">
 				<ref bean="cmsContentImage" />
 		</property>
+
+		
 	</bean>
 	
 	<bean id="cmsContentImage"
