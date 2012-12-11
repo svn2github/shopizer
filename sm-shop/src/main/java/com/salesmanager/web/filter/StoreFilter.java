@@ -20,6 +20,7 @@ import com.salesmanager.core.business.reference.language.service.LanguageService
 import com.salesmanager.core.business.system.model.SystemConfiguration;
 import com.salesmanager.core.business.system.service.SystemConfigurationService;
 import com.salesmanager.core.constants.SystemConstants;
+import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.web.admin.security.UserServicesImpl;
 import com.salesmanager.web.constants.ApplicationConstants;
 import com.salesmanager.web.constants.Constants;
@@ -40,6 +41,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	
 	@Autowired
 	private AppConfiguration appConfiguration;
+	
+	@Autowired
+	CoreConfiguration configuration;
 	
 	@Autowired
 	private InitializationDatabase initializationDatabase;
