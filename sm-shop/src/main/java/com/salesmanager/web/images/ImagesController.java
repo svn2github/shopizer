@@ -38,7 +38,6 @@ public class ImagesController {
 	 * @throws IOException
 	 * @throws ServiceException 
 	 */
-	@SuppressWarnings("unused")
 	@RequestMapping("/static/{storeId}/{imageType}/{imageName}.{extension}")
 	public @ResponseBody byte[] printImage(@PathVariable final Integer storeId, @PathVariable final String imageType, @PathVariable final String imageName, @PathVariable final String extension) throws IOException, ServiceException {
 
@@ -46,15 +45,19 @@ public class ImagesController {
 		
 		ImageContentType imgType = null;
 		
-		if(imageType.equals(ImageContentType.LOGO)) {
+		if(ImageContentType.LOGO.name().equals(imageType)) {
 			imgType = ImageContentType.LOGO;
 		}
 		
-		if(imageType.equals(ImageContentType.CONTENT)) {
+		if(ImageContentType.CONTENT.name().equals(imageType)) {
 			imgType = ImageContentType.CONTENT;
 		}
 		
-		OutputContentImage image =contentService.getContentImage(storeId, new StringBuilder().append(imageName).append(".").append(extension).toString());
+		if(ImageContentType.PROPERTY.name().equals(imageType)) {
+			imgType = ImageContentType.PROPERTY;
+		}
+		
+		OutputContentImage image =contentService.getContentImage(storeId, imgType, new StringBuilder().append(imageName).append(".").append(extension).toString());
 		
 		
 		if(image!=null) {

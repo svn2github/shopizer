@@ -61,7 +61,7 @@
 	                                    <input class="input-file" id="image" name="image" type="file">
 	                                </c:when>
 	                                <c:otherwise>
-	                                	<img src="<%=request.getContextPath()%>/<sm:contentImage imageName="${optionValue.productOptionValueImage}" imageType="PROPERTY"/>
+	                                	<img src="<%=request.getContextPath()%><sm:contentImage imageName="${optionValue.productOptionValueImage}" imageType="PROPERTY"/>" width="200">
 	                                </c:otherwise>
                                 </c:choose>
                         </div>

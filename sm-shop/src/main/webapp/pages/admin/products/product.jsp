@@ -10,6 +10,7 @@
     <link href="<c:url value="/resources/css/bootstrap/css/datepicker.css" />" rel="stylesheet"></link>
 	<script src="<c:url value="/resources/js/bootstrap/bootstrap-datepicker.js" />"></script>
 	<script src="<c:url value="/resources/js/ckeditor/ckeditor.js" />"></script>
+	<!--<script src="<c:url value="/resources/js/jquery.currency.js" />"></script>-->
 	
 
 	
@@ -27,14 +28,14 @@
 		
 		
 		
-		$('#productPriceAmount').currency({
-    		region: 'USD', // The 3 digit ISO code you want to display your currency in
-    		thousands: ',', // Thousands separator
-    		decimal: '.',   // Decimal separator
-    		decimals: 2, // How many decimals to show
-    		hidePrefix: true, // Hide any prefix
-    		hidePostfix: true, // Hide any postfix
-		});
+		//$('#productPriceAmount').currency({
+    	//	region: 'USD', // The 3 digit ISO code you want to display your currency in
+    	//	thousands: ',', // Thousands separator
+    	//	decimal: '.',   // Decimal separator
+    	//	decimals: 2, // How many decimals to show
+    	//	hidePrefix: true, // Hide any prefix
+    	//	hidePostfix: true // Hide any postfix
+		//});
 
 		
 

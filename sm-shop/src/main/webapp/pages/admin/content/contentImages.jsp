@@ -10,19 +10,10 @@
 		<div class="tab-pane active" id="catalogue-section">
            <div class="sm-ui-component">
 				<h3>
-					//TODO Images
-					<s:message code="label.categories.title" text="Categories" />
+					<s:message code="label.content.images" text="Images library" />
 				</h3>
-				<br />
-				<!-- Listing grid include -->
-				<c:set value="/admin/content/images/paging.html" var="pagingUrl" scope="request" />
-				<c:set value="/admin/content/contentImages.html" var="removeUrl" scope="request" />
-				<c:set value="/admin/content/contentImages.html" var="refreshUrl" scope="request" />
-				<c:set var="componentTitleKey" value="menu.content-images" scope="request" />
-				<c:set var="canRemoveEntry" value="true" scope="request" />
-				<jsp:include page="/pages/admin/components/images-list.jsp"></jsp:include>
-				<!-- End listing grid include -->
-			
+				
+				
 			<!--  Add content images -->
 			<c:url var="saveContentImages" value="/admin/content/saveContentImages.html" />
 			<form:form method="POST" enctype="multipart/form-data" commandName="contentImages" action="${saveContentImages}">
@@ -37,12 +28,37 @@
 					<!-- <input class="input-file" id="image1" name="image[1]" type="file"><br /> 
 					<input 	class="input-file" id="image2" name="image[2]" type="file"><br />
 					<input class="input-file" id="image3" name="image[3]" type="file"><br /> -->
-					 <button type="submit" class="btn btn-success">
-					   <s:message code="button.label.upload" text="Upload Images" />
-				   </button>
 				</div>
 			</div>
+			
+			
+			<div class="form-actions">
+
+                  		<div class="pull-right">
+
+                  			<button type="submit" class="btn btn-success"><s:message code="button.label.upload" text="Upload Images"/></button>
+                  			
+
+                  		</div>
+
+            	 </div>
+			
+			
 		  </form:form>
+				
+				
+				
+				<br />
+				<!-- Listing grid include -->
+				<c:set value="/admin/content/images/paging.html" var="pagingUrl" scope="request" />
+				<c:set value="/admin/content/contentImages.html" var="removeUrl" scope="request" />
+				<c:set value="/admin/content/contentImages.html" var="refreshUrl" scope="request" />
+				<c:set var="componentTitleKey" value="menu.content-images" scope="request" />
+				<c:set var="canRemoveEntry" value="true" scope="request" />
+				<jsp:include page="/pages/admin/components/images-list.jsp"></jsp:include>
+				<!-- End listing grid include -->
+			
+
 		</div>
 	   </div>
 	</div>
