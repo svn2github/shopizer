@@ -43,7 +43,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	private AppConfiguration appConfiguration;
 	
 	@Autowired
-	CoreConfiguration configuration;
+	private CoreConfiguration configuration;
 	
 	@Autowired
 	private InitializationDatabase initializationDatabase;

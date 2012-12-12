@@ -54,19 +54,19 @@
                   
 
                  <div class="control-group">
-                        <label><s:message code="label.product.image" text="Image"/></label>&nbsp;<c:if test="${optionValue.productOptionValueImage!=null}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage('${optionValue.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if>
+                        <label><s:message code="label.product.image" text="Image"/>&nbsp;<c:if test="${optionValue.productOptionValueImage!=null}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage('${optionValue.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if></label>
                         <div class="controls" id="imageControl">
                         		<c:choose>
 	                        		<c:when test="${optionValue.productOptionValueImage==null}">
 	                                    <input class="input-file" id="image" name="image" type="file">
 	                                </c:when>
 	                                <c:otherwise>
-	                                	<img src="<%=request.getContextPath()%><sm:contentImage imageName="${optionValue.productOptionValueImage}" imageType="PROPERTY"/>" width="200">
+	                                	<img src="<%=request.getContextPath()%><sm:contentImage imageName="${optionValue.productOptionValueImage}" imageType="PROPERTY"/>" width="80">
 	                                </c:otherwise>
                                 </c:choose>
                         </div>
                   </div>
-                  
+                  <form:hidden path="productOptionValueImage" />
                   <form:hidden path="id" />
 			
 			      <div class="form-actions">

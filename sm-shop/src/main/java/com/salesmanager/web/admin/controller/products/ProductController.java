@@ -1,5 +1,6 @@
 package com.salesmanager.web.admin.controller.products;
 
+import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,10 +10,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +46,7 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 import com.salesmanager.core.business.tax.service.TaxClassService;
+import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
@@ -66,22 +70,20 @@ public class ProductController {
 	@Autowired
 	private ProductTypeService productTypeService;
 	
-	
 	@Autowired
 	private ProductImageService productImageService;
-	
-
 	
 	@Autowired
 	private TaxClassService taxClassService;
 	
 	@Autowired
 	private ProductPriceUtils priceUtil;
-	
 
-	
 	@Autowired
 	LabelUtils messages;
+	
+	@Autowired
+	private CoreConfiguration configuration;
 
 	
 	@RequestMapping(value="/admin/products/editProduct.html", method=RequestMethod.GET)
@@ -236,7 +238,7 @@ public class ProductController {
 	
 
 	@RequestMapping(value="/admin/products/save.html", method=RequestMethod.POST)
-	public String saveProduct(@Valid @ModelAttribute("product") com.salesmanager.web.entity.catalog.Product  product, BindingResult result, Model model, HttpServletRequest request) throws Exception {
+	public String saveProduct(@Valid @ModelAttribute("product") com.salesmanager.web.entity.catalog.Product  product, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
 		//TODO TaxClass
 		Language language = (Language)request.getAttribute("LANGUAGE");
@@ -263,8 +265,63 @@ public class ProductController {
 		try {
 			submitedPrice = priceUtil.getAmount(product.getProductPrice());
 		} catch (Exception e) {
-			ObjectError error = new ObjectError("productPrice","Hey en must be present");
+			ObjectError error = new ObjectError("productPrice",messages.getMessage("NotEmpty.product.productPrice", locale));
 			result.addError(error);
+		}
+		
+
+		
+		//validate image
+		if(product.getImage()!=null && !product.getImage().isEmpty()) {
+			
+			try {
+				
+				String maxHeight = configuration.getProperty("PRODUCT_IMAGE_MAX_HEIGHT_SIZE");
+				String maxWidth = configuration.getProperty("PRODUCT_IMAGE_MAX_WIDTH_SIZE");
+				String maxSize = configuration.getProperty("PRODUCT_IMAGE_MAX_SIZE");
+				
+				
+				BufferedImage image = ImageIO.read(product.getImage().getInputStream());
+				
+				
+				if(!StringUtils.isBlank(maxHeight)) {
+					
+					int maxImageHeight = Integer.parseInt(maxHeight);
+					if(image.getHeight()>maxImageHeight) {
+						ObjectError error = new ObjectError("image",messages.getMessage("message.image.height", locale) + " {"+maxHeight+"}");
+						result.addError(error);
+					}
+					
+				}
+				
+				if(!StringUtils.isBlank(maxWidth)) {
+					
+					int maxImageWidth = Integer.parseInt(maxWidth);
+					if(image.getWidth()>maxImageWidth) {
+						ObjectError error = new ObjectError("image",messages.getMessage("message.image.width", locale) + " {"+maxWidth+"}");
+						result.addError(error);
+					}
+					
+				}
+				
+				if(!StringUtils.isBlank(maxSize)) {
+					
+					int maxImageSize = Integer.parseInt(maxSize);
+					if(product.getImage().getSize()>maxImageSize) {
+						ObjectError error = new ObjectError("image",messages.getMessage("message.image.size", locale) + " {"+maxSize+"}");
+						result.addError(error);
+					}
+					
+				}
+				
+
+				
+			} catch (Exception e) {
+				LOGGER.error("Cannot validate product image", e);
+			}
+
+			
+			
 		}
 		
 		if (result.hasErrors()) {
@@ -387,7 +444,7 @@ public class ProductController {
 		
 		if(product.getImage()!=null && !product.getImage().isEmpty()) {
 			
-			
+
 			
 			String imageName = product.getImage().getOriginalFilename();
 			

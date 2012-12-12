@@ -207,8 +207,10 @@
                         <div class="control-group">
                               <label class="required"><s:message code="label.productedit.productdesc" text="Product description"/> (<c:out value="${description.language.code}"/>)</label>
                               <div class="controls">
-                              	     <textarea cols="30" id="descriptions[${counter.index}].description" name="descriptions[${counter.index}].description">
-                        				<c:out value="${descriptions[counter.index].description}"/>
+                              		 
+                              		 
+                              	     <textarea cols="30" id="descriptions${counter.index}.description" name="descriptions[${counter.index}].description">
+                        				<c:out value="${product.descriptions[counter.index].description}"/>
                         			 </textarea>
                               </div>
                               
@@ -362,7 +364,7 @@
 
 
                   <div class="control-group">
-                        <label><s:message code="label.product.image" text="Image"/></label>&nbsp;<c:if test="${product.productImage.productImage!=null}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage('${product.productImage.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if>
+                        <label><s:message code="label.product.image" text="Image"/>&nbsp;<c:if test="${product.productImage.productImage!=null}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage('${product.productImage.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if></label>
                         <div class="controls" id="imageControl">
                         		<c:choose>
 	                        		<c:when test="${product.productImage.productImage==null}">
@@ -374,6 +376,8 @@
                                 </c:choose>
                         </div>
                   </div>
+                  
+                  <form:hidden path="productImage.productImage" />
                   
                   <div class="control-group">
                         	<label><s:message code="label.taxclass" text="Tax class"/></label>

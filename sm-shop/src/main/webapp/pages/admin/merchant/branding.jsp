@@ -35,7 +35,7 @@
 				
 					<!-- hidden when creating the product -->
 					<div class="control-group">
-						<label><s:message code="label.storelogo" text="Store logo"/></label>&nbsp;<c:if test="${store.storeLogo!=null}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage('${store.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if>
+						<label><s:message code="label.storelogo" text="Store logo"/>&nbsp;<c:if test="${store.storeLogo!=null}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage('${store.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if></label>
 						<div class="controls">
 						
 									   <c:choose>
@@ -74,4 +74,3 @@
 				
 
 
-</div>
