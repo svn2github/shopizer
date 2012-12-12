@@ -411,7 +411,7 @@ public class IsolatedTestCase
     {
 
         final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        final File file1 = new File( "/Umesh/contentimage/test_image1.jpg" );
+        final File file1 = new File( "c:/doc/test-image.jpg" );
 
         if ( !file1.exists() || !file1.canRead() )
         {

@@ -5,4 +5,6 @@ import com.salesmanager.core.business.generic.dao.SalesManagerEntityDao;
 
 public interface ProductImageDao extends SalesManagerEntityDao<Long, ProductImage> {
 
+	ProductImage getProductImageById(Long id);
+
 }

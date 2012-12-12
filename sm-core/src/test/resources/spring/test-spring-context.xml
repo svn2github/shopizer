@@ -32,16 +32,17 @@
 	<util:properties id="shopizer-properties">
     			<prop key="MULTIPLE_PRICE_AVAILABILITY">false</prop>
 				<!-- Images -->
-				<prop key="LARGE_IMAGE_WIDTH_SIZE">360</prop>
-				<prop key="LARGE_IMAGE_HEIGHT_SIZE">268</prop>
-				<prop key="SMALL_IMAGE_WIDTH_SIZE">120</prop>
-				<prop key="SMALL_IMAGE_HEIGHT_SIZE">90</prop>
+				<prop key="PRODUCT_IMAGE_WIDTH_SIZE">360</prop>
+				<prop key="PRODUCT_IMAGE_HEIGHT_SIZE">268</prop>
 				<prop key="CROP_UPLOADED_IMAGES">true</prop>
 				
+				<!-- upload image validations -->
 				<prop key="PRODUCT_IMAGE_MAX_HEIGHT_SIZE">600</prop>
 				<prop key="PRODUCT_IMAGE_MAX_WIDTH_SIZE">720</prop>
-				
+				<prop key="PRODUCT_IMAGE_MAX_SIZE">6150000</prop>
 				<prop key="IMAGE_FORMATS">jpg|png|gif</prop>
+				
+				<prop key="POPULATE_TEST_DATA">true</prop>
 				
 				<prop key="POPULATE_TEST_DATA">true</prop>
 	</util:properties>

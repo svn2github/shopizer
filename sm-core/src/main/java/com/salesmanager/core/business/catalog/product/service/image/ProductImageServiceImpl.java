@@ -28,17 +28,27 @@ import com.salesmanager.core.utils.CoreConfiguration;
 @Service("productImage")
 public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long, ProductImage> 
 	implements ProductImageService {
+	
+	private ProductImageDao productImageDao;
 
 	@Autowired
 	public ProductImageServiceImpl(ProductImageDao productImageDao) {
 		super(productImageDao);
+		this.productImageDao = productImageDao;
 	}
 	
 	@Autowired
-	ProductFileManager productFileManager;
+	private ProductFileManager productFileManager;
 	
 	@Autowired
-	CoreConfiguration configuration;
+	private CoreConfiguration configuration;
+	
+	
+	public ProductImage getById(Long id) {
+		
+		
+		return productImageDao.getProductImageById(id);
+	}
 	
 	
 	@Override
