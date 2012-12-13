@@ -30,6 +30,9 @@
 	
 	<bean id="cmsProductImage"
 				class="com.salesmanager.core.modules.cms.product.CmsImageFileManagerInfinispanImpl" factory-method="getInstance" >
+				<property name="cacheManager">
+						<ref bean="cacheManager" />
+				</property>
 	</bean>
 	
 	<bean id="contentFileManager"
@@ -49,6 +52,13 @@
 	
 	<bean id="cmsContentImage"
 				class="com.salesmanager.core.modules.cms.product.CmsContentFileManagerInfinispanImpl" factory-method="getInstance" >
+				<property name="cacheManager">
+						<ref bean="cacheManager" />
+				</property>
+	</bean>
+	
+	<bean id="cacheManager"
+				class="com.salesmanager.core.modules.cms.impl.CacheManagerImpl" factory-method="getInstance" >
 	</bean>
 	
 	
