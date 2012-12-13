@@ -227,7 +227,7 @@ public class OptionsValueController {
             cmsContentImage.setImageName(imageName);
             cmsContentImage.setContentType( optionValue.getImage().getContentType() );
             cmsContentImage.setFile( inputStream );
-            contentService.addProperty(store.getId(), cmsContentImage);
+            contentService.addProperty(store.getCode(), cmsContentImage);
             
             optionValue.setProductOptionValueImage(imageName);
 
