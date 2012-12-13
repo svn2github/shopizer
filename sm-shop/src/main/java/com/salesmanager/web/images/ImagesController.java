@@ -39,7 +39,7 @@ public class ImagesController {
 	 * @throws ServiceException 
 	 */
 	@RequestMapping("/static/{storeId}/{imageType}/{imageName}.{extension}")
-	public @ResponseBody byte[] printImage(@PathVariable final Integer storeId, @PathVariable final String imageType, @PathVariable final String imageName, @PathVariable final String extension) throws IOException, ServiceException {
+	public @ResponseBody byte[] printImage(@PathVariable final String storeCode, @PathVariable final String imageType, @PathVariable final String imageName, @PathVariable final String extension) throws IOException, ServiceException {
 
 		// example -> /static/1/CONTENT/myImage.png
 		
@@ -57,7 +57,7 @@ public class ImagesController {
 			imgType = ImageContentType.PROPERTY;
 		}
 		
-		OutputContentImage image =contentService.getContentImage(storeId, imgType, new StringBuilder().append(imageName).append(".").append(extension).toString());
+		OutputContentImage image =contentService.getContentImage(storeCode, imgType, new StringBuilder().append(imageName).append(".").append(extension).toString());
 		
 		
 		if(image!=null) {
@@ -71,7 +71,7 @@ public class ImagesController {
 	
 
 	@RequestMapping("/static/{storeId}/{imageType}/{productId}/{imageName}.{extension}")
-	public @ResponseBody byte[] printImage(@PathVariable final Integer storeId, @PathVariable final Long productId, @PathVariable final String imageType, @PathVariable final String imageName, @PathVariable final String extension) throws IOException {
+	public @ResponseBody byte[] printImage(@PathVariable final String storeCode, @PathVariable final Long productId, @PathVariable final String imageType, @PathVariable final String imageName, @PathVariable final String extension) throws IOException {
 
 		// product image
 		// example -> /static/1/PRODUCT/120/product1.jpg
@@ -90,7 +90,7 @@ public class ImagesController {
 		
 		OutputContentImage image = null;
 		try {
-			image = productImageService.getProductImage(storeId, productId, new StringBuilder().append(imageName).append(".").append(extension).toString());
+			image = productImageService.getProductImage(storeCode, productId, new StringBuilder().append(imageName).append(".").append(extension).toString());
 		} catch (ServiceException e) {
 			LOGGER.error("Cannot retrieve image " + imageName, e);
 		}
