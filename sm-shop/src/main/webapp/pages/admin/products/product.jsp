@@ -10,7 +10,7 @@
     <link href="<c:url value="/resources/css/bootstrap/css/datepicker.css" />" rel="stylesheet"></link>
 	<script src="<c:url value="/resources/js/bootstrap/bootstrap-datepicker.js" />"></script>
 	<script src="<c:url value="/resources/js/ckeditor/ckeditor.js" />"></script>
-	<!--<script src="<c:url value="/resources/js/jquery.currency.js" />"></script>-->
+	<script src="<c:url value="/resources/js/jquery.formatCurrency-1.4.0.js" />"></script>
 	
 
 	
@@ -24,20 +24,41 @@
 	
 	$(function(){
 		
-		//currency https://github.com/gilbitron/jQuery-Currency
 		
+		$('#productPriceAmount').blur(function() {
+			$('#help-price').html(null);
+			$(this).formatCurrency({ roundToDecimalPlace: 2, eventOnDecimalsEntered: true, symbol: ''});
+		})
+		.keyup(function(e) {
+				var e = window.event || e;
+				var keyUnicode = e.charCode || e.keyCode;
+				if (e !== undefined) {
+					switch (keyUnicode) {
+						case 16: break; // Shift
+						case 17: break; // Ctrl
+						case 18: break; // Alt
+						case 27: this.value = ''; break; // Esc: clear entry
+						case 35: break; // End
+						case 36: break; // Home
+						case 37: break; // cursor left
+						case 38: break; // cursor up
+						case 39: break; // cursor right
+						case 40: break; // cursor down
+						case 78: break; // N (Opera 9.63+ maps the "." from the number key section to the "N" key too!) (See: http://unixpapa.com/js/key.html search for ". Del")
+						case 110: break; // . number block (Opera 9.63+ maps the "." from the number block to the "N" key (78) !!!)
+						case 190: break; // .
+						default: $(this).formatCurrency({ colorize: true, negativeFormat: '-%s%n', roundToDecimalPlace: -1, eventOnDecimalsEntered: true, symbol: ''});
+					}
+				}
+			})
+		.bind('decimalsEntered', function(e, cents) {
+			if (String(cents).length > 2) {
+				var errorMsg = '<s:message code="message.price.cents" text="Wrong format" /> (0.' + cents + ')';
+				$('#help-price').html(errorMsg);
+			}
+		});
 		
-		
-		//$('#productPriceAmount').currency({
-    	//	region: 'USD', // The 3 digit ISO code you want to display your currency in
-    	//	thousands: ',', // Thousands separator
-    	//	decimal: '.',   // Decimal separator
-    	//	decimals: 2, // How many decimals to show
-    	//	hidePrefix: true, // Hide any prefix
-    	//	hidePostfix: true // Hide any postfix
-		//});
 
-		
 
 		<c:forEach items="${product.descriptions}" var="description" varStatus="counter">		
 			$("#name${counter.index}").friendurl({id : 'seUrl${counter.index}'});
@@ -61,12 +82,12 @@
 						$("#imageControlRemove").html('');
 						//add field
 						$("#imageControl").html('<input class=\"input-file\" id=\"image\" name=\"image\" type=\"file\">');
-						
+						$(".alert-success").show();
 						
 					} else {
 						
 						//display message
-						$("#store.error").show();
+						$(".alert-error").show();
 					}
 		
 			  
@@ -287,7 +308,7 @@
 
                         <div class="controls">
                                     <form:input id="productPriceAmount" cssClass="highlight" path="productPrice"/>
-                                    <span class="help-inline"><form:errors path="productPrice" cssClass="error" /></span>
+                                    <span id="help-price" class="help-inline"><form:errors path="productPrice" cssClass="error" /></span>
                         </div>
                   </div>
 
