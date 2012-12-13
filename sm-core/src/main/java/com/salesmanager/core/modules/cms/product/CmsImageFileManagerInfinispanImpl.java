@@ -107,7 +107,7 @@ public class CmsImageFileManagerInfinispanImpl
 
             // retrieve merchant node
             StringBuilder merchantPath = new StringBuilder();
-            merchantPath.append( "merchant-" ).append( String.valueOf( productImage.getProduct().getMerchantStore().getId() ) );
+            merchantPath.append( "merchant-" ).append( productImage.getProduct().getMerchantStore().getCode() );
 
             // product key
             String productPath = String.valueOf( productImage.getProduct().getId() );
@@ -152,7 +152,7 @@ public class CmsImageFileManagerInfinispanImpl
         throws ServiceException
     {
 
-       return getProductImage(productImage.getProduct().getMerchantStore().getId(),productImage.getProduct().getId(),productImage.getProductImage());
+       return getProductImage(productImage.getProduct().getMerchantStore().getCode(),productImage.getProduct().getId(),productImage.getProductImage());
 
     }
 
@@ -183,7 +183,7 @@ public class CmsImageFileManagerInfinispanImpl
         {
 
             StringBuilder merchantPath =
-                new StringBuilder().append( "merchant-" ).append( String.valueOf( product.getMerchantStore().getId() ) );
+                new StringBuilder().append( "merchant-" ).append(product.getMerchantStore().getCode());
 
             Node<String, Object> productFilesNode = treeCache.getRoot().getChild( Fqn.fromString( "productFiles" ) );
 
@@ -451,7 +451,7 @@ public class CmsImageFileManagerInfinispanImpl
 	}
 
 	@Override
-	public OutputContentImage getProductImage(Integer merchantStoreId,
+	public OutputContentImage getProductImage(String merchantStoreCode,
 			Long productId, String imageName) throws ServiceException {
 		// TODO Auto-generated method stub
         if ( treeCache == null )
@@ -465,7 +465,7 @@ public class CmsImageFileManagerInfinispanImpl
 
             StringBuilder merchantPath = new StringBuilder()
             // filePath.append("/productFiles/")
-            .append( "merchant-" ).append( String.valueOf( merchantStoreId ) );
+            .append( "merchant-" ).append( merchantStoreCode );
             // .append("product-").append(String.valueOf(productImage.getProduct().getId()));
 
             String productPath = String.valueOf( productId );

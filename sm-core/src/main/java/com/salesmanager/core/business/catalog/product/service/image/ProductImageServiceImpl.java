@@ -168,8 +168,8 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	}
 	
 	@Override
-	public OutputContentImage getProductImage(final Integer storeId, final Long productId, final String fileName) throws ServiceException {
-		OutputContentImage outputImage = productFileManager.getProductImage(storeId,productId,fileName);
+	public OutputContentImage getProductImage(final String storeCode, final Long productId, final String fileName) throws ServiceException {
+		OutputContentImage outputImage = productFileManager.getProductImage(storeCode,productId,fileName);
 		return outputImage;
 		
 	}

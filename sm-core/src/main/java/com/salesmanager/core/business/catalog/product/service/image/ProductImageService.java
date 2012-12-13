@@ -49,13 +49,13 @@ public interface ProductImageService extends SalesManagerEntityService<Long, Pro
 	/**
 	 * Returns an image file from required identifier. This method is
 	 * used by the image servlet
-	 * @param storeId
+	 * @param storeCode
 	 * @param productId
 	 * @param fileName
 	 * @return
 	 * @throws ServiceException
 	 */
-	OutputContentImage getProductImage(Integer storeId, Long productId,
+	OutputContentImage getProductImage(String storeCode, Long productId,
 			String fileName) throws ServiceException;
 	
 }

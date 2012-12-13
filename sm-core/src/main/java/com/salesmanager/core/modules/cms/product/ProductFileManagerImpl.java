@@ -276,9 +276,9 @@ public class ProductFileManagerImpl extends ProductFileManager {
 
 
 	@Override
-	public OutputContentImage getProductImage(Integer merchantStoreId,
+	public OutputContentImage getProductImage(String merchantStoreCode,
 			Long productId, String imageName) throws ServiceException {
-		return getImage.getProductImage(merchantStoreId, productId, imageName);
+		return getImage.getProductImage(merchantStoreCode, productId, imageName);
 	}
 
 
