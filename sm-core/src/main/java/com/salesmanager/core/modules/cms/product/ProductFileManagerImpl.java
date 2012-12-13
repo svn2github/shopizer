@@ -222,7 +222,7 @@ public class ProductFileManagerImpl extends ProductFileManager {
 
 		this.removeImage.removeProductImage(productImage);
 		
-		ProductImage large = new ProductImage();
+/*		ProductImage large = new ProductImage();
 		large.setProduct(productImage.getProduct());
 		large.setProductImage("L" + productImage.getProductImage());
 		
@@ -232,7 +232,7 @@ public class ProductFileManagerImpl extends ProductFileManager {
 		small.setProduct(productImage.getProduct());
 		small.setProductImage("S" + productImage.getProductImage());
 		
-		this.removeImage.removeProductImage(small);
+		this.removeImage.removeProductImage(small);*/
 		
 	}
 
