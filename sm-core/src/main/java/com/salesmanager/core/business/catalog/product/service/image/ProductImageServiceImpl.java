@@ -183,7 +183,11 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	public void removeProductImage(ProductImage productImage) throws ServiceException {
 
 		productFileManager.removeProductImage(productImage);
-		this.delete(productImage);
+		
+		ProductImage p = this.getById(productImage.getId());
+		
+		
+		this.delete(p);
 		
 	}
 }
