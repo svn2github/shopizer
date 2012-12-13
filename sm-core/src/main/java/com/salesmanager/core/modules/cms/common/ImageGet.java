@@ -9,7 +9,7 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 public interface ImageGet
 {
 
-    public List<OutputContentImage> getImages( final Integer merchantStoreId, ImageContentType imageContentType )
+    public List<OutputContentImage> getImages( final String merchantStoreCode, ImageContentType imageContentType )
         throws ServiceException;
 
 }

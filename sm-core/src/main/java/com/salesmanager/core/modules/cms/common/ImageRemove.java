@@ -6,6 +6,6 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 public interface ImageRemove {
 	
 	
-	public void removeImages(final Integer merchantStoreId) throws ServiceException;
+	public void removeImages(final String merchantStoreCode) throws ServiceException;
 	
 }

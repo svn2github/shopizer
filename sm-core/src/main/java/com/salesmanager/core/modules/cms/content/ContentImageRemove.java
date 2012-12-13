@@ -8,6 +8,6 @@ public interface ContentImageRemove extends ImageRemove {
 	
 	
 	
-	public void removeImage(final Integer merchantStoreId,final ContentImage contentImage) throws ServiceException;
+	public void removeImage(final String merchantStoreCode,final ContentImage contentImage) throws ServiceException;
 
 }

@@ -46,11 +46,11 @@ public interface ContentService
      * Method responsible for storing content image for given Store.Image for given merchant store will be stored in
      * Infinispan.
      * 
-     * @param merchantStoreId merchant store whose content images are being saved.
+     * @param merchantStoreCode merchant store whose content images are being saved.
      * @param contentImage content image being stored
      * @throws ServiceException
      */
-    void addContentImage( Integer merchantStoreId, CMSContentImage contentImage )
+    void addContentImage( final String merchantStoreCode, CMSContentImage contentImage )
         throws ServiceException;
 
    
@@ -58,67 +58,67 @@ public interface ContentService
      * Method responsible for storing list of content image for given Store.Images for given merchant store will be stored in
      * Infinispan.
      * 
-     * @param merchantStoreId  merchant store whose content images are being saved.
+     * @param merchantStoreCode  merchant store whose content images are being saved.
      * @param contentImagesList list of content images being stored.
      * @throws ServiceException
      */
-    void addContentImages(Integer merchantStoreId,List<CMSContentImage> contentImagesList) throws ServiceException;
+    void addContentImages(final String merchantStoreCode,List<CMSContentImage> contentImagesList) throws ServiceException;
     
     
     /**
      * Method to remove given content image.Images are stored in underlying system based on there name.
      * Name will be used to search given image for removal
      * @param contentImage
-     * @param merchantStoreId merchant store Id
+     * @param merchantStoreCode merchant store code
      * @throws ServiceException
      */
-    public void removeImage( final Integer merchantStoreId,final ContentImage contentImage ) throws ServiceException;
+    public void removeImage( final String merchantStoreCode,final ContentImage contentImage ) throws ServiceException;
     
     
     /**
      * Method to remove all images for a given merchant.It will take merchant store as an input and will
      * remove all images associated with given merchant store.
      * 
-     * @param merchantStoreId
+     * @param merchantStoreCode
      * @throws ServiceException
      */
-    public void removeImages( final Integer merchantStoreId ) throws ServiceException;
+    public void removeImages( final String merchantStoreCode ) throws ServiceException;
     
     /**
      * Method responsible for fetching particular content image for a given merchant store. Requested image will be
      * search in Infinispan tree cache and OutputContentImage will be sent, in case no image is found null will
      * returned.
      * 
-     * @param merchantStoreId
+     * @param merchantStoreCode
      * @param imageName
      * @return {@link OutputContentImage}
      * @throws ServiceException
      */
-    public OutputContentImage getContentImage( final Integer merchantStoreId, final ImageContentType imageContentType, final String imageName )
+    public OutputContentImage getContentImage( final String merchantStoreCode, final ImageContentType imageContentType, final String imageName )
         throws ServiceException;
     
     
     /**
      * Method to get list of all images associated with a given merchant store.In case of no image method will return an empty list.
-     * @param merchantStoreId
+     * @param merchantStoreCode
      * @param imageContentType
      * @return list of {@link OutputContentImage}
      * @throws ServiceException
      */
-    public List<OutputContentImage> getContentImages( final Integer merchantStoreId, ImageContentType imageContentType )
+    public List<OutputContentImage> getContentImages( final String merchantStoreCode, ImageContentType imageContentType )
                     throws ServiceException;
 
 	
-    List<String> getContentImagesNames(final Integer merchantStoreId,
+    List<String> getContentImagesNames(final String merchantStoreCode,
 			ImageContentType imageContentType) throws ServiceException;
 
     /**
      * Add the store logo
-     * @param merchantStoreId
+     * @param merchantStoreCode
      * @param cmsContentImage
      * @throws ServiceException
      */
-	void addLogo(Integer merchantStoreId, CMSContentImage cmsContentImage)
+	void addLogo(final String merchantStoreCode, CMSContentImage cmsContentImage)
 			throws ServiceException;
 
 	/**
@@ -127,7 +127,7 @@ public interface ContentService
 	 * @param cmsContentImage
 	 * @throws ServiceException
 	 */
-	void addProperty(Integer merchantStoreId, CMSContentImage cmsContentImage)
+	void addProperty(final String merchantStoreCode, CMSContentImage cmsContentImage)
 			throws ServiceException;
 
 }

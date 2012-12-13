@@ -24,33 +24,32 @@ public class ContentFileManagerImpl
      * CMSContentManager. For CMS Content images {@link CmsContentFileManagerInfinispanImpl} will take care of adding
      * given content image with Infinispan cache.
      * 
-     * @param merchantStoreId merchant store.
+     * @param merchantStoreCode merchant store.
      * @param image Input content image
      * @throws ServiceException
      */
     @Override
-    public void addImage( final Integer merchantStoreId, final InputContentImage image )
+    public void addImage(final String merchantStoreCode, final InputContentImage image )
         throws ServiceException
     {
 
-        uploadImage.addImage( merchantStoreId, image );
-
-
+        uploadImage.addImage( merchantStoreCode, image );
+       
     }
     /**
      * Implementation for add images. This method will called respected add image method of underlying
      * CMSContentManager. For CMS Content images {@link CmsContentFileManagerInfinispanImpl} will take care of adding
      * given content images with Infinispan cache.
      * 
-     * @param merchantStoreId merchant store.
+     * @param merchantStoreCode merchant store.
      * @param imagesList Input content images
      * @throws ServiceException
      */
     @Override
-    public void addImages( final Integer merchantStoreId, final List<InputContentImage> imagesList )
+    public void addImages( final String merchantStoreCode, final List<InputContentImage> imagesList )
         throws ServiceException
     {
-        uploadImage.addImages( merchantStoreId, imagesList );
+        uploadImage.addImages( merchantStoreCode, imagesList );
         
     }
 
@@ -59,16 +58,16 @@ public class ContentFileManagerImpl
      * CMSContentManager. For CMS Content images {@link CmsContentFileManagerInfinispanImpl} will take care of fetching all images
      * for given merchant from Infinispan cache.
      * 
-     * @param merchantStoreId merchant store.
+     * @param merchantStoreCode merchant store.
      * @param imageContentType Input content image
      * @return list {@link OutputContentImage}
      * @throws ServiceException
      */
     @Override
-    public List<OutputContentImage> getImages( final Integer merchantStoreId, final ImageContentType imageContentType )
+    public List<OutputContentImage> getImages( final String merchantStoreCode, final ImageContentType imageContentType )
         throws ServiceException
     {
-        return getImage.getImages( merchantStoreId, imageContentType );
+        return getImage.getImages( merchantStoreCode, imageContentType );
         
     }
 
@@ -77,15 +76,15 @@ public class ContentFileManagerImpl
      * Images will be searched in Infinispan cache based on there name and 
      * will be removed if any image with given name is found for associated merchant cache.
      * 
-     * @param merchantStoreId Merchant store
+     * @param merchantStoreCode Merchant store
      * @param contentImage content image which will be removed
      * @throws ServiceException
      */
     @Override
-    public void removeImage(final Integer merchantStoreId, final ContentImage contentImage )
+    public void removeImage(final String merchantStoreCode, final ContentImage contentImage )
         throws ServiceException
     {
-      removeImage.removeImage( merchantStoreId, contentImage );
+      removeImage.removeImage( merchantStoreCode, contentImage );
    }
 
     /**
@@ -98,10 +97,10 @@ public class ContentFileManagerImpl
      *  
      */
     @Override
-    public void removeImages( final Integer merchantStoreId )
+    public void removeImages(final String merchantStoreCode)
         throws ServiceException
     {
-        removeImage.removeImages( merchantStoreId );
+        removeImage.removeImages( merchantStoreCode );
 
     }
 
@@ -109,16 +108,16 @@ public class ContentFileManagerImpl
      * Method to get images for a given merchant store.For fetching image all we need to provide MerchantStore for whole
      * image will be fetched and image name. It will return {@link OutputContentImage}
      * 
-     * @param merchantStoreId merchantStore for whom image will be fetched
+     * @param merchantStoreCode merchantStore for whom image will be fetched
      * @param imageName name of the image
      * @param imageContentType {@link ImageContentType}
      * @throws ServiceException
      */
     @Override
-    public OutputContentImage getImage( final Integer merchantStoreId, final String imageName, final ImageContentType imageContentType )
+    public OutputContentImage getImage(final String merchantStoreCode, final String imageName, final ImageContentType imageContentType )
         throws ServiceException
     {
-        return getImage.getImage( merchantStoreId, imageName, imageContentType );
+        return getImage.getImage( merchantStoreCode, imageName, imageContentType );
     }
 
     public ContentImageRemove getRemoveImage()
@@ -157,16 +156,16 @@ public class ContentFileManagerImpl
      * 
      * Names of the images will be retrieved from Infinispan cache.
      * 
-     * @param merchantStoreId merchant store
+     * @param merchantStoreCode merchant store
      * @param imageContentType image content type
      * @throws ServiceException
      */
     @Override
-    public List<String> getImageNames(final Integer merchantStoreId, final ImageContentType imageContentType )
+    public List<String> getImageNames(final String merchantStoreCode, final ImageContentType imageContentType )
         throws ServiceException
     {
        
-        return getImage.getImageNames( merchantStoreId, imageContentType );
+        return getImage.getImageNames( merchantStoreCode, imageContentType );
     }
 
     

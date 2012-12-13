@@ -8,7 +8,7 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 public interface ImagePut {
 	
 	
-	public void addImage(final Integer merchantStoreId, InputContentImage image) throws ServiceException;
-	public void addImages(final Integer merchantStoreId, List<InputContentImage> imagesList) throws ServiceException;
+	public void addImage(final String merchantStoreCode, InputContentImage image) throws ServiceException;
+	public void addImages(final String merchantStoreCode, List<InputContentImage> imagesList) throws ServiceException;
 
 }

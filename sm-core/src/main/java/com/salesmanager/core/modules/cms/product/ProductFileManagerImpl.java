@@ -199,10 +199,10 @@ public class ProductFileManagerImpl extends ProductFileManager {
 
 	
 	@Override
-	public List<OutputContentImage> getImages(final Integer merchantStoreId, ImageContentType imageContentType)
+	public List<OutputContentImage> getImages(final String merchantStoreCode, ImageContentType imageContentType)
 			throws ServiceException {
 		//will return original
-		return getImage.getImages(merchantStoreId,ImageContentType.PRODUCT);
+		return getImage.getImages(merchantStoreCode,ImageContentType.PRODUCT);
 	}
 	
 	@Override
@@ -246,9 +246,9 @@ public class ProductFileManagerImpl extends ProductFileManager {
 
 
 	@Override
-	public void removeImages(Integer merchantStoreId) throws ServiceException {
+	public void removeImages(final String merchantStoreCode) throws ServiceException {
 		
-		this.removeImage.removeImages(merchantStoreId);
+		this.removeImage.removeImages(merchantStoreCode);
 		
 	}
 

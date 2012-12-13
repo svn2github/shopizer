@@ -9,7 +9,7 @@ import com.salesmanager.core.modules.cms.common.ImageGet;
 
 public interface ContentImageGet extends ImageGet {
 	
-	public OutputContentImage getImage(final Integer merchantStoreId, String imageName,ImageContentType imageContentType) throws ServiceException;
-	public List<String> getImageNames(final Integer merchantStoreId, ImageContentType imageContentType) throws ServiceException;
+	public OutputContentImage getImage(final String merchantStoreCode, String imageName,ImageContentType imageContentType) throws ServiceException;
+	public List<String> getImageNames(final String merchantStoreCode, ImageContentType imageContentType) throws ServiceException;
 
 }

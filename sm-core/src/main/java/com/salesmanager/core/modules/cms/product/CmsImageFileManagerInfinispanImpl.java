@@ -161,7 +161,7 @@ public class CmsImageFileManagerInfinispanImpl
         throws ServiceException
     {
 
-         return getImages(store.getId(),imageContentType);
+         return getImages(store.getCode(),imageContentType);
 
     }
 
@@ -238,7 +238,7 @@ public class CmsImageFileManagerInfinispanImpl
     }
 
     @Override
-    public void removeImages( final Integer merchantStoreId )
+    public void removeImages( final String merchantStoreCode )
         throws ServiceException
     {
         if ( treeCache == null )
@@ -250,7 +250,7 @@ public class CmsImageFileManagerInfinispanImpl
         {
 
             StringBuilder filePath = new StringBuilder();
-            filePath.append( "/productFiles/" ).append( "merchant-" ).append( String.valueOf(merchantStoreId ) );
+            filePath.append( "/productFiles/" ).append( "merchant-" ).append( merchantStoreCode );
 
             Fqn merchantFiles = Fqn.fromString( filePath.toString() );
 
@@ -347,7 +347,7 @@ public class CmsImageFileManagerInfinispanImpl
 
 	
     @Override
-	public List<OutputContentImage> getImages(Integer merchantStoreId,
+	public List<OutputContentImage> getImages(final String merchantStoreCode,
 			ImageContentType imageContentType) throws ServiceException {
 		// TODO Need to see since this should be part of product image interface
         if ( treeCache == null )
@@ -361,7 +361,7 @@ public class CmsImageFileManagerInfinispanImpl
         {
 
             StringBuilder merchantPath =
-                new StringBuilder().append( "merchant-" ).append( String.valueOf( merchantStoreId ) );
+                new StringBuilder().append( "merchant-" ).append( merchantStoreCode);
 
             @SuppressWarnings("unchecked")
 			Node<String, Object> productFilesNode = treeCache.getRoot().getChild( Fqn.fromString( "productFiles" ) );

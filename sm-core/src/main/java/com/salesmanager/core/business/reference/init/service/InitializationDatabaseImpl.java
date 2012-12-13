@@ -110,7 +110,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		
 		for (String code : SchemaConstant.CURRENCY_MAP.keySet()) {
 
-
+		      
             try {
             	java.util.Currency c = java.util.Currency.getInstance(code);
             	
@@ -160,7 +160,8 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
               for (Map.Entry<String, Zone> entry : zonesMap.entrySet()) {
             	    String key = entry.getKey();
             	    Zone value = entry.getValue();
-            	    
+            	    System.out.println("******************************************* "+key);
+                    System.out.println("******************************************* "+value);
             	    if(value.getDescriptions()==null) {
             	    	LOGGER.warn("This zone " + key + " has no descriptions");
             	    	continue;
@@ -178,6 +179,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
               }
 
   		} catch (Exception e) {
+  		    
   			throw new ServiceException(e);
   		}
 

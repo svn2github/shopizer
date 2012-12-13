@@ -94,7 +94,7 @@ public class SchemaConstant {
 		CURRENCY_MAP.put("CLP", "Chilean Peso");
 		CURRENCY_MAP.put("CNY", "Yuan Renminbi");
 		CURRENCY_MAP.put("COP", "Colombian Peso");
-		CURRENCY_MAP.put("COU", "Unidad de Valor Real");
+		//CURRENCY_MAP.put("COU", "Unidad de Valor Real");
 		CURRENCY_MAP.put("KMF", "Comoro Franc");
 		CURRENCY_MAP.put("XAF", "CFA Franc BEAC");
 		CURRENCY_MAP.put("CDF", "Congolese Franc");
@@ -102,7 +102,7 @@ public class SchemaConstant {
 		CURRENCY_MAP.put("CRC", "Costa Rican Colon");
 		CURRENCY_MAP.put("XOF", "CFA Franc BCEAO");
 		CURRENCY_MAP.put("HRK", "Croatian Kuna");
-		CURRENCY_MAP.put("CUC", "Peso Convertible");
+		//CURRENCY_MAP.put("CUC", "Peso Convertible");
 		CURRENCY_MAP.put("CUP", "Cuban Peso");
 		CURRENCY_MAP.put("ANG", "Netherlands Antillean Guilder");
 		CURRENCY_MAP.put("CZK", "Czech Koruna");
@@ -173,7 +173,7 @@ public class SchemaConstant {
 		CURRENCY_MAP.put("XOF", "CFA Franc BCEAO");
 		CURRENCY_MAP.put("MRO", "Ouguiya");
 		CURRENCY_MAP.put("MUR", "Mauritius Rupee");
-		CURRENCY_MAP.put("XUA", "ADB Unit of Account");
+		//CURRENCY_MAP.put("XUA", "ADB Unit of Account");
 		CURRENCY_MAP.put("MXN", "Mexican Peso");
 		CURRENCY_MAP.put("MXV", "Mexican Unidad de Inversion (UDI)");
 		CURRENCY_MAP.put("MDL", "Moldovan Leu");
@@ -218,20 +218,20 @@ public class SchemaConstant {
 		CURRENCY_MAP.put("SLL", "Leone");
 		CURRENCY_MAP.put("SGD", "Singapore Dollar");
 		CURRENCY_MAP.put("ANG", "Netherlands Antillean Guilder");
-		CURRENCY_MAP.put("XSU", "Sucre");
+		//CURRENCY_MAP.put("XSU", "Sucre");
 		CURRENCY_MAP.put("SBD", "Solomon Islands Dollar");
 		CURRENCY_MAP.put("SOS", "Somali Shilling");
 		CURRENCY_MAP.put("ZAR", "Rand");
-		CURRENCY_MAP.put("SSP", "South Sudanese Pound");
+		//CURRENCY_MAP.put("SSP", "South Sudanese Pound");
 		CURRENCY_MAP.put("LKR", "Sri Lanka Rupee");
 		CURRENCY_MAP.put("SDG", "Sudanese Pound");
 		CURRENCY_MAP.put("SRD", "Surinam Dollar");
 		CURRENCY_MAP.put("NOK", "Norwegian Krone");
 		CURRENCY_MAP.put("SZL", "Lilangeni");
 		CURRENCY_MAP.put("SEK", "Swedish Krona");
-		CURRENCY_MAP.put("CHE", "WIR Euro");
+		//CURRENCY_MAP.put("CHE", "WIR Euro");
 		CURRENCY_MAP.put("CHF", "Swiss Franc");
-		CURRENCY_MAP.put("CHW", "WIR Franc");
+		//CURRENCY_MAP.put("CHW", "WIR Franc");
 		CURRENCY_MAP.put("SYP", "Syrian Pound");
 		CURRENCY_MAP.put("TWD", "New Taiwan Dollar");
 		CURRENCY_MAP.put("TJS", "Somoni");
@@ -243,13 +243,13 @@ public class SchemaConstant {
 		CURRENCY_MAP.put("TTD", "Trinidad and Tobago Dollar");
 		CURRENCY_MAP.put("TND", "Tunisian Dinar");
 		CURRENCY_MAP.put("TRY", "Turkish Lira");
-		CURRENCY_MAP.put("TMT", "Turkmenistan New Manat");
+		//CURRENCY_MAP.put("TMT", "Turkmenistan New Manat");
 		CURRENCY_MAP.put("AUD", "Australian Dollar");
 		CURRENCY_MAP.put("UGX", "Uganda Shilling");
 		CURRENCY_MAP.put("UAH", "Hryvnia");
 		CURRENCY_MAP.put("AED", "UAE Dirham");
 		CURRENCY_MAP.put("GBP", "Pound Sterling");
-		CURRENCY_MAP.put("UYI", "Uruguay Peso en Unidades Indexadas (URUIURUI)");
+		//CURRENCY_MAP.put("UYI", "Uruguay Peso en Unidades Indexadas (URUIURUI)");
 		CURRENCY_MAP.put("UYU", "Peso Uruguayo");
 		CURRENCY_MAP.put("UZS", "Uzbekistan Sum");
 		CURRENCY_MAP.put("VUV", "Vatu");
@@ -260,7 +260,7 @@ public class SchemaConstant {
 		CURRENCY_MAP.put("MAD", "Moroccan Dirham");
 		CURRENCY_MAP.put("YER", "Yemeni Rial");
 		CURRENCY_MAP.put("ZMK", "Zambian Kwacha");
-		CURRENCY_MAP.put("ZWL", "Zimbabwe Dollar");
+		//CURRENCY_MAP.put("ZWL", "Zimbabwe Dollar");
 		
 
 
