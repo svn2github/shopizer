@@ -399,6 +399,10 @@ public class ProductController {
 			newProductPrice.setProductPriceAmount(submitedPrice);
 		}
 		
+		if(product.getProductImage()!=null && product.getProductImage().getId() == null) {
+			product.setProductImage(null);
+		}
+		
 		if(productPriceDescriptions==null) {
 			productPriceDescriptions = new HashSet<ProductPriceDescription>();
 			for(ProductDescription description : product.getDescriptions()) {
