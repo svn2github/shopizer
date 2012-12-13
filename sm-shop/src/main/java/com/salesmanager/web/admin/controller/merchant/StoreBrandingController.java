@@ -89,7 +89,7 @@ public class StoreBrandingController {
             cmsContentImage.setImageName(imageName);
             cmsContentImage.setContentType( contentImages.getImage().get(0).getContentType() );
             cmsContentImage.setFile( inputStream );
-            contentService.addLogo(store.getId(), cmsContentImage);
+            contentService.addLogo(store.getCode(), cmsContentImage);
 			
             //Update store
             store.setStoreLogo(imageName);
