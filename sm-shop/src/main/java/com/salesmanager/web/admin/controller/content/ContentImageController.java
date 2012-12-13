@@ -93,7 +93,7 @@ public class ContentImageController {
 
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
-			List<String> imageNames = contentService.getContentImagesNames(store.getId(),ImageContentType.CONTENT);
+			List<String> imageNames = contentService.getContentImagesNames(store.getCode(),ImageContentType.CONTENT);
 			
 			if(imageNames!=null) {
 
@@ -178,7 +178,7 @@ public class ContentImageController {
             }
             
             if(CollectionUtils.isNotEmpty( contentImagesList )){
-                contentService.addContentImages( store.getId(), contentImagesList );
+                contentService.addContentImages( store.getCode(), contentImagesList );
             }
             else{
                 // show error message on UI
