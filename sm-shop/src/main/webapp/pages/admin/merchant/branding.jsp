@@ -6,6 +6,45 @@
 
 <%@ page session="false"%>
 
+
+
+<script type="text/javascript">
+	
+	function removeImage(){
+			$("#store.error").show();
+			$.ajax({
+			  type: 'POST',
+			  url: '<c:url value="/admin/store/removeImage.html"/>',
+			  dataType: 'json',
+			  success: function(response){
+		
+					var status = isc.XMLTools.selectObjects(response, "/response/status");
+					if(status==0 || status ==9999) {
+						
+						//remove delete
+						$("#imageControlRemove").html('');
+						//add field
+						$("#imageControl").html('<input class=\"input-file\" id=\"image\" name=\"image\" type=\"file\">');
+						$(".alert-success").show();
+						
+					} else {
+						
+						//display message
+						$(".alert-error").show();
+					}
+		
+			  
+			  },
+			  error: function(xhr, textStatus, errorThrown) {
+			  	alert('error ' + errorThrown);
+			  }
+			  
+			});
+	}
+	
+</script>
+
+
 <div class="tabbable">
 
 
@@ -36,7 +75,7 @@
 					<!-- hidden when creating the product -->
 					<div class="control-group">
 						<label><s:message code="label.storelogo" text="Store logo"/>&nbsp;<c:if test="${store.storeLogo!=null}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage('${store.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if></label>
-						<div class="controls">
+						<div class="controls" id="imageControl">
 						
 									   <c:choose>
 				                        		<c:when test="${store.storeLogo==null}">

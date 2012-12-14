@@ -38,7 +38,7 @@ public class ImagesController {
 	 * @throws IOException
 	 * @throws ServiceException 
 	 */
-	@RequestMapping("/static/{storeId}/{imageType}/{imageName}.{extension}")
+	@RequestMapping("/static/{storeCode}/{imageType}/{imageName}.{extension}")
 	public @ResponseBody byte[] printImage(@PathVariable final String storeCode, @PathVariable final String imageType, @PathVariable final String imageName, @PathVariable final String extension) throws IOException, ServiceException {
 
 		// example -> /static/1/CONTENT/myImage.png
@@ -70,7 +70,7 @@ public class ImagesController {
 	}
 	
 
-	@RequestMapping("/static/{storeId}/{imageType}/{productId}/{imageName}.{extension}")
+	@RequestMapping("/static/{storeCode}/{imageType}/{productId}/{imageName}.{extension}")
 	public @ResponseBody byte[] printImage(@PathVariable final String storeCode, @PathVariable final Long productId, @PathVariable final String imageType, @PathVariable final String imageName, @PathVariable final String extension) throws IOException {
 
 		// product image
