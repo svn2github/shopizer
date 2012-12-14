@@ -8,5 +8,5 @@
 
 	{title:"<s:message code="label.entity.id" text="Id"/>", name:"optionId", canFilter:false},
     {title:"<s:message code="label.entity.name" text="Name"/>", name:"name"},
-    {title:"<s:message code="label.product.image" text="Image"/>", name:"image", canFilter:false},
+    {title:"<s:message code="label.product.image" text="Image"/>", name:"image", type:"image", imageWidth:75, imageURLPrefix:"<c:url value='/static/'/>", canFilter:false},
     {title:"<s:message code="label.entity.details" text="Details"/>", name: "buttonField", align: "center",canFilter:false,canSort:false, canReorder:false}

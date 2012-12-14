@@ -51,7 +51,7 @@
 				<br />
 				<!-- Listing grid include -->
 				<c:set value="/admin/content/images/paging.html" var="pagingUrl" scope="request" />
-				<c:set value="/admin/content/contentImages.html" var="removeUrl" scope="request" />
+				<c:set value="/admin/content/removeImage.html" var="removeUrl" scope="request" />
 				<c:set value="/admin/content/contentImages.html" var="refreshUrl" scope="request" />
 				<c:set var="componentTitleKey" value="menu.content-images" scope="request" />
 				<c:set var="canRemoveEntry" value="true" scope="request" />

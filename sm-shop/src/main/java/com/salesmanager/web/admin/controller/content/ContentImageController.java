@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.salesmanager.core.business.content.model.image.ImageContentType;
+import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.modules.cms.common.CMSContentImage;
@@ -186,6 +188,44 @@ public class ContentImageController {
         }
         this.setMenu(model, request);
         return ControllerConstants.Tiles.ContentImages.contentImages;
+	}
+	
+	
+	/**
+	 * Removes a content image from the CMS
+	 * @param request
+	 * @param response
+	 * @param locale
+	 * @return
+	 */
+	@RequestMapping(value="/admin/content/removeImage.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String removeImage(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		String imageName = request.getParameter("imageName");
+
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		AjaxResponse resp = new AjaxResponse();
+
+		
+		try {
+			
+			OutputContentImage contentImage = new OutputContentImage();
+			contentImage.setImageName(imageName);
+			contentImage.setContentType(ImageContentType.CONTENT);
+			
+			contentService.removeImage(store.getCode(), contentImage);
+
+		
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while deleting product", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
 	}
 	
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {

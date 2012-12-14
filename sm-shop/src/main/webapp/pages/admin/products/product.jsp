@@ -11,7 +11,7 @@
 	<script src="<c:url value="/resources/js/bootstrap/bootstrap-datepicker.js" />"></script>
 	<script src="<c:url value="/resources/js/ckeditor/ckeditor.js" />"></script>
 	<script src="<c:url value="/resources/js/jquery.formatCurrency-1.4.0.js" />"></script>
-	
+	<script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
 
 	
 	
@@ -58,7 +58,7 @@
 			}
 		});
 		
-
+		$('#sku').alphanumeric();
 
 		<c:forEach items="${product.descriptions}" var="description" varStatus="counter">		
 			$("#name${counter.index}").friendurl({id : 'seUrl${counter.index}'});
@@ -146,8 +146,8 @@
                         <div class="control-group">
 	                        <label><s:message code="label.product.sku" text="Sku"/></label>
 	                        <div class="controls">
-	                        		  <form:input cssClass="input-large highlight" path="product.sku"/>
-	                                  <span class="help-inline"><form:errors path="product.sku" cssClass="error" /></span>
+	                        		  <form:input cssClass="input-large highlight" id="sku" path="product.sku"/>
+	                                  <span class="help-inline"><s:message code="label.generic.alphanumeric" text="Alphanumeric" /><form:errors path="product.sku" cssClass="error" /></span>
 	                        </div>
                   		</div>
 

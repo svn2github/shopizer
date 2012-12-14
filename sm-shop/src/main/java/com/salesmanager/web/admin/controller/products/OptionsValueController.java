@@ -33,6 +33,8 @@ import com.salesmanager.core.business.catalog.product.model.attribute.ProductOpt
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValueDescription;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionValueService;
+import com.salesmanager.core.business.content.model.image.ImageContentType;
+import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -336,6 +338,44 @@ public class OptionsValueController {
 		
 		} catch (Exception e) {
 			LOGGER.error("Error while deleting option", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
+	}
+	
+	
+	@RequestMapping(value="/admin/optionsvalues/removeImage.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String removeImage(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		String optionValueId = request.getParameter("optionId");
+
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		AjaxResponse resp = new AjaxResponse();
+
+		
+		try {
+			
+			Long id = Long.parseLong(optionValueId);
+			
+			ProductOptionValue optionValue = productOptionValueService.getById(store, id);
+			
+			OutputContentImage contentImage = new OutputContentImage();
+			contentImage.setImageName(optionValue.getProductOptionValueImage());
+			contentImage.setContentType(ImageContentType.PROPERTY);
+			
+			contentService.removeImage(store.getCode(), contentImage);
+			
+			store.setStoreLogo(null);
+			optionValue.setProductOptionValueImage(null);
+			productOptionValueService.update(optionValue);
+		
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while deleting product", e);
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 			resp.setErrorMessage(e);
 		}

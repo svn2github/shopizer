@@ -3,7 +3,47 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %>
-<%@ page session="false" %>				
+<%@ page session="false" %>		
+
+
+
+<script type="text/javascript">
+	
+	function removeImage(id){
+			$("#store.error").show();
+			$.ajax({
+			  type: 'POST',
+			  url: '<c:url value="/admin/optionsvalues/removeImage.html"/>',
+			  dataType: 'json',
+			  data: 'optionId=' + id,
+			  success: function(response){
+		
+					var status = isc.XMLTools.selectObjects(response, "/response/status");
+					if(status==0 || status ==9999) {
+						
+						//remove delete
+						$("#imageControlRemove").html('');
+						//add field
+						$("#imageControl").html('<input class=\"input-file\" id=\"image\" name=\"image\" type=\"file\">');
+						$(".alert-success").show();
+						
+					} else {
+						
+						//display message
+						$(".alert-error").show();
+					}
+		
+			  
+			  },
+			  error: function(xhr, textStatus, errorThrown) {
+			  	alert('error ' + errorThrown);
+			  }
+			  
+			});
+	}
+	
+</script>
+		
 				
 
 

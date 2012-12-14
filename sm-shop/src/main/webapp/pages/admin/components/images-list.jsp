@@ -20,13 +20,12 @@
 									transformResponse : function (dsResponse, dsRequest, jsonData) {
 										var status = isc.XMLTools.selectObjects(jsonData, "/response/status");
 										if (status != 0) {
-											if(status==9999) {//operation completed
+											//if(status==9999) {//operation completed
 												//reload 
-												window.location='<c:url value="${refreshUrl}" />';
-											}
-
-											var msg = isc.XMLTools.selectObjects(jsonData, "/response/statusMessage");
-												alert("! " + msg);
+											//	window.location='<c:url value="${refreshUrl}" />';
+											//}
+											//var msg = isc.XMLTools.selectObjects(jsonData, "/response/statusMessage");
+											//alert("! " + msg);
 										}
 									}
 								}); 
@@ -67,7 +66,9 @@
 								            tileGrid: this,
 								            record: record,
 								            click : function () {
-								                dataSource.removeData(this.record);
+								            	if (confirm('<s:message code="label.entity.remove.confirm" text="Do you really want to remove this record ?" />')) {
+													dataSource.removeData(this.record);
+												} 
 								            }
 								        });
 
