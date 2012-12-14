@@ -23,6 +23,7 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -156,6 +157,7 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 	private Integer productOrdered;
 
 	@NotEmpty
+	@Pattern(regexp="^[a-zA-Z0-9_]*$")
 	@Column(name = "SKU")
 	private String sku;
 
