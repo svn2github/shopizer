@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,7 +59,7 @@ public class ProductAttributeController {
 	ProductOptionValueService productOptionValueService;
 	
 
-	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/attributes/list.html", method=RequestMethod.GET)
 	public String displayProductAttributes(@RequestParam("id") long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -91,6 +92,7 @@ public class ProductAttributeController {
 	
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/attributes/page.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageAttributes(HttpServletRequest request, HttpServletResponse response) {
 
@@ -154,12 +156,14 @@ public class ProductAttributeController {
 
 	}
 	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/attributes/editAttribute.html", method=RequestMethod.GET)
 	public String displayAttributeEdit(@RequestParam("id") long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return displayAttribute(id,model,request,response);
 
 	}
 	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/attribute/createAttribute.html", method=RequestMethod.GET)
 	public String displayAttributeCreate(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return displayAttribute(null,model,request,response);

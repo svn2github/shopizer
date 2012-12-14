@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -52,13 +53,14 @@ public class CategoryController {
 	@Autowired
 	LabelUtils messages;
 
-	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/categories/editCategory.html", method=RequestMethod.GET)
 	public String displayCategoryEdit(@RequestParam("id") long categoryId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return displayCategory(categoryId,model,request,response);
 
 	}
 	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/categories/createCategory.html", method=RequestMethod.GET)
 	public String displayCategoryCreate(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return displayCategory(null,model,request,response);
@@ -136,7 +138,7 @@ public class CategoryController {
 		return "catalogue-categories-category";
 	}
 	
-	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/categories/save.html", method=RequestMethod.POST)
 	public String saveCategory(@Valid @ModelAttribute("category") Category category, BindingResult result, Model model, HttpServletRequest request) throws Exception {
 
@@ -222,6 +224,7 @@ public class CategoryController {
 	
 	
 	//category list
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/categories/categories.html", method=RequestMethod.GET)
 	public String displayCategories(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -235,6 +238,7 @@ public class CategoryController {
 	}
 	
 	@SuppressWarnings({ "unchecked"})
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/categories/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageCategories(HttpServletRequest request, HttpServletResponse response) {
 		String categoryName = request.getParameter("name");
@@ -295,6 +299,7 @@ public class CategoryController {
 		return returnString;
 	}
 	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/categories/hierarchy.html", method=RequestMethod.GET)
 	public String displayCategoryHierarchy(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -313,7 +318,7 @@ public class CategoryController {
 		return "catalogue-categories-hierarchy";
 	}
 	
-
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/categories/remove.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String deleteCategory(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String sid = request.getParameter("categoryId");
@@ -353,6 +358,7 @@ public class CategoryController {
 		return returnString;
 	}
 	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/categories/moveCategory.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String moveCategory(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String parentid = request.getParameter("parentId");
@@ -409,6 +415,7 @@ public class CategoryController {
 		return returnString;
 	}
 	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/categories/checkCategoryCode.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String checkCategoryCode(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String code = request.getParameter("code");

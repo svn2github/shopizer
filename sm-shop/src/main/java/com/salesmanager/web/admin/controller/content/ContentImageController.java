@@ -132,6 +132,7 @@ public class ContentImageController {
 	 * @return view allowing user to add content images
 	 * @throws Exception
 	 */
+	@Secured("CONTENT")
 	@RequestMapping(value="/admin/content/createContentImages.html", method=RequestMethod.GET)
     public String displayContentImagesCreate(final Model model, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
       
@@ -156,6 +157,7 @@ public class ContentImageController {
 	 * @return
 	 * @throws Exception
 	 */
+	@Secured("CONTENT")
 	@RequestMapping(value="/admin/content/saveContentImages.html", method=RequestMethod.POST)
 	public String saveContentImages(@ModelAttribute(value="contentImages") @Valid final ContentImages contentImages, final BindingResult bindingResult,final Model model, final HttpServletRequest request) throws Exception{
 	    
@@ -198,6 +200,7 @@ public class ContentImageController {
 	 * @param locale
 	 * @return
 	 */
+	@Secured("CONTENT")
 	@RequestMapping(value="/admin/content/removeImage.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeImage(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String imageName = request.getParameter("imageName");

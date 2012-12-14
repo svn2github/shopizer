@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -65,7 +66,7 @@ public class OptionsValueController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OptionsValueController.class);
 	
 	
-	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/options/optionvalues.html", method=RequestMethod.GET)
 	public String displayOptions(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -81,12 +82,13 @@ public class OptionsValueController {
 		
 	}
 	
-
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/options/editOptionValue.html", method=RequestMethod.GET)
 	public String displayOptionEdit(@RequestParam("id") long optionId, HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
 		return displayOption(optionId,request,response,model,locale);
 	}
 	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/options/createOptionValue.html", method=RequestMethod.GET)
 	public String displayOption(HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
 		return displayOption(null,request,response,model,locale);
@@ -167,7 +169,7 @@ public class OptionsValueController {
 	}
 		
 	
-	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/options/saveOptionValue.html", method=RequestMethod.POST)
 	public String saveOption(@Valid @ModelAttribute("optionValue") ProductOptionValue optionValue, BindingResult result, Model model, HttpServletRequest request) throws Exception {
 		
@@ -247,6 +249,7 @@ public class OptionsValueController {
 	
 	
 	@SuppressWarnings("unchecked")
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/optionsvalues/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageOptions(HttpServletRequest request, HttpServletResponse response) {
 		
@@ -308,6 +311,7 @@ public class OptionsValueController {
 		
 	}
 	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/optionsvalues/remove.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String deleteOptionValue(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String sid = request.getParameter("optionValueId");
@@ -347,7 +351,7 @@ public class OptionsValueController {
 		return returnString;
 	}
 	
-	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/optionsvalues/removeImage.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeImage(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String optionValueId = request.getParameter("optionId");

@@ -67,7 +67,8 @@ public class ProductCategoryController {
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
 			List<Category> categories = null;
-					
+				
+			//TODO search by category name
 			if(!StringUtils.isBlank(categoryName)) {
 				
 				

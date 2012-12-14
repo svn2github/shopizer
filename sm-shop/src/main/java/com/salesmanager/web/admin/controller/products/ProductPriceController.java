@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,7 @@ import com.salesmanager.web.constants.Constants;
 @Controller
 public class ProductPriceController {
 	
-	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/prices.html", method=RequestMethod.GET)
 	public String displayOptions(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -38,7 +39,7 @@ public class ProductPriceController {
 		
 	}
 	
-
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/prices/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pagePrices(HttpServletRequest request, HttpServletResponse response) {
 

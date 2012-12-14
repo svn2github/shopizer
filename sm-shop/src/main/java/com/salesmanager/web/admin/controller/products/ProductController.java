@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -85,13 +86,14 @@ public class ProductController {
 	@Autowired
 	private CoreConfiguration configuration;
 
-	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/editProduct.html", method=RequestMethod.GET)
 	public String displayProductEdit(@RequestParam("id") long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return displayProduct(productId,model,request,response);
 
 	}
 	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/createProduct.html", method=RequestMethod.GET)
 	public String displayProductCreate(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return displayProduct(null,model,request,response);
@@ -237,6 +239,7 @@ public class ProductController {
 	}
 	
 
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/save.html", method=RequestMethod.POST)
 	public String saveProduct(@Valid @ModelAttribute("product") com.salesmanager.web.entity.catalog.Product  product, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
@@ -495,6 +498,7 @@ public class ProductController {
 	 * @param locale
 	 * @return
 	 */
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/product/removeImage.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeImage(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String iid = request.getParameter("imageId");

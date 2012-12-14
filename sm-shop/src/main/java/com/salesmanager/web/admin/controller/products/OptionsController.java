@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -51,7 +52,7 @@ public class OptionsController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OptionsController.class);
 	
 	
-	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/options/options.html", method=RequestMethod.GET)
 	public String displayOptions(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -66,12 +67,13 @@ public class OptionsController {
 		
 	}
 	
-
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/options/editOption.html", method=RequestMethod.GET)
 	public String displayOptionEdit(@RequestParam("id") long optionId, HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
 		return displayOption(optionId,request,response,model,locale);
 	}
 	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/options/createOption.html", method=RequestMethod.GET)
 	public String displayOption(HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
 		return displayOption(null,request,response,model,locale);
@@ -150,7 +152,7 @@ public class OptionsController {
 	}
 		
 	
-	
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/options/save.html", method=RequestMethod.POST)
 	public String saveOption(@Valid @ModelAttribute("option") ProductOption option, BindingResult result, Model model, HttpServletRequest request) throws Exception {
 		
@@ -213,6 +215,7 @@ public class OptionsController {
 	
 	
 	@SuppressWarnings("unchecked")
+	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/options/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageOptions(HttpServletRequest request, HttpServletResponse response) {
 		

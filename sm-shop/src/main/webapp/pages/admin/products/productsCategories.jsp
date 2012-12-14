@@ -3,229 +3,58 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 
-<%@ page session="false" %>				
-				
-
-
-
+<%@ page session="false" %>
 <div class="tabbable">
-
-  					
-  					<c:if test="${fn:length(currentMenu.menus)>0}">
-						
-  						<ul class="nav nav-tabs">
-  						<c:forEach items="${currentMenu.menus}" var="menu">
-  							<c:choose>
-  							    <c:when test="${fn:length(menu.menus)==0}">
-  									<li id="${menu.code}-tab" <c:if test="${activeMenus[menu.code]!=null}"> class="active"</c:if>><a href="#" id="${menu.code}-link" data-toggle="tab"><s:message code="menu.${menu.code}" text="${menu.code}"/></a></li>
-  							    </c:when>
-  							    <c:otherwise>
-  									<li class="dropdown <c:if test="${activeMenus[menu.code]!=null}"> active</c:if>" style="z-index:500000;position:relative"> 
-  										<a href="#" class="dropdown-toggle" data-toggle="dropdown"><s:message code="menu.${menu.code}" text="${menu.code}"/><b class="caret"></b></a>
-  										<ul class="dropdown-menu"> 
-  											<c:forEach items="${menu.menus}" var="submenu">
-  												<li><a href="#" id="${submenu.code}-link" data-toggle="tab"><s:message code="menu.${submenu.code}" text="${submenu.code}"/></a></li>
-  											</c:forEach>
-  										</ul> 
-  									</li>
-  							    </c:otherwise>
-  							</c:choose>
-  						</c:forEach>
-  						</ul>
-  					</c:if>
-
-
-  					<div class="tab-content">
-
-    					<div class="tab-pane active" id="catalogue-section">
-
-								
-								
-
-
-								<div class="sm-ui-component">
-
-      							
-			      			     <script>
-
-///isc.showConsole();
-      			     
-      			     
-// User Interface
-// ---------------------------------------------------------------------
-
-								
-
-
-								
-								isc.RestDataSource.create({ 
-									ID:"products", 
-									dataFormat:"json", 
-									dataURL: "<c:url value="/admin/products/paging.html" />",
-									data : {
-										criteria: [
-											{fieldName: "categoryId", operator: "equals", value: "12345"}
-										]
-									}, 
-									operationBindings:[ 
-										{operationType:"fetch", dataProtocol:"postParams"} 
-									]
-								}); 
-								
-
-								
-
-
-								
-								
-								//iterate from category objects to display data
-      							isc.TreeGrid.create({
-    								ID:"categoryTree",
-    								border:1,
-    								showResizeBar: false,
-    								data: isc.Tree.create({
-        								modelType: "parent",
-        								nameProperty: "Name",
-        								idField: "categoryId",
-        								parentIdField: "parentId",
-        								data: [
-            							{categoryId:"4", parentId:"1", Name:"Books"},
-            							{categoryId:"188", parentId:"4", Name:"Novell"},
-            							{categoryId:"189", parentId:"4", Name:"Technology"},
-            							{categoryId:"265", parentId:"188", Name:"Romance"},
-            							{categoryId:"267", parentId:"188", Name:"Test1"},
-            							{categoryId:"264", parentId:"188", Name:"Fiction"}
-        								]
-    								}),
-
-
-    								nodeClick:"itemList.fetchData({categoryId:node.categoryId})",
-    								showHeader:false,
-    								leaveScrollbarGap:false,
-    								animateFolders:true,
-    								canAcceptDroppedRecords:true,
-    								canReparentNodes:false,
-    								selectionType:"single",
-    								animateRowsMaxTime:750
-							  });
-							  
-							  
-							  isc.ListGrid.create({
-    								ID: "itemList",
-    								border:1,
-    								dataSource: "products",
-    								showRecordComponents: true,    
-    								showRecordComponentsByCell: true,
-    								
-    								autoFetchData: false,
-    								showFilterEditor: true,
-    								filterOnKeypress: true,
-									dataFetchMode:"paged",
-
-
-    						      fields:[
-        								{title:"Name", name:"name"},
-        								{title:"SKU", name:"sku"},
-        								{title:"Cost", name:"cost",canFilter:false},
-        								{title:"units", name:"units",canFilter:false},
-        								{title:"Info", name: "buttonField", align: "center",canFilter:false}
-
-    							],
-    							selectionType: "single",
-    							createRecordComponent : function (record, colNum) {  
-        
-        							var fieldName = this.getFieldName(colNum);
-        							if (fieldName == "buttonField") {  
-
-	        						
-	           						var button = isc.IButton.create({
-	                						height: 18,
-	                						width: 65,
-	               					 		title: "Info",
-	                						click : function () {
-	                    					isc.say(record["name"] + " info button clicked.");
-	                						}
-	            					});
-	            					return button;  
-            				
-            					}
- 
-    						  }
-
-
-							});
-								
-
-
-
-
-
-// Define application layout
-// ---------------------------------------------------------------------
-
-isc.HLayout.create({
-    ID:"pageLayout",
-    width: "700",
-    height: "600",
-    position:"relative",
-    members:[
-        isc.SectionStack.create({
-            ID:"leftSideLayout",
-            width:200,
-            showResizeBar:true,
-            visibilityMode:"multiple",
-            animateSections:true,
-            sections:[
-                {title:"Categories", autoShow:true, items:[categoryTree]}
-                /**{title:"Instructions", autoShow:true, items:[helpCanvas]}**/
-            ]
-        }),
-        isc.SectionStack.create({
-            ID:"rightSideLayout",
-            visibilityMode:"multiple",
-            animateSections:true,
-            sections:[
-                {title:"Find Items", autoShow:true, items:[
-                    isc.Canvas.create({
-                        ID:"findPane",
-                        height:60,
-                        overflow:"auto",
-                        styleName:"defaultBorder",
-                        children:[findForm,findButton]
-                    })                
-                ]},
-                {title:"Items", autoShow:true, items:[itemList]}
-                /**{title:"Item Details", autoShow:true, items:[itemDetailTabs]}**/
-            ]
-        })
-    ]
-});
-
-isc.Page.setEvent("load", "pageLayout.draw()");
-
-      			     
-
-								
-								
-												</script>		
-      							
-
-
-      					</div>
-      					
-
-      			     
-      			     
-
-
-      			     
-      			     
-    
-
-
-   					</div>
-
-
-  					</div>
-
+   <jsp:include page="/common/adminTabs.jsp" />
+	<div class="tab-content">
+		<div class="tab-pane active" id="catalogue-section">
+           <div class="sm-ui-component">
+				<h3>
+					<s:message code="label.product.category.association" text="Associate to categories" />
+				</h3>
+				
+				
+			<!--  Add content images -->
+			<c:url var="addCategory" value="/admin/product/addCategory.html" />
+			<form:form method="POST" enctype="multipart/form-data" commandName="categories" action="${addCategory}">
+			<form:errors path="*" cssClass="alert alert-error" element="div" />
+			<div id="store.success" class="alert alert-success"	style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>">
+					<s:message code="message.success" text="Request successfull" />
+			</div>
+			
+			<div class="control-group">
+				<label><s:message code="label.productedit.categoryname" text="Category"/></label>
+			  	<div class="controls">
+	                        		<form:select path="parent.id">
+					  					<form:options items="${categories}" itemValue="id" itemLabel="descriptions[0].name"/>
+				       				</form:select>
+	                                <span class="help-inline"><form:errors path="parent.id" cssClass="error" /></span>
 				</div>
+			</div>
+			
+			
+			<div class="form-actions">
+                  		<div class="pull-right">
+                  			<button type="submit" class="btn btn-success"><s:message code="button.label.upload" text="Upload Images"/></button>
+                  		</div>
+            	 </div>
+			
+		  </form:form>
+				
+				
+				
+				<br />
+				<!-- Listing grid include -->
+				<c:set value="/admin/product/categories/paging.html" var="pagingUrl" scope="request" />
+				<c:set value="/admin/product/categories/removeCategory.html" var="removeUrl" scope="request" />
+				<c:set value="/admin/product/categories/list.html" var="refreshUrl" scope="request" />
+				<c:set var="componentTitleKey" value="label.categories.title" scope="request" />
+				<c:set var="canRemoveEntry" value="true" scope="request" />
+				<jsp:include page="/pages/admin/components/list.jsp"></jsp:include>
+				<!-- End listing grid include -->
+			
+
+		</div>
+	   </div>
+	</div>
+</div>	
