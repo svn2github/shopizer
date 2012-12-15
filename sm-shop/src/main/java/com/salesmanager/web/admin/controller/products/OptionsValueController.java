@@ -289,7 +289,7 @@ public class OptionsValueController {
 				ProductOptionValueDescription description = option.getDescriptions().iterator().next();
 				
 				entry.put("name", description.getName());
-				entry.put("image", option.getProductOptionValueImage());//TODO resolve with option type label
+				entry.put("image", new StringBuilder().append(store.getCode()).append("/").append(ImageContentType.PROPERTY.name()).append("/").append(option.getProductOptionValueImage()).toString());
 				resp.addDataEntry(entry);
 				
 				

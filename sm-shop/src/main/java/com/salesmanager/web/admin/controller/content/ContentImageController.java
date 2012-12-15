@@ -103,7 +103,7 @@ public class ContentImageController {
 
 					@SuppressWarnings("rawtypes")
 					Map entry = new HashMap();
-					entry.put("picture", new StringBuilder().append(store.getCode()).append("/").append(Constants.CONTENT_IMAGE).append("/").append(name).toString());
+					entry.put("picture", new StringBuilder().append(store.getCode()).append("/").append(ImageContentType.CONTENT.name()).append("/").append(name).toString());
 					entry.put("name", name);
 					resp.addDataEntry(entry);
 
@@ -203,7 +203,7 @@ public class ContentImageController {
 	@Secured("CONTENT")
 	@RequestMapping(value="/admin/content/removeImage.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeImage(HttpServletRequest request, HttpServletResponse response, Locale locale) {
-		String imageName = request.getParameter("imageName");
+		String imageName = request.getParameter("name");
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		

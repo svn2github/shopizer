@@ -46,7 +46,7 @@
 								    ],
 
 								    getTile : function (record) {
-								        // override getTile() and add a "Remove" button 
+								        // override getTile() and add a "Remove" button
 								        var canvas = this.Super("getTile", arguments);
 								        canvas.addChild(this.getRemoveButton(this.getRecord(record)));
 								        return canvas;
@@ -67,7 +67,35 @@
 								            record: record,
 								            click : function () {
 								            	if (confirm('<s:message code="label.entity.remove.confirm" text="Do you really want to remove this record ?" />')) {
-													dataSource.removeData(this.record);
+
+								        			$.ajax({
+								        				  type: 'POST',
+								        				  url: '<c:url value="${removeUrl}"/>',
+								        				  data: 'name=' + record.name,
+								        				  dataType: 'json',
+								        				  success: function(response){
+								        			
+								        						var status = isc.XMLTools.selectObjects(response, "/response/status");
+								        						if(status==0 || status ==9999) {
+								        							
+								        							//reload
+								        							window.location='<c:url value="${refreshUrl}" />';
+								        							
+								        						} else {
+								        							
+								        							
+								        						}
+								        			
+								        				  
+								        				  },
+								        				  error: function(xhr, textStatus, errorThrown) {
+								        				  	alert('error ' + errorThrown);
+								        				  }
+								        				  
+								        				});
+								            		
+								            		
+								            		
 												} 
 								            }
 								        });
