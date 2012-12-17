@@ -85,13 +85,13 @@ public class ProductOptionValueServiceImpl extends
 	public void delete(ProductOptionValue entity) throws ServiceException {
 		
 		//remove all attributes having this option
-		List<ProductAttribute> attributes = productAttributeService.getByOptionValueId(entity.getMerchantSore(), entity.getId());
+		List<ProductAttribute> attributes = productAttributeService.getByOptionValueId(entity.getMerchantStore(), entity.getId());
 		
 		for(ProductAttribute attribute : attributes) {
 			productAttributeService.delete(attribute);
 		}
 		
-		ProductOptionValue option = this.getById(entity.getMerchantSore(), entity.getId());
+		ProductOptionValue option = this.getById(entity.getMerchantStore(), entity.getId());
 		
 		//remove option
 		super.delete(option);

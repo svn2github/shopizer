@@ -69,7 +69,7 @@ public class Manufacturer extends SalesManagerEntity<Long, Manufacturer> impleme
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
-	private MerchantStore merchantSore;
+	private MerchantStore merchantStore;
 
 	public Manufacturer() {
 	}
@@ -112,12 +112,12 @@ public class Manufacturer extends SalesManagerEntity<Long, Manufacturer> impleme
 
 
 
-	public MerchantStore getMerchantSore() {
-		return merchantSore;
+	public MerchantStore getMerchantStore() {
+		return merchantStore;
 	}
 
-	public void setMerchantSore(MerchantStore merchantSore) {
-		this.merchantSore = merchantSore;
+	public void setMerchantStore(MerchantStore merchantStore) {
+		this.merchantStore = merchantStore;
 	}
 
 

@@ -32,7 +32,7 @@ public class ProductAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Pro
 		
 		query.from(qEntity)
 			.leftJoin(qEntity.productOption, qProductOption).fetch()
-			.leftJoin(qProductOption.merchantSore).fetch()
+			.leftJoin(qProductOption.merchantStore).fetch()
 			.where(qEntity.id.eq(id));
 		
 		return query.uniqueResult(qEntity);
@@ -48,9 +48,9 @@ public class ProductAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Pro
 		
 		query.from(qEntity)
 			.leftJoin(qEntity.productOption, qProductOption).fetch()
-			.leftJoin(qProductOption.merchantSore).fetch()
+			.leftJoin(qProductOption.merchantStore).fetch()
 			.where(qProductOption.id.eq(id)
-			.and(qProductOption.merchantSore.id.eq(store.getId())));
+			.and(qProductOption.merchantStore.id.eq(store.getId())));
 		
 		return query.list(qEntity);
 	}
@@ -65,9 +65,9 @@ public class ProductAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Pro
 		
 		query.from(qEntity)
 			.leftJoin(qEntity.productOptionValue, qProductOptionValue).fetch()
-			.leftJoin(qProductOptionValue.merchantSore).fetch()
+			.leftJoin(qProductOptionValue.merchantStore).fetch()
 			.where(qProductOptionValue.id.eq(id)
-			.and(qProductOptionValue.merchantSore.id.eq(store.getId())));
+			.and(qProductOptionValue.merchantStore.id.eq(store.getId())));
 		
 		return query.list(qEntity);
 	}
@@ -84,11 +84,11 @@ public class ProductAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Pro
 		
 		query.from(qEntity)
 			.leftJoin(qEntity.productOptionValue, qProductOptionValue).fetch()
-			.leftJoin(qProductOptionValue.merchantSore).fetch()
+			.leftJoin(qProductOptionValue.merchantStore).fetch()
 			.leftJoin(qEntity.product,qProduct).fetch()
 			.leftJoin(qProductOptionValue.descriptions,qProductOptionValueDescription).fetch()
 			.where(qProduct.id.eq(product.getId())
-			.and(qProductOptionValue.merchantSore.id.eq(store.getId()))
+			.and(qProductOptionValue.merchantStore.id.eq(store.getId()))
 			.and(qProductOptionValueDescription.language.id.eq(language.getId())));
 		
 		return query.list(qEntity);

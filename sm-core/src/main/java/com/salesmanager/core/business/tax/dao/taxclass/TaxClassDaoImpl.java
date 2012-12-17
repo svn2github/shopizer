@@ -26,9 +26,9 @@ public class TaxClassDaoImpl extends SalesManagerEntityDaoImpl<Long, TaxClass> i
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qTax)
-			.leftJoin(qTax.merchantSore).fetch()
-			.where(qTax.merchantSore.id.eq(store.getId())
-			.or(qTax.merchantSore.isNull()));
+			.leftJoin(qTax.merchantStore).fetch()
+			.where(qTax.merchantStore.id.eq(store.getId())
+			.or(qTax.merchantStore.isNull()));
 		
 		List<TaxClass> taxes = query.list(qTax);
 		return taxes;

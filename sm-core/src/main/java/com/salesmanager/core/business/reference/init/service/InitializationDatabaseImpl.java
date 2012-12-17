@@ -227,7 +227,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		
 		
 		TaxClass taxclass = new TaxClass(TaxClass.DEFAULT_TAX_CLASS);
-		taxclass.setMerchantSore(store);
+		taxclass.setMerchantStore(store);
 		
 		taxClassService.create(taxclass);
 		

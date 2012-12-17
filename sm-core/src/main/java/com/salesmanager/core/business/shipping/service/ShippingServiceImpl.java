@@ -112,7 +112,7 @@ public class ShippingServiceImpl implements ShippingService {
 				configuration = new MerchantConfiguration();
 				configuration.
 				setKey(SUPPORTED_COUNTRIES);
-				configuration.setMerchantSore(store);
+				configuration.setMerchantStore(store);
 			} 
 			
 			configuration.setValue(value);

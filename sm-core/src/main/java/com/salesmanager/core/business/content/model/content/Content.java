@@ -53,7 +53,7 @@ public class Content extends SalesManagerEntity<Long, Content> implements Serial
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
-	private MerchantStore merchantSore;
+	private MerchantStore merchantStore;
 	
 	@NotEmpty
 	@Column(name="CODE", unique=true, length=100, nullable=false)
@@ -86,12 +86,12 @@ public class Content extends SalesManagerEntity<Long, Content> implements Serial
 		return auditSection;
 	}
 
-	public MerchantStore getMerchantSore() {
-		return merchantSore;
+	public MerchantStore getMerchantStore() {
+		return merchantStore;
 	}
 
-	public void setMerchantSore(MerchantStore merchantSore) {
-		this.merchantSore = merchantSore;
+	public void setMerchantStore(MerchantStore merchantStore) {
+		this.merchantStore = merchantStore;
 	}
 
 	public String getCode() {

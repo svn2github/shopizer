@@ -32,9 +32,9 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 		
 		query.from(qContent)
 			.leftJoin(qContent.descriptions, qContentDescription).fetch()
-			.leftJoin(qContent.merchantSore).fetch()
+			.leftJoin(qContent.merchantStore).fetch()
 			.where(qContentDescription.language.id.eq(language.getId())
-			.and(qContent.merchantSore.id.eq(store.getId()))
+			.and(qContent.merchantStore.id.eq(store.getId()))
 			.and(qContent.contentType.eq(contentType))
 			);
 		
@@ -55,9 +55,9 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 		
 		query.from(qContent)
 			.leftJoin(qContent.descriptions, qContentDescription).fetch()
-			.leftJoin(qContent.merchantSore).fetch()
+			.leftJoin(qContent.merchantStore).fetch()
 			.where(qContentDescription.language.id.eq(language.getId())
-			.and(qContent.merchantSore.id.eq(store.getId()))
+			.and(qContent.merchantStore.id.eq(store.getId()))
 			.and(qContent.contentType.in(contentType))
 			);
 		
@@ -77,8 +77,8 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 		
 		query.from(qContent)
 			.leftJoin(qContent.descriptions, qContentDescription).fetch()
-			.leftJoin(qContent.merchantSore).fetch()
-			.where(qContent.merchantSore.id.eq(store.getId())
+			.leftJoin(qContent.merchantStore).fetch()
+			.where(qContent.merchantStore.id.eq(store.getId())
 			.and(qContent.code.eq(code))
 			);
 		
@@ -98,9 +98,9 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 		
 		query.from(qContent)
 			.leftJoin(qContent.descriptions, qContentDescription).fetch()
-			.leftJoin(qContent.merchantSore).fetch()
+			.leftJoin(qContent.merchantStore).fetch()
 			.where(qContentDescription.language.id.eq(language.getId())
-			.and(qContent.merchantSore.id.eq(store.getId())
+			.and(qContent.merchantStore.id.eq(store.getId())
 			.and(qContent.code.eq(code)))
 			);
 		

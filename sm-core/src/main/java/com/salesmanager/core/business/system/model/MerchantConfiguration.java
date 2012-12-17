@@ -47,7 +47,7 @@ public class MerchantConfiguration extends SalesManagerEntity<Long, MerchantConf
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=true)
-	private MerchantStore merchantSore;
+	private MerchantStore merchantStore;
 	
 	@Embedded
 	private AuditSection auditSection = new AuditSection();
@@ -95,11 +95,11 @@ public class MerchantConfiguration extends SalesManagerEntity<Long, MerchantConf
 
 
 
-	public MerchantStore getMerchantSore() {
-		return merchantSore;
+	public MerchantStore getMerchantStore() {
+		return merchantStore;
 	}
 
-	public void setMerchantSore(MerchantStore merchantSore) {
-		this.merchantSore = merchantSore;
+	public void setMerchantStore(MerchantStore merchantStore) {
+		this.merchantStore = merchantStore;
 	}
 }

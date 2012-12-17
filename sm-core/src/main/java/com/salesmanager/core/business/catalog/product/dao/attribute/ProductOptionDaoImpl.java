@@ -28,8 +28,8 @@ public class ProductOptionDaoImpl extends SalesManagerEntityDaoImpl<Long, Produc
 		
 		query.from(qProductOption)
 			.leftJoin(qProductOption.descriptions, qDescription).fetch()
-			.leftJoin(qProductOption.merchantSore).fetch()
-			.where(qProductOption.merchantSore.id.eq(store.getId())
+			.leftJoin(qProductOption.merchantStore).fetch()
+			.where(qProductOption.merchantStore.id.eq(store.getId())
 			.and(qDescription.language.id.eq(language.getId())))
 			.orderBy(qProductOption.id.asc());
 		
@@ -46,9 +46,9 @@ public class ProductOptionDaoImpl extends SalesManagerEntityDaoImpl<Long, Produc
 		
 		query.from(qProductOption)
 			.leftJoin(qProductOption.descriptions, qDescription).fetch()
-			.leftJoin(qProductOption.merchantSore).fetch()
+			.leftJoin(qProductOption.merchantStore).fetch()
 			.where(qProductOption.id.eq(id)
-			.and(qProductOption.merchantSore.id.eq(store.getId())));
+			.and(qProductOption.merchantStore.id.eq(store.getId())));
 		
 		return query.uniqueResult(qProductOption);
 	}
@@ -62,10 +62,10 @@ public class ProductOptionDaoImpl extends SalesManagerEntityDaoImpl<Long, Produc
 		
 		query.from(qProductOption)
 			.leftJoin(qProductOption.descriptions, qDescription).fetch()
-			.leftJoin(qProductOption.merchantSore).fetch()
+			.leftJoin(qProductOption.merchantStore).fetch()
 			.where(qDescription.name.like("%" + name + "%")
 			.and(qDescription.language.id.eq(language.getId()))
-			.and(qProductOption.merchantSore.id.eq(store.getId())));
+			.and(qProductOption.merchantStore.id.eq(store.getId())));
 		
 
 		

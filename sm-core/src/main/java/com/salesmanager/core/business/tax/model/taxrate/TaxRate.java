@@ -74,7 +74,7 @@ public class TaxRate  extends SalesManagerEntity<Long, TaxRate> implements Audit
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
-	private MerchantStore merchantSore;
+	private MerchantStore merchantStore;
 	
 	@OneToMany(mappedBy = "taxRate", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<TaxRateDescription> descriptions = new ArrayList<TaxRateDescription>();
@@ -154,11 +154,11 @@ public class TaxRate  extends SalesManagerEntity<Long, TaxRate> implements Audit
 		this.geoZone = geoZone;
 	}
 
-	public MerchantStore getMerchantSore() {
-		return merchantSore;
+	public MerchantStore getMerchantStore() {
+		return merchantStore;
 	}
 
-	public void setMerchantSore(MerchantStore merchantSore) {
-		this.merchantSore = merchantSore;
+	public void setMerchantStore(MerchantStore merchantStore) {
+		this.merchantStore = merchantStore;
 	}
 }

@@ -48,7 +48,7 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
-	private MerchantStore merchantSore;
+	private MerchantStore merchantStore;
 	
 	@ManyToOne
 	@JoinColumn(name = "PARENT_ID")
@@ -91,7 +91,7 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 	}
 	
 	public Category(MerchantStore store) {
-		this.merchantSore = store;
+		this.merchantStore = store;
 		this.id = 0L;
 	}
 	
@@ -182,12 +182,12 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 
 
 
-	public MerchantStore getMerchantSore() {
-		return merchantSore;
+	public MerchantStore getMerchantStore() {
+		return merchantStore;
 	}
 
-	public void setMerchantSore(MerchantStore merchantSore) {
-		this.merchantSore = merchantSore;
+	public void setMerchantStore(MerchantStore merchantStore) {
+		this.merchantStore = merchantStore;
 	}
 
 	public List<Category> getCategories() {

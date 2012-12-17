@@ -47,7 +47,7 @@ public class ManufacturerTestCase extends AbstractSalesManagerCoreTestCase {
 		merchantService.create(store);
 		
 		Manufacturer manufacturer = new Manufacturer();
-		manufacturer.setMerchantSore(store);
+		manufacturer.setMerchantStore(store);
 		
 		ManufacturerDescription fd = new ManufacturerDescription();
 		fd.setLanguage(FRENCH);

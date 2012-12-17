@@ -50,7 +50,7 @@ public class SystemNotification extends SalesManagerEntity<Long, SystemNotificat
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=true)
-	private MerchantStore merchantSore;
+	private MerchantStore merchantStore;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="USER_ID", nullable=true)
@@ -109,12 +109,12 @@ public class SystemNotification extends SalesManagerEntity<Long, SystemNotificat
 		return startDate;
 	}
 
-	public void setMerchantSore(MerchantStore merchantSore) {
-		this.merchantSore = merchantSore;
+	public void setMerchantStore(MerchantStore merchantStore) {
+		this.merchantStore = merchantStore;
 	}
 
-	public MerchantStore getMerchantSore() {
-		return merchantSore;
+	public MerchantStore getMerchantStore() {
+		return merchantStore;
 	}
 
 	public void setEndDate(Date endDate) {

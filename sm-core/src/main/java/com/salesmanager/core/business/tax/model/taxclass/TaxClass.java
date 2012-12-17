@@ -66,7 +66,7 @@ public class TaxClass extends SalesManagerEntity<Long, TaxClass> {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=true)
-	private MerchantStore merchantSore;
+	private MerchantStore merchantStore;
 
 	
 	@OneToMany(mappedBy = "taxClass")
@@ -112,12 +112,12 @@ public class TaxClass extends SalesManagerEntity<Long, TaxClass> {
 	}
 
 
-	public MerchantStore getMerchantSore() {
-		return merchantSore;
+	public MerchantStore getMerchantStore() {
+		return merchantStore;
 	}
 
-	public void setMerchantSore(MerchantStore merchantSore) {
-		this.merchantSore = merchantSore;
+	public void setMerchantStore(MerchantStore merchantStore) {
+		this.merchantStore = merchantStore;
 	}
 	
 }

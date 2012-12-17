@@ -26,9 +26,9 @@ public class ManufacturerDaoImpl extends SalesManagerEntityDaoImpl<Long, Manufac
 		
 		query.from(qManufacturer)
 			.leftJoin(qManufacturer.descriptions, qManufacturerDescription).fetch()
-			.leftJoin(qManufacturer.merchantSore).fetch()
+			.leftJoin(qManufacturer.merchantStore).fetch()
 			.where(qManufacturerDescription.language.id.eq(language.getId())
-			.and(qManufacturer.merchantSore.id.eq(store.getId())));
+			.and(qManufacturer.merchantStore.id.eq(store.getId())));
 		
 
 		

@@ -249,7 +249,7 @@ public class IsolatedTestCase
         final Product product = productService.getById( 1L );
 
         /*
-         * product.setMerchantSore(store); try { EmbeddedCacheManager manager = new
+         * product.setMerchantStore(store); try { EmbeddedCacheManager manager = new
          * DefaultCacheManager("cms/infinispan_configuration.xml");
          * //manager.getDefaultCacheConfiguration().invocationBatching().enabled(); Cache defaultCache =
          * manager.getCache("DataRepository"); defaultCache.getCacheConfiguration().invocationBatching().enabled();
@@ -336,7 +336,7 @@ public class IsolatedTestCase
         product.setSku( "XYZTEST" );
         // product.setManufacturer(manufacturer);
         product.setType( generalType );
-        product.setMerchantSore( store );
+        product.setMerchantStore( store );
 
         // Product description
         final ProductDescription description = new ProductDescription();
@@ -412,7 +412,7 @@ public class IsolatedTestCase
     {
 
         final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        final File file1 = new File( "/Umesh/contentimage/homepage.png" );
+        final File file1 = new File( "c:/doc/carl/IA.jpg" );
 
         if ( !file1.exists() || !file1.canRead() )
         {
@@ -549,7 +549,7 @@ public class IsolatedTestCase
         final ProductType generalType = productTypeService.getProductType( ProductType.GENERAL_TYPE );
 
         final Category book = new Category();
-        book.setMerchantSore( store );
+        book.setMerchantStore( store );
         book.setCode( "book" );
 
         final CategoryDescription bookEnglishDescription = new CategoryDescription();
@@ -571,7 +571,7 @@ public class IsolatedTestCase
         categoryService.create( book );
 
         final Category music = new Category();
-        music.setMerchantSore( store );
+        music.setMerchantStore( store );
         music.setCode( "music" );
 
         final CategoryDescription musicEnglishDescription = new CategoryDescription();
@@ -593,7 +593,7 @@ public class IsolatedTestCase
         categoryService.create( music );
 
         final Category novell = new Category();
-        novell.setMerchantSore( store );
+        novell.setMerchantStore( store );
         novell.setCode( "novell" );
 
         final CategoryDescription novellEnglishDescription = new CategoryDescription();
@@ -618,7 +618,7 @@ public class IsolatedTestCase
         categoryService.addChild( book, novell );
 
         final Category tech = new Category();
-        tech.setMerchantSore( store );
+        tech.setMerchantStore( store );
         tech.setCode( "tech" );
 
         final CategoryDescription techEnglishDescription = new CategoryDescription();
@@ -643,7 +643,7 @@ public class IsolatedTestCase
         categoryService.addChild( book, tech );
 
         final Category fiction = new Category();
-        fiction.setMerchantSore( store );
+        fiction.setMerchantStore( store );
         fiction.setCode( "fiction" );
 
         final CategoryDescription fictionEnglishDescription = new CategoryDescription();
@@ -671,7 +671,7 @@ public class IsolatedTestCase
         // ProductType generalType = productTypeService.
 
         final Manufacturer oreilley = new Manufacturer();
-        oreilley.setMerchantSore( store );
+        oreilley.setMerchantStore( store );
 
         final ManufacturerDescription oreilleyd = new ManufacturerDescription();
         oreilleyd.setLanguage( en );
@@ -682,7 +682,7 @@ public class IsolatedTestCase
         manufacturerService.create( oreilley );
 
         final Manufacturer packed = new Manufacturer();
-        packed.setMerchantSore( store );
+        packed.setMerchantStore( store );
 
         final ManufacturerDescription packedd = new ManufacturerDescription();
         packedd.setLanguage( en );
@@ -693,7 +693,7 @@ public class IsolatedTestCase
         manufacturerService.create( packed );
 
         final Manufacturer novells = new Manufacturer();
-        novells.setMerchantSore( store );
+        novells.setMerchantStore( store );
 
         final ManufacturerDescription novellsd = new ManufacturerDescription();
         novellsd.setLanguage( en );
@@ -712,7 +712,7 @@ public class IsolatedTestCase
         product.setSku( "TB12345" );
         product.setManufacturer( oreilley );
         product.setType( generalType );
-        product.setMerchantSore( store );
+        product.setMerchantStore( store );
 
         // Product description
         ProductDescription description = new ProductDescription();
@@ -758,7 +758,7 @@ public class IsolatedTestCase
         product2.setSku( "TB2468" );
         product2.setManufacturer( packed );
         product2.setType( generalType );
-        product2.setMerchantSore( store );
+        product2.setMerchantStore( store );
 
         // Product description
         description = new ProductDescription();
@@ -803,7 +803,7 @@ public class IsolatedTestCase
         product3.setSku( "NB1111" );
         product3.setManufacturer( packed );
         product3.setType( generalType );
-        product3.setMerchantSore( store );
+        product3.setMerchantStore( store );
 
         // Product description
         description = new ProductDescription();
@@ -848,7 +848,7 @@ public class IsolatedTestCase
         product4.setSku( "SF333345" );
         product4.setManufacturer( packed );
         product4.setType( generalType );
-        product4.setMerchantSore( store );
+        product4.setMerchantStore( store );
 
         // Product description
         description = new ProductDescription();
@@ -893,7 +893,7 @@ public class IsolatedTestCase
         product5.setSku( "SF333346" );
         product5.setManufacturer( packed );
         product5.setType( generalType );
-        product5.setMerchantSore( store );
+        product5.setMerchantStore( store );
 
         // Product description
         description = new ProductDescription();
@@ -938,7 +938,7 @@ public class IsolatedTestCase
         product6.setSku( "LL333444" );
         product6.setManufacturer( packed );
         product6.setType( generalType );
-        product6.setMerchantSore( store );
+        product6.setMerchantStore( store );
 
         // Product description
         description = new ProductDescription();
@@ -1137,7 +1137,7 @@ public class IsolatedTestCase
         final Category book = new Category();
         book.setDepth( 0 );
         book.setLineage( "/" );
-        book.setMerchantSore( store );
+        book.setMerchantStore( store );
         book.setCode( "book" );
 
         final CategoryDescription bookEnglishDescription = new CategoryDescription();
@@ -1161,7 +1161,7 @@ public class IsolatedTestCase
         final Category music = new Category();
         music.setDepth( 0 );
         music.setLineage( "/" );
-        music.setMerchantSore( store );
+        music.setMerchantStore( store );
         music.setCode( "music" );
 
         final CategoryDescription musicEnglishDescription = new CategoryDescription();
@@ -1185,7 +1185,7 @@ public class IsolatedTestCase
         final Category novell = new Category();
         novell.setDepth( 1 );
         novell.setLineage( "/" + book.getId() + "/" );
-        novell.setMerchantSore( store );
+        novell.setMerchantStore( store );
         novell.setCode( "novell" );
 
         final CategoryDescription novellEnglishDescription = new CategoryDescription();
@@ -1210,7 +1210,7 @@ public class IsolatedTestCase
         final Category tech = new Category();
         tech.setDepth( 1 );
         tech.setLineage( "/" + book.getId() + "/" );
-        tech.setMerchantSore( store );
+        tech.setMerchantStore( store );
         tech.setCode( "tech" );
 
         final CategoryDescription techEnglishDescription = new CategoryDescription();
@@ -1297,7 +1297,7 @@ public class IsolatedTestCase
         // merchantService.update(store);
 
         // Manufacturer manufacturer = new Manufacturer();
-        manufacturer.setMerchantSore( store );
+        manufacturer.setMerchantStore( store );
 
         final ManufacturerDescription fd = new ManufacturerDescription();
         fd.setLanguage( FRENCH );

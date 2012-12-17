@@ -172,7 +172,7 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	public void delete(Category category) throws ServiceException {
 		
 		//get category with lineage
-		List<Category> categories = this.listByLineage(category.getMerchantSore(), category.getLineage());
+		List<Category> categories = this.listByLineage(category.getMerchantStore(), category.getLineage());
 		
 		if(categories.size()==0) {
 			categories.add(category);
@@ -269,7 +269,7 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	public void addChild(Category parent, Category child) throws ServiceException {
 		
 		
-		if(child==null || child.getMerchantSore()==null) {
+		if(child==null || child.getMerchantStore()==null) {
 			throw new ServiceException("Child category and merchant store should not be null");
 		}
 		
@@ -302,7 +302,7 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 
 			update(child);
 			
-			List<Category> subCategories = listByLineage(child.getMerchantSore(), child.getLineage());
+			List<Category> subCategories = listByLineage(child.getMerchantStore(), child.getLineage());
 			
 			
 			//ajust all sub categories lineages

@@ -87,7 +87,7 @@ public class User extends SalesManagerEntity<Long, User> implements Auditable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
-	private MerchantStore merchantSore;
+	private MerchantStore merchantStore;
 	
 	
 	@Column(name="ADMIN_FIRST_NAME")
@@ -251,12 +251,12 @@ public class User extends SalesManagerEntity<Long, User> implements Auditable {
 		return groups;
 	}
 
-	public MerchantStore getMerchantSore() {
-		return merchantSore;
+	public MerchantStore getMerchantStore() {
+		return merchantStore;
 	}
 
-	public void setMerchantSore(MerchantStore merchantSore) {
-		this.merchantSore = merchantSore;
+	public void setMerchantStore(MerchantStore merchantStore) {
+		this.merchantStore = merchantStore;
 	}
 
 }

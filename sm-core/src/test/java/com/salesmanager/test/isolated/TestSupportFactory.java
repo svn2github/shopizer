@@ -71,7 +71,7 @@ public class TestSupportFactory {
     product.setSku("LL" + rnd.nextLong());
     product.setManufacturer(manufacturer);
     product.setType(type);
-    product.setMerchantSore(store);
+    product.setMerchantStore(store);
 
     // Product description
     ProductDescription description = new ProductDescription();
@@ -123,7 +123,7 @@ public class TestSupportFactory {
       cat.setLineage("/" + parent.getId() + "/");
     }
 
-    cat.setMerchantSore(store);
+    cat.setMerchantStore(store);
 
     List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
 
@@ -196,7 +196,7 @@ public class TestSupportFactory {
     String[] manufacturers = { "O\'reilley", "Hueber", "Langenscheidt", "Readers Digest", "Klett Verlag" };
 
     Manufacturer manufacturer = new Manufacturer();
-    manufacturer.setMerchantSore(store);
+    manufacturer.setMerchantStore(store);
 
     ManufacturerDescription oreilleyd = new ManufacturerDescription();
     oreilleyd.setLanguage(language);

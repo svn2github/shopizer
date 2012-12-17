@@ -155,6 +155,9 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 
 	@Column(name = "QUANTITY_ORDERED")
 	private Integer productOrdered;
+	
+	@Column(name = "ORDER")
+	private Integer sortOrder = new Integer(0);
 
 	@NotEmpty
 	@Pattern(regexp="^[a-zA-Z0-9_]*$")
@@ -357,7 +360,7 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 		return merchantStore;
 	}
 
-	public void setMerchantSore(MerchantStore merchantStore) {
+	public void setMerchantStore(MerchantStore merchantStore) {
 		this.merchantStore = merchantStore;
 	}
 
@@ -375,6 +378,14 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 
 	public void setDateAvailable(Date dateAvailable) {
 		this.dateAvailable = dateAvailable;
+	}
+
+	public void setSortOrder(Integer sortOrder) {
+		this.sortOrder = sortOrder;
+	}
+
+	public Integer getSortOrder() {
+		return sortOrder;
 	}
 
 

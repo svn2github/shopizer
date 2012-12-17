@@ -23,8 +23,8 @@ public class MerchantConfigurationDaoImpl extends SalesManagerEntityDaoImpl<Long
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		query.from(qMerchantCnfiguration)
-			.innerJoin(qMerchantCnfiguration.merchantSore).fetch()
-			.where(qMerchantCnfiguration.merchantSore.id.eq(store.getId())
+			.innerJoin(qMerchantCnfiguration.merchantStore).fetch()
+			.where(qMerchantCnfiguration.merchantStore.id.eq(store.getId())
 			.and(qMerchantCnfiguration.key.eq(key)));
 		
 		return query.uniqueResult(qMerchantCnfiguration);

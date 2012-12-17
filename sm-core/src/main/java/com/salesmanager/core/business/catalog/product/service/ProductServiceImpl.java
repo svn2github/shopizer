@@ -124,7 +124,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		
 		//Get the category list
 		StringBuilder lineage = new StringBuilder().append(category.getLineage()).append(category.getId()).append("/");
-		List<Category> categories = categoryService.listByLineage(category.getMerchantSore(),lineage.toString());
+		List<Category> categories = categoryService.listByLineage(category.getMerchantStore(),lineage.toString());
 		Set<Long> categoryIds = new HashSet<Long>();
 		for(Category c : categories) {
 			
@@ -135,7 +135,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		categoryIds.add(category.getId());
 		
 		//Get products
-		List<Product> products = productDao.getProductsForLocale(category.getMerchantSore(), categoryIds, language, locale);
+		List<Product> products = productDao.getProductsForLocale(category.getMerchantStore(), categoryIds, language, locale);
 		
 		//Filter availability
 		
@@ -160,7 +160,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		
 		//Get the category list
 		StringBuilder lineage = new StringBuilder().append(category.getLineage()).append(category.getId()).append("/");
-		List<Category> categories = categoryService.listByLineage(category.getMerchantSore(),lineage.toString());
+		List<Category> categories = categoryService.listByLineage(category.getMerchantStore(),lineage.toString());
 		Set<Long> categoryIds = new HashSet<Long>();
 		for(Category c : categories) {
 			
@@ -171,7 +171,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		categoryIds.add(category.getId());
 		
 		//Get products
-		ProductList productList = productDao.getProductsForLocale(category.getMerchantSore(), categoryIds, language, locale, startIndex, maxCount);
+		ProductList productList = productDao.getProductsForLocale(category.getMerchantStore(), categoryIds, language, locale, startIndex, maxCount);
 		
 		return productList;
 		
