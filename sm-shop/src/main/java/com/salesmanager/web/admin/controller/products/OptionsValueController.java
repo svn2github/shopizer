@@ -215,7 +215,7 @@ public class OptionsValueController {
 		}
 			
 
-		optionValue.setMerchantSore(store);
+		optionValue.setMerchantStore(store);
 
 		
 		if (result.hasErrors()) {
@@ -327,7 +327,7 @@ public class OptionsValueController {
 			
 			ProductOptionValue entity = productOptionValueService.getById(store, id);
 
-			if(entity==null || entity.getMerchantSore().getId().intValue()!=store.getId().intValue()) {
+			if(entity==null || entity.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 
 				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
 				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			

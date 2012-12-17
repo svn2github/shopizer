@@ -112,7 +112,7 @@ public class StoreLandingController {
 			content = new Content();
 			content.setContentType("PAGE");
 			content.setCode("LANDING_PAGE");
-			content.setMerchantSore(store);
+			content.setMerchantStore(store);
 		}
 		
 

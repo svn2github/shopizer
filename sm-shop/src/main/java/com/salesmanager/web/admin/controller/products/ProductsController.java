@@ -119,7 +119,7 @@ public class ProductsController {
 				
 					Category category = categoryService.getById(lcategoryId);
 	
-					if(category==null || category.getMerchantSore().getId()!=store.getId()) {
+					if(category==null || category.getMerchantStore().getId()!=store.getId()) {
 						resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 						String returnString = resp.toJSONString();
 						return returnString;

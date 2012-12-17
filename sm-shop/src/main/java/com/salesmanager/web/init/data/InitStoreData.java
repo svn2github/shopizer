@@ -121,7 +121,7 @@ public class InitStoreData implements InitData {
 		
 		
 		 Category book = new Category();
-		    book.setMerchantSore(store);
+		    book.setMerchantStore(store);
 		    book.setCode("book");
 
 		    CategoryDescription bookEnglishDescription = new CategoryDescription();
@@ -143,7 +143,7 @@ public class InitStoreData implements InitData {
 		    categoryService.create(book);
 
 		    Category music = new Category();
-		    music.setMerchantSore(store);
+		    music.setMerchantStore(store);
 		    music.setCode("music");
 
 		    CategoryDescription musicEnglishDescription = new CategoryDescription();
@@ -165,7 +165,7 @@ public class InitStoreData implements InitData {
 		    categoryService.create(music);
 
 		    Category novell = new Category();
-		    novell.setMerchantSore(store);
+		    novell.setMerchantStore(store);
 		    novell.setCode("novell");
 
 		    CategoryDescription novellEnglishDescription = new CategoryDescription();
@@ -190,7 +190,7 @@ public class InitStoreData implements InitData {
 		    categoryService.addChild(book, novell);
 
 		    Category tech = new Category();
-		    tech.setMerchantSore(store);
+		    tech.setMerchantStore(store);
 		    tech.setCode("tech");
 
 		    CategoryDescription techEnglishDescription = new CategoryDescription();
@@ -215,7 +215,7 @@ public class InitStoreData implements InitData {
 		    categoryService.addChild(book, tech);
 
 		    Category fiction = new Category();
-		    fiction.setMerchantSore(store);
+		    fiction.setMerchantStore(store);
 		    fiction.setCode("fiction");
 
 		    CategoryDescription fictionEnglishDescription = new CategoryDescription();
@@ -243,7 +243,7 @@ public class InitStoreData implements InitData {
 		    // ProductType generalType = productTypeService.
 
 		    Manufacturer oreilley = new Manufacturer();
-		    oreilley.setMerchantSore(store);
+		    oreilley.setMerchantStore(store);
 
 		    ManufacturerDescription oreilleyd = new ManufacturerDescription();
 		    oreilleyd.setLanguage(en);
@@ -254,7 +254,7 @@ public class InitStoreData implements InitData {
 		    manufacturerService.create(oreilley);
 
 		    Manufacturer packed = new Manufacturer();
-		    packed.setMerchantSore(store);
+		    packed.setMerchantStore(store);
 
 		    ManufacturerDescription packedd = new ManufacturerDescription();
 		    packedd.setLanguage(en);
@@ -265,7 +265,7 @@ public class InitStoreData implements InitData {
 		    manufacturerService.create(packed);
 
 		    Manufacturer novells = new Manufacturer();
-		    novells.setMerchantSore(store);
+		    novells.setMerchantStore(store);
 
 		    ManufacturerDescription novellsd = new ManufacturerDescription();
 		    novellsd.setLanguage(en);
@@ -284,7 +284,7 @@ public class InitStoreData implements InitData {
 		    product.setSku("TB12345");
 		    product.setManufacturer(oreilley);
 		    product.setType(generalType);
-		    product.setMerchantSore(store);
+		    product.setMerchantStore(store);
 
 		    // Product description
 		    ProductDescription description = new ProductDescription();
@@ -332,7 +332,7 @@ public class InitStoreData implements InitData {
 		    product2.setSku("TB2468");
 		    product2.setManufacturer(packed);
 		    product2.setType(generalType);
-		    product2.setMerchantSore(store);
+		    product2.setMerchantStore(store);
 
 		    // Product description
 		    description = new ProductDescription();
@@ -377,7 +377,7 @@ public class InitStoreData implements InitData {
 		    product3.setSku("NB1111");
 		    product3.setManufacturer(packed);
 		    product3.setType(generalType);
-		    product3.setMerchantSore(store);
+		    product3.setMerchantStore(store);
 
 		    // Product description
 		    description = new ProductDescription();
@@ -422,7 +422,7 @@ public class InitStoreData implements InitData {
 		    product4.setSku("SF333345");
 		    product4.setManufacturer(packed);
 		    product4.setType(generalType);
-		    product4.setMerchantSore(store);
+		    product4.setMerchantStore(store);
 
 		    // Product description
 		    description = new ProductDescription();
@@ -467,7 +467,7 @@ public class InitStoreData implements InitData {
 		    product5.setSku("SF333346");
 		    product5.setManufacturer(packed);
 		    product5.setType(generalType);
-		    product5.setMerchantSore(store);
+		    product5.setMerchantStore(store);
 
 		    // Product description
 		    description = new ProductDescription();
@@ -512,7 +512,7 @@ public class InitStoreData implements InitData {
 		    product6.setSku("LL333444");
 		    product6.setManufacturer(packed);
 		    product6.setType(generalType);
-		    product6.setMerchantSore(store);
+		    product6.setMerchantStore(store);
 
 		    // Product description
 		    description = new ProductDescription();

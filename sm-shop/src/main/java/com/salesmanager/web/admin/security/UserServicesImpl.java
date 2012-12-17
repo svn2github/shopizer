@@ -221,7 +221,7 @@ public class UserServicesImpl implements UserDetailsService{
 		  user.setFirstName("Administrator");
 		  user.setLastName("User");
 		  user.getGroups().add(gsuperadmin);
-		  user.setMerchantSore(store);
+		  user.setMerchantStore(store);
 
 		  
 		  userService.create(user);

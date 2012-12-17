@@ -30,7 +30,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.category.model.Category;
+import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
+import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
@@ -49,6 +53,7 @@ import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 import com.salesmanager.core.business.tax.service.TaxClassService;
 import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.core.utils.ProductPriceUtils;
+import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
@@ -85,6 +90,9 @@ public class ProductController {
 	
 	@Autowired
 	private CoreConfiguration configuration;
+	
+	@Autowired
+	CategoryService categoryService;
 
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/editProduct.html", method=RequestMethod.GET)
@@ -417,7 +425,7 @@ public class ProductController {
 			}
 		}
 		
-		newProduct.setMerchantSore(store);
+		newProduct.setMerchantStore(store);
 		
 		if(newProductAvailability==null) {
 			newProductAvailability = new ProductAvailability();
@@ -537,82 +545,177 @@ public class ProductController {
 	}
 	
 	
-/*	//category list
-	@RequestMapping(value="/admin/categories/categories.html", method=RequestMethod.GET)
-	public String displayCategories(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-		
+	/**
+	 * List all categories and let the merchant associate the product to a category
+	 * @param productId
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@Secured("PRODUCTS")
+	@RequestMapping(value="/admin/products/displayProductToCategories.html", method=RequestMethod.GET)
+	public String displayAddProductToCategories(@RequestParam("id") long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	
 		
 		setMenu(model,request);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		Language language = (Language)request.getAttribute("LANGUAGE");
 		
-		//does nothing, ajax subsequent request
 		
-		return "catalogue-categories";
-	}*/
-	
-	/*
-	
-	@SuppressWarnings({ "unchecked"})
-	@RequestMapping(value="/admin/products/paging.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String pageProducts(HttpServletRequest request, HttpServletResponse response) {
-		String categoryName = request.getParameter("name");
+		//get the product and validate it belongs to the current merchant
+		Product product = productService.getById(productId);
+		
+		if(product==null) {
+			return "redirect:/admin/products/products.html";
+		}
+		
+		if(product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			return "redirect:/admin/products/products.html";
+		}
+		
 
+		//get parent categories
+		List<Category> categories = categoryService.listByStore(store,language);
+		
+		model.addAttribute("product", product);
+		model.addAttribute("categories", categories);
+		return "catalogue-product-categories";
+		
+	}
+	
+	/**
+	 * List all categories associated to a Product
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Secured("PRODUCTS")
+	@RequestMapping(value="/admin/product-categories/paging.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String pageProductCategories(HttpServletRequest request, HttpServletResponse response) {
 
+		String sProductId = request.getParameter("productId");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		
 		AjaxResponse resp = new AjaxResponse();
+		
+		Long productId;
+		Product product = null;
+		
+		try {
+			productId = Long.parseLong(sProductId);
+		} catch (Exception e) {
+			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorString("Product id is not valid");
+			String returnString = resp.toJSONString();
+			return returnString;
+		}
 
 		
 		try {
+
+			product = productService.getById(productId);
+
+			
+			if(product==null) {
+				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+				resp.setErrorString("Product id is not valid");
+				String returnString = resp.toJSONString();
+				return returnString;
+			}
+			
+			if(product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+				resp.setErrorString("Product id is not valid");
+				String returnString = resp.toJSONString();
+				return returnString;
+			}
+			
 			
 			Language language = (Language)request.getAttribute("LANGUAGE");
-				
-		
-			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+
 			
-			List<Category> categories = null;
-					
-			if(!StringUtils.isBlank(categoryName)) {
-				
-				
-				categories = categoryService.getByName(store, categoryName, language);
-				
-			} else {
-				
-				categories = categoryService.listByStore(store, language);
-				
-			}
-					
-					
+			Set<Category> categories = product.getCategories();
 			
+
 			for(Category category : categories) {
-				
-				@SuppressWarnings("rawtypes")
 				Map entry = new HashMap();
 				entry.put("categoryId", category.getId());
 				
-				CategoryDescription description = category.getDescriptions().get(0);
-				
-				entry.put("name", description.getName());
-				entry.put("visible", category.isVisible());
+				List<CategoryDescription> descriptions = category.getDescriptions();
+				String categoryName = category.getDescriptions().get(0).getName();
+				for(CategoryDescription description : descriptions){
+					if(description.getLanguage().getCode().equals(language.getCode())) {
+						categoryName = description.getName();
+					}
+				}
+				entry.put("name", categoryName);
 				resp.addDataEntry(entry);
-				
-				
 			}
-			
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
-			
 
+			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_SUCCESS);
 		
 		} catch (Exception e) {
-			LOGGER.error("Error while paging categories", e);
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			LOGGER.error("Error while paging products", e);
+			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
 		}
 		
 		String returnString = resp.toJSONString();
-		
 		return returnString;
+
+
 	}
-	*/
 	
+	@SuppressWarnings("unused")
+	@Secured("PRODUCTS")
+	@RequestMapping(value="/admin/products/addProductToCategories.html", method=RequestMethod.GET)
+	public String addProductToCategory(@RequestParam("productId") long productId, @RequestParam("categoryId") long categoryId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		setMenu(model,request);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		
+		
+		//get the product and validate it belongs to the current merchant
+		Product product = productService.getById(productId);
+		
+		if(product==null) {
+			return "redirect:/admin/products/products.html";
+		}
+		
+		if(product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			return "redirect:/admin/products/products.html";
+		}
+		
+
+		//get parent categories
+		List<Category> categories = categoryService.listByStore(store,language);
+		
+		Category category = categoryService.getById(categoryId);
+		
+		if(category==null) {
+			return "redirect:/admin/products/products.html";
+		}
+		
+		if(category.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			return "redirect:/admin/products/products.html";
+		}
+		
+		product.getCategories().add(category);
+		
+		productService.update(product);
+		
+		model.addAttribute("product", product);
+		model.addAttribute("categories", categories);
+		
+		return "catalogue-product-categories";
+		
+	}
+
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {
 		
 		//display menu

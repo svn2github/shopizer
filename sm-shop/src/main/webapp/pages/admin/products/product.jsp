@@ -381,7 +381,14 @@
                                     <span class="help-inline"><form:errors path="product.productLength" cssClass="error" /></span>
                         </div>
                   </div>          
-                 
+    
+                  <div class="control-group">
+                        <label><s:message code="label.entity.order" text="Sort order"/></label>
+                        <div class="controls">
+                                    <form:input cssClass="" path="product.sortOrder"/>
+                                    <span class="help-inline"><form:errors path="product.sortOrder" cssClass="error" /></span>
+                        </div>
+                  </div>                 
 
 
                   <div class="control-group">

@@ -146,7 +146,7 @@ public class ContentImageController {
 	 * Following steps will be performed in order to add images
 	 * <pre>
 	 * 1. Validate form data
-	 * 2. Get Merchant sore based on merchant Id.
+	 * 2. Get Merchant Store based on merchant Id.
 	 * 3. Call {@link CMSContentImage} to add image(s).
 	 * </pre>
 	 * 

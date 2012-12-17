@@ -45,9 +45,10 @@
 				
 				<br />
 				<!-- Listing grid include -->
-				<c:set value="/admin/product/categories/paging.html" var="pagingUrl" scope="request" />
-				<c:set value="/admin/product/categories/removeCategory.html" var="removeUrl" scope="request" />
-				<c:set value="/admin/product/categories/list.html" var="refreshUrl" scope="request" />
+				<c:set value="/admin/product-categories/paging.html" var="pagingUrl" scope="request" />
+				<c:set value="/admin/product-categories/removeCategory.html" var="removeUrl" scope="request" />
+				<c:set value="/admin/products/addProductToCategories.html" var="refreshUrl" scope="request" />
+				<c:set var="entityId" value="categoryId" scope="request"/>
 				<c:set var="componentTitleKey" value="label.categories.title" scope="request" />
 				<c:set var="canRemoveEntry" value="true" scope="request" />
 				<jsp:include page="/pages/admin/components/list.jsp"></jsp:include>

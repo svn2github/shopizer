@@ -187,7 +187,7 @@ public class UserController {
 //			//get from DB
 //			Category currentCategory = categoryService.getById(category.getId());
 //			
-//			if(currentCategory==null || currentCategory.getMerchantSore().getId()!=store.getId()) {
+//			if(currentCategory==null || currentCategory.getMerchantStore().getId()!=store.getId()) {
 //				return "catalogue-categories";
 //			}
 //
@@ -214,7 +214,7 @@ public class UserController {
 //			}
 //			
 //			//save to DB
-//			category.setMerchantSore(store);
+//			category.setMerchantStore(store);
 //		//}
 //		
 //		if (result.hasErrors()) {
@@ -239,7 +239,7 @@ public class UserController {
 //		
 //			Category parent = new Category();
 //			parent.setId(category.getParent().getId());
-//			parent.setMerchantSore(store);
+//			parent.setMerchantStore(store);
 //			
 //			categoryService.addChild(parent, category);
 //		

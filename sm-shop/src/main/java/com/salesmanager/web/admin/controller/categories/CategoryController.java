@@ -91,7 +91,7 @@ public class CategoryController {
 		
 			
 			
-			if(category==null || category.getMerchantSore().getId().intValue()!=store.getId().intValue()) {
+			if(category==null || category.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 				return "catalogue-categories";
 			}
 		} else {
@@ -154,7 +154,7 @@ public class CategoryController {
 			//get from DB
 			Category currentCategory = categoryService.getById(category.getId());
 			
-			if(currentCategory==null || currentCategory.getMerchantSore().getId()!=store.getId()) {
+			if(currentCategory==null || currentCategory.getMerchantStore().getId()!=store.getId()) {
 				return "catalogue-categories";
 			}
 
@@ -181,7 +181,7 @@ public class CategoryController {
 			}
 			
 			//save to DB
-			category.setMerchantSore(store);
+			category.setMerchantStore(store);
 		//}
 		
 		if (result.hasErrors()) {
@@ -206,7 +206,7 @@ public class CategoryController {
 		
 			Category parent = new Category();
 			parent.setId(category.getParent().getId());
-			parent.setMerchantSore(store);
+			parent.setMerchantStore(store);
 			
 			categoryService.addChild(parent, category);
 		
@@ -334,7 +334,7 @@ public class CategoryController {
 			
 			Category category = categoryService.getById(id);
 			
-			if(category==null || category.getMerchantSore().getId()!=store.getId()) {
+			if(category==null || category.getMerchantStore().getId()!=store.getId()) {
 
 				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
 				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
@@ -384,14 +384,14 @@ public class CategoryController {
 
 			if(parentId!=1) {
 			
-				if(child==null || parent==null || child.getMerchantSore().getId()!=store.getId() || parent.getMerchantSore().getId()!=store.getId()) {
+				if(child==null || parent==null || child.getMerchantStore().getId()!=store.getId() || parent.getMerchantStore().getId()!=store.getId()) {
 					resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
 					
 					resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 					return resp.toJSONString();
 				}
 				
-				if(child.getMerchantSore().getId()!=store.getId() || parent.getMerchantSore().getId()!=store.getId()) {
+				if(child.getMerchantStore().getId()!=store.getId() || parent.getMerchantStore().getId()!=store.getId()) {
 					resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
 					resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 					return resp.toJSONString();
