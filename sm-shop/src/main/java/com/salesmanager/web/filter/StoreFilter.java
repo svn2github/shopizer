@@ -1,5 +1,6 @@
 package com.salesmanager.web.filter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.salesmanager.core.business.content.model.content.Content;
+import com.salesmanager.core.business.content.model.content.ContentDescription;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
@@ -21,6 +24,8 @@ import com.salesmanager.core.business.system.model.SystemConfiguration;
 import com.salesmanager.core.business.system.service.SystemConfigurationService;
 import com.salesmanager.core.constants.SystemConstants;
 import com.salesmanager.core.utils.CoreConfiguration;
+import com.salesmanager.web.admin.entity.merchant.StoreLanding;
+import com.salesmanager.web.admin.entity.merchant.StoreLandingDescription;
 import com.salesmanager.web.admin.security.UserServicesImpl;
 import com.salesmanager.web.constants.ApplicationConstants;
 import com.salesmanager.web.constants.Constants;
@@ -76,9 +81,6 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	            HttpServletRequest request,
 	            HttpServletResponse response,
 	            Object handler) throws Exception {
-		   
-		   
-	
 
 			request.setCharacterEncoding("UTF-8");
 			
@@ -132,6 +134,52 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				}
 				
 				request.setAttribute(Constants.MERCHANT_STORE, store);
+				
+				//get global objects
+				
+				//TODO and by language
+/*				Content content = contentService.getByCode("LANDING_PAGE", store);
+				StoreLanding landing = new StoreLanding();
+				
+				List<StoreLandingDescription> descriptions = new ArrayList<StoreLandingDescription>();
+				
+				
+				for(Language l : store.getLanguages()) {
+					
+					StoreLandingDescription landingDescription = null;
+					if(content!=null) {
+						for(ContentDescription desc : content.getDescriptions()) {
+							if(desc.getLanguage().getCode().equals(l.getCode())) {
+								landingDescription = new StoreLandingDescription();
+								landingDescription.setDescription(desc.getMetatagDescription());
+								landingDescription.setHomePageContent(desc.getDescription());
+								landingDescription.setKeywords(desc.getMetatagKeywords());
+								landingDescription.setTitle(desc.getName());//name is a not empty
+								landingDescription.setLanguage(desc.getLanguage());
+							}
+						}
+					}
+					
+					if(landingDescription==null) {
+						landingDescription = new StoreLandingDescription();
+						landingDescription.setLanguage(l);
+					}
+					
+
+					
+					descriptions.add(landingDescription);
+				}
+				
+				landing.setDescriptions(descriptions);*/
+				
+				
+				
+				
+				//store meta information
+				
+				//store root categories
+				
+				//shopping cart
 			
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

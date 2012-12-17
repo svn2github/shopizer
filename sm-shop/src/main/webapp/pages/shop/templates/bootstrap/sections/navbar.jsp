@@ -21,8 +21,9 @@ response.setDateHeader ("Expires", -1);
 				--><div class="nav-collapse subnav-collapse">
 					<ul class="nav">
 						<li class="active">
-							<a href="#">Home</a>
+							<a href="#"><s:message code="menu.home" text="Home" /></a>
 						</li>
+						<!-- Root categories -->
 						<li>
 							<a href="#">Category 1</a>
 						</li>

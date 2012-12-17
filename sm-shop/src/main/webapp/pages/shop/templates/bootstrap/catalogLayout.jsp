@@ -30,7 +30,7 @@ response.setDateHeader ("Expires", -1);
     			<title>//TODO<s:message code="label.storeadministration" text="Store administration" /></title>
     			<meta name="viewport" content="width=device-width, initial-scale=1.0">
     			<meta name="description" content="">
-    			<meta name="author" content="">
+    			<meta name="author" content="<c:out value="${requestScope.store.name}"/>">
     			<!-- The one provided with the system -->
     			<script src="<c:url value="/resources/js/bootstrap/jquery.js" />"></script>
 
