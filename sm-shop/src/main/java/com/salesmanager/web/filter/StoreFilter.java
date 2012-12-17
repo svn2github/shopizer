@@ -110,7 +110,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			try {
 				
 				
-
+				//TODO global object
 				if (initializationDatabase.isEmpty()) {
 					LOGGER.info(String.format("%s : Shopizer database is empty, populate it....", "sm-shop"));
 			
@@ -124,16 +124,11 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				
 				MerchantStore store = (MerchantStore)request.getSession().getAttribute(Constants.MERCHANT_STORE);
 				if(store==null) {
-					//MerchantStoreService merchantService = (MerchantStoreService) ContextLoader.getCurrentWebApplicationContext().getBean(
-					//		"merchantService");
-					
-					if(merchantService==null) {
-						System.out.println("*** MerchantService is null ***");
-					} else {
+						
+						//TODO get the merchant store code
 						store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
 						request.getSession().setAttribute(Constants.MERCHANT_STORE, store);
-						
-					}
+
 				}
 				
 				request.setAttribute(Constants.MERCHANT_STORE, store);
@@ -149,7 +144,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	   
 		private void loadData() throws ServiceException {
 	
-			List<SystemConfiguration> configurations = systemConfigurationService.list();
+			//List<SystemConfiguration> configurations = systemConfigurationService.list();
 			
 			
 			String loadTestData = appConfiguration.getProperty(ApplicationConstants.POPULATE_TEST_DATA);
