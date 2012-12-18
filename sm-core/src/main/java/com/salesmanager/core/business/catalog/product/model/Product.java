@@ -156,7 +156,7 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 	@Column(name = "QUANTITY_ORDERED")
 	private Integer productOrdered;
 	
-	@Column(name = "ORDER")
+	@Column(name = "SORT_ORDER")
 	private Integer sortOrder = new Integer(0);
 
 	@NotEmpty
