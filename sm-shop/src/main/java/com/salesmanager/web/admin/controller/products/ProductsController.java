@@ -81,7 +81,7 @@ public class ProductsController {
 		String sku = request.getParameter("sku");
 		String available = request.getParameter("available");
 		String searchTerm = request.getParameter("searchTerm");
-		
+		String name = request.getParameter("name");
 		
 		AjaxPageableResponse resp = new AjaxPageableResponse();
 		
@@ -144,6 +144,10 @@ public class ProductsController {
 			
 			if(!StringUtils.isBlank(sku)) {
 				criteria.setCode(sku);
+			}
+			
+			if(!StringUtils.isBlank(name)) {
+				criteria.setProductName(name);
 			}
 			
 			if(!StringUtils.isBlank(available)) {
