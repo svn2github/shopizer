@@ -672,7 +672,7 @@ public class ProductController {
 	
 	@SuppressWarnings("unused")
 	@Secured("PRODUCTS")
-	@RequestMapping(value="/admin/products/addProductToCategories.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/products/addProductToCategories.html", method=RequestMethod.POST)
 	public String addProductToCategory(@RequestParam("productId") long productId, @RequestParam("categoryId") long categoryId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);

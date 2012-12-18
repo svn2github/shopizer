@@ -167,4 +167,10 @@
   		<put-attribute name="body" value="/pages/admin/components/fileBrowser.jsp" /> 
   	</definition>
   	
+  	<definition name="catalogue-product-categories" template="/layout/admin/layout.jsp"> 
+  		<put-attribute name="body" value="/pages/admin/products/productsCategories.jsp" /> 
+  	</definition>
+  	
+  	
+  	
 </tiles-definitions>
