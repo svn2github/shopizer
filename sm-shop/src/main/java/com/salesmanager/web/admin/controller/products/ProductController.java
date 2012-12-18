@@ -34,7 +34,6 @@ import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
@@ -668,6 +667,58 @@ public class ProductController {
 		return returnString;
 
 
+	}
+	
+	
+	@Secured("PRODUCTS")
+	@RequestMapping(value="/admin/product-categories/remove.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String deleteProductFromCategory(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		String sCategoryid = request.getParameter("categoryId");
+		String sProductId = request.getParameter("productId");
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		AjaxResponse resp = new AjaxResponse();
+
+		
+		try {
+			
+			Long categoryId = Long.parseLong(sCategoryid);
+			Long productId = Long.parseLong(sProductId);
+			
+			Category category = categoryService.getById(categoryId);
+			Product product = productService.getById(productId);
+			
+			if(category==null || category.getMerchantStore().getId()!=store.getId()) {
+
+				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
+				return resp.toJSONString();
+			} 
+			
+			if(product==null || product.getMerchantStore().getId()!=store.getId()) {
+
+				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
+				return resp.toJSONString();
+			} 
+			
+			product.getCategories().remove(category);
+			productService.update(product);	
+			
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+
+		
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while deleting category", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
 	}
 	
 	@SuppressWarnings("unused")

@@ -89,6 +89,14 @@
   		<put-attribute name="body" value="/pages/admin/products/productsCategories.jsp" /> 
   	</definition>
   	
+  	<definition name="catalogue-product-categories" template="/layout/admin/layout.jsp"> 
+  		<put-attribute name="body" value="/pages/admin/products/productsCategories.jsp" /> 
+  	</definition>
+  	
+  	<definition name="catalogue-product-reviews" template="/layout/admin/layout.jsp"> 
+  		<put-attribute name="body" value="/pages/admin/products/reviews.jsp" /> 
+  	</definition>
+  	
   	
   	<definition name="admin-shipping-custom" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/shipping/customShipping.jsp" /> 
@@ -167,9 +175,7 @@
   		<put-attribute name="body" value="/pages/admin/components/fileBrowser.jsp" /> 
   	</definition>
   	
-  	<definition name="catalogue-product-categories" template="/layout/admin/layout.jsp"> 
-  		<put-attribute name="body" value="/pages/admin/products/productsCategories.jsp" /> 
-  	</definition>
+
   	
   	
   	
