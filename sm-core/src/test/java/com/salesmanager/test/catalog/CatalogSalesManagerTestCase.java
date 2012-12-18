@@ -19,6 +19,8 @@ import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufac
 import com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDescription;
+import com.salesmanager.core.business.catalog.product.model.review.ProductReview;
+import com.salesmanager.core.business.catalog.product.model.review.ProductReviewDescription;
 import com.salesmanager.core.business.catalog.product.model.type.ProductType;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -238,6 +240,31 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 	    dprice.getDescriptions().add(dpd);
 
 	    productPriceService.create(dprice);
+	    
+	    ProductReview review = new ProductReview();
+	    review.setProduct(product);
+	    review.setReviewRating(4);
+	    
+	    ProductReviewDescription reviewDescription = new ProductReviewDescription();
+	    reviewDescription.setLanguage(en);
+	    reviewDescription.setDescription("This is a product review");
+	    reviewDescription.setProductReview(review);
+	    review.getDescriptions().add(reviewDescription);
+	    
+	    productReviewService.create(review);
+	    
+	    review = new ProductReview();
+	    review.setProduct(product);
+	    review.setReviewRating(5);
+	    
+	    reviewDescription = new ProductReviewDescription();
+	    reviewDescription.setLanguage(en);
+	    reviewDescription.setDescription("This is a second product review");
+	    reviewDescription.setProductReview(review);
+	    review.getDescriptions().add(reviewDescription);
+	    
+	    productReviewService.create(review);
+	    
 
 	    // PRODUCT 2
 

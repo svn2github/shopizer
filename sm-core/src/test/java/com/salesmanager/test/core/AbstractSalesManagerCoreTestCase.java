@@ -18,6 +18,7 @@ import com.salesmanager.core.business.catalog.product.service.availability.Produ
 import com.salesmanager.core.business.catalog.product.service.image.ProductImageService;
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
 import com.salesmanager.core.business.catalog.product.service.price.ProductPriceService;
+import com.salesmanager.core.business.catalog.product.service.review.ProductReviewService;
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -80,6 +81,9 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	
 	@Autowired
 	protected ProductAvailabilityService productAvailabilityService;
+	
+	@Autowired
+	protected ProductReviewService productReviewService;
 	
 	@Autowired
 	protected ProductImageService productImageService;
