@@ -33,8 +33,9 @@
 						<s:message code="menu.catalogue-featured" text="Featured items" />
 				</h3>	
 				<br/>
-				//TODO message to drag from product to related items
-      							
+				<div class="alert alert-info">
+					<s:message code="label.product.featured.meassage" text="Drag and drop product from product list to featured items box"/>
+				</div>			
 		
       			<!-- Listing grid include -->
 				 <c:set value="/admin/products/paging.html" var="pagingUrl" scope="request"/>

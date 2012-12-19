@@ -20,5 +20,9 @@ public interface ControllerConstants
             final String fileBrowser="admin-content-filebrowser";
         }
         
+        interface Product{
+            final String productReviews="catalogue-product-reviews";
+        }
+        
     }
 }

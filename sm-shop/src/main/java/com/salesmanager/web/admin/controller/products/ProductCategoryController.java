@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -18,11 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
-import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
-import com.salesmanager.web.constants.Constants;
 
 @Controller
 public class ProductCategoryController {
@@ -36,10 +32,6 @@ public class ProductCategoryController {
 		
 		setMenu(model,request);
 
-
-		//TODO get the list of categories
-		
-		
 		
 		return "catalogue-products-categories";
 		
@@ -61,25 +53,10 @@ public class ProductCategoryController {
 		
 		try {
 			
-			Language language = (Language)request.getAttribute("LANGUAGE");
-				
-		
-			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-			
+
 			List<Category> categories = null;
 				
-			//TODO search by category name
-			if(!StringUtils.isBlank(categoryName)) {
-				
-				
-				//categories = categoryService.getByName(store, categoryName, language);
-				
-			} else {
-				
-				//categories = categoryService.listByStore(store, language);
-				
-			}
-					
+	
 					
 			
 			for(Category category : categories) {

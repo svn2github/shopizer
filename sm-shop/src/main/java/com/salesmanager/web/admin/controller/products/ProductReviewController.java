@@ -2,6 +2,7 @@ package com.salesmanager.web.admin.controller.products;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.review.ProductReview;
 import com.salesmanager.core.business.catalog.product.model.review.ProductReviewDescription;
@@ -28,7 +30,9 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
+import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
 public class ProductReviewController {
@@ -41,12 +45,15 @@ public class ProductReviewController {
 	@Autowired
 	private ProductReviewService productReviewService;
 	
+	@Autowired
+	LabelUtils messages;
+	
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/reviews.html", method=RequestMethod.GET)
 	public String displayProductReviews(@RequestParam("id") long productId,Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		return "";
+		return ControllerConstants.Tiles.Product.productReviews;
 
 	}
 	
@@ -129,6 +136,51 @@ public class ProductReviewController {
 		return returnString;
 
 
+	}
+	
+	@Secured("PRODUCTS")
+	@RequestMapping(value="/admin/products/reviews/remove.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String deleteProductReview(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		String sReviewid = request.getParameter("reviewId");
+
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		AjaxResponse resp = new AjaxResponse();
+
+		
+		try {
+			
+			Long reviewId = Long.parseLong(sReviewid);
+
+			
+			ProductReview review = productReviewService.getById(reviewId);
+			
+
+			if(review==null || review.getProduct().getMerchantStore().getId().intValue()!=store.getId()) {
+
+				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
+				return resp.toJSONString();
+			} 
+			
+
+			productReviewService.delete(review);
+			
+			
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+
+		
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while deleting category", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
 	}
 	
 	
