@@ -124,7 +124,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 
 		if(!StringUtils.isBlank(criteria.getProductName())) {
 			countBuilderSelect.append(" INNER JOIN p.descriptions pd");
-			countBuilderWhere.append(" and pd.language.id=:lang and pd.name like : nm");
+			countBuilderWhere.append(" and pd.language.id=:lang and pd.name like:nm");
 		}
 		
 		
@@ -165,6 +165,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		
 		if(!StringUtils.isBlank(criteria.getProductName())) {
 			countQ.setParameter("nm", "%" + criteria.getProductName() + "%");
+			countQ.setParameter("lang", language.getId());
 		}
 
 		Number count = (Number) countQ.getSingleResult ();
@@ -244,6 +245,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		
 		if(!StringUtils.isBlank(criteria.getProductName())) {
 			q.setParameter("nm", "%" + criteria.getProductName() + "%");
+			q.setParameter("lang", language.getId());
 		}
     	
     	if(criteria.getMaxCount()>0) {

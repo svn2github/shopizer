@@ -16,8 +16,7 @@ public class ProductReviewServiceImpl extends
 		SalesManagerEntityServiceImpl<Long, ProductReview> implements
 		ProductReviewService {
 
-	
-	@SuppressWarnings("unused")
+
 	private ProductReviewDao productReviewDao;
 	
 	@Autowired
@@ -29,14 +28,12 @@ public class ProductReviewServiceImpl extends
 
 	@Override
 	public List<ProductReview> getByCustomer(Customer customer) {
-		// TODO Auto-generated method stub
-		return null;
+		return productReviewDao.getByCustomer(customer);
 	}
 
 	@Override
 	public List<ProductReview> getByProduct(Product product) {
-		// TODO Auto-generated method stub
-		return null;
+		return productReviewDao.getByProduct(product);
 	}
 
 
