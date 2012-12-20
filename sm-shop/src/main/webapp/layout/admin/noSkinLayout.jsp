@@ -54,10 +54,11 @@ response.setDateHeader ("Expires", -1);
 
 <div class="sm">
 
-	<div class="container"> 
-		<div class="row">
+	<!-- <div class="container">-->
+	<div class="span6">
+		<!--<div class="row">-->
 				<tiles:insertAttribute name="body"/>
-		</div>
+		<!--</div>-->
   
   
 	</div> <!-- /container --> 

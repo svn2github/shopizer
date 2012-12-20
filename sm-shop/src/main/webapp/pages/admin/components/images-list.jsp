@@ -40,6 +40,7 @@
 								    autoFetchData:true,
 								    showAllRecords:true,
 								    animateTileChange:true,
+								    recordClick:"selectImage(record.name)",
 								    fields: [
 								        {name:"picture", type:"image", imageWidth:150, imageURLPrefix:"<c:url value='/static/'/>"},
 								        {name:"name", cellStyle: "name"}

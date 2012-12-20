@@ -31,6 +31,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
+import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
 
@@ -51,7 +52,14 @@ public class ProductReviewController {
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/reviews.html", method=RequestMethod.GET)
-	public String displayProductReviews(@RequestParam("id") long productId,Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String displayProductReviews(@RequestParam("id") long productId,Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+		setMenu(model, request);
+		
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		
+		Product product = productService.getProductForLocale(productId, language, locale);
+		model.addAttribute("product", product);
 		
 		return ControllerConstants.Tiles.Product.productReviews;
 
@@ -181,6 +189,24 @@ public class ProductReviewController {
 		String returnString = resp.toJSONString();
 		
 		return returnString;
+	}
+	
+	
+	private void setMenu(Model model, HttpServletRequest request) throws Exception {
+		
+		//display menu
+		Map<String,String> activeMenus = new HashMap<String,String>();
+		activeMenus.put("catalogue", "catalogue");
+		activeMenus.put("catalogue-products", "catalogue-products");
+		
+		@SuppressWarnings("unchecked")
+		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
+		
+		Menu currentMenu = (Menu)menus.get("catalogue");
+		model.addAttribute("currentMenu",currentMenu);
+		model.addAttribute("activeMenus",activeMenus);
+		//
+		
 	}
 	
 	

@@ -257,8 +257,8 @@
 									['Maximize', 'ShowBlocks'] 
 								],
 								//filebrowserBrowseUrl : '<%=request.getContextPath()%>/merchantstore/displayFileBrowser.action',
-								filebrowserWindowWidth : '400',
-        						filebrowserWindowHeight : '400',
+								filebrowserWindowWidth : '720',
+        						filebrowserWindowHeight : '740',
 								filebrowserImageBrowseUrl :    '<c:url value="/admin/content/fileBrowser.html"/>'
 								//filebrowserFlashBrowseUrl: '<%=request.getContextPath()%>//merchantstore/displayFileBrowser.action?Type=Flash'
 

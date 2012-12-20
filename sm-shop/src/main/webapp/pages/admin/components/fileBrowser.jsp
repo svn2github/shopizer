@@ -3,11 +3,24 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 
-<%@ page session="false" %> 
+<%@ page session="false" %>
+
+
+<script src="<c:url value="/resources/js/ckeditor/ckeditor.js" />"></script>
+
+
+<script language="javascript">
+	function selectImage(img) {//ckeditor function
+		//TODO URL, MERCHANT STORE
+		var image = 'http://localhost:8080<c:url value="/static/DEFAULT/CONTENT/"/>' + img;
+		window.opener.CKEDITOR.tools.callFunction(2, image);
+		window.close();
+	}
+</script>
  
 
 								<div class="sm-ui-component">
-								<h3>//TODO Images<s:message code="label.categories.title" text="Categories" /></h3>	
+								<h3><s:message code="label.content.images" text="Images library" /></h3>	
 								<br/>
 								
 								

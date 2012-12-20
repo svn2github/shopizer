@@ -19,10 +19,18 @@
 								<div class="sm-ui-component">	
 								
 								
+				<c:if test="${product.id!=null && product.id>0}">
+						<c:set value="${product.id}" var="productId" scope="request"/>
+						<jsp:include page="/pages/admin/products/product-menu.jsp" />
+				</c:if>	
+								
+								
 				<h3>
 						<s:message code="label.product.customer.reviews" text="Customer reviews" />
 				</h3>	
 				<br/>
+				<strong><c:out value="${product.sku}"/></strong>
+				<br/><br/>
 
 				 <!-- Listing grid include -->
 				 <c:set value="/admin/products/reviews/paging.html?productId=${product.id}" var="pagingUrl" scope="request"/>
