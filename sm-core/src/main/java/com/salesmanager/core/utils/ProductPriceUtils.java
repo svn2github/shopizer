@@ -315,6 +315,49 @@ public class ProductPriceUtils {
 
 	}
 	
+	/**
+	 * Determines if a ProductPrice has a discount
+	 * @param productPrice
+	 * @return
+	 */
+	public boolean hasDiscount(ProductPrice productPrice) {
+		
+		
+		Date today = new Date();
+
+		//calculate discount price
+		boolean hasDiscount = false;
+		if(productPrice.getProductPriceSpecialStartDate()!=null
+				|| productPrice.getProductPriceSpecialEndDate()!=null) {
+			
+			
+			if(productPrice.getProductPriceSpecialStartDate()!=null) {
+				if(productPrice.getProductPriceSpecialStartDate().before(today)) {
+					if(productPrice.getProductPriceSpecialEndDate()!=null) {
+							if(productPrice.getProductPriceSpecialEndDate().after(today)) {
+								hasDiscount = true;
+							}
+					} else {
+						if(productPrice.getProductPriceSpecialDurationDays()!=null) {
+							Calendar calendar = Calendar.getInstance();
+							calendar.setTime(productPrice.getProductPriceSpecialStartDate());
+							calendar.add(Calendar.DAY_OF_YEAR, productPrice.getProductPriceSpecialDurationDays().intValue());
+							
+							if(calendar.getTime().after(today)) {
+								hasDiscount = true;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return hasDiscount;
+		
+		
+		
+	}
+	
 	private boolean matchPositiveInteger(String amount) {
 
 		Pattern pattern = Pattern.compile("^[+]?\\d*$");

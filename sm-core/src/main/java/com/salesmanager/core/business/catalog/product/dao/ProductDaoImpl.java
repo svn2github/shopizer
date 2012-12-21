@@ -17,6 +17,7 @@ import com.salesmanager.core.business.catalog.product.model.ProductList;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.constants.Constants;
 
 @Repository("productDao")
 public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> implements ProductDao {
@@ -300,7 +301,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		
 
 				List regionList = new ArrayList();
-				regionList.add("*");
+				regionList.add(Constants.ALL_REGIONS);
 				if(locale!=null) {
 					regionList.add(locale.getCountry());
 				}

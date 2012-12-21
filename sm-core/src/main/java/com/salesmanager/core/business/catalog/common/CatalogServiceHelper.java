@@ -1,8 +1,6 @@
 package com.salesmanager.core.business.catalog.common;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -13,6 +11,7 @@ import com.salesmanager.core.business.catalog.product.model.attribute.ProductOpt
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValueDescription;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
+import com.salesmanager.core.constants.Constants;
 
 
 public class CatalogServiceHelper {
@@ -76,7 +75,7 @@ public class CatalogServiceHelper {
 		
 		for(ProductAvailability availability : availabilities) {
 			
-			if(availability.getRegion().equals(ProductAvailability.DEFAULT_AVAILABILITY)) {
+			if(availability.getRegion().equals(Constants.ALL_REGIONS)) {
 				defaultAvailability = availability;
 			} 
 			if(availability.getRegion().equals(locale.getCountry())) {

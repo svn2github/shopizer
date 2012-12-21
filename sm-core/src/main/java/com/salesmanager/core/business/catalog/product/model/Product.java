@@ -75,19 +75,7 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "product")
 	private Set<ProductRelationship> relationships = new HashSet<ProductRelationship>();
 	
-/*	@ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.REFRESH})
-	@JoinTable(name = "MERCHANT_PRODUCT", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
-			@JoinColumn(name = "PRODUCT_ID", nullable = false) }, 
-			inverseJoinColumns = { @JoinColumn(name = "MERCHANT_ID", 
-					nullable = false) })
-	@Cascade({
-		org.hibernate.annotations.CascadeType.DETACH,
-		org.hibernate.annotations.CascadeType.LOCK,
-		org.hibernate.annotations.CascadeType.REFRESH,
-		org.hibernate.annotations.CascadeType.REPLICATE
-		
-	})
-	private Set<MerchantStore> stores = new HashSet<MerchantStore>();*/
+
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
