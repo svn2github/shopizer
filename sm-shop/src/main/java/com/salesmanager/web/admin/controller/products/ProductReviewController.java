@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.review.ProductReview;
 import com.salesmanager.core.business.catalog.product.model.review.ProductReviewDescription;
@@ -59,6 +58,13 @@ public class ProductReviewController {
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		
 		Product product = productService.getProductForLocale(productId, language, locale);
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		if(product==null || product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			return "forward:/admin/products/products.html";
+		}
+		
+		
 		model.addAttribute("product", product);
 		
 		return ControllerConstants.Tiles.Product.productReviews;

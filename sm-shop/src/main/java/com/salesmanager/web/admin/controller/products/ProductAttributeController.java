@@ -25,7 +25,6 @@ import com.salesmanager.core.business.catalog.product.model.attribute.ProductAtt
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValueDescription;
-import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionService;

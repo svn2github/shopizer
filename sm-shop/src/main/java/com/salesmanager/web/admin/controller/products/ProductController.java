@@ -182,7 +182,7 @@ public class ProductController {
 			if(availabilities!=null && availabilities.size()>0) {
 				
 				for(ProductAvailability availability : availabilities) {
-					if(availability.getRegion().equals(ProductAvailability.DEFAULT_AVAILABILITY)) {
+					if(availability.getRegion().equals(com.salesmanager.core.constants.Constants.ALL_REGIONS)) {
 						productAvailability = availability;
 						Set<ProductPrice> prices = availability.getPrices();
 						for(ProductPrice price : prices) {
@@ -374,7 +374,7 @@ public class ProductController {
 			if(avails !=null && avails.size()>0) {
 				
 				for(ProductAvailability availability : avails) {
-					if(availability.getRegion().equals(ProductAvailability.DEFAULT_AVAILABILITY)) {
+					if(availability.getRegion().equals(com.salesmanager.core.constants.Constants.ALL_REGIONS)) {
 						
 						newProductAvailability = availability;
 						Set<ProductPrice> productPrices = availability.getPrices();
