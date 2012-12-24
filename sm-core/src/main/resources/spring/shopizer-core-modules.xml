@@ -59,7 +59,7 @@
 	
 	<!-- Database -->
 	<bean id="imageCacheManager"
-				class="com.salesmanager.core.modules.cms.impl.ImageCacheManagerImpl" factory-method="getInstance" >
+				class="com.salesmanager.core.modules.cms.impl.ImagesCacheManagerImpl" factory-method="getInstance" >
 	</bean>
 	
 	<!-- Disk -->
