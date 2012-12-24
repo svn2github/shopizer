@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
@@ -26,7 +25,8 @@ import com.salesmanager.core.modules.cms.common.CacheAttribute;
 import com.salesmanager.core.modules.cms.content.ContentImageGet;
 import com.salesmanager.core.modules.cms.content.ContentImageRemove;
 import com.salesmanager.core.modules.cms.content.ImagePut;
-import com.salesmanager.core.modules.cms.impl.CacheManagerImpl;
+import com.salesmanager.core.modules.cms.impl.CacheManager;
+import com.salesmanager.core.modules.cms.impl.ImageCacheManagerImpl;
 
 public class CmsContentFileManagerInfinispanImpl
     implements ImagePut, ContentImageGet, ContentImageRemove
@@ -36,11 +36,8 @@ public class CmsContentFileManagerInfinispanImpl
 
     private static CmsContentFileManagerInfinispanImpl fileManager = null;
 
-    private final static String IMAGE_CONTENT = "IMAGE_CONTENT";
 
-    private final static String CONTENT_FILES = "contentFiles";
-    
-    private CacheManagerImpl cacheManager;
+    private CacheManager cacheManager;
 
     /**
      * Requires to stop the engine when image servlet un-deploys
@@ -465,11 +462,11 @@ public class CmsContentFileManagerInfinispanImpl
 
     }
 
-	public CacheManagerImpl getCacheManager() {
+	public CacheManager getCacheManager() {
 		return cacheManager;
 	}
 
-	public void setCacheManager(CacheManagerImpl cacheManager) {
+	public void setCacheManager(CacheManager cacheManager) {
 		this.cacheManager = cacheManager;
 	}
 

@@ -24,7 +24,7 @@ import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.modules.cms.common.CacheAttribute;
-import com.salesmanager.core.modules.cms.impl.CacheManagerImpl;
+import com.salesmanager.core.modules.cms.impl.CacheManager;
 import com.salesmanager.core.utils.CoreConfiguration;
 
 /**
@@ -41,9 +41,7 @@ public class CmsImageFileManagerInfinispanImpl
 
     private static CmsImageFileManagerInfinispanImpl fileManager = null;
 
-    private final static String PRODUCT_FILES = "productFiles";
-    
-    private CacheManagerImpl cacheManager;
+    private CacheManager cacheManager;
 
     /**
      * Requires to stop the engine when image servlet un-deploys
@@ -83,7 +81,6 @@ public class CmsImageFileManagerInfinispanImpl
      * root -productFiles -merchant-id PRODUCT-ID(key) -> CacheAttribute(value) - image 1 - image 2 - image 3
      */
 
-    @SuppressWarnings( "unchecked" )
     @Override
     public void uploadProductImage( CoreConfiguration configuration, ProductImage productImage,
                                     InputContentImage contentImage )
@@ -148,7 +145,6 @@ public class CmsImageFileManagerInfinispanImpl
 
     }
 
-    @SuppressWarnings( "unchecked" )
     @Override
     public List<OutputContentImage> getImages( Product product )
         throws ServiceException
@@ -216,7 +212,9 @@ public class CmsImageFileManagerInfinispanImpl
         return images;
     }
 
-    @Override
+
+
+	@Override
     public void removeImages( final String merchantStoreCode )
         throws ServiceException
     {
@@ -247,7 +245,7 @@ public class CmsImageFileManagerInfinispanImpl
 
     }
 
-    @SuppressWarnings( "unchecked" )
+
     @Override
     public void removeProductImage( ProductImage productImage )
         throws ServiceException
@@ -334,7 +332,6 @@ public class CmsImageFileManagerInfinispanImpl
     @Override
 	public List<OutputContentImage> getImages(final String merchantStoreCode,
 			ImageContentType imageContentType) throws ServiceException {
-		// TODO Need to see since this should be part of product image interface
         if ( cacheManager.getTreeCache() == null )
         {
             throw new ServiceException( "CmsImageFileManagerInfinispan has a null cacheManager.getTreeCache()" );
@@ -401,7 +398,6 @@ public class CmsImageFileManagerInfinispanImpl
 	@Override
 	public OutputContentImage getProductImage(String merchantStoreCode,
 			Long productId, String imageName) throws ServiceException {
-		// TODO Auto-generated method stub
         if ( cacheManager.getTreeCache() == null )
         {
             throw new ServiceException( "CmsImageFileManagerInfinispan has a null cacheManager.getTreeCache()" );
@@ -467,14 +463,15 @@ public class CmsImageFileManagerInfinispanImpl
 	}
 	
 	
-    private Node<String, Object> getMerchantNode( final String storeCode )
+	private Node<String, Object> getMerchantNode( final String storeCode )
     {
         LOGGER.debug( "Fetching merchant node for store {} from Infinispan", storeCode );
         final StringBuilder merchantPath = new StringBuilder();
         merchantPath.append( "product-merchant-" ).append(storeCode );
 
         Fqn contentFilesFqn = Fqn.fromString(merchantPath.toString()); 
-        Node<String,Object> merchant = cacheManager.getTreeCache().getRoot().getChild(contentFilesFqn); 
+
+		Node<String,Object> merchant = cacheManager.getTreeCache().getRoot().getChild(contentFilesFqn); 
         
         if(merchant==null) {
 
@@ -487,11 +484,11 @@ public class CmsImageFileManagerInfinispanImpl
 
     }
 
-	public CacheManagerImpl getCacheManager() {
+	public CacheManager getCacheManager() {
 		return cacheManager;
 	}
 
-	public void setCacheManager(CacheManagerImpl cacheManager) {
+	public void setCacheManager(CacheManager cacheManager) {
 		this.cacheManager = cacheManager;
 	}
 
