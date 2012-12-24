@@ -74,17 +74,33 @@
 
 		</loaders>
 
-
-
-
-
 		<transaction
 
 			transactionManagerLookupClass="org.infinispan.transaction.lookup.DummyTransactionManagerLookup"
-
 			transactionMode="TRANSACTIONAL" lockingMode="OPTIMISTIC" />
 
 	</namedCache>
+	
+	
+	<namedCache name="FilesRepository">
+		 <invocationBatching enabled="true"/>
+	     <loaders passivation="false" shared="false" preload="false">
+	          <loader class="org.infinispan.loaders.file.FileCacheStore" fetchPersistentState="false"
+	               ignoreModifications="false" purgeOnStartup="false">
+	            <properties>
+	                 <property name="location" value="C:/infinispan/store"/>
+	               </properties>
+	          </loader>
+	     </loaders>
+	     
+	     <transaction
+
+			transactionManagerLookupClass="org.infinispan.transaction.lookup.DummyTransactionManagerLookup"
+			transactionMode="TRANSACTIONAL" lockingMode="OPTIMISTIC" />
+	     
+	</namedCache>
+	
+	
 
 </infinispan>
 
