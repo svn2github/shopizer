@@ -13,6 +13,7 @@
 	
 	
 	<!-- CMS -->
+	<!-- Product images manager-->
 	<bean id="productFileManager"
 		class="com.salesmanager.core.modules.cms.product.ProductFileManagerImpl">
 		<property name="uploadImage">
@@ -24,17 +25,17 @@
 		<property name="removeImage">
 				<ref bean="cmsProductImage" />
 		</property>
-
-		
 	</bean>
 	
+	<!-- CMS implementation for product images-->
 	<bean id="cmsProductImage"
 				class="com.salesmanager.core.modules.cms.product.CmsImageFileManagerInfinispanImpl" factory-method="getInstance" >
 				<property name="cacheManager">
-						<ref bean="cacheManager" />
+						<ref bean="imageCacheManager" />
 				</property>
 	</bean>
 	
+	<!-- Content images manager-->
 	<bean id="contentFileManager"
 		class="com.salesmanager.core.modules.cms.content.ContentFileManagerImpl">
 		<property name="uploadImage">
@@ -46,19 +47,24 @@
 		<property name="removeImage">
 				<ref bean="cmsContentImage" />
 		</property>
-
-		
 	</bean>
 	
+	<!-- CMS implementation for content images -->
 	<bean id="cmsContentImage"
 				class="com.salesmanager.core.modules.cms.product.CmsContentFileManagerInfinispanImpl" factory-method="getInstance" >
 				<property name="cacheManager">
-						<ref bean="cacheManager" />
+						<ref bean="imageCacheManager" />
 				</property>
 	</bean>
 	
-	<bean id="cacheManager"
-				class="com.salesmanager.core.modules.cms.impl.CacheManagerImpl" factory-method="getInstance" >
+	<!-- Database -->
+	<bean id="imageCacheManager"
+				class="com.salesmanager.core.modules.cms.impl.ImageCacheManagerImpl" factory-method="getInstance" >
+	</bean>
+	
+	<!-- Disk -->
+	<bean id="filesCacheManager"
+				class="com.salesmanager.core.modules.cms.impl.FilesCacheManagerImpl" factory-method="getInstance" >
 	</bean>
 	
 	
