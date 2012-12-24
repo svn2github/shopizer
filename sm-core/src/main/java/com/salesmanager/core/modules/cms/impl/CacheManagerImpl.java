@@ -8,29 +8,24 @@ import org.infinispan.tree.TreeCacheFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//@Component
-public class CacheManagerImpl {
+public abstract class CacheManagerImpl implements CacheManager {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CacheManagerImpl.class);
-	private static  CacheManagerImpl cacheManager = null;
-	
-	
 	private String repositoryFileName = "cms/infinispan_configuration.xml";
 	
 	private EmbeddedCacheManager manager = null;
 	@SuppressWarnings("rawtypes")
 	private TreeCache treeCache = null;
-	
 
-	
 	@SuppressWarnings("unchecked")
-	private CacheManagerImpl() {
+	protected void init(String namedCache) {
+		
 		
 		try {
 			
 			 manager = new DefaultCacheManager(repositoryFileName);
 			 @SuppressWarnings("rawtypes")
-			 Cache defaultCache = manager.getCache("DataRepository");
+			 Cache defaultCache = manager.getCache(namedCache);
 			 defaultCache.getCacheConfiguration().invocationBatching().enabled();
 	    
 			 TreeCacheFactory f = new TreeCacheFactory();
@@ -42,26 +37,18 @@ public class CacheManagerImpl {
 	         LOGGER.debug("CMS started");
 
 
-       } catch (Exception e) {
-       	LOGGER.error("Error while instantiating CmsImageFileManager",e);
-       } finally {
-           
-       }
+      } catch (Exception e) {
+      	LOGGER.error("Error while instantiating CmsImageFileManager",e);
+      } finally {
+          
+      }
+		
+		
+		
+		
 		
 	}
 	
-	public static CacheManagerImpl getInstance() {
-		
-		if(cacheManager==null) {
-			cacheManager = new CacheManagerImpl();
-
-		}
-		
-		return cacheManager;
-		
-		
-	}
-
 	public EmbeddedCacheManager getManager() {
 		return manager;
 	}
@@ -70,5 +57,7 @@ public class CacheManagerImpl {
 	public TreeCache getTreeCache() {
 		return treeCache;
 	}
+	
+	
 
 }
