@@ -4,6 +4,7 @@
 package com.salesmanager.core.modules.cms.common;
 
 import java.io.InputStream;
+import java.io.Serializable;
 
 /**
  * ContentImage class responsible for carrying information about image being added to CMS for given store. It will
@@ -19,8 +20,11 @@ import java.io.InputStream;
  * @since 07-11-2012
  * @version 1.2
  */
-public class CMSContentImage
+public class CMSContentImage implements Serializable
 {
+
+   
+    private static final long serialVersionUID = 1L;
 
     private String imageName;
 
