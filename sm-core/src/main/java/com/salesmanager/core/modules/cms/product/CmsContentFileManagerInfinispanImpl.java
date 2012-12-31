@@ -26,7 +26,7 @@ import com.salesmanager.core.modules.cms.content.ContentImageGet;
 import com.salesmanager.core.modules.cms.content.ContentImageRemove;
 import com.salesmanager.core.modules.cms.content.ImagePut;
 import com.salesmanager.core.modules.cms.impl.CacheManager;
-import com.salesmanager.core.modules.cms.impl.ImageCacheManagerImpl;
+
 
 public class CmsContentFileManagerInfinispanImpl
     implements ImagePut, ContentImageGet, ContentImageRemove
