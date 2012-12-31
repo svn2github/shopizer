@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.shipping.service.ShippingService;
+import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
 import com.salesmanager.web.admin.entity.web.Menu;
@@ -56,11 +57,13 @@ public class ShippingMethodsController {
 		//get shipping methods
 		List<IntegrationModule> modules = shippingService.getShippingMethods(store);
 
-		//get configured shipping methods
-		//merchantConfigurationService.
+		//get configured shipping modules
+		Map<String,IntegrationConfiguration> configuredModules = shippingService.getShippingModulesConfigured(store);
+		
 
 
 		model.addAttribute("modules", modules);
+		model.addAttribute("configuredModules", configuredModules);
 	
 		
 		return "shipping-methods";

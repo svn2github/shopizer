@@ -42,9 +42,10 @@
 
 									  <c:forEach items="${modules}" var="module">
       			  
-					      			  <div class="control-group">
-					                        <c:choose><c:when></c:when><c:otherwise></c:otherwise></c:choose><label><s:message code="label.shipping.module.${module.code}" text="Shipping method"/></label>
-					                  </div>
+						      			  <div class="control-group">
+
+						                        <c:out value="${module.code}"/> - <label><s:message code="label.shipping.module.${module.code}" text="Shipping method"/></label>
+						                  </div>
 					                  
 					                  </c:forEach>
 					                  

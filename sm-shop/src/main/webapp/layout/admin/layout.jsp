@@ -237,6 +237,14 @@ response.setDateHeader ("Expires", -1);
   				window.location='<c:url value="/admin/content/contentImages.html" />';
 			});
 			
+			
+			$("#shipping-configs-link").click(function() {
+  				window.location='<c:url value="/admin/shipping/shippingConfigs.html" />';
+			});
+			$("#shipping-methods-link").click(function() {
+  				window.location='<c:url value="/admin/shipping/shippingMethods.html" />';
+			});
+			
 
 		}); 
 		
