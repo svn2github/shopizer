@@ -32,27 +32,15 @@
 
 
 							
-							<c:url var="saveShippingMethods" value="/admin/shipping/saveShippingMethods.html"/>
-							<form:form method="POST" commandName="configuration" action="${saveShippingMethods}">
+							<c:url var="saveShippingMethod" value="/admin/shipping/saveShippingMethod.html"/>
+							<form:form method="POST" commandName="configuration" action="${saveShippingMethod}">
 
       							
       								<form:errors path="*" cssClass="alert alert-error" element="div" />
 									<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
 								
 
-									  <c:forEach items="${modules}" var="module">
-      			  
-						      			  <div class="control-group">
-						      			  		<table>
-						      			  			<tr>
-						      			  				<td><label><s:message code="module.shipping.${module.code}" text="No label found - ${module.code}"/></label></td>
-						      			  				<td><img src="<c:url value="/resources/img/shipping/${module.image}"/>"></td>
-						      			  			</tr>
-						      			  		</table>
-						                        
-						                  </div>
-					                  
-					                  </c:forEach>
+									Shipping method
 					                  
 
             	 			</form:form>

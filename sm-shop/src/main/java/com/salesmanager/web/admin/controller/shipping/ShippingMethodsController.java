@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.service.CountryService;
@@ -67,6 +68,33 @@ public class ShippingMethodsController {
 	
 		
 		return "shipping-methods";
+		
+		
+	}
+	
+	@RequestMapping(value="/admin/shipping/shippingMethod.html", method=RequestMethod.GET)
+	public String getShippingMethod(@RequestParam("code") String code, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+
+		this.setMenu(model, request);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+
+		//get configured shipping modules
+		Map<String,IntegrationConfiguration> configuredModules = shippingService.getShippingModulesConfigured(store);
+		
+		if(configuredModules!=null) {
+			for(String key : configuredModules.keySet()) {
+				if(key.equals(code)) {
+					
+					IntegrationConfiguration configuration = configuredModules.get(key);
+					
+					model.addAttribute("configuration", configuration);
+				}
+			}
+		}
+
+		return "shipping-method";
 		
 		
 	}
