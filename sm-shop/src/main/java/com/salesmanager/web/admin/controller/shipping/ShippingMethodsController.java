@@ -1,5 +1,6 @@
 package com.salesmanager.web.admin.controller.shipping;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,18 +83,24 @@ public class ShippingMethodsController {
 
 		//get configured shipping modules
 		Map<String,IntegrationConfiguration> configuredModules = shippingService.getShippingModulesConfigured(store);
-		
+		IntegrationConfiguration configuration = new IntegrationConfiguration();
 		if(configuredModules!=null) {
 			for(String key : configuredModules.keySet()) {
 				if(key.equals(code)) {
 					
-					IntegrationConfiguration configuration = configuredModules.get(key);
+					configuration = configuredModules.get(key);
 					
-					model.addAttribute("configuration", configuration);
+					
 				}
 			}
 		}
-
+		
+		List<String> environments = new ArrayList<String>();
+		environments.add(Constants.TEST_ENVIRONMENT);
+		environments.add(Constants.PRODUCTION_ENVIRONMENT);
+		
+		model.addAttribute("configuration", configuration);
+		model.addAttribute("environments", environments);
 		return "shipping-method";
 		
 		

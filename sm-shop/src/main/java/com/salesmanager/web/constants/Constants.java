@@ -10,4 +10,8 @@ public class Constants {
 	public final static String CONTENT_IMAGE = "CONTENT";
 	
 	public final static String STATIC_URI = "/static";
+	
+	
+	public final static String TEST_ENVIRONMENT= "TEST";
+	public final static String PRODUCTION_ENVIRONMENT= "PRODUCTION";
 }
