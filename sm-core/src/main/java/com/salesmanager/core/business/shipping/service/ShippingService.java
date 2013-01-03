@@ -41,4 +41,13 @@ public interface ShippingService {
 	Map<String, IntegrationConfiguration> getShippingModulesConfigured(
 			MerchantStore store) throws ServiceException;
 
+	/**
+	 * Adds a Shipping configuration
+	 * @param configuration
+	 * @param store
+	 * @throws ServiceException
+	 */
+	void addShippingModuleConfiguration(IntegrationConfiguration configuration,
+			MerchantStore store) throws ServiceException;
+
 }

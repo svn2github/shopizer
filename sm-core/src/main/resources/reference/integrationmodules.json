@@ -4,7 +4,7 @@
 		"code": "canadapost",
 		"version":"",
 		"regions": ["CA"],
-		"moduleImage":"/resources/img/shipping/canadapost.jpg",
+		"moduleImage":"canadapost.jpg",
 		"configuration":[{"env":"DEV","scheme":"http","host":"sellonline.canadapost.ca","port":"30000","uri":""},{"env":"PROD","scheme":"http","host":"sellonline.canadapost.ca","port":"30000","uri":""}]
 	},
 	{
@@ -12,7 +12,7 @@
 		"code": "usps",
 		"version":"",
 		"regions": ["US"],
-		"moduleImage":"/resources/img/shipping/usps.jpg",
+		"moduleImage":"usps.jpg",
 		"configuration":[{"env":"DEV","scheme":"http","host":"testing.shippingapis.com","port":"80","uri":"/ShippingAPI.dll"},{"env":"PROD","scheme":"http","host":"production.shippingapis.com","port":"80","uri":"/ShippingAPI.dll"}]
 
 	},
@@ -21,7 +21,7 @@
 		"code": "ups",
 		"version":"",
 		"regions": ["US","CA","FR","GB"],
-		"moduleImage":"/resources/img/shipping/ups.jpg",
+		"moduleImage":"ups.jpg",
 		"configuration":[{"env":"DEV","scheme":"https","host":"wwwcie.ups.com","port":"443","uri":"/ups.app/xml/Rate"},{"env":"PROD","scheme":"https","host":"onlinetools.ups.com","port":"443","uri":"/xml/Rate"}]
 
 	},
@@ -30,7 +30,7 @@
 		"code": "fedex",
 		"version":"",
 		"regions": ["US","CA","AT","BE","BI","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","MQ","MT","NL","PL","PT","RO","SK","SI","ES","SE","UY"],
-		"moduleImage":"/resources/img/shipping/fedEx.gif",
+		"moduleImage":"fedEx.gif",
 		"configuration":[{"env":"DEV","scheme":"https","host":"gatewaybeta.fedex.com","port":"443","uri":"/web-services"},{"env":"PROD","scheme":"https","host":"gatewaybeta.fedex.com","port":"443","uri":"/web-services"}]
 
 	}
@@ -40,7 +40,7 @@
 		"code": "moneyorder",
 		"version":"",
 		"regions": ["XX"],
-		"moduleImage":"/resources/img/payment/moneyorder.png"
+		"moduleImage":"moneyorder.png"
 	}
 
 ] 

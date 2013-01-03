@@ -21,6 +21,9 @@ public class IntegrationConfiguration implements JSONAware {
 	private boolean active;
 	private Map<String,String> integrationKeys= new HashMap<String,String>();
 	private Map<String,String[]> integrationOptions= new HashMap<String,String[]>();
+	private String environment;
+	
+	
 	public String getModuleCode() {
 		return moduleCode;
 	}
@@ -57,6 +60,8 @@ public class IntegrationConfiguration implements JSONAware {
 		returnString.append("\"moduleCode\"").append(":\"").append(this.getModuleCode()).append("\"");
 		returnString.append(",");
 		returnString.append("\"active\"").append(":").append(this.isActive());
+		returnString.append(",");
+		returnString.append("\"environment\"").append(":").append(this.getEnvironment());
 
 		return returnString.toString();
 		
@@ -133,6 +138,12 @@ public class IntegrationConfiguration implements JSONAware {
 		
 		return returnString.toString();
 
+	}
+	public void setEnvironment(String environment) {
+		this.environment = environment;
+	}
+	public String getEnvironment() {
+		return environment;
 	}
 
 }
