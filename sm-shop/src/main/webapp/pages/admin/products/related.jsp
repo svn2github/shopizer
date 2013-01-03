@@ -15,28 +15,8 @@
 <div class="tabbable">
 
   					
-  					<c:if test="${fn:length(currentMenu.menus)>0}">
-						
-  						<ul class="nav nav-tabs">
-  						<c:forEach items="${currentMenu.menus}" var="menu">
-  							<c:choose>
-  							    <c:when test="${fn:length(menu.menus)==0}">
-  									<li id="${menu.code}-tab" <c:if test="${activeMenus[menu.code]!=null}"> class="active"</c:if>><a href="#" id="${menu.code}-link" data-toggle="tab"><s:message code="menu.${menu.code}" text="${menu.code}"/></a></li>
-  							    </c:when>
-  							    <c:otherwise>
-  									<li class="dropdown <c:if test="${activeMenus[menu.code]!=null}"> active</c:if>" style="z-index:500000;position:relative"> 
-  										<a href="#" class="dropdown-toggle" data-toggle="dropdown"><s:message code="menu.${menu.code}" text="${menu.code}"/><b class="caret"></b></a>
-  										<ul class="dropdown-menu"> 
-  											<c:forEach items="${menu.menus}" var="submenu">
-  												<li><a href="#" id="${submenu.code}-link" data-toggle="tab"><s:message code="menu.${submenu.code}" text="${submenu.code}"/></a></li>
-  											</c:forEach>
-  										</ul> 
-  									</li>
-  							    </c:otherwise>
-  							</c:choose>
-  						</c:forEach>
-  						</ul>
-  					</c:if>
+					<jsp:include page="/common/adminTabs.jsp" />
+
 
 
   					<div class="tab-content">
@@ -48,305 +28,32 @@
 
 
 								<div class="sm-ui-component">
-
-      							
-			      			     <script>
-
-///isc.showConsole();
-      			     
-      			     
-// User Interface
-// ---------------------------------------------------------------------
-
 								
+				<h3>
+						<s:message code="label.product.related.title" text="Related items" />
+				</h3>	
+				<br/>
+				<div class="alert alert-info">
+					<s:message code="label.product.featured.meassage" text="Drag and drop product from product list to related items box"/>
+				</div>			
+		
+      			<!-- Listing grid include -->
+				 <c:set value="/admin/products/paging.html?productId=${productId}" var="pagingUrl" scope="request"/>
+				 <c:set value="/admin/catalogue/related/paging.html" var="containerFetchUrl" scope="request"/>
+				 <c:set value="/admin/catalogue/related/removeItem.html" var="containerRemoveUrl" scope="request"/>
+				 <c:set value="RELATED" var="removeEntity" scope="request"/>
+				 <c:set value="/admin/catalogue/related/addItem.html" var="containerAddUrl" scope="request"/>
+				 <c:set value="/admin/catalogue/related/update.html" var="containerUpdateUrl" scope="request"/>
+				 <c:set value="/admin/products/editProduct.html" var="editUrl" scope="request"/>
+				 <c:set value="/admin/catalogue/related/list.html" var="reloadUrl" scope="request"/>
+				 <c:set var="componentTitleKey" value="label.product.related.title" scope="request"/>
+				 <!-- same headers than featured -->
+				 <c:set var="gridHeader" value="/pages/admin/products/featured-gridHeader.jsp" scope="request"/>
+				 <c:set var="gridHeaderContainer" value="/pages/admin/products/featured-gridHeader-items.jsp" scope="request"/>
+				 <c:set var="canRemoveEntry" value="true" scope="request"/>
 
-
-								
-								isc.RestDataSource.create({ 
-									ID:"products", 
-									dataFormat:"json", 
-									dataURL: "<c:url value="/admin/products/paging.html" />",
-									data : {
-										criteria: [
-											{fieldName: "categoryId", operator: "equals", value: "12345"}
-										]
-									}, 
-									operationBindings:[ 
-										{operationType:"fetch", dataProtocol:"postParams"} 
-									]
-								}); 
-								
-
-								
-
-
-								
-								
-								//iterate from category objects to display data
-      							isc.TreeGrid.create({
-    								ID:"categoryTree",
-    								//border:1,
-    								showResizeBar: false,
-    								data: isc.Tree.create({
-        								modelType: "parent",
-        								nameProperty: "Name",
-        								idField: "categoryId",
-        								parentIdField: "parentId",
-        								data: [
-            							{categoryId:"4", parentId:"1", Name:"Books"},
-            							{categoryId:"188", parentId:"4", Name:"Novell"},
-            							{categoryId:"189", parentId:"4", Name:"Technology"},
-            							{categoryId:"265", parentId:"188", Name:"Romance"},
-            							{categoryId:"267", parentId:"188", Name:"Test1"},
-            							{categoryId:"264", parentId:"188", Name:"Fiction"}
-        								]
-    								}),
-
-
-    								nodeClick:"itemList.fetchData({categoryId:node.categoryId})",
-    								showHeader:false,
-    								leaveScrollbarGap:false,
-    								animateFolders:true,
-    								canAcceptDroppedRecords:true,
-    								canReparentNodes:false,
-    								selectionType:"single",
-    								animateRowsMaxTime:750
-							  });
-							  
-							  
-							  isc.ListGrid.create({
-    								ID: "itemList",
-    								//border:1,
-    								dataSource: "products",
-    								showRecordComponents: true,    
-    								showRecordComponentsByCell: true,
-    								
-    								autoFetchData: false,
-    								showFilterEditor: true,
-    								filterOnKeypress: true,
-									dataFetchMode:"paged",
-									canDragRecordsOut: true,
-    								dragDataAction: "copy",
-    								alternateRecordStyles: true,
-									
-
-
-    						      fields:[
-        								{title:"Name", name:"name"},
-        								{title:"SKU", name:"sku"},
-        								{title:"Info", name: "buttonField", align: "center",canFilter:false}
-    							],
-    							selectionType: "single",
-    							createRecordComponent : function (record, colNum) {  
-        
-        							var fieldName = this.getFieldName(colNum);
-        							if (fieldName == "buttonField") {  
-
-	        						
-	           						var button = isc.IButton.create({
-	                						height: 18,
-	                						width: 65,
-	               					 		title: "Info",
-	                						click : function () {
-	                    					isc.say(record["name"] + " info button clicked.");
-	                						}
-	            					});
-	            					return button;  
-            				
-            					}
- 
-    						  }
-
-
-								});
-								
-								
-								isc.SearchForm.create({
-    								ID:"findForm",
-    								/**dataSource:"supplyItem",**/
-    								left:5,
-    								top:10,
-    								cellPadding:2,
-    								numCols:4,
-    								fields:[
-        								{name:"Product"}
-        								//{name:"itemName", editorType:"comboBox", optionDataSource:"supplyItem", 
-        								//		pickListWidth:250},
-        								//{name:"findInCategory", editorType:"checkbox", 
-            						//		title:"Use category", defaultValue:true, shouldSaveValue:false}
-    								],
-    
-    								// Function to actually find items
-    								findItems : function () {
-
-    								
-    									itemList.fetchData({searchTerm:this.getValues()})
-    								
-        								/**
-        								var findValues;
-								        if (this.getValue('findInCategory') && categoryTree.selection.anySelected()) {
-								            // use tree category and form values
-								            if (categoryName == null) categoryName = categoryTree.getSelectedRecord().categoryName;
-								            findValues = {category:categoryName};
-								            isc.addProperties(findValues, this.getValues());
-								            
-								        } else if (categoryName == null) {
-								            // use form values only
-								            findValues = this.getValues();
-								            
-								        } else {
-								            // use tree category only
-								            findValues = {category:categoryName};
-								        }
-								        
-								        itemList.filterData(findValues);
-								        
-								        itemDetailTabs.clearDetails();
-								        **/
-								    }
-									});
-									
-									
-									isc.IButton.create({
-    									ID:"findButton",
-    									title:"Find",
-    									left:225,
-    									top:14,
-    									width:48,
-    									click:"findForm.findItems()",
-    									/**icon:"demoApp/icon_find.png",**/
-    									iconWidth:24
-									});
-
-
-									isc.ListGrid.create({
-    									ID: "relatedList",
-    									//width: 340, height: 264,
-    									//dataSource: teamMembers,
-    									canAcceptDroppedRecords: true,
-    									canRemoveRecords: true,
-    									alternateRecordStyles: true,    
-    									autoFetchData: false,
-    									preventDuplicates: true,
-    									leaveScrollbarGap: false,
-    									fields: [
-        									{title:"Name", name: "name", width: "70%"},
-        									{title:"SKU", name: "sku", width: "30%"},
-    									]
-									});
-
-
-// Define application layout
-// ---------------------------------------------------------------------
-
-isc.HLayout.create({
-    ID:"pageLayout",
-    width: "700",
-    height: "600",
-    position:"relative",
-    members:[
-        isc.SectionStack.create({
-            ID:"leftSideLayout",
-            width:200,
-            showResizeBar:true,
-            visibilityMode:"multiple",
-            animateSections:true,
-            sections:[
-                {title:"Categories", autoShow:true, items:[categoryTree]}
-                /**{title:"Instructions", autoShow:true, items:[helpCanvas]}**/
-            ]
-        }),
-        isc.SectionStack.create({
-            ID:"middleSideLayout",
-            width:280,
-            visibilityMode:"multiple",
-            animateSections:true,
-            sections:[
-                {title:"Find Items", autoShow:true, items:[
-                    isc.Canvas.create({
-                        ID:"findPane",
-                        height:60,
-                        overflow:"auto",
-                        styleName:"defaultBorder",
-                        children:[findForm,findButton]
-                    })                
-                ]},
-                {title:"Items", autoShow:true, items:[itemList]}
-                /**{title:"Item Details", autoShow:true, items:[itemDetailTabs]}**/
-            ]
-        }),
-        isc.Img.create({src:"icons/32/arrow_right.png", width:32, height:32, layoutAlign:"center",
-        	click:"Items.transferSelectedData(relatedList)"
-    	}),
-    	isc.SectionStack.create({
-            ID:"rightSideLayout",
-            width:180,
-            showResizeBar:false,
-            visibilityMode:"multiple",
-            animateSections:true,
-            sections:[
-                {title:"Related Items", autoShow:true, items:[relatedList]}
-            ]
-        }),
-    ]
-});
-
-
-
-/*isc.HStack.create({
-	membersMargin:10, 
-	height:300,
-	position:"relative", 
-	members:[
-    isc.VStack.create({
-        members: [
-            categoryTree
-        ]
-    }),
-    isc.VStack.create({
-        members: [
-            categoryTree
-        ]
-    }),
-    isc.Img.create({src:"icons/32/arrow_right.png", width:32, height:32, layoutAlign:"center",
-        click:"projectList.transferSelectedData(employeesList)"
-    }),
-    isc.VStack.create({
-        members: [
-            isc.DynamicForm.create({
-                width: 300, height: 30,
-                fields: [
-                    {
-                        ID: "projectSelector",
-                        name: "projectCode",
-                        type: "select",
-                        title: "Team for Project",
-                        defaultValue: projects[0],
-                        valueMap: projects,
-                        changed: function(){
-                            var crit = this.form.getValuesAsCriteria();
-                            projectList.fetchData(crit);
-                        }
-                    }
-                ]
-            }),
-            projectList
-        ]
-    })
-]});*/
-
-
-
-
-
-isc.Page.setEvent("load", "pageLayout.draw()");
-
-      			     
-
-								
-								
-												</script>		
-      							
+            	 <jsp:include page="/pages/admin/components/product-container.jsp"></jsp:include> 
+				 <!-- End listing grid include -->
 
 
       					</div>
