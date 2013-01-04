@@ -152,7 +152,7 @@ public class ShippingConfigsController {
 		return returnString;
 	}
 	
-	@SuppressWarnings({ "unchecked"})
+
 	@RequestMapping(value="/admin/shipping/countries/update.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String updateCountry(HttpServletRequest request, HttpServletResponse response) {
 		String values = request.getParameter("_oldValues");
@@ -168,11 +168,11 @@ public class ShippingConfigsController {
 		try {
 			
 			ObjectMapper mapper = new ObjectMapper();
+			@SuppressWarnings("rawtypes")
 			Map conf = mapper.readValue(values, Map.class);
 			
 			String countryCode = (String)conf.get("code");
-			
-			Language language = (Language)request.getAttribute("LANGUAGE");
+
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
 			//get list of countries

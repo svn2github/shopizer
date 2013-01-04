@@ -3,6 +3,7 @@ package com.salesmanager.web.admin.controller.products;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -60,7 +61,7 @@ public class RelatedItemsController {
 		List<Category> categories = categoryService.listByStore(store,language);
 		
 		model.addAttribute("categories", categories);
-		return "admin-catalogue-featured";
+		return "admin-catalogue-related";
 		
 	}
 	
@@ -78,26 +79,42 @@ public class RelatedItemsController {
 
 			
 			Long productId = Long.parseLong(sProductId);
-			//Product product = productService.getById(id)
+			Product product = productService.getById(productId);
 			
 			Language language = (Language)request.getAttribute("LANGUAGE");
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
-			//TODO specify product
-			List<ProductRelationship> relationships = productRelationshipService.getByType(store, null, ProductRelationshipType.RELATED_ITEM, language);
+			
+			if(product==null || product.getMerchantStore().getId().intValue()!= store.getId().intValue()) {
+				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+				resp.setErrorString("Product id is not valid");
+				String returnString = resp.toJSONString();
+				return returnString;
+			}
+			
+			
+
+			List<ProductRelationship> relationships = productRelationshipService.getByType(store, product, ProductRelationshipType.RELATED_ITEM, language);
 			
 			for(ProductRelationship relationship : relationships) {
 				
-				Product product = relationship.getRelatedProduct();
+				Product relatedProduct = relationship.getRelatedProduct();
 				Map entry = new HashMap();
 				entry.put("relationshipId", relationship.getId());
-				entry.put("productId", product.getId());
+				entry.put("productId", relatedProduct.getId());
 				
-				ProductDescription description = product.getDescriptions().iterator().next();
+				ProductDescription description = relatedProduct.getDescriptions().iterator().next();
+				Set<ProductDescription> descriptions = relatedProduct.getDescriptions();
+				for(ProductDescription desc : descriptions) {
+					if(desc.getLanguage().getId().intValue()==language.getId().intValue()) {
+						description = desc;
+					}
+				}
 				
+
 				entry.put("name", description.getName());
-				entry.put("sku", product.getSku());
-				entry.put("available", product.getAvailable());
+				entry.put("sku", relatedProduct.getSku());
+				entry.put("available", relatedProduct.getAvailable());
 				resp.addDataEntry(entry);
 				
 			}
@@ -122,12 +139,14 @@ public class RelatedItemsController {
 	public @ResponseBody String addItem(HttpServletRequest request, HttpServletResponse response) {
 		
 		String productId = request.getParameter("productId");
+		String baseProductId = request.getParameter("baseProductId");
 		AjaxResponse resp = new AjaxResponse();
 		
 		try {
 			
 
 			Long lProductId = Long.parseLong(productId);
+			Long lBaseProductId = Long.parseLong(baseProductId);
 
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
@@ -142,11 +161,24 @@ public class RelatedItemsController {
 				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
 				return resp.toJSONString();
 			}
+			
+			Product baseProduct = productService.getById(lBaseProductId);
+			
+			if(baseProduct==null) {
+				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			if(baseProduct.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
 
 
 			ProductRelationship relationship = new ProductRelationship();
 			relationship.setActive(true);
-			relationship.setCode(ProductRelationshipType.FEATURED_ITEM.name());
+			relationship.setProduct(baseProduct);
+			relationship.setCode(ProductRelationshipType.RELATED_ITEM.name());
 			relationship.setStore(store);
 			relationship.setRelatedProduct(product);
 			
@@ -171,12 +203,14 @@ public class RelatedItemsController {
 	public @ResponseBody String removeItem(HttpServletRequest request, HttpServletResponse response) {
 		
 		String productId = request.getParameter("productId");
+		String baseProductId = request.getParameter("baseProductId");
 		AjaxResponse resp = new AjaxResponse();
 		
 		try {
 			
 
 			Long lproductId = Long.parseLong(productId);
+			Long lBaseProductId = Long.parseLong(baseProductId);
 
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
@@ -192,7 +226,26 @@ public class RelatedItemsController {
 				return resp.toJSONString();
 			}
 			
-			ProductRelationship relationship = productRelationshipService.getByType(store, product, ProductRelationshipType.FEATURED_ITEM);
+			Product baseProduct = productService.getById(lBaseProductId);
+			
+			if(baseProduct==null) {
+				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			if(baseProduct.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			ProductRelationship relationship = null;
+			List<ProductRelationship> relationships = productRelationshipService.getByType(store, baseProduct, ProductRelationshipType.RELATED_ITEM);
+			
+			for(ProductRelationship r : relationships) {
+				if(r.getRelatedProduct().getId().longValue()==lproductId.longValue()) {
+					relationship = r;
+				}
+			}
 			
 			if(relationship==null) {
 				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);

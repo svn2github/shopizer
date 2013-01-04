@@ -3,6 +3,7 @@ package com.salesmanager.web.admin.controller.products;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -91,6 +92,12 @@ public class FeaturedItemsController {
 				entry.put("productId", product.getId());
 				
 				ProductDescription description = product.getDescriptions().iterator().next();
+				Set<ProductDescription> descriptions = product.getDescriptions();
+				for(ProductDescription desc : descriptions) {
+					if(desc.getLanguage().getId().intValue()==language.getId().intValue()) {
+						description = desc;
+					}
+				}
 				
 				entry.put("name", description.getName());
 				entry.put("sku", product.getSku());
@@ -168,7 +175,6 @@ public class FeaturedItemsController {
 	public @ResponseBody String removeItem(HttpServletRequest request, HttpServletResponse response) {
 		
 		String productId = request.getParameter("productId");
-		String removeEntity = request.getParameter("removeEntity");
 		AjaxResponse resp = new AjaxResponse();
 		
 		try {
@@ -190,7 +196,15 @@ public class FeaturedItemsController {
 				return resp.toJSONString();
 			}
 			
-			ProductRelationship relationship = productRelationshipService.getByType(store, product, ProductRelationshipType.FEATURED_ITEM);
+			
+			ProductRelationship relationship = null;
+			List<ProductRelationship> relationships = productRelationshipService.getByType(store, ProductRelationshipType.FEATURED_ITEM);
+			
+			for(ProductRelationship r : relationships) {
+				if(r.getRelatedProduct().getId().longValue()==lproductId.longValue()) {
+					relationship = r;
+				}
+			}
 			
 			if(relationship==null) {
 				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);

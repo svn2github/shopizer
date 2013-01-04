@@ -8,4 +8,4 @@
 
 					{title:"<s:message code="label.entity.code" text="Code"/>", name:"code", primaryKey:true, canEdit:false, canFilter:false},
         			{title:"<s:message code="label.entity.name" text="Name"/>", name:"name", canEdit:false, canFilter:true},
-        			{title:"<s:message code="label.entity.enabled" text="Enabled"/>", name:"supported", type:"boolean", canEdit:true, canFilter:true},
+        			{title:"<s:message code="label.entity.enabled" text="Enabled"/>", name:"supported", type:"boolean", canEdit:true, canFilter:true}

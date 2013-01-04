@@ -59,9 +59,6 @@
 				"code":"catalogue-products-create","url":"/admin/products/product.html","role":"PRODUCTS","order":0
 			}},
 			{"menu":{
-				"code":"catalogue-products-categories","url":"/admin/products/product-categories.html","role":"PRODUCTS","order":1
-			}},
-			{"menu":{
 				"code":"catalogue","url":"/admin/products/products.html","role":"PRODUCTS","order":2
 			}}
 		]

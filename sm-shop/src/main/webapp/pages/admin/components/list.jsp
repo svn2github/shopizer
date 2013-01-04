@@ -19,7 +19,9 @@
 										{operationType:"update", dataProtocol:"postParams",dataURL: "<c:url value="${updateUrl}" />"},
 									],
 									transformResponse : function (dsResponse, dsRequest, jsonData) {
+										
 										var status = isc.XMLTools.selectObjects(jsonData, "/response/status");
+										//alert('check status ' + status);
 										if (status != 0) {
 											if(status==9999) {//operation completed
 												//reload 
