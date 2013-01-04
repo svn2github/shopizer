@@ -53,17 +53,20 @@ public class ProductRelationshipServiceImpl extends
 	
 	@Override
 	public List<ProductRelationship> getByType(MerchantStore store, Product product, ProductRelationshipType type, Language language) throws ServiceException {
-		
-		if(product==null) {
-			return productRelationshipDao.getByType(store, type.name(), language);
-		} else {
-			return null;
-		}
-		
+
+		return productRelationshipDao.getByType(store, type.name(), language);
+
 	}
 	
 	@Override
-	public ProductRelationship getByType(MerchantStore store, Product product, ProductRelationshipType type) throws ServiceException {
+	public List<ProductRelationship> getByType(MerchantStore store, ProductRelationshipType type) throws ServiceException {
+
+		return productRelationshipDao.getByType(store, type.name());
+
+	}
+	
+	@Override
+	public List<ProductRelationship> getByType(MerchantStore store, Product product, ProductRelationshipType type) throws ServiceException {
 		
 
 		return productRelationshipDao.getByType(store, type.name(), product.getId().longValue());

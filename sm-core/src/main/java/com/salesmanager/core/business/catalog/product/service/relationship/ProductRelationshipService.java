@@ -15,11 +15,39 @@ public interface ProductRelationshipService extends
 
 	void saveOrUpdate(ProductRelationship relationship) throws ServiceException;
 
+	/**
+	 * Get product relationship List for a given type (RELATED, FEATURED...) and language allows
+	 * to return the product description in the appropriate language
+	 * @param store
+	 * @param product
+	 * @param type
+	 * @param language
+	 * @return
+	 * @throws ServiceException
+	 */
 	List<ProductRelationship> getByType(MerchantStore store, Product product,
 			ProductRelationshipType type, Language language) throws ServiceException;
 
-	ProductRelationship getByType(MerchantStore store, Product product,
+	/**
+	 * Get product relationship List for a given type (RELATED, FEATURED...) and a given base product
+	 * @param store
+	 * @param product
+	 * @param type
+	 * @return
+	 * @throws ServiceException
+	 */
+	List<ProductRelationship> getByType(MerchantStore store, Product product,
 			ProductRelationshipType type)
 			throws ServiceException;
+
+	/**
+	 * Get product relationship List for a given type (RELATED, FEATURED...) 
+	 * @param store
+	 * @param type
+	 * @return
+	 * @throws ServiceException
+	 */
+	List<ProductRelationship> getByType(MerchantStore store,
+			ProductRelationshipType type) throws ServiceException;
 
 }

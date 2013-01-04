@@ -177,14 +177,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		
 	}
 	
-	@Override
-	public Product getById(Long id) {
-		
-		
-		return productDao.getProductById(id);
-	}
-	
-	
+
 	@Override
 	public void removeProduct(Product product) throws ServiceException {
 		

@@ -47,8 +47,39 @@ public class ProductRelationshipDaoImpl extends SalesManagerEntityDaoImpl<Long, 
 
 	}
 	
+	
 	@Override
-	public ProductRelationship getByType(MerchantStore store, String type, long productId) {
+	public List<ProductRelationship> getByType(MerchantStore store, String type) {
+		//QDSL cannot interpret the following query, that is why it is in native format
+		
+		StringBuilder qs = new StringBuilder();
+		qs.append("select pr from ProductRelationship as pr ");
+		qs.append("left join fetch pr.product p ");
+		qs.append("join fetch pr.relatedProduct rp ");
+		qs.append("left join fetch rp.descriptions rpd ");
+
+		qs.append("where pr.code=:code");
+
+
+
+
+    	String hql = qs.toString();
+		Query q = super.getEntityManager().createQuery(hql);
+
+    	q.setParameter("code", type);
+
+
+    	@SuppressWarnings("unchecked")
+		List<ProductRelationship> relations =  q.getResultList();
+
+    	
+    	return relations;
+		
+
+	}
+	
+	@Override
+	public List<ProductRelationship> getByType(MerchantStore store, String type, long productId) {
 		//QDSL cannot interpret the following query, that is why it is in native format
 		
 		StringBuilder qs = new StringBuilder();
@@ -66,14 +97,16 @@ public class ProductRelationshipDaoImpl extends SalesManagerEntityDaoImpl<Long, 
     	q.setParameter("pId", productId);
 
 
-		ProductRelationship relation =  (ProductRelationship)q.getSingleResult();
+		@SuppressWarnings("unchecked")
+		List<ProductRelationship> relations =  q.getResultList();
 
     	
-    	return relation;
+    	return relations;
 		
 
 	}
 
+	
 
 
 }

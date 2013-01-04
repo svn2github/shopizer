@@ -48,5 +48,5 @@ public interface ProductService extends SalesManagerEntityService<Long, Product>
 
 	void saveOrUpdate(Product product) throws ServiceException;
 	
-	//Product getById(Long id);
+
 }

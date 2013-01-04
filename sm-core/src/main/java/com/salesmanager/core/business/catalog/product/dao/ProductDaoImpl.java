@@ -445,9 +445,9 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 				return p;
 				
 	}
-	
+
 	@Override
-	public Product getProductById(long productId) {
+	public Product getById(Long productId) {
 
 
 		StringBuilder qs = new StringBuilder();
