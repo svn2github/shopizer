@@ -9,4 +9,5 @@
 					{title:"<s:message code="label.entity.id" text="Id"/>", name:"priceId", canFilter:false},
         			{title:"<s:message code="label.entity.name" text="Name"/>", name:"name", canFilter:false},
         			{title:"<s:message code="label.product.price" text="Price"/>", name:"price", canFiler:false},
+        			{title:"<s:message code="label.product.price" text="Special price"/>", name:"specialPrice", canFiler:false},
         			{title:"<s:message code="label.entity.details" text="Details"/>", name: "buttonField", align: "center",canFilter:false,canSort:false, canReorder:false}

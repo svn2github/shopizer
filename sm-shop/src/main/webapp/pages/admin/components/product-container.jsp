@@ -20,7 +20,7 @@
 									ID:"container", 
 									dataFormat:"json", 
 									operationBindings:[ 
-										{operationType:"remove", dataProtocol:"postParams",dataURL: "<c:url value="${containerRemoveUrl}" />?removeEntity=<c:out value="${removeEntity}" />"},
+										{operationType:"remove", dataProtocol:"postParams",dataURL: "<c:url value="${containerRemoveUrl}" />&removeEntity=<c:out value="${removeEntity}" />"},
 										{operationType:"fetch", dataProtocol:"postParams",dataURL: "<c:url value="${containerFetchUrl}" />"},
 										{operationType:"add", dataProtocol:"postParams",dataURL: "<c:url value="${containerAddUrl}" />"},
 										{operationType:"update", dataProtocol:"postParams",dataURL: "<c:url value="${containerUpdateUrl}" />"}
@@ -30,7 +30,7 @@
 										if (status != 0 && status !=9999) {
 											var msg = isc.XMLTools.selectObjects(jsonData, "/response/statusMessage");
 												alert("! " + msg);
-												window.location='<c:url value="${reloadUrl}" />';
+												//window.location='<c:url value="${reloadUrl}" />';
 										}
 										if(status == 9999) {
 											window.location='<c:url value="${reloadUrl}" />';
@@ -179,7 +179,7 @@ isc.HLayout.create({
     	}),
     	isc.SectionStack.create({
             ID:"rightSideLayout",
-            width:180,
+            width:205,
             showResizeBar:false,
             visibilityMode:"multiple",
             animateSections:true,

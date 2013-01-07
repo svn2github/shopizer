@@ -57,11 +57,16 @@ public class ProductReviewController {
 		
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		
-		Product product = productService.getProductForLocale(productId, language, locale);
-		
+
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		if(product==null || product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
-			return "forward:/admin/products/products.html";
+		Product product = productService.getById(productId);
+		
+		if(product==null) {
+			return "redirect:/admin/products/products.html";
+		}
+		
+		if(product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			return "redirect:/admin/products/products.html";
 		}
 		
 		

@@ -67,13 +67,21 @@ public class ProductPriceController {
 	public String displayProductPrices(@RequestParam("id") long productId,Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
-
-		Product product = productService.getById(productId);
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		if(product==null || product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
-			return "forward:/admin/products/products.html";
+
+		//get the product and validate it belongs to the current merchant
+		Product product = productService.getById(productId);
+		
+		if(product==null) {
+			return "redirect:/admin/products/products.html";
 		}
+		
+		if(product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			return "redirect:/admin/products/products.html";
+		}
+		
+
 
 		model.addAttribute("product",product);
 		
@@ -166,6 +174,7 @@ public class ProductPriceController {
 
 				entry.put("name", priceName);
 				entry.put("price", priceUtil.getAdminFormatedAmountWithCurrency(store,price.getProductPriceAmount()));
+				entry.put("specialPrice", priceUtil.getAdminFormatedAmountWithCurrency(store,price.getProductPriceSpecialAmount()));
 				
 				String discount = "";
 				if(priceUtil.hasDiscount(price)) {
@@ -193,9 +202,20 @@ public class ProductPriceController {
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/price/edit.html", method=RequestMethod.GET)
 	public String editProductPrice(@RequestParam("productId") long productId, @RequestParam("id") long productPriceId,Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		Product product = productService.getById(productId);
+		
+		if(product==null) {
+			return "redirect:/admin/products/products.html";
+		}
+		
+		if(product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			return "redirect:/admin/products/products.html";
+		}
+		
 		
 		setMenu(model,request);
-		return displayProductPrice(productId, productPriceId, model, request, response);
+		return displayProductPrice(product, productPriceId, model, request, response);
 		
 	}
 	
@@ -203,17 +223,26 @@ public class ProductPriceController {
 	@RequestMapping(value="/admin/products/price/create.html", method=RequestMethod.GET)
 	public String createProductPrice(@RequestParam("productId") long productId,Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		Product product = productService.getById(productId);
+		if(product==null) {
+			return "redirect:/admin/products/products.html";
+		}
+		
+		if(product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			return "redirect:/admin/products/products.html";
+		}
+		
 		setMenu(model,request);
-		return displayProductPrice(productId, null, model, request, response);
+		return displayProductPrice(product, null, model, request, response);
 
 
 		
 	}
 	
-	private String displayProductPrice(Long productId, Long productPriceId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private String displayProductPrice(Product product, Long productPriceId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		Product product = productService.getById(productId);
-		
+	
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		if(product.getId().intValue()!=store.getId().intValue()) {

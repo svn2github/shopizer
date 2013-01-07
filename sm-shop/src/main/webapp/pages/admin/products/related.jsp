@@ -33,13 +33,16 @@
 						<c:set value="${product.id}" var="productId" scope="request"/>
 						<jsp:include page="/pages/admin/products/product-menu.jsp" />
 				</c:if>	
-								
-				<h3>
-						<s:message code="label.product.related.title" text="Related items" />
-				</h3>	
+												
+				
+				<h3><s:message code="label.product.related.title" text="Related items" /></h3> 
+				<br/>
+				<strong><c:out value="${product.sku}"/></strong>			
+				
+					
 				<br/>
 				<div class="alert alert-info">
-					<s:message code="label.product.featured.meassage" text="Drag and drop product from product list to related items box"/>
+					<s:message code="label.product.related.meassage" text="Drag and drop product from product list to related items box"/>
 				</div>			
 		
       			<!-- Listing grid include -->

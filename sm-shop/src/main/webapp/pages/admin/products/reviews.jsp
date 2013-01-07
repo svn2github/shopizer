@@ -25,12 +25,14 @@
 				</c:if>	
 								
 								
-				<h3>
-						<s:message code="label.product.customer.reviews" text="Customer reviews" />
-				</h3>	
+
+				
+				<h3><s:message code="label.product.customer.reviews" text="Customer reviews" /></h3> 
 				<br/>
-				<strong><c:out value="${product.sku}"/></strong>
-				<br/><br/>
+				<strong><c:out value="${product.sku}"/></strong>			
+
+				<br/>	
+
 
 				 <!-- Listing grid include -->
 				 <c:set value="/admin/products/reviews/paging.html?productId=${product.id}" var="pagingUrl" scope="request"/>

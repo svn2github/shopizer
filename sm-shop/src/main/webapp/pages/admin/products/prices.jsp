@@ -19,23 +19,28 @@
 
 
 								<div class="sm-ui-component">
-								<h3><s:message code="label.product.prices" text="Product prices" /></h3>[TODO add product name]	
-								<br/>
+
 								
-									<c:if test="${product.product.id!=null && product.product.id>0}">
-										<c:set value="${product.product.id}" var="productId" scope="request"/>
+									<c:if test="${product.id!=null && product.id>0}">
+										<c:set value="${product.id}" var="productId" scope="request"/>
 										<jsp:include page="/pages/admin/products/product-menu.jsp" />
 									</c:if>
-								
-								    <ul class="nav nav-pills">
-    									<li class="enabled"><a href="NEED A URL"><s:message code="label.product.price.create" text="Create price" /></a></li>
-    								</ul>
-								
+									
+				
+
+				
+				<h3><s:message code="label.product.prices" text="Product prices" /></h3> 
+				<br/>
+				<strong><c:out value="${product.sku}"/></strong>			
+
+				<br/>	
+				<a href="<c:url value="/admin/products/price/create.html?productId=${product.id}&availabilityId=${availability.id} }"/>"><s:message code="label.product.price.create" text="Create price" /></a>	
+				<br/><br/>
 								
 				 <!-- Listing grid include -->
-				 <c:set value="/admin/products/prices/paging.html?productId=${productId}" var="pagingUrl" scope="request"/>
-				 <c:set value="/admin/products/price/remove.html?productId=${productId}" var="removeUrl" scope="request"/>
-				 <c:set value="/admin/products/price/edit.html?productId=${productId}" var="editUrl" scope="request"/>
+				 <c:set value="/admin/products/prices/paging.html?productId=${product.id}" var="pagingUrl" scope="request"/>
+				 <c:set value="/admin/products/price/remove.html?productId=${product.id}" var="removeUrl" scope="request"/>
+				 <c:set value="/admin/products/price/edit.html?productId=${product.id}" var="editUrl" scope="request"/>
 				 <c:set value="${pagingUrl}" var="afterRemoveUrl" scope="request"/>
 				 <c:set var="entityId" value="priceId" scope="request"/>
 				 <c:set var="componentTitleKey" value="label.product.prices" scope="request"/>

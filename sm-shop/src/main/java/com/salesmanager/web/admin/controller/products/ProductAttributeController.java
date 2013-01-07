@@ -66,21 +66,14 @@ public class ProductAttributeController {
 		setMenu(model,request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
-		Product product = null;
-		
-		try {
-			product = productService.getById(productId);
-		} catch (Exception e) {
-			LOGGER.error("Cannot get product " + productId, e);
-			return "forward:/admin/products/products.html";
-		}
+		Product product = productService.getById(productId);
 		
 		if(product==null) {
-			return "forward:/admin/products/products.html";
+			return "redirect:/admin/products/products.html";
 		}
 		
-		if(product.getMerchantStore().getId().intValue() != store.getId().intValue()){
-			return "forward:/admin/products/products.html";
+		if(product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			return "redirect:/admin/products/products.html";
 		}
 		
 		model.addAttribute("product",product);

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
@@ -30,6 +31,7 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
+import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 
@@ -50,7 +52,7 @@ public class RelatedItemsController {
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/catalogue/related/list.html", method=RequestMethod.GET)
-	public String displayFeaturedItems(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String displayRelatedItems(@RequestParam("id") long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		
 		setMenu(model,request);
@@ -58,10 +60,23 @@ public class RelatedItemsController {
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
+		//get the product and validate it belongs to the current merchant
+		Product product = productService.getById(productId);
+		
+		if(product==null) {
+			return "redirect:/admin/products/products.html";
+		}
+		
+		if(product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			return "redirect:/admin/products/products.html";
+		}
+		
+		
 		List<Category> categories = categoryService.listByStore(store,language);
 		
 		model.addAttribute("categories", categories);
-		return "admin-catalogue-related";
+		model.addAttribute("product", product);
+		return ControllerConstants.Tiles.Product.relatedItems;
 		
 	}
 	
@@ -244,6 +259,7 @@ public class RelatedItemsController {
 			for(ProductRelationship r : relationships) {
 				if(r.getRelatedProduct().getId().longValue()==lproductId.longValue()) {
 					relationship = r;
+					break;
 				}
 			}
 			
@@ -263,7 +279,7 @@ public class RelatedItemsController {
 			productRelationshipService.delete(relationship);
 			
 
-			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_SUCCESS);
+			resp.setStatus(AjaxPageableResponse.RESPONSE_OPERATION_COMPLETED);
 		
 		} catch (Exception e) {
 			LOGGER.error("Error while paging products", e);
