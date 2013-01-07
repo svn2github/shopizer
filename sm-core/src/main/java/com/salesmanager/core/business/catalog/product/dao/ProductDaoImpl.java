@@ -339,6 +339,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 				
 				qs.append("join fetch p.descriptions pd ");
 				qs.append("join fetch p.categories categs ");
+			
 				
 				
 				//not necessary
@@ -408,8 +409,13 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 				qs.append("select distinct p from Product as p ");
 				qs.append("join fetch p.availabilities pa ");
 				qs.append("join fetch p.descriptions pd ");
+				qs.append("join fetch p.merchantStore pm ");
 				qs.append("join fetch pa.prices pap ");
 				qs.append("left join fetch pap.descriptions papd ");
+				
+				
+				
+				
 				//images
 				qs.append("left join fetch p.images images ");
 				//options
