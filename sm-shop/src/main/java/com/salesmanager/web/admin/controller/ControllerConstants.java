@@ -23,6 +23,7 @@ public interface ControllerConstants
         interface Product{
             final String productReviews="catalogue-product-reviews";
             final String productPrices="admin-products-prices";
+            final String productPrice="admin-products-price";
         }
         
     }
