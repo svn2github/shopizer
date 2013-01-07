@@ -19,7 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Transient;
 
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
@@ -45,8 +45,8 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 	private BigDecimal productPriceAmount = new BigDecimal(0);
 
 
-	@Column(name = "PRODUCT_PRICE_CODE", length=20)
-	private String productPriceCode;
+	@Column(name = "PRODUCT_PRICE_TYPE", length=20)
+	private String productPriceType;
 
 	@Column(name = "DEFAULT_PRICE")
 	private Boolean defaultPrice = false;
@@ -59,9 +59,6 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 	@Column(name = "PRODUCT_PRICE_SPECIAL_END_DATE")
 	private Date productPriceSpecialEndDate;
 
-	@Column(name = "PRODUCT_PRICE_SPECIAL_DAYS")
-	private Integer productPriceSpecialDurationDays;
-
 	@Column(name = "PRODUCT_PRICE_SPECIAL_AMOUNT")
 	private BigDecimal productPriceSpecialAmount;
 	
@@ -69,6 +66,12 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 	@ManyToOne(targetEntity = ProductAvailability.class)
 	@JoinColumn(name = "PRODUCT_AVAIL_ID", nullable = false)
 	private ProductAvailability productPriceAvailability;
+	
+	@Transient
+	private String productPrice = "0";
+	
+	@Transient
+	private String productSpecialPrice = "";
 
 	public ProductPrice() {
 	}
@@ -121,14 +124,7 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 		this.productPriceSpecialEndDate = CloneUtils.clone(productPriceSpecialEndDate);
 	}
 
-	public Integer getProductPriceSpecialDurationDays() {
-		return productPriceSpecialDurationDays;
-	}
 
-	public void setProductPriceSpecialDurationDays(
-			Integer productPriceSpecialDurationDays) {
-		this.productPriceSpecialDurationDays = productPriceSpecialDurationDays;
-	}
 
 	public BigDecimal getProductPriceSpecialAmount() {
 		return productPriceSpecialAmount;
@@ -158,17 +154,34 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 	}
 
 
-
 	public void setProductPriceAvailability(ProductAvailability productPriceAvailability) {
 		this.productPriceAvailability = productPriceAvailability;
 	}
 
-	public void setProductPriceCode(String productPriceCode) {
-		this.productPriceCode = productPriceCode;
+	public void setProductPriceType(String productPriceType) {
+		this.productPriceType = productPriceType;
 	}
 
-	public String getProductPriceCode() {
-		return productPriceCode;
+	public String getProductPriceType() {
+		return productPriceType;
 	}
+
+	public void setProductPrice(String productPrice) {
+		this.productPrice = productPrice;
+	}
+
+	public String getProductPrice() {
+		return productPrice;
+	}
+
+	public void setProductSpecialPrice(String productSpecialPrice) {
+		this.productSpecialPrice = productSpecialPrice;
+	}
+
+	public String getProductSpecialPrice() {
+		return productSpecialPrice;
+	}
+
+
 
 }
