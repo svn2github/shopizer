@@ -107,19 +107,7 @@ public class ProductPriceUtils {
 											hasDiscount = true;
 											finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
 										}
-								} else {
-									if(price.getProductPriceSpecialDurationDays()!=null) {
-										Calendar calendar = Calendar.getInstance();
-										calendar.setTime(price.getProductPriceSpecialStartDate());
-										calendar.add(Calendar.DAY_OF_YEAR, price.getProductPriceSpecialDurationDays().intValue());
-										
-										if(calendar.getTime().after(today)) {
-											hasDiscount = true;
-											finalPrice.setDiscountEndDate(calendar.getTime());
-										}
-									
-									}
-								}
+								} 
 									
 							}
 						}
@@ -337,17 +325,7 @@ public class ProductPriceUtils {
 							if(productPrice.getProductPriceSpecialEndDate().after(today)) {
 								hasDiscount = true;
 							}
-					} else {
-						if(productPrice.getProductPriceSpecialDurationDays()!=null) {
-							Calendar calendar = Calendar.getInstance();
-							calendar.setTime(productPrice.getProductPriceSpecialStartDate());
-							calendar.add(Calendar.DAY_OF_YEAR, productPrice.getProductPriceSpecialDurationDays().intValue());
-							
-							if(calendar.getTime().after(today)) {
-								hasDiscount = true;
-							}
-						}
-					}
+					} 
 				}
 			}
 		}
