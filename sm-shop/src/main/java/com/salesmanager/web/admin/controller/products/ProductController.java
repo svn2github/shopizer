@@ -498,6 +498,232 @@ public class ProductController {
 		return "admin-products-edit";
 	}
 	
+	
+
+	@Secured("PRODUCTS")
+	@RequestMapping(value="/admin/products/product/duplicate.html", method=RequestMethod.POST)
+	public String duplicateProduct(@ModelAttribute("productId") Long  id, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+		
+
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		
+		//display menu
+		setMenu(model,request);
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		List<Manufacturer> manufacturers = manufacturerService.listByStore(store, language);
+		List<ProductType> productTypes = productTypeService.list();
+		List<TaxClass> taxClasses = taxClassService.listByStore(store);
+		List<Language> languages = store.getLanguages();
+		
+		model.addAttribute("manufacturers", manufacturers);
+		model.addAttribute("productTypes", productTypes);
+		model.addAttribute("taxClasses", taxClasses);
+		
+		Product dbProduct = productService.getById(id);
+		
+		if(dbProduct==null || dbProduct.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			return "redirect:/admin/products/products.html";
+		}
+		
+		//Make a copy of the product
+		com.salesmanager.web.entity.catalog.Product product = new com.salesmanager.web.entity.catalog.Product();
+		
+		
+		for(ProductAvailability pAvailability : dbProduct.getAvailabilities()) {
+			
+			ProductAvailability availability = new ProductAvailability();
+			availability.setProductDateAvailable(pAvailability.getProductDateAvailable());
+			availability.setProductIsAlwaysFreeShipping(pAvailability.getProductIsAlwaysFreeShipping());
+			availability.setProductQuantity(pAvailability.getProductQuantity());
+			availability.setProductQuantityOrderMax(pAvailability.getProductQuantityOrderMax());
+			availability.setProductQuantityOrderMin(pAvailability.getProductQuantityOrderMin());
+			availability.setProductStatus(pAvailability.getProductStatus());
+			availability.setRegion(pAvailability.getRegion());
+			availability.setRegionVariant(pAvailability.getRegionVariant());
+			
+
+			
+			Set<ProductPrice> prices = pAvailability.getPrices();
+			
+			//TODO copy prices
+			
+			if(availability.getRegion().equals(com.salesmanager.core.constants.Constants.ALL_REGIONS)) {
+				product.setAvailability(availability);
+			}
+			
+			
+			
+		}
+/*		
+		ProductAvailability availability = new ProductAvailability();
+		availability.setProductQuantity(dbProduct.get)
+		
+		
+		
+		
+		Product newProduct = product.getProduct();
+		ProductAvailability newProductAvailability = null;
+		ProductPrice newProductPrice = null;
+		
+		Set<ProductPriceDescription> productPriceDescriptions = null;
+		
+		//get tax class
+		//TaxClass taxClass = newProduct.getTaxClass();
+		//TaxClass dbTaxClass = taxClassService.getById(taxClass.getId());
+		Set<ProductPrice> prices = new HashSet<ProductPrice>();
+		Set<ProductAvailability> availabilities = new HashSet<ProductAvailability>();	
+
+		if(product.getProduct().getId()!=null && product.getProduct().getId().longValue()>0) {
+		
+		
+			//get actual product
+			newProduct = productService.getById(product.getProduct().getId());
+			if(newProduct!=null && newProduct.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+				return "redirect:/admin/products/products.html";
+			}
+			
+
+			newProduct.setSku(product.getProduct().getSku());
+			newProduct.setAvailable(product.getProduct().getAvailable());
+			newProduct.setDateAvailable(product.getProduct().getDateAvailable());
+			newProduct.setManufacturer(product.getProduct().getManufacturer());
+			newProduct.setType(product.getProduct().getType());
+			newProduct.setProductHeight(product.getProduct().getProductHeight());
+			newProduct.setProductLength(product.getProduct().getProductLength());
+			newProduct.setProductWeight(product.getProduct().getProductWeight());
+			newProduct.setProductWidth(product.getProduct().getProductWidth());
+
+			Set<ProductAvailability> avails = newProduct.getAvailabilities();
+			if(avails !=null && avails.size()>0) {
+				
+				for(ProductAvailability availability : avails) {
+					if(availability.getRegion().equals(com.salesmanager.core.constants.Constants.ALL_REGIONS)) {
+						
+						newProductAvailability = availability;
+						Set<ProductPrice> productPrices = availability.getPrices();
+						
+						for(ProductPrice price : productPrices) {
+							if(price.isDefaultPrice()) {
+								newProductPrice = price;
+								newProductPrice.setProductPriceAmount(submitedPrice);
+								productPriceDescriptions = price.getDescriptions();
+								newProductPrice.setProductPriceAmount(product.getPrice().getProductPriceAmount());
+							} else {
+								prices.add(price);
+							}	
+						}
+					} else {
+						availabilities.add(availability);
+					}
+				}
+			}
+			
+			
+			for(ProductImage image : newProduct.getImages()) {
+				if(image.isDefaultImage()) {
+					product.setProductImage(image);
+				}
+			}
+		}
+		
+		if(newProductPrice==null) {
+			newProductPrice = new ProductPrice();
+			newProductPrice.setDefaultPrice(true);
+			newProductPrice.setProductPriceAmount(submitedPrice);
+		}
+		
+		if(product.getProductImage()!=null && product.getProductImage().getId() == null) {
+			product.setProductImage(null);
+		}
+		
+		if(productPriceDescriptions==null) {
+			productPriceDescriptions = new HashSet<ProductPriceDescription>();
+			for(ProductDescription description : product.getDescriptions()) {
+				ProductPriceDescription ppd = new ProductPriceDescription();
+				ppd.setProductPrice(newProductPrice);
+				ppd.setLanguage(description.getLanguage());
+				ppd.setName(ProductPriceDescription.DEFAULT_PRICE_DESCRIPTION);
+				productPriceDescriptions.add(ppd);
+			}
+		}
+		
+		newProduct.setMerchantStore(store);
+		
+		if(newProductAvailability==null) {
+			newProductAvailability = new ProductAvailability();
+		}
+		
+		
+		newProductAvailability.setProductQuantity(product.getAvailability().getProductQuantity());
+		newProductAvailability.setProductQuantityOrderMin(product.getAvailability().getProductQuantityOrderMin());
+		newProductAvailability.setProductQuantityOrderMax(product.getAvailability().getProductQuantityOrderMax());
+		newProductAvailability.setProduct(newProduct);
+		newProductAvailability.setPrices(prices);
+		availabilities.add(newProductAvailability);
+		
+		newProductPrice.setProductPriceAvailability(newProductAvailability);
+		prices.add(newProductPrice);
+		
+		newProduct.setAvailabilities(availabilities);
+		
+		Set<ProductDescription> descriptions = new HashSet<ProductDescription>();
+		if(product.getDescriptions()!=null && product.getDescriptions().size()>0) {
+			
+			for(ProductDescription description : product.getDescriptions()) {
+				description.setProduct(newProduct);
+				descriptions.add(description);
+				
+			}
+		}
+		
+		newProduct.setDescriptions(descriptions);
+		
+		
+		if(product.getImage()!=null && !product.getImage().isEmpty()) {
+			
+
+			
+			String imageName = product.getImage().getOriginalFilename();
+			
+			List<ProductImageDescription> imagesDescriptions = new ArrayList<ProductImageDescription>();
+
+			for(Language l : languages) {
+				
+				ProductImageDescription imageDescription = new ProductImageDescription();
+				imageDescription.setName(imageName);
+				imageDescription.setLanguage(l);
+				imagesDescriptions.add(imageDescription);
+				
+			}
+			
+			ProductImage productImage = new ProductImage();
+			productImage.setDefaultImage(true);
+			productImage.setImage(product.getImage().getInputStream());
+			productImage.setProductImage(imageName);
+			productImage.setDescriptions(imagesDescriptions);
+			
+			newProduct.getImages().add(productImage);
+			
+			productService.saveOrUpdate(newProduct);
+			
+			product.setProductImage(productImage);
+			
+			
+		} else {
+			
+			productService.saveOrUpdate(newProduct);
+			
+		}
+		*/
+
+		model.addAttribute("success","success");
+		
+		return "admin-products-edit";
+	}
+
+	
 	/**
 	 * Removes a product image based on the productimage id
 	 * @param request

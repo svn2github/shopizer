@@ -48,50 +48,31 @@ public class AdminFilter extends HandlerInterceptorAdapter {
 		//TODO merchant store matches user store
 		MerchantStore store = (MerchantStore)request.getSession().getAttribute(Constants.ADMIN_STORE);
 		if(store==null) {
-			//MerchantStoreService merchantService = (MerchantStoreService) ContextLoader.getCurrentWebApplicationContext().getBean(
-			//		"merchantService");
-			
-
 				store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
 				request.getSession().setAttribute(Constants.ADMIN_STORE, store);
-
 		}
-		
 		request.setAttribute(Constants.ADMIN_STORE, store);
 		
-		
-		
+
 		if(menus==null) {
-			
 			InputStream in = null;
-		
 			ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
 			try {
-				
 				in =
 					(InputStream) this.getClass().getClassLoader().getResourceAsStream("admin/menu.json");
-				
-				
+
 				Map<String,Object> data = mapper.readValue(in, Map.class);
-				
-				
+
 				Menu currentMenu = null;
 				
 				menus = new LinkedHashMap<String,Menu>();
 				List objects = (List)data.get("menus");
 				for(Object object : objects) {
-					
 					Menu m = getMenu(object);
 					menus.put(m.getCode(),m);
-					
 				}
-				
-				
-				cache.putInCache(menus,"MENUMAP");
-				//request.getSession().setAttribute("MENUMAP",menus);
-				
 
-			
+				cache.putInCache(menus,"MENUMAP");
 
 			} catch (JsonParseException e) {
 				LOGGER.error("Error while creating menu", e);
