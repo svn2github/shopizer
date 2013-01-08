@@ -54,47 +54,93 @@ response.setDateHeader ("Expires", -1);
 
 <div class="sm">
 
+
+<div class="navbar navbar-fixed-top" style="z-index:5000000;">
+	
+	<div class="navbar-inner">
+		
+		<div class="container">
+			
+			<a data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</a>
+			
+			<a href="./" class="brand">
+				<img src="<c:url value="/resources/img/shopizer_small.jpg" />"/>			
+			</a>		
+			
+			<div class="nav-collapse">
+				<ul class="nav pull-right">
+					<li class="dropdown">
+						
+						<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+							<i class="icon-cog"></i>
+							//TODO Settings
+							<b class="caret"></b>
+						</a>
+						
+						<ul class="dropdown-menu">
+							<li><a href="javascript:;">TODO //Language</a></li>
+						</ul>
+						
+					</li>
+					<li class="dropdown">
+						
+						<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+							<i class="icon-user"></i> 
+							<sec:authentication property="principal.username" />
+							<b class="caret"></b>
+						</a>
+						
+						<ul class="dropdown-menu">
+							<li><a href="javascript:;"><s:message code="label.my.profile" text="My profile" /></a></li>
+							<li class="divider"></li>
+							<li>
+								<c:url value="/admin/j_spring_security_logout" var="logoutUrl"/>
+								<a href="${logoutUrl}"><s:message code="button.label.logout" text="Logout" /></a>
+							</li>
+						</ul>
+						
+					</li>
+				</ul>
+			
+
+				
+				</div><!--/.nav-collapse -->	
+			</div> <!-- /container -->
+		</div> <!-- /navbar-inner -->
+	</div>
+	<div class="row">&nbsp;</div>
+	<div class="row">&nbsp;</div>
+
+
 	<div class="container"> 
-		<div class="row">
-
-  			<div class="span4"><a class="brand" href="#"><img src="<c:url value="/resources/img/shopizer_small.jpg" />"/></a></div>
-
-  			<div class="span4 offset4">
-
-					<div class="btn-group pull-right">
-						<c:url value="/admin/j_spring_security_logout" var="logoutUrl"/>
-						<a href="${logoutUrl}"><s:message code="button.label.logout" text="Logout" /></a>
-					</div>
-
-  			</div>
-
-
-   
-		
-		</div>
 		<div class="row">	
-		
-			<div class="span3">
-				<ul class="nav nav-list">
-					  <c:forEach items="${requestScope.MENULIST}" var="menu">
+			
+			<div class="span3 main-menu-span" >
+				<div class="nav-collapse sidebar-nav">
+					<ul class="nav nav-tabs nav-stacked main-menu">
+						<c:forEach items="${requestScope.MENULIST}" var="menu">
 					  			<sec:authorize access="hasRole('${menu.role}') and fullyAuthenticated">
 					  			<li <c:if test="${activeMenus[menu.code]!=null}"> class="active"</c:if>>
-									<a href="<c:url value="${menu.url}" />">
+									<a href="<c:url value="${menu.url}" />" style="color: #646464;">
 										<i class="${menu.icon}"></i>
 											<s:message code="menu.${menu.code}" text="${menu.code}"/>
 									</a>
 					  			</li>
 					  			</sec:authorize>
-					  </c:forEach>
-				</ul>
-			</div><!-- end span 3 -->
+					  	</c:forEach>
+					</ul>
+				</div><!--/.well -->
+			</div>
+			
+			
 
 			<div class="span9">
-				
-				
+
 				<tiles:insertAttribute name="body"/>
-
-
 
 			</div>
 
@@ -108,7 +154,7 @@ response.setDateHeader ("Expires", -1);
   
   
 		<footer> 
- 			<p>&copy; Company 2012</p> 
+ 			<p>&copy; Shopizer 2010-2013</p> 
 		</footer> 
   
   
