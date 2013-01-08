@@ -1,8 +1,5 @@
 package com.salesmanager.web.filter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,8 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.salesmanager.core.business.content.model.content.Content;
-import com.salesmanager.core.business.content.model.content.ContentDescription;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
@@ -24,8 +19,6 @@ import com.salesmanager.core.business.system.model.SystemConfiguration;
 import com.salesmanager.core.business.system.service.SystemConfigurationService;
 import com.salesmanager.core.constants.SystemConstants;
 import com.salesmanager.core.utils.CoreConfiguration;
-import com.salesmanager.web.admin.entity.merchant.StoreLanding;
-import com.salesmanager.web.admin.entity.merchant.StoreLandingDescription;
 import com.salesmanager.web.admin.security.UserServicesImpl;
 import com.salesmanager.web.constants.ApplicationConstants;
 import com.salesmanager.web.constants.Constants;
