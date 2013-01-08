@@ -106,7 +106,7 @@
 {
 "menu":{
 "code":"content",
-"icon":"icon-pencil", 
+"icon":"hidden-tablet", 
 "url":"/admin/content/contentManagement.html", 
 "role":"CONTENT",
 "order":4,
