@@ -4,7 +4,7 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ page session="false" %>				
 				
-
+<script src="<c:url value="/resources/js/functions.js" />"></script>
 
 <div class="tabbable">
 
@@ -85,7 +85,7 @@
 				 <div class="control-group">
                         <label><s:message code="label.product.productoptions.price" text="Price"/></label>
                         <div class="controls">
-                                    <form:input path="priceText"/>
+                                    <form:input id="productPriceAmount" cssClass="highlight" path="priceText"/>
                                     <span class="help-inline"><form:errors path="priceText" cssClass="error" /></span>
                         </div>
                   </div>
