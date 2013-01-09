@@ -57,6 +57,28 @@
 				</property>
 	</bean>
 	
+	
+	<!-- CMS implementation for static content data -->
+	<bean id="cmsStaticContents" class="com.salesmanager.core.modules.cms.content.CmsStaticContentFileManagerInfinispanImpl" factory-method="getInstance">
+		<property name="cacheManager">
+			<ref bean="staticContentCacheManager" />
+		</property>
+	</bean>
+	
+	<bean id="staticContentFileManager"	class="com.salesmanager.core.modules.cms.content.StaticContentFileManagerImpl">
+		<property name="uploadStaticContent">
+				<ref bean="cmsStaticContents" />
+		</property>
+		<property name="getStaticContent">
+			<ref bean="cmsStaticContents" />
+		</property>
+		<property name="removeStaticContent">
+			<ref bean="cmsStaticContents" />
+		</property>
+	</bean>
+	
+	<!--  end of CMS implementation for static content data -->
+	
 	<!-- Database -->
 	<bean id="imageCacheManager"
 				class="com.salesmanager.core.modules.cms.impl.ImagesCacheManagerImpl" factory-method="getInstance" >
@@ -67,6 +89,14 @@
 				class="com.salesmanager.core.modules.cms.impl.FilesCacheManagerImpl" factory-method="getInstance" >
 	</bean>
 	
+	<!-- 
+	 Cache manager to handle static content data which includes
+	 1. CSS Files
+	 2. JS Files
+	 2. Digital data
+	 -->
+	 
+	 <bean id="staticContentCacheManager" class="com.salesmanager.core.modules.cms.impl.StaticContentCacheManagerImpl" factory-method="getInstance" ></bean>
 	
 	<!-- Email -->
 	<bean id="freemarkerMailConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
