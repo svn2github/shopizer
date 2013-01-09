@@ -184,7 +184,7 @@ function getZones(countryCode){
 	                        <div class="controls">
 	                        					<form:select cssClass="zone-list highlight" path="zone.code"/>
 	                        					<input type="text" class="input-large highlight" id="storestateprovince" name="storestateprovince" value="${store.storestateprovince}" /> 
-	                                   			<span class="help-inline"></span>
+	                                   			<span class="help-inline"><form:errors path="zone.code" cssClass="error" /></span>
 	                        </div>
 	                  </div>
 	                  
