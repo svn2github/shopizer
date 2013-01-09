@@ -8,16 +8,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,7 +40,6 @@ import com.salesmanager.web.admin.entity.reference.Weight;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
-import javax.annotation.security.RolesAllowed;
 
 @Controller
 public class MerchantStoreController {
@@ -60,7 +62,7 @@ public class MerchantStoreController {
 	@Autowired
 	LabelUtils messages;
 
-	@RolesAllowed("STORE")
+	@Secured("STORE")
 	@RequestMapping(value="/admin/store/store.html", method=RequestMethod.GET)
 	public String displayMerchantStore(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
@@ -102,8 +104,9 @@ public class MerchantStoreController {
 		return "admin-store";
 	}
 	
+	@Secured("STORE")
 	@RequestMapping(value="/admin/store/save.html", method=RequestMethod.POST)
-	public String saveMenrchantStore(@Valid @ModelAttribute("store") MerchantStore store, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	public String saveMerchantStore(@Valid @ModelAttribute("store") MerchantStore store, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		setMenu(model,request);
 		
@@ -133,11 +136,24 @@ public class MerchantStoreController {
 		sizes.add(new Size("CM",messages.getMessage("label.generic.sizeunit.CM", locale)));
 		sizes.add(new Size("IN",messages.getMessage("label.generic.sizeunit.IN", locale)));
 		
-		//TODO no supported languages
+		model.addAttribute("weights",weights);
+		model.addAttribute("sizes",sizes);
 		
+		model.addAttribute("countries", countries);
+		model.addAttribute("languages",languages);
+		model.addAttribute("currencies",currencies);
+		model.addAttribute("store", sessionStore);
+		
+		if(store.getZone()==null && StringUtils.isBlank(store.getStorepostalcode())) {
+			
+			ObjectError error = new ObjectError("zone.code",messages.getMessage("merchant.zone.invalid", locale));
+			result.addError(error);
+			
+		}
+
 		if (result.hasErrors()) {
 			
-	        Map<String, String> errors = new LinkedHashMap<String, String>();
+/*	        Map<String, String> errors = new LinkedHashMap<String, String>();
 	        for (FieldError error : result.getFieldErrors()) {            
 	        	//errors.put(error.getField(), error.getDefaultMessage());
 	        	if(error.getField().equals("languages")) {
@@ -150,15 +166,7 @@ public class MerchantStoreController {
 	        		}
 	        		
 	        	}
-	        } 
-	        
-			model.addAttribute("weights",weights);
-			model.addAttribute("sizes",sizes);
-			
-			model.addAttribute("countries", countries);
-			model.addAttribute("languages",languages);
-			model.addAttribute("currencies",currencies);
-			model.addAttribute("store", store);
+	        } */
 			return "admin-store";
 		}
 		
@@ -221,14 +229,8 @@ public class MerchantStoreController {
 
 
 		model.addAttribute("success","success");
-		model.addAttribute("countries", countries);
-		model.addAttribute("languages",languages);
-		model.addAttribute("store", sessionStore);
 		
-		model.addAttribute("weights",weights);
-		model.addAttribute("sizes",sizes);
 
-		model.addAttribute("currencies",currencies);
 		
 		return "admin-store";
 	}

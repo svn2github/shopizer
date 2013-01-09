@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -61,6 +62,7 @@ public class StoreBrandingController {
 	@Autowired
 	private ContentService contentService;
 	
+	@Secured("STORE")
 	@RequestMapping(value="/admin/store/storeBranding.html", method=RequestMethod.GET)
 	public String displayStoreBranding(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -75,6 +77,7 @@ public class StoreBrandingController {
 		return "admin-store-branding";
 	}
 	
+	@Secured("STORE")
 	@RequestMapping(value="/admin/store/saveBranding.html", method=RequestMethod.POST)
 	public String saveStoreBranding(@ModelAttribute(value="contentImages") @Valid final ContentImages contentImages, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -104,9 +107,9 @@ public class StoreBrandingController {
 		return "admin-store-branding";
 	}
 	
+	@Secured("STORE")
 	@RequestMapping(value="/admin/store/removeImage.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeImage(HttpServletRequest request, HttpServletResponse response, Locale locale) {
-		String iid = request.getParameter("imageId");
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
