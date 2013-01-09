@@ -68,7 +68,7 @@ response.setDateHeader ("Expires", -1);
 			</a>
 			
 			<a href="./" class="brand">
-				<img src="<c:url value="/resources/img/shopizer_small.jpg" />"/>			
+				<img src="<c:url value="/resources/img/shopizer_small.png" />"/>			
 			</a>		
 			
 			<div class="nav-collapse">
@@ -114,27 +114,26 @@ response.setDateHeader ("Expires", -1);
 	</div>
 	<div class="row">&nbsp;</div>
 	<div class="row">&nbsp;</div>
+	<div class="row">&nbsp;</div>
 
 
 	<div class="container"> 
 		<div class="row">	
 			
-			<div class="span3 main-menu-span" >
-				<div class="nav-collapse sidebar-nav">
-					<ul class="nav nav-tabs nav-stacked main-menu">
-						<c:forEach items="${requestScope.MENULIST}" var="menu">
+			<div class="span3">
+				<ul class="nav nav-list">
+					  <c:forEach items="${requestScope.MENULIST}" var="menu">
 					  			<sec:authorize access="hasRole('${menu.role}') and fullyAuthenticated">
 					  			<li <c:if test="${activeMenus[menu.code]!=null}"> class="active"</c:if>>
-									<a href="<c:url value="${menu.url}" />" style="color: #646464;">
+									<a href="<c:url value="${menu.url}" />">
 										<i class="${menu.icon}"></i>
 											<s:message code="menu.${menu.code}" text="${menu.code}"/>
 									</a>
 					  			</li>
 					  			</sec:authorize>
-					  	</c:forEach>
-					</ul>
-				</div><!--/.well -->
-			</div>
+					  </c:forEach>
+				</ul>
+			</div><!-- end span 3 -->
 			
 			
 
