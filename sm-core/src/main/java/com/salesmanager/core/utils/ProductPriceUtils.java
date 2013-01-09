@@ -161,17 +161,22 @@ public class ProductPriceUtils {
 	 * @throws Exception
 	 */
 	public String getAdminFormatedAmount(MerchantStore store, BigDecimal amount) throws Exception {
-			NumberFormat nf = null;
+			
+		if(amount==null) {
+			return "";
+		}
+		
+		NumberFormat nf = null;
 
 			
-			nf = NumberFormat.getInstance(DEFAULT_LOCALE);
+		nf = NumberFormat.getInstance(DEFAULT_LOCALE);
 
-			nf.setMaximumFractionDigits(Integer.parseInt(Character
+		nf.setMaximumFractionDigits(Integer.parseInt(Character
 					.toString(DECIMALCOUNT)));
-			nf.setMinimumFractionDigits(Integer.parseInt(Character
+		nf.setMinimumFractionDigits(Integer.parseInt(Character
 					.toString(DECIMALCOUNT)));
 
-			return nf.format(amount);
+		return nf.format(amount);
 	}
 	
 	/**
