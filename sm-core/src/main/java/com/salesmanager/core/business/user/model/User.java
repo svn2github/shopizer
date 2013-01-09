@@ -93,6 +93,9 @@ public class User extends SalesManagerEntity<Long, User> implements Auditable {
 	@Column(name="ADMIN_FIRST_NAME")
 	private String firstName;
 	
+	@Column(name="ACTIVE")
+	private boolean active = true;
+	
 	
 	@Column(name="ADMIN_LAST_NAME")
 	private String lastName;
@@ -125,19 +128,16 @@ public class User extends SalesManagerEntity<Long, User> implements Auditable {
 
 	@Override
 	public Long getId() {
-		// TODO Auto-generated method stub
 		return this.id;
 	}
 
 	@Override
 	public void setId(Long id) {
-		// TODO Auto-generated method stub
 		this.id = id;
 	}
 
 	@Override
 	public AuditSection getAuditSection() {
-		// TODO Auto-generated method stub
 		return auditSection;
 	}
 
@@ -257,6 +257,14 @@ public class User extends SalesManagerEntity<Long, User> implements Auditable {
 
 	public void setMerchantStore(MerchantStore merchantStore) {
 		this.merchantStore = merchantStore;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public boolean isActive() {
+		return active;
 	}
 
 }

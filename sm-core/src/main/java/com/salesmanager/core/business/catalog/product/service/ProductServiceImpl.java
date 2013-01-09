@@ -255,10 +255,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		if(product.getAttributes()!=null && product.getAttributes().size()>0) {
 			Set<ProductAttribute> attributes = product.getAttributes();
 			for(ProductAttribute attribute : attributes) {
-				
 				productAttributeService.saveOrUpdate(attribute);
-				
-				
 			}
 		}
 		
@@ -268,10 +265,8 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		if(product.getRelationships()!=null && product.getRelationships().size()>0) {
 			Set<ProductRelationship> relationships = product.getRelationships();
 			for(ProductRelationship relationship : relationships) {
-				
+				relationship.setProduct(product);
 				productRelationshipService.saveOrUpdate(relationship);
-				
-				
 			}
 		}
 		
