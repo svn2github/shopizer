@@ -54,6 +54,25 @@
 
 </tag>
 
+
+<tag>
+ 		 <!-- Builds the product URL -->
+         <name>productUrl</name>
+         <tag-class>com.salesmanager.web.tags.ProductDescriptionUrlTag</tag-class>
+         <body-content>scriptless</body-content>
+
+ 
+
+         <attribute>
+                 <name>productDescription</name>
+                 <required>true</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>com.salesmanager.core.business.catalog.product.model.ProductDescription</type>
+         </attribute>
+         
+
+</tag>
+
 </taglib>
 
  

@@ -23,9 +23,7 @@
 
 	
 	$(function(){
-
 		$('#sku').alphanumeric();
-
 		<c:forEach items="${product.descriptions}" var="description" varStatus="counter">		
 			$("#name${counter.index}").friendurl({id : 'seUrl${counter.index}'});
 		</c:forEach>
@@ -100,7 +98,12 @@
 					
 				</h3>	
 				<br/>
-			
+				<c:if test="${product.product.id!=null && product.product.id>0}">
+					<c:forEach items="${product.descriptions}" var="description" varStatus="counter">
+						<strong></strong><sm:productUrl productDescription="${description}" /></strong>
+					</c:forEach>
+				</c:if>
+				<br/>
 
       					<c:url var="productSave" value="/admin/products/save.html"/>
                         <form:form method="POST" enctype="multipart/form-data" commandName="product" action="${productSave}">
@@ -387,6 +390,11 @@
                                     <button type="submit" class="btn btn-success"><s:message code="button.label.submit2" text="Submit"/></button>
                             </div>
                    </div>
+                   
+                   
+
+                   
+
 
                    
 
@@ -399,7 +407,21 @@
                                    
 
                         </form:form>
-      					</div>
+                        
+                  <c:if test="${product.product.id!=null && product.product.id>0}">      
+                  <c:url var="createSimilar" value="/admin/products/product/duplicate.html"/>
+                  <form:form method="POST" enctype="multipart/form-data" commandName="product" action="${createSimilar}">
+							<form:hidden path="product.id" />
+	                        <div class="form-actions">
+	                            <div class="pull-right">
+	                                    <button type="submit" class="btn"><s:message code="label.product.createsimilar" text="Create similar product"/></button>
+	                            </div>
+	                   		</div>
+
+                   </form:form>
+                   </c:if>	    
+                        
+      				</div>
       					
 
       			     
