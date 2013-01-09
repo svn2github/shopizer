@@ -2,6 +2,7 @@ package com.salesmanager.web.admin.security;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -22,6 +23,7 @@ import com.salesmanager.core.business.user.model.Permission;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
 import com.salesmanager.core.business.user.service.UserService;
+import com.salesmanager.web.constants.Constants;
 
 
 /**
@@ -77,13 +79,13 @@ public class UserServicesImpl implements UserDetailsService{
 				credentialsNonExpired, accountNonLocked, authorities);
 		*/
 		
-		com.salesmanager.core.business.user.model.User myUser = null;
+		com.salesmanager.core.business.user.model.User user = null;
 		
 		try {
 
-			myUser = userService.getByUserName(userName);
-		
-			if(myUser==null) {
+			user = userService.getByUserName(userName);
+
+			if(user==null) {
 				return null;
 			}
 
@@ -94,12 +96,25 @@ public class UserServicesImpl implements UserDetailsService{
 		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		
 
-		GrantedAuthority role = new GrantedAuthorityImpl("ADMIN");
+		GrantedAuthority role = new GrantedAuthorityImpl(Constants.PERMISSION_ADMIN);//required to login
 		authorities.add(role);
-		//TODO - get from DB
+
+		
+		List<Group> groups = user.getGroups();
+		for(Group group : groups) {
+			
+			List<Permission> permissions = group.getPermissions();
+			for(Permission permission : permissions) {
+				
+				GrantedAuthority auth = new GrantedAuthorityImpl(permission.getPermissionName());
+				authorities.add(auth);
+			}
+			
+			
+		}
 		
 		
-		GrantedAuthority auth = new GrantedAuthorityImpl("AUTH");
+/*		GrantedAuthority auth = new GrantedAuthorityImpl("AUTH");
 		GrantedAuthority prd = new GrantedAuthorityImpl("PRODUCTS");
 		GrantedAuthority ord = new GrantedAuthorityImpl("ORDER");
 		GrantedAuthority content = new GrantedAuthorityImpl("CONTENT");
@@ -113,11 +128,11 @@ public class UserServicesImpl implements UserDetailsService{
 		authorities.add(content);
 		authorities.add(store);
 		authorities.add(tax);
-		authorities.add(shp);
+		authorities.add(shp);*/
 		
-		User user = new User(userName, myUser.getAdminPassword(), true, true,
+		User secUser = new User(userName, user.getAdminPassword(), user.isActive(), true,
 				true, true, authorities);
-		return user;
+		return secUser;
 	}
 	
 	
@@ -150,11 +165,7 @@ public class UserServicesImpl implements UserDetailsService{
 		  auth.getGroups().add(gstore);
 		  auth.getGroups().add(gorder);
 		  permissionService.create(auth);
-		  
-/*		  Permission categories = new Permission("CATEGORIES");
-		  categories.getGroups().add(gsuperadmin);
-		  categories.getGroups().add(gadmin);
-		  permissionService.create(categories);*/
+
 		  
 		  Permission products = new Permission("PRODUCTS");
 		  products.getGroups().add(gsuperadmin);
@@ -203,20 +214,11 @@ public class UserServicesImpl implements UserDetailsService{
 		  shipping.getGroups().add(gstore);
 		  
 		  permissionService.create(shipping);
-		  
-//		  Permission superadmin = new Permission("SUPERADMIN");
-//		  superadmin.getGroups().add(gsuperadmin);
-//		  permissionService.create(superadmin);
-//		  Permission admin = new Permission("ADMIN");
-//		  admin.getGroups().add(gsuperadmin);
-//		  admin.getGroups().add(gadmin);
-//		  permissionService.create(admin);
-		  
-		  //TODO to be continued
-		  
+
+
 		  String password = passwordEncoder.encodePassword("password", null);
 		  
-		  //creation of the super admin
+		  //creation of the super admin admin:password)
 		  com.salesmanager.core.business.user.model.User user = new com.salesmanager.core.business.user.model.User("admin",password,"admin@shopizer.com");
 		  user.setFirstName("Administrator");
 		  user.setLastName("User");

@@ -34,6 +34,7 @@ import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
@@ -41,6 +42,7 @@ import com.salesmanager.core.business.catalog.product.model.image.ProductImageDe
 import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDescription;
+import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationship;
 import com.salesmanager.core.business.catalog.product.model.type.ProductType;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.image.ProductImageService;
@@ -250,7 +252,7 @@ public class ProductController {
 	@RequestMapping(value="/admin/products/save.html", method=RequestMethod.POST)
 	public String saveProduct(@Valid @ModelAttribute("product") com.salesmanager.web.entity.catalog.Product  product, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
-		//TODO TaxClass
+
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		
 		//display menu
@@ -499,7 +501,17 @@ public class ProductController {
 	}
 	
 	
-
+	/**
+	 * Creates a duplicate product with the same inner object graph
+	 * Will ignore SKU, reviews and images
+	 * @param id
+	 * @param result
+	 * @param model
+	 * @param request
+	 * @param locale
+	 * @return
+	 * @throws Exception
+	 */
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/product/duplicate.html", method=RequestMethod.POST)
 	public String duplicateProduct(@ModelAttribute("productId") Long  id, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
@@ -515,13 +527,13 @@ public class ProductController {
 		List<Manufacturer> manufacturers = manufacturerService.listByStore(store, language);
 		List<ProductType> productTypes = productTypeService.list();
 		List<TaxClass> taxClasses = taxClassService.listByStore(store);
-		List<Language> languages = store.getLanguages();
-		
+
 		model.addAttribute("manufacturers", manufacturers);
 		model.addAttribute("productTypes", productTypes);
 		model.addAttribute("taxClasses", taxClasses);
 		
 		Product dbProduct = productService.getById(id);
+		Product newProduct = new Product();
 		
 		if(dbProduct==null || dbProduct.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 			return "redirect:/admin/products/products.html";
@@ -530,7 +542,8 @@ public class ProductController {
 		//Make a copy of the product
 		com.salesmanager.web.entity.catalog.Product product = new com.salesmanager.web.entity.catalog.Product();
 		
-		
+		Set<ProductAvailability> availabilities = new HashSet<ProductAvailability>();
+		//availability - price
 		for(ProductAvailability pAvailability : dbProduct.getAvailabilities()) {
 			
 			ProductAvailability availability = new ProductAvailability();
@@ -542,182 +555,129 @@ public class ProductController {
 			availability.setProductStatus(pAvailability.getProductStatus());
 			availability.setRegion(pAvailability.getRegion());
 			availability.setRegionVariant(pAvailability.getRegionVariant());
-			
+
 
 			
 			Set<ProductPrice> prices = pAvailability.getPrices();
-			
-			//TODO copy prices
-			
+			for(ProductPrice pPrice : prices) {
+				
+				ProductPrice price = new ProductPrice();
+				price.setDefaultPrice(pPrice.isDefaultPrice());
+				price.setProductPriceAmount(pPrice.getProductPriceAmount());
+				price.setProductPriceAvailability(availability);
+				price.setProductPriceSpecialAmount(pPrice.getProductPriceSpecialAmount());
+				price.setProductPriceSpecialEndDate(pPrice.getProductPriceSpecialEndDate());
+				price.setProductPriceSpecialStartDate(pPrice.getProductPriceSpecialStartDate());
+				price.setProductPriceType(pPrice.getProductPriceType());
+				
+				Set<ProductPriceDescription> priceDescriptions = new HashSet<ProductPriceDescription>();
+				//price descriptions
+				for(ProductPriceDescription pPriceDescription : pPrice.getDescriptions()) {
+					
+					ProductPriceDescription productPriceDescription = new ProductPriceDescription();
+					productPriceDescription.setAuditSection(pPriceDescription.getAuditSection());
+					productPriceDescription.setDescription(pPriceDescription.getDescription());
+					productPriceDescription.setName(pPriceDescription.getName());
+					productPriceDescription.setLanguage(pPriceDescription.getLanguage());
+					productPriceDescription.setProductPrice(price);
+					priceDescriptions.add(productPriceDescription);
+					
+				}
+				price.setDescriptions(priceDescriptions);
+				if(price.isDefaultPrice()) {
+					product.setPrice(price);
+					product.setProductPrice(priceUtil.getAdminFormatedAmount(store, price.getProductPriceAmount()));
+				}
+			}
+
 			if(availability.getRegion().equals(com.salesmanager.core.constants.Constants.ALL_REGIONS)) {
 				product.setAvailability(availability);
 			}
 			
-			
-			
+			availabilities.add(availability);
 		}
-/*		
-		ProductAvailability availability = new ProductAvailability();
-		availability.setProductQuantity(dbProduct.get)
-		
-		
-		
-		
-		Product newProduct = product.getProduct();
-		ProductAvailability newProductAvailability = null;
-		ProductPrice newProductPrice = null;
-		
-		Set<ProductPriceDescription> productPriceDescriptions = null;
-		
-		//get tax class
-		//TaxClass taxClass = newProduct.getTaxClass();
-		//TaxClass dbTaxClass = taxClassService.getById(taxClass.getId());
-		Set<ProductPrice> prices = new HashSet<ProductPrice>();
-		Set<ProductAvailability> availabilities = new HashSet<ProductAvailability>();	
-
-		if(product.getProduct().getId()!=null && product.getProduct().getId().longValue()>0) {
-		
-		
-			//get actual product
-			newProduct = productService.getById(product.getProduct().getId());
-			if(newProduct!=null && newProduct.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
-				return "redirect:/admin/products/products.html";
-			}
-			
-
-			newProduct.setSku(product.getProduct().getSku());
-			newProduct.setAvailable(product.getProduct().getAvailable());
-			newProduct.setDateAvailable(product.getProduct().getDateAvailable());
-			newProduct.setManufacturer(product.getProduct().getManufacturer());
-			newProduct.setType(product.getProduct().getType());
-			newProduct.setProductHeight(product.getProduct().getProductHeight());
-			newProduct.setProductLength(product.getProduct().getProductLength());
-			newProduct.setProductWeight(product.getProduct().getProductWeight());
-			newProduct.setProductWidth(product.getProduct().getProductWidth());
-
-			Set<ProductAvailability> avails = newProduct.getAvailabilities();
-			if(avails !=null && avails.size()>0) {
-				
-				for(ProductAvailability availability : avails) {
-					if(availability.getRegion().equals(com.salesmanager.core.constants.Constants.ALL_REGIONS)) {
-						
-						newProductAvailability = availability;
-						Set<ProductPrice> productPrices = availability.getPrices();
-						
-						for(ProductPrice price : productPrices) {
-							if(price.isDefaultPrice()) {
-								newProductPrice = price;
-								newProductPrice.setProductPriceAmount(submitedPrice);
-								productPriceDescriptions = price.getDescriptions();
-								newProductPrice.setProductPriceAmount(product.getPrice().getProductPriceAmount());
-							} else {
-								prices.add(price);
-							}	
-						}
-					} else {
-						availabilities.add(availability);
-					}
-				}
-			}
-			
-			
-			for(ProductImage image : newProduct.getImages()) {
-				if(image.isDefaultImage()) {
-					product.setProductImage(image);
-				}
-			}
-		}
-		
-		if(newProductPrice==null) {
-			newProductPrice = new ProductPrice();
-			newProductPrice.setDefaultPrice(true);
-			newProductPrice.setProductPriceAmount(submitedPrice);
-		}
-		
-		if(product.getProductImage()!=null && product.getProductImage().getId() == null) {
-			product.setProductImage(null);
-		}
-		
-		if(productPriceDescriptions==null) {
-			productPriceDescriptions = new HashSet<ProductPriceDescription>();
-			for(ProductDescription description : product.getDescriptions()) {
-				ProductPriceDescription ppd = new ProductPriceDescription();
-				ppd.setProductPrice(newProductPrice);
-				ppd.setLanguage(description.getLanguage());
-				ppd.setName(ProductPriceDescription.DEFAULT_PRICE_DESCRIPTION);
-				productPriceDescriptions.add(ppd);
-			}
-		}
-		
-		newProduct.setMerchantStore(store);
-		
-		if(newProductAvailability==null) {
-			newProductAvailability = new ProductAvailability();
-		}
-		
-		
-		newProductAvailability.setProductQuantity(product.getAvailability().getProductQuantity());
-		newProductAvailability.setProductQuantityOrderMin(product.getAvailability().getProductQuantityOrderMin());
-		newProductAvailability.setProductQuantityOrderMax(product.getAvailability().getProductQuantityOrderMax());
-		newProductAvailability.setProduct(newProduct);
-		newProductAvailability.setPrices(prices);
-		availabilities.add(newProductAvailability);
-		
-		newProductPrice.setProductPriceAvailability(newProductAvailability);
-		prices.add(newProductPrice);
 		
 		newProduct.setAvailabilities(availabilities);
 		
-		Set<ProductDescription> descriptions = new HashSet<ProductDescription>();
-		if(product.getDescriptions()!=null && product.getDescriptions().size()>0) {
+		
+		
+		//attributes
+		Set<ProductAttribute> attributes = new HashSet<ProductAttribute>();
+		for(ProductAttribute pAttribute : dbProduct.getAttributes()) {
 			
-			for(ProductDescription description : product.getDescriptions()) {
-				description.setProduct(newProduct);
-				descriptions.add(description);
-				
-			}
+			ProductAttribute attribute = new ProductAttribute();
+			attribute.setAttributeDefault(pAttribute.getAttributeDefault());
+			attribute.setAttributeDiscounted(pAttribute.getAttributeDiscounted());
+			attribute.setAttributeDisplayOnly(pAttribute.getAttributeDisplayOnly());
+			attribute.setAttributeRequired(pAttribute.getAttributeRequired());
+			attribute.setOptionValuePrice(pAttribute.getOptionValuePrice());
+			attribute.setProductAttributeIsFree(pAttribute.getProductAttributeIsFree());
+			attribute.setProductAttributeWeight(pAttribute.getProductAttributeWeight());
+			attribute.setProductOption(pAttribute.getProductOption());
+			attribute.setProductOptionSortOrder(pAttribute.getProductOptionSortOrder());
+			attribute.setProductOptionValue(pAttribute.getProductOptionValue());
+			attributes.add(attribute);
+						
+		}
+		newProduct.setAttributes(attributes);
+		
+		//relationships
+		Set<ProductRelationship> relationships = new HashSet<ProductRelationship>();
+		for(ProductRelationship pRelationship : dbProduct.getRelationships()) {
+			
+			ProductRelationship relationship = new ProductRelationship();
+			relationship.setActive(pRelationship.isActive());
+			relationship.setCode(pRelationship.getCode());
+			relationship.setRelatedProduct(pRelationship.getRelatedProduct());
+			relationship.setStore(store);
+			relationships.add(relationship);
+
 		}
 		
-		newProduct.setDescriptions(descriptions);
+		newProduct.setRelationships(relationships);
 		
-		
-		if(product.getImage()!=null && !product.getImage().isEmpty()) {
+		//product description
+		Set<ProductDescription> descsset = new HashSet<ProductDescription>();
+		List<ProductDescription> desclist = new ArrayList<ProductDescription>();
+		Set<ProductDescription> descriptions = dbProduct.getDescriptions();
+		for(ProductDescription pDescription : descriptions) {
 			
-
-			
-			String imageName = product.getImage().getOriginalFilename();
-			
-			List<ProductImageDescription> imagesDescriptions = new ArrayList<ProductImageDescription>();
-
-			for(Language l : languages) {
-				
-				ProductImageDescription imageDescription = new ProductImageDescription();
-				imageDescription.setName(imageName);
-				imageDescription.setLanguage(l);
-				imagesDescriptions.add(imageDescription);
-				
-			}
-			
-			ProductImage productImage = new ProductImage();
-			productImage.setDefaultImage(true);
-			productImage.setImage(product.getImage().getInputStream());
-			productImage.setProductImage(imageName);
-			productImage.setDescriptions(imagesDescriptions);
-			
-			newProduct.getImages().add(productImage);
-			
-			productService.saveOrUpdate(newProduct);
-			
-			product.setProductImage(productImage);
-			
-			
-		} else {
-			
-			productService.saveOrUpdate(newProduct);
-			
+			ProductDescription description = new ProductDescription();
+			description.setAuditSection(pDescription.getAuditSection());
+			description.setDescription(pDescription.getDescription());
+			description.setLanguage(pDescription.getLanguage());
+			description.setMetatagDescription(pDescription.getMetatagDescription());
+			description.setMetatagKeywords(pDescription.getMetatagKeywords());
+			description.setMetatagTitle(pDescription.getMetatagTitle());
+			descsset.add(description);
+			desclist.add(description);
 		}
-		*/
+		newProduct.setDescriptions(descsset);
+		product.setDescriptions(desclist);
+		
+		//product
+		newProduct.setAuditSection(dbProduct.getAuditSection());
+		newProduct.setAvailable(dbProduct.getAvailable());
+		newProduct.setCategories(dbProduct.getCategories());
+		newProduct.setDateAvailable(dbProduct.getDateAvailable());
+		newProduct.setManufacturer(dbProduct.getManufacturer());
+		newProduct.setMerchantStore(store);
+		newProduct.setProductHeight(dbProduct.getProductHeight());
+		newProduct.setProductIsFree(dbProduct.getProductIsFree());
+		newProduct.setProductLength(dbProduct.getProductLength());
+		newProduct.setProductOrdered(dbProduct.getProductOrdered());
+		newProduct.setProductWeight(dbProduct.getProductWeight());
+		newProduct.setProductWidth(dbProduct.getProductWidth());
+		newProduct.setSortOrder(dbProduct.getSortOrder());
+		newProduct.setTaxClass(dbProduct.getTaxClass());
+		newProduct.setType(dbProduct.getType());
+		
+		productService.saveOrUpdate(newProduct);
+		
+		product.setProduct(newProduct);
+		
 
+		model.addAttribute("product", product);
 		model.addAttribute("success","success");
 		
 		return "admin-products-edit";
@@ -947,7 +907,7 @@ public class ProductController {
 		return returnString;
 	}
 	
-	@SuppressWarnings("unused")
+
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/addProductToCategories.html", method=RequestMethod.POST)
 	public String addProductToCategory(@RequestParam("productId") long productId, @RequestParam("id") long categoryId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
