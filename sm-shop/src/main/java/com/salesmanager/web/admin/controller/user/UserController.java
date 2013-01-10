@@ -1,6 +1,5 @@
 package com.salesmanager.web.admin.controller.user;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -20,16 +19,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
-import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
-import com.salesmanager.core.business.catalog.category.service.CategoryService;
-import com.salesmanager.core.business.content.model.content.ContentDescription;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.service.CountryService;
-import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.business.user.model.User;
@@ -37,6 +31,7 @@ import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.UserService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
@@ -69,42 +64,42 @@ public class UserController {
 	@RequestMapping(value="/admin/users/createUser.html", method=RequestMethod.GET)
 	public String displayUserCreate(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return displayUser(null,model,request,response);
+	}
+	
+	@RequestMapping(value="/admin/users/displayUser.html", method=RequestMethod.GET)
+	public String displayUserEdit(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		
+		String userName = request.getRemoteUser();
+		
+		User user = userService.getByUserName(userName);
+		
+		return displayUser(user,model,request,response);
 
 	}
 	
 	
 	
-	private String displayUser(Long userId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private String displayUser(User user, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 
 		//display menu
 		setMenu(model,request);
-		
-		
-//		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-//		Language language = (Language)request.getAttribute("LANGUAGE");
+
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		//get groups
 		List<Group> groups = groupService.listGroup();
 		
-		User user = new User();
-		
-		if(userId!=null && userId!=0) {//edit mode
-			user = userService.getById(userId);
-		
-			
-			
-			if(user==null) {
-				return "admin-users-users";
-			}
+		if(user==null) {
+			user = new User();
 		}
 		
-		
+
 		model.addAttribute("user", user);
 		model.addAttribute("groups", groups);
 		
 
-		
 		return "admin-users-user";
 	}
 	

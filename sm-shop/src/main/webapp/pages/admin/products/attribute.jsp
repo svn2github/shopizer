@@ -3,7 +3,9 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ page session="false" %>				
-				
+<script type="text/javascript">
+var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong format" />';
+</script>				
 <script src="<c:url value="/resources/js/functions.js" />"></script>
 
 <div class="tabbable">

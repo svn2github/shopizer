@@ -31,7 +31,7 @@
 				<strong><c:out value="${product.sku}"/></strong>			
 
 				<br/>	
-				<a href="<c:url value="/admin/products/attributes/create.html?productId=${product.id}"/>"><s:message code="label.product.attribute.create" text="Create product attribute" /></a>	
+				<a href="<c:url value="/admin/products/attribute/createAttribute.html?productId=${product.id}"/>"><s:message code="label.product.attribute.create" text="Create product attribute" /></a>	
 				<br/><br/>
 
 				 <!-- Listing grid include -->

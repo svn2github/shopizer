@@ -73,7 +73,7 @@ response.setDateHeader ("Expires", -1);
 									</a>
 									
 									<ul class="dropdown-menu">
-										<li><a href="javascript:;"><s:message code="label.my.profile" text="My profile" /></a></li>
+										<li><a href="<c:url value="/admin/users/displayUser.html" />"><s:message code="label.my.profile" text="My profile" /></a></li>
 										<li><a href="javascript:;">TODO //Language</a></li>
 										<li class="divider"></li>
 										<li>
@@ -218,8 +218,8 @@ response.setDateHeader ("Expires", -1);
 			$("#catalogue-featured-link").click(function() {
   				window.location='<c:url value="/admin/catalogue/featured/list.html" />';
 			});
-			$("#userinfo-link").click(function() {
-  				window.location='<c:url value="/admin/user/user.html" />';
+			$("#user-link").click(function() {
+  				window.location='<c:url value="/admin/users/displayUser.html" />';
 			});
 			$("#users-link").click(function() {
   				window.location='<c:url value="/admin/user/users.html" />';

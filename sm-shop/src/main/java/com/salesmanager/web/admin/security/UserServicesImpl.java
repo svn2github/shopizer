@@ -170,6 +170,11 @@ public class UserServicesImpl implements UserDetailsService{
 		  groupService.create(gorder);
 		  groupService.create(gcontent);
 		  
+		  Permission storeadmin = new Permission("STORE_ADMIN");//Administrator of the store
+		  storeadmin.getGroups().add(gsuperadmin);
+		  storeadmin.getGroups().add(gadmin);
+		  permissionService.create(storeadmin);
+		  
 
 		  
 		  Permission auth = new Permission("AUTH");//Authenticated
@@ -237,6 +242,7 @@ public class UserServicesImpl implements UserDetailsService{
 		  user.setFirstName("Administrator");
 		  user.setLastName("User");
 		  user.getGroups().add(gsuperadmin);
+		  user.getGroups().add(gadmin);
 		  user.setMerchantStore(store);
 
 		  

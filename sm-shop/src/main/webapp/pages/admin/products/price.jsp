@@ -2,7 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@ page session="false" %>				
+<%@ page session="false" %>
+<script type="text/javascript">
+var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong format" />';
+</script>				
 				
 <link href="<c:url value="/resources/css/bootstrap/css/datepicker.css" />" rel="stylesheet"></link>
 <script src="<c:url value="/resources/js/bootstrap/bootstrap-datepicker.js" />"></script>				
@@ -39,7 +42,7 @@
 				})
 			.bind('decimalsEntered', function(e, cents) {
 				if (String(cents).length > 2) {
-					var errorMsg = '<s:message code="message.price.cents" text="Wrong format" /> (0.' + cents + ')';
+					var errorMsg = priceFormatMessage + ' (0.' + cents + ')';
 					$('#help-special-price').html(errorMsg);
 				}
 			});

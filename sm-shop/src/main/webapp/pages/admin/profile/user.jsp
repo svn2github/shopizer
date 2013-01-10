@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ page session="false" %>				
 				
 
@@ -154,20 +155,36 @@
                   <div class="control-group">
                       <label><s:message code="label.user.defaultLanguage" text="Default language"/> </label>
                       <div class="controls">
-                          <form:input cssClass="input-large" path="defaultLanguage"/>
+                          <form:select cssClass="" items="${languages}" itemValue="id" itemLabel="code" path="defaultLanguage.id"/>
                               <span class="help-inline"><form:errors path="defaultLanguage" cssClass="error" /></span>
                       </div>
                   </div>
+                  
+                  <div class="control-group">
+	                        <label><s:message code="label.groups.title" text="Groups"/></label>
+	                        <div class="controls">
+
+	                        					<form:checkboxes cssClass="highlight" items="${groups}" itemValue="id" itemLabel="groupName" path="groups" /> 
+	                                   			<span class="help-inline"><form:errors path="groups" cssClass="error" /></span>
+	                        </div>
+	              </div>
+                  
+                  
+                  <sec:authorize access="hasRole('STORE_ADMIN') and fullyAuthenticated">
+                  <div class="control-group">
+                        	<label><s:message code="label.entity.active" text="Active"/></label>
+                        	<div class="controls">
+                                    <form:checkbox path="active" />
+                        	</div>
+                  </div>
+                  </sec:authorize>
 
                   <form:hidden path="id"/>
 			
 			      <div class="form-actions">
 
                   		<div class="pull-right">
-
                   			<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>
-                  			
-
                   		</div>
 
             	 </div>

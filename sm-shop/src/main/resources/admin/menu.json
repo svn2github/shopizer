@@ -28,7 +28,7 @@
 "role":"AUTH",
 "order":2,
 "menus":[
-	{"menu":{"code":"userinfo","url":"","role":"AUTH","order":0}},
+	{"menu":{"code":"user","url":"","role":"AUTH","order":0}},
 	{"menu":{"code":"users","url":"","role":"ADMIN","order":0}},
 	{"menu":{"code":"create-user","url":"","role":"ADMIN","order":0}},
 	{"menu":{
