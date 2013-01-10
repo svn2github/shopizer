@@ -74,6 +74,7 @@ import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.service.ModuleConfigurationService;
 import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.business.user.model.Permission;
+import com.salesmanager.core.business.user.model.User;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
 import com.salesmanager.core.business.user.service.UserService;
@@ -498,6 +499,31 @@ public class IsolatedTestCase
         }
 
     }
+    
+/*    @Test
+    public void testGetUser() throws Exception {
+    	
+    	List<Integer> groups = new ArrayList<Integer>();
+    	User user = userService.getByUserName("admin");
+    	for(Group group : user.getGroups()) {
+    		
+    		System.out.println(group.getGroupName());
+    		groups.add(group.getId());
+    		for(Permission permission : group.getPermissions()) {
+    			
+    			System.out.println(permission.getPermissionName());
+    			
+    			
+    		}
+    		
+    	}
+    	
+    	List<Permission> permissions = permissionService.getPermissions(groups);
+    	for(Permission permission : permissions) {
+    		System.out.println(permission.getPermissionName());
+    	}
+    	
+    }*/
 
     @Test
     public void test2CreateProducts()
