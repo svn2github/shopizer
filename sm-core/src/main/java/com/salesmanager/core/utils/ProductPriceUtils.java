@@ -188,6 +188,12 @@ public class ProductPriceUtils {
 	 * @throws Exception
 	 */
 	public String getAdminFormatedAmountWithCurrency(MerchantStore store, BigDecimal amount) throws Exception {
+		if(amount==null) {
+			return "";
+		}
+		
+		
+		
 		NumberFormat nf = null;
 
 		
