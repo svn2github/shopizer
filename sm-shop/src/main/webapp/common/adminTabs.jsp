@@ -19,10 +19,9 @@
   							    <c:otherwise>
   									 <li class="dropdown <c:if test="${activeMenus[menu.code]!=null}"> active</c:if>" style="z-index:500000;position:relative"> 
   										<a href="#" class="dropdown-toggle" data-toggle="dropdown"><s:message code="menu.${menu.code}" text="${menu.code}"/><b class="caret"></b></a>
-
   										<ul class="dropdown-menu"> 
   											<c:forEach items="${menu.menus}" var="submenu">
-  												<li><a href="#" id="${submenu.code}-link" data-toggle="tab" style="color: #646464;">><s:message code="menu.${submenu.code}" text="${submenu.code}"/></a></li>
+  												<li><a href="#" id="${submenu.code}-link" data-toggle="tab"><s:message code="menu.${submenu.code}" text="${submenu.code}"/></a></li>
   											</c:forEach>
   										</ul> 
   									</li>
