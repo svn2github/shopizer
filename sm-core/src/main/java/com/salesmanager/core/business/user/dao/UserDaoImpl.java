@@ -6,8 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
-import com.salesmanager.core.business.catalog.category.model.QCategory;
-import com.salesmanager.core.business.catalog.category.model.QCategoryDescription;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.user.model.QGroup;
 import com.salesmanager.core.business.user.model.QUser;
@@ -30,8 +28,8 @@ public class UserDaoImpl extends SalesManagerEntityDaoImpl<Long, User> implement
 			.innerJoin(qUser.groups, qGroup).fetch()
 			.where(qUser.adminName.eq(userName));
 		
-
 		
+
 		User user = query.uniqueResult(qUser);
 		return user;
 	}

@@ -1,6 +1,7 @@
 package com.salesmanager.core.business.user.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class GroupServiceImpl extends
 	public void removeGroup(Group group) throws ServiceException {
 		group = this.getById(group.getId());// Prevents detached entity error
 
-		List<Permission> permissions = group.getPermissions();
+		Set<Permission> permissions = group.getPermissions();
 		for (Permission p : permissions){
 			p.getGroups().remove(group);
 		}

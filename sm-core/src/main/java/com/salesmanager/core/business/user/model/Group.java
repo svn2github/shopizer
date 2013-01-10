@@ -53,8 +53,16 @@ public class Group extends SalesManagerEntity<Integer, Group> implements Auditab
 	}
 	
 	@ManyToMany(mappedBy = "groups")
-	private List<Permission> permissions = new ArrayList<Permission>();	
+	private Set<Permission> permissions = new HashSet<Permission>();	
 	
+	public Set<Permission> getPermissions() {
+		return permissions;
+	}
+
+	public void setPermissions(Set<Permission> permissions) {
+		this.permissions = permissions;
+	}
+
 	@Embedded
 	private AuditSection auditSection = new AuditSection();
 	
@@ -87,12 +95,6 @@ public class Group extends SalesManagerEntity<Integer, Group> implements Auditab
 		this.groupName = groupName;
 	}
 
-	public List<Permission> getPermissions() {
-		return permissions;
-	}
 
-	public void setPermissions(List<Permission> permissions) {
-		this.permissions = permissions;
-	}
 
 }
