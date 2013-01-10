@@ -386,7 +386,6 @@ public class ProductController {
 								newProductPrice = price;
 								newProductPrice.setProductPriceAmount(submitedPrice);
 								productPriceDescriptions = price.getDescriptions();
-								newProductPrice.setProductPriceAmount(product.getPrice().getProductPriceAmount());
 							} else {
 								prices.add(price);
 							}	
@@ -432,18 +431,20 @@ public class ProductController {
 			newProductAvailability = new ProductAvailability();
 		}
 		
+		if(newProductAvailability.getId()==null) {
+			newProductAvailability.setProductQuantity(product.getAvailability().getProductQuantity());
+			newProductAvailability.setProductQuantityOrderMin(product.getAvailability().getProductQuantityOrderMin());
+			newProductAvailability.setProductQuantityOrderMax(product.getAvailability().getProductQuantityOrderMax());
+			newProductAvailability.setProduct(newProduct);
+			newProductAvailability.setPrices(prices);
+			availabilities.add(newProductAvailability);
+			
+			newProductPrice.setProductPriceAvailability(newProductAvailability);
+			prices.add(newProductPrice);
+			
+			newProduct.setAvailabilities(availabilities);
 		
-		newProductAvailability.setProductQuantity(product.getAvailability().getProductQuantity());
-		newProductAvailability.setProductQuantityOrderMin(product.getAvailability().getProductQuantityOrderMin());
-		newProductAvailability.setProductQuantityOrderMax(product.getAvailability().getProductQuantityOrderMax());
-		newProductAvailability.setProduct(newProduct);
-		newProductAvailability.setPrices(prices);
-		availabilities.add(newProductAvailability);
-		
-		newProductPrice.setProductPriceAvailability(newProductAvailability);
-		prices.add(newProductPrice);
-		
-		newProduct.setAvailabilities(availabilities);
+		}
 		
 		Set<ProductDescription> descriptions = new HashSet<ProductDescription>();
 		if(product.getDescriptions()!=null && product.getDescriptions().size()>0) {

@@ -67,7 +67,7 @@
                  <name>productDescription</name>
                  <required>true</required>
                  <rtexprvalue>true</rtexprvalue>
-                 <type>com.salesmanager.core.business.catalog.product.model.ProductDescription</type>
+                 <type>com.salesmanager.core.business.catalog.product.model.description.ProductDescription</type>
          </attribute>
          
 

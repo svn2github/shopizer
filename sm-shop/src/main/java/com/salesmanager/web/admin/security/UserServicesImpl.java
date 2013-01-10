@@ -3,7 +3,10 @@ package com.salesmanager.web.admin.security;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
@@ -23,6 +26,7 @@ import com.salesmanager.core.business.user.model.Permission;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
 import com.salesmanager.core.business.user.service.UserService;
+import com.salesmanager.web.admin.controller.categories.CategoryController;
 import com.salesmanager.web.constants.Constants;
 
 
@@ -34,11 +38,13 @@ import com.salesmanager.web.constants.Constants;
  */
 @Service("userDetailsService")
 public class UserServicesImpl implements UserDetailsService{
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserServicesImpl.class);
 
 	@Autowired
 	private UserService userService;
 	
-	
+
 	@Autowired
 	private MerchantStoreService merchantStoreService;
 	
@@ -80,6 +86,7 @@ public class UserServicesImpl implements UserDetailsService{
 		*/
 		
 		com.salesmanager.core.business.user.model.User user = null;
+		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		
 		try {
 
@@ -89,29 +96,36 @@ public class UserServicesImpl implements UserDetailsService{
 				return null;
 			}
 
-		} catch (ServiceException e) {
-			e.printStackTrace();
-		}
-		
-		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		
 
-		GrantedAuthority role = new GrantedAuthorityImpl(Constants.PERMISSION_ADMIN);//required to login
-		authorities.add(role);
-
-		
-		List<Group> groups = user.getGroups();
-		for(Group group : groups) {
 			
-			List<Permission> permissions = group.getPermissions();
-			for(Permission permission : permissions) {
+			
+	
+			GrantedAuthority role = new GrantedAuthorityImpl(Constants.PERMISSION_ADMIN);//required to login
+			authorities.add(role);
+	
+			List<Integer> groupsId = new ArrayList<Integer>();
+			List<Group> groups = user.getGroups();
+			for(Group group : groups) {
 				
-				GrantedAuthority auth = new GrantedAuthorityImpl(permission.getPermissionName());
-				authorities.add(auth);
+				
+				groupsId.add(group.getId());
+				
 			}
 			
-			
+	
+	    	
+	    	List<Permission> permissions = permissionService.getPermissions(groupsId);
+	    	for(Permission permission : permissions) {
+	    		GrantedAuthority auth = new GrantedAuthorityImpl(permission.getPermissionName());
+	    		authorities.add(auth);
+	    	}
+    	
+		} catch (Exception e) {
+			LOGGER.error("Exception while querrying user",e);
+			throw new SecurityDataAccessException("Exception while querrying user",e);
 		}
+		
+		
 		
 		
 /*		GrantedAuthority auth = new GrantedAuthorityImpl("AUTH");

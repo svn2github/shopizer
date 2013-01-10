@@ -142,9 +142,12 @@ public class MerchantStoreController {
 		model.addAttribute("countries", countries);
 		model.addAttribute("languages",languages);
 		model.addAttribute("currencies",currencies);
-		model.addAttribute("store", sessionStore);
 		
-		if(store.getZone()==null && StringUtils.isBlank(store.getStorepostalcode())) {
+		
+		Country c = store.getCountry();
+		List<Zone> zonesList = zoneService.getZones(c, language);
+		
+		if((zonesList==null || zonesList.size()==0) && StringUtils.isBlank(store.getStorestateprovince())) {
 			
 			ObjectError error = new ObjectError("zone.code",messages.getMessage("merchant.zone.invalid", locale));
 			result.addError(error);
@@ -229,7 +232,7 @@ public class MerchantStoreController {
 
 
 		model.addAttribute("success","success");
-		
+		model.addAttribute("store", sessionStore);
 
 		
 		return "admin-store";

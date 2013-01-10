@@ -81,10 +81,22 @@ public class ProductPriceController {
 			return "redirect:/admin/products/products.html";
 		}
 		
+		ProductAvailability productAvailability = null;
+		for(ProductAvailability availability : product.getAvailabilities()) {
+			
+			if(availability.getRegion().equals(com.salesmanager.core.constants.Constants.ALL_REGIONS)) {
+				
+				productAvailability = availability;
+				
+			}
+			
+			
+		}
+		
 
 
 		model.addAttribute("product",product);
-		
+		model.addAttribute("availability",productAvailability);
 
 		return ControllerConstants.Tiles.Product.productPrices;
 		

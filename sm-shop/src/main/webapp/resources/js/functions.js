@@ -32,7 +32,7 @@
 				})
 			.bind('decimalsEntered', function(e, cents) {
 				if (String(cents).length > 2) {
-					var errorMsg = '<s:message code="message.price.cents" text="Wrong format" /> (0.' + cents + ')';
+					var errorMsg = priceFormatMessage + ' (0.' + cents + ')';
 					$('#help-price').html(errorMsg);
 				}
 			});

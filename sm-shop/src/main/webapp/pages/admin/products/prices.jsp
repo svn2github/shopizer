@@ -34,7 +34,7 @@
 				<strong><c:out value="${product.sku}"/></strong>			
 
 				<br/>	
-				<a href="<c:url value="/admin/products/price/create.html?productId=${product.id}&availabilityId=${availability.id} }"/>"><s:message code="label.product.price.create" text="Create price" /></a>	
+				<a href="<c:url value="/admin/products/price/create.html?productId=${product.id}&availabilityId=${availability.id}"/>"><s:message code="label.product.price.create" text="Create price" /></a>	
 				<br/><br/>
 								
 				 <!-- Listing grid include -->

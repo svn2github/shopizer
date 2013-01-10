@@ -5,7 +5,9 @@
 <%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %>
 
 <%@ page session="false" %>			
-
+<script type="text/javascript">
+var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong format" />';
+</script>
 
     <link href="<c:url value="/resources/css/bootstrap/css/datepicker.css" />" rel="stylesheet"></link>
 	<script src="<c:url value="/resources/js/bootstrap/bootstrap-datepicker.js" />"></script>
@@ -100,10 +102,10 @@
 				<br/>
 				<c:if test="${product.product.id!=null && product.product.id>0}">
 					<c:forEach items="${product.descriptions}" var="description" varStatus="counter">
-						<strong></strong><sm:productUrl productDescription="${description}" /></strong>
+						<strong><sm:productUrl productDescription="${description}" /></strong>
 					</c:forEach>
 				</c:if>
-				<br/>
+				<br/><br/>
 
       					<c:url var="productSave" value="/admin/products/save.html"/>
                         <form:form method="POST" enctype="multipart/form-data" commandName="product" action="${productSave}">

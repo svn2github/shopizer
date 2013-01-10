@@ -53,68 +53,56 @@ response.setDateHeader ("Expires", -1);
      <p>&nbsp;</p>
 
 <div class="sm">
+	<div class="container">
 
+		<div class="row">
 
-<div class="navbar navbar-fixed-top" style="z-index:5000000;">
-	
-	<div class="navbar-inner">
-		
-		<div class="container">
-			
-			<a data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar">
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			</a>
-			
-			<a href="./" class="brand">
-				<img src="<c:url value="/resources/img/shopizer_small.png" />"/>			
-			</a>		
-			
-			<div class="nav-collapse">
-				<ul class="nav pull-right">
-					<li class="dropdown">
-						
-						<a data-toggle="dropdown" class="dropdown-toggle" href="#">
-							<i class="icon-cog"></i>
-							//TODO Settings
-							<b class="caret"></b>
-						</a>
-						
-						<ul class="dropdown-menu">
-							<li><a href="javascript:;">TODO //Language</a></li>
+  			<div class="span4"><a class="brand" href="#"><img src="<c:url value="/resources/img/shopizer_small.jpg" />"/></a></div>
+
+  			<div class="span4 offset4">
+
+					<div class="btn-group pull-right">
+						<div class="nav-collapse">
+							<ul class="nav pull-right">
+								<li class="dropdown">
+									
+									<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+										<i class="icon-user"></i> 
+										<sec:authentication property="principal.username" />
+										<b class="caret"></b>
+									</a>
+									
+									<ul class="dropdown-menu">
+										<li><a href="javascript:;"><s:message code="label.my.profile" text="My profile" /></a></li>
+										<li><a href="javascript:;">TODO //Language</a></li>
+										<li class="divider"></li>
+										<li>
+											<c:url value="/admin/j_spring_security_logout" var="logoutUrl"/>
+											<a href="${logoutUrl}"><s:message code="button.label.logout" text="Logout" /></a>
+										</li>
+									</ul>
+									
+								</li>
 						</ul>
-						
-					</li>
-					<li class="dropdown">
-						
-						<a data-toggle="dropdown" class="dropdown-toggle" href="#">
-							<i class="icon-user"></i> 
-							<sec:authentication property="principal.username" />
-							<b class="caret"></b>
-						</a>
-						
-						<ul class="dropdown-menu">
-							<li><a href="javascript:;"><s:message code="label.my.profile" text="My profile" /></a></li>
-							<li class="divider"></li>
-							<li>
-								<c:url value="/admin/j_spring_security_logout" var="logoutUrl"/>
-								<a href="${logoutUrl}"><s:message code="button.label.logout" text="Logout" /></a>
-							</li>
-						</ul>
-						
-					</li>
-				</ul>
 			
 
 				
 				</div><!--/.nav-collapse -->	
-			</div> <!-- /container -->
-		</div> <!-- /navbar-inner -->
+
+			</div>
+
+  			</div>
+
+
+   
+		
+		</div>
+		
 	</div>
+
+	
 	<div class="row">&nbsp;</div>
-	<div class="row">&nbsp;</div>
-	<div class="row">&nbsp;</div>
+
 
 
 	<div class="container"> 
