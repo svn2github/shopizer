@@ -233,7 +233,7 @@ public class ProductPriceController {
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/price/create.html", method=RequestMethod.GET)
-	public String createProductPrice(@RequestParam("productId") long productId,Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String displayCreateProductPrice(@RequestParam("productId") long productId,@RequestParam("availabilityId") long avilabilityId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		Product product = productService.getById(productId);
@@ -256,10 +256,7 @@ public class ProductPriceController {
 
 	
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		
-		if(product.getId().intValue()!=store.getId().intValue()) {
-			return "redirect:/admin/products/products.html";
-		}
+
 		
 		
 		ProductPrice productPrice = null;

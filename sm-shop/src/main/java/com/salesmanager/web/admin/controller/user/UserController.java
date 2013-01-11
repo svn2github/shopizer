@@ -100,7 +100,7 @@ public class UserController {
 		model.addAttribute("groups", groups);
 		
 
-		return "admin-users-user";
+		return "admin-user-profile";
 	}
 	
 	@RequestMapping(value="/admin/users/checkUserCode.html", method=RequestMethod.POST, produces="application/json")

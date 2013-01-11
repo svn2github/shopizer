@@ -66,7 +66,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                  </div>		
                  
                  <div class="control-group" id="optionValueText">
-                 <c:forEach items="${attribute.optionValue.descriptionsSettoList}" var="description" varStatus="counter">
+                 <c:forEach items="${optionValue.descriptionsSettoList}" var="description" varStatus="counter">
 	                  
 		                 
 		                        <label class="required"><s:message code="label.product.productoptions.name" text="Option name"/> (<c:out value="${description.language.code}"/>)</label>

@@ -38,11 +38,13 @@
 				<br/><br/>
 								
 				 <!-- Listing grid include -->
+				 
 				 <c:set value="/admin/products/prices/paging.html?productId=${product.id}" var="pagingUrl" scope="request"/>
 				 <c:set value="/admin/products/price/remove.html?productId=${product.id}" var="removeUrl" scope="request"/>
-				 <c:set value="/admin/products/price/edit.html?productId=${product.id}" var="editUrl" scope="request"/>
+				 <c:set value="/admin/products/price/edit.html" var="editUrl" scope="request"/>
 				 <c:set value="${pagingUrl}" var="afterRemoveUrl" scope="request"/>
 				 <c:set var="entityId" value="priceId" scope="request"/>
+				 <c:set var="appendQueryStringToEdit" value="productId=${product.id}" scope="request"/>
 				 <c:set var="componentTitleKey" value="label.product.prices" scope="request"/>
 				 <c:set var="gridHeader" value="/pages/admin/products/prices-gridHeader.jsp" scope="request"/>
 				 <c:set var="canRemoveEntry" value="true" scope="request"/>
