@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
@@ -70,6 +71,17 @@ public class ProductAttribute extends SalesManagerEntity<Long, ProductAttribute>
 	@JoinColumn(name="OPTION_VALUE_ID", nullable=false)
 	private ProductOptionValue productOptionValue;
 	
+	@Transient
+	private String attributePrice;
+	
+	public String getAttributePrice() {
+		return attributePrice;
+	}
+
+	public void setAttributePrice(String attributePrice) {
+		this.attributePrice = attributePrice;
+	}
+
 	@ManyToOne(targetEntity = Product.class)
 	@JoinColumn(name = "PRODUCT_ID", nullable = false)
 	private Product product;
