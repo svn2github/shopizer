@@ -92,25 +92,6 @@
 					<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
 								
 
-
-<!--       			  
-      			 <div class="control-group">
-                        <label><s:message code="label.user.usergroup" text="User group"/></label>
-                        <div class="controls">
-                                   
-	                        <div class="controls">
-	                        		<form:select path="id">
-	                        			<form:option value="-1" label="--- Select ---" />
-					  					<form:options items="${groups}" itemValue="id" itemLabel="groupName"/>
-				       				</form:select>
-	                                <span class="help-inline"><form:errors path="id" cssClass="error" /></span>
-	                        </div>
-
-                        </div>
-                  </div>
--->      			  
-      			  	
-              
                   <div class="control-group">
                         <label><s:message code="label.user.name" text="User name"/></label>
 	                        <div class="controls">
@@ -163,21 +144,47 @@
                   <div class="control-group">
 	                        <label><s:message code="label.groups.title" text="Groups"/></label>
 	                        <div class="controls">
-
-	                        					<form:checkboxes cssClass="highlight" items="${groups}" itemValue="id" itemLabel="groupName" path="groups" /> 
-	                                   			<span class="help-inline"><form:errors path="groups" cssClass="error" /></span>
+	                        	<form:checkboxes cssClass="highlight" items="${groups}" itemValue="id" itemLabel="groupName" path="groups" /> 
+	                            <span class="help-inline"><form:errors path="groups" cssClass="error" /></span>
 	                        </div>
 	              </div>
                   
                   
                   <sec:authorize access="hasRole('STORE_ADMIN') and fullyAuthenticated">
                   <div class="control-group">
-                        	<label><s:message code="label.entity.active" text="Active"/></label>
+                        	<label><strong></strong><s:message code="label.entity.active" text="Active"/></strong></label>
                         	<div class="controls">
                                     <form:checkbox path="active" />
                         	</div>
                   </div>
                   </sec:authorize>
+                  
+                  <div class="control-group">
+                      <label><s:message code="security.question1" text="Question 1"/> </label>
+                      <div class="controls">
+                          <form:select cssClass="" items="${questions}" itemValue="id" itemLabel="label" path="question1"/>
+                          <form:input cssClass="input-large" path="answer1"/>
+                              <span class="help-inline"><form:errors path="answer1" cssClass="error" /></span>
+                      </div>
+                  </div>
+                  
+                  <div class="control-group">
+                      <label><s:message code="security.question1" text="Question 2"/> </label>
+                      <div class="controls">
+                      	  <form:select cssClass="" items="${questions}" itemValue="id" itemLabel="label" path="question2"/>
+                          <form:input cssClass="input-large" path="answer2"/>
+                              <span class="help-inline"><form:errors path="answer2" cssClass="error" /></span>
+                      </div>
+                  </div>
+                  
+                  <div class="control-group">
+                      <label><s:message code="security.question3" text="Question 3"/> </label>
+                      <div class="controls">
+                      	  <form:select cssClass="" items="${questions}" itemValue="id" itemLabel="label" path="question3"/>
+                          <form:input cssClass="input-large" path="answer3"/>
+                              <span class="help-inline"><form:errors path="answer3" cssClass="error" /></span>
+                      </div>
+                  </div>
 
                   <form:hidden path="id"/>
 			

@@ -1,33 +1,25 @@
 package com.salesmanager.web.admin.controller.user;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.reference.country.service.CountryService;
-import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.business.reference.language.service.LanguageService;
-import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.business.user.model.Permission;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
@@ -53,6 +45,7 @@ public class PermissionController {
 	@Autowired
 	LabelUtils messages;
 
+	@Secured("STORE_ADMIN")
 	@RequestMapping(value = "/admin/permissions/editPermission.html", method = RequestMethod.GET)
 	public String displayPermissionEdit(
 			@RequestParam("id") Integer permissionId, Model model,
@@ -87,7 +80,7 @@ public class PermissionController {
 		return "admin-user-permission";
 	}
 
-	@RequestMapping(value = "/admin/permission/save.html", method = RequestMethod.POST)
+/*	@RequestMapping(value = "/admin/permission/save.html", method = RequestMethod.POST)
 	public String savePermission(
 			@Valid @ModelAttribute("permission") Permission permission,
 			BindingResult result, Model model, HttpServletRequest request)
@@ -123,9 +116,9 @@ public class PermissionController {
 
 		model.addAttribute("success", "success");
 		return "admin-user-permissions";
-	}
+	}*/
 
-	// category list
+	@Secured("STORE_ADMIN")
 	@RequestMapping(value = "/admin/permissions/permissions.html", method = RequestMethod.GET)
 	public String displayPermissions(Model model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -137,7 +130,7 @@ public class PermissionController {
 		return "admin-user-permissions";
 	}
 
-	// @SuppressWarnings({ "unchecked" })
+	@Secured("STORE_ADMIN")
 	@RequestMapping(value = "/admin/permissions/paging.html", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	String pagePermissions(HttpServletRequest request,
@@ -179,8 +172,9 @@ public class PermissionController {
 
 		return returnString;
 	}
+	
 
-	@RequestMapping(value = "/admin/permissions/remove.html", method = RequestMethod.POST, produces = "application/json")
+/*	@RequestMapping(value = "/admin/permissions/remove.html", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	String deletePermission(HttpServletRequest request,
 			HttpServletResponse response, Locale locale) {
@@ -218,9 +212,9 @@ public class PermissionController {
 		String returnString = resp.toJSONString();
 
 		return returnString;
-	}
+	}*/
 
-	@RequestMapping(value = "/admin/permissions/removePermission.html", method = RequestMethod.POST, produces = "application/json")
+/*	@RequestMapping(value = "/admin/permissions/removePermission.html", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	String removePermission(HttpServletRequest request,
 			HttpServletResponse response, Locale locale) {
@@ -258,7 +252,7 @@ public class PermissionController {
 		String returnString = resp.toJSONString();
 
 		return returnString;
-	}
+	}*/
 	
 	private void setMenu(Model model, HttpServletRequest request)
 			throws Exception {

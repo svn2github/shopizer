@@ -4,35 +4,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
-import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
-import com.salesmanager.core.business.catalog.product.model.ProductList;
-import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
-import com.salesmanager.core.business.catalog.product.service.ProductService;
-import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
@@ -68,6 +58,7 @@ public class GroupsController {
 	@Autowired
 	LabelUtils messages;
 
+	@Secured("STORE_ADMIN")
 	@RequestMapping(value = "/admin/groups/editGroup.html", method = RequestMethod.GET)
 	public String displayGroupEdit(
 			@RequestParam("id") Integer groupId, Model model,
@@ -130,7 +121,7 @@ public class GroupsController {
 		return "admin-user-group";
 	}
 
-	@RequestMapping(value = "/admin/group/save.html", method = RequestMethod.POST)
+/*	@RequestMapping(value = "/admin/group/save.html", method = RequestMethod.POST)
 	public String saveGroup(
 			@Valid @ModelAttribute("group") Group group,
 			BindingResult result, Model model, HttpServletRequest request)
@@ -171,9 +162,9 @@ public class GroupsController {
 
 		model.addAttribute("success", "success");
 		return "admin-user-groups";
-	}
+	}*/
 
-	// category list
+	@Secured("STORE_ADMIN")
 	@RequestMapping(value = "/admin/groups/groups.html", method = RequestMethod.GET)
 	public String displayGroups(Model model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -188,10 +179,11 @@ public class GroupsController {
 		return "admin-user-groups";
 	}
 
-	// @SuppressWarnings({ "unchecked" })
+	
+	@Secured("STORE_ADMIN")
 	@RequestMapping(value = "/admin/groups/paging.html", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	String pagePermissions(HttpServletRequest request,
+	String pageGroups(HttpServletRequest request,
 			HttpServletResponse response) {
 		String groupId = request.getParameter("groupId");
 
@@ -261,9 +253,7 @@ public class GroupsController {
 				entry.put("groupId", groupId);
 //				entry.put("available", permission.getAvailable());
 				resp.addDataEntry(entry);
-				
-				
-				
+
 			}
 
 			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_SUCCESS);
@@ -277,8 +267,11 @@ public class GroupsController {
 		String returnString = resp.toJSONString();
 		return returnString;
 	}
+	
+	
 
-	@RequestMapping(value = "/admin/groups/remove.html", method = RequestMethod.POST, produces = "application/json")
+
+/*	@RequestMapping(value = "/admin/groups/remove.html", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	String deleteGroup(HttpServletRequest request,
 			HttpServletResponse response, Locale locale) {
@@ -318,7 +311,7 @@ public class GroupsController {
 		String returnString = resp.toJSONString();
 
 		return returnString;
-	}
+	}*/
 
 	private void setMenu(Model model, HttpServletRequest request)
 			throws Exception {

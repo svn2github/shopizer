@@ -175,7 +175,9 @@ public class UserServicesImpl implements UserDetailsService{
 		  storeadmin.getGroups().add(gadmin);
 		  permissionService.create(storeadmin);
 		  
-
+		  Permission superadmin = new Permission("SUPERADMIN");
+		  superadmin.getGroups().add(gsuperadmin);
+		  permissionService.create(superadmin);
 		  
 		  Permission auth = new Permission("AUTH");//Authenticated
 		  auth.getGroups().add(gsuperadmin);

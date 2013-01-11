@@ -27,5 +27,9 @@ public interface ControllerConstants
             final String relatedItems="admin-products-related";
         }
         
+        interface User{
+            final String profile="admin-user-profile";
+        }
+        
     }
 }

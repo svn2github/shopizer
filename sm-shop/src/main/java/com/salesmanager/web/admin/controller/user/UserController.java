@@ -1,5 +1,6 @@
 package com.salesmanager.web.admin.controller.user;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,7 +32,9 @@ import com.salesmanager.core.business.user.model.User;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.UserService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
+import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.admin.security.SecurityQuestion;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
 
@@ -62,32 +66,28 @@ public class UserController {
 //	}
 	
 	@RequestMapping(value="/admin/users/createUser.html", method=RequestMethod.GET)
-	public String displayUserCreate(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return displayUser(null,model,request,response);
+	public String displayUserCreate(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		return displayUser(null,model,request,response,locale);
 	}
 	
 	@RequestMapping(value="/admin/users/displayUser.html", method=RequestMethod.GET)
-	public String displayUserEdit(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String displayUserEdit(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		
 		String userName = request.getRemoteUser();
-		
 		User user = userService.getByUserName(userName);
-		
-		return displayUser(user,model,request,response);
+		return displayUser(user,model,request,response,locale);
 
 	}
 	
 	
 	
-	private String displayUser(User user, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private String displayUser(User user, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 
 		//display menu
 		setMenu(model,request);
 
-		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		
 		//get groups
 		List<Group> groups = groupService.listGroup();
 		
@@ -95,12 +95,60 @@ public class UserController {
 			user = new User();
 		}
 		
+		//questions
+		List<SecurityQuestion> questions = new ArrayList<SecurityQuestion>();
+		
+		SecurityQuestion question = new SecurityQuestion();
+		question.setId("1");
+		question.setLabel(messages.getMessage("security.question.1", locale));
+		questions.add(question);
+		
+		question = new SecurityQuestion();
+		question.setId("2");
+		question.setLabel(messages.getMessage("security.question.2", locale));
+		questions.add(question);
+		
+		question = new SecurityQuestion();
+		question.setId("3");
+		question.setLabel(messages.getMessage("security.question.3", locale));
+		questions.add(question);
+		
+		question = new SecurityQuestion();
+		question.setId("4");
+		question.setLabel(messages.getMessage("security.question.4", locale));
+		questions.add(question);
+		
+		question = new SecurityQuestion();
+		question.setId("5");
+		question.setLabel(messages.getMessage("security.question.5", locale));
+		questions.add(question);
+		
+		question = new SecurityQuestion();
+		question.setId("6");
+		question.setLabel(messages.getMessage("security.question.6", locale));
+		questions.add(question);
+		
+		question = new SecurityQuestion();
+		question.setId("7");
+		question.setLabel(messages.getMessage("security.question.7", locale));
+		questions.add(question);
+		
+		question = new SecurityQuestion();
+		question.setId("8");
+		question.setLabel(messages.getMessage("security.question.8", locale));
+		questions.add(question);
+		
+		question = new SecurityQuestion();
+		question.setId("9");
+		question.setLabel(messages.getMessage("security.question.9", locale));
+		questions.add(question);
 
+		model.addAttribute("questions", questions);
 		model.addAttribute("user", user);
 		model.addAttribute("groups", groups);
 		
 
-		return "admin-user-profile";
+		return ControllerConstants.Tiles.User.profile;
 	}
 	
 	@RequestMapping(value="/admin/users/checkUserCode.html", method=RequestMethod.POST, produces="application/json")
@@ -108,10 +156,6 @@ public class UserController {
 		String code = request.getParameter("code");
 		String id = request.getParameter("id");
 
-
-//		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		
-		
 		AjaxResponse resp = new AjaxResponse();
 		
 		try {
@@ -133,13 +177,7 @@ public class UserController {
 			}
 
 		}
-		
-		
-		
-		
 
-	
-		
 			
 			if(StringUtils.isBlank(code)) {
 				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
@@ -150,9 +188,6 @@ public class UserController {
 				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
 				return resp.toJSONString();
 			}
-			
-
-			
 
 			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 
@@ -168,86 +203,73 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/admin/users/save.html", method=RequestMethod.POST)
-	public String saveUser(@Valid @ModelAttribute("category") Category category, BindingResult result, Model model, HttpServletRequest request) throws Exception {
+	public String saveUser(@Valid @ModelAttribute("user") User user, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 
-//		Language language = (Language)request.getAttribute("LANGUAGE");
-//		
-//		//display menu
-//		setMenu(model,request);
-//		
-//		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-//
-//		if(category.getId() != null && category.getId() >0) { //edit entry
-//			
-//			//get from DB
-//			Category currentCategory = categoryService.getById(category.getId());
-//			
-//			if(currentCategory==null || currentCategory.getMerchantStore().getId()!=store.getId()) {
-//				return "catalogue-categories";
-//			}
-//
-//		}
-//
-//			
-//			Map<String,Language> langs = languageService.getLanguagesMap();
-//			
-//
-//
-//			List<CategoryDescription> descriptions = category.getDescriptions();
-//			if(descriptions!=null) {
-//				
-//				for(CategoryDescription description : descriptions) {
-//					
-//					String code = description.getLanguage().getCode();
-//					Language l = langs.get(code);
-//					description.setLanguage(l);
-//					description.setCategory(category);
-//					
-//					
-//				}
-//				
-//			}
-//			
-//			//save to DB
-//			category.setMerchantStore(store);
-//		//}
-//		
-//		if (result.hasErrors()) {
-//			return "catalogue-categories-category";
-//		}
-//		
-//		//check parent
-//		if(category.getParent()!=null) {
-//			if(category.getParent().getId()==-1) {//this is a root category
-//				category.setParent(null);
-//				category.setLineage("/");
-//				category.setDepth(0);
-//			}
-//		}
-//		
-//		
-//		categoryService.saveOrUpdate(category);
-//
-//			
-//		//ajust lineage and depth
-//		if(category.getParent()!=null && category.getParent().getId()!=-1) { 
-//		
-//			Category parent = new Category();
-//			parent.setId(category.getParent().getId());
-//			parent.setMerchantStore(store);
-//			
-//			categoryService.addChild(parent, category);
-//		
-//		}
-//		
-//		
-//		//get parent categories
-//		List<Category> categories = categoryService.listByStore(store,language);
-//		model.addAttribute("categories", categories);
-//		
-//
+
+		//validate security questions not empty
+		if(StringUtils.isBlank(user.getAnswer1())) {
+			ObjectError error = new ObjectError("answer1",messages.getMessage("security.answer.question1.message", locale));
+			result.addError(error);
+		}
+		
+		if(StringUtils.isBlank(user.getAnswer2())) {
+			ObjectError error = new ObjectError("answer2",messages.getMessage("security.answer.question2.message", locale));
+			result.addError(error);
+		}
+		
+		if(StringUtils.isBlank(user.getAnswer3())) {
+			ObjectError error = new ObjectError("answer3",messages.getMessage("security.answer.question3.message", locale));
+			result.addError(error);
+		}
+		
+		if(user.getQuestion1().equals(user.getQuestion2()) || user.getQuestion1().equals(user.getQuestion3())
+				|| user.getQuestion2().equals(user.getQuestion1()) || user.getQuestion1().equals(user.getQuestion3())
+				|| user.getQuestion3().equals(user.getQuestion1()) || user.getQuestion1().equals(user.getQuestion2()))
+		
+		
+		{
+			ObjectError error = new ObjectError("question1",messages.getMessage("security.questions.differentmessages", locale));
+			result.addError(error);
+		}
+		
+		
+		//can't revoke super admin
+		User dbUser = userService.getByUserName(user.getAdminName());
+		if(dbUser==null) {
+			return ControllerConstants.Tiles.User.profile;
+		}
+		
+		List<Group> groups = dbUser.getGroups();
+		boolean removeSuperAdmin = false;
+		for(Group group : groups) {
+			if(group.getGroupName().equals("SUPERADMIN")) {
+				List<Group> userGroups = user.getGroups();
+				for(Group g : userGroups) {
+					if(g.getGroupName().equals("SUPERADMIN")) {
+						break;
+					}
+				}
+				removeSuperAdmin = true;
+			}
+		}
+		
+		if(removeSuperAdmin) {
+			ObjectError error = new ObjectError("groups",messages.getMessage("message.security.cannotrevoke.superadmin", locale));
+			result.addError(error);
+		}
+		
+		if (result.hasErrors()) {
+			return ControllerConstants.Tiles.User.profile;
+		}
+		
+		
+		
+		//save or update user
+		userService.saveOrUpdate(user);
+		
+
 		model.addAttribute("success","success");
-		return "catalogue-categories-category";
+		return ControllerConstants.Tiles.User.profile;
 	}
 	
 	
