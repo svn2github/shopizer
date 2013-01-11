@@ -104,6 +104,7 @@ public class User extends SalesManagerEntity<Long, User> implements Auditable {
 	@JoinColumn(name = "LANGUAGE_ID")
 	private Language defaultLanguage;
 	
+	
 	@Column(name="ADMIN_Q1")
 	private String question1;
 	

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
+import com.salesmanager.core.business.user.model.User;
 
 /**
  * <p>Service racine pour la gestion des entités.</p>
@@ -87,4 +88,5 @@ public interface SalesManagerEntityService<K extends Serializable & Comparable<K
 	void flush();
 
 	void clear();
+
 }
