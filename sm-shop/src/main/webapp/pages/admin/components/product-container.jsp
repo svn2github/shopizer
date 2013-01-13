@@ -93,10 +93,10 @@
 	                							width: 65,
 	               					 			title: "<s:message code="label.entity.details" text="Details"/>",
 	                							click : function () {
-	                								var url = '<c:url value="/admin/products/editProduct.html" />?id=' + record["productId"]
-	                								<c:if test="appendQueryStringToEdit!=null && appendQueryStringToEdit!=''">
-	                									url = url + '&<c:out value="${appendQueryStringToEdit}" />' 
-	                								</c:if>
+	                    							var url = '<c:url value="/admin/products/editProduct.html" />?id=' + record["productId"];
+	                    							<c:if test="${appendQueryStringToEdit!=null && appendQueryStringToEdit!=''}">
+	                    									url = url + '&<c:out value="${appendQueryStringToEdit}" />' ;
+	                    							</c:if>
 	                    							window.location=url;
 	                							}
 	            							});

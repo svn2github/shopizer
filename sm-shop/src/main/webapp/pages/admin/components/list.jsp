@@ -79,7 +79,15 @@
 	                						width: 65,
 	               					 		title: "<s:message code="label.entity.details" text="Details"/>",
 	                						click : function () {
-	                							window.location='<c:url value="${editUrl}" />?id=' + record["<c:out value="${entityId}" />"];
+	                							
+                								var url = '<c:url value="${editUrl}" />';
+                								var queryString = '?id=' + record["<c:out value="${entityId}" />"];
+                								<c:if test="${appendQueryStringToEdit!=null && appendQueryStringToEdit!=''}">
+                									queryString = queryString + '&<c:out value="${appendQueryStringToEdit}" />' ;
+                								</c:if>
+                								var locationUrl = url + queryString;
+                    							window.location= locationUrl;
+
 	                						}
 	            					});
 	            					return button;  

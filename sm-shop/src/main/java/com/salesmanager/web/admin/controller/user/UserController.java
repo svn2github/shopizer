@@ -87,6 +87,8 @@ public class UserController {
 
 		//display menu
 		setMenu(model,request);
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
 		//get groups
 		List<Group> groups = groupService.listGroup();
@@ -145,6 +147,7 @@ public class UserController {
 
 		model.addAttribute("questions", questions);
 		model.addAttribute("user", user);
+		model.addAttribute("languages", store.getLanguages());
 		model.addAttribute("groups", groups);
 		
 

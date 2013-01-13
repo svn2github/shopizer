@@ -1,6 +1,7 @@
 package com.salesmanager.web.admin.controller.products;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -213,7 +214,7 @@ public class ProductPriceController {
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/price/edit.html", method=RequestMethod.GET)
-	public String editProductPrice(@RequestParam("productId") long productId, @RequestParam("id") long productPriceId,Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String editProductPrice(@RequestParam("id") long productPriceId, @RequestParam("productId") long productId,Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		Product product = productService.getById(productId);
 		
@@ -257,7 +258,7 @@ public class ProductPriceController {
 	
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
-		
+		com.salesmanager.web.entity.catalog.ProductPrice pprice = new com.salesmanager.web.entity.catalog.ProductPrice();
 		
 		ProductPrice productPrice = null;
 		ProductAvailability productAvailability = null;
@@ -268,15 +269,15 @@ public class ProductPriceController {
 	
 			//get default availability
 			for(ProductAvailability availability : availabilities) {
-				productAvailability = availability;
 				if(availability.getRegion().equals(com.salesmanager.core.constants.Constants.ALL_REGIONS)) {
+					productAvailability = availability;
 					Set<ProductPrice> prices = availability.getPrices();
 					for(ProductPrice price : prices) {
 						if(price.getId().longValue()==productPriceId.longValue()) {
 							productPrice = price;
-							price.setProductPrice(priceUtil.getAdminFormatedAmount(store, price.getProductPriceAmount()));
+							pprice.setPriceText(priceUtil.getAdminFormatedAmount(store, price.getProductPriceAmount()));
 							if(price.getProductPriceSpecialAmount()!=null) {
-								price.setProductSpecialPrice(priceUtil.getAdminFormatedAmount(store, price.getProductPriceSpecialAmount()));
+								pprice.setSpecialPriceText(priceUtil.getAdminFormatedAmount(store, price.getProductPriceSpecialAmount()));
 							}
 							break;
 						}
@@ -295,7 +296,7 @@ public class ProductPriceController {
 		List<Language> languages = store.getLanguages();
 		
 		Set<ProductPriceDescription> productPriceDescriptions = productPrice.getDescriptions();
-		
+		List<ProductPriceDescription> descriptions = new ArrayList<ProductPriceDescription>();
 		for(Language l : languages) {
 			ProductPriceDescription productPriceDesc = null;
 			for(ProductPriceDescription desc : productPriceDescriptions) {
@@ -310,11 +311,17 @@ public class ProductPriceController {
 				productPriceDesc.setLanguage(l);
 				productPriceDescriptions.add(productPriceDesc);
 			}	
+			descriptions.add(productPriceDesc);
 		}
-
+		
+		pprice.setDescriptions(descriptions);
+		pprice.setProductAvailability(productAvailability);
+		pprice.setPrice(productPrice);
+		
 
 		model.addAttribute("product",product);
-		model.addAttribute("price",productPrice);
+		model.addAttribute("descriptions",descriptions);
+		model.addAttribute("price",pprice);
 		model.addAttribute("availability",productAvailability);
 		
 		return ControllerConstants.Tiles.Product.productPrice;
@@ -324,13 +331,13 @@ public class ProductPriceController {
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/price/save.html", method=RequestMethod.POST)
-	public String saveProduct(@ModelAttribute("availability") ProductAvailability availability, @Valid @ModelAttribute("price") ProductPrice price, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+	public String saveProduct(@Valid @ModelAttribute("price") com.salesmanager.web.entity.catalog.ProductPrice price, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
 		
 		//validate price
 		BigDecimal submitedPrice = null;
 		try {
-			submitedPrice = priceUtil.getAmount(price.getProductPrice());
+			submitedPrice = priceUtil.getAmount(price.getPriceText());
 		} catch (Exception e) {
 			ObjectError error = new ObjectError("productPrice",messages.getMessage("NotEmpty.product.productPrice", locale));
 			result.addError(error);
@@ -339,9 +346,9 @@ public class ProductPriceController {
 		//validate discount price
 		BigDecimal submitedDiscountPrice = null;
 		
-		if(!StringUtils.isBlank(price.getProductSpecialPrice())) {
+		if(!StringUtils.isBlank(price.getSpecialPriceText())) {
 			try {
-				submitedDiscountPrice = priceUtil.getAmount(price.getProductSpecialPrice());
+				submitedDiscountPrice = priceUtil.getAmount(price.getSpecialPriceText());
 			} catch (Exception e) {
 				ObjectError error = new ObjectError("productSpecialPrice",messages.getMessage("NotEmpty.product.productPrice", locale));
 				result.addError(error);
@@ -359,25 +366,25 @@ public class ProductPriceController {
 			
 		//}
 		
-		price.setProductPriceAmount(submitedPrice);
-		if(!StringUtils.isBlank(price.getProductSpecialPrice())) {
-			price.setProductPriceSpecialAmount(submitedDiscountPrice);
+		price.getPrice().setProductPriceAmount(submitedPrice);
+		if(!StringUtils.isBlank(price.getSpecialPriceText())) {
+			price.getPrice().setProductPriceSpecialAmount(submitedDiscountPrice);
 		}
 		
 		Set<ProductPriceDescription> descriptions = new HashSet<ProductPriceDescription>();
 		if(price.getDescriptions()!=null && price.getDescriptions().size()>0) {
 			
 			for(ProductPriceDescription description : price.getDescriptions()) {
-				description.setProductPrice(price);
+				description.setProductPrice(price.getPrice());
 				descriptions.add(description);
 				
 			}
 		}
 		
-		price.setDescriptions(descriptions);
-		price.setProductPriceAvailability(availability);
+		price.getPrice().setDescriptions(descriptions);
+		price.getPrice().setProductPriceAvailability(price.getProductAvailability());
 		
-		productPriceService.saveOrUpdate(price);
+		productPriceService.saveOrUpdate(price.getPrice());
 		
 		return ControllerConstants.Tiles.Product.productPrice;
 		

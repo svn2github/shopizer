@@ -12,6 +12,8 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 <script src="<c:url value="/resources/js/jquery.formatCurrency-1.4.0.js" />"></script>
 <script src="<c:url value="/resources/js/functions.js" />"></script>
 
+
+<script type="text/javascript">
 	$(function(){
 	
 			$('#productSpecialPriceAmount').blur(function() {
@@ -50,7 +52,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 
 	});
 
-
+</script>
 <div class="tabbable">
 
 					<jsp:include page="/common/adminTabs.jsp" />
@@ -71,10 +73,12 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 								
 				<h3>
 						<s:message code="label.product.price" text="Product price" />
-				</h3>	
+				</h3>
+				<br/>
+				<strong><c:out value="${product.sku}"/></strong>		
 				
 
-				<br/>
+				<br/><br/>
 
 
 				<c:url var="saveProductPrice" value="/admin/products/prices/saveProductPrice.html"/>
@@ -89,8 +93,8 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 					<div class="control-group">
 	                        <label class="required"><s:message code="label.product.price" text="Price"/></label>
 	                        <div class="controls">
-	                                    <form:input id="productPriceAmount" cssClass="highlight" path="productPrice"/>
-	                                    <span id="help-price" class="help-inline"><form:errors path="productPrice" cssClass="error" /></span>
+	                                    <form:input id="productPriceAmount" cssClass="highlight" path="priceText"/>
+	                                    <span id="help-price" class="help-inline"><form:errors path="priceText" cssClass="error" /></span>
 	                        </div>
 	                 </div>
 					
@@ -98,7 +102,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 					 <div class="control-group">
                         	<label><s:message code="label.product.price.default" text="Default price"/></label>
                         	<div class="controls">
-                                    <form:checkbox path="defaultPrice" />
+                                    <form:checkbox path="price.defaultPrice" />
                         	</div>
                   	</div>
 					
@@ -123,15 +127,15 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                   <div class="control-group">
 	                        <label class="required"><s:message code="label.product.price.special" text="Special price"/></label>
 	                        <div class="controls">
-	                                    <form:input id="productSpecialPriceAmount" cssClass="highlight" path="productSpecialPrice"/>
-	                                    <span id="help-special-price" class="help-inline"><form:errors path="productSpecialPrice" cssClass="error" /></span>
+	                                    <form:input id="productSpecialPriceAmount" cssClass="highlight" path="specialPriceText"/>
+	                                    <span id="help-special-price" class="help-inline"><form:errors path="specialPriceText" cssClass="error" /></span>
 	                        </div>
 	              </div>
 	              
 	              <div class="control-group">
 	                        <label><s:message code="label.product.price.special.startdate" text="Special start date"/></label>
 	                        <div class="controls">
-	                        		 <input id="productPriceSpecialStartDate" value="${price.productPriceSpecialStartDate}" class="small" type="text" data-datepicker="datepicker"> 
+	                        		 <input id="price.price.productPriceSpecialStartDate" value="${price.price.productPriceSpecialStartDate}" class="small" type="text" data-datepicker="datepicker"> 
 	                                 <span class="help-inline"></span>
 	                        </div>
 	              </div>
@@ -140,16 +144,16 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 	              <div class="control-group">
 	                        <label><s:message code="label.product.price.special.enddate" text="Special end date"/></label>
 	                        <div class="controls">
-	                        		 <input id="productPriceSpecialEndDate" value="${price.productPriceSpecialEndDate}" class="small" type="text" data-datepicker="datepicker"> 
+	                        		 <input id="price.price.productPriceSpecialEndDate" value="${price.price.productPriceSpecialEndDate}" class="small" type="text" data-datepicker="datepicker"> 
 	                                 <span class="help-inline"></span>
 	                        </div>
 	              </div>
 
 
-				  <form:hidden path="productPriceType" />
-                  <form:hidden path="id" />
-                  <form:hidden path="availability.region" />
-                  <form:hidden path="availability.id" />
+				  <form:hidden path="price.productPriceType" />
+                  <form:hidden path="price.id" />
+                  <form:hidden path="productAvailability.region" />
+                  <form:hidden path="productAvailability.id" />
 			
 			      <div class="form-actions">
 
