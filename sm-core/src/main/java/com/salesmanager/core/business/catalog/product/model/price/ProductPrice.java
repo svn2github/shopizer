@@ -49,7 +49,9 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 	private String productPriceType;
 
 	@Column(name = "DEFAULT_PRICE")
-	private Boolean defaultPrice = false;
+	private boolean defaultPrice = false;
+
+
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "PRODUCT_PRICE_SPECIAL_ST_DATE")
@@ -67,11 +69,6 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 	@JoinColumn(name = "PRODUCT_AVAIL_ID", nullable = false)
 	private ProductAvailability productPriceAvailability;
 	
-	@Transient
-	private String productPrice = "0";
-	
-	@Transient
-	private String productSpecialPrice = "";
 
 	public ProductPrice() {
 	}
@@ -98,14 +95,6 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 	}
 
 
-
-	public Boolean isDefaultPrice() {
-		return defaultPrice;
-	}
-
-	public void setDefaultPrice(Boolean defaultPrice) {
-		this.defaultPrice = defaultPrice;
-	}
 	
 	public Date getProductPriceSpecialStartDate() {
 		return CloneUtils.clone(productPriceSpecialStartDate);
@@ -166,22 +155,14 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 		return productPriceType;
 	}
 
-	public void setProductPrice(String productPrice) {
-		this.productPrice = productPrice;
+
+	public boolean isDefaultPrice() {
+		return defaultPrice;
 	}
 
-	public String getProductPrice() {
-		return productPrice;
+	public void setDefaultPrice(boolean defaultPrice) {
+		this.defaultPrice = defaultPrice;
 	}
-
-	public void setProductSpecialPrice(String productSpecialPrice) {
-		this.productSpecialPrice = productSpecialPrice;
-	}
-
-	public String getProductSpecialPrice() {
-		return productSpecialPrice;
-	}
-
 
 
 }
