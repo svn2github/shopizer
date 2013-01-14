@@ -26,6 +26,7 @@ public class UserDaoImpl extends SalesManagerEntityDaoImpl<Long, User> implement
 		
 		query.from(qUser)
 			.innerJoin(qUser.groups, qGroup).fetch()
+			.innerJoin(qUser.merchantStore).fetch()
 			.where(qUser.adminName.eq(userName));
 		
 		
@@ -40,6 +41,7 @@ public class UserDaoImpl extends SalesManagerEntityDaoImpl<Long, User> implement
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qUser)
+			.innerJoin(qUser.merchantStore).fetch()
 			.orderBy(qUser.id.asc());
 		
 		return query.listDistinct(qUser);
