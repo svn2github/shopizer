@@ -99,6 +99,14 @@
 	                                <span class="help-inline"><div id="checkCodeStatus" style="display:none;"></div><form:errors path="adminName" cssClass="error" /></span>
 	                        </div>
                   </div>
+                  
+                  <div class="control-group">
+                      <label><s:message code="label.store.title" text="Store"/> </label>
+                      <div class="controls">
+                          <form:select cssClass="" items="${stores}" itemValue="id" itemLabel="code" path="merchantStore.id"/>
+                              <span class="help-inline"><form:errors path="merchantStore" cssClass="error" /></span>
+                      </div>
+                  </div>
 
                   <div class="control-group">
 	                  <label><s:message code="label.user.email" text="Email"/></label>
@@ -111,7 +119,7 @@
                   <div class="control-group">
 	                  <label><s:message code="label.user.password" text="Password"/></label>
 	                  <div class="controls">
-                   		  <form:input cssClass="input-large highlight" path="adminPassword"/>
+                   		  <form:password cssClass="input-large highlight" path="adminPassword"/>
                              <span class="help-inline"><form:errors path="adminPassword" cssClass="error" /></span>
 	                  </div>
 

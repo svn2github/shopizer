@@ -13,6 +13,7 @@
 		class="com.salesmanager.web.admin.security.CustomerServicesImpl">
 	</beans:bean>
 
+	<!-- JDBC User details -->
 	<beans:bean id="userDetailsService"
 		class="com.salesmanager.web.admin.security.UserServicesImpl">
 	</beans:bean>
