@@ -17,9 +17,6 @@
 		if($("#adminName").val()=="") {
 			$('.btn').addClass('disabled');
 		}
-		<c:forEach items="${category.descriptions}" var="description" varStatus="counter">		
-			$("#name${counter.index}").friendurl({id : 'seUrl${counter.index}'});
-		</c:forEach>
 	});
 	
 	

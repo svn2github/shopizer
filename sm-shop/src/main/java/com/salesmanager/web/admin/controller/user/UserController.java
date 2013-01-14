@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.user.model.Group;
@@ -54,6 +55,9 @@ public class UserController {
 	
 	@Autowired
 	CountryService countryService;
+	
+	@Autowired
+	MerchantStoreService merchantStoreService;
 	
 	@Autowired
 	LabelUtils messages;
@@ -89,6 +93,21 @@ public class UserController {
 		setMenu(model,request);
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		List<MerchantStore> stores = new ArrayList<MerchantStore>();
+		stores.add(store);
+		
+		String remoteUser = request.getRemoteUser();
+		User logedInUser = userService.getByUserName(remoteUser);
+		
+		//check groups
+		List<Group> logedInUserGroups = logedInUser.getGroups();
+		for(Group group : logedInUserGroups) {
+			
+			if(group.getGroupName().equals(Constants.GROUP_SUPERADMIN)) {
+				stores = merchantStoreService.list();
+			}
+			
+		}
 
 		//get groups
 		List<Group> groups = groupService.listGroup();
@@ -147,6 +166,7 @@ public class UserController {
 
 		model.addAttribute("questions", questions);
 		model.addAttribute("user", user);
+		model.addAttribute("stores", stores);
 		model.addAttribute("languages", store.getLanguages());
 		model.addAttribute("groups", groups);
 		

@@ -320,9 +320,9 @@ public class ProductPriceController {
 		
 
 		model.addAttribute("product",product);
-		model.addAttribute("descriptions",descriptions);
+		//model.addAttribute("descriptions",descriptions);
 		model.addAttribute("price",pprice);
-		model.addAttribute("availability",productAvailability);
+		//model.addAttribute("availability",productAvailability);
 		
 		return ControllerConstants.Tiles.Product.productPrice;
 	}
@@ -333,6 +333,7 @@ public class ProductPriceController {
 	@RequestMapping(value="/admin/products/price/save.html", method=RequestMethod.POST)
 	public String saveProduct(@Valid @ModelAttribute("price") com.salesmanager.web.entity.catalog.ProductPrice price, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
+		//TODO success message, dates after save, menu
 		
 		//validate price
 		BigDecimal submitedPrice = null;

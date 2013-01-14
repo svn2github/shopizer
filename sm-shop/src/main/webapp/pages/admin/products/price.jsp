@@ -81,7 +81,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 				<br/><br/>
 
 
-				<c:url var="saveProductPrice" value="/admin/products/prices/saveProductPrice.html"/>
+				<c:url var="saveProductPrice" value="/admin/products/price/save.html"/>
 
 
 				<form:form method="POST" commandName="price" action="${saveProductPrice}">
@@ -106,7 +106,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                         	</div>
                   	</div>
 					
-					<c:forEach items="${descriptions}" var="description" varStatus="counter">
+					<c:forEach items="${price.descriptions}" var="description" varStatus="counter">
 
                         <div class="control-group">
 
@@ -127,7 +127,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                   <div class="control-group">
 	                        <label class="required"><s:message code="label.product.price.special" text="Special price"/></label>
 	                        <div class="controls">
-	                                    <form:input id="productSpecialPriceAmount" cssClass="highlight" path="specialPriceText"/>
+	                                    <form:input id="productSpecialPriceAmount" cssClass="" path="specialPriceText"/>
 	                                    <span id="help-special-price" class="help-inline"><form:errors path="specialPriceText" cssClass="error" /></span>
 	                        </div>
 	              </div>

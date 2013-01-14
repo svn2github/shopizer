@@ -5,6 +5,7 @@ public class Constants {
 	public final static String PERMISSION_ADMIN = "ADMIN";
 	public final static String ADMIN_STORE = "ADMIN_STORE";
 	public final static String MERCHANT_STORE = "MERCHANT_STORE";
+	public final static String GROUP_SUPERADMIN = "SUPERADMIN";
 	
 	
 	public final static String CONTENT_IMAGE = "CONTENT";
