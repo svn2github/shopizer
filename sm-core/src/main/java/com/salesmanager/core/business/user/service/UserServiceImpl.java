@@ -7,12 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
-import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.user.dao.UserDao;
 import com.salesmanager.core.business.user.model.User;
 
-@Service("userService")
+
 public class UserServiceImpl extends SalesManagerEntityServiceImpl<Long, User>
 		implements UserService {
 

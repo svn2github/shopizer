@@ -16,6 +16,10 @@
    	<bean id="coreConfiguration" class="com.salesmanager.core.utils.CoreConfiguration">
 		<property name="properties" ref="shopizer-properties"/>
 	</bean>
+	
+	<!-- JDBC User -->
+	<bean id="userService" class="com.salesmanager.core.business.user.service.UserServiceImpl"/>
+
 
 
 	
