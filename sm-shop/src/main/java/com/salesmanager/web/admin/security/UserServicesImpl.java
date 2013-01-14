@@ -3,7 +3,6 @@ package com.salesmanager.web.admin.security;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.user.model.Group;
@@ -26,7 +24,6 @@ import com.salesmanager.core.business.user.model.Permission;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
 import com.salesmanager.core.business.user.service.UserService;
-import com.salesmanager.web.admin.controller.categories.CategoryController;
 import com.salesmanager.web.constants.Constants;
 
 
@@ -37,7 +34,7 @@ import com.salesmanager.web.constants.Constants;
  *         -custom-user-details
  */
 @Service("userDetailsService")
-public class UserServicesImpl implements UserDetailsService{
+public class UserServicesImpl implements WebUserServices{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserServicesImpl.class);
 
@@ -156,7 +153,7 @@ public class UserServicesImpl implements UserDetailsService{
 		
 		  MerchantStore store = merchantStoreService.getMerchantStore(MerchantStore.DEFAULT_STORE);
 
-		  Group gsuperadmin = new Group("SUPERADMIN");
+/*		  Group gsuperadmin = new Group("SUPERADMIN");
 		  Group gadmin = new Group("ADMIN");
 		  Group gcatalogue = new Group("ADMIN_CATALOGUE");
 		  Group gstore = new Group("ADMIN_STORE");
@@ -234,17 +231,28 @@ public class UserServicesImpl implements UserDetailsService{
 		  shipping.getGroups().add(gadmin);
 		  shipping.getGroups().add(gstore);
 		  
-		  permissionService.create(shipping);
+		  permissionService.create(shipping);*/
 
 
 		  String password = passwordEncoder.encodePassword("password", null);
+		  
+		  List<Group> groups = groupService.listGroup();
 		  
 		  //creation of the super admin admin:password)
 		  com.salesmanager.core.business.user.model.User user = new com.salesmanager.core.business.user.model.User("admin",password,"admin@shopizer.com");
 		  user.setFirstName("Administrator");
 		  user.setLastName("User");
-		  user.getGroups().add(gsuperadmin);
-		  user.getGroups().add(gadmin);
+		  
+		  for(Group group : groups) {
+			  
+			  if(group.getGroupName().equals("SUPERADMIN") || group.getGroupName().equals("ADMIN")) {
+				  user.getGroups().add(group);
+			  }
+			  
+		  }
+		  
+		  //user.getGroups().add(gsuperadmin);
+		  //user.getGroups().add(gadmin);
 		  user.setMerchantStore(store);
 
 		  

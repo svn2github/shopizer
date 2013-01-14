@@ -3,24 +3,19 @@ package com.salesmanager.web.filter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.init.service.InitializationDatabase;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
-import com.salesmanager.core.business.system.model.SystemConfiguration;
 import com.salesmanager.core.business.system.service.SystemConfigurationService;
-import com.salesmanager.core.constants.SystemConstants;
 import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.web.admin.security.UserServicesImpl;
-import com.salesmanager.web.constants.ApplicationConstants;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.AppConfiguration;
 
@@ -106,14 +101,14 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				
 				
 				//TODO global object
-				if (initializationDatabase.isEmpty()) {
+/*				if (initializationDatabase.isEmpty()) {
 					LOGGER.info(String.format("%s : Shopizer database is empty, populate it....", "sm-shop"));
 			
 					initializationDatabase.populate("sm-shop");
 					userDetailsService.createDefaultAdmin();
 					loadData();
 	
-				}
+				}*/
 	
 				
 				
@@ -175,15 +170,14 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				//shopping cart
 			
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("Error in StoreFilter",e);
 			}
 
 			return true;
 		   
 	   }
 	   
-		private void loadData() throws ServiceException {
+/*		private void loadData() throws ServiceException {
 	
 			//List<SystemConfiguration> configurations = systemConfigurationService.list();
 			
@@ -214,7 +208,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				
 				
 			}
-		}
+		}*/
 
 
 	
