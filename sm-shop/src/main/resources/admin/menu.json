@@ -28,7 +28,18 @@
 "role":"AUTH",
 "order":2,
 "menus":[
-	{"menu":{"code":"user","url":"","role":"AUTH","order":0}},
+	{"menu":{
+		"code":"user","url":"","role":"AUTH","order":0,"menus":
+		[
+			{"menu":{
+				"code":"myprofile","url":"/admin/user/profile.html","role":"AUTH","order":0
+			}},
+			{"menu":{
+				"code":"change-password","url":"/admin/user/password.html","role":"ADMIN","order":1
+			}}
+		]
+		
+	}},
 	{"menu":{"code":"users","url":"","role":"ADMIN","order":0}},
 	{"menu":{"code":"create-user","url":"","role":"ADMIN","order":0}},
 	{"menu":{
