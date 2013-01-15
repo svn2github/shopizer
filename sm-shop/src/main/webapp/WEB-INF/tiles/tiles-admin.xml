@@ -133,6 +133,10 @@
   		<put-attribute name="body" value="/pages/admin/profile/profile.jsp" /> 
   	</definition>
   	
+  	<definition name="admin-user-password" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/profile/password.jsp" /> 
+  	</definition>
+  	
   	 <definition name="admin-user-permissions" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/profile/permissions.jsp" /> 
   	</definition>

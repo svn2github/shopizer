@@ -218,8 +218,11 @@ response.setDateHeader ("Expires", -1);
 			$("#catalogue-featured-link").click(function() {
   				window.location='<c:url value="/admin/catalogue/featured/list.html" />';
 			});
-			$("#user-link").click(function() {
+			$("#myprofile-link").click(function() {
   				window.location='<c:url value="/admin/users/displayUser.html" />';
+			});
+			$("#change-password-link").click(function() {
+  				window.location='<c:url value="/admin/users/password.html" />';
 			});
 			$("#users-link").click(function() {
   				window.location='<c:url value="/admin/user/users.html" />';

@@ -6,8 +6,6 @@
 <%@ page session="false" %>				
 				
 
-<script src="<c:url value="/resources/js/ckeditor/ckeditor.js" />"></script>
-
 
 	<script type="text/javascript">
 	
@@ -111,7 +109,7 @@
                    		  <form:input cssClass="input-large highlight" path="adminEmail"/>
                              <span class="help-inline"><form:errors path="adminEmail" cssClass="error" /></span>
 	                  </div>
-	       		  </div>
+	       		  </div><!--
 
                   <div class="control-group">
 	                  <label><s:message code="label.user.password" text="Password"/></label>
@@ -122,7 +120,7 @@
 
 	       		  </div>
 
-                  <div class="control-group">
+                  --><div class="control-group">
                       <label><s:message code="label.user.firstName" text="First name"/> </label>
                       <div class="controls">
                           <form:input cssClass="input-large" path="firstName"/>
