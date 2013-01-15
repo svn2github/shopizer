@@ -360,13 +360,7 @@ public class ProductPriceController {
 			return ControllerConstants.Tiles.Product.productPrice;
 		}
 		
-		//if(price.getId()!=null && price.getId().longValue()>0) {
-			
-			
-			
-			
-		//}
-		
+
 		price.getPrice().setProductPriceAmount(submitedPrice);
 		if(!StringUtils.isBlank(price.getSpecialPriceText())) {
 			price.getPrice().setProductPriceSpecialAmount(submitedDiscountPrice);
@@ -386,6 +380,7 @@ public class ProductPriceController {
 		price.getPrice().setProductPriceAvailability(price.getProductAvailability());
 		
 		productPriceService.saveOrUpdate(price.getPrice());
+		model.addAttribute("success","success");
 		
 		return ControllerConstants.Tiles.Product.productPrice;
 		

@@ -14,6 +14,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,6 +31,7 @@ import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.user.model.Group;
+import com.salesmanager.core.business.user.model.Permission;
 import com.salesmanager.core.business.user.model.User;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.UserService;
@@ -61,13 +64,126 @@ public class UserController {
 	
 	@Autowired
 	LabelUtils messages;
-
 	
-//	@RequestMapping(value="/admin/categories/editCategory.html", method=RequestMethod.GET)
-//	public String displayUserEdit(@RequestParam("id") long categoryId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-//		return displayUser(categoryId,model,request,response);
-//
-//	}
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	@SuppressWarnings("unchecked")
+	@Secured("STORE_ADMIN")
+	@RequestMapping(value = "/admin/users/paging.html", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	String pagePermissions(HttpServletRequest request,
+			HttpServletResponse response) {
+
+		AjaxResponse resp = new AjaxResponse();
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+
+		try {
+
+			List<User> users = userService.listUserByStore(store);
+
+
+
+			for (User user : users) {
+
+				@SuppressWarnings("rawtypes")
+				Map entry = new HashMap();
+				entry.put("id", user.getId());
+				entry.put("name", user.getFirstName() + " " + user.getLastName());
+				entry.put("email", user.getAdminEmail());
+				entry.put("active", user.isActive());
+				resp.addDataEntry(entry);
+
+			}
+
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+
+		} catch (Exception e) {
+			LOGGER.error("Error while paging categories", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+		}
+
+		String returnString = resp.toJSONString();
+
+		return returnString;
+	}
+
+
+	@RequestMapping(value="/admin/users/password.html", method=RequestMethod.GET)
+	public String displayChangePassword(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+		String userName = request.getRemoteUser();
+		User user = userService.getByUserName(userName);
+		
+		model.addAttribute("user",user);
+		return ControllerConstants.Tiles.User.password;
+	}
+	
+	
+	
+	@RequestMapping(value="/admin/users/savePassword.html", method=RequestMethod.POST)
+	public String changePassword(@ModelAttribute("user") User user, @ModelAttribute("password") String password, @ModelAttribute("newPassword") String newPassword, @ModelAttribute("newPasswordAgain") String repeatPassword, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+		String userName = request.getRemoteUser();
+		User dbUser = userService.getByUserName(userName);
+		
+
+		if(user.getId().longValue()!= dbUser.getId().longValue()) {
+				return "redirect:/admin/users/displayUser.html";
+		}
+		
+		model.addAttribute("user",dbUser);
+		
+		String tempPass = passwordEncoder.encodePassword(password, null);
+		
+		//password match
+		if(tempPass.equals(dbUser.getAdminPassword())) {
+			ObjectError error = new ObjectError("password",messages.getMessage("message.password.invalid", locale));
+			result.addError(error);
+			return ControllerConstants.Tiles.User.password;
+		}
+
+		//validate password not empty
+		if(StringUtils.isBlank(password)) {
+			ObjectError error = new ObjectError("password",new StringBuilder().append(messages.getMessage("label.generic.password", locale)).append(" ").append(messages.getMessage("message.cannot.empty", locale)).toString());
+			result.addError(error);
+			return ControllerConstants.Tiles.User.password;
+		}
+		
+		if(StringUtils.isBlank(newPassword)) {
+			ObjectError error = new ObjectError("newPassword",new StringBuilder().append(messages.getMessage("label.generic.newpassword", locale)).append(" ").append(messages.getMessage("message.cannot.empty", locale)).toString());
+			result.addError(error);
+		}
+		
+		if(StringUtils.isBlank(repeatPassword)) {
+			ObjectError error = new ObjectError("newPasswordAgain",new StringBuilder().append(messages.getMessage("label.generic.newpassword.repeat", locale)).append(" ").append(messages.getMessage("message.cannot.empty", locale)).toString());
+			result.addError(error);
+		}
+		
+		if(repeatPassword.equals(newPassword)) {
+			ObjectError error = new ObjectError("newPasswordAgain",messages.getMessage("message.password.different", locale));
+			result.addError(error);
+		}
+		
+		if(newPassword.length()<6) {
+			ObjectError error = new ObjectError("newPassword",messages.getMessage("message.password.length", locale));
+			result.addError(error);
+		}
+		
+		if (result.hasErrors()) {
+			return ControllerConstants.Tiles.User.password;
+		}
+		
+		
+		
+		String pass = passwordEncoder.encodePassword(newPassword, null);
+		dbUser.setAdminPassword(pass);
+		userService.update(dbUser);
+		
+		model.addAttribute("success","success");
+		return ControllerConstants.Tiles.User.password;
+	}
 	
 	@RequestMapping(value="/admin/users/createUser.html", method=RequestMethod.GET)
 	public String displayUserCreate(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
@@ -259,7 +375,13 @@ public class UserController {
 		//can't revoke super admin
 		User dbUser = userService.getByUserName(user.getAdminName());
 		if(dbUser==null) {
-			return ControllerConstants.Tiles.User.profile;
+			return "redirect://admin/users/displayUser.html";
+		}
+		
+		if(user.getId()!=null && user.getId()>0) {
+			if(user.getId().longValue()!=dbUser.getId().longValue()) {
+				return "redirect://admin/users/displayUser.html";
+			}
 		}
 		
 		List<Group> groups = dbUser.getGroups();
@@ -286,7 +408,7 @@ public class UserController {
 		}
 		
 		
-		
+		user.setAdminPassword(dbUser.getAdminPassword());
 		//save or update user
 		userService.saveOrUpdate(user);
 		
