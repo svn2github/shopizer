@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.user.dao.UserDao;
 import com.salesmanager.core.business.user.model.User;
 
@@ -35,6 +36,15 @@ public class UserServiceImpl extends SalesManagerEntityServiceImpl<Long, User>
 	public List<User> listUser() throws ServiceException {
 		try {
 			return userDao.listUser();
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	@Override
+	public List<User> listUserByStore(MerchantStore store) throws ServiceException {
+		try {
+			return userDao.listUserByStore(store);
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}

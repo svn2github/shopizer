@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.merchant.model.QMerchantStore;
 import com.salesmanager.core.business.user.model.QGroup;
 import com.salesmanager.core.business.user.model.QUser;
 import com.salesmanager.core.business.user.model.User;
@@ -43,6 +45,20 @@ public class UserDaoImpl extends SalesManagerEntityDaoImpl<Long, User> implement
 		query.from(qUser)
 			.innerJoin(qUser.merchantStore).fetch()
 			.orderBy(qUser.id.asc());
+		
+		return query.listDistinct(qUser);
+	}
+	
+	@Override
+	public List<User> listUserByStore(MerchantStore store) {
+		QUser qUser = QUser.user;
+		QMerchantStore qStore = qUser.merchantStore;
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qUser)
+			.innerJoin(qUser.merchantStore,qStore).fetch()
+			.orderBy(qUser.id.asc())
+			.where(qStore.id.eq(store.getId()));
 		
 		return query.listDistinct(qUser);
 	}

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.user.model.User;
 
 public interface UserService extends SalesManagerEntityService<Long, User> {
@@ -18,5 +19,7 @@ public interface UserService extends SalesManagerEntityService<Long, User> {
 	 * @throws ServiceException
 	 */
 	void saveOrUpdate(User user) throws ServiceException;
+
+	List<User> listUserByStore(MerchantStore store) throws ServiceException;
 
 }

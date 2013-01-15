@@ -3,6 +3,7 @@ package com.salesmanager.core.business.user.service;
 import java.util.List;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.user.model.User;
 
 public class UserServiceLDAPImpl implements UserService {
@@ -89,6 +90,13 @@ public class UserServiceLDAPImpl implements UserService {
 	public void saveOrUpdate(User user) throws ServiceException {
 		throw new ServiceException("Not implemented");
 
+	}
+
+	@Override
+	public List<User> listUserByStore(MerchantStore store)
+			throws ServiceException {
+		// TODO Auto-generated method stub
+		throw new ServiceException("Not implemented");
 	}
 
 }
