@@ -363,10 +363,10 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 
 
                   <div class="control-group">
-                        <label><s:message code="label.product.image" text="Image"/>&nbsp;<c:if test="${product.productImage.productImage!=null}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage('${product.productImage.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if></label>
+                        <label><s:message code="label.product.image" text="Image"/>&nbsp;<c:if test="${product.productImage.productImage!=null && product.productImage.productImage!=''}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage('${product.productImage.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if></label>
                         <div class="controls" id="imageControl">
                         		<c:choose>
-	                        		<c:when test="${product.productImage.productImage==null}">
+	                        		<c:when test="${product.productImage.productImage==null || product.productImage.productImage==''}">
 	                                    <input class="input-file" id="image" name="image" type="file">
 	                                </c:when>
 	                                <c:otherwise>

@@ -332,9 +332,9 @@ public class ProductController {
 				LOGGER.error("Cannot validate product image", e);
 			}
 
-			
-			
 		}
+		
+		
 		
 		if (result.hasErrors()) {
 			return "admin-products-edit";

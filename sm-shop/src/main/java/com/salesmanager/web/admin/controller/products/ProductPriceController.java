@@ -2,6 +2,7 @@ package com.salesmanager.web.admin.controller.products;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -44,6 +45,7 @@ import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.utils.DateUtil;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
@@ -90,8 +92,6 @@ public class ProductPriceController {
 				productAvailability = availability;
 				
 			}
-			
-			
 		}
 		
 
@@ -275,6 +275,12 @@ public class ProductPriceController {
 					for(ProductPrice price : prices) {
 						if(price.getId().longValue()==productPriceId.longValue()) {
 							productPrice = price;
+							if(price.getProductPriceSpecialStartDate()!=null) {
+								pprice.setProductPriceSpecialStartDate(DateUtil.formatDate(price.getProductPriceSpecialStartDate()));
+							}
+							if(price.getProductPriceSpecialEndDate()!=null) {
+								pprice.setProductPriceSpecialEndDate(DateUtil.formatDate(price.getProductPriceSpecialEndDate()));
+							}
 							pprice.setPriceText(priceUtil.getAdminFormatedAmount(store, price.getProductPriceAmount()));
 							if(price.getProductPriceSpecialAmount()!=null) {
 								pprice.setSpecialPriceText(priceUtil.getAdminFormatedAmount(store, price.getProductPriceSpecialAmount()));
@@ -317,6 +323,7 @@ public class ProductPriceController {
 		pprice.setDescriptions(descriptions);
 		pprice.setProductAvailability(productAvailability);
 		pprice.setPrice(productPrice);
+		pprice.setProduct(product);
 		
 
 		model.addAttribute("product",product);
@@ -331,9 +338,19 @@ public class ProductPriceController {
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/price/save.html", method=RequestMethod.POST)
-	public String saveProduct(@Valid @ModelAttribute("price") com.salesmanager.web.entity.catalog.ProductPrice price, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+	public String saveProductPrice(@Valid @ModelAttribute("price") com.salesmanager.web.entity.catalog.ProductPrice price, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
-		//TODO success message, dates after save, menu
+		//dates after save
+		
+		setMenu(model,request);
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		Product product = price.getProduct();
+		Product dbProduct = productService.getById(product.getId());
+		if(store.getId().intValue()!=dbProduct.getMerchantStore().getId().intValue()) {
+			return "redirect:/admin/products/products.html";
+		}
 		
 		//validate price
 		BigDecimal submitedPrice = null;
@@ -356,6 +373,28 @@ public class ProductPriceController {
 			}
 		}
 		
+		//validate start date
+		if(!StringUtils.isBlank(price.getProductPriceSpecialStartDate())) {
+			try {
+				Date startDate = DateUtil.getDate(price.getProductPriceSpecialStartDate());
+				price.getPrice().setProductPriceSpecialStartDate(startDate);
+			} catch (Exception e) {
+				ObjectError error = new ObjectError("productPriceSpecialStartDate",messages.getMessage("message.invalid.date", locale));
+				result.addError(error);
+			}
+		}
+		
+		if(!StringUtils.isBlank(price.getProductPriceSpecialEndDate())) {
+			try {
+				Date endDate = DateUtil.getDate(price.getProductPriceSpecialEndDate());
+				price.getPrice().setProductPriceSpecialEndDate(endDate);
+			} catch (Exception e) {
+				ObjectError error = new ObjectError("productPriceSpecialEndDate",messages.getMessage("message.invalid.date", locale));
+				result.addError(error);
+			}
+		}
+		
+		
 		if (result.hasErrors()) {
 			return ControllerConstants.Tiles.Product.productPrice;
 		}
@@ -365,6 +404,9 @@ public class ProductPriceController {
 		if(!StringUtils.isBlank(price.getSpecialPriceText())) {
 			price.getPrice().setProductPriceSpecialAmount(submitedDiscountPrice);
 		}
+		
+		
+		
 		
 		Set<ProductPriceDescription> descriptions = new HashSet<ProductPriceDescription>();
 		if(price.getDescriptions()!=null && price.getDescriptions().size()>0) {

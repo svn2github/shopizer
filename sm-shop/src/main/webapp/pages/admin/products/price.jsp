@@ -135,8 +135,8 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 	              <div class="control-group">
 	                        <label><s:message code="label.product.price.special.startdate" text="Special start date"/></label>
 	                        <div class="controls">
-	                        		 <input id="price.price.productPriceSpecialStartDate" value="${price.price.productPriceSpecialStartDate}" class="small" type="text" data-datepicker="datepicker"> 
-	                                 <span class="help-inline"></span>
+	                        		 <input id="productPriceSpecialStartDate" value="${price.price.productPriceSpecialStartDate}" class="small" type="text" data-datepicker="datepicker"> 
+	                                 <span class="help-inline"><form:errors path="productPriceSpecialStartDate" cssClass="error" /></span>
 	                        </div>
 	              </div>
 					
@@ -144,8 +144,8 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 	              <div class="control-group">
 	                        <label><s:message code="label.product.price.special.enddate" text="Special end date"/></label>
 	                        <div class="controls">
-	                        		 <input id="price.price.productPriceSpecialEndDate" value="${price.price.productPriceSpecialEndDate}" class="small" type="text" data-datepicker="datepicker"> 
-	                                 <span class="help-inline"></span>
+	                        		 <input id="productPriceSpecialEndDate" value="${price.price.productPriceSpecialEndDate}" class="small" type="text" data-datepicker="datepicker"> 
+	                                 <span class="help-inline"><form:errors path="productPriceSpecialEndDate" cssClass="error" /></span>
 	                        </div>
 	              </div>
 
@@ -154,6 +154,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                   <form:hidden path="price.id" />
                   <form:hidden path="productAvailability.region" />
                   <form:hidden path="productAvailability.id" />
+                  <form:hidden path="price.product.id" />
 			
 			      <div class="form-actions">
 

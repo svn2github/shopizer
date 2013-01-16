@@ -15,6 +15,13 @@ public class ProductPrice {
 	private ProductAvailability productAvailability;
 	
 	
+	//cannot convert in this object to date ??? needs to use a string, parse, bla bla
+	private String productPriceSpecialStartDate;
+	private String productPriceSpecialEndDate;
+	
+	private com.salesmanager.core.business.catalog.product.model.Product product;
+	
+	
 	
 	
 	
@@ -47,6 +54,26 @@ public class ProductPrice {
 	}
 	public void setSpecialPriceText(String specialPriceText) {
 		this.specialPriceText = specialPriceText;
+	}
+
+	public com.salesmanager.core.business.catalog.product.model.Product getProduct() {
+		return product;
+	}
+	public void setProduct(com.salesmanager.core.business.catalog.product.model.Product product) {
+		this.product = product;
+	}
+	public String getProductPriceSpecialStartDate() {
+		return productPriceSpecialStartDate;
+	}
+	public void setProductPriceSpecialStartDate(
+			String productPriceSpecialStartDate) {
+		this.productPriceSpecialStartDate = productPriceSpecialStartDate;
+	}
+	public String getProductPriceSpecialEndDate() {
+		return productPriceSpecialEndDate;
+	}
+	public void setProductPriceSpecialEndDate(String productPriceSpecialEndDate) {
+		this.productPriceSpecialEndDate = productPriceSpecialEndDate;
 	}
 
 }
