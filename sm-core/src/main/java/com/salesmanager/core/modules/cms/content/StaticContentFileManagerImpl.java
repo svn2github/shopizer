@@ -9,7 +9,6 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.modules.cms.common.ContentData;
 import com.salesmanager.core.modules.cms.common.InputStaticContentData;
 import com.salesmanager.core.modules.cms.common.OutputStaticContentData;
-import com.salesmanager.core.modules.cms.impl.CacheManager;
 
 /**
  * @author Umesh Awasthi
@@ -45,18 +44,20 @@ public class StaticContentFileManagerImpl extends StaticContentFileManager
     {
         this.removeStaticContent = removeStaticContent;
     }
+    
     @Override
     public OutputStaticContentData getStaticContentData( String merchantStoreCode, String contentName )
         throws ServiceException
     {
-        // TODO Auto-generated method stub
-        return null;
+      return  getStaticContent.getStaticContentData( merchantStoreCode, contentName );
+      
     }
+    
     @Override
     public void addStaticFile( String merchantStoreCode, InputStaticContentData inputStaticContentData )
         throws ServiceException
     {
-        // TODO Auto-generated method stub
+        uploadStaticContent.addStaticFile( merchantStoreCode, inputStaticContentData );
         
     }
     @Override

@@ -51,10 +51,12 @@ import com.salesmanager.core.business.catalog.product.service.image.ProductImage
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
 import com.salesmanager.core.business.catalog.product.service.price.ProductPriceService;
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
+import com.salesmanager.core.business.content.model.content.StaticContentType;
 import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.InputContentImage;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.content.service.ContentService;
+import com.salesmanager.core.business.content.service.StaticContentService;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.util.EntityManagerUtils;
@@ -79,6 +81,8 @@ import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
 import com.salesmanager.core.business.user.service.UserService;
 import com.salesmanager.core.modules.cms.common.CMSContentImage;
+import com.salesmanager.core.modules.cms.common.InputStaticContentData;
+import com.salesmanager.core.modules.cms.common.OutputStaticContentData;
 import com.salesmanager.core.utils.reference.ConfigurationModulesLoader;
 import com.salesmanager.test.core.SalesManagerCoreTestExecutionListener;
 
@@ -164,7 +168,8 @@ public class IsolatedTestCase
     @Autowired
     protected ModuleConfigurationService moduleConfigurationService;
     
-
+    @Autowired   
+    protected StaticContentService staticContentService;
 
     // @Autowired
     protected TestSupportFactory testSupportFactory;
@@ -498,6 +503,35 @@ public class IsolatedTestCase
             System.out.println( image.getImageContentType() );
         }
 
+    }
+    
+    @Test
+    public void addStaticContentData() throws ServiceException, FileNotFoundException{
+      
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        final File file1 = new File( "D:/wamp/www/travellingrants/wp-content/themes/TravelPro/style.css" );
+
+        if ( !file1.exists() || !file1.canRead() )
+        {
+            throw new ServiceException( "Can't read" + file1.getAbsolutePath() );
+        }
+
+        InputStaticContentData staticData=new InputStaticContentData();
+        staticData.setFileName( file1.getName() );
+        staticData.setFile( new FileInputStream( file1 ) );
+        staticData.setContentType( StaticContentType.STATIC_DATA );
+        staticContentService.addStaticContentData( store.getCode(), staticData );
+       
+    }
+    
+    @Test
+    public void getStaticContentData() throws ServiceException{
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        String fileName="style.css";
+        OutputStaticContentData data=staticContentService.getStaticContentData( store.getCode(), fileName );
+        System.out.println(data.getContentType());
+        //System.out.println(data.getFile().);
+        
     }
     
 /*    @Test
