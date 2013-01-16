@@ -25,13 +25,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.user.model.Group;
-import com.salesmanager.core.business.user.model.Permission;
 import com.salesmanager.core.business.user.model.User;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.UserService;
@@ -68,11 +66,30 @@ public class UserController {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
+	@Secured("STORE_ADMIN")
+	@RequestMapping(value="/admin/users/list.html", method=RequestMethod.GET)
+	public String displayUsers(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+		//MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		//List<User> users = userService.listUserByStore(store);
+		//model.addAttribute("users",users);
+		
+		//The users are retrieved from the paging method
+		
+		return ControllerConstants.Tiles.User.users;
+	}
+	
+	/**
+	 * Displays a list of users that can be managed by admins
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	@Secured("STORE_ADMIN")
 	@RequestMapping(value = "/admin/users/paging.html", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	String pagePermissions(HttpServletRequest request,
+	String pageUsers(HttpServletRequest request,
 			HttpServletResponse response) {
 
 		AjaxResponse resp = new AjaxResponse();
@@ -190,6 +207,21 @@ public class UserController {
 		return displayUser(null,model,request,response,locale);
 	}
 	
+	@RequestMapping(value="/admin/users/displayStoreUser.html", method=RequestMethod.GET)
+	public String displayUserEdit(@ModelAttribute("userId") Long userId, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+
+		User dbUser = userService.getById(userId);
+		
+		if(dbUser==null) {
+			LOGGER.info("User is null for id " + userId);
+			return "redirect://admin/users/list.html";
+		}
+		
+		
+		return displayUser(dbUser,model,request,response,locale);
+
+	}
+	
 	@RequestMapping(value="/admin/users/displayUser.html", method=RequestMethod.GET)
 	public String displayUserEdit(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
@@ -212,17 +244,18 @@ public class UserController {
 		List<MerchantStore> stores = new ArrayList<MerchantStore>();
 		stores.add(store);
 		
-		String remoteUser = request.getRemoteUser();
-		User logedInUser = userService.getByUserName(remoteUser);
+		//String remoteUser = request.getRemoteUser();
 		
-		//check groups
-		List<Group> logedInUserGroups = logedInUser.getGroups();
-		for(Group group : logedInUserGroups) {
+		if(user!=null) {
+			User logedInUser = userService.getByUserName(user.getAdminName());
 			
-			if(group.getGroupName().equals(Constants.GROUP_SUPERADMIN)) {
-				stores = merchantStoreService.list();
+			//check groups
+			List<Group> logedInUserGroups = logedInUser.getGroups();
+			for(Group group : logedInUserGroups) {
+				if(group.getGroupName().equals(Constants.GROUP_SUPERADMIN)) {
+					stores = merchantStoreService.list();
+				}
 			}
-			
 		}
 
 		//get groups
@@ -423,7 +456,7 @@ public class UserController {
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("profile", "profile");
-		activeMenus.put("create-user", "create-user");
+		activeMenus.put("user", "create-user");
 		
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");

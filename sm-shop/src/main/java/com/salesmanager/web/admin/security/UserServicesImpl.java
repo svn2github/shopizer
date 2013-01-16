@@ -244,11 +244,9 @@ public class UserServicesImpl implements WebUserServices{
 		  user.setLastName("User");
 		  
 		  for(Group group : groups) {
-			  
 			  if(group.getGroupName().equals("SUPERADMIN") || group.getGroupName().equals("ADMIN")) {
 				  user.getGroups().add(group);
 			  }
-			  
 		  }
 		  
 		  //user.getGroups().add(gsuperadmin);

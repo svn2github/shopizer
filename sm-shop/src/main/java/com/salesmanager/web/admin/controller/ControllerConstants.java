@@ -29,6 +29,7 @@ public interface ControllerConstants
         
         interface User{
             final String profile="admin-user-profile";
+            final String users="admin-users";
             final String password="admin-user-password";
         }
         
