@@ -35,13 +35,17 @@
 				"code":"myprofile","url":"/admin/user/profile.html","role":"AUTH","order":0
 			}},
 			{"menu":{
-				"code":"change-password","url":"/admin/user/password.html","role":"ADMIN","order":1
+				"code":"change-password","url":"/admin/user/password.html","role":"AUTH","order":1
+			}},
+			{"menu":{
+				"code":"users","url":"","role":"ADMIN","order":2
+			}},
+			{"menu":{
+				"code":"create-user","url":"","role":"ADMIN","order":3
 			}}
 		]
 		
 	}},
-	{"menu":{"code":"users","url":"","role":"ADMIN","order":0}},
-	{"menu":{"code":"create-user","url":"","role":"ADMIN","order":0}},
 	{"menu":{
 		"code":"security","url":"","role":"ADMIN","order":1,"menus":
 		[
