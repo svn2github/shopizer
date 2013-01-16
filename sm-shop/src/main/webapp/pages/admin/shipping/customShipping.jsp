@@ -76,7 +76,9 @@
 				       							</form:select>
 	                                   			<span class="help-inline"><form:errors path="country" cssClass="error" /></span>
 	                        			</div>
-	                 			 </div><!--
+	                 			 </div>
+	                 			 
+	                 			 <!--
 				
 				      			<div class="form-actions">
 	                  					<div class="pull-right">

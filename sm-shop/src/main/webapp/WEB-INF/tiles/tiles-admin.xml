@@ -148,6 +148,10 @@
   		<put-attribute name="body" value="/pages/admin/profile/groups.jsp" /> 
   	</definition>
   	
+  	<definition name="admin-users" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/profile/users.jsp" /> 
+  	</definition>
+  	
   	<definition name="shipping-configs" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/shipping/shippingConfig.jsp" /> 
   	</definition>

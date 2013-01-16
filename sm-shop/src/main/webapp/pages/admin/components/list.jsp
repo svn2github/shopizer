@@ -69,6 +69,18 @@
 								fetchData: function () {
 									return this.Super("fetchData", arguments);
 								},
+								
+								
+								//canExpandRecords: true,
+    							//expansionMode: "detailField",
+    							//detailField: "background",
+    							
+    							//selectionType: "simple",
+    							//selectionChanged: "selectedCountries.setData(this.getSelection())"
+    							
+								
+								
+								
     							createRecordComponent : function (record, colNum) {  
         							var fieldName = this.getFieldName(colNum);
         							if (fieldName == "buttonField") {  

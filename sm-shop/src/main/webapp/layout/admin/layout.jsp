@@ -221,11 +221,14 @@ response.setDateHeader ("Expires", -1);
 			$("#myprofile-link").click(function() {
   				window.location='<c:url value="/admin/users/displayUser.html" />';
 			});
+			$("#user-link").click(function() {
+  				window.location='<c:url value="/admin/users/displayUser.html" />';
+			});
 			$("#change-password-link").click(function() {
   				window.location='<c:url value="/admin/users/password.html" />';
 			});
 			$("#users-link").click(function() {
-  				window.location='<c:url value="/admin/user/users.html" />';
+  				window.location='<c:url value="/admin/users/list.html" />';
 			});
 			$("#security-permissions-link").click(function() {
   				window.location='<c:url value="/admin/user/permissions.html" />';
