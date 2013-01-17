@@ -55,6 +55,24 @@ public class ContentImageUrlTag extends TagSupport {
 			//	scheme = "http";
 			//}
 			
+
+
+			@SuppressWarnings("unchecked")
+			Map<String,String> configurations = (Map<String, String>)session.getAttribute(Constants.STORE_CONFIGURATION);
+			String scheme = Constants.HTTP_SCHEME;
+			if(configurations!=null) {
+				scheme = (String)configurations.get("scheme");
+			}
+			
+
+			
+			imagePath.append(scheme).append("://")
+			.append(merchantStore.getDomainName())
+			.append("/")
+			.append(request.getContextPath());
+			
+			
+			
 			imagePath	//.append(scheme).append("://").append(merchantStore.getDomainName())\
 				.append(Constants.STATIC_URI).append("/")
 				.append(merchantStore.getCode()).append("/").append(this.getImageType())

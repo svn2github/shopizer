@@ -212,6 +212,7 @@ public class ProductController {
 			product.setDescriptions(descriptions);
 			
 			
+			product.setDateAvailable(DateUtil.formatDate(productAvailability.getProductDateAvailable()));
 
 
 		} else {
@@ -239,8 +240,9 @@ public class ProductController {
 
 		}
 		
-
-
+		
+		
+		
 		
 		model.addAttribute("product",product);
 		model.addAttribute("manufacturers", manufacturers);
