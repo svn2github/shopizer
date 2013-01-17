@@ -158,6 +158,36 @@
 
 
                         </div>
+                        
+                        <script type="text/javascript">
+						//<![CDATA[
+
+							CKEDITOR.replace('descriptions[${counter.index}].description',
+							{
+								skin : 'office2003',
+								toolbar : 
+								[
+									['Source','-','Save','NewPage','Preview'], 
+									['Cut','Copy','Paste','PasteText','-','Print'], 
+									['Undo','Redo','-','Find','-','SelectAll','RemoveFormat'], '/', 
+									['Bold','Italic','Underline','Strike','-','Subscript','Superscript'], 
+									['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'], 
+									['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'], 
+									['Link','Unlink','Anchor'], 
+									['Image','Flash','Table','HorizontalRule','SpecialChar','PageBreak'], '/', 
+									['Styles','Format','Font','FontSize'], ['TextColor','BGColor'], 
+									['Maximize', 'ShowBlocks'] 
+								],
+								//filebrowserBrowseUrl : '<%=request.getContextPath()%>/merchantstore/displayFileBrowser.action',
+								filebrowserWindowWidth : '720',
+        						filebrowserWindowHeight : '740',
+								filebrowserImageBrowseUrl :    '<c:url value="/admin/content/fileBrowser.html"/>'
+								//filebrowserFlashBrowseUrl: '<%=request.getContextPath()%>//merchantstore/displayFileBrowser.action?Type=Flash'
+
+							});
+
+						//]]>
+						</script>
 
                   </div>
                                     
