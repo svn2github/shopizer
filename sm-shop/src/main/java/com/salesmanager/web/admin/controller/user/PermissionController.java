@@ -164,7 +164,7 @@ public class PermissionController {
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
 
 		} catch (Exception e) {
-			LOGGER.error("Error while paging categories", e);
+			LOGGER.error("Error while paging permissions", e);
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 		}
 

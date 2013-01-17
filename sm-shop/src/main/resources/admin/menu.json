@@ -24,7 +24,7 @@
 "menu":{
 "code":"profile", 
 "icon":"icon-info-sign",
-"url":"/admin/user/user.html", 
+"url":"/admin/users/displayUser.html", 
 "role":"AUTH",
 "order":2,
 "menus":[

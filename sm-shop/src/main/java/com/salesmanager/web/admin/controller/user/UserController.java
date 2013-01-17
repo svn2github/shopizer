@@ -75,7 +75,7 @@ public class UserController {
 		//model.addAttribute("users",users);
 		
 		//The users are retrieved from the paging method
-		
+		setMenu(model,request);
 		return ControllerConstants.Tiles.User.users;
 	}
 	
@@ -106,7 +106,7 @@ public class UserController {
 
 				@SuppressWarnings("rawtypes")
 				Map entry = new HashMap();
-				entry.put("id", user.getId());
+				entry.put("userId", user.getId());
 				entry.put("name", user.getFirstName() + " " + user.getLastName());
 				entry.put("email", user.getAdminEmail());
 				entry.put("active", user.isActive());
@@ -117,7 +117,7 @@ public class UserController {
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
 
 		} catch (Exception e) {
-			LOGGER.error("Error while paging categories", e);
+			LOGGER.error("Error while paging products", e);
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 		}
 
@@ -129,7 +129,7 @@ public class UserController {
 
 	@RequestMapping(value="/admin/users/password.html", method=RequestMethod.GET)
 	public String displayChangePassword(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
-		
+		setMenu(model,request);
 		String userName = request.getRemoteUser();
 		User user = userService.getByUserName(userName);
 		
@@ -141,7 +141,7 @@ public class UserController {
 	
 	@RequestMapping(value="/admin/users/savePassword.html", method=RequestMethod.POST)
 	public String changePassword(@ModelAttribute("user") User user, @ModelAttribute("password") String password, @ModelAttribute("newPassword") String newPassword, @ModelAttribute("newPasswordAgain") String repeatPassword, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
-		
+		setMenu(model,request);
 		String userName = request.getRemoteUser();
 		User dbUser = userService.getByUserName(userName);
 		

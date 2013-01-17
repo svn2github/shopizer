@@ -80,7 +80,7 @@ public class ProductCategoryController {
 
 		
 		} catch (Exception e) {
-			LOGGER.error("Error while paging categories", e);
+			LOGGER.error("Error while paging products categories", e);
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 		}
 		

@@ -7,7 +7,7 @@
 
 
 
-			      				{title:"<s:message code="label.entity.id" text="Id"/>", name:"groupId", canFilter:false},
+			      				{title:"<s:message code="label.entity.id" text="Id"/>", name:"userId", canFilter:false},
 			      				{title:"<s:message code="label.entity.name" text="Name"/>", name:"name"},	
 			      				{title:"<s:message code="label.generic.email" text="Email"/>", name:"email"},
 			      				{title:"<s:message code="label.entity.active" text="Active"/>", name:"active"}

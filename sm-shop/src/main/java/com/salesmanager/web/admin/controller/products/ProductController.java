@@ -3,6 +3,7 @@ package com.salesmanager.web.admin.controller.products;
 import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -58,6 +59,7 @@ import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.utils.DateUtil;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
@@ -279,6 +281,16 @@ public class ProductController {
 		} catch (Exception e) {
 			ObjectError error = new ObjectError("productPrice",messages.getMessage("NotEmpty.product.productPrice", locale));
 			result.addError(error);
+		}
+		
+		if(!StringUtils.isBlank(product.getDateAvailable())) {
+			try {
+				Date date = DateUtil.getDate(product.getDateAvailable());
+				product.getAvailability().setProductDateAvailable(date);
+			} catch (Exception e) {
+				ObjectError error = new ObjectError("dateAvailable",messages.getMessage("message.invalid.date", locale));
+				result.addError(error);
+			}
 		}
 		
 

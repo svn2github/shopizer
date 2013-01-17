@@ -352,6 +352,8 @@ public class ProductPriceController {
 			return "redirect:/admin/products/products.html";
 		}
 		
+		model.addAttribute("product",product);
+		
 		//validate price
 		BigDecimal submitedPrice = null;
 		try {

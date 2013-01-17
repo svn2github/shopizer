@@ -3,12 +3,16 @@ package com.salesmanager.web.entity.catalog;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDescription;
 
 public class ProductPrice {
 	
+	@Valid
 	private com.salesmanager.core.business.catalog.product.model.price.ProductPrice price = null;
+	@Valid
 	private List <ProductPriceDescription> descriptions = new ArrayList<ProductPriceDescription>();
 	private String priceText;
 	private String specialPriceText;

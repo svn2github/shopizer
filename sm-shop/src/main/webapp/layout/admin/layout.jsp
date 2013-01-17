@@ -63,7 +63,7 @@ response.setDateHeader ("Expires", -1);
 
 					<div class="btn-group pull-right">
 						<div class="nav-collapse">
-							<ul class="nav pull-right">
+							<ul class="nav pull-right" style="z-index:500000;position:relative">
 								<li class="dropdown">
 									
 									<a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -230,6 +230,10 @@ response.setDateHeader ("Expires", -1);
 			$("#users-link").click(function() {
   				window.location='<c:url value="/admin/users/list.html" />';
 			});
+			$("#create-user-link").click(function() {
+  				window.location='<c:url value="/admin/users/createUser.html" />';
+			});
+			
 			$("#security-permissions-link").click(function() {
   				window.location='<c:url value="/admin/user/permissions.html" />';
 			});

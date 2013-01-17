@@ -45,9 +45,17 @@ public class Product implements Serializable {
 	
 	@NotEmpty
 	private String productPrice = "0";
+	
+	private String dateAvailable;
 
 	
 	
+	public String getDateAvailable() {
+		return dateAvailable;
+	}
+	public void setDateAvailable(String dateAvailable) {
+		this.dateAvailable = dateAvailable;
+	}
 	public com.salesmanager.core.business.catalog.product.model.Product getProduct() {
 		return product;
 	}

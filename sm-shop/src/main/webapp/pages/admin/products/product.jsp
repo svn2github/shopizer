@@ -20,9 +20,6 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 	
 <script type="text/javascript">
 
-
-	
-
 	
 	$(function(){
 		$('#sku').alphanumeric();
@@ -136,8 +133,8 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                   		<div class="control-group">
 	                        <label><s:message code="label.product.availabledate" text="Date available"/></label>
 	                        <div class="controls">
-	                        		 <input id="dateAvailable" value="${product.product.dateAvailable}" class="small" type="text" data-datepicker="datepicker"> 
-	                                 <span class="help-inline"></span>
+	                        		 <input id="dateAvailable" name="dateAvailable" value="${product.product.dateAvailable}" class="small" type="text" data-datepicker="datepicker"> 
+	                                 <span class="help-inline"><form:errors path="dateAvailable" cssClass="error" /></span>
 	                        </div>
 	                  	</div>
 	                  	

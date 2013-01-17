@@ -8,7 +8,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 </script>				
 				
 <link href="<c:url value="/resources/css/bootstrap/css/datepicker.css" />" rel="stylesheet"></link>
-<script src="<c:url value="/resources/js/bootstrap/bootstrap-datepicker.js" />"></script>				
+<script src="<c:url value="/resources/js/bootstrap/bootstrap-datepicker.js" />"></script>			
 <script src="<c:url value="/resources/js/jquery.formatCurrency-1.4.0.js" />"></script>
 <script src="<c:url value="/resources/js/functions.js" />"></script>
 
@@ -135,7 +135,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 	              <div class="control-group">
 	                        <label><s:message code="label.product.price.special.startdate" text="Special start date"/></label>
 	                        <div class="controls">
-	                        		 <input id="productPriceSpecialStartDate" value="${price.price.productPriceSpecialStartDate}" class="small" type="text" data-datepicker="datepicker"> 
+	                        		 <input name="productPriceSpecialStartDate" id="productPriceSpecialStartDate" value="${price.price.productPriceSpecialStartDate}" class="small" type="text" data-datepicker="datepicker"> 
 	                                 <span class="help-inline"><form:errors path="productPriceSpecialStartDate" cssClass="error" /></span>
 	                        </div>
 	              </div>
@@ -144,7 +144,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 	              <div class="control-group">
 	                        <label><s:message code="label.product.price.special.enddate" text="Special end date"/></label>
 	                        <div class="controls">
-	                        		 <input id="productPriceSpecialEndDate" value="${price.price.productPriceSpecialEndDate}" class="small" type="text" data-datepicker="datepicker"> 
+	                        		 <input name="productPriceSpecialEndDate" id="productPriceSpecialEndDate" value="${price.price.productPriceSpecialEndDate}" class="small" type="text" data-datepicker="datepicker"> 
 	                                 <span class="help-inline"><form:errors path="productPriceSpecialEndDate" cssClass="error" /></span>
 	                        </div>
 	              </div>
@@ -154,7 +154,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                   <form:hidden path="price.id" />
                   <form:hidden path="productAvailability.region" />
                   <form:hidden path="productAvailability.id" />
-                  <form:hidden path="price.product.id" />
+                  <form:hidden path="product.id" />
 			
 			      <div class="form-actions">
 
