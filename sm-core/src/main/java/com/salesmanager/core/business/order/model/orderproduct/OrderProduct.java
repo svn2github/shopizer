@@ -30,21 +30,21 @@ public class OrderProduct extends SalesManagerEntity<Long, OrderProduct> {
 	private static final long serialVersionUID = 176131742783954627L;
 	
 	@Id
-	@Column (name="ORDER_PRODUCTS_ID")
+	@Column (name="ORDER_PRODUCT_ID")
 	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "ORDER_PRODUCT_ID_NEXT_VALUE")
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
 
-	@Column (name="PRODUCTS_MODEL" , length=32)
-	private String productModel;
+	@Column (name="PRODUCT_SKU")
+	private String sku;
 
-	@Column (name="PRODUCTS_NAME" , length=64 , nullable=false)
+	@Column (name="PRODUCT_NAME" , length=64 , nullable=false)
 	private String productName;
 
-	@Column (name="PRODUCTS_QUANTITY")
+	@Column (name="PRODUCT_QUANTITY")
 	private int productQuantity;
 
-	@Column (name="ONETIME_CHARGES" , precision=15, scale=4, nullable=false )
+	@Column (name="ONETIME_CHARGE" , precision=15, scale=4, nullable=false )
 	private BigDecimal onetimeCharge;//
 
 	@Column (name="PRODUCT_SPECIAL_PRICE" , precision=15, scale=4 )
@@ -85,13 +85,6 @@ public class OrderProduct extends SalesManagerEntity<Long, OrderProduct> {
 		this.id = id;
 	}
 
-	public String getProductModel() {
-		return productModel;
-	}
-
-	public void setProductModel(String productModel) {
-		this.productModel = productModel;
-	}
 
 	public String getProductName() {
 		return productName;
@@ -184,6 +177,14 @@ public class OrderProduct extends SalesManagerEntity<Long, OrderProduct> {
 
 	public BigDecimal getFinalPrice() {
 		return finalPrice;
+	}
+
+	public void setSku(String sku) {
+		this.sku = sku;
+	}
+
+	public String getSku() {
+		return sku;
 	}
 	
 }

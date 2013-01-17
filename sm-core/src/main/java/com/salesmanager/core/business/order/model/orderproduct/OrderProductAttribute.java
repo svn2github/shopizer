@@ -46,7 +46,7 @@ public class OrderProductAttribute implements Serializable {
 	private ProductOption productOption;
 
 	@ManyToOne
-	@JoinColumn(name = "PRODUCT_OPTIONS_VALUE_ID", nullable = false)
+	@JoinColumn(name = "PRODUCT_OPTION_VALUE_ID", nullable = false)
 	private ProductOptionValue productOptionValue;
 
 	public OrderProductAttribute() {

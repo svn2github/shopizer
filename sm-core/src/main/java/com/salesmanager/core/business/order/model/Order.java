@@ -34,10 +34,15 @@ import com.salesmanager.core.constants.SchemaConstant;
 import com.salesmanager.core.utils.CloneUtils;
 
 @Entity
-@Table (name="ORDERS", schema = SchemaConstant.SALESMANAGER_SCHEMA)
+@Table (name="ORDER", schema = SchemaConstant.SALESMANAGER_SCHEMA)
 public class Order extends SalesManagerEntity<Long, Order> {
-	private static final long serialVersionUID = -4932198678436149138L;
 	
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@Column (name ="ORDER_ID" , unique=true , nullable=false )
 	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT",
@@ -56,17 +61,20 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@Column (name ="LAST_MODIFIED")
 	private Date lastModified;
 	
+	//the customer object can be detached. An order can exist and the customer deleted
 	@Column (name ="CUSTOMER_ID")
-	private Long customerId;//the customer object can be detached. An order can exist and the customer deleted
+	private Long customerId;
 	
 	@Temporal(TemporalType.DATE)
 	@Column (name ="DATE_PURCHASED")
 	private Date datePurchased;
 	
+	//used for an order payable on multiple installment
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column (name ="ORDER_DATE_FINISHED")
 	private Date orderDateFinished;
 	
+	//TODO not sure it is a big decimal but a currency object (see merchant store)
 	@Column (name ="CURRENCY_VALUE")
 	private BigDecimal currencyValue;
 	
@@ -79,10 +87,11 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@Column (name ="IP_ADDRESS")
 	private String ipAddress;
 	
+	//TODO should be an object
 	@Column (name ="CHANNEL")
 	private int channel;
 	
-
+	//TODO have an embedded object credit card @Embedded
 	@Column (name ="CARD_TYPE")
 	private String cardType;
 	
@@ -101,14 +110,14 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@Column (name ="DISPLAY_INVOICE_PAYMENTS")
 	private boolean displayInvoicePayments;	
 	
-
+	//TODO enum
 	@Column (name ="PAYMENT_METHOD")
 	private String paymentMethod;
 	
 	@Column (name ="PAYMENT_MODULE_CODE")
 	private String paymentModuleCode;
 	
-
+	//TODO enum
 	@Column (name ="SHIPPING_METHOD")
 	private String shippingMethod;
 	
