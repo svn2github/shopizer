@@ -2,6 +2,7 @@ package com.salesmanager.web.admin.controller.orders;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,10 +21,13 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
+import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.utils.DateUtil;
 import com.salesmanager.web.utils.LabelUtils;
 
 
@@ -42,12 +46,15 @@ public class OrdersController {
 	@Autowired
 	LabelUtils messages;
 	
+	@Autowired
+	private ProductPriceUtils priceUtil;
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.class);
 	
 	
 	
 	
-	@RequestMapping(value="/admin/orders/orders.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/orders/lists.html", method=RequestMethod.GET)
 	public String displayOrders(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
@@ -57,7 +64,7 @@ public class OrdersController {
 		
 		//the list of orders is from page method
 		
-		return "admin-orders";
+		return ControllerConstants.Tiles.Order.orders;
 		
 		
 	}
@@ -65,7 +72,7 @@ public class OrdersController {
 	
 	@SuppressWarnings({ "unchecked"})
 	@RequestMapping(value="/admin/orders/paging.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String pageOrders(HttpServletRequest request, HttpServletResponse response) {
+	public @ResponseBody String pageOrders(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 
 		//TODO 
 		//filter customer name
@@ -96,12 +103,11 @@ public class OrdersController {
 				@SuppressWarnings("rawtypes")
 				Map entry = new HashMap();
 				entry.put("orderId", order.getId());
-
 				entry.put("customer", order.getBilling().getName());
-				//entry.put("amount", order.getTotal());//todo format total
-				//entry.put("date", order.getDatePurchased());//todo format date
+				entry.put("amount", priceUtil.getAdminFormatedAmountWithCurrency(store,order.getTotal()));//todo format total
+				entry.put("date", DateUtil.formatDate(order.getDatePurchased()));
 				entry.put("status", order.getStatus().name());
-				entry.put("paymentMethod", order.getPaymentMethod());//todo get the name from modules bundle
+				entry.put("paymentModule", messages.getMessage(new StringBuilder().append("module.paymentModule.").append(order.getPaymentModuleCode()).toString(), locale));
 				resp.addDataEntry(entry);
 				
 				
