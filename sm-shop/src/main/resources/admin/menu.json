@@ -173,7 +173,7 @@
 "menu":{
 "code":"order",
 "icon":"icon-shopping-cart", 
-"url":"/admin/orders/orders.html", 
+"url":"/admin/orders/list.html", 
 "role":"ORDER",
 "order":8
 }},
