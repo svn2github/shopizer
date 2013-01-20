@@ -1,5 +1,7 @@
 package com.salesmanager.core.business.catalog.product.service.price;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +35,15 @@ public class ProductPriceServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		if(price.getId()!=null && price.getId()>0) {
 			this.update(price);
 		} else {
+			
+			Set<ProductPriceDescription> descriptions = price.getDescriptions();
+			price.setDescriptions(null);
 			this.create(price);
+			for(ProductPriceDescription description : descriptions) {
+				description.setProductPrice(price);
+				this.addDescription(price, description);
+			}
+			
 		}
 		
 		
