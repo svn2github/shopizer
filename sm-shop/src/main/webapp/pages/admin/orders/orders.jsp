@@ -19,7 +19,7 @@
 
 
 								<div class="sm-ui-component">
-								<h3><s:message code="label.order.title text="Orders" /></h3>	
+								<h3><s:message code="label.order.title" text="Orders" /></h3>	
 								<br/>
 								
 								

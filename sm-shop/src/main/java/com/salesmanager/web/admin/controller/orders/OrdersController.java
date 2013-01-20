@@ -54,7 +54,7 @@ public class OrdersController {
 	
 	
 	
-	@RequestMapping(value="/admin/orders/lists.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/orders/list.html", method=RequestMethod.GET)
 	public String displayOrders(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);

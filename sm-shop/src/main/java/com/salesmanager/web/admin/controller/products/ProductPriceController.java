@@ -268,7 +268,7 @@ public class ProductPriceController {
 	
 			//get default availability
 			for(ProductAvailability availability : availabilities) {
-				if(availability.getRegion().equals(com.salesmanager.core.constants.Constants.ALL_REGIONS)) {
+				if(availability.getRegion().equals(com.salesmanager.core.constants.Constants.ALL_REGIONS)) {//TODO to be updated when multiple regions is implemented
 					productAvailability = availability;
 					Set<ProductPrice> prices = availability.getPrices();
 					for(ProductPrice price : prices) {
@@ -319,6 +319,17 @@ public class ProductPriceController {
 			descriptions.add(productPriceDesc);
 		}
 		
+		
+		if(productAvailability==null) {
+			Set<ProductAvailability> availabilities = product.getAvailabilities();
+			for(ProductAvailability availability : availabilities) {
+				if(availability.getRegion().equals(com.salesmanager.core.constants.Constants.ALL_REGIONS)) {//TODO to be updated when multiple regions is implemented
+					productAvailability = availability;
+					break;
+				}
+			}
+		}
+		
 		pprice.setDescriptions(descriptions);
 		pprice.setProductAvailability(productAvailability);
 		pprice.setPrice(productPrice);
@@ -351,7 +362,7 @@ public class ProductPriceController {
 			return "redirect:/admin/products/products.html";
 		}
 		
-		model.addAttribute("product",product);
+		model.addAttribute("product",dbProduct);
 		
 		//validate price
 		BigDecimal submitedPrice = null;
@@ -406,6 +417,19 @@ public class ProductPriceController {
 			price.getPrice().setProductPriceSpecialAmount(submitedDiscountPrice);
 		}
 		
+		ProductAvailability productAvailability = null;
+		
+		Set<ProductAvailability> availabilities = dbProduct.getAvailabilities();
+		for(ProductAvailability availability : availabilities) {
+			
+			if(availability.getId().longValue()==price.getProductAvailability().getId().longValue()) {
+				productAvailability = availability;
+				break;
+			}
+			
+			
+		}
+		
 		
 		
 		
@@ -415,12 +439,12 @@ public class ProductPriceController {
 			for(ProductPriceDescription description : price.getDescriptions()) {
 				description.setProductPrice(price.getPrice());
 				descriptions.add(description);
-				
+				description.setProductPrice(price.getPrice());
 			}
 		}
 		
 		price.getPrice().setDescriptions(descriptions);
-		price.getPrice().setProductPriceAvailability(price.getProductAvailability());
+		price.getPrice().setProductPriceAvailability(productAvailability);
 		
 		productPriceService.saveOrUpdate(price.getPrice());
 		model.addAttribute("success","success");
