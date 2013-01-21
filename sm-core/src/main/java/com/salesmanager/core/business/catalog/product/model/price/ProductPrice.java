@@ -19,7 +19,6 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
@@ -67,7 +66,7 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 
 	@ManyToOne(targetEntity = ProductAvailability.class)
 	@JoinColumn(name = "PRODUCT_AVAIL_ID", nullable = false)
-	private ProductAvailability productPriceAvailability;
+	private ProductAvailability productAvailability;
 	
 
 	public ProductPrice() {
@@ -138,14 +137,7 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 
 
 
-	public ProductAvailability getProductPriceAvailability() {
-		return productPriceAvailability;
-	}
 
-
-	public void setProductPriceAvailability(ProductAvailability productPriceAvailability) {
-		this.productPriceAvailability = productPriceAvailability;
-	}
 
 	public void setProductPriceType(String productPriceType) {
 		this.productPriceType = productPriceType;
@@ -162,6 +154,14 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 
 	public void setDefaultPrice(boolean defaultPrice) {
 		this.defaultPrice = defaultPrice;
+	}
+
+	public void setProductAvailability(ProductAvailability productAvailability) {
+		this.productAvailability = productAvailability;
+	}
+
+	public ProductAvailability getProductAvailability() {
+		return productAvailability;
 	}
 
 

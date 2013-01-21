@@ -242,7 +242,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 				if(prices!=null && prices.size()>0) {
 
 					for(ProductPrice price : prices) {
-						price.setProductPriceAvailability(availability);
+						price.setProductAvailability(availability);
 						productPriceService.saveOrUpdate(price);
 					}
 				}	

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
+import com.salesmanager.core.business.catalog.product.model.availability.QProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.model.price.QProductPrice;
 import com.salesmanager.core.business.catalog.product.model.price.QProductPriceDescription;
@@ -16,13 +17,16 @@ public class ProductPriceDaoImpl extends SalesManagerEntityDaoImpl<Long, Product
 	@Override
 	public ProductPrice getById(Long id) {
 		QProductPrice qEntity = QProductPrice.productPrice;
+		QProductAvailability qAvailability = QProductAvailability.productAvailability;
 		QProductPriceDescription qEntityDescription = QProductPriceDescription.productPriceDescription;
 		
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qEntity)
+			.innerJoin(qEntity.productAvailability,qAvailability).fetch()
 			.leftJoin(qEntity.descriptions, qEntityDescription).fetch()
+			.join(qAvailability.product.merchantStore).fetch()
 			.where(qEntity.id.eq(id));
 		
 		return query.uniqueResult(qEntity);
