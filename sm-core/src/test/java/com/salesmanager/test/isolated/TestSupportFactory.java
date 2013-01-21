@@ -96,7 +96,7 @@ public class TestSupportFactory {
     ProductPrice price = new ProductPrice();
     price.setDefaultPrice(true);
     price.setProductPriceAmount(new BigDecimal(18.99));
-    price.setProductPriceAvailability(availability);
+    price.setProductAvailability(availability);
 
     ProductPriceDescription dpd = new ProductPriceDescription();
     dpd.setName("Base price");
