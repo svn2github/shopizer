@@ -81,8 +81,6 @@ import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
 import com.salesmanager.core.business.user.service.UserService;
 import com.salesmanager.core.modules.cms.common.CMSContentImage;
-import com.salesmanager.core.modules.cms.common.InputStaticContentData;
-import com.salesmanager.core.modules.cms.common.OutputStaticContentData;
 import com.salesmanager.core.utils.reference.ConfigurationModulesLoader;
 import com.salesmanager.test.core.SalesManagerCoreTestExecutionListener;
 
@@ -168,8 +166,7 @@ public class IsolatedTestCase
     @Autowired
     protected ModuleConfigurationService moduleConfigurationService;
     
-    @Autowired   
-    protected StaticContentService staticContentService;
+
 
     // @Autowired
     protected TestSupportFactory testSupportFactory;
@@ -761,7 +758,7 @@ public class IsolatedTestCase
         final ProductPrice dprice = new ProductPrice();
         dprice.setDefaultPrice( true );
         dprice.setProductPriceAmount( new BigDecimal( 29.99 ) );
-        dprice.setProductPriceAvailability( availability );
+        dprice.setProductAvailability( availability );
 
         ProductPriceDescription dpd = new ProductPriceDescription();
         dpd.setName( "Base price" );
@@ -806,7 +803,7 @@ public class IsolatedTestCase
         final ProductPrice dprice2 = new ProductPrice();
         dprice2.setDefaultPrice( true );
         dprice2.setProductPriceAmount( new BigDecimal( 39.99 ) );
-        dprice2.setProductPriceAvailability( availability2 );
+        dprice2.setProductAvailability( availability2 );
 
         dpd = new ProductPriceDescription();
         dpd.setName( "Base price" );
@@ -851,7 +848,7 @@ public class IsolatedTestCase
         final ProductPrice dprice3 = new ProductPrice();
         dprice3.setDefaultPrice( true );
         dprice3.setProductPriceAmount( new BigDecimal( 19.99 ) );
-        dprice3.setProductPriceAvailability( availability3 );
+        dprice3.setProductAvailability( availability3 );
 
         dpd = new ProductPriceDescription();
         dpd.setName( "Base price" );
@@ -896,7 +893,7 @@ public class IsolatedTestCase
         final ProductPrice dprice4 = new ProductPrice();
         dprice4.setDefaultPrice( true );
         dprice4.setProductPriceAmount( new BigDecimal( 18.99 ) );
-        dprice4.setProductPriceAvailability( availability4 );
+        dprice4.setProductAvailability( availability4 );
 
         dpd = new ProductPriceDescription();
         dpd.setName( "Base price" );
@@ -941,7 +938,7 @@ public class IsolatedTestCase
         final ProductPrice dprice5 = new ProductPrice();
         dprice5.setDefaultPrice( true );
         dprice5.setProductPriceAmount( new BigDecimal( 18.99 ) );
-        dprice5.setProductPriceAvailability( availability5 );
+        dprice5.setProductAvailability( availability5 );
 
         dpd = new ProductPriceDescription();
         dpd.setName( "Base price" );
@@ -986,7 +983,7 @@ public class IsolatedTestCase
         final ProductPrice dprice6 = new ProductPrice();
         dprice6.setDefaultPrice( true );
         dprice6.setProductPriceAmount( new BigDecimal( 18.99 ) );
-        dprice6.setProductPriceAvailability( availability6 );
+        dprice6.setProductAvailability( availability6 );
 
         dpd = new ProductPriceDescription();
         dpd.setName( "Base price" );
