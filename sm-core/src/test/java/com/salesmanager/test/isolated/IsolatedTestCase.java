@@ -81,6 +81,8 @@ import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
 import com.salesmanager.core.business.user.service.UserService;
 import com.salesmanager.core.modules.cms.common.CMSContentImage;
+import com.salesmanager.core.modules.cms.common.InputStaticContentData;
+import com.salesmanager.core.modules.cms.common.OutputStaticContentData;
 import com.salesmanager.core.utils.reference.ConfigurationModulesLoader;
 import com.salesmanager.test.core.SalesManagerCoreTestExecutionListener;
 
@@ -108,6 +110,9 @@ public class IsolatedTestCase
 
     @Autowired
     protected ProductOptionService productOptionService;
+    
+    @Autowired
+    protected StaticContentService staticContentService;
 
     @Autowired
     protected ProductOptionValueService productOptionValueService;
