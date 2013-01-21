@@ -70,7 +70,7 @@ public class ProductAvailability extends SalesManagerEntity<Long, ProductAvailab
 	@Column(name="QUANTITY_ORD_MAX")
 	private Integer productQuantityOrderMax = 0;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy="productPriceAvailability", cascade = CascadeType.REMOVE)	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="productAvailability", cascade = CascadeType.REMOVE)	
 	private Set<ProductPrice> prices = new HashSet<ProductPrice>();
 	
 	@Transient
