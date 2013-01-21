@@ -34,6 +34,7 @@ import com.salesmanager.core.business.catalog.product.model.availability.Product
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDescription;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPriceType;
+import com.salesmanager.core.business.catalog.product.model.review.ProductReview;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.price.ProductPriceService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -85,15 +86,10 @@ public class ProductPriceController {
 		
 		ProductAvailability productAvailability = null;
 		for(ProductAvailability availability : product.getAvailabilities()) {
-			
 			if(availability.getRegion().equals(com.salesmanager.core.constants.Constants.ALL_REGIONS)) {
-				
 				productAvailability = availability;
-				
 			}
 		}
-		
-
 
 		model.addAttribute("product",product);
 		model.addAttribute("availability",productAvailability);
@@ -444,13 +440,55 @@ public class ProductPriceController {
 		}
 		
 		price.getPrice().setDescriptions(descriptions);
-		price.getPrice().setProductPriceAvailability(productAvailability);
+		price.getPrice().setProductAvailability(productAvailability);
 		
 		productPriceService.saveOrUpdate(price.getPrice());
 		model.addAttribute("success","success");
 		
 		return ControllerConstants.Tiles.Product.productPrice;
 		
+	}
+	
+	@Secured("PRODUCTS")
+	@RequestMapping(value="/admin/products/price/remove.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String deleteProductReview(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		String sPriceid = request.getParameter("priceId");
+
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		AjaxResponse resp = new AjaxResponse();
+
+		
+		try {
+			
+			Long priceId = Long.parseLong(sPriceid);
+			ProductPrice price = productPriceService.getById(priceId);
+			
+
+			if(price==null || price.getProductPriceAvailability().getProduct().getMerchantStore().getId().intValue()!=store.getId()) {
+
+				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
+				return resp.toJSONString();
+			} 
+			
+
+			productPriceService.delete(price);
+			
+			
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+
+		
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while deleting product price", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
 	}
 		
 	

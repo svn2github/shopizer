@@ -3,12 +3,10 @@ package com.salesmanager.web.admin.controller.merchant;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -19,7 +17,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -221,6 +218,7 @@ public class MerchantStoreController {
 		sessionStore.setLanguages(supportedLanguagesList);
 		sessionStore.setStoreaddress(store.getStoreaddress());
 		sessionStore.setStorecity(store.getStorecity());
+		sessionStore.setStorephone(store.getStorephone());
 		sessionStore.setStoreEmailAddress(store.getStoreEmailAddress());
 		sessionStore.setLanguages(supportedLanguagesList);
 		sessionStore.setWeightunitcode(store.getWeightunitcode());

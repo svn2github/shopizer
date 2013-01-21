@@ -453,7 +453,7 @@ public class ProductController {
 			newProductAvailability.setPrices(prices);
 			availabilities.add(newProductAvailability);
 			
-			newProductPrice.setProductPriceAvailability(newProductAvailability);
+			newProductPrice.setProductAvailability(newProductAvailability);
 			prices.add(newProductPrice);
 			
 			newProduct.setAvailabilities(availabilities);
@@ -579,7 +579,7 @@ public class ProductController {
 				ProductPrice price = new ProductPrice();
 				price.setDefaultPrice(pPrice.isDefaultPrice());
 				price.setProductPriceAmount(pPrice.getProductPriceAmount());
-				price.setProductPriceAvailability(availability);
+				price.setProductAvailability(availability);
 				price.setProductPriceSpecialAmount(pPrice.getProductPriceSpecialAmount());
 				price.setProductPriceSpecialEndDate(pPrice.getProductPriceSpecialEndDate());
 				price.setProductPriceSpecialStartDate(pPrice.getProductPriceSpecialStartDate());
