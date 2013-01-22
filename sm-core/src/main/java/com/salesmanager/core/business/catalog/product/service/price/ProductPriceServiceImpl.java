@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.catalog.product.service.price;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class ProductPriceServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		} else {
 			
 			Set<ProductPriceDescription> descriptions = price.getDescriptions();
-			price.setDescriptions(null);
+			price.setDescriptions(new HashSet<ProductPriceDescription>());
 			this.create(price);
 			for(ProductPriceDescription description : descriptions) {
 				description.setProductPrice(price);
@@ -47,6 +48,15 @@ public class ProductPriceServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		}
 		
 		
+		
+	}
+	
+	@Override
+	public void delete(ProductPrice price) throws ServiceException {
+		
+		//override method, this allows the error that we try to remove a detached instance
+		price = this.getById(price.getId());
+		super.delete(price);
 		
 	}
 	
