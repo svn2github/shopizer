@@ -60,18 +60,27 @@ public class StaticContentFileManagerImpl extends StaticContentFileManager
         uploadStaticContent.addStaticFile( merchantStoreCode, inputStaticContentData );
         
     }
+    
+    /**
+     * Implementation for add static data files. This method will called respected add files method of underlying
+     * CMSStaticContentManager. For CMS Content files {@link CmsStaticContentFileManagerInfinispanImpl} will take care of adding
+     * given content images with Infinispan cache.
+     * 
+     * @param merchantStoreCode merchant store.
+     * @param inputStaticContentDataList Input content images
+     * @throws ServiceException
+     */
     @Override
     public void addStaticFiles( String merchantStoreCode, List<InputStaticContentData> inputStaticContentDataList )
         throws ServiceException
     {
-        // TODO Auto-generated method stub
-        
+       uploadStaticContent.addStaticFiles( merchantStoreCode, inputStaticContentDataList );
     }
     @Override
     public void removeStaticContent( String merchantStoreCode, ContentData contentData )
         throws ServiceException
     {
-        // TODO Auto-generated method stub
+     //
         
     }
     @Override

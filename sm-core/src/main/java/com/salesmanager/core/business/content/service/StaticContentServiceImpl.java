@@ -3,13 +3,14 @@
  */
 package com.salesmanager.core.business.content.service;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.modules.cms.common.InputStaticContentData;
 import com.salesmanager.core.modules.cms.common.OutputStaticContentData;
@@ -57,6 +58,24 @@ public class StaticContentServiceImpl implements StaticContentService
         
     }
     
+    /**
+     * Implimentation responsible for adding list of static content files for given merchant store in underlying Infinispan tree
+     * cache. It will take list of {@link InputStaticContentData} and will store them for given merchant store.
+     * 
+     * @param merchantStoreCode Merchant store.
+     * @param inputStaticContentDataList list of {@link InputStaticContentData} being stored.
+     * @throws ServiceException service exception
+     */
+    @Override
+    public void addStaticContentDataFiles( String merchantStoreCode,
+                                           List<InputStaticContentData> inputStaticContentDataList )
+        throws ServiceException
+    {
+        Assert.notNull( merchantStoreCode, "Merchant store ID can not be null" );
+        Assert.notEmpty( inputStaticContentDataList, "Images list can not be empty" );
+        LOG.info( "Adding total {} files for given merchant",inputStaticContentDataList.size() );
+        staticContentFileManager.addStaticFiles( merchantStoreCode, inputStaticContentDataList );
+    }
     
     /**
      * Implementation for getStaticContentData method defined in {@link StaticContentService} interface. Methods will return
@@ -77,5 +96,8 @@ public class StaticContentServiceImpl implements StaticContentService
         Assert.notNull( fileName, "file name can not be null" );
         return  staticContentFileManager.getStaticContentData( merchantStoreCode, fileName );
     }
+
+
+   
 
 }

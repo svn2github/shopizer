@@ -3,7 +3,10 @@
  */
 package com.salesmanager.core.modules.cms.common;
 
+import java.io.InputStream;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>Cache attribute class which encapsulate details of the object being stored in the
@@ -21,6 +24,8 @@ public class StaticContentCacheAttribute extends CacheAttribute implements Seria
    
     private static final long serialVersionUID = -1482978134467061295L;
     private String dataType;
+    private Map<String,InputStream> staticDataEntities = new HashMap<String,InputStream>();
+   
     
     public String getDataType()
     {
@@ -30,7 +35,15 @@ public class StaticContentCacheAttribute extends CacheAttribute implements Seria
     {
         this.dataType = dataType;
     }
+    public Map<String, InputStream> getStaticDataEntities()
+    {
+        return staticDataEntities;
+    }
+    public void setStaticDataEntities( Map<String, InputStream> staticDataEntities )
+    {
+        this.staticDataEntities = staticDataEntities;
+    }
     
-
+    
     
 }
