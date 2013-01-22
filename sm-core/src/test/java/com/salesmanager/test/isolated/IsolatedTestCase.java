@@ -509,7 +509,7 @@ public class IsolatedTestCase
     
     @Test
     public void addStaticContentData() throws ServiceException, FileNotFoundException{
-      
+        
         final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
         final File file1 = new File( "D:/wamp/www/travellingrants/wp-content/themes/TravelPro/style.css" );
 
@@ -523,6 +523,42 @@ public class IsolatedTestCase
         staticData.setFile( new FileInputStream( file1 ) );
         staticData.setContentType( StaticContentType.STATIC_DATA );
         staticContentService.addStaticContentData( store.getCode(), staticData );
+        
+       
+       
+    }
+    
+    @Test
+    public void addStaticContentDataFiles() throws ServiceException, FileNotFoundException{
+      
+        List<InputStaticContentData> inputStaticContentDataList=new ArrayList<InputStaticContentData>();
+        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        final File file1 = new File( "D:/wamp/www/travellingrants/wp-content/themes/TravelPro/style.css" );
+
+        if ( !file1.exists() || !file1.canRead() )
+        {
+            throw new ServiceException( "Can't read" + file1.getAbsolutePath() );
+        }
+
+        InputStaticContentData staticData=new InputStaticContentData();
+        staticData.setFileName( file1.getName() );
+        staticData.setFile( new FileInputStream( file1 ) );
+        staticData.setContentType( StaticContentType.STATIC_DATA );
+        inputStaticContentDataList.add( staticData );
+        
+        final File file2= new File( "D:/personal/songs/Bahut der kardi.mp3" );
+
+        if ( !file2.exists() || !file2.canRead() )
+        {
+            throw new ServiceException( "Can't read" + file2.getAbsolutePath() );
+        }
+
+        InputStaticContentData staticData1=new InputStaticContentData();
+        staticData1.setFileName( file2.getName() );
+        staticData1.setFile( new FileInputStream( file2 ) );
+        staticData1.setContentType( StaticContentType.DIGITAL_DATA );
+        inputStaticContentDataList.add( staticData1 );
+        staticContentService.addStaticContentDataFiles( store.getCode(), inputStaticContentDataList );
        
     }
     
