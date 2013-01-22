@@ -465,7 +465,7 @@ public class ProductPriceController {
 			ProductPrice price = productPriceService.getById(priceId);
 			
 
-			if(price==null || price.getProductPriceAvailability().getProduct().getMerchantStore().getId().intValue()!=store.getId()) {
+			if(price==null || price.getProductAvailability().getProduct().getMerchantStore().getId().intValue()!=store.getId()) {
 
 				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
 				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
