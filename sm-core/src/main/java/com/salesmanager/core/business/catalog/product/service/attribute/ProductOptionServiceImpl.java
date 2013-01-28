@@ -39,16 +39,7 @@ public class ProductOptionServiceImpl extends
 		
 	}
 	
-	@Override
-	public ProductOption getById(MerchantStore store, Long id) throws ServiceException {
-		
-		try {
-			return productOptionDao.getById(store, id);
-		} catch (Exception e) {
-			throw new ServiceException(e);
-		}
-		
-	}
+
 	
 	@Override
 	public List<ProductOption> getByName(MerchantStore store, String name, Language language) throws ServiceException {
@@ -85,7 +76,7 @@ public class ProductOptionServiceImpl extends
 			productAttributeService.delete(attribute);
 		}
 		
-		ProductOption option = this.getById(entity.getMerchantStore(), entity.getId());
+		ProductOption option = this.getById(entity.getId());
 		
 		//remove option
 		super.delete(option);

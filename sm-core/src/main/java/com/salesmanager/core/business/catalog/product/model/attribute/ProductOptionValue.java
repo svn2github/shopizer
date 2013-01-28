@@ -43,6 +43,9 @@ public class ProductOptionValue extends SalesManagerEntity<Long, ProductOptionVa
 	@Column(name="PRODUCT_OPT_VAL_IMAGE")
 	private String productOptionValueImage;
 	
+	@Column(name="PRODUCT_OPT_FOR_DISP")
+	private boolean productOptionDisplayOnly=false;
+	
 	@Transient
 	private MultipartFile image = null;
 	
@@ -130,6 +133,14 @@ public class ProductOptionValue extends SalesManagerEntity<Long, ProductOptionVa
 
 	public MultipartFile getImage() {
 		return image;
+	}
+	
+	public boolean isProductOptionDisplayOnly() {
+		return productOptionDisplayOnly;
+	}
+
+	public void setProductOptionDisplayOnly(boolean productOptionDisplayOnly) {
+		this.productOptionDisplayOnly = productOptionDisplayOnly;
 	}
 
 

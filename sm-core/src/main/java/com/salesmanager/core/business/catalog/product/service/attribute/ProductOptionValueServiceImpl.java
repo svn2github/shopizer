@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.catalog.product.dao.attribute.ProductOptionValueDao;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
@@ -35,10 +34,13 @@ public class ProductOptionValueServiceImpl extends
 	@Override
 	public List<ProductOptionValue> listByStore(MerchantStore store, Language language) throws ServiceException {
 		
-		
 		return productOptionValueDao.listByStore(store, language);
+	}
+	
+	@Override
+	public List<ProductOptionValue> listByStoreNoReadOnly(MerchantStore store, Language language) throws ServiceException {
 		
-		
+		return productOptionValueDao.listByStoreNoReadOnly(store, language);
 	}
 	
 	@Override

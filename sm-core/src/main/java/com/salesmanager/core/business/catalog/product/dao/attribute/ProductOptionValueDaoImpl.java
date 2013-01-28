@@ -30,12 +30,38 @@ public class ProductOptionValueDaoImpl extends SalesManagerEntityDaoImpl<Long, P
 			.leftJoin(qProductOption.descriptions, qDescription).fetch()
 			.leftJoin(qProductOption.merchantStore).fetch()
 			.where(qProductOption.merchantStore.id.eq(store.getId())
-			.and(qDescription.language.id.eq(language.getId())))
-			.orderBy(qProductOption.id.asc());
+			.and(qDescription.language.id.eq(language.getId())));
+			query.orderBy(qProductOption.id.asc());
+			
+			
 		
 		return query.listDistinct(qProductOption);
 		
 	}
+	
+	@Override
+	public List<ProductOptionValue> listByStoreNoReadOnly(MerchantStore store, Language language) {
+		
+		QProductOptionValue qProductOption = QProductOptionValue.productOptionValue;
+		QProductOptionValueDescription qDescription = QProductOptionValueDescription.productOptionValueDescription;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qProductOption)
+			.leftJoin(qProductOption.descriptions, qDescription).fetch()
+			.leftJoin(qProductOption.merchantStore).fetch()
+			.where(qProductOption.merchantStore.id.eq(store.getId())
+			.and(qProductOption.productOptionDisplayOnly.eq(false))
+			.and(qDescription.language.id.eq(language.getId())));
+			query.orderBy(qProductOption.id.asc());
+			
+			
+		
+		return query.listDistinct(qProductOption);
+		
+	}
+	
+
 	
 	@Override
 	public ProductOptionValue getById(MerchantStore store, Long id) {

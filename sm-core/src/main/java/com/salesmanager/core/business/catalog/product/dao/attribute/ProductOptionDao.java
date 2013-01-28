@@ -12,8 +12,6 @@ public interface ProductOptionDao extends SalesManagerEntityDao<Long, ProductOpt
 
 	List<ProductOption> listByStore(MerchantStore store, Language language);
 
-	ProductOption getById(MerchantStore store, Long id);
-
 	List<ProductOption> getByName(MerchantStore store, String name,
 			Language language);
 

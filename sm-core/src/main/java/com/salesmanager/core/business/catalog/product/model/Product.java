@@ -66,7 +66,7 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy="product", orphanRemoval = true)
 	private Set<ProductAvailability> availabilities = new HashSet<ProductAvailability>();
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "product")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "product")
 	private Set<ProductAttribute> attributes = new HashSet<ProductAttribute>();
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "product")

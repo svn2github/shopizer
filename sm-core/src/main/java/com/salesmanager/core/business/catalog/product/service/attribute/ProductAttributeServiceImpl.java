@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.salesmanager.core.business.catalog.product.dao.attribute.ProductAttributeDao;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
+import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -68,6 +69,15 @@ public class ProductAttributeServiceImpl extends
 		} else {
 			productAttributeDao.save(productAttribute);
 		}
+		
+	}
+	
+	@Override
+	public void delete(ProductAttribute attribute) throws ServiceException {
+		
+		//override method, this allows the error that we try to remove a detached instance
+		attribute = this.getById(attribute.getId());
+		super.delete(attribute);
 		
 	}
 

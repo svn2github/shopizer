@@ -195,6 +195,12 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		
 		product.setImages(null);
 		
+		//related - featured
+		List<ProductRelationship> relationships = productRelationshipService.listByProduct(product);
+		for(ProductRelationship relationship : relationships) {
+			productRelationshipService.delete(relationship);
+		}
+		
 		this.delete(product);
 		
 		
@@ -255,6 +261,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		if(product.getAttributes()!=null && product.getAttributes().size()>0) {
 			Set<ProductAttribute> attributes = product.getAttributes();
 			for(ProductAttribute attribute : attributes) {
+				attribute.setProduct(product);
 				productAttributeService.saveOrUpdate(attribute);
 			}
 		}

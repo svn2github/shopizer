@@ -8,7 +8,6 @@ import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.merchant.model.QMerchantStore;
 import com.salesmanager.core.business.user.model.QGroup;
 import com.salesmanager.core.business.user.model.QUser;
 import com.salesmanager.core.business.user.model.User;
@@ -29,6 +28,7 @@ public class UserDaoImpl extends SalesManagerEntityDaoImpl<Long, User> implement
 		query.from(qUser)
 			.innerJoin(qUser.groups, qGroup).fetch()
 			.innerJoin(qUser.merchantStore).fetch()
+			.innerJoin(qUser.defaultLanguage).fetch()
 			.where(qUser.adminName.eq(userName));
 		
 		
@@ -44,6 +44,7 @@ public class UserDaoImpl extends SalesManagerEntityDaoImpl<Long, User> implement
 		
 		query.from(qUser)
 			.innerJoin(qUser.merchantStore).fetch()
+			.innerJoin(qUser.defaultLanguage).fetch()
 			.orderBy(qUser.id.asc());
 		
 		return query.listDistinct(qUser);
@@ -52,11 +53,11 @@ public class UserDaoImpl extends SalesManagerEntityDaoImpl<Long, User> implement
 	@Override
 	public List<User> listUserByStore(MerchantStore store) {
 		QUser qUser = QUser.user;
-		QMerchantStore qStore = qUser.merchantStore;
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qUser)
 			.innerJoin(qUser.merchantStore).fetch()
+			.innerJoin(qUser.defaultLanguage).fetch()
 			.orderBy(qUser.id.asc())
 			.where(qUser.merchantStore.id.eq(store.getId()));
 		

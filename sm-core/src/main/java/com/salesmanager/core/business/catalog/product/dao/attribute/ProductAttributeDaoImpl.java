@@ -26,12 +26,17 @@ public class ProductAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Pro
 	public ProductAttribute getById(Long id) {
 		QProductAttribute qEntity = QProductAttribute.productAttribute;
 		QProductOption qProductOption = QProductOption.productOption;
+		QProductOptionValue qProductOptionValue = QProductOptionValue.productOptionValue;
 		
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qEntity)
+			.join(qEntity.product).fetch()
 			.leftJoin(qEntity.productOption, qProductOption).fetch()
+			.leftJoin(qEntity.productOptionValue, qProductOptionValue).fetch()
+			.leftJoin(qProductOption.descriptions).fetch()
+			.leftJoin(qProductOptionValue.descriptions).fetch()
 			.leftJoin(qProductOption.merchantStore).fetch()
 			.where(qEntity.id.eq(id));
 		
@@ -47,6 +52,7 @@ public class ProductAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Pro
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qEntity)
+			.join(qEntity.product).fetch()
 			.leftJoin(qEntity.productOption, qProductOption).fetch()
 			.leftJoin(qProductOption.merchantStore).fetch()
 			.where(qProductOption.id.eq(id)
@@ -64,6 +70,7 @@ public class ProductAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Pro
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qEntity)
+			.join(qEntity.product).fetch()
 			.leftJoin(qEntity.productOptionValue, qProductOptionValue).fetch()
 			.leftJoin(qProductOptionValue.merchantStore).fetch()
 			.where(qProductOptionValue.id.eq(id)
@@ -85,7 +92,7 @@ public class ProductAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Pro
 		query.from(qEntity)
 			.leftJoin(qEntity.productOptionValue, qProductOptionValue).fetch()
 			.leftJoin(qProductOptionValue.merchantStore).fetch()
-			.leftJoin(qEntity.product,qProduct).fetch()
+			.join(qEntity.product,qProduct).fetch()
 			.leftJoin(qProductOptionValue.descriptions,qProductOptionValueDescription).fetch()
 			.where(qProduct.id.eq(product.getId())
 			.and(qProductOptionValue.merchantStore.id.eq(store.getId()))

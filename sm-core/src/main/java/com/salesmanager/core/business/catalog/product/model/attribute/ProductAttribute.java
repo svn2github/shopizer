@@ -2,7 +2,6 @@ package com.salesmanager.core.business.catalog.product.model.attribute;
 
 import java.math.BigDecimal;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -39,6 +38,7 @@ public class ProductAttribute extends SalesManagerEntity<Long, ProductAttribute>
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
 
+	
 	@Column(name="PRODUCT_ATRIBUTE_PRICE")
 	private BigDecimal optionValuePrice;
 
@@ -46,33 +46,58 @@ public class ProductAttribute extends SalesManagerEntity<Long, ProductAttribute>
 	private Integer productOptionSortOrder;
 	
 	@Column(name="PRODUCT_ATTRIBUTE_FREE")
-	private Boolean productAttributeIsFree;
+	private boolean productAttributeIsFree;
 	
+
 	@Column(name="PRODUCT_ATTRIBUTE_WEIGHT")
 	private BigDecimal productAttributeWeight;
 	
 	@Column(name="PRODUCT_ATTRIBUTE_DEFAULT")
-	private Boolean attributeDefault=false;
+	private boolean attributeDefault=false;
 	
 	@Column(name="PRODUCT_ATTRIBUTE_REQUIRED")
-	private Boolean attributeRequired=false;
+	private boolean attributeRequired=false;
 	
 	@Column(name="PRODUCT_ATTRIBUTE_FOR_DISP")
-	private Boolean attributeDisplayOnly=false;
+	private boolean attributeDisplayOnly=false;
 	
 	@Column(name="PRODUCT_ATTRIBUTE_DISCOUNTED")
-	private Boolean attributeDiscounted=false;
+	private boolean attributeDiscounted=false;
 	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="OPTION_ID", nullable=false)
 	private ProductOption productOption;
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="OPTION_VALUE_ID", nullable=false)
 	private ProductOptionValue productOptionValue;
 	
+	
+	/**
+	 * This transient object property
+	 * is a utility used only to submit from a free text
+	 */
 	@Transient
-	private String attributePrice;
+	private String attributePrice = "0";
+	
+	
+	/**
+	 * This transient object property
+	 * is a utility used only to submit from a free text
+	 */
+	@Transient
+	private String attributeSortOrder = "0";
+	
+
+
+	/**
+	 * This transient object property
+	 * is a utility used only to submit from a free text
+	 */
+	@Transient
+	private String attributeAdditionalWeight = "0";
 	
 	public String getAttributePrice() {
 		return attributePrice;
@@ -115,11 +140,11 @@ public class ProductAttribute extends SalesManagerEntity<Long, ProductAttribute>
 		this.productOptionSortOrder = productOptionSortOrder;
 	}
 
-	public Boolean getProductAttributeIsFree() {
+	public boolean getProductAttributeIsFree() {
 		return productAttributeIsFree;
 	}
 
-	public void setProductAttributeIsFree(Boolean productAttributeIsFree) {
+	public void setProductAttributeIsFree(boolean productAttributeIsFree) {
 		this.productAttributeIsFree = productAttributeIsFree;
 	}
 
@@ -131,35 +156,35 @@ public class ProductAttribute extends SalesManagerEntity<Long, ProductAttribute>
 		this.productAttributeWeight = productAttributeWeight;
 	}
 
-	public Boolean getAttributeDefault() {
+	public boolean getAttributeDefault() {
 		return attributeDefault;
 	}
 
-	public void setAttributeDefault(Boolean attributeDefault) {
+	public void setAttributeDefault(boolean attributeDefault) {
 		this.attributeDefault = attributeDefault;
 	}
 
-	public Boolean getAttributeRequired() {
+	public boolean getAttributeRequired() {
 		return attributeRequired;
 	}
 
-	public void setAttributeRequired(Boolean attributeRequired) {
+	public void setAttributeRequired(boolean attributeRequired) {
 		this.attributeRequired = attributeRequired;
 	}
 
-	public Boolean getAttributeDisplayOnly() {
+	public boolean getAttributeDisplayOnly() {
 		return attributeDisplayOnly;
 	}
 
-	public void setAttributeDisplayOnly(Boolean attributeDisplayOnly) {
+	public void setAttributeDisplayOnly(boolean attributeDisplayOnly) {
 		this.attributeDisplayOnly = attributeDisplayOnly;
 	}
 
-	public Boolean getAttributeDiscounted() {
+	public boolean getAttributeDiscounted() {
 		return attributeDiscounted;
 	}
 
-	public void setAttributeDiscounted(Boolean attributeDiscounted) {
+	public void setAttributeDiscounted(boolean attributeDiscounted) {
 		this.attributeDiscounted = attributeDiscounted;
 	}
 
@@ -185,6 +210,23 @@ public class ProductAttribute extends SalesManagerEntity<Long, ProductAttribute>
 
 	public void setProduct(Product product) {
 		this.product = product;
+	}
+	
+	
+	public String getAttributeSortOrder() {
+		return attributeSortOrder;
+	}
+
+	public void setAttributeSortOrder(String attributeSortOrder) {
+		this.attributeSortOrder = attributeSortOrder;
+	}
+
+	public String getAttributeAdditionalWeight() {
+		return attributeAdditionalWeight;
+	}
+
+	public void setAttributeAdditionalWeight(String attributeAdditionalWeight) {
+		this.attributeAdditionalWeight = attributeAdditionalWeight;
 	}
 
 

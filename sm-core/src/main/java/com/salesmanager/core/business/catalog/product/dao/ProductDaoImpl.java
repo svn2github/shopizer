@@ -56,14 +56,14 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		qs.append("select p from Product as p ");
 		qs.append("join fetch p.merchantStore merch ");
 		qs.append("join fetch p.availabilities pa ");
-		qs.append("join fetch pa.prices pap ");
+		qs.append("left join fetch pa.prices pap ");
 		
 		qs.append("join fetch p.descriptions pd ");
 		qs.append("join fetch p.categories categs ");
 		
 		
 		
-		qs.append("join fetch pap.descriptions papd ");
+		qs.append("left join fetch pap.descriptions papd ");
 		
 		
 		//images
@@ -181,7 +181,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		qs.append("select p from Product as p ");
 		qs.append("join fetch p.merchantStore merch ");
 		qs.append("join fetch p.availabilities pa ");
-		qs.append("join fetch pa.prices pap ");
+		qs.append("left join fetch pa.prices pap ");
 		
 		qs.append("join fetch p.descriptions pd ");
 		qs.append("left join fetch p.categories categs ");
@@ -335,7 +335,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 				qs.append("select p from Product as p ");
 				qs.append("join fetch p.merchantStore merch ");
 				qs.append("join fetch p.availabilities pa ");
-				qs.append("join fetch pa.prices pap ");
+				qs.append("left join fetch pa.prices pap ");
 				
 				qs.append("join fetch p.descriptions pd ");
 				qs.append("join fetch p.categories categs ");
@@ -410,7 +410,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 				qs.append("join fetch p.availabilities pa ");
 				qs.append("join fetch p.descriptions pd ");
 				qs.append("join fetch p.merchantStore pm ");
-				qs.append("join fetch pa.prices pap ");
+				qs.append("left join fetch pa.prices pap ");
 				qs.append("left join fetch pap.descriptions papd ");
 				
 				
@@ -462,7 +462,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		qs.append("join fetch p.merchantStore merch ");
 		qs.append("join fetch p.descriptions pd ");
 		qs.append("left join fetch p.categories categs ");
-		qs.append("join fetch pa.prices pap ");
+		qs.append("left join fetch pa.prices pap ");
 		qs.append("left join fetch pap.descriptions papd ");
 		qs.append("left join fetch categs.descriptions categsd ");
 		

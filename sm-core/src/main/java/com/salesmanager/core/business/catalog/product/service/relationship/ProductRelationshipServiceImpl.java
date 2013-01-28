@@ -52,10 +52,23 @@ public class ProductRelationshipServiceImpl extends
 	}
 	
 	@Override
+	public List<ProductRelationship> listByProduct(Product product) throws ServiceException {
+
+		return productRelationshipDao.listByProducts(product);
+
+	}
+	
+	
+	@Override
 	public List<ProductRelationship> getByType(MerchantStore store, Product product, ProductRelationshipType type, Language language) throws ServiceException {
 
-		return productRelationshipDao.getByType(store, type.name(), language);
+		return productRelationshipDao.getByType(store, type.name(), product, language);
 
+	}
+	
+	@Override
+	public List<ProductRelationship> getByType(MerchantStore store, ProductRelationshipType type, Language language) throws ServiceException {
+		return productRelationshipDao.getByType(store, type.name(), language);
 	}
 	
 	@Override
@@ -69,7 +82,7 @@ public class ProductRelationshipServiceImpl extends
 	public List<ProductRelationship> getByType(MerchantStore store, Product product, ProductRelationshipType type) throws ServiceException {
 		
 
-		return productRelationshipDao.getByType(store, type.name(), product.getId().longValue());
+		return productRelationshipDao.getByType(store, type.name(), product);
 				
 		
 	}

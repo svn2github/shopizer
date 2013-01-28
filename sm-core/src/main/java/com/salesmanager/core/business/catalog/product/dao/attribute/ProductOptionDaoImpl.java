@@ -38,7 +38,7 @@ public class ProductOptionDaoImpl extends SalesManagerEntityDaoImpl<Long, Produc
 	}
 	
 	@Override
-	public ProductOption getById(MerchantStore store, Long id) {
+	public ProductOption getById(Long id) {
 		QProductOption qProductOption = QProductOption.productOption;
 		QProductOptionDescription qDescription = QProductOptionDescription.productOptionDescription;
 		
@@ -47,8 +47,7 @@ public class ProductOptionDaoImpl extends SalesManagerEntityDaoImpl<Long, Produc
 		query.from(qProductOption)
 			.leftJoin(qProductOption.descriptions, qDescription).fetch()
 			.leftJoin(qProductOption.merchantStore).fetch()
-			.where(qProductOption.id.eq(id)
-			.and(qProductOption.merchantStore.id.eq(store.getId())));
+			.where(qProductOption.id.eq(id));
 		
 		return query.uniqueResult(qProductOption);
 	}

@@ -50,4 +50,11 @@ public interface ProductRelationshipService extends
 	List<ProductRelationship> getByType(MerchantStore store,
 			ProductRelationshipType type) throws ServiceException;
 
+	List<ProductRelationship> listByProduct(Product product)
+			throws ServiceException;
+
+	List<ProductRelationship> getByType(MerchantStore store,
+			ProductRelationshipType type, Language language)
+			throws ServiceException;
+
 }

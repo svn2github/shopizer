@@ -21,4 +21,7 @@ public interface ProductOptionValueService extends SalesManagerEntityService<Lon
 	List<ProductOptionValue> listByStore(MerchantStore store, Language language)
 			throws ServiceException;
 
+	List<ProductOptionValue> listByStoreNoReadOnly(MerchantStore store,
+			Language language) throws ServiceException;
+
 }

@@ -8,7 +8,9 @@ import com.salesmanager.core.business.user.model.Group;
 
 public interface GroupDao extends SalesManagerEntityDao<Integer, Group> {
 
-	List<Group> getGroupsListBypermissions(Set ids);
+	List<Group> getGroupsListBypermissions(Set<Integer> ids);
 
 	List<Group> listGroup();
+
+	List<Group> listGroupByIds(Set<Integer> ids);
 }
