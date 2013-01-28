@@ -1,6 +1,8 @@
 package com.salesmanager.web.constants;
 
 public class Constants {
+	
+	public final static String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
 	public final static String PERMISSION_ADMIN = "ADMIN";
 	public final static String ADMIN_STORE = "ADMIN_STORE";

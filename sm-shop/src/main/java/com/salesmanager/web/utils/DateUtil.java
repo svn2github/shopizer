@@ -23,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
+import com.salesmanager.web.constants.Constants;
+
 public class DateUtil {
 
 	private Date startDate = new Date(new Date().getTime());
@@ -51,7 +53,7 @@ public class DateUtil {
 
 		if (dt == null)
 			return null;
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat format = new SimpleDateFormat(Constants.DEFAULT_DATE_FORMAT);
 		return format.format(dt);
 
 	}
@@ -66,13 +68,13 @@ public class DateUtil {
 
 		if (dt == null)
 			return null;
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MMM-dd");
+		SimpleDateFormat format = new SimpleDateFormat(Constants.DEFAULT_DATE_FORMAT);
 		return format.format(dt);
 
 	}
 
 	public static Date getDate(String date) throws Exception {
-		DateFormat myDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat myDateFormat = new SimpleDateFormat(Constants.DEFAULT_DATE_FORMAT);
 		return myDateFormat.parse(date);
 	}
 
@@ -94,7 +96,7 @@ public class DateUtil {
 
 		Date dt = new Date();
 
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat format = new SimpleDateFormat(Constants.DEFAULT_DATE_FORMAT);
 		return format.format(new Date(dt.getTime()));
 	}
 
@@ -108,7 +110,7 @@ public class DateUtil {
 
 	public void processPostedDates(HttpServletRequest request) {
 		Date dt = new Date();
-		DateFormat myDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat myDateFormat = new SimpleDateFormat(Constants.DEFAULT_DATE_FORMAT);
 		Date sDate = null;
 		Date eDate = null;
 		try {
