@@ -133,7 +133,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                   		<div class="control-group">
 	                        <label><s:message code="label.product.availabledate" text="Date available"/></label>
 	                        <div class="controls">
-	                        		 <input id="dateAvailable" name="dateAvailable" value="${product.product.dateAvailable}" class="small" type="text" data-datepicker="datepicker"> 
+	                        		 <input id="dateAvailable" name="dateAvailable" value="${product.product.dateAvailable}" class="small" type="text" data-date-format="<%=com.salesmanager.web.constants.Constants.DEFAULT_DATE_FORMAT%>" data-datepicker="datepicker"> 
 	                                 <span class="help-inline"><form:errors path="dateAvailable" cssClass="error" /></span>
 	                        </div>
 	                  	</div>

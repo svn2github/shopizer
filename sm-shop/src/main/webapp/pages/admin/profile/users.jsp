@@ -24,7 +24,7 @@
 								
 								<!-- Listing grid include -->
 								 <c:set value="/admin/users/paging.html" var="pagingUrl" scope="request"/>
-								 <c:set value="/admin/users/displayStoreUser.html" var="editUrl" scope="request"/>
+								 <c:set value="displayUserEdit" var="editUrl" scope="request"/>
 								 <c:set var="entityId" value="userId" scope="request"/>
 								 <c:set var="componentTitleKey" value="menu.users" scope="request"/>
 								 <c:set var="gridHeader" value="/pages/admin/profile/users-gridHeader.jsp" scope="request"/>

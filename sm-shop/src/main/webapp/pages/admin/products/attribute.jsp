@@ -15,15 +15,15 @@ $(document).ready(function() {
 
 
 	$("#productOption").change(function() {
-		//alert($(this).val());
-		//alert($("#attributeDisplayOnly").val());
-		checkReadOnlyAttribute($(this).val());
+		if($('#attributeDisplayOnly').attr('checked')) {
+			checkReadOnlyAttribute($(this).val());
+		}
 	})
 
 	$("#attributeDisplayOnly").click(function() {
-		//alert($(this).val());
-		//alert($("#productOption").val());
-		checkReadOnlyAttribute($("#productOption").val());
+		if($('#attributeDisplayOnly').attr('checked')) {
+			checkReadOnlyAttribute($("#productOption").val());
+		}
 	})
 });
 	
