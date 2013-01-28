@@ -53,7 +53,7 @@
 				 <c:set value="/admin/catalogue/related/addItem.html?baseProductId=${productId}" var="containerAddUrl" scope="request"/>
 				 <c:set value="/admin/catalogue/related/update.html" var="containerUpdateUrl" scope="request"/>
 				 <c:set value="/admin/products/editProduct.html" var="editUrl" scope="request"/>
-				 <c:set value="/admin/catalogue/related/list.html" var="reloadUrl" scope="request"/>
+				 <c:set value="/admin/catalogue/related/list.html?id=${productId}" var="reloadUrl" scope="request"/>
 				 <c:set var="componentTitleKey" value="label.product.related.title" scope="request"/>
 				 <!-- same headers than featured -->
 				 <c:set var="gridHeader" value="/pages/admin/products/featured-gridHeader.jsp" scope="request"/>

@@ -190,6 +190,7 @@
                   </div>
 
                   <form:hidden path="id"/>
+                  <form:hidden path="adminPassword"/>
 			
 			      <div class="form-actions">
 

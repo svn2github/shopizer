@@ -82,7 +82,7 @@ public class FeaturedItemsController {
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
 
-			List<ProductRelationship> relationships = productRelationshipService.getByType(store, null, ProductRelationshipType.FEATURED_ITEM, language);
+			List<ProductRelationship> relationships = productRelationshipService.getByType(store, ProductRelationshipType.FEATURED_ITEM, language);
 			
 			for(ProductRelationship relationship : relationships) {
 				

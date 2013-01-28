@@ -39,7 +39,7 @@
 				<c:url var="savePassword" value="/admin/users/savePassword.html"/>
 
 
-				<form:form method="POST" commandName="user" action="${savePassword}">
+				<form:form method="POST" commandName="password" action="${savePassword}">
 
       							
       				<form:errors path="*" cssClass="alert alert-error" element="div" />
@@ -49,7 +49,7 @@
                   <div class="control-group">
                         <label><s:message code="label.generic.password" text="Password"/></label>
 	                        <div class="controls">
-	                        		<input type="text" name="password" id="password" cssClass="input-large highlight" />
+	                        		<input type="password" name="password" id="password" cssClass="input-large highlight" />
 	                                <span class="help-inline"><form:errors path="password" cssClass="error" /></span>
 	                        </div>
                   </div>
@@ -57,7 +57,7 @@
                   <div class="control-group">
                         <label><s:message code="label.generic.newpassword" text="New password"/></label>
 	                        <div class="controls">
-	                        		<input type="text" name="newPassword" id="newPassword" cssClass="input-large highlight" />
+	                        		<input type="password" name="newPassword" id="newPassword" cssClass="input-large highlight" />
 	                                <span class="help-inline"><form:errors path="newPassword" cssClass="error" /></span>
 	                        </div>
                   </div>
@@ -65,11 +65,11 @@
                   <div class="control-group">
                         <label><s:message code="label.generic.newpassword.repeat" text="Repeat new password"/></label>
 	                        <div class="controls">
-	                        		<input type="text" name="newPasswordAgain" id="newPasswordAgain" cssClass="input-large highlight" />
-	                                <span class="help-inline"><form:errors path="newPasswordAgain" cssClass="error" /></span>
+	                        		<input type="password" name="repeatPassword" id="repeatPassword" cssClass="input-large highlight" />
+	                                <span class="help-inline"><form:errors path="repeatPassword" cssClass="error" /></span>
 	                        </div>
                   </div>
-                  <form:hidden path="id"/>
+                  <form:hidden path="user.id"/>
 			
 			      <div class="form-actions">
 

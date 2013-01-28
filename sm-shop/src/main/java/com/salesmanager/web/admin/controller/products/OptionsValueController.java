@@ -284,7 +284,7 @@ public class OptionsValueController {
 				
 				@SuppressWarnings("rawtypes")
 				Map entry = new HashMap();
-				entry.put("optionId", option.getId());
+				entry.put("optionValueId", option.getId());
 				
 				ProductOptionValueDescription description = option.getDescriptions().iterator().next();
 				

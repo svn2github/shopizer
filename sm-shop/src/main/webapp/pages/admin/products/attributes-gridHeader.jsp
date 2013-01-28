@@ -6,7 +6,8 @@
 
 
 
-				{title:"<s:message code="label.entity.id" text="Id"/>", name:"optionId", canFilter:false},
-        		{title:"<s:message code="label.entity.name" text="Name"/>", name:"name"},
-        		{title:"<s:message code="label.entity.type" text="Type"/>", name:"type", canFilter:false},
+				{title:"<s:message code="label.entity.id" text="Id"/>", name:"attributeId", canFilter:false},
+        		{title:"<s:message code="label.product.productoptions.name" text="Attribute / option name"/>", name:"attribute", canFilter:false},
+        		{title:"<s:message code="label.product.productoptiosvalue.title" text="Option value"/>", name:"value", canFilter:false},
+        		{title:"<s:message code="label.entity.order" text="Order"/>", name:"order", canFilter:false},
         		{title:"<s:message code="label.entity.details" text="Details"/>", name: "buttonField", align: "center",canFilter:false,canSort:false, canReorder:false}

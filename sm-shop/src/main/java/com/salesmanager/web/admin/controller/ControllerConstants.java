@@ -25,6 +25,7 @@ public interface ControllerConstants
             final String productPrices="admin-products-prices";
             final String productPrice="admin-products-price";
             final String relatedItems="admin-products-related";
+            final String digitalProduct="admin-products-digital";
         }
         
         interface User{

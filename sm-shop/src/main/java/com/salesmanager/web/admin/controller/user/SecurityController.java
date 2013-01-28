@@ -13,8 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.salesmanager.core.business.catalog.category.model.Category;
-import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.web.admin.entity.web.Menu;

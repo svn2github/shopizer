@@ -142,8 +142,8 @@ public class ProductController {
 
 			Product dbProduct = productService.getById(productId);
 			
-			if(dbProduct==null) {
-				return "admin-products";
+			if(dbProduct==null || dbProduct.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+				return "redirect:/admin/products/products.html";
 			}
 			
 			product.setProduct(dbProduct);
@@ -236,6 +236,7 @@ public class ProductController {
 			product.setAvailability(productAvailability);
 			product.setProduct(prod);
 			product.setDescriptions(descriptions);
+			product.setDateAvailable(DateUtil.formatDate(new Date()));
 
 
 		}
@@ -284,11 +285,12 @@ public class ProductController {
 			ObjectError error = new ObjectError("productPrice",messages.getMessage("NotEmpty.product.productPrice", locale));
 			result.addError(error);
 		}
-		
+		Date date = new Date();
 		if(!StringUtils.isBlank(product.getDateAvailable())) {
 			try {
-				Date date = DateUtil.getDate(product.getDateAvailable());
+				date = DateUtil.getDate(product.getDateAvailable());
 				product.getAvailability().setProductDateAvailable(date);
+				product.setDateAvailable(DateUtil.formatDate(date));
 			} catch (Exception e) {
 				ObjectError error = new ObjectError("dateAvailable",messages.getMessage("message.invalid.date", locale));
 				result.addError(error);
@@ -378,7 +380,7 @@ public class ProductController {
 
 			newProduct.setSku(product.getProduct().getSku());
 			newProduct.setAvailable(product.getProduct().getAvailable());
-			newProduct.setDateAvailable(product.getProduct().getDateAvailable());
+			newProduct.setDateAvailable(date);
 			newProduct.setManufacturer(product.getProduct().getManufacturer());
 			newProduct.setType(product.getProduct().getType());
 			newProduct.setProductHeight(product.getProduct().getProductHeight());
@@ -471,6 +473,8 @@ public class ProductController {
 		}
 		
 		newProduct.setDescriptions(descriptions);
+		product.setDateAvailable(DateUtil.formatDate(date));
+
 		
 		
 		if(product.getImage()!=null && !product.getImage().isEmpty()) {
@@ -603,7 +607,11 @@ public class ProductController {
 					product.setPrice(price);
 					product.setProductPrice(priceUtil.getAdminFormatedAmount(store, price.getProductPriceAmount()));
 				}
+				
+				availability.getPrices().add(price);
 			}
+			
+			
 
 			if(availability.getRegion().equals(com.salesmanager.core.constants.Constants.ALL_REGIONS)) {
 				product.setAvailability(availability);
@@ -659,6 +667,7 @@ public class ProductController {
 			
 			ProductDescription description = new ProductDescription();
 			description.setAuditSection(pDescription.getAuditSection());
+			description.setName(pDescription.getName());
 			description.setDescription(pDescription.getDescription());
 			description.setLanguage(pDescription.getLanguage());
 			description.setMetatagDescription(pDescription.getMetatagDescription());
@@ -686,6 +695,7 @@ public class ProductController {
 		newProduct.setSortOrder(dbProduct.getSortOrder());
 		newProduct.setTaxClass(dbProduct.getTaxClass());
 		newProduct.setType(dbProduct.getType());
+		newProduct.setSku(dbProduct.getSku());
 		
 		productService.saveOrUpdate(newProduct);
 		
@@ -695,7 +705,7 @@ public class ProductController {
 		model.addAttribute("product", product);
 		model.addAttribute("success","success");
 		
-		return "admin-products-edit";
+		return "redirect:/admin/products/products.html";
 	}
 
 	

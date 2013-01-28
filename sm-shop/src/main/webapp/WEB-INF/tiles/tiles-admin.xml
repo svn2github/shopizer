@@ -85,6 +85,10 @@
   		<put-attribute name="body" value="/pages/admin/products/price.jsp" /> 
   	</definition>
   	
+  	<definition name="admin-products-digital" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/products/digitalProduct.jsp" /> 
+  	</definition>
+  	
   	<definition name="catalogue-products-categories" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/products/productsCategories.jsp" /> 
   	</definition>

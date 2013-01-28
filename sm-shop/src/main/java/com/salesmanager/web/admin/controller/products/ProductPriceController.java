@@ -34,7 +34,6 @@ import com.salesmanager.core.business.catalog.product.model.availability.Product
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDescription;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPriceType;
-import com.salesmanager.core.business.catalog.product.model.review.ProductReview;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.price.ProductPriceService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -67,7 +66,7 @@ public class ProductPriceController {
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/prices.html", method=RequestMethod.GET)
-	public String displayProductPrices(@RequestParam("id") long productId,Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String getProductPrices(@RequestParam("id") long productId,Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
 		
@@ -451,7 +450,7 @@ public class ProductPriceController {
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/price/remove.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String deleteProductReview(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+	public @ResponseBody String deleteProductPrice(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String sPriceid = request.getParameter("priceId");
 
 		

@@ -58,7 +58,6 @@ public class ProductDescriptionUrlTag extends TagSupport {
 			
 			productPath.append(scheme).append("://")
 			.append(merchantStore.getDomainName())
-			.append("/")
 			.append(request.getContextPath());
 			
 			if(!StringUtils.isBlank(this.getProductDescription().getSeUrl())) {

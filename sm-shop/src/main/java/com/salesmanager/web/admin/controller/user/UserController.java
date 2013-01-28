@@ -2,9 +2,11 @@ package com.salesmanager.web.admin.controller.user;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.country.service.CountryService;
+import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.business.user.model.User;
@@ -35,6 +38,7 @@ import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.UserService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
+import com.salesmanager.web.admin.entity.secutity.Password;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.admin.security.SecurityQuestion;
 import com.salesmanager.web.constants.Constants;
@@ -69,11 +73,7 @@ public class UserController {
 	@Secured("STORE_ADMIN")
 	@RequestMapping(value="/admin/users/list.html", method=RequestMethod.GET)
 	public String displayUsers(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
-		
-		//MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		//List<User> users = userService.listUserByStore(store);
-		//model.addAttribute("users",users);
-		
+
 		//The users are retrieved from the paging method
 		setMenu(model,request);
 		return ControllerConstants.Tiles.User.users;
@@ -93,14 +93,11 @@ public class UserController {
 			HttpServletResponse response) {
 
 		AjaxResponse resp = new AjaxResponse();
-		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
 		try {
 
 			List<User> users = userService.listUserByStore(store);
-
-
 
 			for (User user : users) {
 
@@ -133,6 +130,10 @@ public class UserController {
 		String userName = request.getRemoteUser();
 		User user = userService.getByUserName(userName);
 		
+		Password password = new Password();
+		password.setUser(user);
+		
+		model.addAttribute("password",password);
 		model.addAttribute("user",user);
 		return ControllerConstants.Tiles.User.password;
 	}
@@ -140,50 +141,51 @@ public class UserController {
 	
 	
 	@RequestMapping(value="/admin/users/savePassword.html", method=RequestMethod.POST)
-	public String changePassword(@ModelAttribute("user") User user, @ModelAttribute("password") String password, @ModelAttribute("newPassword") String newPassword, @ModelAttribute("newPasswordAgain") String repeatPassword, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	public String changePassword(@ModelAttribute("password") Password password, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		setMenu(model,request);
 		String userName = request.getRemoteUser();
 		User dbUser = userService.getByUserName(userName);
 		
 
-		if(user.getId().longValue()!= dbUser.getId().longValue()) {
+		if(password.getUser().getId().longValue()!= dbUser.getId().longValue()) {
 				return "redirect:/admin/users/displayUser.html";
 		}
 		
-		model.addAttribute("user",dbUser);
-		
-		String tempPass = passwordEncoder.encodePassword(password, null);
-		
-		//password match
-		if(tempPass.equals(dbUser.getAdminPassword())) {
-			ObjectError error = new ObjectError("password",messages.getMessage("message.password.invalid", locale));
-			result.addError(error);
-			return ControllerConstants.Tiles.User.password;
-		}
-
 		//validate password not empty
-		if(StringUtils.isBlank(password)) {
+		if(StringUtils.isBlank(password.getPassword())) {
 			ObjectError error = new ObjectError("password",new StringBuilder().append(messages.getMessage("label.generic.password", locale)).append(" ").append(messages.getMessage("message.cannot.empty", locale)).toString());
 			result.addError(error);
 			return ControllerConstants.Tiles.User.password;
 		}
 		
-		if(StringUtils.isBlank(newPassword)) {
+
+		String tempPass = passwordEncoder.encodePassword(password.getPassword(), null);
+		
+		//password match
+		if(!tempPass.equals(dbUser.getAdminPassword())) {
+			ObjectError error = new ObjectError("password",messages.getMessage("message.password.invalid", locale));
+			result.addError(error);
+			return ControllerConstants.Tiles.User.password;
+		}
+
+
+		
+		if(StringUtils.isBlank(password.getNewPassword())) {
 			ObjectError error = new ObjectError("newPassword",new StringBuilder().append(messages.getMessage("label.generic.newpassword", locale)).append(" ").append(messages.getMessage("message.cannot.empty", locale)).toString());
 			result.addError(error);
 		}
 		
-		if(StringUtils.isBlank(repeatPassword)) {
+		if(StringUtils.isBlank(password.getRepeatPassword())) {
 			ObjectError error = new ObjectError("newPasswordAgain",new StringBuilder().append(messages.getMessage("label.generic.newpassword.repeat", locale)).append(" ").append(messages.getMessage("message.cannot.empty", locale)).toString());
 			result.addError(error);
 		}
 		
-		if(repeatPassword.equals(newPassword)) {
+		if(!password.getRepeatPassword().equals(password.getNewPassword())) {
 			ObjectError error = new ObjectError("newPasswordAgain",messages.getMessage("message.password.different", locale));
 			result.addError(error);
 		}
 		
-		if(newPassword.length()<6) {
+		if(password.getNewPassword().length()<6) {
 			ObjectError error = new ObjectError("newPassword",messages.getMessage("message.password.length", locale));
 			result.addError(error);
 		}
@@ -194,7 +196,7 @@ public class UserController {
 		
 		
 		
-		String pass = passwordEncoder.encodePassword(newPassword, null);
+		String pass = passwordEncoder.encodePassword(password.getNewPassword(), null);
 		dbUser.setAdminPassword(pass);
 		userService.update(dbUser);
 		
@@ -232,15 +234,11 @@ public class UserController {
 
 	}
 	
-	
-	
-	private String displayUser(User user, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	private void populateUserObjects(User user, MerchantStore store, Model model, Locale locale) throws Exception {
 		
-
-		//display menu
-		setMenu(model,request);
+		//get groups
+		List<Group> groups = groupService.listGroup();
 		
-		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		List<MerchantStore> stores = new ArrayList<MerchantStore>();
 		stores.add(store);
 		
@@ -256,13 +254,6 @@ public class UserController {
 					stores = merchantStoreService.list();
 				}
 			}
-		}
-
-		//get groups
-		List<Group> groups = groupService.listGroup();
-		
-		if(user==null) {
-			user = new User();
 		}
 		
 		//questions
@@ -312,12 +303,37 @@ public class UserController {
 		question.setId("9");
 		question.setLabel(messages.getMessage("security.question.9", locale));
 		questions.add(question);
-
+		
 		model.addAttribute("questions", questions);
-		model.addAttribute("user", user);
 		model.addAttribute("stores", stores);
 		model.addAttribute("languages", store.getLanguages());
 		model.addAttribute("groups", groups);
+		
+		
+	}
+	
+	
+	
+	private String displayUser(User user, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+
+		//display menu
+		setMenu(model,request);
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+
+
+
+		
+		if(user==null) {
+			user = new User();
+		}
+		
+		this.populateUserObjects(user, store, model, locale);
+		user.setAdminPassword("TRANSIENT");
+
+		model.addAttribute("user", user);
+		
 		
 
 		return ControllerConstants.Tiles.User.profile;
@@ -378,6 +394,34 @@ public class UserController {
 	public String saveUser(@Valid @ModelAttribute("user") User user, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 
 
+		setMenu(model,request);
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+
+		
+		this.populateUserObjects(user, store, model, locale);
+		
+		Language language = user.getDefaultLanguage();
+		
+		Language l = languageService.getById(language.getId());
+		
+		user.setDefaultLanguage(l);
+		
+		
+		//can't revoke super admin
+		User dbUser = userService.getByUserName(user.getAdminName());
+		if(dbUser==null) {
+			return "redirect://admin/users/displayUser.html";
+		}
+		
+		List<Group> submitedGroups = user.getGroups();
+		Set<Integer> ids = new HashSet<Integer>();
+		for(Group group : submitedGroups) {
+			ids.add(Integer.parseInt(group.getGroupName()));
+		}
+		
+
+		
 		//validate security questions not empty
 		if(StringUtils.isBlank(user.getAnswer1())) {
 			ObjectError error = new ObjectError("answer1",messages.getMessage("security.answer.question1.message", locale));
@@ -405,11 +449,7 @@ public class UserController {
 		}
 		
 		
-		//can't revoke super admin
-		User dbUser = userService.getByUserName(user.getAdminName());
-		if(dbUser==null) {
-			return "redirect://admin/users/displayUser.html";
-		}
+
 		
 		if(user.getId()!=null && user.getId()>0) {
 			if(user.getId().longValue()!=dbUser.getId().longValue()) {
@@ -418,16 +458,18 @@ public class UserController {
 		}
 		
 		List<Group> groups = dbUser.getGroups();
-		boolean removeSuperAdmin = false;
+		boolean removeSuperAdmin = true;
 		for(Group group : groups) {
 			if(group.getGroupName().equals("SUPERADMIN")) {
+				Integer groupId = group.getId();
 				List<Group> userGroups = user.getGroups();
 				for(Group g : userGroups) {
-					if(g.getGroupName().equals("SUPERADMIN")) {
-						break;
+					int submitedGroup = Integer.parseInt(g.getGroupName());
+					if(submitedGroup==groupId) {
+						removeSuperAdmin = false;
 					}
 				}
-				removeSuperAdmin = true;
+				
 			}
 		}
 		
@@ -436,15 +478,20 @@ public class UserController {
 			result.addError(error);
 		}
 		
+		List<Group> newGroups = groupService.listGroupByIds(ids);
+
+		//set actual user groups
+		user.setGroups(newGroups);
+		
 		if (result.hasErrors()) {
 			return ControllerConstants.Tiles.User.profile;
 		}
 		
-		
+
 		user.setAdminPassword(dbUser.getAdminPassword());
 		//save or update user
 		userService.saveOrUpdate(user);
-		
+		//model.addAttribute("user", user);
 
 		model.addAttribute("success","success");
 		return ControllerConstants.Tiles.User.profile;

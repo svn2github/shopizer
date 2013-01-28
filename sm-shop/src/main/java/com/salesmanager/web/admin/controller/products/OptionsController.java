@@ -94,7 +94,7 @@ public class OptionsController {
 		if(optionId!=null && optionId!=0) {//edit mode
 			
 			
-			option = productOptionService.getById(store, optionId);
+			option = productOptionService.getById(optionId);
 			
 			
 			if(option==null) {
@@ -166,7 +166,7 @@ public class OptionsController {
 		if(option.getId() != null && option.getId() >0) { //edit entry
 			
 			//get from DB
-			dbEntity = productOptionService.getById(store,option.getId());
+			dbEntity = productOptionService.getById(option.getId());
 			
 			if(dbEntity==null) {
 				return "redirect:/admin/options/options.html";
@@ -310,7 +310,7 @@ public class OptionsController {
 			
 			Long id = Long.parseLong(sid);
 			
-			ProductOption entity = productOptionService.getById(store, id);
+			ProductOption entity = productOptionService.getById(id);
 
 			if(entity==null || entity.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 

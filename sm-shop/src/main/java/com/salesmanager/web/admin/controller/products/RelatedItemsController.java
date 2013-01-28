@@ -84,7 +84,7 @@ public class RelatedItemsController {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/catalogue/related/paging.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String pageProducts(HttpServletRequest request, HttpServletResponse response) {
+	public @ResponseBody String pageRelatedItems(HttpServletRequest request, HttpServletResponse response) {
 		
 		String sProductId = request.getParameter("productId");
 		AjaxResponse resp = new AjaxResponse();
@@ -298,7 +298,7 @@ public class RelatedItemsController {
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("catalogue", "catalogue");
-		activeMenus.put("catalogue-related", "catalogue-related");
+		activeMenus.put("catalogue-products", "catalogue-products");
 		
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");

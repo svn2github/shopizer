@@ -410,7 +410,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                   <c:if test="${product.product.id!=null && product.product.id>0}">      
                   <c:url var="createSimilar" value="/admin/products/product/duplicate.html"/>
                   <form:form method="POST" enctype="multipart/form-data" commandName="product" action="${createSimilar}">
-							<form:hidden path="product.id" />
+							<input type="hidden" name="productId" value="${product.product.id}" />
 	                        <div class="form-actions">
 	                            <div class="pull-right">
 	                                    <button type="submit" class="btn"><s:message code="label.product.createsimilar" text="Create similar product"/></button>

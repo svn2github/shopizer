@@ -10,11 +10,11 @@
 
 <script type="text/javascript">
 	
-	function removeImage(){
+	function removeFile(fileId){
 			$("#store.error").show();
 			$.ajax({
 			  type: 'POST',
-			  url: '<c:url value="/admin/store/removeImage.html"/>',
+			  url: '<c:url value="/admin/products/product/removeProduct.html"/>?fileId=' + fileId,
 			  dataType: 'json',
 			  success: function(response){
 		
@@ -22,9 +22,9 @@
 					if(status==0 || status ==9999) {
 						
 						//remove delete
-						$("#imageControlRemove").html('');
+						$("#productControlRemove").html('');
 						//add field
-						$("#imageControl").html('<input class=\"input-file\" id=\"image\" name=\"image\" type=\"file\">');
+						$("#productControl").html('<input class=\"input-file\" id=\"productImage\" name=\"productImage\" type=\"file\">');
 						$(".alert-success").show();
 						
 					} else {
@@ -54,42 +54,30 @@
 
 		<div class="tab-pane active" id="catalogue-section">
 		
-				<c:url var="saveBrandingImage" value="/admin/store/saveBranding.html" />
-				<form:form method="POST" enctype="multipart/form-data" commandName="contentImages" action="${saveBrandingImage}">
+				<c:url var="saveProductFile" value="/admin/products/product/saveDigitalProduct.html" />
+				<form:form method="POST" enctype="multipart/form-data" commandName="productFiles" action="${saveProductFile}">
 
 					<form:errors path="*" cssClass="alert alert-error" element="div" />
 					<div id="store.success" class="alert alert-success"
 						style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>">
 						<s:message code="message.success" text="Request successfull" />
 					</div>
-					
-<%-- 					<div class="control-group">
-						<div class="controls">
-								<input type="hidden" name="contentImages.merchantStoreId" value="1"/>
-							<span class="help-inline"></span>
-						</div>
-					</div> --%>
+					<form:hidden path="product.id" />
 				
 					<!-- hidden when creating the product -->
 					<div class="control-group">
-						<label><s:message code="label.storelogo" text="Store logo"/>&nbsp;<c:if test="${store.storeLogo!=null}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage('${store.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if></label>
-						<div class="controls" id="imageControl">
+						<label><s:message code="label.storelogo" text="Store logo"/>&nbsp;<c:if test="${file==null}"><span id="productControlRemove"> - <a href="#" onClick="removeFile('${file.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if></label>
+						<div class="controls" id="fileControl">
 						
 									   <c:choose>
-				                        		<c:when test="${store.storeLogo==null}">
-				                                    
-				                                    <input class="input-file" id="image" name="image[0]" type="file"><br/>
+				                        		<c:when test="${file==null}">
+				                                    <input class="input-file" id="file" name="file[0]" type="file"><br/>
 				                                </c:when>
 				                                <c:otherwise>
-				                                	<img src="<%=request.getContextPath()%>/<sm:contentImage imageName="${store.storeLogo}" imageType="LOGO"/>">
+				                                	
 				                                </c:otherwise>
 			                            </c:choose>
-										
-						
-							
-								
-
-						
+		
 						</div>
 					</div>
 					<div class="form-actions">
