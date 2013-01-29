@@ -33,6 +33,17 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 	public MerchantStore getMerchantStore(String merchantStoreCode) throws ServiceException {
 		return super.getByField(MerchantStore_.code, merchantStoreCode);
 	}
+	
+	@Override
+	public void saveOrUpdate(MerchantStore store) throws ServiceException {
+		
+		if(store.getId()==null) {
+			super.save(store);
+		} else {
+			super.update(store);
+		}
+	}
+	
 
 	@Override
 	public void addProduct(MerchantStore merchantStore, Product product) throws ServiceException {

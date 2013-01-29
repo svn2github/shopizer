@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Email;
@@ -91,6 +92,9 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	@Temporal(TemporalType.DATE)
 	@Column(name = "IN_BUSINESS_SINCE")
 	private Date inBusinessSince = new Date();
+	
+	@Transient
+	private String dateBusinessSince;
 
 	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Language.class)
 	@JoinColumn(name = "LANGUAGE_ID", nullable=false)
@@ -350,6 +354,14 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	public void setDateBusinessSince(String dateBusinessSince) {
+		this.dateBusinessSince = dateBusinessSince;
+	}
+
+	public String getDateBusinessSince() {
+		return dateBusinessSince;
 	}
 
 
