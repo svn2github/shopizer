@@ -210,12 +210,12 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/admin/users/displayStoreUser.html", method=RequestMethod.GET)
-	public String displayUserEdit(@ModelAttribute("userId") Long userId, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	public String displayUserEdit(@ModelAttribute("id") Long id, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
-		User dbUser = userService.getById(userId);
+		User dbUser = userService.getById(id);
 		
 		if(dbUser==null) {
-			LOGGER.info("User is null for id " + userId);
+			LOGGER.info("User is null for id " + id);
 			return "redirect://admin/users/list.html";
 		}
 		
@@ -327,10 +327,12 @@ public class UserController {
 		
 		if(user==null) {
 			user = new User();
+		} else {
+			user.setAdminPassword("TRANSIENT");
 		}
 		
 		this.populateUserObjects(user, store, model, locale);
-		user.setAdminPassword("TRANSIENT");
+		
 
 		model.addAttribute("user", user);
 		
@@ -408,10 +410,15 @@ public class UserController {
 		user.setDefaultLanguage(l);
 		
 		
-		//can't revoke super admin
-		User dbUser = userService.getByUserName(user.getAdminName());
-		if(dbUser==null) {
-			return "redirect://admin/users/displayUser.html";
+		
+		User dbUser = null;
+		
+		//edit mode, need to get original user important information
+		if(user.getId()!=null) {
+			dbUser = userService.getByUserName(user.getAdminName());
+			if(dbUser==null) {
+				return "redirect://admin/users/displayUser.html";
+			}
 		}
 		
 		List<Group> submitedGroups = user.getGroups();
@@ -455,28 +462,33 @@ public class UserController {
 			if(user.getId().longValue()!=dbUser.getId().longValue()) {
 				return "redirect://admin/users/displayUser.html";
 			}
-		}
-		
-		List<Group> groups = dbUser.getGroups();
-		boolean removeSuperAdmin = true;
-		for(Group group : groups) {
-			if(group.getGroupName().equals("SUPERADMIN")) {
-				Integer groupId = group.getId();
-				List<Group> userGroups = user.getGroups();
-				for(Group g : userGroups) {
-					int submitedGroup = Integer.parseInt(g.getGroupName());
-					if(submitedGroup==groupId) {
-						removeSuperAdmin = false;
+			
+			List<Group> groups = dbUser.getGroups();
+			boolean removeSuperAdmin = true;
+			for(Group group : groups) {
+				//can't revoke super admin
+				if(group.getGroupName().equals("SUPERADMIN")) {
+					Integer groupId = group.getId();
+					List<Group> userGroups = user.getGroups();
+					for(Group g : userGroups) {
+						int submitedGroup = Integer.parseInt(g.getGroupName());
+						if(submitedGroup==groupId) {
+							removeSuperAdmin = false;
+							break;
+						}
 					}
 				}
-				
+			}
+			
+			if(removeSuperAdmin) {
+				ObjectError error = new ObjectError("groups",messages.getMessage("message.security.cannotrevoke.superadmin", locale));
+				result.addError(error);
 			}
 		}
 		
-		if(removeSuperAdmin) {
-			ObjectError error = new ObjectError("groups",messages.getMessage("message.security.cannotrevoke.superadmin", locale));
-			result.addError(error);
-		}
+
+		
+
 		
 		List<Group> newGroups = groupService.listGroupByIds(ids);
 
@@ -487,8 +499,9 @@ public class UserController {
 			return ControllerConstants.Tiles.User.profile;
 		}
 		
-
-		user.setAdminPassword(dbUser.getAdminPassword());
+		if(user.getId()!=null && user.getId()>0) {
+			user.setAdminPassword(dbUser.getAdminPassword());
+		}
 		//save or update user
 		userService.saveOrUpdate(user);
 		//model.addAttribute("user", user);

@@ -2,6 +2,7 @@ package com.salesmanager.web.admin.controller.merchant;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -36,6 +37,7 @@ import com.salesmanager.web.admin.entity.reference.Size;
 import com.salesmanager.web.admin.entity.reference.Weight;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.utils.DateUtil;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
@@ -58,6 +60,20 @@ public class MerchantStoreController {
 	
 	@Autowired
 	LabelUtils messages;
+	
+	@Secured("STORE")
+	@RequestMapping(value="/admin/store/storeCreate.html", method=RequestMethod.GET)
+	public String displayMerchantStoreCreate(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+		
+		
+		setMenu(model,request);
+
+		MerchantStore store = new MerchantStore();
+
+		return displayMerchantStore(store, model, request, response, locale);
+	}
+		
 
 	@Secured("STORE")
 	@RequestMapping(value="/admin/store/store.html", method=RequestMethod.GET)
@@ -65,20 +81,35 @@ public class MerchantStoreController {
 		
 		setMenu(model,request);
 
-		Language language = (Language)request.getAttribute("LANGUAGE");
-		
-		//get countries
-		List<Country> countries = countryService.getCountries(language);
-		
-		
+
 		//TODO use multiple store
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
-		model.addAttribute("store", store);
+		
+		
+		return displayMerchantStore(store, model, request, response, locale);
+	}
+	
+	private String displayMerchantStore(MerchantStore store, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+		
+		setMenu(model,request);
+		
+		Language language = (Language)request.getAttribute("LANGUAGE");
 		
 		List<Language> languages = languageService.getLanguages();
 		
 		List<Currency> currencies = currencyService.list();
+		
+		Date dt = store.getInBusinessSince();
+		if(dt!=null) {
+			store.setDateBusinessSince(DateUtil.formatDate(dt));
+		} else {
+			store.setDateBusinessSince(DateUtil.formatDate(new Date()));
+		}
+		
+		//get countries
+		List<Country> countries = countryService.getCountries(language);
 		
 		List<Weight> weights = new ArrayList<Weight>();
 		weights.add(new Weight("LB",messages.getMessage("label.generic.weightunit.LB", locale)));
@@ -96,11 +127,15 @@ public class MerchantStoreController {
 		
 		model.addAttribute("weights",weights);
 		model.addAttribute("sizes",sizes);
+		model.addAttribute("store", store);
 		
 		
 		return "admin-store";
+		
+		
 	}
 	
+
 	@Secured("STORE")
 	@RequestMapping(value="/admin/store/save.html", method=RequestMethod.POST)
 	public String saveMerchantStore(@Valid @ModelAttribute("store") MerchantStore store, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
@@ -110,9 +145,20 @@ public class MerchantStoreController {
 		
 		MerchantStore sessionStore = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
-		if(store.getId()>0) {
+		if(store.getId()!=null) {
 			if(store.getId().intValue() != sessionStore.getId().intValue()) {
 				return "redirect:/admin/store/store.html";
+			}
+		}
+		
+		Date date = new Date();
+		if(!StringUtils.isBlank(store.getDateBusinessSince())) {
+			try {
+				date = DateUtil.getDate(store.getDateBusinessSince());
+				store.setInBusinessSince(date);
+			} catch (Exception e) {
+				ObjectError error = new ObjectError("dateBusinessSince",messages.getMessage("message.invalid.date", locale));
+				result.addError(error);
 			}
 		}
 		
@@ -152,21 +198,6 @@ public class MerchantStoreController {
 		}
 
 		if (result.hasErrors()) {
-			
-/*	        Map<String, String> errors = new LinkedHashMap<String, String>();
-	        for (FieldError error : result.getFieldErrors()) {            
-	        	//errors.put(error.getField(), error.getDefaultMessage());
-	        	if(error.getField().equals("languages")) {
-	        		
-	        		if(store.getLanguages()==null || store.getLanguages().size()==0) {
-	        			Language en = languageService.getByCode("en");
-	        			List<Language> langs = new ArrayList<Language>();
-	        			//langs.add(en);
-	        			//store.setLanguages(langs);
-	        		}
-	        		
-	        	}
-	        } */
 			return "admin-store";
 		}
 		
@@ -200,33 +231,22 @@ public class MerchantStoreController {
 			store.setDefaultLanguage(defaultLanguage);
 		}
 		
-		if(!MerchantStore.DEFAULT_STORE.equals(sessionStore.getCode())) {
-			
-			sessionStore.setCode(store.getCode());
-			
-		}
-		
+
+		store.setCountry(country);
+		store.setZone(zone);
+		store.setCurrency(currency);
+		store.setDefaultLanguage(defaultLanguage);
+		store.setLanguages(supportedLanguagesList);
+		store.setLanguages(supportedLanguagesList);
 
 		
-		sessionStore.setCountry(country);
-		sessionStore.setZone(zone);
-		sessionStore.setStorestateprovince(store.getStorestateprovince());
-		sessionStore.setCurrency(currency);
-		sessionStore.setDefaultLanguage(defaultLanguage);
-		sessionStore.setDomainName(store.getDomainName());
-		sessionStore.setInBusinessSince(store.getInBusinessSince());
-		sessionStore.setLanguages(supportedLanguagesList);
-		sessionStore.setStoreaddress(store.getStoreaddress());
-		sessionStore.setStorecity(store.getStorecity());
-		sessionStore.setStorephone(store.getStorephone());
-		sessionStore.setStoreEmailAddress(store.getStoreEmailAddress());
-		sessionStore.setLanguages(supportedLanguagesList);
-		sessionStore.setWeightunitcode(store.getWeightunitcode());
-		sessionStore.setSeizeunitcode(store.getSeizeunitcode());
+		merchantStoreService.saveOrUpdate(store);
 		
-		merchantStoreService.update(sessionStore);
+		sessionStore = merchantStoreService.getMerchantStore(sessionStore.getCode());
+		
+		
 		//update session store
-		request.getSession().setAttribute(Constants.ADMIN_STORE, sessionStore);
+		//request.getSession().setAttribute(Constants.ADMIN_STORE, sessionStore);
 
 
 		model.addAttribute("success","success");
