@@ -15,7 +15,16 @@
 "role":"STORE",
 "order":1,
 "menus":[
-	{"menu":{"code":"storeDetails","url":"/admin/store/store.html","role":"STORE","order":0}},
+	{"menu":{"code":"storeDetails","url":"/admin/store/store.html","role":"STORE","order":0, "menus":
+		[
+			{"menu":{
+				"code":"storeDetails","url":"/admin/store/store.html","role":"STORE","order":0
+			}},
+			{"menu":{
+				"code":"create-store","url":"/admin/user/createStore.html","role":"SUPERADMIN","order":1
+			}}
+		]
+	}},
 	{"menu":{"code":"storeBranding","url":"/admin/store/branding.html","role":"STORE","order":1}},
 	{"menu":{"code":"storeLanding","url":"/admin/store/storeLanding.html","role":"STORE","order":2}}
 ]
