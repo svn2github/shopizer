@@ -397,7 +397,7 @@ public class OptionsValueController {
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("catalogue", "catalogue");
-		activeMenus.put("catalogue-options-values", "catalogue-options-values");
+		activeMenus.put("catalogue-options", "catalogue-options");
 		
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");

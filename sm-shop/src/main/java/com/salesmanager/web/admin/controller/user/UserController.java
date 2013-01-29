@@ -244,7 +244,7 @@ public class UserController {
 		
 		//String remoteUser = request.getRemoteUser();
 		
-		if(user!=null) {
+		if(user!=null && user.getId()!=null) {
 			User logedInUser = userService.getByUserName(user.getAdminName());
 			
 			//check groups
@@ -351,7 +351,7 @@ public class UserController {
 		User user = userService.getByUserName(code);
 		
 		
-		if(id!=null) {
+		if(!StringUtils.isBlank(id)) {
 			try {
 				Long lid = Long.parseLong(id);
 				
