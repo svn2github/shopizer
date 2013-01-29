@@ -28,7 +28,7 @@ public class UserDaoImpl extends SalesManagerEntityDaoImpl<Long, User> implement
 		query.from(qUser)
 			.innerJoin(qUser.groups, qGroup).fetch()
 			.innerJoin(qUser.merchantStore).fetch()
-			.innerJoin(qUser.defaultLanguage).fetch()
+			.leftJoin(qUser.defaultLanguage).fetch()
 			.where(qUser.adminName.eq(userName));
 		
 		
@@ -44,7 +44,7 @@ public class UserDaoImpl extends SalesManagerEntityDaoImpl<Long, User> implement
 		
 		query.from(qUser)
 			.innerJoin(qUser.merchantStore).fetch()
-			.innerJoin(qUser.defaultLanguage).fetch()
+			.leftJoin(qUser.defaultLanguage).fetch()
 			.orderBy(qUser.id.asc());
 		
 		return query.listDistinct(qUser);
@@ -57,7 +57,7 @@ public class UserDaoImpl extends SalesManagerEntityDaoImpl<Long, User> implement
 		
 		query.from(qUser)
 			.innerJoin(qUser.merchantStore).fetch()
-			.innerJoin(qUser.defaultLanguage).fetch()
+			.leftJoin(qUser.defaultLanguage).fetch()
 			.orderBy(qUser.id.asc())
 			.where(qUser.merchantStore.id.eq(store.getId()));
 		
