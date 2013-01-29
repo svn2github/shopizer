@@ -109,8 +109,9 @@
                    		  <form:input cssClass="input-large highlight" path="adminEmail"/>
                              <span class="help-inline"><form:errors path="adminEmail" cssClass="error" /></span>
 	                  </div>
-	       		  </div><!--
-
+	       		  </div>
+	       		  
+	       		  <c:if test="${user.id==null || user.id==0}">
                   <div class="control-group">
 	                  <label><s:message code="label.user.password" text="Password"/></label>
 	                  <div class="controls">
@@ -119,8 +120,9 @@
 	                  </div>
 
 	       		  </div>
-
-                  --><div class="control-group">
+                  </c:if>
+                  
+                  <div class="control-group">
                       <label><s:message code="label.user.firstName" text="First name"/> </label>
                       <div class="controls">
                           <form:input cssClass="input-large" path="firstName"/>
@@ -190,7 +192,9 @@
                   </div>
 
                   <form:hidden path="id"/>
+                  <c:if test="${user.id!=null && user.id>0}">
                   <form:hidden path="adminPassword"/>
+                  </c:if>
 			
 			      <div class="form-actions">
 

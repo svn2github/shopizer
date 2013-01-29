@@ -250,9 +250,8 @@ function getZones(countryCode){
 	                  <div class="control-group">
 	                        <label><s:message code="label.store.inbusinesssince" text="Web site operating since"/></label>
 	                        <div class="controls">
-
-	                        					<input id="inBusinessSince" value="${store.inBusinessSince}" class="small" type="text" data-datepicker="datepicker"> 
-	                                   			<span class="help-inline"></span>
+	                        					<input id="dateBusinessSince" name="dateBusinessSince" value="${store.dateBusinessSince}" class="small" type="text" data-date-format="<%=com.salesmanager.web.constants.Constants.DEFAULT_DATE_FORMAT%>" data-datepicker="datepicker"> 
+	                                   			 <span class="help-inline"><form:errors path="dateBusinessSince" cssClass="error" /></span>
 	                        </div>
 	                  </div>
 	                  

@@ -251,6 +251,10 @@ response.setDateHeader ("Expires", -1);
   				window.location='<c:url value="/admin/store/store.html" />';
 			});
 			
+			$("#create-store-link").click(function() {
+  				window.location='<c:url value="/admin/store/storeCreate.html" />';
+			});
+			
 			$("#storeBranding-link").click(function() {
   				window.location='<c:url value="/admin/store/storeBranding.html" />';
 			});

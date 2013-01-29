@@ -136,8 +136,6 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 	                        		 <input id="dateAvailable" name="dateAvailable" value="${product.dateAvailable}" class="small" type="text" data-date-format="<%=com.salesmanager.web.constants.Constants.DEFAULT_DATE_FORMAT%>" data-datepicker="datepicker"> 
 	                                 <script type="text/javascript">
 	                                 $('#dateAvailable').datepicker();
-    								//	format: 'yyyy-mm-dd'
-									// });
 	                                 </script>
 	                                 <span class="help-inline"><form:errors path="dateAvailable" cssClass="error" /></span>
 	                        </div>
