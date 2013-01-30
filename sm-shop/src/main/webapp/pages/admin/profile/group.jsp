@@ -5,48 +5,6 @@
 <%@ page session="false" %>				
 				
 
-<script src="<c:url value="/resources/js/ckeditor/ckeditor.js" />"></script>
-
-
-	<script type="text/javascript">
-	
-
-	
-	$(function(){	
-		$('.btn').addClass('disabled');
-		<c:forEach items="${category.descriptions}" var="description" varStatus="counter">		
-			$("#name${counter.index}").friendurl({id : 'seUrl${counter.index}'});
-		</c:forEach>
-	});
-	
-	
-	function validateCode() {
-		$('#checkCodeStatus').html('<img src="<c:url value="/resources/img/ajax-loader.gif" />');
-		$('#checkCodeStatus').show();
-		var code = $("#code").val();
-		checkCode(code,'<c:url value="/admin/categories/checkCategoryCode.html" />');
-	}
-	
-	function callBackCheckCode(msg,code) {
-		
-		if(code==9999 || code==0) {
-
-			$('#checkCodeStatus').html('<font color="green"><s:message code="message.code.available" text="This code is available"/></font>');
-			$('#checkCodeStatus').show();
-			$('.btn').removeClass('disabled');
-		}
-		if(code==9998) {
-
-			$('#checkCodeStatus').html('<font color="red"><s:message code="message.code.exist" text="This code already exist"/></font>');
-			$('#checkCodeStatus').show();
-			$('.btn').addClass('disabled');
-		}
-		
-	}
-	
-	
-	</script>
-
 
 
 <div class="tabbable">

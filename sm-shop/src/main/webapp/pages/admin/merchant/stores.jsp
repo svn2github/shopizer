@@ -19,30 +19,31 @@
 
 
 								<div class="sm-ui-component">
-								<h3><s:message code="menu.users" text="Users" /></h3>	
+								<h3><s:message code="label.store.list" text="Stores" /></h3>	
 								<br/>
 								
+								
 								<!-- Listing grid include -->
-								 <c:set value="/admin/users/paging.html" var="pagingUrl" scope="request"/>
-								 <c:set value="/admin/users/remove.html" var="removeUrl" scope="request"/>
-								 <c:set value="/admin/users/list.html" var="refreshUrl" scope="request"/>
-								 <c:set value="/admin/users/displayStoreUser.html" var="editUrl" scope="request"/>
-								 <c:set var="entityId" value="userId" scope="request"/>
-								 <c:set var="componentTitleKey" value="menu.users" scope="request"/>
-								 <c:set var="gridHeader" value="/pages/admin/profile/users-gridHeader.jsp" scope="request"/>
-								 <sec:authorize access="hasRole('STORE_ADMIN') and fullyAuthenticated">
+								 <c:set value="/admin/store/paging.html" var="pagingUrl" scope="request"/>
+								 <c:set value="/admin/store/store.html" var="editUrl" scope="request"/>
+								 <c:set var="entityId" value="storeId" scope="request"/>
+								 <c:set var="componentTitleKey" value="label.store.list" scope="request"/>
+								 <c:set var="gridHeader" value="/pages/admin/merchant/stores-gridHeader.jsp" scope="request"/>
 								 <c:set var="canRemoveEntry" value="true" scope="request"/>
-								 </sec:authorize>
-
 				
 				            	 <jsp:include page="/pages/admin/components/list.jsp"></jsp:include> 
 								 <!-- End listing grid include -->
-
+								
+								
+	
 			      			     
 			      			     
       					</div>
 
+
    					</div>
+
+
   					</div>
 
-</div>		      			     
+				</div>		      			     
