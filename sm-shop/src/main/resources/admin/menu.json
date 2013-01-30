@@ -21,7 +21,10 @@
 				"code":"storeDetails","url":"/admin/store/store.html","role":"STORE","order":0
 			}},
 			{"menu":{
-				"code":"create-store","url":"/admin/user/createStore.html","role":"SUPERADMIN","order":1
+				"code":"create-store","url":"/admin/store/createStore.html","role":"SUPERADMIN","order":1
+			}},
+			{"menu":{
+				"code":"store-list","url":"/admin/store/list.html","role":"SUPERADMIN","order":1
 			}}
 		]
 	}},
