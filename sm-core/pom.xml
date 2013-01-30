@@ -13,6 +13,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.6</jdk.version>
+		
+		
 		<jackson-version>1.8.1</jackson-version>
 		<axis-version>1.4</axis-version>
 		<jaxws.api.version>2.1</jaxws.api.version>
@@ -21,16 +23,16 @@
 		<jsr250.version>1.0</jsr250.version>
 		<elasticsearch-version>0.17.0</elasticsearch-version>
 		<jasperreports-version>3.7.4</jasperreports-version>
+		
+		<freemarker.version>2.3.19</freemarker.version>
+		<org.slf4j-version>1.6.6</org.slf4j-version>
 		<sm-core.hibernate-entitymanager-version>4.1.2</sm-core.hibernate-entitymanager-version>
 		<sm-core.hibernate-jpamodelgen.version>1.1.1.Final</sm-core.hibernate-jpamodelgen.version>
 		<sm-core.aspectj.version>1.5.4</sm-core.aspectj.version>
-		<freemarker.version>2.3.19</freemarker.version>
-		<org.slf4j-version>1.6.6</org.slf4j-version>
 		<sm-core.mysql-connector-java>5.1.19</sm-core.mysql-connector-java>
 		<sm-core.junit.version>4.9</sm-core.junit.version>
 		<sm-core.spring.version>3.1.0.RELEASE</sm-core.spring.version>
 		<sm-core.org.springframework.version>3.1.0.RELEASE</sm-core.org.springframework.version>
-		<jcr.version>2.0</jcr.version>	
 		<sm-core.c3p0.version>0.9.1.2</sm-core.c3p0.version>
 		<sm-core.querydsl.version>2.3.3</sm-core.querydsl.version>
 		<sm-core.jodatime.version>2.0</sm-core.jodatime.version>
@@ -277,46 +279,14 @@
 			<artifactId>usertype.core</artifactId>
 			<version>3.0.0.CR1</version>
 		</dependency>
-		
-		
-		
-		<!-- ModeShape -->
-<!--         <dependency>
-            <groupId>javax.jcr</groupId>
-            <artifactId>jcr</artifactId>
-            <version>${jcr.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-jcr</artifactId>
-            <version>${modeshape.version}</version>
-            <scope>compile</scope>
-        </dependency>
-     	<dependency>
-    		<groupId>org.modeshape</groupId>
-    		<artifactId>modeshape-sequencer-images</artifactId>
-    		<version>${modeshape.version}</version>
-  		</dependency>
-  		<dependency>
-    		<groupId>org.modeshape</groupId>
-    		<artifactId>modeshape-sequencer-text</artifactId>
-    		<version>${modeshape.version}</version>
-  		</dependency>  
-  		        <dependency>
-            <groupId>org.modeshape</groupId>
-            <artifactId>modeshape-schematic</artifactId>
-    		<version>${modeshape.version}</version>
-        </dependency>   
-         -->
-        
+
+
         <!-- Infinispan -->
   		<dependency>
 			<groupId>org.infinispan</groupId>
     		<artifactId>infinispan-core</artifactId>
     		<version>5.1.6.FINAL</version>
   		</dependency>
-
 
   		<dependency>
     		<groupId>org.infinispan</groupId>
