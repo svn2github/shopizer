@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
@@ -33,6 +36,8 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
+import com.salesmanager.core.utils.ajax.AjaxResponse;
+import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.reference.Size;
 import com.salesmanager.web.admin.entity.reference.Weight;
 import com.salesmanager.web.admin.entity.web.Menu;
@@ -42,6 +47,8 @@ import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
 public class MerchantStoreController {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(MerchantStoreController.class);
 	
 	@Autowired
 	MerchantStoreService merchantStoreService;
@@ -60,6 +67,52 @@ public class MerchantStoreController {
 	
 	@Autowired
 	LabelUtils messages;
+	
+	@Secured("SUPERADMIN")
+	@RequestMapping(value="/admin/store/list.html", method=RequestMethod.GET)
+	public String displayStores(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+
+		
+		setMenu(model,request);
+		return ControllerConstants.Tiles.Store.stores;
+	}
+	
+	@Secured("SUPERADMIN")
+	@RequestMapping(value = "/admin/store/paging.html", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	String pageStores(HttpServletRequest request,
+			HttpServletResponse response) {
+
+		AjaxResponse resp = new AjaxResponse();
+
+
+		try {
+
+			List<MerchantStore> stores = merchantStoreService.list();
+
+			for (MerchantStore store : stores) {
+
+
+				Map<String,String> entry = new HashMap<String,String> ();
+				entry.put("storeId", String.valueOf(store.getId()));
+				entry.put("code", store.getCode());
+				entry.put("name", store.getStorename());
+				entry.put("email", store.getStoreEmailAddress());
+				resp.addDataEntry(entry);
+
+			}
+
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+
+		} catch (Exception e) {
+			LOGGER.error("Error while paging products", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+		}
+
+		String returnString = resp.toJSONString();
+
+		return returnString;
+	}
 	
 	@Secured("STORE")
 	@RequestMapping(value="/admin/store/storeCreate.html", method=RequestMethod.GET)

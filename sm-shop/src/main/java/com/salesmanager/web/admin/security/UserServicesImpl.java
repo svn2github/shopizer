@@ -61,27 +61,7 @@ public class UserServicesImpl implements WebUserServices{
 	@SuppressWarnings("deprecation")
 	public UserDetails loadUserByUsername(String userName)
 			throws UsernameNotFoundException, DataAccessException {
-		//UserDetails userDetails = new UserDetails();
-		// UserEntity userEntity = dao.findByName(username);
-		// if (userEntity == null)
-		// throw new UsernameNotFoundException("user not found");
-		// return assembler.buildUserFromUserEntity(userEntity);
 
-		/*		
-  		String username = userEntity.getUsername();
-		String password = userEntity.getPassword();
-		boolean enabled = userEntity.isActive();
-		boolean accountNonExpired = userEntity.isActive();
-		boolean credentialsNonExpired = userEntity.isActive();
-		boolean accountNonLocked = userEntity.isActive();
-		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		for (SecurityRoleEntity role : userEntity.getUserSecurityRoleEntity()) {
-			authorities.add(new GrantedAuthorityImpl(role.getName()));
-		}
-		User user = new User(username, password, enabled, accountNonExpired,
-				credentialsNonExpired, accountNonLocked, authorities);
-		*/
-		
 		com.salesmanager.core.business.user.model.User user = null;
 		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		
@@ -93,10 +73,6 @@ public class UserServicesImpl implements WebUserServices{
 				return null;
 			}
 
-
-			
-			
-	
 			GrantedAuthority role = new GrantedAuthorityImpl(Constants.PERMISSION_ADMIN);//required to login
 			authorities.add(role);
 	
@@ -124,22 +100,7 @@ public class UserServicesImpl implements WebUserServices{
 		
 		
 		
-		
-/*		GrantedAuthority auth = new GrantedAuthorityImpl("AUTH");
-		GrantedAuthority prd = new GrantedAuthorityImpl("PRODUCTS");
-		GrantedAuthority ord = new GrantedAuthorityImpl("ORDER");
-		GrantedAuthority content = new GrantedAuthorityImpl("CONTENT");
-		GrantedAuthority store = new GrantedAuthorityImpl("STORE");
-		GrantedAuthority tax = new GrantedAuthorityImpl("TAX");
-		GrantedAuthority shp = new GrantedAuthorityImpl("SHIPPING");
-		
-		authorities.add(auth);
-		authorities.add(prd);
-		authorities.add(ord);
-		authorities.add(content);
-		authorities.add(store);
-		authorities.add(tax);
-		authorities.add(shp);*/
+	
 		
 		User secUser = new User(userName, user.getAdminPassword(), user.isActive(), true,
 				true, true, authorities);

@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.country.service.CountryService;
@@ -123,7 +125,7 @@ public class UserController {
 		return returnString;
 	}
 
-
+	@Secured("AUTH")
 	@RequestMapping(value="/admin/users/password.html", method=RequestMethod.GET)
 	public String displayChangePassword(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		setMenu(model,request);
@@ -139,7 +141,7 @@ public class UserController {
 	}
 	
 	
-	
+	@Secured("AUTH")
 	@RequestMapping(value="/admin/users/savePassword.html", method=RequestMethod.POST)
 	public String changePassword(@ModelAttribute("password") Password password, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		setMenu(model,request);
@@ -204,11 +206,24 @@ public class UserController {
 		return ControllerConstants.Tiles.User.password;
 	}
 	
+	@Secured("STORE_ADMIN")
 	@RequestMapping(value="/admin/users/createUser.html", method=RequestMethod.GET)
 	public String displayUserCreate(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		return displayUser(null,model,request,response,locale);
 	}
 	
+
+	/**
+	 * From user list
+	 * @param id
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @param locale
+	 * @return
+	 * @throws Exception
+	 */
+	@Secured("AUTH")
 	@RequestMapping(value="/admin/users/displayStoreUser.html", method=RequestMethod.GET)
 	public String displayUserEdit(@ModelAttribute("id") Long id, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
@@ -224,6 +239,16 @@ public class UserController {
 
 	}
 	
+	/**
+	 * From user profile
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @param locale
+	 * @return
+	 * @throws Exception
+	 */
+	@Secured("AUTH")
 	@RequestMapping(value="/admin/users/displayUser.html", method=RequestMethod.GET)
 	public String displayUserEdit(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
@@ -341,6 +366,7 @@ public class UserController {
 		return ControllerConstants.Tiles.User.profile;
 	}
 	
+	@Secured("AUTH")
 	@RequestMapping(value="/admin/users/checkUserCode.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String checkUserCode(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String code = request.getParameter("code");
@@ -392,6 +418,7 @@ public class UserController {
 		return returnString;
 	}
 	
+	@Secured("AUTH")
 	@RequestMapping(value="/admin/users/save.html", method=RequestMethod.POST)
 	public String saveUser(@Valid @ModelAttribute("user") User user, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 
@@ -508,6 +535,75 @@ public class UserController {
 
 		model.addAttribute("success","success");
 		return ControllerConstants.Tiles.User.profile;
+	}
+	
+	@Secured("AUTH")
+	@RequestMapping(value="/admin/users/remove.html", method=RequestMethod.POST, produces="application/json")
+	public String removeUser(HttpServletRequest request, Locale locale) throws Exception {
+		
+		//do not remove super admin
+		
+		String sUserId = request.getParameter("userId");
+
+		AjaxResponse resp = new AjaxResponse();
+
+		
+		try {
+			
+			Long userId = Long.parseLong(sUserId);
+			User user = userService.getById(userId);
+			
+			/**
+			 * In order to remove a User the logged in ser must be STORE_ADMIN
+			 * or SUPER_USER
+			 */
+			
+
+			if(user==null){
+				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
+				return resp.toJSONString();
+			}
+			
+			if(!request.isUserInRole(Constants.PERMISSION_ADMIN)) {
+				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
+				return resp.toJSONString();
+			}
+
+			
+			//check if the user removed has group SUPERADMIN
+			List<Group> userGroups = user.getGroups();
+			boolean isSuperAdmin = false;
+			for(Group group : userGroups) {
+				if(group.getGroupName().equals(Constants.GROUP_SUPERADMIN)) {
+					isSuperAdmin = true;
+					break;
+				}
+			}
+			
+			if(isSuperAdmin) {
+				resp.setStatusMessage(messages.getMessage("message.security.caanotremovesuperadmin", locale));
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
+				return resp.toJSONString();
+			}
+			
+			userService.delete(user);
+			
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+
+		
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while deleting product price", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
+		
 	}
 	
 	

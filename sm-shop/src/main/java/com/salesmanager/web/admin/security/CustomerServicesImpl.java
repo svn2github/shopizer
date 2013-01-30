@@ -5,7 +5,6 @@ import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.User;
@@ -32,9 +31,6 @@ public class CustomerServicesImpl implements UserDetailsService{
 	@Autowired
 	private UserService userService;
 	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-	
 
 	
 	@Autowired
@@ -47,27 +43,7 @@ public class CustomerServicesImpl implements UserDetailsService{
 	
 	public UserDetails loadUserByUsername(String userName)
 			throws UsernameNotFoundException, DataAccessException {
-		//UserDetails userDetails = new UserDetails();
-		// UserEntity userEntity = dao.findByName(username);
-		// if (userEntity == null)
-		// throw new UsernameNotFoundException("user not found");
-		// return assembler.buildUserFromUserEntity(userEntity);
 
-		/*		
-  		String username = userEntity.getUsername();
-		String password = userEntity.getPassword();
-		boolean enabled = userEntity.isActive();
-		boolean accountNonExpired = userEntity.isActive();
-		boolean credentialsNonExpired = userEntity.isActive();
-		boolean accountNonLocked = userEntity.isActive();
-		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		for (SecurityRoleEntity role : userEntity.getUserSecurityRoleEntity()) {
-			authorities.add(new GrantedAuthorityImpl(role.getName()));
-		}
-		User user = new User(username, password, enabled, accountNonExpired,
-				credentialsNonExpired, accountNonLocked, authorities);
-		*/
-		
 		com.salesmanager.core.business.user.model.User myUser = null;
 		
 		try {

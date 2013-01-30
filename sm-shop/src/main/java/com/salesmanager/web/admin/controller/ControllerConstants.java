@@ -34,6 +34,10 @@ public interface ControllerConstants
             final String password="admin-user-password";
         }
         
+        interface Store{
+            final String stores="admin-stores";
+        }
+        
         interface Order{
             final String orders="admin-orders";
         }
