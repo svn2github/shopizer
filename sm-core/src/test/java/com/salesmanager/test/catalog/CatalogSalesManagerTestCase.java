@@ -5,14 +5,11 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.catalog.product.model.ProductList;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
@@ -31,8 +28,12 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 	
 	private static final Date date = new Date(System.currentTimeMillis());
 
+	/**
+	 * This method creates multiple products using multiple catelog APIs
+	 * @throws ServiceException
+	 */
 	@Test
-	public void testCatalog() throws ServiceException {
+	public void testCreateProduct() throws ServiceException {
 
 	    Language en = languageService.getByCode("en");
 	    Language fr = languageService.getByCode("fr");
@@ -158,9 +159,6 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 
 	    categoryService.create(fiction);
 	    categoryService.addChild(book, fiction);
-
-	    // Add products
-	    // ProductType generalType = productTypeService.
 
 	    Manufacturer oreilley = new Manufacturer();
 	    oreilley.setMerchantStore(store);
@@ -491,13 +489,121 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 
 	    productPriceService.create(dprice6);
 	    
+
 	    
-	    //Test get products
-	    ProductList productList = productService.listByStore(store, en, null);
+	}
+	
+	
+	/**
+	 * This method creates a product and uses the saveOrUpdate on a complex graph object
+	 * @throws ServiceException
+	 */
+	@Test
+	public void testCreateSimpleProduct() throws ServiceException {
+		
+		
+	    Language en = languageService.getByCode("en");
+	    Language fr = languageService.getByCode("fr");
+
+	    MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
+	    ProductType generalType = productTypeService.getProductType(ProductType.GENERAL_TYPE);
+
+	    /**
+	     * Create the category
+	     */
 	    
-	    List<Product> products = productList.getProducts();
-	    Assert.assertNotNull(products);
+	    Category book = new Category();
+	    book.setMerchantStore(store);
+	    book.setCode("book");
+
+	    CategoryDescription bookEnglishDescription = new CategoryDescription();
+	    bookEnglishDescription.setName("Book");
+	    bookEnglishDescription.setCategory(book);
+	    bookEnglishDescription.setLanguage(en);
+
+	    CategoryDescription bookFrenchDescription = new CategoryDescription();
+	    bookFrenchDescription.setName("Livre");
+	    bookFrenchDescription.setCategory(book);
+	    bookFrenchDescription.setLanguage(fr);
+
+	    List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
+	    descriptions.add(bookEnglishDescription);
+	    descriptions.add(bookFrenchDescription);
+
+	    book.setDescriptions(descriptions);
+
+	    categoryService.create(book);
 	    
+	    
+	    /**
+	     * Create a manufacturer
+	     */
+	    Manufacturer packed = new Manufacturer();
+	    packed.setMerchantStore(store);
+
+	    ManufacturerDescription packedd = new ManufacturerDescription();
+	    packedd.setLanguage(en);
+	    packedd.setManufacturer(packed);
+	    packedd.setName("Packed publishing");
+	    packed.getDescriptions().add(packedd);
+
+	    manufacturerService.create(packed);
+	    
+	    /**
+	     * Create the product
+	     */
+	    
+	    Product product = new Product();
+	    product.setProductHeight(new BigDecimal(4));
+	    product.setProductLength(new BigDecimal(3));
+	    product.setProductWidth(new BigDecimal(1));
+	    product.setSku("TB12345");
+	    product.setManufacturer(packed);
+	    product.setType(generalType);
+	    product.setMerchantStore(store);
+
+	    // Product description
+	    ProductDescription description = new ProductDescription();
+	    description.setName("Spring in Action");
+	    description.setLanguage(en);
+	    description.setProduct(product);
+
+	    product.getDescriptions().add(description);
+	    product.getCategories().add(book);
+	    
+	    
+	    //availability
+	    ProductAvailability availability = new ProductAvailability();
+	    availability.setProductDateAvailable(date);
+	    availability.setProductQuantity(100);
+	    availability.setRegion("*");
+	    availability.setProduct(product);// associate with product
+	    
+	    //price
+	    ProductPrice dprice = new ProductPrice();
+	    dprice.setDefaultPrice(true);
+	    dprice.setProductPriceAmount(new BigDecimal(29.99));
+	    dprice.setProductAvailability(availability);
+	    
+	    
+
+	    ProductPriceDescription dpd = new ProductPriceDescription();
+	    dpd.setName("Base price");
+	    dpd.setProductPrice(dprice);
+	    dpd.setLanguage(en);
+
+	    dprice.getDescriptions().add(dpd);
+	    availability.getPrices().add(dprice);
+
+
+	    //relationships
+	    
+	    //attributes
+	  
+	    productService.create(product);
+
+		
+		
 	}
 
 
