@@ -92,13 +92,14 @@ public class MerchantStoreController {
 
 			for (MerchantStore store : stores) {
 
-
-				Map<String,String> entry = new HashMap<String,String> ();
-				entry.put("storeId", String.valueOf(store.getId()));
-				entry.put("code", store.getCode());
-				entry.put("name", store.getStorename());
-				entry.put("email", store.getStoreEmailAddress());
-				resp.addDataEntry(entry);
+				if(store.getCode()!=MerchantStore.DEFAULT_STORE) {
+					Map<String,String> entry = new HashMap<String,String> ();
+					entry.put("storeId", String.valueOf(store.getId()));
+					entry.put("code", store.getCode());
+					entry.put("name", store.getStorename());
+					entry.put("email", store.getStoreEmailAddress());
+					resp.addDataEntry(entry);
+				}
 
 			}
 
@@ -123,11 +124,19 @@ public class MerchantStoreController {
 		setMenu(model,request);
 
 		MerchantStore store = new MerchantStore();
+		
+		MerchantStore sessionStore = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		store.setCurrency(sessionStore.getCurrency());
+		store.setCountry(sessionStore.getCountry());
+		store.setZone(sessionStore.getZone());
+		store.setStorestateprovince(sessionStore.getStorestateprovince());
+		store.setLanguages(sessionStore.getLanguages());
+		store.setDomainName(sessionStore.getDomainName());
+		
 
 		return displayMerchantStore(store, model, request, response, locale);
 	}
-		
-
+	
 	@Secured("STORE")
 	@RequestMapping(value="/admin/store/store.html", method=RequestMethod.GET)
 	public String displayMerchantStore(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
@@ -135,11 +144,23 @@ public class MerchantStoreController {
 		setMenu(model,request);
 
 
-		//TODO use multiple store
+
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		
 		
+		return displayMerchantStore(store, model, request, response, locale);
+	}
+		
+
+	@Secured("STORE")
+	@RequestMapping(value="/admin/store/editStore.html", method=RequestMethod.GET)
+	public String displayMerchantStore(@ModelAttribute("id") Integer id, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+		setMenu(model,request);
+
+		MerchantStore store = merchantStoreService.getById(id);
+
 		return displayMerchantStore(store, model, request, response, locale);
 	}
 	
@@ -303,10 +324,45 @@ public class MerchantStoreController {
 
 
 		model.addAttribute("success","success");
-		model.addAttribute("store", sessionStore);
+		model.addAttribute("store", store);
 
 		
 		return "admin-store";
+	}
+	
+	@Secured("AUTH")
+	@RequestMapping(value="/admin/store/checkStoreCode.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String checkStoreCode(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		String code = request.getParameter("code");
+
+
+		AjaxResponse resp = new AjaxResponse();
+		
+		try {
+			
+			MerchantStore store = merchantStoreService.getByCode(code);
+		
+
+
+			
+			if(store!=null) {
+				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
+				return resp.toJSONString();
+			}
+
+
+
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+
+		} catch (Exception e) {
+			LOGGER.error("Error while getting user", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
 	}
 	
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {

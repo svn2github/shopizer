@@ -45,6 +45,7 @@ import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.admin.security.SecurityQuestion;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
+import com.salesmanager.web.utils.UserUtils;
 
 @Controller
 public class UserController {
@@ -102,14 +103,18 @@ public class UserController {
 			List<User> users = userService.listUserByStore(store);
 
 			for (User user : users) {
+				
+				if(!UserUtils.userInGroup(user, Constants.GROUP_SUPERADMIN)) {
 
-				@SuppressWarnings("rawtypes")
-				Map entry = new HashMap();
-				entry.put("userId", user.getId());
-				entry.put("name", user.getFirstName() + " " + user.getLastName());
-				entry.put("email", user.getAdminEmail());
-				entry.put("active", user.isActive());
-				resp.addDataEntry(entry);
+					@SuppressWarnings("rawtypes")
+					Map entry = new HashMap();
+					entry.put("userId", user.getId());
+					entry.put("name", user.getFirstName() + " " + user.getLastName());
+					entry.put("email", user.getAdminEmail());
+					entry.put("active", user.isActive());
+					resp.addDataEntry(entry);
+				
+				}
 
 			}
 
@@ -259,7 +264,7 @@ public class UserController {
 
 	}
 	
-	private void populateUserObjects(User user, MerchantStore store, Model model, Locale locale) throws Exception {
+	private void populateUserObjects(User user, MerchantStore store, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
 		//get groups
 		List<Group> groups = groupService.listGroup();
@@ -267,17 +272,13 @@ public class UserController {
 		List<MerchantStore> stores = new ArrayList<MerchantStore>();
 		stores.add(store);
 		
-		//String remoteUser = request.getRemoteUser();
-		
-		if(user!=null && user.getId()!=null) {
-			User logedInUser = userService.getByUserName(user.getAdminName());
-			
+		String remoteUser = request.getRemoteUser();
+		User loggedInUser = userService.getByUserName(remoteUser);
+		if(loggedInUser!=null && loggedInUser.getId()!=null) {
+
 			//check groups
-			List<Group> logedInUserGroups = logedInUser.getGroups();
-			for(Group group : logedInUserGroups) {
-				if(group.getGroupName().equals(Constants.GROUP_SUPERADMIN)) {
-					stores = merchantStoreService.list();
-				}
+			if(UserUtils.userInGroup(loggedInUser, Constants.GROUP_SUPERADMIN)) {
+				stores = merchantStoreService.list();
 			}
 		}
 		
@@ -356,7 +357,7 @@ public class UserController {
 			user.setAdminPassword("TRANSIENT");
 		}
 		
-		this.populateUserObjects(user, store, model, locale);
+		this.populateUserObjects(user, store, model, request, locale);
 		
 
 		model.addAttribute("user", user);
@@ -428,7 +429,7 @@ public class UserController {
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
 		
-		this.populateUserObjects(user, store, model, locale);
+		this.populateUserObjects(user, store, model, request, locale);
 		
 		Language language = user.getDefaultLanguage();
 		
@@ -573,14 +574,11 @@ public class UserController {
 
 			
 			//check if the user removed has group SUPERADMIN
-			List<Group> userGroups = user.getGroups();
 			boolean isSuperAdmin = false;
-			for(Group group : userGroups) {
-				if(group.getGroupName().equals(Constants.GROUP_SUPERADMIN)) {
-					isSuperAdmin = true;
-					break;
-				}
+			if(UserUtils.userInGroup(user, Constants.GROUP_SUPERADMIN)) {
+				isSuperAdmin = true;
 			}
+
 			
 			if(isSuperAdmin) {
 				resp.setStatusMessage(messages.getMessage("message.security.caanotremovesuperadmin", locale));
