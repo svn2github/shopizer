@@ -83,29 +83,28 @@ public class MerchantStoreDaoImpl extends SalesManagerEntityDaoImpl<Integer, Mer
 	@Override
 	public MerchantStore getMerchantStore(String code)   throws ServiceException {
 	
-		StringBuilder qs = new StringBuilder();
+/*		
 		String q = "from MerchantStore m join fetch m.defaultLanguage left join fetch m.currency left join fetch m.country left join fetch m.zone left join fetch m.languages where m.code=:code";
 		
 		
 		Query queryQ = super.getEntityManager().createQuery(q);
 		queryQ.setParameter("code", code);
 		
-		return (MerchantStore)queryQ.getSingleResult();
+		return (MerchantStore)queryQ.getSingleResult();*/
 		//TODO add fetch
-/*		QMerchantStore qMerchantStore = QMerchantStore.merchantStore;
+		QMerchantStore qMerchantStore = QMerchantStore.merchantStore;
 
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
-		//TODO Zone
 		query.from(qMerchantStore)
-			.innerJoin(qMerchantStore.defaultLanguage)
-			.leftJoin(qMerchantStore.currency)
-			.leftJoin(qMerchantStore.country)
-			.leftJoin(qMerchantStore.zone)
-			.leftJoin(qMerchantStore.languages)
+			.innerJoin(qMerchantStore.defaultLanguage).fetch()
+			.leftJoin(qMerchantStore.currency).fetch()
+			.leftJoin(qMerchantStore.country).fetch()
+			.leftJoin(qMerchantStore.zone).fetch()
+			.leftJoin(qMerchantStore.languages).fetch()
 			.where(qMerchantStore.code.eq(code));
 		
-		return query.uniqueResult(qMerchantStore);*/
+		return query.uniqueResult(qMerchantStore);
 	}
 	
 	public MerchantStore getMerchantStore(Integer merchantStoreId) {

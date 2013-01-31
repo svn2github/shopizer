@@ -43,6 +43,7 @@ public class UserDaoImpl extends SalesManagerEntityDaoImpl<Long, User> implement
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qUser)
+			.innerJoin(qUser.groups).fetch()
 			.innerJoin(qUser.merchantStore).fetch()
 			.leftJoin(qUser.defaultLanguage).fetch()
 			.orderBy(qUser.id.asc());
@@ -56,6 +57,7 @@ public class UserDaoImpl extends SalesManagerEntityDaoImpl<Long, User> implement
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qUser)
+			.innerJoin(qUser.groups).fetch()
 			.innerJoin(qUser.merchantStore).fetch()
 			.leftJoin(qUser.defaultLanguage).fetch()
 			.orderBy(qUser.id.asc())
