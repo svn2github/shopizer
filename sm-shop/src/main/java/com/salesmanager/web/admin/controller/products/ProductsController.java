@@ -216,7 +216,7 @@ public class ProductsController {
 				
 			} else {
 				
-				productService.removeProduct(product);
+				productService.delete(product);
 				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 				
 			}

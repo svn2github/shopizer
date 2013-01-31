@@ -94,7 +94,7 @@ public class OrdersController {
 
 			
 			//TODO add filters as criteria
-			List<Order> orders = orderService.getMerchantOrders(store);
+			List<Order> orders = orderService.listByStore(store);
 					
 					
 			

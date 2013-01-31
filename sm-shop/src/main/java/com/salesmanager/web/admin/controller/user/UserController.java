@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
-import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.country.service.CountryService;
@@ -100,7 +98,7 @@ public class UserController {
 
 		try {
 
-			List<User> users = userService.listUserByStore(store);
+			List<User> users = userService.listByStore(store);
 
 			for (User user : users) {
 				
@@ -264,7 +262,7 @@ public class UserController {
 
 	}
 	
-	private void populateUserObjects(User user, MerchantStore store, Model model, HttpServletRequest request, Locale locale) throws Exception {
+	private void populateUserObjects(User user, MerchantStore store, Model model, Locale locale) throws Exception {
 		
 		//get groups
 		List<Group> groups = groupService.listGroup();
@@ -272,13 +270,17 @@ public class UserController {
 		List<MerchantStore> stores = new ArrayList<MerchantStore>();
 		stores.add(store);
 		
-		String remoteUser = request.getRemoteUser();
-		User loggedInUser = userService.getByUserName(remoteUser);
-		if(loggedInUser!=null && loggedInUser.getId()!=null) {
-
+		//String remoteUser = request.getRemoteUser();
+		
+		if(user!=null && user.getId()!=null) {
+			User logedInUser = userService.getByUserName(user.getAdminName());
+			
 			//check groups
-			if(UserUtils.userInGroup(loggedInUser, Constants.GROUP_SUPERADMIN)) {
-				stores = merchantStoreService.list();
+			List<Group> logedInUserGroups = logedInUser.getGroups();
+			for(Group group : logedInUserGroups) {
+				if(group.getGroupName().equals(Constants.GROUP_SUPERADMIN)) {
+					stores = merchantStoreService.list();
+				}
 			}
 		}
 		
@@ -357,7 +359,7 @@ public class UserController {
 			user.setAdminPassword("TRANSIENT");
 		}
 		
-		this.populateUserObjects(user, store, model, request, locale);
+		this.populateUserObjects(user, store, model, locale);
 		
 
 		model.addAttribute("user", user);
@@ -429,7 +431,7 @@ public class UserController {
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
 		
-		this.populateUserObjects(user, store, model, request, locale);
+		this.populateUserObjects(user, store, model, locale);
 		
 		Language language = user.getDefaultLanguage();
 		
