@@ -1,5 +1,7 @@
 package com.salesmanager.core.business.system.dao;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.mysema.query.jpa.JPQLQuery;
@@ -28,6 +30,21 @@ public class MerchantConfigurationDaoImpl extends SalesManagerEntityDaoImpl<Long
 			.and(qMerchantCnfiguration.key.eq(key)));
 		
 		return query.uniqueResult(qMerchantCnfiguration);
+
+	}
+	
+	@Override
+	public List<MerchantConfiguration> getMerchantConfigurations(MerchantStore store) {
+
+		QMerchantConfiguration qMerchantCnfiguration = QMerchantConfiguration.merchantConfiguration;
+
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		query.from(qMerchantCnfiguration)
+			.innerJoin(qMerchantCnfiguration.merchantStore).fetch()
+			.where(qMerchantCnfiguration.merchantStore.id.eq(store.getId()));
+		
+		return query.list(qMerchantCnfiguration);
 
 	}
 }

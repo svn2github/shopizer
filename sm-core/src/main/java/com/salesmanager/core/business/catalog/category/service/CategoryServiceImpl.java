@@ -197,16 +197,8 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		for(Product product : products) {
 			
 			
-			productService.removeProduct(product);
+			productService.delete(product);
 
-			//need to delete a few things
-			
-			//delete attributes
-			
-			//delete availabilities
-			
-			
-			
 		}
 		
 		for(Category c : categories) {

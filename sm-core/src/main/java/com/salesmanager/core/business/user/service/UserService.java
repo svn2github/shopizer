@@ -20,6 +20,6 @@ public interface UserService extends SalesManagerEntityService<Long, User> {
 	 */
 	void saveOrUpdate(User user) throws ServiceException;
 
-	List<User> listUserByStore(MerchantStore store) throws ServiceException;
+	List<User> listByStore(MerchantStore store) throws ServiceException;
 
 }

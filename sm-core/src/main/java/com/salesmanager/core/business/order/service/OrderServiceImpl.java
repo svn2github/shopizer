@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -27,7 +26,8 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		return getById(orderId);
 	}
 	
-	public List<Order> getMerchantOrders(MerchantStore merchantStore) {
+	@Override
+	public List<Order> listByStore(MerchantStore merchantStore) {
 		return listByField(Order_.merchant, merchantStore);
 	}
 	
@@ -37,5 +37,12 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		order.getOrderHistory().add(history);
 		history.setOrder(order);
 		update(order);
+	}
+	
+	@Override
+	public void delete(Order order) throws ServiceException {
+		
+		//TODO delete sub objects
+		super.delete(order);
 	}
 }

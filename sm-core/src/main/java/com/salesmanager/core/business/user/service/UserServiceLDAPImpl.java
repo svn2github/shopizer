@@ -93,7 +93,7 @@ public class UserServiceLDAPImpl implements UserService {
 	}
 
 	@Override
-	public List<User> listUserByStore(MerchantStore store)
+	public List<User> listByStore(MerchantStore store)
 			throws ServiceException {
 		// TODO Auto-generated method stub
 		throw new ServiceException("Not implemented");

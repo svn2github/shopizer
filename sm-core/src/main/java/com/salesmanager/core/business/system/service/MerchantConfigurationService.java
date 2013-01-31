@@ -1,5 +1,7 @@
 package com.salesmanager.core.business.system.service;
 
+import java.util.List;
+
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -11,5 +13,8 @@ public interface MerchantConfigurationService extends
 	MerchantConfiguration getMerchantConfiguration(String key, MerchantStore store) throws ServiceException;
 
 	public void saveOrUpdate(MerchantConfiguration entity) throws ServiceException;
+
+	List<MerchantConfiguration> listByStore(MerchantStore store)
+			throws ServiceException;
 
 }

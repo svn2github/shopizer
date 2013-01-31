@@ -179,7 +179,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	
 
 	@Override
-	public void removeProduct(Product product) throws ServiceException {
+	public void delete(Product product) throws ServiceException {
 		
 		
 		product = this.getById(product.getId());//Prevents detached entity error
@@ -201,7 +201,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 			productRelationshipService.delete(relationship);
 		}
 		
-		this.delete(product);
+		super.delete(product);
 		
 		
 	}

@@ -43,7 +43,6 @@ public interface ProductService extends SalesManagerEntityService<Long, Product>
 	ProductList listByStore(MerchantStore store, Language language,
 			ProductCriteria criteria);
 
-	void removeProduct(Product product) throws ServiceException;
 
 
 	void saveOrUpdate(Product product) throws ServiceException;

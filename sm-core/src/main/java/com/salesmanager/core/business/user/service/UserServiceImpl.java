@@ -42,7 +42,7 @@ public class UserServiceImpl extends SalesManagerEntityServiceImpl<Long, User>
 	}
 	
 	@Override
-	public List<User> listUserByStore(MerchantStore store) throws ServiceException {
+	public List<User> listByStore(MerchantStore store) throws ServiceException {
 		try {
 			return userDao.listUserByStore(store);
 		} catch (Exception e) {

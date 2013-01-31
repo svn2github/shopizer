@@ -1,12 +1,10 @@
 package com.salesmanager.core.business.system.service;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -33,6 +31,12 @@ public class MerchantConfigurationServiceImpl extends
 		
 		return merchantConfigurationDao.getMerchantConfiguration(key, store);
 		
+	}
+	
+	
+	@Override
+	public List<MerchantConfiguration> listByStore(MerchantStore store) throws ServiceException {
+		return merchantConfigurationDao.getMerchantConfigurations(store);
 	}
 	
 	@Override

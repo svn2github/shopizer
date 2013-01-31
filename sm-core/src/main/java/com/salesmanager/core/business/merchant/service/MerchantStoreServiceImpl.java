@@ -6,16 +6,51 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.salesmanager.core.business.catalog.category.model.Category;
+import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
+import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.dao.MerchantStoreDao;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.model.MerchantStore_;
+import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.order.service.OrderService;
+import com.salesmanager.core.business.system.model.MerchantConfiguration;
+import com.salesmanager.core.business.system.service.MerchantConfigurationService;
+import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
+import com.salesmanager.core.business.tax.service.TaxClassService;
+import com.salesmanager.core.business.user.model.User;
+import com.salesmanager.core.business.user.service.UserService;
 
 @Service("merchantService")
 public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Integer, MerchantStore> 
 		implements MerchantStoreService {
+	
+
+		
+	@Autowired
+	protected ProductTypeService productTypeService;
+	
+	@Autowired
+	private TaxClassService taxClassService;
+	
+	@Autowired
+	private ContentService contentService;
+	
+	@Autowired
+	private MerchantConfigurationService merchantConfigurationService;
+	
+	@Autowired
+	private CategoryService categoryService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private OrderService orderService;
 	
 	private MerchantStoreDao merchantStoreDao;
 	
@@ -90,6 +125,50 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 	public MerchantStore getByCode(String code) throws ServiceException {
 		
 		return merchantStoreDao.getMerchantStore(code);
+	}
+	
+	@Override
+	public void delete(MerchantStore merchant) throws ServiceException {
+		
+		
+		//reference
+		//TODO manufacturer
+		
+		List<MerchantConfiguration> configurations = merchantConfigurationService.listByStore(merchant);
+		for(MerchantConfiguration configuration : configurations) {
+			merchantConfigurationService.delete(configuration);
+		}
+		
+
+		//TODO taxService
+		List<TaxClass> taxClasses = taxClassService.listByStore(merchant);
+		for(TaxClass taxClass : taxClasses) {
+			taxClassService.delete(taxClass);
+		}
+		
+		//content
+		contentService.removeImages(merchant.getCode());
+		//TODO staticContentService.removeImages
+		
+		//category / product
+		List<Category> categories = categoryService.listByStore(merchant);
+		for(Category category : categories) {
+			categoryService.delete(category);
+		}
+
+		//users
+		List<User> users = userService.listByStore(merchant);
+		for(User user : users) {
+			userService.delete(user);
+		}
+		
+		
+		//orders
+		List<Order> orders = orderService.listByStore(merchant);
+		for(Order order : orders) {
+			orderService.delete(order);
+		}
+		
 	}
 
 }
