@@ -79,7 +79,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		orderService.create(order);
 		
 		try {
-			merchantOrders = orderService.getMerchantOrders(merchant);
+			merchantOrders = orderService.listByStore(merchant);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
