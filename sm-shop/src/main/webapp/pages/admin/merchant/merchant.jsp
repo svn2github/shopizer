@@ -14,6 +14,10 @@
 
 
 $(document).ready(function() {
+	
+	if($("#code").val()=="") {
+		$('.btn').addClass('disabled');
+	}
 
 	
 	<c:choose>
@@ -90,6 +94,36 @@ function getZones(countryCode){
 
 
 
+function validateCode() {
+	alert('in');
+	$('#checkCodeStatus').html('<img src="<c:url value="/resources/img/ajax-loader.gif" />');
+	$('#checkCodeStatus').show();
+	var storeCode = $("#code").val();
+	var id = $("#id").val();
+	checkCode(storeCode,id,'<c:url value="/admin/store/checkStoreCode.html" />');
+}
+
+function callBackCheckCode(msg,code) {
+	
+	if(code==0) {
+		$('.btn').removeClass('disabled');
+	}
+	if(code==9999) {
+
+		$('#checkCodeStatus').html('<font color="green"><s:message code="message.code.available" text="This code is available"/></font>');
+		$('#checkCodeStatus').show();
+		$('.btn').removeClass('disabled');
+	}
+	if(code==9998) {
+
+		$('#checkCodeStatus').html('<font color="red"><s:message code="message.code.exist" text="This code already exist"/></font>');
+		$('#checkCodeStatus').show();
+		$('.btn').addClass('disabled');
+	}
+	
+}
+
+
 </script>
 
 
@@ -126,10 +160,10 @@ function getZones(countryCode){
 	                        					<span class="input-large uneditable-input">${store.code}</span><form:hidden path="code" />
 	                        				</c:when>
 	                        				<c:otherwise>
-	                        					<form:input cssClass="input-large highlight" path="code" />
+	                        					<form:input cssClass="input-large highlight" path="code" onblur="validateCode()"/>
 	                        				</c:otherwise>
 	                        			</c:choose>
-	                                    <span class="help-inline"><form:errors path="code" cssClass="error" /></span>
+	                        			<span class="help-inline"><div id="checkCodeStatus" style="display:none;"></div><form:errors path="code" cssClass="error" /></span>
 	                        </div>
 	                  </div>
 	                  
