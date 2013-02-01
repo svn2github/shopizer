@@ -10,6 +10,12 @@ import org.junit.Test;
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionDescription;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionType;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValueDescription;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
@@ -511,7 +517,6 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 	    /**
 	     * Create the category
 	     */
-	    
 	    Category book = new Category();
 	    book.setMerchantStore(store);
 	    book.setCode("book");
@@ -550,9 +555,53 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 	    manufacturerService.create(packed);
 	    
 	    /**
+	     * Create an option
+	     */
+	    ProductOption option = new ProductOption();
+	    option.setMerchantStore(store);
+	    option.setProductOptionType(ProductOptionType.Radio.name());
+	    
+	    ProductOptionDescription optionDescription = new ProductOptionDescription();
+	    optionDescription.setLanguage(en);
+	    optionDescription.setName("Book type");
+	    optionDescription.setDescription("Offered in hard and soft copy");
+	    optionDescription.setProductOption(option);
+	    
+	    option.getDescriptions().add(optionDescription);
+	    
+	    productOptionService.saveOrUpdate(option);
+	    
+	    ProductOptionValue soft = new ProductOptionValue();
+	    soft.setMerchantStore(store);
+	    
+	    ProductOptionValueDescription softDescription = new ProductOptionValueDescription();
+	    softDescription.setLanguage(en);
+	    softDescription.setName("Soft");
+	    softDescription.setDescription("Soft copy");
+	    softDescription.setProductOptionValue(soft);
+	    
+	    soft.getDescriptions().add(softDescription);
+	    
+	    productOptionValueService.saveOrUpdate(soft);
+	    
+	    
+	    ProductOptionValue hard = new ProductOptionValue();
+	    hard.setMerchantStore(store);
+	    
+	    ProductOptionValueDescription hardDescription = new ProductOptionValueDescription();
+	    hardDescription.setLanguage(en);
+	    hardDescription.setName("Hard");
+	    hardDescription.setDescription("Hard copy");
+	    hardDescription.setProductOptionValue(hard);
+	    
+	    hard.getDescriptions().add(hardDescription);
+
+	    productOptionValueService.saveOrUpdate(hard);
+	    
+	    
+	    /**
 	     * Create the product
 	     */
-	    
 	    Product product = new Product();
 	    product.setProductHeight(new BigDecimal(4));
 	    product.setProductLength(new BigDecimal(3));
@@ -594,11 +643,34 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 
 	    dprice.getDescriptions().add(dpd);
 	    availability.getPrices().add(dprice);
-
+	    
+	    
+	    
+	    //attributes
+	    ProductAttribute attribute = new ProductAttribute();
+	    attribute.setProduct(product);
+	    attribute.setProductOption(option);
+	    attribute.setAttributeDefault(true);
+	    attribute.setOptionValuePrice(new BigDecimal(0));//no price variation
+	    attribute.setProductAttributeWeight(new BigDecimal(1));//weight variation
+	    attribute.setProductOption(option);
+	    attribute.setProductOptionValue(hard);
+	    
+	    product.getAttributes().add(attribute);
+	    
+	    attribute = new ProductAttribute();
+	    attribute.setProduct(product);
+	    attribute.setProductOption(option);
+	    attribute.setOptionValuePrice(new BigDecimal(0));//no price variation
+	    attribute.setProductAttributeWeight(new BigDecimal(0));//no weight variation
+	    attribute.setProductOption(option);
+	    attribute.setProductOptionValue(soft);
+	    
+	    product.getAttributes().add(attribute);
 
 	    //relationships
 	    
-	    //attributes
+	    
 	  
 	    productService.create(product);
 
