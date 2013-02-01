@@ -70,10 +70,11 @@
 									return this.Super("fetchData", arguments);
 								},
 								
-								
-								//canExpandRecords: true,
-    							//expansionMode: "detailField",
-    							//detailField: "background",
+								<c:if test="${expandDetails!=null && expandDetails!=''}">
+								canExpandRecords: true,
+    							expansionMode: "detailField",
+    							detailField: "<c:out value="${expandDetails}"/>",
+    							</c:if>
     							
     							//selectionType: "simple",
     							//selectionChanged: "selectedCountries.setData(this.getSelection())"
