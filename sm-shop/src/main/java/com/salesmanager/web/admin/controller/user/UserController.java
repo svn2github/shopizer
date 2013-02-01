@@ -582,7 +582,7 @@ public class UserController {
 			}
 
 			
-			if(isSuperAdmin) {
+			if(!isSuperAdmin) {
 				resp.setStatusMessage(messages.getMessage("message.security.caanotremovesuperadmin", locale));
 				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
 				return resp.toJSONString();

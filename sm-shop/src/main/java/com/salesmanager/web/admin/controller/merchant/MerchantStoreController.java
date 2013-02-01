@@ -36,6 +36,8 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
+import com.salesmanager.core.business.user.model.User;
+import com.salesmanager.core.business.user.service.UserService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.reference.Size;
@@ -44,6 +46,7 @@ import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.DateUtil;
 import com.salesmanager.web.utils.LabelUtils;
+import com.salesmanager.web.utils.UserUtils;
 
 @Controller
 public class MerchantStoreController {
@@ -64,6 +67,9 @@ public class MerchantStoreController {
 	
 	@Autowired
 	CurrencyService currencyService;
+	
+	@Autowired
+	UserService userService;
 	
 	@Autowired
 	LabelUtils messages;
@@ -363,6 +369,58 @@ public class MerchantStoreController {
 		String returnString = resp.toJSONString();
 		
 		return returnString;
+	}
+	
+	
+	@Secured("SUPERADMIN")
+	@RequestMapping(value="/admin/store/remove.html", method=RequestMethod.POST, produces="application/json")
+	public String removeMerchantStore(HttpServletRequest request, Locale locale) throws Exception {
+
+		String sMerchantStoreId = request.getParameter("storeId");
+
+		AjaxResponse resp = new AjaxResponse();
+
+		
+		try {
+			
+			Integer storeId = Integer.parseInt(sMerchantStoreId);
+			MerchantStore store = merchantStoreService.getById(storeId);
+			
+			User user = userService.getByUserName(request.getRemoteUser());
+			
+			/**
+			 * In order to remove a Store the logged in ser must be SUPERADMIN
+			 */
+
+			//check if the user removed has group SUPERADMIN
+			boolean isSuperAdmin = false;
+			if(UserUtils.userInGroup(user, Constants.GROUP_SUPERADMIN)) {
+				isSuperAdmin = true;
+			}
+
+			
+			if(!isSuperAdmin) {
+				resp.setStatusMessage(messages.getMessage("message.security.caanotremovesuperadmin", locale));
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
+				return resp.toJSONString();
+			}
+			
+			merchantStoreService.delete(store);
+			
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+
+		
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while deleting product price", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
+		
 	}
 	
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {
