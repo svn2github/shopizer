@@ -10,6 +10,8 @@ import com.salesmanager.core.business.reference.language.model.Language;
 public interface ManufacturerDao extends SalesManagerEntityDao<Long, Manufacturer> {
 
 	List<Manufacturer> listByStore(MerchantStore store, Language language);
+
+	List<Manufacturer> listByStore(MerchantStore store);
 	
 
 }

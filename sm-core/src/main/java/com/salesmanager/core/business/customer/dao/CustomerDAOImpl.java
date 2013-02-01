@@ -9,6 +9,7 @@ import com.mysema.query.jpa.impl.JPAQuery;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.QCustomer;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.QCountry;
 import com.salesmanager.core.business.reference.zone.model.QZone;
 
@@ -29,6 +30,7 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qCustomer)
+			.join(qCustomer.merchantStore).fetch()
 			.leftJoin(qCustomer.country,qCountry).fetch()
 			.leftJoin(qCustomer.zone,qZone).fetch()
 			.where(qCustomer.id.eq(id));
@@ -41,17 +43,20 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		
 		QCustomer qCustomer = QCustomer.customer;
 		QCountry qCountry = QCountry.country;
-		QZone qZone = QZone.zone;
+
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qCustomer)
-			.leftJoin(qCustomer.country,qCountry).fetch();
+			.join(qCustomer.merchantStore).fetch()
+			.leftJoin(qCustomer.country,qCountry).fetch()
+			.leftJoin(qCustomer.zone).fetch();
 	
 		return (List<Customer>) query.list(qCustomer);
 		
 	}
 	
+	@Override
 	public List<Customer> getByName(String name){
 		QCustomer qCustomer = QCustomer.customer;
 		QCountry qCountry = QCountry.country;
@@ -60,9 +65,27 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qCustomer)
+			.join(qCustomer.merchantStore).fetch()
 			.leftJoin(qCustomer.country,qCountry).fetch()
 			.leftJoin(qCustomer.zone,qZone).fetch()
 			.where(qCustomer.firstname.eq(name));
+		
+		return query.list(qCustomer);
+	}
+	
+	@Override
+	public List<Customer> listByStore(MerchantStore store){
+		QCustomer qCustomer = QCustomer.customer;
+		QCountry qCountry = QCountry.country;
+		QZone qZone = QZone.zone;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCustomer)
+			.join(qCustomer.merchantStore).fetch()
+			.leftJoin(qCustomer.country,qCountry).fetch()
+			.leftJoin(qCustomer.zone,qZone).fetch()
+			.where(qCustomer.merchantStore.id.eq(store.getId()));
 		
 		return query.list(qCustomer);
 	}

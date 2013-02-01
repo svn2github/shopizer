@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -20,6 +21,7 @@ import javax.persistence.TemporalType;
 
 import com.salesmanager.core.business.catalog.product.model.review.ProductReview;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.constants.SchemaConstant;
@@ -96,6 +98,10 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 	
 	@OneToMany(mappedBy = "customer", targetEntity = ProductReview.class)
 	private List<ProductReview> reviews = new ArrayList<ProductReview>();
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="MERCHANT_ID", nullable=false)
+	private MerchantStore merchantStore;
 	
 	public Customer() {
 	}
@@ -258,5 +264,13 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 
 	public void setReviews(List<ProductReview> reviews) {
 		this.reviews = reviews;
+	}
+
+	public void setMerchantStore(MerchantStore merchantStore) {
+		this.merchantStore = merchantStore;
+	}
+
+	public MerchantStore getMerchantStore() {
+		return merchantStore;
 	}
 }

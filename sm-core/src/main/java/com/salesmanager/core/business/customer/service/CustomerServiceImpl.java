@@ -5,11 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import com.salesmanager.core.business.customer.dao.CustomerDAO;
 import com.salesmanager.core.business.customer.model.Customer;
-import com.salesmanager.core.business.customer.model.Customer_;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 
 @Service("customerService")
 public class CustomerServiceImpl extends SalesManagerEntityServiceImpl<Long, Customer> implements CustomerService {
@@ -30,6 +29,11 @@ public class CustomerServiceImpl extends SalesManagerEntityServiceImpl<Long, Cus
 	@Override
 	public Customer getById(Long id) {
 			return customerDAO.getById(id);		
+	}
+	
+	@Override
+	public List<Customer> listByStore(MerchantStore store) {
+		return customerDAO.listByStore(store);
 	}
 
 }

@@ -9,8 +9,12 @@ import org.springframework.stereotype.Service;
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
+import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
 import com.salesmanager.core.business.content.service.ContentService;
+import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.dao.MerchantStoreDao;
@@ -51,6 +55,12 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 	
 	@Autowired
 	private OrderService orderService;
+	
+	@Autowired
+	private CustomerService customerService;
+	
+	@Autowired
+	private ManufacturerService manufacturerService;
 	
 	private MerchantStoreDao merchantStoreDao;
 	
@@ -132,7 +142,10 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 		
 		
 		//reference
-		//TODO manufacturer
+		List<Manufacturer> manufacturers = manufacturerService.listByStore(merchant);
+		for(Manufacturer manufacturer : manufacturers) {
+			manufacturerService.delete(manufacturer);
+		}
 		
 		List<MerchantConfiguration> configurations = merchantConfigurationService.listByStore(merchant);
 		for(MerchantConfiguration configuration : configurations) {
@@ -162,6 +175,11 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 			userService.delete(user);
 		}
 		
+		//customers
+		List<Customer> customers = customerService.listByStore(merchant);
+		for(Customer customer : customers) {
+			customerService.delete(customer);
+		}
 		
 		//orders
 		List<Order> orders = orderService.listByStore(merchant);
