@@ -73,8 +73,8 @@ public class UserServicesImpl implements WebUserServices{
 				return null;
 			}
 
-			GrantedAuthority role = new GrantedAuthorityImpl(Constants.PERMISSION_ADMIN);//required to login
-			authorities.add(role);
+			//GrantedAuthority role = new GrantedAuthorityImpl(Constants.PERMISSION_AUTHENTICATED);//required to login
+			//authorities.add(role);
 	
 			List<Integer> groupsId = new ArrayList<Integer>();
 			List<Group> groups = user.getGroups();
@@ -205,13 +205,11 @@ public class UserServicesImpl implements WebUserServices{
 		  user.setLastName("User");
 		  
 		  for(Group group : groups) {
-			  if(group.getGroupName().equals("SUPERADMIN") || group.getGroupName().equals("ADMIN")) {
+			  if(group.getGroupName().equals(Constants.GROUP_SUPERADMIN) || group.getGroupName().equals(Constants.GROUP_ADMIN)) {
 				  user.getGroups().add(group);
 			  }
 		  }
-		  
-		  //user.getGroups().add(gsuperadmin);
-		  //user.getGroups().add(gadmin);
+
 		  user.setMerchantStore(store);
 
 		  

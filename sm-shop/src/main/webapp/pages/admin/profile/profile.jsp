@@ -146,6 +146,7 @@
                       </div>
                   </div>
                   
+                  <sec:authorize access="hasRole('ADMIN') and fullyAuthenticated">
                   <div class="control-group">
 	                        <label><s:message code="label.groups.title" text="Groups"/></label>
 	                        <div class="controls">
@@ -153,9 +154,10 @@
 	                            <span class="help-inline"><form:errors path="groups" cssClass="error" /></span>
 	                        </div>
 	              </div>
+	               </sec:authorize>
                   
                   
-                  <sec:authorize access="hasRole('STORE_ADMIN') and fullyAuthenticated">
+                  <sec:authorize access="hasRole('ADMIN') and fullyAuthenticated">
                   <div class="control-group">
                         	<label><strong></strong><s:message code="label.entity.active" text="Active"/></strong></label>
                         	<div class="controls">

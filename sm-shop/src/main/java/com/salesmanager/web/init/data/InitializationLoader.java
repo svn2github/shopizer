@@ -91,6 +91,11 @@ public class InitializationLoader {
 				  superadmin.getGroups().add(gsuperadmin);
 				  permissionService.create(superadmin);
 				  
+				  Permission admin = new Permission("ADMIN");
+				  admin.getGroups().add(gsuperadmin);
+				  admin.getGroups().add(gadmin);
+				  permissionService.create(admin);
+				  
 				  Permission auth = new Permission("AUTH");//Authenticated
 				  auth.getGroups().add(gsuperadmin);
 				  auth.getGroups().add(gadmin);

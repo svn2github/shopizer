@@ -21,7 +21,9 @@
   										<a href="#" class="dropdown-toggle" data-toggle="dropdown"><s:message code="menu.${menu.code}" text="${menu.code}"/><b class="caret"></b></a>
   										<ul class="dropdown-menu"> 
   											<c:forEach items="${menu.menus}" var="submenu">
-  												<li><a href="#" id="${submenu.code}-link" data-toggle="tab"><s:message code="menu.${submenu.code}" text="${submenu.code}"/></a></li>
+  												<sec:authorize access="hasRole('${submenu.role}') and fullyAuthenticated">
+  													<li><a href="#" id="${submenu.code}-link" data-toggle="tab"><s:message code="menu.${submenu.code}" text="${submenu.code}"/></a></li>
+  												</sec:authorize>
   											</c:forEach>
   										</ul> 
   									</li>

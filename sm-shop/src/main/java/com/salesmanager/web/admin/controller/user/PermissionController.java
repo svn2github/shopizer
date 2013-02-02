@@ -75,48 +75,10 @@ public class PermissionController {
 		}
 
 		model.addAttribute("permission", permission);
-		// model.addAttribute("categories", categories);
 
 		return "admin-user-permission";
 	}
 
-/*	@RequestMapping(value = "/admin/permission/save.html", method = RequestMethod.POST)
-	public String savePermission(
-			@Valid @ModelAttribute("permission") Permission permission,
-			BindingResult result, Model model, HttpServletRequest request)
-			throws Exception {
-
-
-		// display menu
-		setMenu(model, request);
-
-
-		if (permission.getId() != null && permission.getId() > 0) { // edit
-																	// entry
-
-			// get from DB
-			Permission currentPermission = permissionService.getById(permission
-					.getId());
-
-			if (currentPermission == null) {
-				return "admin-user-permissions";
-			}
-
-		}
-
-		if (result.hasErrors()) {
-			return "admin-user-permission";
-		}
-
-		permissionService.saveOrUpdate(permission);
-
-		// get parent categories
-		List<Permission> permissions = permissionService.list();
-		model.addAttribute("permissions", permissions);
-
-		model.addAttribute("success", "success");
-		return "admin-user-permissions";
-	}*/
 
 	@Secured("STORE_ADMIN")
 	@RequestMapping(value = "/admin/permissions/permissions.html", method = RequestMethod.GET)
@@ -124,8 +86,6 @@ public class PermissionController {
 			HttpServletResponse response) throws Exception {
 
 		setMenu(model, request);
-
-		// does nothing, ajax subsequent request
 
 		return "admin-user-permissions";
 	}
@@ -135,21 +95,14 @@ public class PermissionController {
 	public @ResponseBody
 	String pagePermissions(HttpServletRequest request,
 			HttpServletResponse response) {
-		String permissionName = request.getParameter("name");
+		//String permissionName = request.getParameter("name");
 
 		AjaxResponse resp = new AjaxResponse();
 
 		try {
 
 			List<Permission> permissions = null;
-
-			if (!StringUtils.isBlank(permissionName)) {
-
-				permissions = permissionService.getByName();
-
-			} else {
-				permissions = permissionService.listPermission();
-			}
+			permissions = permissionService.listPermission();
 
 			for (Permission permission : permissions) {
 
@@ -172,88 +125,7 @@ public class PermissionController {
 
 		return returnString;
 	}
-	
 
-/*	@RequestMapping(value = "/admin/permissions/remove.html", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	String deletePermission(HttpServletRequest request,
-			HttpServletResponse response, Locale locale) {
-		String sid = request.getParameter("permissionId");
-
-		// MerchantStore store =
-		// (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-
-		AjaxResponse resp = new AjaxResponse();
-
-		try {
-
-			int id = Integer.parseInt(sid);
-
-			Permission permission = permissionService.getById(id);
-
-			if (permission == null) {
-
-				resp.setStatusMessage(messages.getMessage(
-						"message.unauthorized", locale));
-				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-
-			} else {
-				permissionService.deletePermission(permission);
-				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
-
-			}
-
-		} catch (Exception e) {
-			LOGGER.error("Error while deleting permission", e);
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-			resp.setErrorMessage(e);
-		}
-
-		String returnString = resp.toJSONString();
-
-		return returnString;
-	}*/
-
-/*	@RequestMapping(value = "/admin/permissions/removePermission.html", method = RequestMethod.POST, produces = "application/json")
-	public @ResponseBody
-	String removePermission(HttpServletRequest request,
-			HttpServletResponse response, Locale locale) {
-		String sid = request.getParameter("permissionId");
-		String gid = request.getParameter("groupId");
-	
-		AjaxResponse resp = new AjaxResponse();
-
-		try {
-
-			int id = Integer.parseInt(sid);
-			int groupId=Integer.parseInt(gid);
-
-			Permission permission = permissionService.getById(id);
-			Group group=groupService.getById(groupId);
-
-			if (permission == null) {
-
-				resp.setStatusMessage(messages.getMessage(
-						"message.unauthorized", locale));
-				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-
-			} else {
-				permissionService.removePermission(permission,group);
-				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
-
-			}
-
-		} catch (Exception e) {
-			LOGGER.error("Error while deleting permission", e);
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-			resp.setErrorMessage(e);
-		}
-
-		String returnString = resp.toJSONString();
-
-		return returnString;
-	}*/
-	
 	private void setMenu(Model model, HttpServletRequest request)
 			throws Exception {
 

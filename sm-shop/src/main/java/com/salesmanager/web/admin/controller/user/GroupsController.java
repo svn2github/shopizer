@@ -60,11 +60,8 @@ public class GroupsController {
 		setMenu(model, request);
 
 		Group group = groupService.getById(groupId);
-		
-		//group description
 
 		model.addAttribute("group", group);
-		// model.addAttribute("categories", categories);
 
 		return "admin-user-group";
 	}
@@ -99,6 +96,7 @@ public class GroupsController {
 					Map entry = new HashMap();
 					entry.put("groupId", group.getId());
 					entry.put("name", group.getGroupName());
+					//entry.put("name", group.getGroupName());
 					resp.addDataEntry(entry);
 				}
 

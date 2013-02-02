@@ -265,7 +265,14 @@ public class UserController {
 	private void populateUserObjects(User user, MerchantStore store, Model model, Locale locale) throws Exception {
 		
 		//get groups
-		List<Group> groups = groupService.listGroup();
+		List<Group> groups = new ArrayList<Group>();
+		List<Group> userGroups = groupService.listGroup();
+		for(Group group : userGroups) {
+			if(!group.getGroupName().equals(Constants.GROUP_SUPERADMIN)) {
+				groups.add(group);
+			}
+		}
+		
 		
 		List<MerchantStore> stores = new ArrayList<MerchantStore>();
 		stores.add(store);
@@ -382,7 +389,7 @@ public class UserController {
 		User user = userService.getByUserName(code);
 		
 		
-		if(!StringUtils.isBlank(id)) {
+		if(!StringUtils.isBlank(id)&& user!=null) {
 			try {
 				Long lid = Long.parseLong(id);
 				
@@ -450,7 +457,7 @@ public class UserController {
 				return "redirect://admin/users/displayUser.html";
 			}
 		}
-		
+
 		List<Group> submitedGroups = user.getGroups();
 		Set<Integer> ids = new HashSet<Integer>();
 		for(Group group : submitedGroups) {
@@ -486,7 +493,7 @@ public class UserController {
 		}
 		
 		
-
+		Group superAdmin = null;
 		
 		if(user.getId()!=null && user.getId()>0) {
 			if(user.getId().longValue()!=dbUser.getId().longValue()) {
@@ -494,30 +501,26 @@ public class UserController {
 			}
 			
 			List<Group> groups = dbUser.getGroups();
-			boolean removeSuperAdmin = true;
+			//boolean removeSuperAdmin = true;
 			for(Group group : groups) {
 				//can't revoke super admin
 				if(group.getGroupName().equals("SUPERADMIN")) {
-					Integer groupId = group.getId();
-					List<Group> userGroups = user.getGroups();
-					for(Group g : userGroups) {
-						int submitedGroup = Integer.parseInt(g.getGroupName());
-						if(submitedGroup==groupId) {
-							removeSuperAdmin = false;
-							break;
-						}
-					}
+					superAdmin = group;
 				}
 			}
+
+		} else {
 			
-			if(removeSuperAdmin) {
-				ObjectError error = new ObjectError("groups",messages.getMessage("message.security.cannotrevoke.superadmin", locale));
+			if(user.getAdminPassword().length()<6) {
+				ObjectError error = new ObjectError("adminPassword",messages.getMessage("message.password.length", locale));
 				result.addError(error);
 			}
+			
 		}
 		
-
-		
+		if(superAdmin!=null) {
+			ids.add(superAdmin.getId());
+		}
 
 		
 		List<Group> newGroups = groupService.listGroupByIds(ids);
@@ -531,6 +534,9 @@ public class UserController {
 		
 		if(user.getId()!=null && user.getId()>0) {
 			user.setAdminPassword(dbUser.getAdminPassword());
+		} else {
+			String encoded = passwordEncoder.encodePassword(user.getAdminPassword(),null);
+			user.setAdminPassword(encoded);
 		}
 		//save or update user
 		userService.saveOrUpdate(user);
@@ -549,6 +555,9 @@ public class UserController {
 		String sUserId = request.getParameter("userId");
 
 		AjaxResponse resp = new AjaxResponse();
+		
+		String userName = request.getRemoteUser();
+		User remoteUser = userService.getByUserName(userName);
 
 		
 		try {
@@ -568,21 +577,21 @@ public class UserController {
 				return resp.toJSONString();
 			}
 			
-			if(!request.isUserInRole(Constants.PERMISSION_ADMIN)) {
+			if(!request.isUserInRole(Constants.GROUP_ADMIN)) {
 				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
 				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
 				return resp.toJSONString();
 			}
 
 			
-			//check if the user removed has group SUPERADMIN
-			boolean isSuperAdmin = false;
-			if(UserUtils.userInGroup(user, Constants.GROUP_SUPERADMIN)) {
-				isSuperAdmin = true;
+			//check if the user removed has group ADMIN
+			boolean isAdmin = false;
+			if(UserUtils.userInGroup(remoteUser, Constants.GROUP_ADMIN) || UserUtils.userInGroup(remoteUser, Constants.GROUP_SUPERADMIN)) {
+				isAdmin = true;
 			}
 
 			
-			if(!isSuperAdmin) {
+			if(!isAdmin) {
 				resp.setStatusMessage(messages.getMessage("message.security.caanotremovesuperadmin", locale));
 				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
 				return resp.toJSONString();
