@@ -78,7 +78,7 @@ public class User extends SalesManagerEntity<Long, User> implements Auditable {
 	
 	@NotEmpty
 	@Email
-	@Column(name="ADMIN_EMAIL", unique=true)
+	@Column(name="ADMIN_EMAIL")
 	private String adminEmail;
 	
 	@NotEmpty

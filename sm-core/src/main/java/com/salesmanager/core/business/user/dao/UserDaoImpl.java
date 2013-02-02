@@ -36,6 +36,27 @@ public class UserDaoImpl extends SalesManagerEntityDaoImpl<Long, User> implement
 		User user = query.uniqueResult(qUser);
 		return user;
 	}
+	
+	@Override
+	public User getById(Long id) {
+		
+		
+		QUser qUser = QUser.user;
+		QGroup qGroup = QGroup.group;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qUser)
+			.innerJoin(qUser.groups, qGroup).fetch()
+			.innerJoin(qUser.merchantStore).fetch()
+			.leftJoin(qUser.defaultLanguage).fetch()
+			.where(qUser.id.eq(id));
+		
+		
+
+		User user = query.uniqueResult(qUser);
+		return user;
+	}
 
 	@Override
 	public List<User> listUser() {

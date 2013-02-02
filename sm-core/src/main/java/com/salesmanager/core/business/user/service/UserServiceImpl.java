@@ -3,7 +3,6 @@ package com.salesmanager.core.business.user.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
@@ -29,6 +28,14 @@ public class UserServiceImpl extends SalesManagerEntityServiceImpl<Long, User>
 	public User getByUserName(String userName) throws ServiceException {
 		
 		return userDao.getByUserName(userName);
+		
+	}
+	
+	@Override
+	public void delete(User user) throws ServiceException {
+		
+		User u = this.getById(user.getId());
+		super.delete(u);
 		
 	}
 
