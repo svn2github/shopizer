@@ -2,8 +2,6 @@ package com.salesmanager.core.business.merchant.dao;
 
 import java.util.Collection;
 
-import javax.persistence.Query;
-
 import org.hibernate.Session;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.springframework.stereotype.Repository;
@@ -77,6 +75,25 @@ public class MerchantStoreDaoImpl extends SalesManagerEntityDaoImpl<Integer, Mer
 
 		
 		
+		
+	}
+	
+	@Override
+	public MerchantStore getById(Integer id)  {
+		
+		QMerchantStore qMerchantStore = QMerchantStore.merchantStore;
+
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		query.from(qMerchantStore)
+			.innerJoin(qMerchantStore.defaultLanguage).fetch()
+			.leftJoin(qMerchantStore.currency).fetch()
+			.leftJoin(qMerchantStore.country).fetch()
+			.leftJoin(qMerchantStore.zone).fetch()
+			.leftJoin(qMerchantStore.languages).fetch()
+			.where(qMerchantStore.id.eq(id));
+		
+		return query.uniqueResult(qMerchantStore);
 		
 	}
 	
