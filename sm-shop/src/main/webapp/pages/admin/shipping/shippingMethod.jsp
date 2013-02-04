@@ -30,7 +30,7 @@
 								
 								
 
-								<s:message code="module.shipping.${configuration.moduleCode}.note" text=""/><br/>
+							<s:message code="module.shipping.${configuration.moduleCode}.note" text=""/><br/>
 							
 							<c:url var="saveShippingMethod" value="/admin/shipping/saveShippingMethod.html"/>
 							<form:form method="POST" commandName="configuration" action="${saveShippingMethod}">
@@ -54,6 +54,14 @@
 				       					</form:select>
 	                                	<span class="help-inline"><form:errors path="environment" cssClass="error" /></span>
 	                        		</div>
+	                        		
+	                        		<jsp:include page="/pages/admin/shipping/${configuration.moduleCode}.jsp"></jsp:include> 
+	                        		
+	                        		<div class="form-actions">
+                  						<div class="pull-right">
+                  							<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>
+                  						</div>
+            	 					</div>
 					                  
 
             	 			</form:form>
