@@ -2,6 +2,7 @@ package com.salesmanager.web.admin.controller.user;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -85,7 +86,7 @@ public class GroupsController {
 	@RequestMapping(value = "/admin/groups/paging.html", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	String pageGroups(HttpServletRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response, Locale locale) {
 
 		AjaxResponse resp = new AjaxResponse();
 		try {
@@ -96,7 +97,11 @@ public class GroupsController {
 					Map entry = new HashMap();
 					entry.put("groupId", group.getId());
 					entry.put("name", group.getGroupName());
-					//entry.put("name", group.getGroupName());
+
+					StringBuilder key = new StringBuilder().append("security.group.description.").append(group.getGroupName());
+					
+					entry.put("description", messages.getMessage(key.toString(), locale));
+
 					resp.addDataEntry(entry);
 				}
 
