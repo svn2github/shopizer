@@ -17,6 +17,7 @@ public class FinalPrice {
 	private int discountPercent = 0;
 	
 	private Date discountEndDate = null;
+	private ProductPrice defaultPrice;
 
 
 
@@ -60,6 +61,14 @@ public class FinalPrice {
 
 	public BigDecimal getDiscountedPrice() {
 		return discountedPrice;
+	}
+
+	public void setDefaultPrice(ProductPrice defaultPrice) {
+		this.defaultPrice = defaultPrice;
+	}
+
+	public ProductPrice getDefaultPrice() {
+		return defaultPrice;
 	}
 
 }
