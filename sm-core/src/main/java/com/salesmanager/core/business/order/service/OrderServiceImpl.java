@@ -1,10 +1,12 @@
 package com.salesmanager.core.business.order.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -37,6 +39,18 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		order.getOrderHistory().add(history);
 		history.setOrder(order);
 		update(order);
+	}
+	
+	@Override
+	public BigDecimal getTotal(List<Product> products, MerchantStore store) throws ServiceException {
+		
+		
+		for(Product product : products) {
+			
+		}
+		
+		
+		return null;
 	}
 	
 	@Override

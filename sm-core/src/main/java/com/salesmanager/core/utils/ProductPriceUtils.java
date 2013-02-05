@@ -15,10 +15,12 @@ import org.apache.commons.validator.routines.CurrencyValidator;
 import org.springframework.stereotype.Component;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.constants.Constants;
 
 
 /**
@@ -65,20 +67,18 @@ public class ProductPriceUtils {
 		
 		return defaultPrice;
 	}
-
 	
 	/**
-	 * This is the final price calculated from all configured prices
-	 * and all possibles discounts
-	 * @param store
+	 * This method calculates the final price taking into account
+	 * all attributes included in the product object. The calculation is based
+	 * on the default price.
 	 * @param product
-	 * @param locale
 	 * @return
 	 */
-	public FinalPrice getFinalPrice(Product product) {
+	public FinalPrice getFinalOrderPrice(Product product) {
 
 
-		FinalPrice finalPrice = new FinalPrice();
+/*		FinalPrice finalPrice = new FinalPrice();
 
 		Date today = new Date();
 		
@@ -87,59 +87,129 @@ public class ProductPriceUtils {
 
 		Set<ProductAvailability> availabilities = product.getAvailabilities();
 		for(ProductAvailability availability : availabilities) {
-			
-			Set<ProductPrice> prices = availability.getPrices();
-			for(ProductPrice price : prices) {
-				
-				if(price.isDefaultPrice()) {
-					defaultPrice = price.getProductPriceAmount();
-					//calculate discount price
-					boolean hasDiscount = false;
-					if(price.getProductPriceSpecialStartDate()!=null
-							|| price.getProductPriceSpecialEndDate()!=null) {
-						
-						
-						if(price.getProductPriceSpecialStartDate()!=null) {
-							if(price.getProductPriceSpecialStartDate().before(today)) {
-								if(price.getProductPriceSpecialEndDate()!=null) {
-										if(price.getProductPriceSpecialEndDate().after(today)) {
-											hasDiscount = true;
-											finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
-										}
-								} 
-									
+			if(availability.getRegion().equals(Constants.ALL_REGIONS)) {
+				Set<ProductPrice> prices = availability.getPrices();
+				for(ProductPrice price : prices) {
+					
+					if(price.isDefaultPrice()) {
+						defaultPrice = price.getProductPriceAmount();
+						//calculate discount price
+						boolean hasDiscount = false;
+						if(price.getProductPriceSpecialStartDate()!=null
+								|| price.getProductPriceSpecialEndDate()!=null) {
+							
+							
+							if(price.getProductPriceSpecialStartDate()!=null) {
+								if(price.getProductPriceSpecialStartDate().before(today)) {
+									if(price.getProductPriceSpecialEndDate()!=null) {
+											if(price.getProductPriceSpecialEndDate().after(today)) {
+												hasDiscount = true;
+												finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
+											}
+									} 
+										
+								}
+							}
+							
+							
+							if(!hasDiscount && price.getProductPriceSpecialStartDate()==null && price.getProductPriceSpecialEndDate()!=null) {
+								if(price.getProductPriceSpecialEndDate().after(today)) {
+									hasDiscount = true;
+									finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
+								}
 							}
 						}
 						
 						
-						if(!hasDiscount && price.getProductPriceSpecialStartDate()==null && price.getProductPriceSpecialEndDate()!=null) {
-							if(price.getProductPriceSpecialEndDate().after(today)) {
-								hasDiscount = true;
-								finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
-							}
+						//calculate attribute
+						if(product.getAttributes()!=null && product.getAttributes().size()>0) {
+							
 						}
-
+						
+						
+						if(hasDiscount) {
+							
+							finalPrice.setDiscounted(true);
+							finalPrice.setDiscountedPrice(price.getProductPriceSpecialAmount());
+							double arith = price.getProductPriceSpecialAmount().doubleValue() / price.getProductPriceAmount().doubleValue();
+							double fsdiscount = 100 - arith * 100;
+							Float percentagediscount = new Float(fsdiscount);
+							int percent = percentagediscount.intValue();
+							finalPrice.setDiscountPercent(percent);
+							
+						}
+	
 					}
 					
-					if(hasDiscount) {
-						
-						finalPrice.setDiscounted(true);
-						finalPrice.setDiscountedPrice(price.getProductPriceSpecialAmount());
-						double arith = price.getProductPriceSpecialAmount().doubleValue() / price.getProductPriceAmount().doubleValue();
-						double fsdiscount = 100 - arith * 100;
-						Float percentagediscount = new Float(fsdiscount);
-						int percent = percentagediscount.intValue();
-						finalPrice.setDiscountPercent(percent);
-						
-					}
-
 				}
-				
 			}
+			
+		}*/
+		
+		FinalPrice finalPrice = calculateFinalPrice(product);
+		
+		//attributes
+		BigDecimal attributePrice = new BigDecimal(0);
+		if(product.getAttributes()!=null && product.getAttributes().size()>0) {
+			for(ProductAttribute attribute : product.getAttributes()) {
+				attributePrice = attributePrice.add(attribute.getOptionValuePrice());
+			}
+		}
+		
+		BigDecimal finalProductPrice = finalPrice.getOriginalPrice().add(attributePrice);
+		finalPrice.setOriginalPrice(finalProductPrice);
+		
+		if(finalPrice.isDiscounted()) {
+			
+			finalPrice.setDiscounted(true);
+			
+			double arith = finalPrice.getOriginalPrice().doubleValue() / finalPrice.getDefaultPrice().getProductPriceAmount().doubleValue();
+			double fsdiscount = 100 - arith * 100;
+			Float percentagediscount = new Float(fsdiscount);
+			int percent = percentagediscount.intValue();
+			finalPrice.setDiscountPercent(percent);
+			
+			//calculate percent
+			BigDecimal price = finalPrice.getOriginalPrice();
+			price = price.multiply(new BigDecimal(fsdiscount));
+			finalPrice.setDiscountedPrice(price);
+
+			
+		}
+
+		return finalPrice;
+
+	}
+
+	
+	/**
+	 * This is the final price calculated from all configured prices
+	 * and all possibles discounts. This price does not calculate the attributes
+	 * or other prices than the default one
+	 * @param store
+	 * @param product
+	 * @param locale
+	 * @return
+	 */
+	public FinalPrice getFinalPrice(Product product) {
+
+
+
+		FinalPrice finalPrice = calculateFinalPrice(product);
+		
+		if(finalPrice.isDiscounted()) {
+			
+			finalPrice.setDiscounted(true);
+			finalPrice.setDiscountedPrice(finalPrice.getDefaultPrice().getProductPriceSpecialAmount());
+			double arith = finalPrice.getDefaultPrice().getProductPriceSpecialAmount().doubleValue() / finalPrice.getDefaultPrice().getProductPriceAmount().doubleValue();
+			double fsdiscount = 100 - arith * 100;
+			Float percentagediscount = new Float(fsdiscount);
+			int percent = percentagediscount.intValue();
+			finalPrice.setDiscountPercent(percent);
 			
 		}
 		
-		finalPrice.setOriginalPrice(defaultPrice);
+		finalPrice.setOriginalPrice(finalPrice.getDefaultPrice().getProductPriceAmount());
 		return finalPrice;
 
 	}
@@ -356,6 +426,64 @@ public class ProductPriceUtils {
 		} else {
 			return false;
 		}
+	}
+	
+	private FinalPrice calculateFinalPrice(Product product) {
+		
+		FinalPrice finalPrice = new FinalPrice();
+
+		Date today = new Date();
+		
+		
+		BigDecimal defaultPrice = new BigDecimal(0);
+
+		Set<ProductAvailability> availabilities = product.getAvailabilities();
+		for(ProductAvailability availability : availabilities) {
+			if(availability.getRegion().equals(Constants.ALL_REGIONS)) {
+				Set<ProductPrice> prices = availability.getPrices();
+				for(ProductPrice price : prices) {
+					
+					if(price.isDefaultPrice()) {
+						defaultPrice = price.getProductPriceAmount();
+						//calculate discount price
+						boolean hasDiscount = false;
+						if(price.getProductPriceSpecialStartDate()!=null
+								|| price.getProductPriceSpecialEndDate()!=null) {
+							
+							
+							if(price.getProductPriceSpecialStartDate()!=null) {
+								if(price.getProductPriceSpecialStartDate().before(today)) {
+									if(price.getProductPriceSpecialEndDate()!=null) {
+											if(price.getProductPriceSpecialEndDate().after(today)) {
+												hasDiscount = true;
+												finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
+											}
+									} 
+										
+								}
+							}
+							
+							
+							if(!hasDiscount && price.getProductPriceSpecialStartDate()==null && price.getProductPriceSpecialEndDate()!=null) {
+								if(price.getProductPriceSpecialEndDate().after(today)) {
+									hasDiscount = true;
+									finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
+								}
+							}
+						}
+						finalPrice.setDefaultPrice(price);
+
+					}
+					
+				}
+			}
+			
+		}
+		
+		finalPrice.setOriginalPrice(defaultPrice);
+		return finalPrice;
+		
+		
 	}
 
 
