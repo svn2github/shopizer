@@ -45,7 +45,7 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 
 
 	@Column(name = "PRODUCT_PRICE_TYPE", length=20)
-	private String productPriceType;
+	private String productPriceType = ProductPriceType.ONE_TIME.name();
 
 	@Column(name = "DEFAULT_PRICE")
 	private boolean defaultPrice = false;
