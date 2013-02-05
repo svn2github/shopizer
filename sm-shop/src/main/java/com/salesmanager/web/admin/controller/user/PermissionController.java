@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.reference.country.service.CountryService;
@@ -45,39 +43,9 @@ public class PermissionController {
 	@Autowired
 	LabelUtils messages;
 
-	@Secured("STORE_ADMIN")
-	@RequestMapping(value = "/admin/permissions/editPermission.html", method = RequestMethod.GET)
-	public String displayPermissionEdit(
-			@RequestParam("id") Integer permissionId, Model model,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		return displayPermission(permissionId, model, request, response);
 
-	}
 
-	private String displayPermission(Integer permissionId, Model model,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		// display menu
-		setMenu(model, request);
 
-		Permission permission = new Permission();
-
-		if (permissionId != null && permissionId != 0) {// edit mode
-
-			// get from DB
-			permission = permissionService.getById(permissionId);
-
-			if (permission == null) {
-				return "admin-user-permissions";
-			}
- 
-		}
-
-		model.addAttribute("permission", permission);
-
-		return "admin-user-permission";
-	}
 
 
 	@Secured("STORE_ADMIN")
@@ -85,11 +53,13 @@ public class PermissionController {
 	public String displayPermissions(Model model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
-		setMenu(model, request);
-
-		return "admin-user-permissions";
+		//setMenu(model, request);
+		//return "admin-user-permissions";
+		
+		throw new Exception("Not implemented");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Secured("STORE_ADMIN")
 	@RequestMapping(value = "/admin/permissions/paging.html", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
@@ -126,6 +96,7 @@ public class PermissionController {
 		return returnString;
 	}
 
+	@SuppressWarnings("unused")
 	private void setMenu(Model model, HttpServletRequest request)
 			throws Exception {
 
