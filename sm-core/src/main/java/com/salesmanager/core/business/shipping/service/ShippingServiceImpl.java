@@ -54,16 +54,18 @@ public class ShippingServiceImpl implements ShippingService {
 	}
 	
 	@Override
-	public void addShippingModuleConfiguration(IntegrationConfiguration configuration, MerchantStore store) throws ServiceException {
+	public void saveShippingModuleConfiguration(IntegrationConfiguration configuration, MerchantStore store) throws ServiceException {
 		
 		try {
+			
+			//validate user entries first
+			
+			
 			Map<String,IntegrationConfiguration> modules = new HashMap<String,IntegrationConfiguration>();
 			MerchantConfiguration merchantConfiguration = merchantConfigurationService.getMerchantConfiguration(SHIPPING_MODULES, store);
 			if(merchantConfiguration!=null) {
 				if(!StringUtils.isBlank(merchantConfiguration.getValue())) {
-					
 					modules = ConfigurationModulesLoader.loadIntegrationConfigurations(merchantConfiguration.getValue());
-					
 				}
 			} else {
 				merchantConfiguration = new MerchantConfiguration();
@@ -76,7 +78,6 @@ public class ShippingServiceImpl implements ShippingService {
 			merchantConfiguration.setValue(configs);
 			merchantConfigurationService.saveOrUpdate(merchantConfiguration);
 		} catch (Exception e) {
-
 			throw new ServiceException(e);
 		}
 		
