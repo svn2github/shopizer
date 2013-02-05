@@ -5,6 +5,7 @@ public class Constants {
 	public final static String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 	
 	public final static String ADMIN_STORE = "ADMIN_STORE";
+	public final static String ADMIN_USER = "ADMIN_USER";
 	public final static String MERCHANT_STORE = "MERCHANT_STORE";
 	
 

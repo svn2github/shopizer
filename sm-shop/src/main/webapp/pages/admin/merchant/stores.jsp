@@ -25,7 +25,9 @@
 								
 								<!-- Listing grid include -->
 								 <c:set value="/admin/store/paging.html" var="pagingUrl" scope="request"/>
+								 <c:set value="/admin/store/remove.html" var="removeUrl" scope="request"/>
 								 <c:set value="/admin/store/editStore.html" var="editUrl" scope="request"/>
+								 <c:set value="/admin/store/list.html" var="refreshUrl" scope="request"/>
 								 <c:set var="entityId" value="storeId" scope="request"/>
 								 <c:set var="componentTitleKey" value="label.store.list" scope="request"/>
 								 <c:set var="gridHeader" value="/pages/admin/merchant/stores-gridHeader.jsp" scope="request"/>

@@ -98,7 +98,7 @@ public class MerchantStoreController {
 
 			for (MerchantStore store : stores) {
 
-				if(store.getCode()!=MerchantStore.DEFAULT_STORE) {
+				if(!store.getCode().equals(MerchantStore.DEFAULT_STORE)){
 					Map<String,String> entry = new HashMap<String,String> ();
 					entry.put("storeId", String.valueOf(store.getId()));
 					entry.put("code", store.getCode());
@@ -346,6 +346,11 @@ public class MerchantStoreController {
 		
 		try {
 			
+			if(StringUtils.isBlank(code)) {
+				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
+				return resp.toJSONString();
+			}
+			
 			MerchantStore store = merchantStoreService.getByCode(code);
 		
 
@@ -374,7 +379,7 @@ public class MerchantStoreController {
 	
 	@Secured("SUPERADMIN")
 	@RequestMapping(value="/admin/store/remove.html", method=RequestMethod.POST, produces="application/json")
-	public String removeMerchantStore(HttpServletRequest request, Locale locale) throws Exception {
+	public @ResponseBody String removeMerchantStore(HttpServletRequest request, Locale locale) throws Exception {
 
 		String sMerchantStoreId = request.getParameter("storeId");
 

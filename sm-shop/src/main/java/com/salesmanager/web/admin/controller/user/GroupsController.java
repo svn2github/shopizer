@@ -99,8 +99,17 @@ public class GroupsController {
 					entry.put("name", group.getGroupName());
 
 					StringBuilder key = new StringBuilder().append("security.group.description.").append(group.getGroupName());
+					try {
 					
-					entry.put("description", messages.getMessage(key.toString(), locale));
+						String message =  messages.getMessage(key.toString(), locale);
+						entry.put("description",message);
+					
+					} catch(Exception noLabelException) {
+						LOGGER.error("No label found for key [" + key.toString() + "]");
+					}
+					
+					
+					
 
 					resp.addDataEntry(entry);
 				}

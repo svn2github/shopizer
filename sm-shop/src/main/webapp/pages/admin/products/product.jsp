@@ -99,7 +99,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 				<br/>
 				<c:if test="${product.product.id!=null && product.product.id>0}">
 					<c:forEach items="${product.descriptions}" var="description" varStatus="counter">
-						<strong><sm:productUrl productDescription="${description}" /></strong>
+						<strong><sm:productUrl productDescription="${description}" /></strong><br/>
 					</c:forEach>
 				</c:if>
 				<br/><br/>

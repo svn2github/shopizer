@@ -96,13 +96,16 @@ public class UserController {
 		AjaxResponse resp = new AjaxResponse();
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
+		String currentUser = request.getRemoteUser();
+		
+		
 		try {
 
 			List<User> users = userService.listByStore(store);
 
 			for (User user : users) {
 				
-				if(!UserUtils.userInGroup(user, Constants.GROUP_SUPERADMIN)) {
+				if(!UserUtils.userInGroup(user, Constants.GROUP_SUPERADMIN) || !currentUser.equals(user.getAdminName())) {
 
 					@SuppressWarnings("rawtypes")
 					Map entry = new HashMap();
@@ -275,11 +278,12 @@ public class UserController {
 		
 		
 		List<MerchantStore> stores = new ArrayList<MerchantStore>();
-		stores.add(store);
+		//stores.add(store);
+		stores = merchantStoreService.list();
 		
 		//String remoteUser = request.getRemoteUser();
 		
-		if(user!=null && user.getId()!=null) {
+/*		if(user!=null && user.getId()!=null) {
 			User logedInUser = userService.getByUserName(user.getAdminName());
 			
 			//check groups
@@ -289,7 +293,7 @@ public class UserController {
 					stores = merchantStoreService.list();
 				}
 			}
-		}
+		}*/
 		
 		//questions
 		List<SecurityQuestion> questions = new ArrayList<SecurityQuestion>();
@@ -386,23 +390,28 @@ public class UserController {
 		
 		try {
 			
-		User user = userService.getByUserName(code);
-		
-		
-		if(!StringUtils.isBlank(id)&& user!=null) {
-			try {
-				Long lid = Long.parseLong(id);
-				
-				if(user.getAdminName().equals(code) && user.getId()==lid) {
-					resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
-					return resp.toJSONString();
-				}
-			} catch (Exception e) {
+			if(StringUtils.isBlank(code)) {
 				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
 				return resp.toJSONString();
 			}
-
-		}
+			
+			User user = userService.getByUserName(code);
+		
+		
+			if(!StringUtils.isBlank(id)&& user!=null) {
+				try {
+					Long lid = Long.parseLong(id);
+					
+					if(user.getAdminName().equals(code) && user.getId()==lid) {
+						resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+						return resp.toJSONString();
+					}
+				} catch (Exception e) {
+					resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
+					return resp.toJSONString();
+				}
+	
+			}
 
 			
 			if(StringUtils.isBlank(code)) {
@@ -548,7 +557,7 @@ public class UserController {
 	
 	@Secured("AUTH")
 	@RequestMapping(value="/admin/users/remove.html", method=RequestMethod.POST, produces="application/json")
-	public String removeUser(HttpServletRequest request, Locale locale) throws Exception {
+	public @ResponseBody String removeUser(HttpServletRequest request, Locale locale) throws Exception {
 		
 		//do not remove super admin
 		

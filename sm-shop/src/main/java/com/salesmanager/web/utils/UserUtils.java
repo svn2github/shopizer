@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.business.user.model.User;
-import com.salesmanager.web.constants.Constants;
 
 public class UserUtils {
 	
@@ -14,7 +13,7 @@ public class UserUtils {
 		
 		List<Group> logedInUserGroups = user.getGroups();
 		for(Group group : logedInUserGroups) {
-			if(group.getGroupName().equals(Constants.GROUP_SUPERADMIN)) {
+			if(group.getGroupName().equals(groupName)) {
 				return true;
 			}
 		}

@@ -20,6 +20,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
+import com.salesmanager.core.business.user.model.User;
+import com.salesmanager.core.business.user.service.UserService;
 import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
@@ -33,22 +35,54 @@ public class AdminFilter extends HandlerInterceptorAdapter {
 	@Autowired
 	private MerchantStoreService merchantService;
 	
+	@Autowired
+	private UserService userService;
+	
 	public boolean preHandle(
             HttpServletRequest request,
             HttpServletResponse response,
             Object handler) throws Exception {
 		
 		CacheUtils cache = CacheUtils.getInstance();
-		//Map<String,Menu> menus = (Map) request.getSession().getAttribute("MENUMAP");
-		@SuppressWarnings("unchecked")
-		Map<String,Menu> menus = (Map) cache.getFromCache("MENUMAP");
-		
 
+		@SuppressWarnings("unchecked")
+		Map<String,Menu> menus = (Map<String,Menu>) cache.getFromCache("MENUMAP");
 		
-		//TODO merchant store matches user store
+		User user = (User)request.getSession().getAttribute(Constants.ADMIN_USER);
+		
+		String storeCode = MerchantStore.DEFAULT_STORE;
 		MerchantStore store = (MerchantStore)request.getSession().getAttribute(Constants.ADMIN_STORE);
+		
+		
+		String userName = request.getRemoteUser();
+		
+		if(userName!=null) {
+		
+			if(user==null) {
+				user = userService.getByUserName(userName);
+				request.getSession().setAttribute(Constants.ADMIN_USER, user);
+				if(user!=null) {
+					storeCode = user.getMerchantStore().getCode();
+				} else {
+					LOGGER.warn("User name not found " + userName);
+				}
+				store=null;
+			}
+			
+			if(!user.getAdminName().equals(userName)) {
+				user = userService.getByUserName(userName);
+				if(user!=null) {
+					storeCode = user.getMerchantStore().getCode();
+				} else {
+					LOGGER.warn("User name not found " + userName);
+				}
+				store=null;
+			}
+		
+		}
+		
 		if(store==null) {
-				store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
+				store = merchantService.getByCode(storeCode);
 				request.getSession().setAttribute(Constants.ADMIN_STORE, store);
 		}
 		request.setAttribute(Constants.ADMIN_STORE, store);

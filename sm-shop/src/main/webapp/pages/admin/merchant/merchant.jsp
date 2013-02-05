@@ -95,7 +95,6 @@ function getZones(countryCode){
 
 
 function validateCode() {
-	alert('in');
 	$('#checkCodeStatus').html('<img src="<c:url value="/resources/img/ajax-loader.gif" />');
 	$('#checkCodeStatus').show();
 	var storeCode = $("#code").val();
