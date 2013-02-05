@@ -62,9 +62,6 @@
 		"code":"security","url":"","role":"ADMIN","order":1,"menus":
 		[
 			{"menu":{
-				"code":"security-permissions","url":"/admin/user/permissions.html","role":"ADMIN","order":0
-			}},
-			{"menu":{
 				"code":"security-groups","url":"/admin/user/groups.html","role":"ADMIN","order":1
 			}}
 		]
