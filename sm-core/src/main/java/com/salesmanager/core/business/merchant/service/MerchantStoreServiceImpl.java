@@ -140,6 +140,8 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 	@Override
 	public void delete(MerchantStore merchant) throws ServiceException {
 		
+		merchant = this.getById(merchant.getId());
+		
 		
 		//reference
 		List<Manufacturer> manufacturers = manufacturerService.listByStore(merchant);
@@ -186,6 +188,8 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 		for(Order order : orders) {
 			orderService.delete(order);
 		}
+		
+		super.delete(merchant);
 		
 	}
 
