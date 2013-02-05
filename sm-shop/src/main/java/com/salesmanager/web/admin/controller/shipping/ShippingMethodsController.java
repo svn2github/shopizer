@@ -23,6 +23,7 @@ import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
+import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 
@@ -101,7 +102,25 @@ public class ShippingMethodsController {
 		
 		model.addAttribute("configuration", configuration);
 		model.addAttribute("environments", environments);
-		return "shipping-method";
+		return ControllerConstants.Tiles.Shipping.shippingMethod;
+		
+		
+	}
+	
+	@RequestMapping(value="/admin/shipping/saveShippingMethod.html", method=RequestMethod.POST)
+	public String saveShippingMethod(@RequestParam("shippingMethod") IntegrationConfiguration configuration, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+
+		this.setMenu(model, request);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		String moduleCode = configuration.getModuleCode();
+
+
+
+	
+		
+		return ControllerConstants.Tiles.Shipping.shippingMethod;
 		
 		
 	}

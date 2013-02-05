@@ -37,6 +37,11 @@ public interface ControllerConstants
         interface Store{
             final String stores="admin-stores";
         }
+
+
+        interface Shipping{
+            final String shippingMethod="shipping-method";
+        }
         
         interface Order{
             final String orders="admin-orders";
