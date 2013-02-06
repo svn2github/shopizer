@@ -15,11 +15,14 @@ import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
+import com.salesmanager.core.business.system.dao.MerchantConfigurationDao;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
 import com.salesmanager.core.business.system.service.ModuleConfigurationService;
+import com.salesmanager.core.constants.ShippingConstants;
 import com.salesmanager.core.utils.reference.ConfigurationModulesLoader;
 
 @Service("shippingService")
@@ -34,6 +37,45 @@ public class ShippingServiceImpl implements ShippingService {
 	
 	@Autowired
 	private ModuleConfigurationService moduleConfigurationService;
+	
+	@Override
+	public ShippingConfiguration getShippingConfiguration(MerchantStore store) throws ServiceException {
+		
+		
+		MerchantConfiguration configuration = merchantConfigurationService.getMerchantConfiguration(ShippingConstants.SHIPPING_CONFIGURATION, store);
+		
+		ShippingConfiguration shippingConfiguration = null;
+		
+		if(configuration!=null) {
+			String value = configuration.getValue();
+			
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				shippingConfiguration = mapper.readValue(value, ShippingConfiguration.class);
+			} catch(Exception e) {
+				throw new ServiceException("Cannot parse json string " + value);
+			}
+		}
+		return shippingConfiguration;
+		
+	}
+	
+	@Override
+	public void saveShippingConfiguration(ShippingConfiguration shippingConfiguration, MerchantStore store) throws ServiceException {
+		
+		MerchantConfiguration configuration = merchantConfigurationService.getMerchantConfiguration(ShippingConstants.SHIPPING_CONFIGURATION, store);
+
+		if(configuration==null) {
+			configuration = new MerchantConfiguration();
+			configuration.setMerchantStore(store);
+			configuration.setKey(ShippingConstants.SHIPPING_CONFIGURATION);
+		}
+		
+		String value = shippingConfiguration.toJSONString();
+		configuration.setValue(value);
+		merchantConfigurationService.saveOrUpdate(configuration);
+		
+	}
 	
 
 	@Override

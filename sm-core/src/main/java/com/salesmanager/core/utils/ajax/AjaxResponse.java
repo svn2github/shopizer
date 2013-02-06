@@ -66,6 +66,7 @@ public class AjaxResponse implements JSONAware {
 		
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public String toJSONString() {
 		StringBuilder returnString = new StringBuilder();

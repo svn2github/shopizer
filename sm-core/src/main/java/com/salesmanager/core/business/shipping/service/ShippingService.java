@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 
@@ -48,6 +49,28 @@ public interface ShippingService {
 	 * @throws ServiceException
 	 */
 	void saveShippingModuleConfiguration(IntegrationConfiguration configuration,
+			MerchantStore store) throws ServiceException;
+
+	/**
+	 * ShippingType (NATIONAL, INTERNATIONSL)
+	 * ShippingBasisType (SHIPPING, BILLING)
+	 * ShippingPriceOptionType (ALL, LEAST, HIGHEST)
+	 * Packages
+	 * Handling
+	 * @param store
+	 * @return
+	 * @throws ServiceException
+	 */
+	ShippingConfiguration getShippingConfiguration(MerchantStore store)
+			throws ServiceException;
+
+	/**
+	 * Saves ShippingConfiguration for a given MerchantStore
+	 * @param shippingConfiguration
+	 * @param store
+	 * @throws ServiceException
+	 */
+	void saveShippingConfiguration(ShippingConfiguration shippingConfiguration,
 			MerchantStore store) throws ServiceException;
 
 }
