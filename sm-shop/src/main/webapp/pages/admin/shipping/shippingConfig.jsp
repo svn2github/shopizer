@@ -45,13 +45,16 @@
 					                        <div class="controls">
 					                                   
 						                        <div class="controls">
-						                        		 <form:radiobutton path="mode" value="NATIONAL"/>&nbsp;<s:message code="label.shipping.national" text="National" />			
-														 <form:radiobutton path="mode" value="INTERNATIONAL"/>&nbsp;<s:message code="label.shipping.international" text="International" />
-						                                 <span class="help-inline"><form:errors path="mode" cssClass="error" /></span>
+						                        		 <form:radiobutton path="shipType" value="NATIONAL"/>&nbsp;<s:message code="label.shipping.national" text="National" />			
+														 <form:radiobutton path="shipType" value="INTERNATIONAL"/>&nbsp;<s:message code="label.shipping.international" text="International" />
+						                                 <span class="help-inline"><form:errors path="shipType" cssClass="error" /></span>
 						                        </div>
 					
 					                        </div>
 					                  </div>
+					                  
+					                  <form:hidden path="shipBaseType"/>
+					                  <form:hidden path="shipOptionPriceType"/>
 					                  
 					                  <div class="form-actions">
                   						<div class="pull-right">
