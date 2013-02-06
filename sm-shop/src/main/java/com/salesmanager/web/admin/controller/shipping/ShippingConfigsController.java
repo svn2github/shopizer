@@ -24,12 +24,13 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
+import com.salesmanager.core.business.shipping.model.ShippingType;
 import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
 import com.salesmanager.core.constants.ShippingConstants;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
-import com.salesmanager.web.admin.entity.shipping.ShippingConfiguration;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 
@@ -61,38 +62,32 @@ public class ShippingConfigsController {
 	public String getShippingConfigs(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		this.setMenu(model, request);
-		ShippingConfiguration shippingConfiguration = new ShippingConfiguration();
-		
-		
+
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 
-		//get key SHP_ZONES_SHIPPING (NATIONAL/INTERNATIONAL) from MerchantConfiguration for the current merchant
-		MerchantConfiguration modeConfiguration =  merchantConfigurationService.getMerchantConfiguration(ShippingConstants.SHIPPING_MODE, store);
 		
-		if(modeConfiguration!=null) {
-			shippingConfiguration.setMode(modeConfiguration.getValue());
+		ShippingConfiguration shippingConfiguration =  shippingService.getShippingConfiguration(store);
+		
+		if(shippingConfiguration==null) {
+			shippingConfiguration = new ShippingConfiguration();
+			shippingConfiguration.setShippingType(ShippingType.INTERNATIONAL);
 		}
-
+		
 
 		model.addAttribute("configuration", shippingConfiguration);
-		
 		return "shipping-configs";
 		
 		
 	}
 	
-	@RequestMapping(value="/admin/shipping/saveShippingMode.html", method=RequestMethod.POST)
-	public String saveShippingMode(@ModelAttribute("configuration") ShippingConfiguration configuration, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	@RequestMapping(value="/admin/shipping/saveShippingConfiguration.html", method=RequestMethod.POST)
+	public String saveShippingConfiguration(@ModelAttribute("configuration") ShippingConfiguration configuration, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		this.setMenu(model, request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
-		MerchantConfiguration modeConfiguration =  merchantConfigurationService.getMerchantConfiguration(ShippingConstants.SHIPPING_MODE, store);
-		
-		if(modeConfiguration!=null) {
-			//overwrite with submited value
-		}
+		shippingService.saveShippingConfiguration(configuration, store);
 		
 		return "shipping-methods";
 		
