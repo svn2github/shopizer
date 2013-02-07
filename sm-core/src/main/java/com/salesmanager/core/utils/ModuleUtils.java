@@ -3,6 +3,8 @@ package com.salesmanager.core.utils;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.salesmanager.core.modules.integration.IntegrationException;
+
 public class ModuleUtils {
 	
 	/**
@@ -11,7 +13,7 @@ public class ModuleUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public Object getModule(String name) throws Exception {
+	public static Object getModule(String name) throws IntegrationException {
 		
 		ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext(
 		        new String[] {"shopizer-core-modules.xml"});

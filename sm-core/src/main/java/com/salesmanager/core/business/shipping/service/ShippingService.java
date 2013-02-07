@@ -48,7 +48,7 @@ public interface ShippingService {
 	 * @param store
 	 * @throws ServiceException
 	 */
-	void saveShippingModuleConfiguration(IntegrationConfiguration configuration,
+	void saveShippingQuoteModuleConfiguration(IntegrationConfiguration configuration,
 			MerchantStore store) throws ServiceException;
 
 	/**

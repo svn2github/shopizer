@@ -16,13 +16,15 @@ import org.springframework.stereotype.Service;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
-import com.salesmanager.core.business.system.dao.MerchantConfigurationDao;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
 import com.salesmanager.core.business.system.service.ModuleConfigurationService;
 import com.salesmanager.core.constants.ShippingConstants;
+import com.salesmanager.core.modules.integration.IntegrationException;
+import com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule;
+import com.salesmanager.core.utils.ModuleUtils;
 import com.salesmanager.core.utils.reference.ConfigurationModulesLoader;
 
 @Service("shippingService")
@@ -96,32 +98,47 @@ public class ShippingServiceImpl implements ShippingService {
 	}
 	
 	@Override
-	public void saveShippingModuleConfiguration(IntegrationConfiguration configuration, MerchantStore store) throws ServiceException {
+	public void saveShippingQuoteModuleConfiguration(IntegrationConfiguration configuration, MerchantStore store) throws ServiceException {
 		
-		try {
+		
 			
-			//validate user entries first
-			
-			
-			Map<String,IntegrationConfiguration> modules = new HashMap<String,IntegrationConfiguration>();
-			MerchantConfiguration merchantConfiguration = merchantConfigurationService.getMerchantConfiguration(SHIPPING_MODULES, store);
-			if(merchantConfiguration!=null) {
-				if(!StringUtils.isBlank(merchantConfiguration.getValue())) {
-					modules = ConfigurationModulesLoader.loadIntegrationConfigurations(merchantConfiguration.getValue());
+			//validate entries
+			try {
+				
+				String moduleCode = configuration.getModuleCode();
+				ShippingQuoteModule quoteModule = (ShippingQuoteModule)ModuleUtils.getModule(moduleCode);
+				
+				if(quoteModule==null) {
+					throw new ServiceException("Shipping quote module " + moduleCode + " does not exist");
 				}
-			} else {
-				merchantConfiguration = new MerchantConfiguration();
-				merchantConfiguration.setMerchantStore(store);
-				merchantConfiguration.setKey(SHIPPING_MODULES);
+				
+				quoteModule.validateModuleConfiguration(configuration, store);
+				
+			} catch (IntegrationException ie) {
+				throw ie;
 			}
-			modules.put(configuration.getModuleCode(), configuration);
 			
-			String configs =  ConfigurationModulesLoader.toJSONString(modules);
-			merchantConfiguration.setValue(configs);
-			merchantConfigurationService.saveOrUpdate(merchantConfiguration);
-		} catch (Exception e) {
-			throw new ServiceException(e);
-		}
+			try {
+				Map<String,IntegrationConfiguration> modules = new HashMap<String,IntegrationConfiguration>();
+				MerchantConfiguration merchantConfiguration = merchantConfigurationService.getMerchantConfiguration(SHIPPING_MODULES, store);
+				if(merchantConfiguration!=null) {
+					if(!StringUtils.isBlank(merchantConfiguration.getValue())) {
+						modules = ConfigurationModulesLoader.loadIntegrationConfigurations(merchantConfiguration.getValue());
+					}
+				} else {
+					merchantConfiguration = new MerchantConfiguration();
+					merchantConfiguration.setMerchantStore(store);
+					merchantConfiguration.setKey(SHIPPING_MODULES);
+				}
+				modules.put(configuration.getModuleCode(), configuration);
+				
+				String configs =  ConfigurationModulesLoader.toJSONString(modules);
+				merchantConfiguration.setValue(configs);
+				merchantConfigurationService.saveOrUpdate(merchantConfiguration);
+				
+			} catch (Exception e) {
+				throw new ServiceException(e);
+			}
 		
 	}
 	
