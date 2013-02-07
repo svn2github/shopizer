@@ -45,8 +45,8 @@
 					                        <div class="controls">
 					                                   
 						                        <div class="controls">
-						                        		 <form:radiobutton path="shipType" value="NATIONAL"/>&nbsp;<s:message code="label.shipping.national" text="National" />			
-														 <form:radiobutton path="shipType" value="INTERNATIONAL"/>&nbsp;<s:message code="label.shipping.international" text="International" />
+						                        		 <form:radiobutton id="shipType" path="shipType" value="NATIONAL"/>&nbsp;<s:message code="label.shipping.national" text="National" />			
+														 <form:radiobutton id="shipType" path="shipType" value="INTERNATIONAL"/>&nbsp;<s:message code="label.shipping.international" text="International" />
 						                                 <span class="help-inline"><form:errors path="shipType" cssClass="error" /></span>
 						                        </div>
 					

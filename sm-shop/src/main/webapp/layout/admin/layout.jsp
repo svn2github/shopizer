@@ -295,6 +295,9 @@ response.setDateHeader ("Expires", -1);
 			$("#shipping-methods-link").click(function() {
   				window.location='<c:url value="/admin/shipping/shippingMethods.html" />';
 			});
+			$("#shipping-options-link").click(function() {
+  				window.location='<c:url value="/admin/shipping/shippingOptions.html" />';
+			});
 			
 
 		}); 
