@@ -28,7 +28,7 @@
 								<br/>
 
 
-								<c:url var="shippingConfigurationSave" value="/admin/shipping/saveShippingMode.html"/>
+								<c:url var="shippingConfigurationSave" value="/admin/shipping/saveShippingConfiguration.html"/>
 
 
 								<form:form method="POST" commandName="configuration" action="${shippingConfigurationSave}">

@@ -96,24 +96,35 @@ public class UserController {
 		AjaxResponse resp = new AjaxResponse();
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
-		String currentUser = request.getRemoteUser();
+		String sCurrentUser = request.getRemoteUser();
 		
 		
 		try {
 
-			List<User> users = userService.listByStore(store);
+			User currentUser = userService.getByUserName(sCurrentUser);
+			List<User> users = null;
+			if(UserUtils.userInGroup(currentUser, Constants.GROUP_SUPERADMIN) ) {
+				users = userService.listUser();
+			} else {
+				users = userService.listByStore(store);
+			}
+			 
 
 			for (User user : users) {
 				
-				if(!UserUtils.userInGroup(user, Constants.GROUP_SUPERADMIN) || !currentUser.equals(user.getAdminName())) {
+				if(!UserUtils.userInGroup(user, Constants.GROUP_SUPERADMIN)) {
+					
+					if(!currentUser.equals(user.getAdminName())){
 
-					@SuppressWarnings("rawtypes")
-					Map entry = new HashMap();
-					entry.put("userId", user.getId());
-					entry.put("name", user.getFirstName() + " " + user.getLastName());
-					entry.put("email", user.getAdminEmail());
-					entry.put("active", user.isActive());
-					resp.addDataEntry(entry);
+						@SuppressWarnings("rawtypes")
+						Map entry = new HashMap();
+						entry.put("userId", user.getId());
+						entry.put("name", user.getFirstName() + " " + user.getLastName());
+						entry.put("email", user.getAdminEmail());
+						entry.put("active", user.isActive());
+						resp.addDataEntry(entry);
+					
+					}
 				
 				}
 

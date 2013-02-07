@@ -89,7 +89,9 @@ public class ShippingConfigsController {
 		
 		shippingService.saveShippingConfiguration(configuration, store);
 		
-		return "shipping-methods";
+		model.addAttribute("configuration", configuration);
+		
+		return "shipping-configs";
 		
 	}
 	
