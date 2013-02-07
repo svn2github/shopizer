@@ -78,7 +78,7 @@ public class ShippingConfiguration implements JSONAware {
 	/** JSON bindding **/
 	public void setShipType(String shipType) {
 		this.shipType = shipType;
-		ShippingType sType = ShippingType.NATIANAL;
+		ShippingType sType = ShippingType.NATIONAL;
 		if(shipType.equals(ShippingType.INTERNATIONAL)) {
 			sType = ShippingType.INTERNATIONAL;
 		}
