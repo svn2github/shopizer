@@ -39,10 +39,7 @@ import com.salesmanager.web.constants.Constants;
 public class ShippingConfigsController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ShippingConfigsController.class);
-	
-	
-	@Autowired
-	private MerchantConfigurationService merchantConfigurationService;
+
 	
 	@Autowired
 	private ShippingService shippingService;
@@ -59,7 +56,7 @@ public class ShippingConfigsController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value="/admin/shipping/shippingConfigs.html", method=RequestMethod.GET)
-	public String getShippingConfigs(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String displayShippingConfigs(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		this.setMenu(model, request);
 
@@ -90,7 +87,7 @@ public class ShippingConfigsController {
 		shippingService.saveShippingConfiguration(configuration, store);
 		
 		model.addAttribute("configuration", configuration);
-		
+		model.addAttribute("success","success");
 		return "shipping-configs";
 		
 	}

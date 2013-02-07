@@ -41,6 +41,7 @@ public interface ControllerConstants
 
         interface Shipping{
             final String shippingMethod="shipping-method";
+            final String shippingOptions="shipping-options";
         }
         
         interface Order{
