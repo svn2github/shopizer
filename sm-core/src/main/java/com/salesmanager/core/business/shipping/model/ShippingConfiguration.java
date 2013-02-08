@@ -79,7 +79,7 @@ public class ShippingConfiguration implements JSONAware {
 	public void setShipType(String shipType) {
 		this.shipType = shipType;
 		ShippingType sType = ShippingType.NATIONAL;
-		if(shipType.equals(ShippingType.INTERNATIONAL)) {
+		if(shipType.equals(ShippingType.INTERNATIONAL.name())) {
 			sType = ShippingType.INTERNATIONAL;
 		}
 		setShippingType(sType);
@@ -89,10 +89,10 @@ public class ShippingConfiguration implements JSONAware {
 	public void setShipOptionPriceType(String shipOptionPriceType) {
 		this.shipOptionPriceType = shipOptionPriceType;
 		ShippingOptionPriceType sType = ShippingOptionPriceType.ALL;
-		if(shipOptionPriceType.equals(ShippingOptionPriceType.HIGHEST)) {
+		if(shipOptionPriceType.equals(ShippingOptionPriceType.HIGHEST.name())) {
 			sType = ShippingOptionPriceType.HIGHEST;
 		}
-		if(shipOptionPriceType.equals(ShippingOptionPriceType.LEAST)) {
+		if(shipOptionPriceType.equals(ShippingOptionPriceType.LEAST.name())) {
 			sType = ShippingOptionPriceType.LEAST;
 		}
 		setShippingOptionPriceType(sType);
@@ -102,7 +102,7 @@ public class ShippingConfiguration implements JSONAware {
 	public void setShipBaseType(String shipBaseType) {
 		this.shipBaseType = shipBaseType;
 		ShippingBasisType sType = ShippingBasisType.SHIPPING;
-		if(shipBaseType.equals(ShippingBasisType.BILLING)) {
+		if(shipBaseType.equals(ShippingBasisType.BILLING.name())) {
 			sType = ShippingBasisType.BILLING;
 		}
 		setShippingBasisType(sType);
