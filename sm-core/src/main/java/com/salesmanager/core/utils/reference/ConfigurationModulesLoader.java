@@ -1,6 +1,7 @@
 package com.salesmanager.core.utils.reference;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -13,6 +14,7 @@ import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 
 public class ConfigurationModulesLoader {
 	
+	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationModulesLoader.class);
 	
 
@@ -72,7 +74,7 @@ public class ConfigurationModulesLoader {
             	Map<String,String> confs = (Map<String,String> )object.get("integrationKeys");
             	configuration.setIntegrationKeys(confs);
             	
-            	Map<String,String[]> options = (Map<String,String[]> )object.get("integrationOptions");
+            	Map<String,List<String>> options = (Map<String,List<String>> )object.get("integrationOptions");
             	configuration.setIntegrationOptions(options);
 
             	
