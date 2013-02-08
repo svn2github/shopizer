@@ -6,10 +6,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,11 +28,13 @@ import com.salesmanager.core.business.system.service.ModuleConfigurationService;
 import com.salesmanager.core.constants.ShippingConstants;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule;
-import com.salesmanager.core.utils.ModuleUtils;
 import com.salesmanager.core.utils.reference.ConfigurationModulesLoader;
 
 @Service("shippingService")
 public class ShippingServiceImpl implements ShippingService {
+	
+	@SuppressWarnings("unused")
+	private static final Logger LOGGER = LoggerFactory.getLogger(ShippingServiceImpl.class);
 	
 	
 	private final static String SUPPORTED_COUNTRIES = "SUPPORTED_CNTR";
@@ -39,6 +45,10 @@ public class ShippingServiceImpl implements ShippingService {
 	
 	@Autowired
 	private ModuleConfigurationService moduleConfigurationService;
+	
+	@Autowired
+	@Resource(name="shippingModules")
+	private Map<String,ShippingQuoteModule> shippingModules;
 	
 	@Override
 	public ShippingConfiguration getShippingConfiguration(MerchantStore store) throws ServiceException {
@@ -106,8 +116,9 @@ public class ShippingServiceImpl implements ShippingService {
 			try {
 				
 				String moduleCode = configuration.getModuleCode();
-				ShippingQuoteModule quoteModule = (ShippingQuoteModule)ModuleUtils.getModule(moduleCode);
 				
+				ShippingQuoteModule quoteModule = (ShippingQuoteModule)shippingModules.get(moduleCode);
+
 				if(quoteModule==null) {
 					throw new ServiceException("Shipping quote module " + moduleCode + " does not exist");
 				}
@@ -141,6 +152,35 @@ public class ShippingServiceImpl implements ShippingService {
 			}
 		
 	}
+	
+	
+	@Override
+	public void removeShippingQuoteModuleConfiguration(String moduleCode, MerchantStore store) throws ServiceException {
+		
+		
+
+		try {
+			Map<String,IntegrationConfiguration> modules = new HashMap<String,IntegrationConfiguration>();
+			MerchantConfiguration merchantConfiguration = merchantConfigurationService.getMerchantConfiguration(SHIPPING_MODULES, store);
+			if(merchantConfiguration!=null) {
+				if(!StringUtils.isBlank(merchantConfiguration.getValue())) {
+					modules = ConfigurationModulesLoader.loadIntegrationConfigurations(merchantConfiguration.getValue());
+				}
+				
+				modules.remove(moduleCode);
+				String configs =  ConfigurationModulesLoader.toJSONString(modules);
+				merchantConfiguration.setValue(configs);
+				merchantConfigurationService.saveOrUpdate(merchantConfiguration);
+				
+				
+			} 
+
+			
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	
+}
 	
 	@Override
 	public Map<String,IntegrationConfiguration> getShippingModulesConfigured(MerchantStore store) throws ServiceException {

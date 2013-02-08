@@ -1,6 +1,7 @@
 package com.salesmanager.core.business.system.model;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public class IntegrationConfiguration implements JSONAware {
 	private String moduleCode;
 	private boolean active;
 	private Map<String,String> integrationKeys= new HashMap<String,String>();
-	private Map<String,String[]> integrationOptions= new HashMap<String,String[]>();
+	private Map<String,List<String>> integrationOptions= new HashMap<String,List<String>>();
 	private String environment;
 	
 	
@@ -45,13 +46,7 @@ public class IntegrationConfiguration implements JSONAware {
 	public void setIntegrationKeys(Map<String, String> integrationKeys) {
 		this.integrationKeys = integrationKeys;
 	}
-	public Map<String, String[]> getIntegrationOptions() {
-		return integrationOptions;
-	}
-	@JsonProperty("integrationOptions")
-	public void setIntegrationOptions(Map<String, String[]> integrationOptions) {
-		this.integrationOptions = integrationOptions;
-	}
+
 	
 	protected String getJsonInfo() {
 		
@@ -61,7 +56,7 @@ public class IntegrationConfiguration implements JSONAware {
 		returnString.append(",");
 		returnString.append("\"active\"").append(":").append(this.isActive());
 		returnString.append(",");
-		returnString.append("\"environment\"").append(":").append(this.getEnvironment());
+		returnString.append("\"environment\"").append(":\"").append(this.getEnvironment()).append("\"");
 
 		return returnString.toString();
 		
@@ -100,15 +95,15 @@ public class IntegrationConfiguration implements JSONAware {
 				int countOptions = 0;
 				for(String key : keys) {
 
-					String[] values = this.getIntegrationOptions().get(key);
+					List<String> values = this.getIntegrationOptions().get(key);
 					StringBuilder optionsEntries = new StringBuilder();
 					StringBuilder dataEntries = new StringBuilder();
 					
 					int count = 0;
-					for(int i = 0 ; i < values.length ; i ++) {
+					for(String value : values) {
 						
-						dataEntries.append("\"").append(values[i]).append("\"");
-						if(count<values.length-1) {
+						dataEntries.append("\"").append(value).append("\"");
+						if(count<values.size()-1) {
 							dataEntries.append(",");
 						}
 						count++;
@@ -145,5 +140,13 @@ public class IntegrationConfiguration implements JSONAware {
 	public String getEnvironment() {
 		return environment;
 	}
+	public Map<String,List<String>> getIntegrationOptions() {
+		return integrationOptions;
+	}
+	public void setIntegrationOptions(Map<String,List<String>> integrationOptions) {
+		this.integrationOptions = integrationOptions;
+	}
+
+
 
 }

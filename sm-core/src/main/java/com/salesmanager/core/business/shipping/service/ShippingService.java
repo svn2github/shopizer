@@ -73,4 +73,7 @@ public interface ShippingService {
 	void saveShippingConfiguration(ShippingConfiguration shippingConfiguration,
 			MerchantStore store) throws ServiceException;
 
+	void removeShippingQuoteModuleConfiguration(String moduleCode,
+			MerchantStore store) throws ServiceException;
+
 }
