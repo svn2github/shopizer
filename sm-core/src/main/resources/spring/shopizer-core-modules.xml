@@ -10,6 +10,13 @@
    http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
+
+	<!-- Integration modules -->
+	<util:map id="shippingModules" map-class="java.util.HashMap" key-type="java.lang.String" value-type="com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule">
+    			<entry key="canadapost" value-ref="canadapost"/>
+    </util:map>
+
+
 	<!-- Shipping -->
 	<bean id="canadapost"
 		class="com.salesmanager.core.modules.integration.shipping.impl.CanadaPostShippingQuote"/>
