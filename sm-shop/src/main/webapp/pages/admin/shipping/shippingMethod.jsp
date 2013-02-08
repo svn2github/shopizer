@@ -48,15 +48,18 @@
                   					</div>
                   					
                   					<div class="controls">
-	                        			<s:message code="label.category.root" text="Root" var="rootVar"/>			
+	                        			<label><s:message code="label.generic.environment" text="Environment"/></label>			
+	                        			<div class="controls">
 	                        			<form:select path="environment">
 					  						<form:options items="${environments}" />
 				       					</form:select>
+				       					</div>
 	                                	<span class="help-inline"><form:errors path="environment" cssClass="error" /></span>
 	                        		</div>
 	                        		
 	                        		<jsp:include page="/pages/admin/shipping/${configuration.moduleCode}.jsp"></jsp:include> 
 	                        		
+	                        		<form:hidden path="moduleCode" />
 	                        		<div class="form-actions">
                   						<div class="pull-right">
                   							<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>
