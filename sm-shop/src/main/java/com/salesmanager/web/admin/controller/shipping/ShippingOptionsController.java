@@ -1,6 +1,5 @@
 package com.salesmanager.web.admin.controller.shipping;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -25,7 +24,6 @@ import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 import com.salesmanager.core.business.shipping.model.ShippingType;
 import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
-import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
@@ -77,7 +75,7 @@ public class ShippingOptionsController {
 	}
 	
 
-	@RequestMapping(value="/admin/shipping/saveShippingMethod.html", method=RequestMethod.POST)
+	@RequestMapping(value="/admin/shipping/saveShippingOptions.html", method=RequestMethod.POST)
 	public String saveShippingOptions(@RequestParam("shippingOptions") IntegrationConfiguration configuration, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
 
