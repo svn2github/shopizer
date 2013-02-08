@@ -1329,9 +1329,15 @@ public class IsolatedTestCase
     	
     	canadaPost.setIntegrationKeys(integrationKeys);
     	
-    	String cpOptions[] = {"A","B"};
+    	//String cpOptions[] = {"A","B"};
     	
-    	Map<String,String[]> integrationOptions= new HashMap<String,String[]>();
+    	List<String> cpOptions = new ArrayList<String>();
+    	cpOptions.add("A");
+    	cpOptions.add("B");
+    	
+    	//String cpOptions = "A,B";
+    	
+    	Map<String,List<String>> integrationOptions= new HashMap<String,List<String>>();
     	integrationOptions.put("cpExpress", cpOptions);
     	
     	canadaPost.setIntegrationOptions(integrationOptions);
@@ -1349,9 +1355,14 @@ public class IsolatedTestCase
     	
     	usps.setIntegrationKeys(integrationKeys);
     	
-    	String uspsOptions[] = {"X","Y"};
+    	//String uspsOptions[] = {"X","Y"};
+    	List<String> uspsOptions = new ArrayList<String>();
+    	uspsOptions.add("X");
+    	uspsOptions.add("Y");
     	
-    	integrationOptions= new HashMap<String,String[]>();
+    	//String uspsOptions = "X,Y";
+    	
+    	integrationOptions= new HashMap<String,List<String>>();
     	integrationOptions.put("uspsExpress", uspsOptions);
     	
     	usps.setIntegrationOptions(integrationOptions);
