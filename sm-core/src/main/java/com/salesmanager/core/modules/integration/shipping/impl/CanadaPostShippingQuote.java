@@ -25,22 +25,22 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 		Map<String,String> keys = integrationConfiguration.getIntegrationKeys();
 		if(keys==null || StringUtils.isBlank(keys.get("account"))) {
 			errorFields = new ArrayList<String>();
-			errorFields.add("integrationKeys['account']");
+			errorFields.add("identifier");
 		}
 
 		//validate at least one integrationOptions['packages']
-		Map<String,String[]> options = integrationConfiguration.getIntegrationOptions();
+		Map<String,List<String>> options = integrationConfiguration.getIntegrationOptions();
 		if(options==null) {
 			errorFields = new ArrayList<String>();
-			errorFields.add("integrationKeys['account']");
+			errorFields.add("identifier");
 		}
 		
-		String[] packages = options.get("packages");
-		if(packages==null || packages.length==0) {
+		List<String> packages = options.get("packages");
+		if(packages==null || packages.size()==0) {
 			if(errorFields==null) {
 				errorFields = new ArrayList<String>();
 			}
-			errorFields.add("integrationOptions['packages']");
+			errorFields.add("packages");
 		}
 		
 		if(errorFields!=null) {
