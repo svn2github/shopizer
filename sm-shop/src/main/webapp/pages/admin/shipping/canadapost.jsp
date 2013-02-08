@@ -12,21 +12,27 @@
 	                        <div class="controls">
 	                        		<form:input cssClass="input-large highlight" path="integrationKeys['account']" />
 	                        </div>
-	                        <span class="help-inline"><form:errors path="integrationKeys['account']" cssClass="error" /></span>
+	                        <span class="help-inline">
+	                        	<c:if test="${identifier!=null}">
+	                        	<span id="identifiererrors" class="error"><s:message code="module.shipping.canadapost.message.identifier" text="Field in error"/></span>
+	                        	</c:if>
+	                        </span>
                   </div>
-
-
+                  
                    <div class="control-group">
-                        	<label><strong></strong><s:message code="module.shipping.canadapost.packages" text="Packages/></strong></label>
-                        	<div class="controls">
-                        			
-                                    <form:checkbox path="integrationOptions['packages']" value="PACKAGE"/>
-                                    <label for="option1">Package</label>
-                                    <form:checkbox path="integrationOptions['packages']" value="ENVELOPE"/>
-                                    <label for="option2">Envelope</label>
-                        	</div>
-                        	<span class="help-inline"><form:errors path="integrationOptions['packages']" cssClass="error" /></span>
+                        <label class="required"><s:message code="module.shipping.canadapost.packages" text="Packaging"/></label>
+	                        <div class="controls">
+	                        		<form:radiobutton cssClass="input-large highlight" path="integrationOptions['packages']" value="PACKAGE" />&nbsp;<s:message code="module.shipping.canadapost.packages.package" text="Package" /><br/>
+	                        		<form:radiobutton cssClass="input-large highlight" path="integrationOptions['packages']" value="ENVELOPE" />&nbsp;<s:message code="module.shipping.canadapost.packages.envelope" text="Envelope" /></br>
+	                        </div>
+	                        <span class="help-inline">
+	                        	<c:if test="${packages!=null}">
+	                        		<span id="packageserrors" class="error"><s:message code="module.shipping.canadapost.message.packages" text="Field in error"/></span>
+	                        	</c:if>
+	                        </span>
                   </div>
+
+
                   
             
             

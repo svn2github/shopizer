@@ -45,7 +45,16 @@
 						      			  <div class="control-group">
 						      			  		<table>
 						      			  			<tr>
-						      			  				<td><c:choose><c:when test="${configuredModules[module.code]!=null && configuredModules[module.code].active==true}"><img src="<c:url value="/resources/img/green_check.jpg"/>"></c:when><c:otherwise><img src="<c:url value="/resources/img/red_dot.gif"/>"></c:otherwise></c:choose></td>
+						      			  				<td>
+						      			  					<c:choose>
+						      			  						<c:when test="${configuredModules[module.code]!=null && configuredModules[module.code].active==true}">
+						      			  							<img src="<c:url value="/resources/img/icon_green_on.gif"/>" width="12">&nbsp;
+						      			  						</c:when>
+						      			  						<c:otherwise>
+						      			  							<img src="<c:url value="/resources/img/icon_red_on.gif"/>" width="12">&nbsp;
+						      			  						</c:otherwise>
+						      			  					</c:choose>
+						      			  				</td>
 						      			  				<td><label><a href="<c:url value="/admin/shipping/shippingMethod.html?code="/><c:out value="${module.code}"/>"><s:message code="module.shipping.${module.code}" text="No label found - ${module.code}"/></a></label></td>
 						      			  				<td><img src="<c:url value="/resources/img/shipping/${module.image}"/>"></td>
 						      			  			</tr>

@@ -150,7 +150,7 @@
                   <div class="control-group">
 	                        <label><s:message code="label.groups.title" text="Groups"/></label>
 	                        <div class="controls">
-	                        	<form:checkboxes cssClass="highlight" items="${groups}" itemValue="id" itemLabel="groupName" path="groups" /> 
+	                        	<form:checkboxes cssClass="highlight" items="${groups}" itemValue="id" itemLabel="groupName" path="groups" delimiter="<br/>" /> 
 	                            <span class="help-inline"><form:errors path="groups" cssClass="error" /></span>
 	                        </div>
 	              </div>

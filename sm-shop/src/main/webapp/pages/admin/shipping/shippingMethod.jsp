@@ -24,7 +24,7 @@
 
 
 								<div class="sm-ui-component">
-								<h3><s:message code="label.shipping.title" text="Shipping configuration" /> <s:message code="module.shipping.${configuration.moduleCode}" text="No label found - ${configuration.moduleCode}"/></h3>	
+								<h3><s:message code="label.shipping.title" text="Shipping configuration" /> - <s:message code="module.shipping.${configuration.moduleCode}" text="No label found - ${configuration.moduleCode}"/></h3>	
 								<br/>
 								
 								
@@ -70,7 +70,18 @@
             	 			</form:form>
 							
 							
-
+		                  <c:if test="${configuration.active}">      
+		                  <c:url var="removeModule" value="/admin/shipping/deleteShippingMethod.html"/>
+		                  <form:form method="POST" enctype="multipart/form-data" commandName="code" action="${removeModule}">
+									<input type="hidden" name="code" value="${configuration.moduleCode}" />
+			                        <div class="form-actions">
+			                            <div class="pull-right">
+			                                    <button type="submit" class="btn"><s:message code="label.generic.remove" text="Remove"/></button>
+			                            </div>
+			                   		</div>
+		
+		                   </form:form>
+		                   </c:if>	
 
       					</div>
       					

@@ -119,6 +119,13 @@ public class ShippingMethodsController {
 		
 		String moduleCode = configuration.getModuleCode();
 		LOGGER.debug("Saving module code " + moduleCode);
+		
+		List<String> environments = new ArrayList<String>();
+		environments.add(Constants.TEST_ENVIRONMENT);
+		environments.add(Constants.PRODUCTION_ENVIRONMENT);
+
+		model.addAttribute("environments", environments);
+		model.addAttribute("configuration", configuration);
 
 		try {
 			shippingService.saveShippingQuoteModuleConfiguration(configuration, store);
@@ -128,21 +135,36 @@ public class ShippingMethodsController {
 					
 					List<String> errorCodes = ((IntegrationException)e).getErrorFields();
 					for(String errorCode : errorCodes) {
-						ObjectError error = new ObjectError(errorCode,messages.getMessage("message.fielderror", locale));
-						result.addError(error);
+						//ObjectError error = new ObjectError(new StringBuilder().append(errorCode).append("-error").toString(),messages.getMessage("message.fielderror", locale));
+						//result.addError(error);
+						model.addAttribute(errorCode,messages.getMessage("message.fielderror", locale));
 					}
-					
+					return ControllerConstants.Tiles.Shipping.shippingMethod;
 				}
+			} else {
+				throw new Exception(e);
 			}
 		}
 		
 		
-	
+		
 		model.addAttribute("success","success");
 		return ControllerConstants.Tiles.Shipping.shippingMethod;
 		
 		
 	}
+	
+	@RequestMapping(value="/admin/shipping/deleteShippingMethod.html", method=RequestMethod.POST)
+	public String deleteShippingMethod(@RequestParam("code") String code, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+		this.setMenu(model, request);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		shippingService.removeShippingQuoteModuleConfiguration(code, store);
+		
+		return "redirect:/admin/shipping/shippingMethods.html";
+		
+	}
+
 	
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {
 		
