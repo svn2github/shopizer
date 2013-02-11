@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -79,7 +80,7 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 	@Column(name="CUSTOMER_FAX", length=32)
 	private String fax;
 	
-	@Column(name="CUSTOMER_PASSWORD", length=40)
+	@Column(name="CUSTOMER_PASSWORD", length=20)
 	private String password;
 	
 	@Column(name="CUSTOMER_NEWSLETTER", length=1)
@@ -102,6 +103,12 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
 	private MerchantStore merchantStore;
+	
+	@Embedded
+	private Delivery delivery = null;
+	
+	@Embedded
+	private Billing billing = null;
 	
 	public Customer() {
 	}
@@ -272,5 +279,21 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 
 	public MerchantStore getMerchantStore() {
 		return merchantStore;
+	}
+
+	public void setDelivery(Delivery delivery) {
+		this.delivery = delivery;
+	}
+
+	public Delivery getDelivery() {
+		return delivery;
+	}
+
+	public void setBilling(Billing billing) {
+		this.billing = billing;
+	}
+
+	public Billing getBilling() {
+		return billing;
 	}
 }

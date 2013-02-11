@@ -103,7 +103,7 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 	
 	
 	@Column(name="AVAILABLE")
-	private Boolean available = new Boolean(true);
+	private boolean available = new boolean(true);
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
 	@JoinColumn(name="MANUFACTURER_ID", nullable=true)
@@ -118,10 +118,10 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 	private TaxClass taxClass;
 
 	@Column(name = "PRODUCT_VIRTUAL")
-	private Boolean productVirtual = false;
+	private boolean productVirtual = false;
 
 	@Column(name = "PRODUCT_FREE")
-	private Boolean productIsFree;
+	private boolean productIsFree;
 
 	@Column(name = "PRODUCT_LENGTH")
 	private BigDecimal productLength;
@@ -176,7 +176,7 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 	}
 
 
-	public Boolean isProductVirtual() {
+	public boolean isProductVirtual() {
 		return productVirtual;
 	}
 
@@ -257,19 +257,19 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 	}
 
 
-	public Boolean getProductVirtual() {
+	public boolean getProductVirtual() {
 		return productVirtual;
 	}
 
-	public void setProductVirtual(Boolean productVirtual) {
+	public void setProductVirtual(boolean productVirtual) {
 		this.productVirtual = productVirtual;
 	}
 
-	public Boolean getProductIsFree() {
+	public boolean getProductIsFree() {
 		return productIsFree;
 	}
 
-	public void setProductIsFree(Boolean productIsFree) {
+	public void setProductIsFree(boolean productIsFree) {
 		this.productIsFree = productIsFree;
 	}
 
@@ -352,13 +352,7 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 		this.merchantStore = merchantStore;
 	}
 
-	public Boolean getAvailable() {
-		return available;
-	}
 
-	public void setAvailable(Boolean available) {
-		this.available = available;
-	}
 
 	public Date getDateAvailable() {
 		return dateAvailable;
@@ -374,6 +368,16 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 
 	public Integer getSortOrder() {
 		return sortOrder;
+	}
+
+
+
+	public void setAvailable(boolean available) {
+		this.available = available;
+	}
+
+	public boolean isAvailable() {
+		return available;
 	}
 
 

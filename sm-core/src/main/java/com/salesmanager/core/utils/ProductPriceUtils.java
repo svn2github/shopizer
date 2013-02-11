@@ -435,8 +435,8 @@ public class ProductPriceUtils {
 		Date today = new Date();
 		
 		
-		BigDecimal defaultPrice = new BigDecimal(0);
-
+		BigDecimal fPrice = new BigDecimal(0);
+		BigDecimal oPrice = new BigDecimal(0);
 		Set<ProductAvailability> availabilities = product.getAvailabilities();
 		for(ProductAvailability availability : availabilities) {
 			if(availability.getRegion().equals(Constants.ALL_REGIONS)) {
@@ -444,7 +444,8 @@ public class ProductPriceUtils {
 				for(ProductPrice price : prices) {
 					
 					if(price.isDefaultPrice()) {
-						defaultPrice = price.getProductPriceAmount();
+						fPrice = price.getProductPriceAmount();
+						oPrice = price.getProductPriceAmount();
 						//calculate discount price
 						boolean hasDiscount = false;
 						if(price.getProductPriceSpecialStartDate()!=null
@@ -456,6 +457,7 @@ public class ProductPriceUtils {
 									if(price.getProductPriceSpecialEndDate()!=null) {
 											if(price.getProductPriceSpecialEndDate().after(today)) {
 												hasDiscount = true;
+												fPrice = price.getProductPriceSpecialAmount();
 												finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
 											}
 									} 
@@ -467,12 +469,12 @@ public class ProductPriceUtils {
 							if(!hasDiscount && price.getProductPriceSpecialStartDate()==null && price.getProductPriceSpecialEndDate()!=null) {
 								if(price.getProductPriceSpecialEndDate().after(today)) {
 									hasDiscount = true;
+									fPrice = price.getProductPriceSpecialAmount();
 									finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
 								}
 							}
 						}
 						finalPrice.setDefaultPrice(price);
-
 					}
 					
 				}
@@ -480,7 +482,8 @@ public class ProductPriceUtils {
 			
 		}
 		
-		finalPrice.setOriginalPrice(defaultPrice);
+		finalPrice.setFinalPrice(fPrice);
+		finalPrice.setOriginalPrice(oPrice);
 		return finalPrice;
 		
 		

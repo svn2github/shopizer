@@ -8,22 +8,22 @@ public class Delivery {
 	
 	
 
-	@Column (name ="DELIVERY_NAME")
+	@Column (name ="DELIVERY_NAME", length=64)
 	private String name;
 	
-	@Column (name ="DELIVERY_COMPANY")
+	@Column (name ="DELIVERY_COMPANY", length=100)
 	private String company;
 	
-	@Column (name ="DELIVERY_STREET_ADDRESS")
+	@Column (name ="DELIVERY_STREET_ADDRESS", length=256)
 	private String address;
 
-	@Column (name ="DELIVERY_CITY")
+	@Column (name ="DELIVERY_CITY", length=100)
 	private String city;
 	
-	@Column (name ="DELIVERY_POSTCODE")
+	@Column (name ="DELIVERY_POSTCODE", length=20)
 	private String postalCode;
 	
-	@Column (name ="DELIVERY_STATE")
+	@Column (name ="DELIVERY_STATE", length=100)
 	private String state;
 	
 	@Column (name ="DELIVERY_COUNTRY")

@@ -15,16 +15,7 @@ public interface OrderService extends SalesManagerEntityService<Long, Order> {
 	
 	public List<Order> listByStore(MerchantStore merchantStore);
 
-	/**
-	 * Calculates the total that would cost an order based on a list of Product
-	 * Does not include shipping and other additional costs
-	 * @param products
-	 * @param store
-	 * @return
-	 * @throws ServiceException
-	 */
-	BigDecimal getTotal(List<Product> products, MerchantStore store)
-			throws ServiceException;
+
 	
 
 }

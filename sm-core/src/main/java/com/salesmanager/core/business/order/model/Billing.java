@@ -9,26 +9,26 @@ public class Billing {
 	
 
 	
-	@Column (name ="BILLING_NAME")
+	@Column (name ="BILLING_NAME", length=64)
 	private String name;
 	
-	@Column (name ="BILLING_COMPANY")
+	@Column (name ="BILLING_COMPANY", length=100)
 	private String company;
 	
-	@Column (name ="BILLING_STREET_ADDRESS")
+	@Column (name ="BILLING_STREET_ADDRESS", length=256)
 	private String address;
 	
 	
-	@Column (name ="BILLING_CITY")
+	@Column (name ="BILLING_CITY", length=100)
 	private String city;
 	
-	@Column (name ="BILLING_POSTCODE")
+	@Column (name ="BILLING_POSTCODE", length=20)
 	private String postalCode;
 	
-	@Column (name ="BILLING_STATE")
+	@Column (name ="BILLING_STATE", length=100)
 	private String state;
 	
-	@Column (name ="BILLING_COUNTRY")
+	@Column (name ="BILLING_COUNTRY", length=100)
 	private String countryCode;
 
 	public String getName() {
