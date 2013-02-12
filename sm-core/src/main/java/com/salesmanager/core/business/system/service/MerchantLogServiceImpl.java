@@ -9,7 +9,7 @@ import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceI
 import com.salesmanager.core.business.system.dao.MerchantLogDao;
 import com.salesmanager.core.business.system.model.MerchantLog;
 
-@Service("moduleConfigurationService")
+@Service("merchantLogService")
 public class MerchantLogServiceImpl extends
 		SalesManagerEntityServiceImpl<Long, MerchantLog> implements
 		MerchantLogService {
