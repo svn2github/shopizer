@@ -10,15 +10,24 @@ import org.json.simple.JSONObject;
  */
 public class ShippingConfiguration implements JSONAware {
 	
-	private ShippingType shippingType;
-	private ShippingBasisType shippingBasisType;
-	private ShippingOptionPriceType shippingOptionPriceType;
+	//enums
+	private ShippingType shippingType = ShippingType.NATIONAL;
+	private ShippingBasisType shippingBasisType = ShippingBasisType.SHIPPING;
+	private ShippingOptionPriceType shippingOptionPriceType = ShippingOptionPriceType.ALL;
+	private ShippingPackageType shippingPackageType = ShippingPackageType.ITEM;
+	
+	private int boxWidth = 0;
+	private int boxHeight = 0;
+	private int boxLength = 0;
+	private int boxWeight = 0;
+	private int maxWeight = 0;
 	
 	
-
+	//JSON bindings
 	private String shipType;
 	private String shipBaseType;
 	private String shipOptionPriceType;
+	private String shipPackageType;
 	
 	
 	public String getShipType() {
@@ -34,11 +43,6 @@ public class ShippingConfiguration implements JSONAware {
 	public String getShipOptionPriceType() {
 		return shipOptionPriceType;
 	}
-
-
-
-
-
 
 
 
@@ -72,6 +76,21 @@ public class ShippingConfiguration implements JSONAware {
 
 	public ShippingType getShippingType() {
 		return shippingType;
+	}
+	
+	public ShippingPackageType getShippingPackageType() {
+		return shippingPackageType;
+	}
+
+
+	public void setShippingPackageType(ShippingPackageType shippingPackageType) {
+		this.shippingPackageType = shippingPackageType;
+		this.shipPackageType = shippingPackageType.name();
+	}
+	
+	
+	public String getShipPackageType() {
+		return shipPackageType;
 	}
 
 	
@@ -108,6 +127,17 @@ public class ShippingConfiguration implements JSONAware {
 		setShippingBasisType(sType);
 	}
 
+
+
+	public void setShipPackageType(String shipPackageType) {
+		this.shipPackageType = shipPackageType;
+		ShippingPackageType sType = ShippingPackageType.ITEM;
+		if(shipPackageType.equals(ShippingPackageType.BOX.name())) {
+			sType = ShippingPackageType.BOX;
+		}
+		this.setShippingPackageType(sType);
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public String toJSONString() {
@@ -115,8 +145,74 @@ public class ShippingConfiguration implements JSONAware {
 		data.put("shipBaseType", this.getShippingBasisType().name());
 		data.put("shipOptionPriceType", this.getShippingOptionPriceType().name());
 		data.put("shipType", this.getShippingType().name());
+		data.put("shipPackageType", this.getShippingPackageType().name());
+		
+		
+		data.put("boxWidth", this.getBoxWidth());
+		data.put("boxHeight", this.getBoxHeight());
+		data.put("boxLength", this.getBoxLength());
+		data.put("boxWeight", this.getBoxWeight());
+		data.put("maxWeight", this.getMaxWeight());
+		
+		
 		return data.toJSONString();
 	}
+
+
+	public int getBoxWidth() {
+		return boxWidth;
+	}
+
+
+	public void setBoxWidth(int boxWidth) {
+		this.boxWidth = boxWidth;
+	}
+
+
+	public int getBoxHeight() {
+		return boxHeight;
+	}
+
+
+	public void setBoxHeight(int boxHeight) {
+		this.boxHeight = boxHeight;
+	}
+
+
+	public int getBoxLength() {
+		return boxLength;
+	}
+
+
+	public void setBoxLength(int boxLength) {
+		this.boxLength = boxLength;
+	}
+
+
+	public int getBoxWeight() {
+		return boxWeight;
+	}
+
+
+	public void setBoxWeight(int boxWeight) {
+		this.boxWeight = boxWeight;
+	}
+
+
+	public int getMaxWeight() {
+		return maxWeight;
+	}
+
+
+	public void setMaxWeight(int maxWeight) {
+		this.maxWeight = maxWeight;
+	}
+
+
+
+
+
+
 
 
 

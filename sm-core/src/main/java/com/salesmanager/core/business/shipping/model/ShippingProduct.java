@@ -4,6 +4,10 @@ import com.salesmanager.core.business.catalog.product.model.Product;
 
 public class ShippingProduct {
 	
+	public ShippingProduct(Product product) {
+		this.product = product;
+	}
+	
 	private int quantity = 1;
 	private Product product;
 	public void setQuantity(int quantity) {

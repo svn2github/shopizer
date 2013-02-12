@@ -5,7 +5,9 @@ import java.util.Map;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
+import com.salesmanager.core.business.shipping.model.ShippingProduct;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 
@@ -74,6 +76,17 @@ public interface ShippingService {
 			MerchantStore store) throws ServiceException;
 
 	void removeShippingQuoteModuleConfiguration(String moduleCode,
+			MerchantStore store) throws ServiceException;
+
+	/**
+	 * Provides detailed information on boxes that will be used
+	 * when getting a ShippingQuote
+	 * @param products
+	 * @param store
+	 * @return
+	 * @throws ServiceException
+	 */
+	List<PackageDetails> getPackagesDetails(List<ShippingProduct> products,
 			MerchantStore store) throws ServiceException;
 
 }
