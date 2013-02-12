@@ -42,7 +42,7 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 	 * @throws ServiceException
 	 */
 	@Test
-	public void testGetShippingQuote() throws ServiceException {
+	public void testGetShippingPackages() throws ServiceException {
 
 	    Language en = languageService.getByCode("en");
 
@@ -160,7 +160,7 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 	    ShippingConfiguration shippingConfiguration = new ShippingConfiguration();
 	    shippingConfiguration.setShippingBasisType(ShippingBasisType.SHIPPING);
 	    shippingConfiguration.setShippingType(ShippingType.INTERNATIONAL);
-	    shippingConfiguration.setShippingPackageType(ShippingPackageType.BOX);
+	    shippingConfiguration.setShippingPackageType(ShippingPackageType.ITEM);
 	    shippingConfiguration.setBoxHeight(5);
 	    shippingConfiguration.setBoxLength(5);
 	    shippingConfiguration.setBoxWidth(5);
