@@ -51,7 +51,6 @@ import com.salesmanager.core.business.catalog.product.service.image.ProductImage
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
 import com.salesmanager.core.business.catalog.product.service.price.ProductPriceService;
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
-import com.salesmanager.core.business.content.model.content.StaticContentType;
 import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.InputContentImage;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
@@ -76,13 +75,10 @@ import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.service.ModuleConfigurationService;
 import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.business.user.model.Permission;
-import com.salesmanager.core.business.user.model.User;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
 import com.salesmanager.core.business.user.service.UserService;
 import com.salesmanager.core.modules.cms.common.CMSContentImage;
-import com.salesmanager.core.modules.cms.common.InputStaticContentData;
-import com.salesmanager.core.modules.cms.common.OutputStaticContentData;
 import com.salesmanager.core.utils.reference.ConfigurationModulesLoader;
 import com.salesmanager.test.core.SalesManagerCoreTestExecutionListener;
 
@@ -507,7 +503,7 @@ public class IsolatedTestCase
 
     }
     
-    @Test
+/*    @Test
     public void addStaticContentData() throws ServiceException, FileNotFoundException{
         
         final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
@@ -570,7 +566,7 @@ public class IsolatedTestCase
         System.out.println(data.getContentType());
         //System.out.println(data.getFile().);
         
-    }
+    }*/
     
 /*    @Test
     public void testGetUser() throws Exception {
