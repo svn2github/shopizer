@@ -9,6 +9,8 @@ public class PackageDetails {
 	private double shippingWidth;
 	private int shippingQuantity;
 	private int treshold;
+	
+	
 	public double getShippingWeight() {
 		return shippingWeight;
 	}

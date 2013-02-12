@@ -1,12 +1,17 @@
 package com.salesmanager.core.modules.integration.shipping.impl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.shipping.model.PackageDetails;
+import com.salesmanager.core.business.shipping.model.ShippingOption;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule;
@@ -50,6 +55,11 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 			
 		}
 
+	}
+	
+	@Override
+	public List<ShippingOption> getShippingQuotes(List<PackageDetails> packages, BigDecimal orderTotal, Customer customer, MerchantStore store, Locale locale) throws IntegrationException {
+		return null;
 	}
 
 }

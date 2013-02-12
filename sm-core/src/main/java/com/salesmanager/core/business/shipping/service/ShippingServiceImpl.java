@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -21,8 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -31,6 +28,7 @@ import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
+import com.salesmanager.core.business.shipping.model.ShippingPackageType;
 import com.salesmanager.core.business.shipping.model.ShippingProduct;
 import com.salesmanager.core.business.shipping.model.ShippingQuote;
 import com.salesmanager.core.business.shipping.model.ShippingType;
@@ -41,6 +39,7 @@ import com.salesmanager.core.business.system.service.MerchantConfigurationServic
 import com.salesmanager.core.business.system.service.ModuleConfigurationService;
 import com.salesmanager.core.constants.ShippingConstants;
 import com.salesmanager.core.modules.integration.IntegrationException;
+import com.salesmanager.core.modules.integration.shipping.model.Packaging;
 import com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule;
 import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.core.utils.reference.ConfigurationModulesLoader;
@@ -66,6 +65,9 @@ public class ShippingServiceImpl implements ShippingService {
 	
 	@Autowired
 	private ModuleConfigurationService moduleConfigurationService;
+	
+	@Autowired
+	private Packaging packaging;
 	
 	@Autowired
 	@Resource(name="shippingModules")
@@ -295,11 +297,21 @@ public class ShippingServiceImpl implements ShippingService {
 			}
 			
 			//calculate order total
-		
 			BigDecimal orderTotal = calculateOrderTotal(products,store);
+			
+			//free shipping ?
+			
+			List<PackageDetails> packages = this.getPackagesDetails(products, store);
+			
+			//tax basis
+			
+			//handling fees
+			
+			//invoke modules
+			
+			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ServiceException(e);
 		}
 		
 		return shippingQuote;
@@ -379,305 +391,36 @@ public class ShippingServiceImpl implements ShippingService {
 		
 		
 	}
-	
+
 	@Override
 	public List<PackageDetails> getPackagesDetails(
-			List<ShippingProduct> products, MerchantStore store) throws ServiceException {
-
-		if (products == null) {
-			throw new ServiceException("Product list cannot be null !!");
-		}
-
-		double width = 0;
-		double length = 0;
-		double height = 0;
-		double weight = 0;
-		double maxweight = 0;
-
-		//int treshold = 0;
+			List<ShippingProduct> products, MerchantStore store)
+			throws ServiceException {
 		
+		List<PackageDetails> packages = null;
 		
 		ShippingConfiguration shippingConfiguration = this.getShippingConfiguration(store);
-		if(shippingConfiguration==null) {
-			throw new ServiceException("ShippingConfiguration not found for merchant " + store.getCode());
+		//determine if the system has to use BOX or ITEM
+		ShippingPackageType shippingPackageType = ShippingPackageType.ITEM;
+		if(shippingConfiguration!=null) {
+			shippingPackageType = shippingConfiguration.getShippingPackageType();
 		}
 		
-		width = new Double(shippingConfiguration.getBoxWidth()).doubleValue();
-		length = new Double(shippingConfiguration.getBoxLength()).doubleValue();
-		height = new Double(shippingConfiguration.getBoxHeight()).doubleValue();
-		weight = new Double(shippingConfiguration.getBoxWeight()).doubleValue();
-		maxweight = new Double(shippingConfiguration.getMaxWeight()).doubleValue();
-		
-
-
-		List<PackageDetails> boxes = new ArrayList<PackageDetails>();
-
-		// maximum number of boxes
-		int maxBox = 100;
-		int iterCount = 0;
-
-		List<Product> individualProducts = new ArrayList<Product>();
-
-		// need to put items individually
-		for(ShippingProduct shippingProduct : products){
-
-			Product product = shippingProduct.getProduct();
-			if (product.isProductVirtual()) {
-				continue;
-			}
-
-			int qty = shippingProduct.getQuantity();
-
-			Set<ProductAttribute> attrs = shippingProduct.getProduct().getAttributes();
-
-			// set attributes values
-			BigDecimal w = product.getProductWeight();
-			if (attrs != null && attrs.size() > 0) {
-				for(ProductAttribute attribute : attrs) {
-					w = w.add(attribute.getProductAttributeWeight());
-				}
-			}
-			
-
-
-			if (qty > 1) {
-
-				for (int i = 1; i <= qty; i++) {
-					Product temp = new Product();
-					temp.setProductHeight(product.getProductHeight());
-					temp.setProductLength(product.getProductLength());
-					temp.setProductWidth(product.getProductWidth());
-					temp.setProductWeight(w);
-					temp.setAttributes(product.getAttributes());
-					individualProducts.add(temp);
-				}
-			} else {
-				Product temp = new Product();
-				temp.setProductHeight(product.getProductHeight());
-				temp.setProductLength(product.getProductLength());
-				temp.setProductWidth(product.getProductWidth());
-				temp.setProductWeight(w);
-				temp.setAttributes(product.getAttributes());
-				individualProducts.add(temp);
-			}
-			iterCount++;
-		}
-
-		if (iterCount == 0) {
-			return null;
-		}
-
-		int productCount = individualProducts.size();
-
-		//if (productCount < treshold) {
-		//	throw new ServiceException("Number of items smaller than treshold");
-		//}
-
-		
-		List<PackingBox> boxesList = new ArrayList<PackingBox>();
-
-		//start the creation of boxes
-		PackingBox box = new PackingBox();
-		// set box max volume
-		double maxVolume = width * length * height;
-
-		if (maxVolume == 0 || maxweight == 0) {
-/*			LogMerchantUtil.log(merchantId,
-					"Check shipping box configuration, it has a volume of "
-							+ maxVolume + " and a maximum weight of "
-							+ maxweight
-							+ ". Those values must be greater than 0.");*/
+		if(shippingPackageType.name().equals(ShippingPackageType.BOX.name())){
+			packages = packaging.getBoxPackagesDetails(products, store);
+		} else {
+			packages = packaging.getItemPackagesDetails(products, store);
 		}
 		
+		return packages;
 		
-		box.setVolumeLeft(maxVolume);
-		box.setWeightLeft(maxweight);
-
-		boxesList.add(box);//assign first box
-
-		int boxCount = 1;
-		List<Product> assignedProducts = new ArrayList<Product>();
-
-		// calculate the volume for the next object
-		if (assignedProducts.size() > 0) {
-			individualProducts.removeAll(assignedProducts);
-			assignedProducts = new ArrayList<Product>();
-		}
-
-		boolean productAssigned = false;
-
-		for(Product p : individualProducts) {
-
-			Set<ProductAttribute> attributes = p.getAttributes();
-			productAssigned = false;
-
-			double productWeight = p.getProductWeight().doubleValue();
-
-
-			// validate if product fits in the box
-			if (p.getProductWidth().doubleValue() > width
-					|| p.getProductHeight().doubleValue() > height
-					|| p.getProductLength().doubleValue() > length) {
-				// log message to customer
-				return null;
-/*				LogMerchantUtil
-						.log(
-								merchantId,
-								"Product "
-										+ op.getProductId()
-										+ " has a demension larger than the box size specified. Will use per item calculation.");
-				// exit this process and let shipping calculator calculate
-				// individual items
-				throw new Exception(
-						"Product configuration exceeds box configuraton");*/
-			}
-
-			if (productWeight > maxweight) {
-				
-				return null;
-/*				LogMerchantUtil
-						.log(
-								merchantId,
-								"Product "
-										+ op.getProductId()
-										+ " has a weight larger than the box maximum weight specified. Will use per item calculation.");
-				throw new Exception("Product weight exceeds box maximum weight");*/
-			}
-
-			double productVolume = (p.getProductWidth().doubleValue()
-					* p.getProductHeight().doubleValue() * p
-					.getProductLength().doubleValue());
-
-			if (productVolume == 0) {
-				
-				return null;
-				
-/*				LogMerchantUtil
-						.log(
-								merchantId,
-								"Product "
-										+ op.getProductId()
-										+ " has one of the dimension set to 0 and therefore cannot calculate the volume");
-				throw new Exception("Cannot calculate volume");*/
-			}
-			
-			if (productVolume > maxVolume) {
-				
-				return null;
-				
-			}
-
-			//List boxesList = boxesList;
-
-			// try each box
-			//Iterator boxIter = boxesList.iterator();
-			for (PackingBox pbox : boxesList) {
-				double volumeLeft = pbox.getVolumeLeft();
-				double weightLeft = pbox.getWeightLeft();
-
-				if ((volumeLeft * .75) >= productVolume
-						&& pbox.getWeightLeft() >= productWeight) {// fit the item
-																	// in this
-																	// box
-					// fit in the current box
-					volumeLeft = volumeLeft - productVolume;
-					pbox.setVolumeLeft(volumeLeft);
-					weightLeft = weightLeft - productWeight;
-					pbox.setWeightLeft(weightLeft);
-
-					assignedProducts.add(p);
-					productCount--;
-
-					double w = pbox.getWeight();
-					w = w + productWeight;
-					pbox.setWeight(w);
-					productAssigned = true;
-					maxBox--;
-					break;
-
-				}
-
-			}
-
-			if (!productAssigned) {// create a new box
-
-				box = new PackingBox();
-				// set box max volume
-				box.setVolumeLeft(maxVolume);
-				box.setWeightLeft(maxweight);
-
-				boxesList.add(box);
-
-				double volumeLeft = box.getVolumeLeft() - productVolume;
-				box.setVolumeLeft(volumeLeft);
-				double weightLeft = box.getWeightLeft() - productWeight;
-				box.setWeightLeft(weightLeft);
-				assignedProducts.add(p);
-				productCount--;
-				double w = box.getWeight();
-				w = w + productWeight;
-				box.setWeight(w);
-				maxBox--;
-			}
-
-		}
-
-		// now prepare the shipping info
-
-		// number of boxes
-
-		//Iterator ubIt = usedBoxesList.iterator();
-
-		System.out.println("###################################");
-		System.out.println("Number of boxes " + boxesList.size());
-		System.out.println("###################################");
-
-		for(PackingBox pb : boxesList) {
-			PackageDetails details = new PackageDetails();
-			details.setShippingHeight(height);
-			details.setShippingLength(length);
-			details.setShippingWeight(weight + box.getWeight());
-			details.setShippingWidth(width);
-			boxes.add(details);
-		}
-
-		return boxes;
-
 	}
+	
+
+
 
 
 }
 
 
 
-class PackingBox {
-
-	private double volumeLeft;
-	private double weightLeft;
-	private double weight;
-
-	public double getVolumeLeft() {
-		return volumeLeft;
-	}
-
-	public void setVolumeLeft(double volumeLeft) {
-		this.volumeLeft = volumeLeft;
-	}
-
-	public double getWeight() {
-		return weight;
-	}
-
-	public void setWeight(double weight) {
-		this.weight = weight;
-	}
-
-	public double getWeightLeft() {
-		return weightLeft;
-	}
-
-	public void setWeightLeft(double weightLeft) {
-		this.weightLeft = weightLeft;
-	}
-
-}
