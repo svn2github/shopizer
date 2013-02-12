@@ -21,6 +21,10 @@
 	<bean id="canadapost"
 		class="com.salesmanager.core.modules.integration.shipping.impl.CanadaPostShippingQuote"/>
 
+	<!-- Default packaging -->
+	<bean id="boxPackaging"
+		class="com.salesmanager.core.modules.integration.shipping.impl.DefaultPackagingImpl"/>
+	
 	
 	<!-- CMS -->
 	<!-- Product images manager-->
