@@ -1,5 +1,7 @@
 package com.salesmanager.core.business.shipping.model;
 
+import java.math.BigDecimal;
+
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
@@ -21,6 +23,9 @@ public class ShippingConfiguration implements JSONAware {
 	private int boxLength = 0;
 	private int boxWeight = 0;
 	private int maxWeight = 0;
+	
+	private boolean freeShippingEnabled = false;
+	private BigDecimal orderTotalFreeShipping = null;
 	
 	
 	//JSON bindings
@@ -206,6 +211,26 @@ public class ShippingConfiguration implements JSONAware {
 
 	public void setMaxWeight(int maxWeight) {
 		this.maxWeight = maxWeight;
+	}
+
+
+	public boolean isFreeShippingEnabled() {
+		return freeShippingEnabled;
+	}
+
+
+	public void setFreeShippingEnabled(boolean freeShippingEnabled) {
+		this.freeShippingEnabled = freeShippingEnabled;
+	}
+
+
+	public BigDecimal getOrderTotalFreeShipping() {
+		return orderTotalFreeShipping;
+	}
+
+
+	public void setOrderTotalFreeShipping(BigDecimal orderTotalFreeShipping) {
+		this.orderTotalFreeShipping = orderTotalFreeShipping;
 	}
 
 

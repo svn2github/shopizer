@@ -133,19 +133,14 @@ public class ShippingServiceImpl implements ShippingService {
 	@Override
 	public void saveShippingQuoteModuleConfiguration(IntegrationConfiguration configuration, MerchantStore store) throws ServiceException {
 		
-		
-			
 			//validate entries
 			try {
 				
 				String moduleCode = configuration.getModuleCode();
-				
 				ShippingQuoteModule quoteModule = (ShippingQuoteModule)shippingModules.get(moduleCode);
-
 				if(quoteModule==null) {
 					throw new ServiceException("Shipping quote module " + moduleCode + " does not exist");
 				}
-				
 				quoteModule.validateModuleConfiguration(configuration, store);
 				
 			} catch (IntegrationException ie) {
@@ -173,7 +168,6 @@ public class ShippingServiceImpl implements ShippingService {
 			} catch (Exception e) {
 				throw new ServiceException(e);
 			}
-		
 	}
 	
 	
@@ -203,7 +197,7 @@ public class ShippingServiceImpl implements ShippingService {
 			throw new ServiceException(e);
 		}
 	
-}
+	}
 	
 	@Override
 	public Map<String,IntegrationConfiguration> getShippingModulesConfigured(MerchantStore store) throws ServiceException {
