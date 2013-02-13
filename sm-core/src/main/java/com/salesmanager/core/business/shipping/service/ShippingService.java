@@ -1,13 +1,16 @@
 package com.salesmanager.core.business.shipping.service;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 import com.salesmanager.core.business.shipping.model.ShippingProduct;
+import com.salesmanager.core.business.shipping.model.ShippingQuote;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 
@@ -88,5 +91,19 @@ public interface ShippingService {
 	 */
 	List<PackageDetails> getPackagesDetails(List<ShippingProduct> products,
 			MerchantStore store) throws ServiceException;
+
+	/**
+	 * Get a list of ShippingQuote from a configured
+	 * shipping gateway
+	 * @param store
+	 * @param customer
+	 * @param products
+	 * @param locale
+	 * @return
+	 * @throws ServiceException
+	 */
+	ShippingQuote getShippingQuote(MerchantStore store, Customer customer,
+			List<ShippingProduct> products, Locale locale)
+			throws ServiceException;
 
 }

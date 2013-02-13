@@ -27,6 +27,10 @@ public class ShippingConfiguration implements JSONAware {
 	private boolean freeShippingEnabled = false;
 	private BigDecimal orderTotalFreeShipping = null;
 	
+	private BigDecimal handlingFees = null;
+	
+	private boolean taxOnShipping = false;
+	
 	
 	//JSON bindings
 	private String shipType;
@@ -158,6 +162,10 @@ public class ShippingConfiguration implements JSONAware {
 		data.put("boxLength", this.getBoxLength());
 		data.put("boxWeight", this.getBoxWeight());
 		data.put("maxWeight", this.getMaxWeight());
+		data.put("freeShippingEnabled", this.freeShippingEnabled);
+		data.put("orderTotalFreeShipping", this.orderTotalFreeShipping);
+		data.put("handlingFees", this.handlingFees);
+		data.put("taxOnShipping", this.taxOnShipping);
 		
 		
 		return data.toJSONString();
@@ -231,6 +239,26 @@ public class ShippingConfiguration implements JSONAware {
 
 	public void setOrderTotalFreeShipping(BigDecimal orderTotalFreeShipping) {
 		this.orderTotalFreeShipping = orderTotalFreeShipping;
+	}
+
+
+	public void setHandlingFees(BigDecimal handlingFees) {
+		this.handlingFees = handlingFees;
+	}
+
+
+	public BigDecimal getHandlingFees() {
+		return handlingFees;
+	}
+
+
+	public void setTaxOnShipping(boolean taxOnShipping) {
+		this.taxOnShipping = taxOnShipping;
+	}
+
+
+	public boolean isTaxOnShipping() {
+		return taxOnShipping;
 	}
 
 

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 
-import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.model.Delivery;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingOption;
@@ -16,6 +16,6 @@ public interface ShippingQuoteModule {
 	public void validateModuleConfiguration(IntegrationConfiguration integrationConfiguration, MerchantStore store) throws IntegrationException;
 
 	
-	public List<ShippingOption> getShippingQuotes(List<PackageDetails> packages, BigDecimal orderTotal, Customer customer, MerchantStore store, Locale locale) throws IntegrationException;
+	public List<ShippingOption> getShippingQuotes(List<PackageDetails> packages, BigDecimal orderTotal, Delivery delivery, MerchantStore store, IntegrationConfiguration configuration, Locale locale) throws IntegrationException;
 
 }

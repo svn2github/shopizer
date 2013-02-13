@@ -21,13 +21,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
+import com.salesmanager.core.business.customer.model.Billing;
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.model.Delivery;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
+import com.salesmanager.core.business.shipping.model.ShippingBasisType;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
+import com.salesmanager.core.business.shipping.model.ShippingOption;
+import com.salesmanager.core.business.shipping.model.ShippingOptionPriceType;
 import com.salesmanager.core.business.shipping.model.ShippingPackageType;
 import com.salesmanager.core.business.shipping.model.ShippingProduct;
 import com.salesmanager.core.business.shipping.model.ShippingQuote;
@@ -222,6 +227,7 @@ public class ShippingServiceImpl implements ShippingService {
 		
 	}
 	
+	@Override
 	public ShippingQuote getShippingQuote(MerchantStore store, Customer customer, List<ShippingProduct> products, Locale locale) throws ServiceException  {
 		
 		ShippingQuote shippingQuote = new ShippingQuote();
@@ -233,12 +239,14 @@ public class ShippingServiceImpl implements ShippingService {
 			ShippingConfiguration shippingConfiguration = getShippingConfiguration(store);
 			ShippingType shippingType = ShippingType.INTERNATIONAL;
 			
-			if(shippingConfiguration!=null) {
-				if(shippingConfiguration.getShippingType()!=null) {
-					shippingType = shippingConfiguration.getShippingType();
-				}
+			if(shippingConfiguration==null) {
+				shippingConfiguration = new ShippingConfiguration();
 			}
-	
+			
+			if(shippingConfiguration.getShippingType()!=null) {
+					shippingType = shippingConfiguration.getShippingType();
+			}
+
 			//look if customer country code excluded
 			Country shipCountry = customer.getDelivery().getCountry();
 			if(shipCountry==null) {
@@ -275,9 +283,10 @@ public class ShippingServiceImpl implements ShippingService {
 				return shippingQuote;
 			}
 			
+			IntegrationConfiguration configuration = null;
 			for(String module : modules.keySet()) {
 				
-				IntegrationConfiguration configuration = modules.get(module);
+				configuration = modules.get(module);
 				//use the first active module
 				if(configuration.isActive()) {
 					shippingQuoteModule = this.shippingModules.get(module);
@@ -292,24 +301,110 @@ public class ShippingServiceImpl implements ShippingService {
 			
 			//calculate order total
 			BigDecimal orderTotal = calculateOrderTotal(products,store);
-			
-			//free shipping ?
-			
 			List<PackageDetails> packages = this.getPackagesDetails(products, store);
 			
-			//tax basis
+			//free shipping ?
+			BigDecimal freeShippingAmount = shippingConfiguration.getOrderTotalFreeShipping();
+			if(freeShippingAmount!=null) {
+				shippingQuote.setFreeShipping(true);
+				shippingQuote.setFreeShippingAmount(freeShippingAmount);
+				return shippingQuote;
+			}
 			
+
 			//handling fees
+			BigDecimal handlingFees = shippingConfiguration.getHandlingFees();
+			if(handlingFees!=null) {
+				shippingQuote.setHandlingFees(handlingFees);
+			}
 			
-			//invoke modules
+			//tax basis
+			shippingQuote.setApplyTaxOnShipping(shippingConfiguration.isTaxOnShipping());
 			
+			
+			//create delivery
+			Delivery delivery = customer.getDelivery();
+			Billing billing = customer.getBilling();
+			
+
+			//determine shipping basis
+			if(shippingConfiguration.getShippingBasisType().name().equals(ShippingBasisType.BILLING)) {
+					
+					delivery = new Delivery();
+					if(billing!=null) {
+						delivery.setAddress(billing.getAddress());
+						delivery.setCity(billing.getCity());
+						delivery.setCompany(billing.getCompany());
+						delivery.setCountryCode(billing.getCountryCode());
+						delivery.setName(billing.getName());
+						delivery.setPostalCode(billing.getPostalCode());
+						delivery.setState(billing.getState());
+						delivery.setZone(billing.getZone());
+						delivery.setCountry(billing.getCountry());
+					}
+
+			} 
+				
+			if(delivery==null) {
+				delivery = new Delivery();
+				delivery.setAddress(customer.getStreetAddress());
+				delivery.setCity(customer.getCity());
+				delivery.setCompany(customer.getCompany());
+				delivery.setName(customer.getFirstname() + " " + customer.getLastname());
+				delivery.setPostalCode(customer.getPostalCode());
+				delivery.setState(customer.getState());
+				delivery.setZone(customer.getZone());
+				delivery.setCountry(customer.getCountry());
+			}
+						
+			
+
+
+			//invoke module
+			List<ShippingOption> shippingOptions = shippingQuoteModule.getShippingQuotes(packages, orderTotal, delivery, store, configuration, locale);
+			
+			//filter shipping options
+			ShippingOptionPriceType shippingOptionPriceType = shippingConfiguration.getShippingOptionPriceType();
+			ShippingOption selectedOption = null;
+			if(shippingOptionPriceType.name().equals(ShippingOptionPriceType.HIGHEST)) {
+				for(ShippingOption option : shippingOptions) {
+					if(selectedOption==null) {
+						selectedOption = option;
+					}
+					if (option.getOptionPrice()
+							.longValue() > selectedOption
+							.getOptionPrice()
+							.longValue()) {
+						selectedOption = option;
+					}
+				}
+			}
+			
+			if(shippingOptionPriceType.name().equals(ShippingOptionPriceType.LEAST)) {
+				for(ShippingOption option : shippingOptions) {
+					if(selectedOption==null) {
+						selectedOption = option;
+					}
+					if (option.getOptionPrice()
+							.longValue() < selectedOption
+							.getOptionPrice()
+							.longValue()) {
+						selectedOption = option;
+					}
+				}
+			}
+			
+			if(selectedOption!=null) {
+				shippingOptions = new ArrayList<ShippingOption>();
+			}
+			
+			shippingQuote.setShippingOptions(shippingOptions);
 			
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}
 		
 		return shippingQuote;
-		
 		
 	}
 

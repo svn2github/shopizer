@@ -45,6 +45,10 @@ public class IntegrationException extends ServiceException {
 		this.errorCode = code;
 	}
 
+	public IntegrationException(String message) {
+		super(message);
+	}
+
 	public void setErrorFields(List<String> errorFields) {
 		this.errorFields = errorFields;
 	}
