@@ -17,6 +17,7 @@ public class ShippingConfiguration implements JSONAware {
 	private ShippingBasisType shippingBasisType = ShippingBasisType.SHIPPING;
 	private ShippingOptionPriceType shippingOptionPriceType = ShippingOptionPriceType.ALL;
 	private ShippingPackageType shippingPackageType = ShippingPackageType.ITEM;
+	private ShippingDescription shippingDescription = ShippingDescription.SHORT_DESCRIPTION;
 	
 	private int boxWidth = 0;
 	private int boxHeight = 0;
@@ -37,6 +38,7 @@ public class ShippingConfiguration implements JSONAware {
 	private String shipBaseType;
 	private String shipOptionPriceType;
 	private String shipPackageType;
+	private String shipDescription;
 	
 	
 	public String getShipType() {
@@ -145,6 +147,15 @@ public class ShippingConfiguration implements JSONAware {
 			sType = ShippingPackageType.BOX;
 		}
 		this.setShippingPackageType(sType);
+	}
+	
+	public void setShipDescription(String shipDescription) {
+		this.shipDescription = shipDescription;
+		ShippingDescription sType = ShippingDescription.SHORT_DESCRIPTION;
+		if(shipDescription.equals(ShippingDescription.LONG_DESCRIPTION.name())) {
+			sType = ShippingDescription.LONG_DESCRIPTION;
+		}
+		this.setShippingDescription(sType);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -259,6 +270,24 @@ public class ShippingConfiguration implements JSONAware {
 
 	public boolean isTaxOnShipping() {
 		return taxOnShipping;
+	}
+
+
+
+
+
+	public String getShipDescription() {
+		return shipDescription;
+	}
+
+
+	public void setShippingDescription(ShippingDescription shippingDescription) {
+		this.shippingDescription = shippingDescription;
+	}
+
+
+	public ShippingDescription getShippingDescription() {
+		return shippingDescription;
 	}
 
 

@@ -1,12 +1,21 @@
 package com.salesmanager.core.modules.integration.shipping.impl;
 
+import java.io.Reader;
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.digester.Digester;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.RequestEntity;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.salesmanager.core.business.customer.model.Billing;
@@ -17,16 +26,37 @@ import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingBasisType;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
+import com.salesmanager.core.business.shipping.model.ShippingDescription;
 import com.salesmanager.core.business.shipping.model.ShippingOption;
 import com.salesmanager.core.business.shipping.service.ShippingService;
+import com.salesmanager.core.business.shipping.service.ShippingServiceImpl;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
+import com.salesmanager.core.business.system.model.IntegrationModule;
+import com.salesmanager.core.business.system.model.MerchantLog;
+import com.salesmanager.core.business.system.model.ModuleConfig;
+import com.salesmanager.core.business.system.service.MerchantLogService;
+import com.salesmanager.core.constants.MeasureUnit;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule;
+import com.salesmanager.core.utils.DataUtils;
+import com.salesmanager.core.utils.ProductPriceUtils;
 
 public class CanadaPostShippingQuote implements ShippingQuoteModule {
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CanadaPostShippingQuote.class);
+
+	
+	private final static String SHIPPING_TURN_AROUND_TIME = "24";
+
+	
 	@Autowired
 	private ShippingService shippingService;
+	
+	@Autowired
+	private ProductPriceUtils productPriceUtils;
+	
+	@Autowired
+	private MerchantLogService merchantLogService;
 
 	@Override
 	public void validateModuleConfiguration(
@@ -68,153 +98,145 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 	}
 	
 	@Override
-	public List<ShippingOption> getShippingQuotes(List<PackageDetails> packages, BigDecimal orderTotal, Delivery delivery, MerchantStore store, IntegrationConfiguration configuration, Locale locale) throws IntegrationException {
+	public List<ShippingOption> getShippingQuotes(List<PackageDetails> packages, BigDecimal orderTotal, Delivery delivery, MerchantStore store, IntegrationConfiguration configuration, IntegrationModule module, ShippingConfiguration shippingConfiguration, Locale locale) throws IntegrationException {
 		BigDecimal total = orderTotal;
 
 		if (packages == null) {
 			return null;
 		}
+		
+		List<ShippingOption> options = null;
 
 		// only applies to Canada and US
 		Country country = delivery.getCountry();
 		if(!country.getIsoCode().equals("US") || !country.equals("CA")) {
 			throw new IntegrationException("Canadapost Not configured for shipping in country " + country.getIsoCode());
 		}
-/*
+
 		// supports en and fr
 		String language = locale.getLanguage();
-		if (!language.equals(Constants.FRENCH_CODE)
-				&& !language.equals(Constants.ENGLISH_CODE)) {
-			language = Constants.ENGLISH_CODE;
+		if (!language.equals(Locale.FRENCH.getLanguage())
+				&& !language.equals(Locale.ENGLISH.getLanguage())) {
+			language = Locale.ENGLISH.getLanguage();
 		}
 		
 
-
-
-		// if store is not CAD
-		if (!store.getCurrency().equals(Constants.CURRENCY_CODE_CAD)) {
+		// if store is not CAD /** maintained in the currency **/
+/*		if (!store.getCurrency().equals(Constants.CURRENCY_CODE_CAD)) {
 			total = CurrencyUtil.convertToCurrency(total, store.getCurrency(),
 					Constants.CURRENCY_CODE_CAD);
-		}
+		}*/
 
+		
 		PostMethod httppost = null;
-
 		CanadaPostParsedElements canadaPost = null;
 
 		try {
-
-			int icountry = store.getCountry();
-			String country = CountryUtil.getCountryIsoCodeById(icountry);
-
-			ShippingService sservice = (ShippingService) ServiceFactory
-					.getService(ServiceFactory.ShippingService);
-			CoreModuleService cms = sservice.getRealTimeQuoteShippingService(
-					country, "canadapost");
-
-			IntegrationKeys keys = (IntegrationKeys) config
-					.getConfiguration("canadapost-keys");
-			IntegrationProperties props = (IntegrationProperties) config
-					.getConfiguration("canadapost-properties");
-
-			if (cms == null) {
-				// throw new
-				// Exception("Central integration services not configured for "
-				// + PaymentConstants.PAYMENT_PSIGATENAME + " and country id " +
-				// origincountryid);
-				log
-						.error("CoreModuleService not configured for  canadapost and country id "
-								+ icountry);
-				return null;
+			
+			Map<String,String> keys = configuration.getIntegrationKeys();
+			if(keys==null || StringUtils.isBlank(keys.get("account"))) {
+				throw new IntegrationException("Canadapost missing configuration key account");
 			}
 
-			String host = cms.getCoreModuleServiceProdDomain();
-			String protocol = cms.getCoreModuleServiceProdProtocol();
-			String port = cms.getCoreModuleServiceProdPort();
-			String url = cms.getCoreModuleServiceProdEnv();
-			if (props.getProperties1().equals(
-					String.valueOf(ShippingConstants.TEST_ENVIRONMENT))) {
-				host = cms.getCoreModuleServiceDevDomain();
-				protocol = cms.getCoreModuleServiceDevProtocol();
-				port = cms.getCoreModuleServiceDevPort();
-				url = cms.getCoreModuleServiceDevEnv();
+			
+			String host = null;
+			String protocol = null;
+			String port = null;
+			String url = null;
+		
+			
+			
+			//against which environment are we using the service
+			String env = configuration.getEnvironment();
+
+			Country originCountry = store.getCountry();
+
+			Map<String, ModuleConfig> moduleConfigsMap = module.getModuleConfigs();
+			for(String key : moduleConfigsMap.keySet()) {
+				
+				ModuleConfig moduleConfig = (ModuleConfig)moduleConfigsMap.get(key);
+				if(moduleConfig.getEnv().equals(env)) {
+					host = moduleConfig.getHost();
+					protocol = moduleConfig.getScheme();
+					port = moduleConfig.getPort();
+					url = moduleConfig.getUri();
+				}
 			}
+			
+
 
 			// accept KG and CM
 
-			StringBuffer request = new StringBuffer();
+			StringBuilder request = new StringBuilder();
 
 			request.append("<?xml version=\"1.0\" ?>");
 			request.append("<eparcel>");
 			request.append("<language>").append(language).append("</language>");
 
 			request.append("<ratesAndServicesRequest>");
-			request.append("<merchantCPCID>").append(keys.getUserid()).append(
+			request.append("<merchantCPCID>").append(keys.get("account")).append(
 					"</merchantCPCID>");
 			request.append("<fromPostalCode>").append(
-					com.salesmanager.core.util.ShippingUtil
+					DataUtils
 							.trimPostalCode(store.getStorepostalcode()))
 					.append("</fromPostalCode>");
-			request.append("<turnAroundTime>").append("24").append(
+			request.append("<turnAroundTime>").append(SHIPPING_TURN_AROUND_TIME).append(
 					"</turnAroundTime>");
 			request.append("<itemsPrice>").append(
-					CurrencyUtil.displayFormatedAmountNoCurrency(total, "CAD"))
+					productPriceUtils.getFormatedAmountWithCurrency(store,total, locale))
 					.append("</itemsPrice>");
 			request.append("<lineItems>");
 
-			Iterator packageIterator = packages.iterator();
-			while (packageIterator.hasNext()) {
-				PackageDetail pack = (PackageDetail) packageIterator.next();
+
+			for(PackageDetails pack : packages) {
 				request.append("<item>");
 				request.append("<quantity>").append(pack.getShippingQuantity())
 						.append("</quantity>");
 				request.append("<weight>").append(
-						String.valueOf(CurrencyUtil.getWeight(pack
+						String.valueOf(DataUtils.getWeight(pack
 								.getShippingWeight(), store,
-								Constants.KG_WEIGHT_UNIT))).append("</weight>");
+								MeasureUnit.KG.name()))).append("</weight>");
 				request.append("<length>").append(
-						String.valueOf(CurrencyUtil.getMeasure(pack
+						String.valueOf(DataUtils.getMeasure(pack
 								.getShippingLength(), store,
-								Constants.CM_SIZE_UNIT))).append("</length>");
+								MeasureUnit.CM.name()))).append("</length>");
 				request.append("<width>").append(
-						String.valueOf(CurrencyUtil.getMeasure(pack
+						String.valueOf(DataUtils.getMeasure(pack
 								.getShippingWidth(), store,
-								Constants.CM_SIZE_UNIT))).append("</width>");
+								MeasureUnit.CM.name()))).append("</width>");
 				request.append("<height>").append(
-						String.valueOf(CurrencyUtil.getMeasure(pack
+						String.valueOf(DataUtils.getMeasure(pack
 								.getShippingHeight(), store,
-								Constants.CM_SIZE_UNIT))).append("</height>");
-				request.append("<description>").append(pack.getProductName())
+								MeasureUnit.CM.name()))).append("</height>");
+				request.append("<description>").append(pack.getItemName())
 						.append("</description>");
 				request.append("<readyToShip/>");
 				request.append("</item>");
 			}
-
-			Country c = null;
-			Map countries = (Map) RefCache.getAllcountriesmap(LanguageUtil
-					.getLanguageNumberCode(locale.getLanguage()));
-			c = (Country) countries.get(store.getCountry());
-
+			
 			request.append("</lineItems>");
-			request.append("<city>").append(customer.getCustomerCity()).append(
+			
+			request.append("<city>").append(delivery.getCity()).append(
 					"</city>");
-
-			request.append("<provOrState>").append(customer.getShippingSate())
+			if(delivery.getZone()!=null) {
+			request.append("<provOrState>").append(delivery.getZone().getCode())
 					.append("</provOrState>");
-			Map cs = (Map) RefCache.getAllcountriesmap(LanguageUtil
-					.getLanguageNumberCode(locale.getLanguage()));
-			Country customerCountry = (Country) cs.get(customer
-					.getCustomerCountryId());
+			} else {
+			request.append("<provOrState>").append(delivery.getState())
+				.append("</provOrState>");				
+			}
 			request.append("<country>")
-					.append(customerCountry.getCountryName()).append(
+					.append(delivery.getCountry().getName()).append(
 							"</country>");
 			request.append("<postalCode>").append(
-					com.salesmanager.core.util.ShippingUtil
-							.trimPostalCode(customer.getCustomerPostalCode()))
+					DataUtils
+					.trimPostalCode(delivery.getPostalCode()))
 					.append("</postalCode>");
 			request.append("</ratesAndServicesRequest>");
 			request.append("</eparcel>");
 
-			*//**
+
+			/**
 			 * <?xml version="1.0" ?> <eparcel>
 			 * <!--********************************--> <!-- Prefered language
 			 * for the --> <!-- response (FR/EN) (optional) -->
@@ -283,9 +305,10 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 			 * where the --> <!-- parcel will be shipped to -->
 			 * <!--********************************--> <postalCode>
 			 * H3K1E5</postalCode> </ratesAndServicesRequest> </eparcel>
-			 **//*
+			 **/
+			
 
-			log.debug("canadapost request " + request.toString());
+			LOGGER.debug("canadapost request " + request.toString());
 
 			HttpClient client = new HttpClient();
 			
@@ -294,7 +317,7 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 				u.append(url);
 			}
 			
-			log.debug("Canadapost URL " + u.toString());
+			LOGGER.debug("Canadapost URL " + u.toString());
 
 			httppost = new PostMethod(u.toString());
 			RequestEntity entity = new StringRequestEntity(request.toString(),
@@ -304,13 +327,13 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 			int result = client.executeMethod(httppost);
 
 			if (result != 200) {
-				log.error("Communication Error with canadapost " + protocol
+				LOGGER.error("Communication Error with canadapost " + protocol
 						+ "://" + host + ":" + port + url);
 				throw new Exception("Communication Error with canadapost "
 						+ protocol + "://" + host + ":" + port + url);
 			}
 			String stringresult = httppost.getResponseBodyAsString();
-			log.debug("canadapost response " + stringresult);
+			LOGGER.debug("canadapost response " + stringresult);
 
 			canadaPost = new CanadaPostParsedElements();
 			Digester digester = new Digester();
@@ -324,16 +347,16 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 					"setStatusMessage", 0);
 			digester.addObjectCreate(
 					"eparcel/ratesAndServicesResponse/product",
-					com.salesmanager.core.entity.shipping.ShippingOption.class);
+					ShippingOption.class);
 			digester.addSetProperties(
 					"eparcel/ratesAndServicesResponse/product", "sequence",
 					"optionId");
 			digester.addCallMethod(
 					"eparcel/ratesAndServicesResponse/product/shippingDate",
-					"setShippingDate", 0);
+					"setOptionShippingDate", 0);
 			digester.addCallMethod(
 					"eparcel/ratesAndServicesResponse/product/deliveryDate",
-					"setDeliveryDate", 0);
+					"setOptionDeliveryDate", 0);
 			digester.addCallMethod(
 					"eparcel/ratesAndServicesResponse/product/name",
 					"setOptionName", 0);
@@ -343,7 +366,7 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 			digester.addSetNext("eparcel/ratesAndServicesResponse/product",
 					"addOption");
 
-			*//**
+			/**
 			 * response
 			 * 
 			 * <?xml version="1.0" ?> <!DOCTYPE eparcel (View Source for full
@@ -381,138 +404,86 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 			 * <deliveryConfirmation>Yes</deliveryConfirmation>
 			 * <signature>No</signature> </shippingOptions> <comment />
 			 * </ratesAndServicesResponse> </eparcel> - <!-- END_OF_EPARCEL -->
-			 *//*
-
+			 **/
+			
 			Reader reader = new StringReader(stringresult);
-
+			
 			digester.parse(reader);
+			
+			
 
-		} catch (Exception e) {
-			log.error(e);
-		} finally {
-			if (httppost != null) {
-				httppost.releaseConnection();
+		
+		
+			if (canadaPost == null || canadaPost.getStatusCode() == null) {
+				return null;
 			}
-		}
+	
+			if (canadaPost.getStatusCode().equals("-6")
+					|| canadaPost.getStatusCode().equals("-7")) {
+				merchantLogService.save(
+						new MerchantLog(store,
+						"Can't process CanadaPost statusCode="
+								+ canadaPost.getStatusCode() + " message= "
+								+ canadaPost.getStatusMessage()));
+			}
+	
+			if (!canadaPost.getStatusCode().equals("1")) {
+				merchantLogService.save(
+						new MerchantLog(store,("An error occured with canadapost request (code-> "
+						+ canadaPost.getStatusCode() + " message-> "
+						+ canadaPost.getStatusMessage() )));
+				throw new IntegrationException("Error with post canada service");
+			}
 
-		if (canadaPost == null || canadaPost.getStatusCode() == null) {
-			return null;
-		}
-
-		if (canadaPost.getStatusCode().equals("-6")
-				|| canadaPost.getStatusCode().equals("-7")) {
-			LogMerchantUtil.log(store.getMerchantId(),
-					"Can't process CanadaPost statusCode="
-							+ canadaPost.getStatusCode() + " message= "
-							+ canadaPost.getStatusMessage());
-		}
-
-		if (!canadaPost.getStatusCode().equals("1")) {
-			log.error("An error occured with canadapost request (code-> "
-					+ canadaPost.getStatusCode() + " message-> "
-					+ canadaPost.getStatusMessage() + ")");
-			return null;
-		}
-
-		String carrier = getShippingMethodDescription(locale);
+		//String carrier = getShippingMethodDescription(locale);
 		// cost is in CAD, need to do conversion
 
-		boolean requiresCurrencyConversion = false;
+/*		boolean requiresCurrencyConversion = false;
 		String storeCurrency = store.getCurrency();
 		if (!storeCurrency.equals(Constants.CURRENCY_CODE_CAD)) {
 			requiresCurrencyConversion = true;
-		}
-
-		*//** Details on whit RT quote information to display **//*
-		MerchantConfiguration rtdetails = config
-				.getMerchantConfiguration(ShippingConstants.MODULE_SHIPPING_DISPLAY_REALTIME_QUOTES);
-		int displayQuoteDeliveryTime = ShippingConstants.NO_DISPLAY_RT_QUOTE_TIME;
-		if (rtdetails != null) {
-
-			if (!StringUtils.isBlank(rtdetails.getConfigurationValue1())) {// display
-																			// or
-																			// not
-																			// quotes
-				try {
-					displayQuoteDeliveryTime = Integer.parseInt(rtdetails
-							.getConfigurationValue1());
-
-				} catch (Exception e) {
-					log.error("Display quote is not an integer value ["
-							+ rtdetails.getConfigurationValue1() + "]");
-				}
-			}
-		}
+		}*/
+		
+		
 		
 
-		List options = canadaPost.getOptions();
-		if (options != null) {
-			Iterator i = options.iterator();
-			while (i.hasNext()) {
-				ShippingOption option = (ShippingOption) i.next();
-				option.setCurrency(store.getCurrency());
-				StringBuffer description = new StringBuffer();
-				description.append(option.getOptionName());
-				if (displayQuoteDeliveryTime == ShippingConstants.DISPLAY_RT_QUOTE_TIME) {
-					description.append(" (").append(option.getDeliveryDate())
-							.append(")");
-				}
-				option.setDescription(description.toString());
-				if (requiresCurrencyConversion) {
-					option.setOptionPrice(CurrencyUtil.convertToCurrency(option
-							.getOptionPrice(), Constants.CURRENCY_CODE_CAD,
-							store.getCurrency()));
-				}
-				// System.out.println(option.getOptionPrice().toString());
+
+
+			options = canadaPost.getOptions();
+			for(ShippingOption option : options) {
+					StringBuilder description = new StringBuilder();
+					description.append(option.getOptionName());
+					if (shippingConfiguration.getShippingDescription()==ShippingDescription.LONG_DESCRIPTION) {
+						description.append(" (").append(option.getOptionDeliveryDate())
+								.append(")");
+					}
+					option.setDescription(description.toString());
+	/*				if (requiresCurrencyConversion) {
+						option.setOptionPrice(CurrencyUtil.convertToCurrency(option
+								.getOptionPrice(), Constants.CURRENCY_CODE_CAD,
+								store.getCurrency()));
+					}*/
+					// System.out.println(option.getOptionPrice().toString());
 
 			}
+
+		
+		
+		} catch (Exception e) {
+			LOGGER.error("Canadapost getShippingQuote", e);
+		} finally {
+				if (httppost != null) {
+					httppost.releaseConnection();
+				}
 		}
+
+		
 
 		return options;
 	}
+	
 
-	public ConfigurationResponse getConfiguration(
-			MerchantConfiguration configurations, ConfigurationResponse vo)
-			throws Exception {
-		if (configurations.getConfigurationKey().equals(
-				ShippingConstants.MODULE_SHIPPING_RT_CRED)) {// handle
-																// credentials
 
-			if (!StringUtils.isBlank(configurations.getConfigurationValue2())) {
-
-				IntegrationKeys keys = ShippingUtil.getKeys(configurations
-						.getConfigurationValue1());
-				vo.addConfiguration("canadapost-keys", keys);
-
-			}
-
-			if (!StringUtils.isBlank(configurations.getConfigurationValue2())) {
-				IntegrationProperties props = ShippingUtil
-						.getProperties(configurations.getConfigurationValue2());
-				vo.addConfiguration("canadapost-properties", props);
-			}
-
-		}
-
-		if (configurations.getConfigurationKey().equals(
-				ShippingConstants.MODULE_SHIPPING_RT_PKG_DOM_INT)) {// handle
-																	// packages
-																	// &
-																	// services
-			Map domesticmap = null;
-			Map globalmap = null;
-			// PKGOPTIONS
-			if (!StringUtils.isBlank(configurations.getConfigurationValue())) {
-				vo.addConfiguration("package-canadapost", configurations
-						.getConfigurationValue());
-			}
-		}
-
-		vo.addMerchantConfiguration(configurations);
-		return vo;*/
-		
-		return null;
-	}
 
 
 
@@ -522,13 +493,13 @@ class CanadaPostParsedElements {
 
 	private String statusCode;
 	private String statusMessage;
-	private List options = new ArrayList();
+	private List<ShippingOption> options = new ArrayList<ShippingOption>();
 
 	public void addOption(ShippingOption option) {
 		options.add(option);
 	}
 
-	public List getOptions() {
+	public List<ShippingOption> getOptions() {
 		return options;
 	}
 

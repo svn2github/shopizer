@@ -10,7 +10,15 @@ public class PackageDetails {
 	private int shippingQuantity;
 	private int treshold;
 	
+	private String itemName = "";
 	
+	
+	public String getItemName() {
+		return itemName;
+	}
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
 	public double getShippingWeight() {
 		return shippingWeight;
 	}

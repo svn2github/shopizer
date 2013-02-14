@@ -99,6 +99,7 @@ public class DefaultPackagingImpl implements Packaging {
 					temp.setProductWidth(product.getProductWidth());
 					temp.setProductWeight(w);
 					temp.setAttributes(product.getAttributes());
+					temp.setDescriptions(product.getDescriptions());
 					individualProducts.add(temp);
 				}
 			} else {
@@ -108,6 +109,7 @@ public class DefaultPackagingImpl implements Packaging {
 				temp.setProductWidth(product.getProductWidth());
 				temp.setProductWeight(w);
 				temp.setAttributes(product.getAttributes());
+				temp.setDescriptions(product.getDescriptions());
 				individualProducts.add(temp);
 			}
 			iterCount++;
@@ -276,6 +278,7 @@ public class DefaultPackagingImpl implements Packaging {
 			details.setShippingLength(length);
 			details.setShippingWeight(weight + box.getWeight());
 			details.setShippingWidth(width);
+			details.setItemName(store.getCode());
 			boxes.add(details);
 		}
 
@@ -320,6 +323,11 @@ public class DefaultPackagingImpl implements Packaging {
 				detail.setShippingWeight(weight.doubleValue());
 				detail.setShippingWidth(product.getProductWidth().doubleValue());
 				detail.setShippingQuantity(shippingProduct.getQuantity());
+				String description = "item";
+				if(product.getDescriptions().size()>0) {
+					description = product.getDescriptions().iterator().next().getName();
+				}
+				detail.setItemName(description);
 	
 				packages.add(detail);
 			} else if (shippingProduct.getQuantity() > 1) {
@@ -333,6 +341,12 @@ public class DefaultPackagingImpl implements Packaging {
 					detail.setShippingWidth(product.getProductWidth()
 							.doubleValue());
 					detail.setShippingQuantity(shippingProduct.getQuantity());
+					String description = "item";
+					if(product.getDescriptions().size()>0) {
+						description = product.getDescriptions().iterator().next().getName();
+					}
+					detail.setItemName(description);
+					
 					packages.add(detail);
 				}
 			}

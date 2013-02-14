@@ -283,9 +283,12 @@ public class ShippingServiceImpl implements ShippingService {
 				return shippingQuote;
 			}
 			
+			
+			/** uses this module name **/
+			String moduleName = null;
 			IntegrationConfiguration configuration = null;
 			for(String module : modules.keySet()) {
-				
+				moduleName = module;
 				configuration = modules.get(module);
 				//use the first active module
 				if(configuration.isActive()) {
@@ -295,6 +298,21 @@ public class ShippingServiceImpl implements ShippingService {
 			}
 			
 			if(shippingQuoteModule==null){
+				shippingQuote.setShippingReturnCode(ShippingQuote.NO_SHIPPING_MODULE_CONFIGURED);
+				return shippingQuote;
+			}
+			
+			/** merchant module configs **/
+			List<IntegrationModule> shippingMethods = this.getShippingMethods(store);
+			IntegrationModule shippingModule = null;
+			for(IntegrationModule mod : shippingMethods) {
+				if(mod.getCode().equals(moduleName)){
+					shippingModule = mod;
+				}
+			}
+			
+			/** general module configs **/
+			if(shippingModule==null) {
 				shippingQuote.setShippingReturnCode(ShippingQuote.NO_SHIPPING_MODULE_CONFIGURED);
 				return shippingQuote;
 			}
@@ -357,11 +375,11 @@ public class ShippingServiceImpl implements ShippingService {
 				delivery.setCountry(customer.getCountry());
 			}
 						
-			
+
 
 
 			//invoke module
-			List<ShippingOption> shippingOptions = shippingQuoteModule.getShippingQuotes(packages, orderTotal, delivery, store, configuration, locale);
+			List<ShippingOption> shippingOptions = shippingQuoteModule.getShippingQuotes(packages, orderTotal, delivery, store, configuration, shippingModule, shippingConfiguration, locale);
 			
 			//filter shipping options
 			ShippingOptionPriceType shippingOptionPriceType = shippingConfiguration.getShippingOptionPriceType();
