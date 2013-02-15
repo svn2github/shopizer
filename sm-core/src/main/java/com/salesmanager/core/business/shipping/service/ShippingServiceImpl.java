@@ -258,14 +258,11 @@ public class ShippingServiceImpl implements ShippingService {
 			Validate.notNull(store.getCountry());
 			
 			if(shippingType.name().equals(ShippingType.NATIONAL.name())){
-				
 				//customer country must match store country
 				if(!shipCountry.getIsoCode().equals(store.getCountry().getIsoCode())) {
 					shippingQuote.setShippingReturnCode(ShippingQuote.NO_SHIPPING_TO_SELECTED_COUNTRY + " " + shipCountry.getIsoCode());
 					return shippingQuote;
 				}
-				
-				
 			} else if(shippingType.name().equals(ShippingType.INTERNATIONAL.name())){
 				
 				//customer shipping country code must be in accepted list
@@ -324,9 +321,20 @@ public class ShippingServiceImpl implements ShippingService {
 			//free shipping ?
 			BigDecimal freeShippingAmount = shippingConfiguration.getOrderTotalFreeShipping();
 			if(freeShippingAmount!=null) {
-				shippingQuote.setFreeShipping(true);
-				shippingQuote.setFreeShippingAmount(freeShippingAmount);
-				return shippingQuote;
+				if(orderTotal.doubleValue()>freeShippingAmount.doubleValue()) {
+					if(shippingConfiguration.getFreeShippingType() == ShippingType.NATIONAL) {
+						if(store.getCountry().getIsoCode().equals(shipCountry.getIsoCode())) {
+							shippingQuote.setFreeShipping(true);
+							shippingQuote.setFreeShippingAmount(freeShippingAmount);
+							return shippingQuote;
+						}
+					} else {//international
+						shippingQuote.setFreeShipping(true);
+						shippingQuote.setFreeShippingAmount(freeShippingAmount);
+						return shippingQuote;
+					}
+
+				}
 			}
 			
 

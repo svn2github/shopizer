@@ -25,11 +25,12 @@ public class ShippingConfiguration implements JSONAware {
 	private int boxWeight = 0;
 	private int maxWeight = 0;
 	
+	//free shipping
 	private boolean freeShippingEnabled = false;
 	private BigDecimal orderTotalFreeShipping = null;
+	private ShippingType freeShippingType = null;
 	
 	private BigDecimal handlingFees = null;
-	
 	private boolean taxOnShipping = false;
 	
 	
@@ -39,6 +40,7 @@ public class ShippingConfiguration implements JSONAware {
 	private String shipOptionPriceType;
 	private String shipPackageType;
 	private String shipDescription;
+	private String shipFreeType;
 	
 	
 	public String getShipType() {
@@ -156,6 +158,15 @@ public class ShippingConfiguration implements JSONAware {
 			sType = ShippingDescription.LONG_DESCRIPTION;
 		}
 		this.setShippingDescription(sType);
+	}
+	
+	public void setShipFreeType(String shipFreeType) {
+		this.shipFreeType = shipFreeType;
+		ShippingType sType = ShippingType.NATIONAL;
+		if(shipFreeType.equals(ShippingType.INTERNATIONAL.name())) {
+			sType = ShippingType.INTERNATIONAL;
+		}
+		setFreeShippingType(sType);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -288,6 +299,22 @@ public class ShippingConfiguration implements JSONAware {
 
 	public ShippingDescription getShippingDescription() {
 		return shippingDescription;
+	}
+
+
+	public void setFreeShippingType(ShippingType freeShippingType) {
+		this.freeShippingType = freeShippingType;
+	}
+
+
+	public ShippingType getFreeShippingType() {
+		return freeShippingType;
+	}
+
+
+
+	public String getShipFreeType() {
+		return shipFreeType;
 	}
 
 

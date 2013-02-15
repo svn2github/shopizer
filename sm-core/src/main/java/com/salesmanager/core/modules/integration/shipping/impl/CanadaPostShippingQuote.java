@@ -18,18 +18,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.salesmanager.core.business.customer.model.Billing;
-import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.Delivery;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
-import com.salesmanager.core.business.shipping.model.ShippingBasisType;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 import com.salesmanager.core.business.shipping.model.ShippingDescription;
 import com.salesmanager.core.business.shipping.model.ShippingOption;
 import com.salesmanager.core.business.shipping.service.ShippingService;
-import com.salesmanager.core.business.shipping.service.ShippingServiceImpl;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.model.MerchantLog;
@@ -41,6 +37,11 @@ import com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteMod
 import com.salesmanager.core.utils.DataUtils;
 import com.salesmanager.core.utils.ProductPriceUtils;
 
+/**
+ * Integrates with Canada Post sell online API
+ * @author casams1
+ *
+ */
 public class CanadaPostShippingQuote implements ShippingQuoteModule {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CanadaPostShippingQuote.class);
@@ -48,10 +49,7 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 	
 	private final static String SHIPPING_TURN_AROUND_TIME = "24";
 
-	
-	@Autowired
-	private ShippingService shippingService;
-	
+
 	@Autowired
 	private ProductPriceUtils productPriceUtils;
 	
