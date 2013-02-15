@@ -379,7 +379,7 @@ public class ProductController {
 			
 
 			newProduct.setSku(product.getProduct().getSku());
-			newProduct.setAvailable(product.getProduct().getAvailable());
+			newProduct.setAvailable(product.getProduct().isAvailable());
 			newProduct.setDateAvailable(date);
 			newProduct.setManufacturer(product.getProduct().getManufacturer());
 			newProduct.setType(product.getProduct().getType());
@@ -681,7 +681,7 @@ public class ProductController {
 		
 		//product
 		newProduct.setAuditSection(dbProduct.getAuditSection());
-		newProduct.setAvailable(dbProduct.getAvailable());
+		newProduct.setAvailable(dbProduct.isAvailable());
 		newProduct.setCategories(dbProduct.getCategories());
 		newProduct.setDateAvailable(dbProduct.getDateAvailable());
 		newProduct.setManufacturer(dbProduct.getManufacturer());
