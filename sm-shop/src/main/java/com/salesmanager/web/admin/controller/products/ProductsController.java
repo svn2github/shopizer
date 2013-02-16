@@ -172,7 +172,7 @@ public class ProductsController {
 				
 				entry.put("name", description.getName());
 				entry.put("sku", product.getSku());
-				entry.put("available", product.getAvailable());
+				entry.put("available", product.isAvailable());
 				resp.addDataEntry(entry);
 				
 				
