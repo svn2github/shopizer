@@ -129,7 +129,7 @@ public class RelatedItemsController {
 
 				entry.put("name", description.getName());
 				entry.put("sku", relatedProduct.getSku());
-				entry.put("available", relatedProduct.getAvailable());
+				entry.put("available", relatedProduct.isAvailable());
 				resp.addDataEntry(entry);
 				
 			}
