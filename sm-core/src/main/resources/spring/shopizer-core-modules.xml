@@ -15,6 +15,7 @@
 	<util:map id="shippingModules" map-class="java.util.HashMap" key-type="java.lang.String" value-type="com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule">
     			<entry key="canadapost" value-ref="canadapost"/>
     			<entry key="usps" value-ref="usps"/>
+    			<entry key="ups" value-ref="ups"/>
     </util:map>
 
 
@@ -23,6 +24,8 @@
 		class="com.salesmanager.core.modules.integration.shipping.impl.CanadaPostShippingQuote"/>
 	<bean id="usps"
 		class="com.salesmanager.core.modules.integration.shipping.impl.USPSShippingQuote"/>
+	<bean id="ups"
+		class="com.salesmanager.core.modules.integration.shipping.impl.UPSShippingQuote"/>
 
 	<!-- Default packaging -->
 	<bean id="boxPackaging"
