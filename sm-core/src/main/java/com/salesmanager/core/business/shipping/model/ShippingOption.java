@@ -2,7 +2,6 @@ package com.salesmanager.core.business.shipping.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 public class ShippingOption implements Serializable {
 	
@@ -18,6 +17,9 @@ public class ShippingOption implements Serializable {
 	private String optionPriceText;
 	private String optionId;
 	private String description;
+	
+	private int estimatedNumberOfDays;
+	
 	public void setOptionPrice(BigDecimal optionPrice) {
 		this.optionPrice = optionPrice;
 	}
@@ -67,6 +69,12 @@ public class ShippingOption implements Serializable {
 	}
 	public String getDescription() {
 		return description;
+	}
+	public void setEstimatedNumberOfDays(int estimatedNumberOfDays) {
+		this.estimatedNumberOfDays = estimatedNumberOfDays;
+	}
+	public int getEstimatedNumberOfDays() {
+		return estimatedNumberOfDays;
 	}
 
 }

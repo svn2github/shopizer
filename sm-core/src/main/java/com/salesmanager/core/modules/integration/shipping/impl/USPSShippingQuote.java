@@ -148,7 +148,7 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 
 		
 		GetMethod httpget = null;
-
+		Reader xmlreader = null;
 		String pack = configuration.getIntegrationOptions().get("packages").get(0);
 
 		try {
@@ -349,7 +349,7 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 				xmldatabuffer.append(ounces);
 				xmldatabuffer.append("</Ounces>");
 				xmldatabuffer.append("<MailType>");
-				xmldatabuffer.append("Package");
+				xmldatabuffer.append("Package");//TODO try Envelope
 				xmldatabuffer.append("</MailType>");
 				xmldatabuffer.append("<ValueOfContents>");
 				xmldatabuffer.append(orderTotal);
@@ -496,7 +496,7 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 			// XML document is well formed but the document is not
 			// valid</ErrorDescription><ErrorLocation><ErrorLocationElementName>AddressValidationRequest</ErrorLocationElementName></ErrorLocation></Error></Response></AddressValidationResponse>
 
-			Reader xmlreader = new StringReader(data);
+			xmlreader = new StringReader(data);
 			digester.parse(xmlreader);
 
 			if (!StringUtils.isBlank(parsed.getErrorCode())) {
@@ -522,9 +522,7 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 				return null;
 			}
 
-			
-			
-			
+	
 			
 /*			String carrier = getShippingMethodDescription(locale);
 			// cost is in USD, need to do conversion
@@ -549,17 +547,18 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 				}
 			}
 		
-			LabelUtil labelUtil = LabelUtil.getInstance();
+			LabelUtil labelUtil = LabelUtil.getInstance();*/
 			// Map serviceMap =
 			// com.salesmanager.core.util.ShippingUtil.buildServiceMap("usps",locale);
 		
-			List options = parsed.getOptions();
+			@SuppressWarnings("unchecked")
+			List<ShippingOption> shippingOptions = parsed.getOptions();
 		
-			Collection returnColl = null;
+			List<ShippingOption> returnOptions = null;
 		
-			if (options != null && options.size() > 0) {
+			if (shippingOptions != null && shippingOptions.size() > 0) {
 		
-				returnColl = new ArrayList();
+				returnOptions = new ArrayList<ShippingOption>();
 				// Map selectedintlservices =
 				// (Map)config.getConfiguration("service-global-usps");
 				// need to create a Map of LABEL - LABLEL
@@ -577,32 +576,28 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 				// services.put(value, key);
 				// }
 		
-				Iterator it = options.iterator();
-				while (it.hasNext()) {
-					ShippingOption option = (ShippingOption) it.next();
-					option.setCurrency(Constants.CURRENCY_CODE_USD);
-		
-					StringBuffer description = new StringBuffer();
+				for(ShippingOption option : shippingOptions) {
+
+					StringBuilder description = new StringBuilder();
 					description.append(option.getOptionName());
-					if (displayQuoteDeliveryTime == ShippingConstants.DISPLAY_RT_QUOTE_TIME) {
-						if (!StringUtils.isBlank(option
-								.getEstimatedNumberOfDays())) {
+					//if (displayQuoteDeliveryTime == ShippingConstants.DISPLAY_RT_QUOTE_TIME) {
+					if (shippingConfiguration.getShippingDescription()==ShippingDescription.LONG_DESCRIPTION) {
+						if (option.getEstimatedNumberOfDays()>0) {
 							description.append(" (").append(
 									option.getEstimatedNumberOfDays()).append(
 									" ").append(
-									labelUtil.getText(locale,
-											"label.generic.days.lowercase"))
+									" d")
 									.append(")");
 						}
 					}
 					option.setDescription(description.toString());
 		
 					// get currency
-					if (!option.getCurrency().equals(store.getCurrency())) {
+/*					if (!option.getCurrency().equals(store.getCurrency())) {
 						option.setOptionPrice(CurrencyUtil.convertToCurrency(
 								option.getOptionPrice(), option.getCurrency(),
 								store.getCurrency()));
-					}
+					}*/
 		
 					// if(!services.containsKey(option.getOptionCode())) {
 					// if(returnColl==null) {
@@ -610,7 +605,7 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 					// }
 					// returnColl.add(option);
 					// }
-					returnColl.add(option);
+					returnOptions.add(option);
 				}
 		
 				// if(options.size()==0) {
@@ -623,15 +618,15 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 		
 			}
 		
-			return returnColl;
+			return returnOptions;
 		
 		} catch (Exception e1) {
-			log.error(e1);
+			LOGGER.error("Error in USPS shipping quote ",e1);
 			return null;
 		} finally {
-			if (reader != null) {
+			if (xmlreader != null) {
 				try {
-					reader.close();
+					xmlreader.close();
 				} catch (Exception ignore) {
 				}
 			}
@@ -639,21 +634,7 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 				httpget.releaseConnection();
 			}
 		}
-					
-					
-	*/				
-					
-					
-					
-					
-					
-			
-		} catch(Exception e) {}
-			
-	
-		
 
-		return null;
 		
 	}
 
