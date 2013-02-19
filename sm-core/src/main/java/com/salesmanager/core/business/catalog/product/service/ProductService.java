@@ -46,6 +46,8 @@ public interface ProductService extends SalesManagerEntityService<Long, Product>
 
 
 	void saveOrUpdate(Product product) throws ServiceException;
+
+	List<Product> listByStore(MerchantStore store);
 	
 
 }

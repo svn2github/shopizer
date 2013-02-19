@@ -148,6 +148,12 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		
 		return productDao.listByStore(store, language, criteria);
 	}
+	
+	@Override
+	public List<Product> listByStore(MerchantStore store) {
+		
+		return productDao.listByStore(store);
+	}
 
 	@Override
 	public ProductList getProductsForLocale(Category category,

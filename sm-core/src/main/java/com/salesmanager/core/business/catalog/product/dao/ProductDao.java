@@ -35,5 +35,7 @@ public interface ProductDao extends SalesManagerEntityDao<Long, Product> {
 	 * @return
 	 */
 	ProductList listByStore(MerchantStore store, Language language, ProductCriteria criteria);
+
+	List<Product> listByStore(MerchantStore store);
 	
 }
