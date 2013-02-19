@@ -29,7 +29,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		order.setLastModified(new Date());
 		
 		orderService.create(order);
-		Assert.assertTrue(orderService.count() == 1);
+		Assert.assertTrue(orderService.count() >= 1);
 	}
 	
 	
@@ -49,6 +49,19 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		merchant.setCountry(country);
 		merchant.setDefaultLanguage(language);
 
+		
+		merchant.setStorecity("Test Store City");
+		merchant.setCode( merchantService.count()+"");
+		Language en = languageService.getByCode("en");
+		Language fr = languageService.getByCode("fr");
+		List<Language> supportedLanguages = new ArrayList<Language>();
+		supportedLanguages.add(en);
+		supportedLanguages.add(fr);
+		merchant.setLanguages( supportedLanguages );
+		merchant.setStoreEmailAddress("store_email@email.com");
+		merchant.setStorephone("Merchant Store Phone");
+		merchant.setStorepostalcode("12061");
+		
 		merchantService.create(merchant);
 		
 		Customer customer = new Customer();
@@ -64,7 +77,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		
 		customer.setTelephone("Customer Phone");
 		
-		customerService.create(customer);
+//		customerService.create(customer);
 		
 		
 		Order order = new Order();
