@@ -1,5 +1,6 @@
 package com.salesmanager.core.modules.integration.shipping.impl;
 
+import java.io.BufferedReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -10,10 +11,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.RequestEntity;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,16 +64,26 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 		
 		//validate integrationKeys['accessKey']
 		Map<String,String> keys = integrationConfiguration.getIntegrationKeys();
-		if(keys==null || StringUtils.isBlank(keys.get("accseeKey"))) {
+		if(keys==null || StringUtils.isBlank(keys.get("accessKey"))) {
 			errorFields = new ArrayList<String>();
-			errorFields.add("identifier");
+			errorFields.add("accessKey");
+		}
+		
+		if(keys==null || StringUtils.isBlank(keys.get("userId"))) {
+			errorFields = new ArrayList<String>();
+			errorFields.add("userId");
+		}
+		
+		if(keys==null || StringUtils.isBlank(keys.get("password"))) {
+			errorFields = new ArrayList<String>();
+			errorFields.add("password");
 		}
 
 		//validate at least one integrationOptions['packages']
 		Map<String,List<String>> options = integrationConfiguration.getIntegrationOptions();
 		if(options==null) {
 			errorFields = new ArrayList<String>();
-			errorFields.add("identifier");
+			errorFields.add("packages");
 		}
 		
 		List<String> packages = options.get("packages");
@@ -136,53 +151,68 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 			language = Locale.ENGLISH.getLanguage();
 		}
 		
+		String pack = configuration.getIntegrationOptions().get("packages").get(0);
+		Map<String,String> keys = configuration.getIntegrationKeys();
+		
+		String accessKey = keys.get("accessKey");
+		String userId = keys.get("userId");
+		String password = keys.get("password");
+		
 		//CoreModuleService cis = null;
 		//StringBuffer xmlbuffer = new StringBuffer();
 		//BufferedReader reader = null;
 		//PostMethod httppost = null;
+		
+		String host = null;
+		String protocol = null;
+		String port = null;
+		String url = null;
+		
+		StringBuilder xmlbuffer = new StringBuilder();
+		PostMethod httppost = null;
+		BufferedReader reader = null;
 
 		try {
-
-/*			CommonService cservice = (CommonService) ServiceFactory
-					.getService(ServiceFactory.CommonService);
-
-			String countrycode = CountryUtil.getCountryIsoCodeById(store
-					.getCountry());
-			cis = cservice.getModule(countrycode, "upsxml");
-
-			if (cis == null) {
-				log.error("Can't retreive an integration service [countryid "
-						+ store.getCountry() + " ups subtype 1]");
-				// throw new
-				// Exception("UPS getQuote Can't retreive an integration service");
+			String env = configuration.getEnvironment();
+			
+			Set<String> regions = module.getRegionsSet();
+			if(!regions.contains(store.getCountry().getIsoCode())) {
+				merchantLogService.save(
+						new MerchantLog(store,
+						"Can't use UPS shipping quote service for store country code"
+								+ store.getCountry().getIsoCode()));
+				throw new IntegrationException("Can't use the service for store country code ");
+			}
+			
+			Map<String, ModuleConfig> moduleConfigsMap = module.getModuleConfigs();
+			for(String key : moduleConfigsMap.keySet()) {
+				
+				ModuleConfig moduleConfig = (ModuleConfig)moduleConfigsMap.get(key);
+				if(moduleConfig.getEnv().equals(env)) {
+					host = moduleConfig.getHost();
+					protocol = moduleConfig.getScheme();
+					port = moduleConfig.getPort();
+					url = moduleConfig.getUri();
+				}
 			}
 
-			MerchantService service = (MerchantService) ServiceFactory
-					.getService(ServiceFactory.MerchantService);
-
-			ConfigurationRequest request_prefs = new ConfigurationRequest(store
-					.getMerchantId(),
-					ShippingConstants.MODULE_SHIPPING_RT_PKG_DOM_INT);
-			ConfigurationResponse vo_prefs = service
-					.getConfiguration(request_prefs);
-
-			String pack = (String) vo_prefs.getConfiguration("package-upsxml");
-			if (pack == null) {
-				log
-						.debug("Will assign packaging type 02 to UPS shipping for merchantid "
-								+ store.getMerchantId());
-				pack = "02";
-			}
-
-			ConfigurationRequest request = new ConfigurationRequest(store
-					.getMerchantId(), ShippingConstants.MODULE_SHIPPING_RT_CRED);
-			ConfigurationResponse vo = service.getConfiguration(request);
-
-			if (vo == null) {
-				throw new Exception("ConfigurationVO is null upsxml");
-			}
-
-			String xmlhead = getHeader(store.getMerchantId(), vo);
+			
+			StringBuilder xmlreqbuffer = new StringBuilder();
+			xmlreqbuffer.append("<?xml version=\"1.0\"?>");
+			xmlreqbuffer.append("<AccessRequest>");
+			xmlreqbuffer.append("<AccessLicenseNumber>");
+			xmlreqbuffer.append(accessKey);
+			xmlreqbuffer.append("</AccessLicenseNumber>");
+			xmlreqbuffer.append("<UserId>");
+			xmlreqbuffer.append(userId);
+			xmlreqbuffer.append("</UserId>");
+			xmlreqbuffer.append("<Password>");
+			xmlreqbuffer.append(password);
+			xmlreqbuffer.append("</Password>");
+			xmlreqbuffer.append("</AccessRequest>");
+			
+			String xmlhead = xmlreqbuffer.toString();
+			
 
 			String weightCode = store.getWeightunitcode();
 			String measureCode = store.getSeizeunitcode();
@@ -194,7 +224,7 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 			}
 
 			String xml = "<?xml version=\"1.0\"?><RatingServiceSelectionRequest><Request><TransactionReference><CustomerContext>SalesManager Data</CustomerContext><XpciVersion>1.0001</XpciVersion></TransactionReference><RequestAction>Rate</RequestAction><RequestOption>Shop</RequestOption></Request>";
-			StringBuffer xmldatabuffer = new StringBuffer();*/
+			StringBuffer xmldatabuffer = new StringBuffer();
 
 			/**
 			 * <Shipment>
@@ -224,7 +254,7 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 			 * </CustomerClassification> </RatingServiceSelectionRequest>
 			 * **/
 
-/*			Map countriesMap = (Map) RefCache.getAllcountriesmap(LanguageUtil
+			/**Map countriesMap = (Map) RefCache.getAllcountriesmap(LanguageUtil
 					.getLanguageNumberCode(locale.getLanguage()));
 			Map zonesMap = (Map) RefCache.getAllZonesmap(LanguageUtil
 					.getLanguageNumberCode(locale.getLanguage()));
@@ -244,7 +274,9 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 
 			Zone storeZone = (Zone) zonesMap.get(sZone);
 			Zone customerZone = (Zone) zonesMap.get(customer
-					.getCustomerZoneId());
+					.getCustomerZoneId());**/
+					
+				
 
 			xmldatabuffer.append("<PickupType><Code>03</Code></PickupType>");
 			// xmldatabuffer.append("<Description>Daily Pickup</Description>");
@@ -254,16 +286,16 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 			xmldatabuffer.append(store.getStorecity());
 			xmldatabuffer.append("</City>");
 			// if(!StringUtils.isBlank(store.getStorestateprovince())) {
-			if (storeZone != null) {
+			if (store.getZone() != null) {
 				xmldatabuffer.append("<StateProvinceCode>");
-				xmldatabuffer.append(storeZone.getZoneCode());// zone code
+				xmldatabuffer.append(store.getZone().getCode());// zone code
 				xmldatabuffer.append("</StateProvinceCode>");
 			}
 			xmldatabuffer.append("<CountryCode>");
-			xmldatabuffer.append(storeCountry.getCountryIsoCode2());
+			xmldatabuffer.append(store.getCountry().getIsoCode());
 			xmldatabuffer.append("</CountryCode>");
 			xmldatabuffer.append("<PostalCode>");
-			xmldatabuffer.append(com.salesmanager.core.util.ShippingUtil
+			xmldatabuffer.append(DataUtils
 					.trimPostalCode(store.getStorepostalcode()));
 			xmldatabuffer.append("</PostalCode></Address></Shipper>");
 
@@ -271,27 +303,26 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 			xmldatabuffer.append("<ShipTo>");
 			xmldatabuffer.append("<Address>");
 			xmldatabuffer.append("<City>");
-			xmldatabuffer.append(customer.getCustomerCity());
+			xmldatabuffer.append(delivery.getCity());
 			xmldatabuffer.append("</City>");
 			// if(!StringUtils.isBlank(customer.getCustomerState())) {
-			if (customerZone != null) {
+			if (delivery.getZone() != null) {
 				xmldatabuffer.append("<StateProvinceCode>");
-				xmldatabuffer.append(customerZone.getZoneCode());// zone code
+				xmldatabuffer.append(delivery.getZone().getCode());// zone code
 				xmldatabuffer.append("</StateProvinceCode>");
 			}
 			xmldatabuffer.append("<CountryCode>");
-			xmldatabuffer.append(customerCountry.getCountryIsoCode2());
+			xmldatabuffer.append(delivery.getCountry().getIsoCode());
 			xmldatabuffer.append("</CountryCode>");
 			xmldatabuffer.append("<PostalCode>");
-			xmldatabuffer.append(com.salesmanager.core.util.ShippingUtil
-					.trimPostalCode(customer.getCustomerPostalCode()));
+			xmldatabuffer.append(DataUtils
+					.trimPostalCode(delivery.getPostalCode()));
 			xmldatabuffer.append("</PostalCode></Address></ShipTo>");
 			// xmldatabuffer.append("<Service><Code>11</Code></Service>");
 
-			Iterator packagesIterator = packages.iterator();
-			while (packagesIterator.hasNext()) {
 
-				PackageDetail detail = (PackageDetail) packagesIterator.next();
+			for(PackageDetails packageDetail : packages){
+
 				xmldatabuffer.append("<Package>");
 				xmldatabuffer.append("<PackagingType>");
 				xmldatabuffer.append("<Code>");
@@ -307,7 +338,7 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 				xmldatabuffer.append("</Code>");
 				xmldatabuffer.append("</UnitOfMeasurement>");
 				xmldatabuffer.append("<Weight>");
-				xmldatabuffer.append(new BigDecimal(detail.getShippingWeight())
+				xmldatabuffer.append(new BigDecimal(packageDetail.getShippingWeight())
 						.setScale(1, BigDecimal.ROUND_HALF_UP));
 				xmldatabuffer.append("</Weight>");
 				xmldatabuffer.append("</PackageWeight>");
@@ -320,15 +351,15 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 				xmldatabuffer.append("</Code>");
 				xmldatabuffer.append("</UnitOfMeasurement>");
 				xmldatabuffer.append("<Length>");
-				xmldatabuffer.append(new BigDecimal(detail.getShippingLength())
+				xmldatabuffer.append(new BigDecimal(packageDetail.getShippingLength())
 						.setScale(2, BigDecimal.ROUND_HALF_UP));
 				xmldatabuffer.append("</Length>");
 				xmldatabuffer.append("<Width>");
-				xmldatabuffer.append(new BigDecimal(detail.getShippingWidth())
+				xmldatabuffer.append(new BigDecimal(packageDetail.getShippingWidth())
 						.setScale(2, BigDecimal.ROUND_HALF_UP));
 				xmldatabuffer.append("</Width>");
 				xmldatabuffer.append("<Height>");
-				xmldatabuffer.append(new BigDecimal(detail.getShippingHeight())
+				xmldatabuffer.append(new BigDecimal(packageDetail.getShippingHeight())
 						.setScale(2, BigDecimal.ROUND_HALF_UP));
 				xmldatabuffer.append("</Height>");
 				xmldatabuffer.append("</Dimensions>");
@@ -341,45 +372,29 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 
 			xmlbuffer.append(xmlhead).append(xml).append(
 					xmldatabuffer.toString());
+			
 
-			log.debug("UPS QUOTE REQUEST " + xmlbuffer.toString());
+
+			LOGGER.debug("UPS QUOTE REQUEST " + xmlbuffer.toString());
 
 			String data = "";
 
-			IntegrationKeys keys = (IntegrationKeys) config
-					.getConfiguration("upsxml-keys");
-
-			IntegrationProperties props = (IntegrationProperties) config
-					.getConfiguration("upsxml-properties");
-
-			String host = cis.getCoreModuleServiceProdDomain();
-			String protocol = cis.getCoreModuleServiceProdProtocol();
-			String port = cis.getCoreModuleServiceProdPort();
-			String uri = cis.getCoreModuleServiceProdEnv();
-
-			if (props.getProperties1().equals(
-					String.valueOf(ShippingConstants.TEST_ENVIRONMENT))) {
-				host = cis.getCoreModuleServiceDevDomain();
-				protocol = cis.getCoreModuleServiceDevProtocol();
-				port = cis.getCoreModuleServiceDevPort();
-				uri = cis.getCoreModuleServiceDevEnv();
-			}
 
 			HttpClient client = new HttpClient();
 			httppost = new PostMethod(protocol + "://" + host + ":" + port
-					+ uri);
+					+ url);
 			RequestEntity entity = new StringRequestEntity(
 					xmlbuffer.toString(), "text/plain", "UTF-8");
 			httppost.setRequestEntity(entity);
 
 			int result = client.executeMethod(httppost);
 			if (result != 200) {
-				log.error("Communication Error with ups quote " + result + " "
-						+ protocol + "://" + host + ":" + port + uri);
+				LOGGER.error("Communication Error with ups quote " + result + " "
+						+ protocol + "://" + host + ":" + port + url);
 				throw new Exception("UPS quote communication error " + result);
 			}
 			data = httppost.getResponseBodyAsString();
-			log.debug("ups quote response " + data);
+			LOGGER.debug("ups quote response " + data);
 
 			UPSParsedElements parsed = new UPSParsedElements();
 
@@ -406,7 +421,7 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 
 			digester.addObjectCreate(
 					"RatingServiceSelectionResponse/RatedShipment",
-					com.salesmanager.core.entity.shipping.ShippingOption.class);
+					ShippingOption.class);
 			// digester.addSetProperties(
 			// "RatingServiceSelectionResponse/RatedShipment", "sequence",
 			// "optionId" );
@@ -431,7 +446,7 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 							"RatingServiceSelectionResponse/RatedShipment/GuaranteedDaysToDelivery",
 							"setEstimatedNumberOfDays", 0);
 			digester.addSetNext("RatingServiceSelectionResponse/RatedShipment",
-					"addOption");*/
+					"addOption");
 
 			// <?xml
 			// version="1.0"?><AddressValidationResponse><Response><TransactionReference><CustomerContext>SalesManager
@@ -582,7 +597,7 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 			LOGGER.error("UPS quote error",e1);
 			return null;
 		} finally {
-/*			if (reader != null) {
+			if (reader != null) {
 				try {
 					reader.close();
 				} catch (Exception ignore) {
@@ -591,7 +606,7 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 
 			if (httppost != null) {
 				httppost.releaseConnection();
-			}*/
+			}
 		}
 		
 		return null;

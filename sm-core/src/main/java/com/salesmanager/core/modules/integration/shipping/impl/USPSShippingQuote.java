@@ -157,7 +157,7 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 			
 			Map<String,String> keys = configuration.getIntegrationKeys();
 			if(keys==null || StringUtils.isBlank(keys.get("account"))) {
-				throw new IntegrationException("Canadapost missing configuration key account");
+				return null;//TODO can we return null
 			}
 
 			
@@ -171,7 +171,14 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 			//against which environment are we using the service
 			String env = configuration.getEnvironment();
 
-			Country originCountry = store.getCountry();
+			//must be US
+			if(!store.getCountry().getIsoCode().equals("US")) {
+				merchantLogService.save(
+						new MerchantLog(store,
+						"Can't use USPS shipping quote service for store country code"
+								+ store.getCountry().getIsoCode()));
+				throw new IntegrationException("Can't use the service for store country code ");
+			}
 
 			Map<String, ModuleConfig> moduleConfigsMap = module.getModuleConfigs();
 			for(String key : moduleConfigsMap.keySet()) {
