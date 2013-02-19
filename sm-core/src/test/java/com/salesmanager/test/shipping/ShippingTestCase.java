@@ -1,9 +1,10 @@
 package com.salesmanager.test.shipping;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +17,21 @@ import com.salesmanager.core.business.catalog.product.model.description.ProductD
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDescription;
 import com.salesmanager.core.business.catalog.product.model.type.ProductType;
+import com.salesmanager.core.business.customer.model.Billing;
+import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.model.Delivery;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingBasisType;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
+import com.salesmanager.core.business.shipping.model.ShippingOption;
 import com.salesmanager.core.business.shipping.model.ShippingPackageType;
 import com.salesmanager.core.business.shipping.model.ShippingProduct;
+import com.salesmanager.core.business.shipping.model.ShippingQuote;
 import com.salesmanager.core.business.shipping.model.ShippingType;
 import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.system.model.Environment;
@@ -196,6 +204,133 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 
 	    
 	}
+	
+	@Test
+	public void testGetShippingQuotes() throws ServiceException {
+
+	    Language en = languageService.getByCode("en");
+	    Country country = countryService.getByCode("CA");
+	    Zone zone = zoneService.getByCode("QC");
+
+	    MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
+	    ProductType generalType = productTypeService.getProductType(ProductType.GENERAL_TYPE);
+	    
+
+	    Product product = new Product();
+	    product.setProductHeight(new BigDecimal(4));
+	    product.setProductLength(new BigDecimal(3));
+	    product.setProductWidth(new BigDecimal(5));
+	    product.setProductWeight(new BigDecimal(8));
+	    product.setSku("TESTSKU");
+	    product.setType(generalType);
+	    product.setMerchantStore(store);
+
+	    // Product description
+	    ProductDescription description = new ProductDescription();
+	    description.setName("Product 1");
+	    description.setLanguage(en);
+	    description.setProduct(product);
+
+	    product.getDescriptions().add(description);
+	    
+
+	    // Availability
+	    ProductAvailability availability = new ProductAvailability();
+	    availability.setProductDateAvailable(new Date());
+	    availability.setProductQuantity(100);
+	    availability.setRegion("*");
+	    availability.setProduct(product);// associate with product
+
+	    ProductPrice dprice = new ProductPrice();
+	    dprice.setDefaultPrice(true);
+	    dprice.setProductPriceAmount(new BigDecimal(29.99));
+	    dprice.setProductAvailability(availability);
+
+	    ProductPriceDescription dpd = new ProductPriceDescription();
+	    dpd.setName("Base price");
+	    dpd.setProductPrice(dprice);
+	    dpd.setLanguage(en);
+
+	    dprice.getDescriptions().add(dpd);
+	    
+	    productService.saveOrUpdate(product);
+	    
+	    
+	    //create an integration configuration
+	    IntegrationConfiguration configuration = new IntegrationConfiguration();
+	    configuration.setActive(true);
+	    configuration.setEnvironment(Environment.TEST.name());
+	    configuration.setModuleCode("canadapost");
+	    
+	    //configure shipping
+	    ShippingConfiguration shippingConfiguration = new ShippingConfiguration();
+	    shippingConfiguration.setShippingBasisType(ShippingBasisType.SHIPPING);
+	    shippingConfiguration.setShippingType(ShippingType.INTERNATIONAL);
+	    shippingConfiguration.setShippingPackageType(ShippingPackageType.ITEM);
+	    shippingConfiguration.setBoxHeight(5);
+	    shippingConfiguration.setBoxLength(5);
+	    shippingConfiguration.setBoxWidth(5);
+	    shippingConfiguration.setBoxWeight(1);
+	    shippingConfiguration.setMaxWeight(10);
+	    
+	    //configure module
+	    List<String> options = new ArrayList<String>();
+	    options.add("PACKAGE");
+	    configuration.getIntegrationKeys().put("account", "CPC_CS_TI_INC");
+	    configuration.getIntegrationOptions().put("packages",options);
+	    
+	    shippingService.saveShippingConfiguration(shippingConfiguration, store);
+	    shippingService.saveShippingQuoteModuleConfiguration(configuration, store);
+	    
+	    //now create ShippingProduct
+	    ShippingProduct shippingProduct1 = new ShippingProduct(product);
+	    List<ShippingProduct> shippingProducts = new ArrayList<ShippingProduct>();
+	    shippingProducts.add(shippingProduct1);
+	    
+		Customer customer = new Customer();
+		customer.setFirstname("Test");
+		customer.setMerchantStore(store);
+		customer.setLastname("User");
+		customer.setCity("city");
+		customer.setEmailAddress("test@test.com");
+		customer.setGender("M");
+		customer.setTelephone("00000");
+		customer.setAnonymous(true);
+		customer.setCompany("ifactory");
+		customer.setDateOfBirth(new Date());
+		customer.setFax("fax");
+		customer.setNewsletter('c');
+		customer.setNick("My nick");
+		customer.setPassword("123456");
+		customer.setPostalCode("000");
+		customer.setState("state");
+		customer.setStreetAddress("Street 1");
+		customer.setTelephone("123123");
+		customer.setCountry(country);
+		customer.setZone(zone);
+		
+	    Delivery delivery = new Delivery();
+	    delivery.setAddress("Shipping address");
+	    delivery.setCountry(country);
+	    delivery.setZone(zone);
+	    
+	    
+	    Billing billing = new Billing();
+	    billing.setAddress("Billing address");
+	    billing.setCountry(country);
+	    billing.setZone(zone);
+	    
+	    customer.setBilling(billing);
+	    customer.setDelivery(delivery);
+		
+		customerService.create(customer);
+	    
+	    ShippingQuote shippingQuote = shippingService.getShippingQuote(store, customer, shippingProducts, Locale.US);
+
+	    Assert.notNull(shippingQuote);
+	    
+	}
+
 
 
 }
