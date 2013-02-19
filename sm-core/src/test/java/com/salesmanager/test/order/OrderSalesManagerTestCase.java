@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -16,17 +17,38 @@ import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;
 
-// TODO : clean it!
+
 public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase {
 
 	@Test
 	public void createOrder() throws ServiceException {
+		
+
+	    MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
+	    
+	    //get product create during population
+	    List<Product> products = productService.listByStore(store);
+	    Product product = products.listIterator().next();
+	    
+	    //create a Customer
+	    //see customer test case
+
+		
 		Currency currency = currencyService.getByCode(EURO_CURRENCY_CODE);
 
 		Order order = new Order();
 		order.setDatePurchased(new Date());
 		order.setCurrency(currency);
 		order.setLastModified(new Date());
+		//all required fields
+		
+		//Delivery
+		//Billing
+		
+		//requires 
+		//OrderProduct
+		//OrderProductPrice
+		//OrderTotal
 		
 		orderService.create(order);
 		Assert.assertTrue(orderService.count() >= 1);
