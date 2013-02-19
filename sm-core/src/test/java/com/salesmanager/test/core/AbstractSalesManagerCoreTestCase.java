@@ -1,5 +1,8 @@
 package com.salesmanager.test.core;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -10,6 +13,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
+import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
+import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
+import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
+import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDescription;
+import com.salesmanager.core.business.catalog.product.model.type.ProductType;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionService;
@@ -23,11 +32,13 @@ import com.salesmanager.core.business.catalog.product.service.type.ProductTypeSe
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.util.EntityManagerUtils;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.currency.service.CurrencyService;
 import com.salesmanager.core.business.reference.init.service.InitializationDatabase;
+import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 
@@ -122,7 +133,56 @@ public abstract class AbstractSalesManagerCoreTestCase {
 
 	@Before
 	public void init() throws ServiceException {
+		
 		populate();
+		
+		
+		
+		//create a product
+	    ProductType generalType = productTypeService.getProductType(ProductType.GENERAL_TYPE);
+	    
+	    Language en = languageService.getByCode("en");
+	    MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
+
+
+	    Product product = new Product();
+	    product.setProductHeight(new BigDecimal(4));
+	    product.setProductLength(new BigDecimal(3));
+	    product.setProductWidth(new BigDecimal(5));
+	    product.setProductWeight(new BigDecimal(8));
+	    product.setSku("TESTSKU");
+	    product.setType(generalType);
+	    product.setMerchantStore(store);
+
+	    // Product description
+	    ProductDescription description = new ProductDescription();
+	    description.setName("Product 1");
+	    description.setLanguage(en);
+	    description.setProduct(product);
+
+	    product.getDescriptions().add(description);
+	    
+
+	    // Availability
+	    ProductAvailability availability = new ProductAvailability();
+	    availability.setProductDateAvailable(new Date());
+	    availability.setProductQuantity(100);
+	    availability.setRegion("*");
+	    availability.setProduct(product);// associate with product
+
+	    ProductPrice dprice = new ProductPrice();
+	    dprice.setDefaultPrice(true);
+	    dprice.setProductPriceAmount(new BigDecimal(29.99));
+	    dprice.setProductAvailability(availability);
+
+	    ProductPriceDescription dpd = new ProductPriceDescription();
+	    dpd.setName("Base price");
+	    dpd.setProductPrice(dprice);
+	    dpd.setLanguage(en);
+
+	    dprice.getDescriptions().add(dpd);
+	    
+	    productService.saveOrUpdate(product);
 
 	}
 	
