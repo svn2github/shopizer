@@ -1,7 +1,7 @@
 package com.salesmanager.web.admin.controller.shipping;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -15,16 +15,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 import com.salesmanager.core.business.shipping.model.ShippingType;
 import com.salesmanager.core.business.shipping.service.ShippingService;
-import com.salesmanager.core.business.system.model.IntegrationConfiguration;
-import com.salesmanager.core.modules.integration.IntegrationException;
+import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
@@ -41,6 +40,9 @@ public class ShippingOptionsController {
 	
 	@Autowired
 	LabelUtils messages;
+	
+	@Autowired
+	private ProductPriceUtils priceUtil;
 	
 	/**
 	 * Displays shipping options
@@ -67,6 +69,18 @@ public class ShippingOptionsController {
 			shippingConfiguration.setShippingType(ShippingType.INTERNATIONAL);
 		}
 		
+		if(shippingConfiguration!=null) {
+			
+			if(shippingConfiguration.getHandlingFees()!=null) {
+				shippingConfiguration.setHandlingFeesText(priceUtil.getAdminFormatedAmount(store,shippingConfiguration.getHandlingFees()));
+			}
+			
+			if(shippingConfiguration.getOrderTotalFreeShipping()!=null) {
+				shippingConfiguration.setOrderTotalFreeShippingText(priceUtil.getAdminFormatedAmount(store,shippingConfiguration.getOrderTotalFreeShipping()));
+			}
+			
+		}
+		
 
 		model.addAttribute("configuration", shippingConfiguration);
 		return ControllerConstants.Tiles.Shipping.shippingOptions;
@@ -74,35 +88,51 @@ public class ShippingOptionsController {
 		
 	}
 	
-
+	/**
+	 * Saves shipping options
+	 * @param configuration
+	 * @param result
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @param locale
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value="/admin/shipping/saveShippingOptions.html", method=RequestMethod.POST)
-	public String saveShippingOptions(@RequestParam("shippingOptions") IntegrationConfiguration configuration, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	public String saveShippingOptions(@ModelAttribute("configuration") ShippingConfiguration configuration, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
 
 		this.setMenu(model, request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
-		String moduleCode = configuration.getModuleCode();
-		LOGGER.debug("Saving module code " + moduleCode);
 
-		try {
-			shippingService.saveShippingQuoteModuleConfiguration(configuration, store);
-		} catch (Exception e) {
-			if(e instanceof IntegrationException) {
-				if(((IntegrationException)e).getErrorCode()==IntegrationException.ERROR_VALIDATION_SAVE) {
-					
-					List<String> errorCodes = ((IntegrationException)e).getErrorFields();
-					for(String errorCode : errorCodes) {
-						ObjectError error = new ObjectError(errorCode,messages.getMessage("message.fielderror", locale));
-						result.addError(error);
-					}
-					
-				}
+		
+		BigDecimal submitedOrderPrice = null;
+		if(configuration.getOrderTotalFreeShippingText()!=null){
+			try {
+				submitedOrderPrice = priceUtil.getAmount(configuration.getOrderTotalFreeShippingText());
+				configuration.setOrderTotalFreeShipping(submitedOrderPrice);
+			} catch (Exception e) {
+				ObjectError error = new ObjectError("orderTotalFreeShippingText",messages.getMessage("message.invalid.price", locale));
+				result.addError(error);
 			}
 		}
 		
+		BigDecimal submitedHandlingPrice = null;
+		if(configuration.getHandlingFeesText()!=null){
+			try {
+				submitedHandlingPrice = priceUtil.getAmount(configuration.getHandlingFeesText());
+				configuration.setHandlingFees(submitedHandlingPrice);
+			} catch (Exception e) {
+				ObjectError error = new ObjectError("handlingFeesText",messages.getMessage("message.invalid.price", locale));
+				result.addError(error);
+			}
+		}
+
+		shippingService.saveShippingConfiguration(configuration, store);
 		
-	
+		model.addAttribute("configuration", configuration);
 		model.addAttribute("success","success");
 		return ControllerConstants.Tiles.Shipping.shippingOptions;
 		
