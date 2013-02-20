@@ -392,36 +392,41 @@ public class ShippingServiceImpl implements ShippingService {
 			//filter shipping options
 			ShippingOptionPriceType shippingOptionPriceType = shippingConfiguration.getShippingOptionPriceType();
 			ShippingOption selectedOption = null;
-			if(shippingOptionPriceType.name().equals(ShippingOptionPriceType.HIGHEST)) {
-				for(ShippingOption option : shippingOptions) {
-					if(selectedOption==null) {
-						selectedOption = option;
-					}
-					if (option.getOptionPrice()
-							.longValue() > selectedOption
-							.getOptionPrice()
-							.longValue()) {
-						selectedOption = option;
+			
+			if(shippingOptions!=null) {
+				if(shippingOptionPriceType.name().equals(ShippingOptionPriceType.HIGHEST)) {
+					for(ShippingOption option : shippingOptions) {
+						if(selectedOption==null) {
+							selectedOption = option;
+						}
+						if (option.getOptionPrice()
+								.longValue() > selectedOption
+								.getOptionPrice()
+								.longValue()) {
+							selectedOption = option;
+						}
 					}
 				}
-			}
-			
-			if(shippingOptionPriceType.name().equals(ShippingOptionPriceType.LEAST)) {
-				for(ShippingOption option : shippingOptions) {
-					if(selectedOption==null) {
-						selectedOption = option;
-					}
-					if (option.getOptionPrice()
-							.longValue() < selectedOption
-							.getOptionPrice()
-							.longValue()) {
-						selectedOption = option;
+				
+				if(shippingOptionPriceType.name().equals(ShippingOptionPriceType.LEAST)) {
+					for(ShippingOption option : shippingOptions) {
+						if(selectedOption==null) {
+							selectedOption = option;
+						}
+						if (option.getOptionPrice()
+								.longValue() < selectedOption
+								.getOptionPrice()
+								.longValue()) {
+							selectedOption = option;
+						}
 					}
 				}
-			}
+				
+				if(selectedOption!=null) {
+					shippingOptions = new ArrayList<ShippingOption>();
+					shippingOptions.add(selectedOption);
+				}
 			
-			if(selectedOption!=null) {
-				shippingOptions = new ArrayList<ShippingOption>();
 			}
 			
 			shippingQuote.setShippingOptions(shippingOptions);

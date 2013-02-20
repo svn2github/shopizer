@@ -23,9 +23,7 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
-import com.salesmanager.core.business.shipping.model.ShippingDescription;
 import com.salesmanager.core.business.shipping.model.ShippingOption;
-import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.model.MerchantLog;
@@ -407,12 +405,10 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 			Reader reader = new StringReader(stringresult);
 			
 			digester.parse(reader);
-			
-			
 
 		
-		
 			if (canadaPost == null || canadaPost.getStatusCode() == null) {
+				LOGGER.error("Nothing received from CanadaPost");
 				return null;
 			}
 	
@@ -447,7 +443,7 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 
 
 
-			options = canadaPost.getOptions();
+/*			options = canadaPost.getOptions();
 			for(ShippingOption option : options) {
 					StringBuilder description = new StringBuilder();
 					description.append(option.getOptionName());
@@ -456,14 +452,14 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 								.append(")");
 					}
 					option.setDescription(description.toString());
-	/*				if (requiresCurrencyConversion) {
+						if (requiresCurrencyConversion) {
 						option.setOptionPrice(CurrencyUtil.convertToCurrency(option
 								.getOptionPrice(), Constants.CURRENCY_CODE_CAD,
 								store.getCurrency()));
-					}*/
+					}
 					// System.out.println(option.getOptionPrice().toString());
 
-			}
+			}*/
 
 		
 		

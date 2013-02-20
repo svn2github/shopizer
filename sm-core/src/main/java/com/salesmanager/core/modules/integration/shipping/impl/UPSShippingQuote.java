@@ -4,10 +4,7 @@ import java.io.BufferedReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -15,7 +12,6 @@ import java.util.Set;
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
@@ -29,15 +25,12 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
-import com.salesmanager.core.business.shipping.model.ShippingDescription;
 import com.salesmanager.core.business.shipping.model.ShippingOption;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.model.MerchantLog;
 import com.salesmanager.core.business.system.model.ModuleConfig;
 import com.salesmanager.core.business.system.service.MerchantLogService;
-import com.salesmanager.core.constants.Constants;
-import com.salesmanager.core.constants.MeasureUnit;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule;
 import com.salesmanager.core.utils.DataUtils;
@@ -223,7 +216,7 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 				weightCode = "LBS";
 			}
 
-			String xml = "<?xml version=\"1.0\"?><RatingServiceSelectionRequest><Request><TransactionReference><CustomerContext>SalesManager Data</CustomerContext><XpciVersion>1.0001</XpciVersion></TransactionReference><RequestAction>Rate</RequestAction><RequestOption>Shop</RequestOption></Request>";
+			String xml = "<?xml version=\"1.0\"?><RatingServiceSelectionRequest><Request><TransactionReference><CustomerContext>Shopizer</CustomerContext><XpciVersion>1.0001</XpciVersion></TransactionReference><RequestAction>Rate</RequestAction><RequestOption>Shop</RequestOption></Request>";
 			StringBuffer xmldatabuffer = new StringBuffer();
 
 			/**
@@ -318,7 +311,7 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 			xmldatabuffer.append(DataUtils
 					.trimPostalCode(delivery.getPostalCode()));
 			xmldatabuffer.append("</PostalCode></Address></ShipTo>");
-			// xmldatabuffer.append("<Service><Code>11</Code></Service>");
+			// xmldatabuffer.append("<Service><Code>11</Code></Service>");//TODO service codes (next day ...)
 
 
 			for(PackageDetails packageDetail : packages){
@@ -454,41 +447,50 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 			// XML document is well formed but the document is not
 			// valid</ErrorDescription><ErrorLocation><ErrorLocationElementName>AddressValidationRequest</ErrorLocationElementName></ErrorLocation></Error></Response></AddressValidationResponse>
 
-			/*Reader xmlreader = new StringReader(data);
+			Reader xmlreader = new StringReader(data);
 
 			digester.parse(xmlreader);
 
 			if (!StringUtils.isBlank(parsed.getErrorCode())) {
-				log.error("Can't process UPS statusCode="
-						+ parsed.getErrorCode() + " message= "
-						+ parsed.getError());
+
+				merchantLogService.save(
+						new MerchantLog(store,
+						"Can't process UPS shipping quote service for store country code"
+								+ parsed.getStatusCode() + " message= "
+								+ parsed.getError()));
+				
+					LOGGER.error("Can't process UPS statusCode="
+							+ parsed.getErrorCode() + " message= "
+							+ parsed.getError());
 				return null;
 			}
 			if (!StringUtils.isBlank(parsed.getStatusCode())
 					&& !parsed.getStatusCode().equals("1")) {
-				LogMerchantUtil.log(store.getMerchantId(),
-						"Can't process UPS statusCode="
+				
+				merchantLogService.save(
+						new MerchantLog(store,
+								"Can't process UPS statusCode="
 								+ parsed.getStatusCode() + " message= "
-								+ parsed.getError());
-				log.error("Can't process UPS statusCode="
-						+ parsed.getStatusCode() + " message= "
-						+ parsed.getError());
+								+ parsed.getError()));
+
 				return null;
 			}
 
 			if (parsed.getOptions() == null || parsed.getOptions().size() == 0) {
-				log.warn("No options returned from UPS");
+				merchantLogService.save(
+						new MerchantLog(store,
+								"No options returned from UPS"));
 				return null;
 			}
 
-			String carrier = getShippingMethodDescription(locale);
+			/*String carrier = getShippingMethodDescription(locale);
 			// cost is in CAD, need to do conversion
 
 			
-			 * boolean requiresCurrencyConversion = false; String storeCurrency
-			 * = store.getCurrency();
-			 * if(!storeCurrency.equals(Constants.CURRENCY_CODE_CAD)) {
-			 * requiresCurrencyConversion = true; }
+			boolean requiresCurrencyConversion = false; String storeCurrency
+			 = store.getCurrency();
+			if(!storeCurrency.equals(Constants.CURRENCY_CODE_CAD)) {
+			 requiresCurrencyConversion = true; }
 			 
 
 			LabelUtil labelUtil = LabelUtil.getInstance();
@@ -499,6 +501,8 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 			MerchantConfiguration rtdetails = config
 					.getMerchantConfiguration(ShippingConstants.MODULE_SHIPPING_DISPLAY_REALTIME_QUOTES);
 			int displayQuoteDeliveryTime = ShippingConstants.NO_DISPLAY_RT_QUOTE_TIME;
+			
+			
 			if (rtdetails != null) {
 
 				if (!StringUtils.isBlank(rtdetails.getConfigurationValue1())) {// display
@@ -514,13 +518,12 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 								+ rtdetails.getConfigurationValue1() + "]");
 					}
 				}
-			}
+			}*/
 			
 
-			Collection returnColl = null;
-
-			List options = parsed.getOptions();
-			if (options != null) {
+			List<ShippingOption> shippingOptions = parsed.getOptions();
+			
+/*			if (options != null) {
 
 				Map selectedintlservices = (Map) config
 						.getConfiguration("service-global-upsxml");
@@ -587,11 +590,11 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 																	.size()])
 											+ "] for this shipping is in your selection list");
 				}
-			}
+			}*/
 
 
 
-			return returnColl;*/
+			return shippingOptions;
 
 		} catch (Exception e1) {
 			LOGGER.error("UPS quote error",e1);
@@ -608,9 +611,6 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 				httppost.releaseConnection();
 			}
 		}
-		
-		return null;
-
 }}
 
 

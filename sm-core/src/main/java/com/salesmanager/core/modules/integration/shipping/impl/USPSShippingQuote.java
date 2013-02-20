@@ -14,9 +14,6 @@ import java.util.Map;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,18 +24,17 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
-import com.salesmanager.core.business.shipping.model.ShippingDescription;
 import com.salesmanager.core.business.shipping.model.ShippingOption;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.model.MerchantLog;
 import com.salesmanager.core.business.system.model.ModuleConfig;
 import com.salesmanager.core.business.system.service.MerchantLogService;
+import com.salesmanager.core.constants.Constants;
 import com.salesmanager.core.constants.MeasureUnit;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule;
 import com.salesmanager.core.utils.DataUtils;
-import com.salesmanager.core.constants.Constants;
 
 /**
  * Integrates with USPS online API
@@ -561,7 +557,7 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 			@SuppressWarnings("unchecked")
 			List<ShippingOption> shippingOptions = parsed.getOptions();
 		
-			List<ShippingOption> returnOptions = null;
+/*			List<ShippingOption> returnOptions = null;
 		
 			if (shippingOptions != null && shippingOptions.size() > 0) {
 		
@@ -600,11 +596,11 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 					option.setDescription(description.toString());
 		
 					// get currency
-/*					if (!option.getCurrency().equals(store.getCurrency())) {
+					if (!option.getCurrency().equals(store.getCurrency())) {
 						option.setOptionPrice(CurrencyUtil.convertToCurrency(
 								option.getOptionPrice(), option.getCurrency(),
 								store.getCurrency()));
-					}*/
+					}
 		
 					// if(!services.containsKey(option.getOptionCode())) {
 					// if(returnColl==null) {
@@ -623,9 +619,9 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 				// "] for this shipping is in your selection list");
 				// }
 		
-			}
+			}*/
 		
-			return returnOptions;
+			return shippingOptions;
 		
 		} catch (Exception e1) {
 			LOGGER.error("Error in USPS shipping quote ",e1);

@@ -42,6 +42,10 @@ public class ShippingConfiguration implements JSONAware {
 	private String shipDescription;
 	private String shipFreeType;
 	
+	//Transient
+	private String orderTotalFreeShippingText = null;
+	private String handlingFeesText = null;
+	
 	
 	public String getShipType() {
 		return shipType;
@@ -315,6 +319,26 @@ public class ShippingConfiguration implements JSONAware {
 
 	public String getShipFreeType() {
 		return shipFreeType;
+	}
+
+
+	public void setOrderTotalFreeShippingText(String orderTotalFreeShippingText) {
+		this.orderTotalFreeShippingText = orderTotalFreeShippingText;
+	}
+
+
+	public String getOrderTotalFreeShippingText() {
+		return orderTotalFreeShippingText;
+	}
+
+
+	public void setHandlingFeesText(String handlingFeesText) {
+		this.handlingFeesText = handlingFeesText;
+	}
+
+
+	public String getHandlingFeesText() {
+		return handlingFeesText;
 	}
 
 
