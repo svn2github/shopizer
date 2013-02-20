@@ -81,6 +81,15 @@ public class ShippingConfigsController {
 		this.setMenu(model, request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
+		//get original configuration
+		ShippingConfiguration shippingConfiguration =  shippingService.getShippingConfiguration(store);
+		
+		if(shippingConfiguration==null) {
+			shippingConfiguration = new ShippingConfiguration();
+		}
+		
+		shippingConfiguration.setShippingType(configuration.getShippingType());
+		
 		shippingService.saveShippingConfiguration(configuration, store);
 		
 		model.addAttribute("configuration", configuration);

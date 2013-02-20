@@ -21,9 +21,11 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.salesmanager.core.constants.Constants;
+import com.salesmanager.web.admin.controller.content.ContentImageController;
 
 
 
@@ -31,7 +33,7 @@ public class DateUtil {
 
 	private Date startDate = new Date(new Date().getTime());
 	private Date endDate = new Date(new Date().getTime());
-	private Logger log = Logger.getLogger(DateUtil.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DateUtil.class);
 
 	
 	
@@ -125,7 +127,7 @@ public class DateUtil {
 			this.startDate = sDate;
 			this.endDate = eDate;
 		} catch (Exception e) {
-			log.error(e);
+			LOGGER.error("",e);
 			this.startDate = new Date(dt.getTime());
 			this.endDate = new Date(dt.getTime());
 		}

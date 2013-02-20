@@ -106,13 +106,18 @@ public class ShippingOptionsController {
 		this.setMenu(model, request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
-
+		//get original configuration
+		ShippingConfiguration shippingConfiguration =  shippingService.getShippingConfiguration(store);
+		
+		if(shippingConfiguration==null) {
+			shippingConfiguration = new ShippingConfiguration();
+		}
 		
 		BigDecimal submitedOrderPrice = null;
 		if(configuration.getOrderTotalFreeShippingText()!=null){
 			try {
 				submitedOrderPrice = priceUtil.getAmount(configuration.getOrderTotalFreeShippingText());
-				configuration.setOrderTotalFreeShipping(submitedOrderPrice);
+				shippingConfiguration.setOrderTotalFreeShipping(submitedOrderPrice);
 			} catch (Exception e) {
 				ObjectError error = new ObjectError("orderTotalFreeShippingText",messages.getMessage("message.invalid.price", locale));
 				result.addError(error);
@@ -123,14 +128,19 @@ public class ShippingOptionsController {
 		if(configuration.getHandlingFeesText()!=null){
 			try {
 				submitedHandlingPrice = priceUtil.getAmount(configuration.getHandlingFeesText());
-				configuration.setHandlingFees(submitedHandlingPrice);
+				shippingConfiguration.setHandlingFees(submitedHandlingPrice);
 			} catch (Exception e) {
 				ObjectError error = new ObjectError("handlingFeesText",messages.getMessage("message.invalid.price", locale));
 				result.addError(error);
 			}
 		}
+		
+		shippingConfiguration.setFreeShippingEnabled(configuration.isFreeShippingEnabled());
+		shippingConfiguration.setTaxOnShipping(configuration.isTaxOnShipping());
+		shippingConfiguration.setShipFreeType(configuration.getShipFreeType());
+		
 
-		shippingService.saveShippingConfiguration(configuration, store);
+		shippingService.saveShippingConfiguration(shippingConfiguration, store);
 		
 		model.addAttribute("configuration", configuration);
 		model.addAttribute("success","success");
@@ -144,7 +154,7 @@ public class ShippingOptionsController {
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("shipping", "shipping");
-		activeMenus.put("shipping-methods", "shipping-methods");
+		activeMenus.put("shipping-options", "shipping-options");
 		
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
