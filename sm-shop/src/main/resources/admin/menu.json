@@ -151,7 +151,8 @@
 "menus":[
 	{"menu":{"code":"shipping-configs","url":"","role":"SHIPPING","order":0}},
 	{"menu":{"code":"shipping-methods","url":"","role":"SHIPPING","order":0}},
-	{"menu":{"code":"shipping-options","url":"","role":"SHIPPING","order":0}}
+	{"menu":{"code":"shipping-options","url":"","role":"SHIPPING","order":0}},
+	{"menu":{"code":"shipping-packages","url":"","role":"SHIPPING","order":0}}
 ]
 }},
 {
