@@ -24,16 +24,12 @@
 
 
 								<div class="sm-ui-component">
-								<h3><s:message code="label.shipping.title" text="Shipping configuration" /> <s:message code="module.shipping.${configuration.moduleCode}" text="No label found - ${configuration.moduleCode}"/></h3>	
+								<h3><s:message code="label.shipping.options" text="Shipping options" /></h3>	
 								<br/>
 								
-								
-								
 
-							<s:message code="module.shipping.${configuration.moduleCode}.note" text=""/><br/>
-							
-							<c:url var="saveShippingMethod" value="/admin/shipping/saveShippingMethod.html"/>
-							<form:form method="POST" commandName="configuration" action="${saveShippingMethod}">
+							<c:url var="saveShippingOptions" value="/admin/shipping/saveShippingOptions.html"/>
+							<form:form method="POST" commandName="configuration" action="${saveShippingOptions}">
 
       							
       								<form:errors path="*" cssClass="alert alert-error" element="div" />
@@ -41,22 +37,30 @@
 								
 
 									<div class="control-group">
-                        				<label><s:message code="label.entity.enabled" text="Module enabled"/></label>
+                        				<label><s:message code="label.shipping.taxonshipping" text="Apply tax on shipping" /></label>
                         				<div class="controls">
-                                    		<form:checkbox path="active" />
+                                    		<form:checkbox id="taxOnShipping" path="taxOnShipping" />
                         				</div>
                   					</div>
+                  					<div class="control-group">
+                        				<label><s:message code="label.shipping.freeshipping" text="Apply free shipping"/></label>
+                        				<div class="controls">
+                                    		<form:checkbox id="freeShippingEnabled" path="freeShippingEnabled" /><br/>
+                                    		<form:radiobutton id="shipFreeType" path="shipFreeType" value="NATIONAL"/>&nbsp;<s:message code="label.shipping.national" text="National" />			
+											<form:radiobutton id="shipFreeType" path="shipFreeType" value="INTERNATIONAL"/>&nbsp;<s:message code="label.shipping.international" text="International" />
+											<form:input cssClass="input-large" path="orderTotalFreeShippingText" />&nbsp;<s:message code="label.shipping.freeshippingamount" text="Order total over" />
+                        				</div>
+                        				<span class="help-inline"><form:errors path="orderTotalFreeShippingText" cssClass="error" /></span>
+                  					</div>
                   					
-                  					<div class="controls">
-	                        			<s:message code="label.category.root" text="Root" var="rootVar"/>			
-	                        			<form:select path="environment">
-					  						<form:options items="${environments}" />
-				       					</form:select>
-	                                	<span class="help-inline"><form:errors path="environment" cssClass="error" /></span>
+                  					<div class="control-group">
+                        				<label><s:message code="label.shipping.handlingfees" text="Handling fees"/></label>
+                        				<div class="controls">
+											<form:input cssClass="input-large" path="handlingFeesText" />
+                        				</div>
+	                                	<span class="help-inline"><form:errors path="handlingFeesText" cssClass="error" /></span>
 	                        		</div>
-	                        		
-	                        		<jsp:include page="/pages/admin/shipping/${configuration.moduleCode}.jsp"></jsp:include> 
-	                        		
+
 	                        		<div class="form-actions">
                   						<div class="pull-right">
                   							<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>
