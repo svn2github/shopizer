@@ -46,8 +46,8 @@
                         				<label><s:message code="label.shipping.freeshipping" text="Apply free shipping"/></label>
                         				<div class="controls">
                                     		<form:checkbox id="freeShippingEnabled" path="freeShippingEnabled" /><br/>
-                                    		<form:radiobutton id="shipFreeType" path="shipFreeType" value="NATIONAL"/>&nbsp;<s:message code="label.shipping.national" text="National" />			
-											<form:radiobutton id="shipFreeType" path="shipFreeType" value="INTERNATIONAL"/>&nbsp;<s:message code="label.shipping.international" text="International" />
+                                    		<form:radiobutton id="shipFreeType" path="shipFreeType" value="NATIONAL"/>&nbsp;<s:message code="label.shipping.national" text="National" /><br/>			
+											<form:radiobutton id="shipFreeType" path="shipFreeType" value="INTERNATIONAL"/>&nbsp;<s:message code="label.shipping.international" text="International" /><br/>
 											<form:input cssClass="input-large" path="orderTotalFreeShippingText" />&nbsp;<s:message code="label.shipping.freeshippingamount" text="Order total over" />
                         				</div>
                         				<span class="help-inline"><form:errors path="orderTotalFreeShippingText" cssClass="error" /></span>
