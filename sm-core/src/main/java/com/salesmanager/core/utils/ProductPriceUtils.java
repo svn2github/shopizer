@@ -208,8 +208,9 @@ public class ProductPriceUtils {
 			finalPrice.setDiscountPercent(percent);
 			
 		}
-		
-		finalPrice.setOriginalPrice(finalPrice.getDefaultPrice().getProductPriceAmount());
+		if(finalPrice.getDefaultPrice()!=null) {
+			finalPrice.setOriginalPrice(finalPrice.getDefaultPrice().getProductPriceAmount());
+		}
 		return finalPrice;
 
 	}
