@@ -105,7 +105,7 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 
 		// only applies to Canada and US
 		Country country = delivery.getCountry();
-		if(!country.getIsoCode().equals("US") || !country.equals("CA")) {
+		if(!country.getIsoCode().equals("US") || !country.getIsoCode().equals("CA")) {
 			throw new IntegrationException("Canadapost Not configured for shipping in country " + country.getIsoCode());
 		}
 
