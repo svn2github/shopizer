@@ -42,6 +42,7 @@
                                     		<form:checkbox id="taxOnShipping" path="taxOnShipping" />
                         				</div>
                   					</div>
+
                   					<div class="control-group">
                         				<label><s:message code="label.shipping.freeshipping" text="Apply free shipping"/></label>
                         				<div class="controls">
