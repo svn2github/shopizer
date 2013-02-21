@@ -18,6 +18,7 @@ public class ShippingConfiguration implements JSONAware {
 	private ShippingOptionPriceType shippingOptionPriceType = ShippingOptionPriceType.ALL;
 	private ShippingPackageType shippingPackageType = ShippingPackageType.ITEM;
 	private ShippingDescription shippingDescription = ShippingDescription.SHORT_DESCRIPTION;
+	private ShippingType freeShippingType = null;
 	
 	private int boxWidth = 0;
 	private int boxHeight = 0;
@@ -28,7 +29,7 @@ public class ShippingConfiguration implements JSONAware {
 	//free shipping
 	private boolean freeShippingEnabled = false;
 	private BigDecimal orderTotalFreeShipping = null;
-	private ShippingType freeShippingType = null;
+	
 	
 	private BigDecimal handlingFees = null;
 	private boolean taxOnShipping = false;
@@ -181,6 +182,10 @@ public class ShippingConfiguration implements JSONAware {
 		data.put("shipOptionPriceType", this.getShippingOptionPriceType().name());
 		data.put("shipType", this.getShippingType().name());
 		data.put("shipPackageType", this.getShippingPackageType().name());
+		if(shipFreeType!=null) {
+			data.put("shipFreeType", this.getFreeShippingType().name());
+		}
+		data.put("shipDescription", this.getShippingDescription().name());
 		
 		
 		data.put("boxWidth", this.getBoxWidth());
