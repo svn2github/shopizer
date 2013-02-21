@@ -305,6 +305,7 @@ public class ShippingServiceImpl implements ShippingService {
 			for(IntegrationModule mod : shippingMethods) {
 				if(mod.getCode().equals(moduleName)){
 					shippingModule = mod;
+					break;
 				}
 			}
 			
@@ -503,7 +504,7 @@ public class ShippingServiceImpl implements ShippingService {
 			
 			BigDecimal currentPrice = price.getFinalPrice();
 			currentPrice = currentPrice.multiply(new BigDecimal(shippingProduct.getQuantity()));
-			total.add(currentPrice);
+			total = total.add(currentPrice);
 		}
 		
 		
