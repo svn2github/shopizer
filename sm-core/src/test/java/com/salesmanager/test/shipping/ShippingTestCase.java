@@ -252,6 +252,9 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 	    dpd.setLanguage(en);
 
 	    dprice.getDescriptions().add(dpd);
+	    availability.getPrices().add(dprice);
+	    
+	    product.getAvailabilities().add(availability);
 	    
 	    productService.saveOrUpdate(product);
 	    
@@ -272,6 +275,14 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 	    shippingConfiguration.setBoxWidth(5);
 	    shippingConfiguration.setBoxWeight(1);
 	    shippingConfiguration.setMaxWeight(10);
+	    
+	    List<String> supportedCountries = new ArrayList<String>();
+	    supportedCountries.add("CA");
+	    supportedCountries.add("US");
+	    supportedCountries.add("UK");
+	    supportedCountries.add("FR");
+	    
+	    shippingService.setSupportedCountries(store, supportedCountries);
 	    
 	    //configure module
 	    List<String> options = new ArrayList<String>();
