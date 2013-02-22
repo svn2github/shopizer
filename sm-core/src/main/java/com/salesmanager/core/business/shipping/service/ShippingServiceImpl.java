@@ -26,7 +26,6 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.Delivery;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingBasisType;
@@ -62,9 +61,7 @@ public class ShippingServiceImpl implements ShippingService {
 	@Autowired
 	private MerchantConfigurationService merchantConfigurationService;
 	
-	@Autowired
-	private OrderService orderService;
-	
+
 	@Autowired
 	private ProductPriceUtils productPriceUtils;
 	
