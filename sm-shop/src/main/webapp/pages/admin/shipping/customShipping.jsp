@@ -15,35 +15,14 @@
 <div class="tabbable">
 
   					
-  					<c:if test="${currentMenu!=null && fn:length(currentMenu.menus)>0}">
-						
-  						<ul class="nav nav-tabs">
-  						<c:forEach items="${currentMenu.menus}" var="menu">
-  							<c:choose>
-  							    <c:when test="${fn:length(menu.menus)==0}">
-  									<li id="${menu.code}-tab" <c:if test="${activeMenus[menu.code]!=null}"> class="active"</c:if>><a href="#" id="${menu.code}-link" data-toggle="tab"><s:message code="menu.${menu.code}" text="${menu.code}"/></a></li>
-  							    </c:when>
-  							    <c:otherwise>
-  									<li class="dropdown <c:if test="${activeMenus[menu.code]!=null}"> active</c:if>" style="z-index:500000;position:relative"> 
-  										<a href="#" class="dropdown-toggle" data-toggle="dropdown"><s:message code="menu.${menu.code}" text="${menu.code}"/><b class="caret"></b></a>
-  										<ul class="dropdown-menu"> 
-  											<c:forEach items="${menu.menus}" var="submenu">
-  												<li><a href="#" id="${submenu.code}-link" data-toggle="tab"><s:message code="menu.${submenu.code}" text="${submenu.code}"/></a></li>
-  											</c:forEach>
-  										</ul> 
-  									</li>
-  							    </c:otherwise>
-  							</c:choose>
-  						</c:forEach>
-  						</ul>
-  					</c:if>
+  					<jsp:include page="/common/adminTabs.jsp" />
 
 
   					<div class="tab-content">
 
     					<div class="tab-pane active" id="shipping-section">
 
-								<form action="<c:url value="/admin/shipping/addRegion.html"/>">  
+								<form action="<c:url value="/admin/shipping/addCustomRegion.html"/>">  
 			      					<label class="required">Add region</label>  
 			      					<input type="text" class="span3" name="region" id="region"><!-- must be unique -->  
 			      					<span class="help-block">Create a region that will contain one or many countries with shipping rules</span>  
@@ -52,44 +31,31 @@
 			      				</form>	
 								<br/>
 								
-								<form action="<c:url value="/admin/shipping/addCountry.html"/>">  
-
-
-	                  			<div class="control-group">
-	                        			<label><s:message code="label.region" text="Region"/></label>
-	                        			<div class="controls">
-	                        					
-	                        					<form:select path="regions">
-					  								<form:option value="-1" label="--- Select ---" />
-					  								<form:options items="${regions}"/>
-				       							</form:select>
-	                        			</div>
-	                 			 </div>
-
-	                  			<div class="control-group">
-	                        			<label><s:message code="label.country" text="Country"/></label>
-	                        			<div class="controls">
-	                        					
-	                        					<form:select path="countries">
-					  								<form:option value="-1" label="--- Select ---" />
-					  								<form:options items="${countries}" itemValue="id" itemLabel="name"/>
-				       							</form:select>
-	                                   			<span class="help-inline"><form:errors path="country" cssClass="error" /></span>
-	                        			</div>
-	                 			 </div>
-	                 			 
-	                 			 <!--
-				
-				      			<div class="form-actions">
-	                  					<div class="pull-right">
-	                  						<button type="submit" class="btn btn-action"><s:message code="button.label.submit2" text="Submit"/></button>
-	                  					</div>
-	            	 			</div>
-
-
-			      				-->
-			      				<button type="submit" class="btn btn-action"><s:message code="button.label.submit2" text="Submit"/></button>
-			      				
+								
+								<form action="<c:url value="/admin/shipping/addCountryToRegion.html"/>">  
+		                  			 <div class="control-group">
+		                        			<label><s:message code="label.region" text="Region"/></label>
+		                        			<div class="controls">
+		                        					<form:select path="regions">
+						  								<form:options items="${regions}"/>
+					       							</form:select>
+		                        			</div>
+		                 			 </div>
+		                  			 <div class="control-group">
+		                        			<label><s:message code="label.country" text="Country"/></label>
+		                        			<div class="controls">
+		                        					
+		                        					<form:select path="countries">
+						  								<form:options items="${countries}" itemValue="id" itemLabel="name"/>
+					       							</form:select>
+		                                   			<span class="help-inline"><form:errors path="country" cssClass="error" /></span>
+		                        			</div>
+		                 			 </div>
+	                        		 <div class="form-actions">
+                  						<div class="pull-right">
+                  							<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>
+                  						</div>
+            	 					</div>
 			      				</form>	
 
 								<div class="sm-ui-component">

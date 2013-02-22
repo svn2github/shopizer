@@ -3,11 +3,18 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 
-<%@ page session="false" %>				
+<%@ page session="false" %>	
+
+<script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>			
 				
 <script>
 	
-
+	$(function(){
+		$('#boxWidth').numeric();
+		$('#boxHeight').numeric();
+		$('#boxLength').numeric();
+		$('#boxWeight').numeric();
+	});
 	
 </script>
 
@@ -52,14 +59,14 @@
                   					<div class="control-group">
                         				<label><s:message code="label.shipping.packaging.box.width" text="Box width"/></label>
                         				<div class="controls">
-											<form:input cssClass="input-small" path="boxWidth" />
+											<form:input cssClass="input-small" id="boxWidth" path="boxWidth" />
                         				</div>
                         				<span class="help-inline"><form:errors path="boxWidth" cssClass="error" /></span>
                   					</div>
                   					<div class="control-group">
                         				<label><s:message code="label.shipping.packaging.box.height" text="Box height"/></label>
                         				<div class="controls">
-											<form:input cssClass="input-small" path="boxHeight" />
+											<form:input cssClass="input-small" id="boxHeight" path="boxHeight" />
                         				</div>
                         				<span class="help-inline"><form:errors path="boxHeight" cssClass="error" /></span>
                   					</div>
@@ -68,7 +75,7 @@
                   					 <div class="control-group">
                         				<label><s:message code="label.shipping.packaging.box.length" text="Box length"/></label>
                         				<div class="controls">
-											<form:input cssClass="input-small" path="boxLength" />
+											<form:input cssClass="input-small" id="boxLength" path="boxLength" />
                         				</div>
                         				<span class="help-inline"><form:errors path="boxLength" cssClass="error" /></span>
                   					</div>
@@ -76,7 +83,7 @@
                   					<div class="control-group">
                         				<label><s:message code="label.shipping.packaging.box.weight" text="Box weight"/></label>
                         				<div class="controls">
-											<form:input cssClass="input-small" path="boxWeight" />
+											<form:input cssClass="input-small" id="boxWeight" path="boxWeight" />
                         				</div>
                         				<span class="help-inline"><form:errors path="boxWeight" cssClass="error" /></span>
                   					</div>                   					

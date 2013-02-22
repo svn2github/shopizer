@@ -20,7 +20,7 @@
   					 <div class="tab-content">
   					
   					
-  					<div class="tab-pane active" id="shipping-methods">
+  					<div class="tab-pane active" id="shipping-method">
 
 
 								<div class="sm-ui-component">
