@@ -33,8 +33,13 @@
 		"image":"fedEx.gif",
 		"configuration":[{"env":"DEV","scheme":"https","host":"gatewaybeta.fedex.com","port":"443","uri":"/web-services"},{"env":"PROD","scheme":"https","host":"gatewaybeta.fedex.com","port":"443","uri":"/web-services"}]
 
-	}
-	,
+	},
+	{
+		"module": "SHIPPING",
+		"code": "weightBased",
+		"version":"1.0",
+		"regions": ["XX"]
+	},
 	{
 		"module": "PAYMENT",
 		"code": "moneyorder",
