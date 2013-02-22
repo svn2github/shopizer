@@ -26,6 +26,7 @@ import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.modules.integration.IntegrationException;
+import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuotesConfiguration;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
@@ -152,6 +153,15 @@ public class ShippingMethodsController {
 		return ControllerConstants.Tiles.Shipping.shippingMethod;
 		
 		
+	}
+	
+	
+	@RequestMapping(value="/admin/shipping/weightBased.html", method=RequestMethod.POST)
+	public String saveCustomWeightBasedShippingMethod(@ModelAttribute("configuration") CustomShippingQuotesConfiguration configuration, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+
+		model.addAttribute("success","success");
+		return ControllerConstants.Tiles.Shipping.shippingMethod;
+
 	}
 	
 	@RequestMapping(value="/admin/shipping/deleteShippingMethod.html", method=RequestMethod.POST)

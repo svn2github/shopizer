@@ -21,7 +21,6 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 import com.salesmanager.core.business.shipping.model.ShippingType;
 import com.salesmanager.core.business.shipping.service.ShippingService;
-import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
@@ -39,9 +38,7 @@ public class ShippingPackagingController {
 	@Autowired
 	LabelUtils messages;
 	
-	@Autowired
-	private ProductPriceUtils priceUtil;
-	
+
 	/**
 	 * Displays shipping packaging
 	 * @param request
@@ -57,9 +54,7 @@ public class ShippingPackagingController {
 		this.setMenu(model, request);
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		
 
-		
 		ShippingConfiguration shippingConfiguration =  shippingService.getShippingConfiguration(store);
 		
 		if(shippingConfiguration==null) {
@@ -98,31 +93,12 @@ public class ShippingPackagingController {
 			shippingConfiguration = new ShippingConfiguration();
 		}
 		
-/*		BigDecimal submitedOrderPrice = null;
-		if(configuration.getOrderTotalFreeShippingText()!=null){
-			try {
-				submitedOrderPrice = priceUtil.getAmount(configuration.getOrderTotalFreeShippingText());
-				shippingConfiguration.setOrderTotalFreeShipping(submitedOrderPrice);
-			} catch (Exception e) {
-				ObjectError error = new ObjectError("orderTotalFreeShippingText",messages.getMessage("message.invalid.price", locale));
-				result.addError(error);
-			}
-		}
+		shippingConfiguration.setBoxHeight(configuration.getBoxHeight());
+		shippingConfiguration.setBoxLength(configuration.getBoxLength());
+		shippingConfiguration.setBoxWeight(configuration.getBoxWeight());
+		shippingConfiguration.setBoxWidth(configuration.getBoxWidth());
 		
-		BigDecimal submitedHandlingPrice = null;
-		if(configuration.getHandlingFeesText()!=null){
-			try {
-				submitedHandlingPrice = priceUtil.getAmount(configuration.getHandlingFeesText());
-				shippingConfiguration.setHandlingFees(submitedHandlingPrice);
-			} catch (Exception e) {
-				ObjectError error = new ObjectError("handlingFeesText",messages.getMessage("message.invalid.price", locale));
-				result.addError(error);
-			}
-		}
-		
-		shippingConfiguration.setFreeShippingEnabled(configuration.isFreeShippingEnabled());
-		shippingConfiguration.setTaxOnShipping(configuration.isTaxOnShipping());
-		shippingConfiguration.setShipFreeType(configuration.getShipFreeType());*/
+		shippingConfiguration.setShipPackageType(configuration.getShipPackageType());
 		
 
 		shippingService.saveShippingConfiguration(shippingConfiguration, store);
