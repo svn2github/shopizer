@@ -142,10 +142,10 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@OneToMany(mappedBy = "order")
 	private Set<OrderAccount> orderAccounts = new HashSet<OrderAccount>();
 	
-	@OneToMany(mappedBy = "order")
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
 	
-	@OneToMany(mappedBy = "order")
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private Set<OrderTotal> orderTotal = new HashSet<OrderTotal>();
 	
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
