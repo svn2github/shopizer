@@ -97,6 +97,14 @@ public class CustomerController {
 	@RequestMapping(value="/admin/customers/save.html", method=RequestMethod.POST)
 	public String saveCustomer(@Valid @ModelAttribute("customer") Customer customer, BindingResult result, Model model, HttpServletRequest request) throws Exception{
 	
+		
+		//check if error from the @valid
+		if (result.hasErrors()) {
+			return "admin-customer";
+		}
+		
+		
+		
 		customerService.save(customer);
 		
 		//display menu
