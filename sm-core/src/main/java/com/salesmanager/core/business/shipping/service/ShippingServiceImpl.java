@@ -495,7 +495,7 @@ public class ShippingServiceImpl implements ShippingService {
 
 	private BigDecimal calculateOrderTotal(List<ShippingProduct> products, MerchantStore store) throws Exception {
 		
-		BigDecimal total = new BigDecimal("0");
+		BigDecimal total = new BigDecimal(0);
 		for(ShippingProduct shippingProduct : products) {
 			FinalPrice price = productPriceUtils.getFinalPrice(shippingProduct.getProduct());
 			

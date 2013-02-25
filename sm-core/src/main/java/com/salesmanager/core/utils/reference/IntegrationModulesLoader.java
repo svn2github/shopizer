@@ -18,6 +18,7 @@ import com.salesmanager.core.business.system.model.ModuleConfig;
 @Component
 public class IntegrationModulesLoader {
 	
+	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LoggerFactory.getLogger(IntegrationModulesLoader.class);
 	
 
@@ -47,7 +48,7 @@ public class IntegrationModulesLoader {
             	module.setModule((String)object.get("module"));
             	module.setCode((String)object.get("code"));
             	module.setImage((String)object.get("image"));
-            	
+            	module.setCustomModule((Boolean)object.get("customModule"));
             	//module.setRegions(regions)
             	
             	

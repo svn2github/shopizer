@@ -59,6 +59,9 @@ public class IntegrationModule extends SalesManagerEntity<Long, IntegrationModul
 	@Column(name="IMAGE")
 	private String image;
 	
+	@Column(name="CUSTOM_IND")
+	private boolean customModule = false;
+	
 	@Transient
 	private Set<String> regionsSet = new HashSet<String>();
 	
@@ -185,6 +188,18 @@ public class IntegrationModule extends SalesManagerEntity<Long, IntegrationModul
 
 	public String getImage() {
 		return image;
+	}
+
+
+
+	public void setCustomModule(boolean customModule) {
+		this.customModule = customModule;
+	}
+
+
+
+	public boolean isCustomModule() {
+		return customModule;
 	}
 
 
