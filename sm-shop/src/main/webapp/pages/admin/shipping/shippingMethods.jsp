@@ -55,7 +55,18 @@
 						      			  						</c:otherwise>
 						      			  					</c:choose>
 						      			  				</td>
-						      			  				<td><label><a href="<c:url value="/admin/shipping/shippingMethod.html?code="/><c:out value="${module.code}"/>"><s:message code="module.shipping.${module.code}" text="No label found - ${module.code}"/></a></label></td>
+						      			  				<td>
+						      			  					<label>
+						      			  						<c:choose>
+						      			  							<c:when test="${module.customModule==true}">
+						      			  								<a href="<c:url value="/admin/shipping/${module.code}.html"/><s:message code="module.shipping.${module.code}" text="No label found - ${module.code}"/></a>
+						      			  							</c:when>
+						      			  							<c:otherwise>
+						      			  								<a href="<c:url value="/admin/shipping/shippingMethod.html?code="/><c:out value="${module.code}"/>"><s:message code="module.shipping.${module.code}" text="No label found - ${module.code}"/></a>
+						      			  							</c:otherwise>
+						      			  						</c:choose>
+						      			  					</label>
+						      			  				</td>
 						      			  				<td><img src="<c:url value="/resources/img/shipping/${module.image}"/>"></td>
 						      			  			</tr>
 						      			  		</table>

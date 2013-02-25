@@ -5,7 +5,7 @@
 
 <%@ page session="false" %>
 
-     <script src="<c:url value="/resources/templates/bootstrap/js/bootstrap-button.js" />"></script>
+    <script src="<c:url value="/resources/templates/bootstrap/js/bootstrap-button.js" />"></script>
     <script src="<c:url value="/resources/templates/bootstrap/js/bootstrap-modal.js" />"></script>
     <script src="<c:url value="/resources/templates/bootstrap/js/bootstrap-tab.js" />"></script>
     <script src="<c:url value="/resources/templates/bootstrap/js/bootstrap-transition.js" />"></script>

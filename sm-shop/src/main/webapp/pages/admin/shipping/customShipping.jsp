@@ -7,7 +7,33 @@
 				
 <script>
 	
+function validateRegion() {
+	$('#checkCodeStatus').html('<img src="<c:url value="/resources/img/ajax-loader.gif" />');
+	$('#checkCodeStatus').show();
+	var region = $("#region").val();
+	var id = "";
+	checkCode(region,id,'<c:url value="/admin/shipping/checkRegionCode.html" />');
+}
 
+function callBackCheckCode(msg,code) {
+	
+	if(code==0) {
+		$('.btn-region').removeClass('disabled');
+	}
+	if(code==9999) {
+
+		$('#checkCodeStatus').html('<font color="green"><s:message code="label.message.region.available" text="This region is available"/></font>');
+		$('#checkCodeStatus').show();
+		$('.btn-region').removeClass('disabled');
+	}
+	if(code==9998) {
+
+		$('#checkCodeStatus').html('<font color="red"><s:message code="label.message.region.exist" text="This region already exist"/></font>');
+		$('#checkCodeStatus').show();
+		$('.btn-region').addClass('disabled');
+	}
+	
+}
 	
 </script>
 
@@ -21,18 +47,26 @@
   					<div class="tab-content">
 
     					<div class="tab-pane active" id="shipping-section">
+    					
+    							<div class="sm-ui-component">
+								<h3><s:message code="module.shipping.weightBased" text="module.shipping.weightBased" /></h3>	
+								<br/>
 
 								<form action="<c:url value="/admin/shipping/addCustomRegion.html"/>">  
-			      					<label class="required">Add region</label>  
-			      					<input type="text" class="span3" name="region" id="region"><!-- must be unique -->  
-			      					<span class="help-block">Create a region that will contain one or many countries with shipping rules</span>  
+			      					<label class="required"><s:message code="label.shipping.addregion" text="Add region" /></label>
+			      					<input type="text" class="span3" name="region" id="region" onblur="validatecode()"><!-- must be unique -->  
+			      					<span class="help-inline"><div id="checkCodeStatus" style="display:none;"></span>  
 			      					<br/>   
-			      					<button type="submit" class="btn btn-action"><s:message code="button.label.submit2" text="Submit"/></button>
+			      					<button type="submit" class="btn-region btn-action"><s:message code="button.label.submit2" text="Submit"/></button>
 			      				</form>	
 								<br/>
 								
-								
-								<form action="<c:url value="/admin/shipping/addCountryToRegion.html"/>">  
+								<c:url var="addShipping" value="/admin/shipping/addCountryToRegion.html"/> 
+		                  		<form:form method="POST" commandName="customShipping" action="${addShipping}">
+				
+									<form:errors path="*" cssClass="alert alert-error" element="div" />
+									<div id="form.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
+				
 		                  			 <div class="control-group">
 		                        			<label><s:message code="label.region" text="Region"/></label>
 		                        			<div class="controls">
@@ -48,7 +82,6 @@
 		                        					<form:select path="countries">
 						  								<form:options items="${countries}" itemValue="id" itemLabel="name"/>
 					       							</form:select>
-		                                   			<span class="help-inline"><form:errors path="country" cssClass="error" /></span>
 		                        			</div>
 		                 			 </div>
 	                        		 <div class="form-actions">
@@ -56,7 +89,24 @@
                   							<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>
                   						</div>
             	 					</div>
-			      				</form>	
+			      				</form:form>	
+			      				
+			      				
+								 <!-- Listing grid include -->
+								 <c:set value="/admin/shipping/weightBased/page.html" var="pagingUrl" scope="request"/>
+								 <c:set value="/admin/shipping/weightBased/remove.html" var="removeUrl" scope="request"/>
+								 <c:set value="/admin/shipping/weightBased/edit.html" var="editUrl" scope="request"/>
+								 <c:set value="/admin/shipping/weightBased.html" var="refreshUrl" scope="request"/>
+								 <c:set var="entityId" value="region" scope="request"/>
+								 <c:set var="groupByEntity" value="region" scope="request"/>
+								 <c:set var="componentTitleKey" value="module.shipping.weightBased" scope="request"/>
+								 <c:set var="gridHeader" value="/admin/shipping/weightBased-gridHeader.jsp" scope="request"/>
+								 <c:set var="canRemoveEntry" value="true" scope="request"/>
+				
+				            	 <jsp:include page="/pages/admin/components/list.jsp"></jsp:include> 
+								 <!-- End listing grid include -->
+			      				
+			      				
 
 								<div class="sm-ui-component">
 
