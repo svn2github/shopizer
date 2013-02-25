@@ -5,7 +5,7 @@
 		"version":"",
 		"regions": ["CA"],
 		"image":"canadapost.jpg",
-		"configuration":[{"env":"DEV","scheme":"http","host":"sellonline.canadapost.ca","port":"30000","uri":""},{"env":"PROD","scheme":"http","host":"sellonline.canadapost.ca","port":"30000","uri":""}]
+		"configuration":[{"env":"TEST","scheme":"http","host":"sellonline.canadapost.ca","port":"30000","uri":""},{"env":"PROD","scheme":"http","host":"sellonline.canadapost.ca","port":"30000","uri":""}]
 	},
 	{
 		"module": "SHIPPING",
@@ -13,7 +13,7 @@
 		"version":"",
 		"regions": ["US"],
 		"image":"usps.jpg",
-		"configuration":[{"env":"DEV","scheme":"http","host":"testing.shippingapis.com","port":"80","uri":"/ShippingAPI.dll"},{"env":"PROD","scheme":"http","host":"production.shippingapis.com","port":"80","uri":"/ShippingAPI.dll"}]
+		"configuration":[{"env":"TEST","scheme":"http","host":"testing.shippingapis.com","port":"80","uri":"/ShippingAPI.dll"},{"env":"PROD","scheme":"http","host":"production.shippingapis.com","port":"80","uri":"/ShippingAPI.dll"}]
 
 	},
 	{
@@ -22,7 +22,7 @@
 		"version":"",
 		"regions": ["US","CA","FR","GB"],
 		"image":"ups.jpg",
-		"configuration":[{"env":"DEV","scheme":"https","host":"wwwcie.ups.com","port":"443","uri":"/ups.app/xml/Rate"},{"env":"PROD","scheme":"https","host":"onlinetools.ups.com","port":"443","uri":"/xml/Rate"}]
+		"configuration":[{"env":"TEST","scheme":"https","host":"wwwcie.ups.com","port":"443","uri":"/ups.app/xml/Rate"},{"env":"PROD","scheme":"https","host":"onlinetools.ups.com","port":"443","uri":"/xml/Rate"}]
 
 	},
 	{
@@ -31,7 +31,7 @@
 		"version":"",
 		"regions": ["US","CA","AT","BE","BI","CZ","DK","EE","FI","FR","DE","GR","HU","IE","IT","LV","LT","MQ","MT","NL","PL","PT","RO","SK","SI","ES","SE","UY"],
 		"image":"fedEx.gif",
-		"configuration":[{"env":"DEV","scheme":"https","host":"gatewaybeta.fedex.com","port":"443","uri":"/web-services"},{"env":"PROD","scheme":"https","host":"gatewaybeta.fedex.com","port":"443","uri":"/web-services"}]
+		"configuration":[{"env":"TEST","scheme":"https","host":"gatewaybeta.fedex.com","port":"443","uri":"/web-services"},{"env":"PROD","scheme":"https","host":"gatewaybeta.fedex.com","port":"443","uri":"/web-services"}]
 
 	},
 	{
@@ -53,7 +53,7 @@
 		"version":"",
 		"regions": ["XX"],
 		"image":"paypal.gif",
-		"configuration":[{"env":"DEV","scheme":"https","host":"sandbox.paypal.com","port":"443","uri":"/web-services"},{"env":"PROD","scheme":"https","host":"www.paypal.com","port":"443","uri":"/web-services"}]
+		"configuration":[{"env":"TEST","scheme":"https","host":"sandbox.paypal.com","port":"443","uri":"/web-services"},{"env":"PROD","scheme":"https","host":"www.paypal.com","port":"443","uri":"/web-services"}]
 
 	}
 
