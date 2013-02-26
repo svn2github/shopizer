@@ -48,7 +48,20 @@ public class IntegrationModulesLoader {
             	module.setModule((String)object.get("module"));
             	module.setCode((String)object.get("code"));
             	module.setImage((String)object.get("image"));
-            	module.setCustomModule((Boolean)object.get("customModule"));
+            	if(object.get("customModule")!=null) {
+            		Object o = object.get("customModule");
+            		Boolean b = false;
+            		if(o instanceof Boolean) {
+            			b = (Boolean)object.get("customModule");
+            		} else {
+            			try {
+            				b = new Boolean((String)object.get("customModule"));
+            			} catch(Exception e) {
+            				LOGGER.error("Cannot cast " + o.getClass() + " tp a boolean value");
+            			}
+            		}
+            		module.setCustomModule(b);
+            	}
             	//module.setRegions(regions)
             	
             	
