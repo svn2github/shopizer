@@ -30,6 +30,7 @@ import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.zone.model.Zone;
+import com.salesmanager.core.constants.MeasureUnit;
 import com.salesmanager.core.constants.SchemaConstant;
 import com.salesmanager.core.utils.CloneUtils;
 
@@ -84,10 +85,10 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	private String storestateprovince;
 	
 	@Column(name = "WEIGHTUNITCODE", length=5)
-	private String weightunitcode;
+	private String weightunitcode = MeasureUnit.LB.name();
 
 	@Column(name = "SEIZEUNITCODE", length=5)
-	private String seizeunitcode;
+	private String seizeunitcode = MeasureUnit.IN.name();
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "IN_BUSINESS_SINCE")
