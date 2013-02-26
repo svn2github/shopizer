@@ -4,7 +4,8 @@ public enum OrderStatus {
 	
 	ORDERED("ordered"),
 	SHIPPED("shipped"),
-	PREPARED("prepared")
+	PREPARED("prepared"),
+	DELIVERED("delivered")
 	;
 	
 	private String value;

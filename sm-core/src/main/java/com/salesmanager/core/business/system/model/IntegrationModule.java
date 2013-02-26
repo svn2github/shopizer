@@ -17,6 +17,8 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Type;
+
 import com.salesmanager.core.business.common.model.audit.AuditListener;
 import com.salesmanager.core.business.common.model.audit.AuditSection;
 import com.salesmanager.core.business.common.model.audit.Auditable;
@@ -54,6 +56,7 @@ public class IntegrationModule extends SalesManagerEntity<Long, IntegrationModul
 	private String regions;
 	
 	@Column(name="CONFIGURATION")
+	@Type(type = "org.hibernate.type.StringClobType")
 	private String configuration;
 	
 	@Column(name="IMAGE")

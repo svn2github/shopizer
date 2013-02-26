@@ -22,7 +22,6 @@ import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.orderaccount.OrderAccount;
@@ -74,7 +73,7 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@Column (name ="ORDER_DATE_FINISHED")
 	private Date orderDateFinished;
 	
-	//TODO not sure it is a big decimal but a currency object (see merchant store)
+	//What was the exchange rate
 	@Column (name ="CURRENCY_VALUE")
 	private BigDecimal currencyValue;
 	
