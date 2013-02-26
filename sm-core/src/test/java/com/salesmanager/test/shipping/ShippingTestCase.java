@@ -324,12 +324,14 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 	    delivery.setAddress("Shipping address");
 	    delivery.setCountry(country);
 	    delivery.setZone(zone);
+	    delivery.setPostalCode("J4B-8J9");
 	    
 	    
 	    Billing billing = new Billing();
 	    billing.setAddress("Billing address");
 	    billing.setCountry(country);
 	    billing.setZone(zone);
+	    billing.setPostalCode("J4B-8J9");
 	    
 	    customer.setBilling(billing);
 	    customer.setDelivery(delivery);
