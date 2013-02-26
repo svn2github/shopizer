@@ -3,17 +3,13 @@ package com.salesmanager.test.order;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
@@ -28,7 +24,6 @@ import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.model.OrderTotal;
 import com.salesmanager.core.business.order.model.orderaccount.OrderAccount;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
-import com.salesmanager.core.business.order.model.orderproduct.OrderProductAttribute;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProductDownload;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProductPrice;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
@@ -37,7 +32,6 @@ import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.zone.model.Zone;
-import com.salesmanager.core.constants.Constants;
 import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;
 
 
@@ -96,57 +90,52 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 	    
 	    //create a Customer
 		Country country = countryService.getByCode("CA");
-		Zone zone = zoneService.getByCode("VT");
+		Zone zone = zoneService.getByCode("QC");
 		
 		Customer customer = new Customer();
 		customer.setFirstname("Leonardo");
 		customer.setMerchantStore(store);
-		customer.setLastname("Ribeiro");
+		customer.setLastname("DiCaprio");
 		customer.setCity("city");
 		customer.setEmailAddress("test@test.com");
 		customer.setGender("M");						
-		customer.setTelephone("00000");
+		customer.setTelephone("444-555-6666");
 		customer.setAnonymous(true);
 		customer.setCompany("ifactory");
 		customer.setDateOfBirth(new Date());
-		customer.setFax("fax");
+		customer.setFax("555-666-7777");
 		customer.setNewsletter('c');
 		customer.setNick("My nick");
-		customer.setPassword("123456");
-		customer.setPostalCode("000");
-		customer.setState("state");				
-		customer.setStreetAddress("Street 1");
-		customer.setTelephone("123123");
+		customer.setPostalCode("J4B-8J9");			
+		customer.setStreetAddress("358 Du Languadoc");
+		customer.setTelephone("444-555-6666");
 		customer.setCountry(country);
 		customer.setZone(zone);
 		
 	    Delivery delivery = new Delivery();
-	    delivery.setAddress("Delivery address");
-	    delivery.setCity( "Delivery city " );
-	    delivery.setCompany( "Delivery company ");
+	    delivery.setAddress("358 Du Languadoc");
+	    delivery.setCity( "Boucherville" );
 	    delivery.setCountry(country);
-	    delivery.setCountryCode("1" );
+	    delivery.setCountryCode(CA_COUNTRY_CODE);
 	    delivery.setName("Delivery Name" );
-	    delivery.setPostalCode("Delivery PostalCode" );
-	    delivery.setState("Delivery State" );
+	    delivery.setPostalCode("J4B-8J9" );
 	    delivery.setZone(zone);	    
 	    
 	    Billing billing = new Billing();
-	    billing.setAddress("Billing address");
-	    billing.setCity("Billing city");
-	    billing.setCompany("Billing company");
+	    billing.setAddress("358 Du Languadoc");
+	    billing.setCity("Boucherville");
+	    billing.setCompany("CSTI Consulting");
 	    billing.setCountry(country);
 	    billing.setCountryCode(CA_COUNTRY_CODE);
-	    billing.setName("Billing name");
-	    billing.setPostalCode("Billing postal code");
-	    billing.setState("Billing state");
+	    billing.setName("CSTI Consulting");
+	    billing.setPostalCode("J4B-8J9");
 	    billing.setZone(zone);
 	    
 	    customer.setBilling(billing);
 	    customer.setDelivery(delivery);		
 		customerService.create(customer);
 		
-		Currency currency = currencyService.getByCode(EURO_CURRENCY_CODE);
+		Currency currency = currencyService.getByCode(CAD_CURRENCY_CODE);
 
 		OrderStatusHistory orderStatusHistory = new OrderStatusHistory();
 		
@@ -157,64 +146,53 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		order.setLastModified(new Date());
 		order.setBilling(billing);
 
-		order.setCardType("Visa");
-		order.setCcCvv("123");
-		order.setCcExpires("12/30/2020" );
-		order.setCcNumber( "123456789");
-		order.setCcOwner("ccOwner" );
-		order.setChannel(1);
-		order.setCouponCode("1");
-		order.setCurrencyValue(new BigDecimal(19.99));
-		order.setCustomerId(new Long(1) );
+
+		order.setChannel(1);//1 is online
+		order.setCurrencyValue(new BigDecimal(0.98));//compared to based currency (not necessary)
+		order.setCustomerId(customer.getId());
 		order.setDelivery(delivery);
 		order.setDisplayInvoicePayments(true);
 		order.setIpAddress("ipAddress" );
 		order.setMerchant(store);
-		order.getOrderAccounts().add( new OrderAccount() );
-		order.setOrderDateFinished(new Date());
-		orderStatusHistory.setComments(" Status History comment");
+		order.setOrderDateFinished(new Date());//committed date
+		
+		orderStatusHistory.setComments("We received your order");
 		orderStatusHistory.setCustomerNotified(1);
-		orderStatusHistory.setStatus( OrderStatus.ORDERED);
+		orderStatusHistory.setStatus(OrderStatus.ORDERED);
 		orderStatusHistory.setDateAdded(new Date() );
 		orderStatusHistory.setOrder(order);
 		order.getOrderHistory().add( orderStatusHistory );		
+		
 		order.setOrderTax(new BigDecimal(4.00));
-		order.setPaymentMethod("Cash");
-		order.setPaymentModuleCode("payment Module Code");
-		order.setShippingMethod("UPS");
-		order.setShippingModuleCode("Shipping Module Code" );
-		order.setStatus( OrderStatus.ORDERED);
+		order.setPaymentMethod("Paypal");
+		order.setPaymentModuleCode("paypal");
+		order.setStatus( OrderStatus.DELIVERED);
 		order.setTotal(new BigDecimal(23.99));
 		
 		
-		//OrderProductDownload
+		//OrderProductDownload - Digital download
 		OrderProductDownload orderProductDownload = new OrderProductDownload();
 		orderProductDownload.setDownloadCount(1);
 		orderProductDownload.setFileId( new Long(1) );
 		orderProductDownload.setMaxdays(31);		
-		orderProductDownload.setOrderProductFilename("order Product Download");
+		orderProductDownload.setOrderProductFilename("Your digital file name");
 		
 		//OrderProductPrice
 		OrderProductPrice oproductprice = new OrderProductPrice();
 		oproductprice.setDefaultPrice(true);	
 		oproductprice.setProductPriceAmount(new BigDecimal(19.99) );
-		oproductprice.setProductPriceCode("product Price code" );
-		oproductprice.setProductPriceName("product Price Name" );
-		oproductprice.setProductPriceSpecialAmount(new BigDecimal(13.99) );	
+		oproductprice.setProductPriceCode("baseprice" );
+		oproductprice.setProductPriceName("Base Price" );
 
-		
 		//OrderProduct
 		OrderProduct oproduct = new OrderProduct();
-		oproduct.getDownloads().add(  orderProductDownload);
+		oproduct.getDownloads().add( orderProductDownload);
 		oproduct.setFinalPrice(new BigDecimal(19.99) );
-		oproduct.setOnetimeCharge( new BigDecimal(6.99) );
+		oproduct.setOnetimeCharge( new BigDecimal(19.99) );
 		oproduct.setOrder(order);		
-		oproduct.setProductName( "Order Product Name" );
-		oproduct.setProductQuantity(5);
-		oproduct.setProductSpecialDateAvailable( new Date() );
-		oproduct.setProductSpecialDateExpire( new Date() );
-		oproduct.setProductSpecialPrice( new BigDecimal(14.99 ) );
-		oproduct.setSku("Order Product sku" );		
+		oproduct.setProductName( "Product name" );
+		oproduct.setProductQuantity(1);
+		oproduct.setSku("TB12345" );		
 		oproduct.getPrices().add(oproductprice ) ;
 		
 		oproductprice.setOrderProduct(oproduct);		
@@ -229,15 +207,35 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 
 		
 		//OrderTotal
-		OrderTotal ordertotal = new OrderTotal();	
-		ordertotal.setModule("OrderTotal Module" );		
-		ordertotal.setSortOrder(1);
-		ordertotal.setText("OrderTotal Text" );
-		ordertotal.setTitle("OrderTotal Title" );
-		ordertotal.setValue(new BigDecimal(19.99 ) );
-		ordertotal.setOrder(order);
+		OrderTotal subtotal = new OrderTotal();	
+		subtotal.setModule("summary" );		
+		subtotal.setSortOrder(0);
+		subtotal.setText("Summary" );
+		subtotal.setTitle("Summary" );
+		subtotal.setValue(new BigDecimal(19.99 ) );
+		subtotal.setOrder(order);
 		
-		order.getOrderTotal().add(ordertotal);
+		order.getOrderTotal().add(subtotal);
+		
+		OrderTotal tax = new OrderTotal();	
+		tax.setModule("tax" );		
+		tax.setSortOrder(1);
+		tax.setText("Tax" );
+		tax.setTitle("Tax" );
+		tax.setValue(new BigDecimal(4) );
+		tax.setOrder(order);
+		
+		order.getOrderTotal().add(tax);
+		
+		OrderTotal total = new OrderTotal();	
+		total.setModule("total" );		
+		total.setSortOrder(2);
+		total.setText("Total" );
+		total.setTitle("Total" );
+		total.setValue(new BigDecimal(23.99) );
+		total.setOrder(order);
+		
+		order.getOrderTotal().add(total);
 		
 		orderService.create(order);
 		Assert.assertTrue(orderService.count() == 1);
