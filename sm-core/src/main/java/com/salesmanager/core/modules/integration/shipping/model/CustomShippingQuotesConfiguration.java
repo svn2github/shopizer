@@ -3,16 +3,17 @@ package com.salesmanager.core.modules.integration.shipping.model;
 import java.io.Serializable;
 import java.util.List;
 
-import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
+import com.salesmanager.core.business.system.model.CustomIntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 
-public class CustomShippingQuotesConfiguration extends IntegrationConfiguration implements Serializable, JSONAware {
+public class CustomShippingQuotesConfiguration extends IntegrationConfiguration implements CustomIntegrationConfiguration, Serializable {
 	
 	/**
 	 * 
 	 */
+	private String moduleCode;
 	private static final long serialVersionUID = 1L;
 	private String customRegionName;//a name given by the merchant for this custom region
 	private List<String> countries;//a list of country code for this region
@@ -47,10 +48,8 @@ public class CustomShippingQuotesConfiguration extends IntegrationConfiguration 
 	public String toJSONString() {
 		JSONObject data = new JSONObject();
 		
-		data.put("active", super.isActive());
-		data.put("moduleCode", super.getModuleCode());
+
 		data.put("customRegionName", this.getCustomRegionName());
-		
 		StringBuilder coutriesList = new StringBuilder();
 		int countCountry = 0;
 		coutriesList.append("[");
@@ -80,6 +79,17 @@ public class CustomShippingQuotesConfiguration extends IntegrationConfiguration 
 		
 		return data.toJSONString();
 		
+		
+	}
+
+	@Override
+	public String getModuleCode() {
+		return moduleCode;
+	}
+
+	@Override
+	public void setModuleCode(String moduleCode) {
+		this.moduleCode = moduleCode;
 		
 	}
 

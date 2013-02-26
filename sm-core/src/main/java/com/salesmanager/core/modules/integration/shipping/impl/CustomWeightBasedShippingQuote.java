@@ -9,6 +9,7 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 import com.salesmanager.core.business.shipping.model.ShippingOption;
+import com.salesmanager.core.business.system.model.CustomIntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.modules.integration.IntegrationException;
@@ -25,6 +26,14 @@ public class CustomWeightBasedShippingQuote implements ShippingQuoteModule {
 		//not used, it has its own controller with complex validators
 
 	}
+	
+
+	@Override
+	public CustomIntegrationConfiguration getCustomModuleConfiguration(
+			MerchantStore store) throws IntegrationException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
 	public List<ShippingOption> getShippingQuotes(
@@ -36,5 +45,7 @@ public class CustomWeightBasedShippingQuote implements ShippingQuoteModule {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
 
 }

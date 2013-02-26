@@ -25,6 +25,7 @@ import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 import com.salesmanager.core.business.shipping.model.ShippingOption;
+import com.salesmanager.core.business.system.model.CustomIntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.model.MerchantLog;
@@ -153,7 +154,6 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 			//against which environment are we using the service
 			String env = configuration.getEnvironment();
 
-			Country originCountry = store.getCountry();
 
 			Map<String, ModuleConfig> moduleConfigsMap = module.getModuleConfigs();
 			for(String key : moduleConfigsMap.keySet()) {
@@ -499,6 +499,15 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 		
 
 		return options;
+	}
+
+
+
+	@Override
+	public CustomIntegrationConfiguration getCustomModuleConfiguration(
+			MerchantStore store) throws IntegrationException {
+		//nothing to do
+		return null;
 	}
 	
 
