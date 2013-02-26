@@ -13,6 +13,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,6 +61,8 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 			MerchantStore store) throws IntegrationException {
 		
 		
+		
+		
 		List<String> errorFields = null;
 		
 		//validate integrationKeys['account']
@@ -97,9 +100,9 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 	public List<ShippingOption> getShippingQuotes(List<PackageDetails> packages, BigDecimal orderTotal, Delivery delivery, MerchantStore store, IntegrationConfiguration configuration, IntegrationModule module, ShippingConfiguration shippingConfiguration, Locale locale) throws IntegrationException {
 		BigDecimal total = orderTotal;
 
-		if (packages == null) {
-			return null;
-		}
+
+		Validate.notNull(packages);
+		Validate.notNull(delivery.getPostalCode());
 		
 		List<ShippingOption> options = null;
 
@@ -335,10 +338,27 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 			}
 			String stringresult = httppost.getResponseBodyAsString();
 			LOGGER.debug("canadapost response " + stringresult);
+			
+			
+/*			<eparcel>
+			<error>
+			<statusCode>-3001</statusCode>
+			<statusMessage>Destination Postal Code/State Name/ Country is illegal. </statusMessage>
+			<requestID>2773909</requestID>
+			</error>
+			</eparcel>*/
 
 			canadaPost = new CanadaPostParsedElements();
 			Digester digester = new Digester();
 			digester.push(canadaPost);
+			
+			digester.addCallMethod(
+					"eparcel/error/statusCode",
+					"setStatusCode", 0);
+			
+			digester.addCallMethod(
+					"eparcel/error/statusMessage",
+					"setStatusMessage", 0);
 
 			digester.addCallMethod(
 					"eparcel/ratesAndServicesResponse/statusCode",
@@ -431,7 +451,7 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 						new MerchantLog(store,("An error occured with canadapost request (code-> "
 						+ canadaPost.getStatusCode() + " message-> "
 						+ canadaPost.getStatusMessage() )));
-				throw new IntegrationException("Error with post canada service");
+				throw new IntegrationException("Error with post canada service " + canadaPost.getStatusMessage());
 			}
 
 		//String carrier = getShippingMethodDescription(locale);
