@@ -215,6 +215,8 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 	    MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
 	    ProductType generalType = productTypeService.getProductType(ProductType.GENERAL_TYPE);
 	    
+	    //set valid store postal code
+	    store.setStorepostalcode("J4B-9J9");
 
 	    Product product = new Product();
 	    product.setProductHeight(new BigDecimal(4));
