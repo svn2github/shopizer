@@ -145,6 +145,12 @@ public class InitializationLoader {
 				  payment.getGroups().add(gadmin);
 				  permissionService.create(payment);
 				  
+				  Permission customer = new Permission("CUSTOMER");
+				  customer.getGroups().add(gsuperadmin);
+				  customer.getGroups().add(gstore);
+				  customer.getGroups().add(gadmin);
+				  permissionService.create(customer);
+				  
 				  
 				  Permission shipping = new Permission("SHIPPING");
 				  shipping.getGroups().add(gsuperadmin);
