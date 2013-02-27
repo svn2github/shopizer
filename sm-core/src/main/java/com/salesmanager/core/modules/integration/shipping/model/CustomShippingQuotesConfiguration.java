@@ -14,72 +14,32 @@ public class CustomShippingQuotesConfiguration extends IntegrationConfiguration 
 	 * 
 	 */
 	private String moduleCode;
-	private static final long serialVersionUID = 1L;
-	private String customRegionName;//a name given by the merchant for this custom region
-	private List<String> countries;//a list of country code for this region
 	
-	private List<CustomShippingQuoteWeightItem> quoteItems;//price max weight
+	private List<CustomShippingQuotesRegion> regions;
+	
+	
+	private static final long serialVersionUID = 1L;
 
-	public void setQuoteItems(List<CustomShippingQuoteWeightItem> quoteItems) {
-		this.quoteItems = quoteItems;
-	}
-
-	public List<CustomShippingQuoteWeightItem> getQuoteItems() {
-		return quoteItems;
-	}
-
-	public void setCountries(List<String> countries) {
-		this.countries = countries;
-	}
-
-	public List<String> getCountries() {
-		return countries;
-	}
-
-	public void setCustomRegionName(String customRegionName) {
-		this.customRegionName = customRegionName;
-	}
-
-	public String getCustomRegionName() {
-		return customRegionName;
-	}
 	
 	@SuppressWarnings("unchecked")
 	public String toJSONString() {
 		JSONObject data = new JSONObject();
 		
 
-		data.put("customRegionName", this.getCustomRegionName());
-		StringBuilder coutriesList = new StringBuilder();
-		int countCountry = 0;
-		coutriesList.append("[");
-		for(String country : countries) {
-			coutriesList.append("\"").append(country).append("\"");
-			countCountry ++;
-			if(countCountry<countries.size()) {
-				coutriesList.append(",");
+		data.put("moduleCode", this.getModuleCode());
+		StringBuilder regionsList = new StringBuilder();
+		int countRegion = 0;
+		regionsList.append("[");
+		for(CustomShippingQuotesRegion region : regions) {
+			regionsList.append(region.toJSONString());
+			countRegion ++;
+			if(countRegion<regions.size()) {
+				regionsList.append(",");
 			}
 		}
-		coutriesList.append("]");
-		data.put("countries", coutriesList.toString());
-		
-		StringBuilder quotesList = new StringBuilder();
-		int countQuotes = 0;
-		quotesList.append("[");
-		for(CustomShippingQuoteWeightItem quote : quoteItems) {
-			quotesList.append(quote.toJSONString());
-			countQuotes ++;
-			if(countQuotes<quoteItems.size()) {
-				quotesList.append(",");
-			}
-		}
-		quotesList.append("]");
-		data.put("quoteItems", quotesList.toString());
-		
-		
+
 		return data.toJSONString();
-		
-		
+
 	}
 
 	@Override
@@ -91,6 +51,14 @@ public class CustomShippingQuotesConfiguration extends IntegrationConfiguration 
 	public void setModuleCode(String moduleCode) {
 		this.moduleCode = moduleCode;
 		
+	}
+
+	public void setRegions(List<CustomShippingQuotesRegion> regions) {
+		this.regions = regions;
+	}
+
+	public List<CustomShippingQuotesRegion> getRegions() {
+		return regions;
 	}
 
 }

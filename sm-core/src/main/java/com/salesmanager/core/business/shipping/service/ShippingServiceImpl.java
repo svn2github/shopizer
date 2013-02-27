@@ -36,6 +36,7 @@ import com.salesmanager.core.business.shipping.model.ShippingPackageType;
 import com.salesmanager.core.business.shipping.model.ShippingProduct;
 import com.salesmanager.core.business.shipping.model.ShippingQuote;
 import com.salesmanager.core.business.shipping.model.ShippingType;
+import com.salesmanager.core.business.system.model.CustomIntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
@@ -77,8 +78,7 @@ public class ShippingServiceImpl implements ShippingService {
 	
 	@Override
 	public ShippingConfiguration getShippingConfiguration(MerchantStore store) throws ServiceException {
-		
-		
+
 		MerchantConfiguration configuration = merchantConfigurationService.getMerchantConfiguration(ShippingConstants.SHIPPING_CONFIGURATION, store);
 		
 		ShippingConfiguration shippingConfiguration = null;
@@ -94,6 +94,18 @@ public class ShippingServiceImpl implements ShippingService {
 			}
 		}
 		return shippingConfiguration;
+		
+	}
+	
+	@Override
+	public CustomIntegrationConfiguration getCustomShippingConfiguration(String moduleCode, MerchantStore store) throws ServiceException {
+
+		
+		ShippingQuoteModule quoteModule = (ShippingQuoteModule)shippingModules.get(moduleCode);
+		if(quoteModule==null) {
+			return null;
+		}
+		return quoteModule.getCustomModuleConfiguration(store);
 		
 	}
 	

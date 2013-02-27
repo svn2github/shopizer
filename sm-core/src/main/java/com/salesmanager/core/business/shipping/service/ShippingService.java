@@ -11,6 +11,7 @@ import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 import com.salesmanager.core.business.shipping.model.ShippingProduct;
 import com.salesmanager.core.business.shipping.model.ShippingQuote;
+import com.salesmanager.core.business.system.model.CustomIntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 
@@ -105,5 +106,19 @@ public interface ShippingService {
 	ShippingQuote getShippingQuote(MerchantStore store, Customer customer,
 			List<ShippingProduct> products, Locale locale)
 			throws ServiceException;
+	
+	/**
+	 * Retrieves the custom configuration for a given module
+	 * @param moduleCode
+	 * @param store
+	 * @return
+	 * @throws ServiceException
+	 */
+
+
+	CustomIntegrationConfiguration getCustomShippingConfiguration(
+			String moduleCode, MerchantStore store) throws ServiceException;
+
+
 
 }

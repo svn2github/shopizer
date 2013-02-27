@@ -18,6 +18,7 @@ import javax.mail.internet.MimeMultipart;
 
 import org.springframework.mail.MailPreparationException;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 //import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
@@ -54,12 +55,11 @@ public class HtmlEmailSenderImpl implements HtmlEmailSender {
 					throws MessagingException, IOException {
 				
 				
-				//JavaMailSenderImpl impl = (JavaMailSenderImpl)mailSender;
+				JavaMailSenderImpl impl = (JavaMailSenderImpl)mailSender;
 				//impl.setProtocol(protocol)
 				
 				//(FreeMarkerConfigurationFactoryBean)freemarkerMailConfiguration.setTemplateLoader(loader)
-				
-				
+
 				mimeMessage.setRecipient(Message.RecipientType.TO,
 						new InternetAddress(to));
 
