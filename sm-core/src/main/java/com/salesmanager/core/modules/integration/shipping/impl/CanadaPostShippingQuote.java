@@ -110,8 +110,7 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 		// only applies to Canada and US
 		Country country = delivery.getCountry();
 		
-		System.out.println(country.getIsoCode());
-		System.out.println(country.getIsoCode().equals("CA"));
+
 		
 		
 		if(!(country.getIsoCode().equals("US") || country.getIsoCode().equals("CA"))) {
@@ -223,14 +222,14 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 			request.append("<city>").append(delivery.getCity()).append(
 					"</city>");
 			if(delivery.getZone()!=null) {
-			request.append("<provOrState>").append(delivery.getZone().getCode())
+				request.append("<provOrState>").append(delivery.getZone().getCode())
 					.append("</provOrState>");
 			} else {
-			request.append("<provOrState>").append(delivery.getState())
+				request.append("<provOrState>").append(delivery.getState())
 				.append("</provOrState>");				
 			}
 			request.append("<country>")
-					.append(delivery.getCountry().getName()).append(
+					.append(delivery.getCountry().getIsoCode()).append(
 							"</country>");
 			request.append("<postalCode>").append(
 					DataUtils
@@ -384,6 +383,7 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 			digester.addCallMethod(
 					"eparcel/ratesAndServicesResponse/product/rate",
 					"setOptionPriceText", 0);
+			
 			digester.addSetNext("eparcel/ratesAndServicesResponse/product",
 					"addOption");
 

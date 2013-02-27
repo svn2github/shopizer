@@ -3,7 +3,13 @@ package com.salesmanager.core.business.shipping.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ShippingOption implements Serializable {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ShippingOption.class);
 	
 	/**
 	 * 
@@ -20,10 +26,17 @@ public class ShippingOption implements Serializable {
 	
 	private int estimatedNumberOfDays;
 	
-	public void setOptionPrice(BigDecimal optionPrice) {
-		this.optionPrice = optionPrice;
-	}
+
 	public BigDecimal getOptionPrice() {
+		
+		if(!StringUtils.isBlank(this.getOptionPriceText())) {
+			try {
+				this.optionPrice = new BigDecimal(this.getOptionPriceText());
+			} catch(Exception e) {
+				LOGGER.equals("Can't convert price text " + this.getOptionPriceText() + " to big decimal");
+			}
+		}
+		
 		return optionPrice;
 	}
 
