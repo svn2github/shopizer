@@ -1,8 +1,8 @@
 package com.salesmanager.test.shipping;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -28,7 +28,6 @@ import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingBasisType;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
-import com.salesmanager.core.business.shipping.model.ShippingOption;
 import com.salesmanager.core.business.shipping.model.ShippingPackageType;
 import com.salesmanager.core.business.shipping.model.ShippingProduct;
 import com.salesmanager.core.business.shipping.model.ShippingQuote;
@@ -324,6 +323,7 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 		
 	    Delivery delivery = new Delivery();
 	    delivery.setAddress("Shipping address");
+	    delivery.setCity("Boucherville");
 	    delivery.setCountry(country);
 	    delivery.setZone(zone);
 	    delivery.setPostalCode("J4B-8J9");
