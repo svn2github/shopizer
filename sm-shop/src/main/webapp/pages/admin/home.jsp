@@ -12,7 +12,8 @@
 
 					<jsp:include page="/common/adminTabs.jsp" />
 
-
-					Admin home page
+					<div class="box">
+						<span class="box-title"><p>Admin home</p></span>
+					</div>
 
 </div>
