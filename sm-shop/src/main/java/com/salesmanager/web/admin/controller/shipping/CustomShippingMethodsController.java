@@ -22,6 +22,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.reference.country.model.Country;
+import com.salesmanager.core.business.reference.country.service.CountryService;
+import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
+import com.salesmanager.core.business.shipping.model.ShippingType;
 import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
@@ -38,8 +43,13 @@ public class CustomShippingMethodsController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomShippingMethodsController.class);
 	
 
+	public final static String WEIGHT_BASED_SHIPPING_METHOD = "weightBased";
+	
 	@Autowired
 	private ShippingService shippingService;
+	
+	@Autowired
+	private CountryService countryService;
 	
 	@Autowired
 	LabelUtils messages;
@@ -49,10 +59,17 @@ public class CustomShippingMethodsController {
 	@RequestMapping(value="/admin/shipping/weightBased.html", method=RequestMethod.GET)
 	public String getWeightBasedShippingMethod(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		String moduleCode = "weightBased";
 
 		this.setMenu(model, request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		
+		ShippingConfiguration shippingConfiguration =  shippingService.getShippingConfiguration(store);
+		
+		if(shippingConfiguration==null) {
+			shippingConfiguration = new ShippingConfiguration();
+			shippingConfiguration.setShippingType(ShippingType.INTERNATIONAL);
+		}
 		
 
 		//get configured shipping modules
@@ -60,27 +77,43 @@ public class CustomShippingMethodsController {
 		IntegrationConfiguration configuration = new IntegrationConfiguration();
 		if(configuredModules!=null) {
 			for(String key : configuredModules.keySet()) {
-				if(key.equals(moduleCode)) {
+				if(key.equals(WEIGHT_BASED_SHIPPING_METHOD)) {
 					configuration = configuredModules.get(key);
 					break;
 				}
 			}
 		}
 		
-		configuration.setModuleCode(moduleCode);
+		configuration.setModuleCode(WEIGHT_BASED_SHIPPING_METHOD);
 		
 		//get custom information
-		
-		//get regions
-		
+		CustomShippingQuotesConfiguration customConfiguration = (CustomShippingQuotesConfiguration)shippingService.getCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, store);
+
 		//get supported countries
+		List<String> includedCountries = shippingService.getSupportedCountries(store);
+		List<Country> shippingCountries = new ArrayList<Country>();
+		if(shippingConfiguration.getShippingType().equals(ShippingType.INTERNATIONAL.name())){
+			Map<String,Country> countries = countryService.getCountriesMap(language);
+			for(String key : countries.keySet()) {
+				Country country = (Country)countries.get(key);
+				if(!includedCountries.contains(key)) {
+					shippingCountries.add(country);
+				}
+			}
+		} else {//if national only store country
+			if(!includedCountries.contains(store.getCountry().getIsoCode())) {
+				shippingCountries.add(store.getCountry());
+			}
+		}
+		
 		
 		List<String> environments = new ArrayList<String>();
 		environments.add(Constants.TEST_ENVIRONMENT);
 		environments.add(Constants.PRODUCTION_ENVIRONMENT);
 		
 		model.addAttribute("configuration", configuration);
-		model.addAttribute("environments", environments);
+		model.addAttribute("customConfiguration", customConfiguration);
+		model.addAttribute("shippingCountries", shippingCountries);
 		return ControllerConstants.Tiles.Shipping.shippingMethod;
 		
 		
@@ -125,6 +158,7 @@ public class CustomShippingMethodsController {
 		}
 		
 		//save custom configuration
+		//shippingService
 		
 		model.addAttribute("success","success");
 		return ControllerConstants.Tiles.Shipping.shippingMethod;
