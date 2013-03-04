@@ -119,6 +119,17 @@ public interface ShippingService {
 	CustomIntegrationConfiguration getCustomShippingConfiguration(
 			String moduleCode, MerchantStore store) throws ServiceException;
 
+	/**
+	 * Weight based configuration
+	 * @param moduleCode
+	 * @param shippingConfiguration
+	 * @param store
+	 * @throws ServiceException
+	 */
+	void saveCustomShippingConfiguration(String moduleCode,
+			CustomIntegrationConfiguration shippingConfiguration,
+			MerchantStore store) throws ServiceException;
+
 
 
 }

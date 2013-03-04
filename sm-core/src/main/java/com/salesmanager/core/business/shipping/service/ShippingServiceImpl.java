@@ -44,6 +44,7 @@ import com.salesmanager.core.business.system.service.MerchantConfigurationServic
 import com.salesmanager.core.business.system.service.ModuleConfigurationService;
 import com.salesmanager.core.constants.ShippingConstants;
 import com.salesmanager.core.modules.integration.IntegrationException;
+import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuotesConfiguration;
 import com.salesmanager.core.modules.integration.shipping.model.Packaging;
 import com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule;
 import com.salesmanager.core.utils.ProductPriceUtils;
@@ -126,6 +127,40 @@ public class ShippingServiceImpl implements ShippingService {
 		
 	}
 	
+	@Override
+	public void saveCustomShippingConfiguration(String moduleCode, CustomIntegrationConfiguration shippingConfiguration, MerchantStore store) throws ServiceException {
+		
+		
+		ShippingQuoteModule quoteModule = (ShippingQuoteModule)shippingModules.get(moduleCode);
+		if(quoteModule==null) {
+			throw new ServiceException("Shipping module " + moduleCode + " does not exist");
+		}
+		
+		String configurationValue = shippingConfiguration.toJSONString();
+		
+		
+		try {
+
+			MerchantConfiguration configuration = merchantConfigurationService.getMerchantConfiguration(moduleCode, store);
+	
+			if(configuration==null) {
+
+				configuration = new MerchantConfiguration();
+				configuration.setKey(moduleCode);
+				configuration.setMerchantStore(store);
+			}
+			
+			configuration.setValue(configurationValue);
+			merchantConfigurationService.saveOrUpdate(configuration);
+		
+		} catch (Exception e) {
+			throw new IntegrationException(e);
+		}
+
+		
+		
+	}
+	
 
 	@Override
 	public List<IntegrationModule> getShippingMethods(MerchantStore store) throws ServiceException {
@@ -135,7 +170,7 @@ public class ShippingServiceImpl implements ShippingService {
 		
 		for(IntegrationModule module : modules) {
 			if(module.getRegionsSet().contains(store.getCountry().getIsoCode())
-					|| module.getRegionsSet().contains("*")) {
+					|| module.getRegionsSet().contains("XX")) {
 				
 				returnModules.add(module);
 			}

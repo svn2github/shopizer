@@ -58,13 +58,17 @@ public class CustomWeightBasedShippingQuote implements ShippingQuoteModule {
 					throw new ServiceException("Cannot parse json string " + value);
 				}
 	
+			} else {
+				CustomShippingQuotesConfiguration custom = new CustomShippingQuotesConfiguration();
+				custom.setModuleCode(MODULE_CODE);
+				return custom;
 			}
 		
 		} catch (Exception e) {
 			throw new IntegrationException(e);
 		}
 		
-		return null;
+		
 	}
 
 	@Override
