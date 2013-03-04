@@ -53,7 +53,7 @@
                   					<div class="control-group">
                         				<div class="controls">
                                     		<s:message code="label.store.weightunit" text="Weight units" />&nbsp;<strong><c:out value="${weightUnits}"/></strong><br/>			
-											<s:message code="label.store.sizeunits" text="Size units />&nbsp;<strong><c:out value="${sizeUnits}"/></strong><br/>
+											<s:message code="label.store.sizeunits" text="Size units" />&nbsp;<strong><c:out value="${sizeUnits}"/></strong><br/>
                         				</div>
                   					</div>
                   					<div class="control-group">

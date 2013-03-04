@@ -299,7 +299,7 @@ response.setDateHeader ("Expires", -1);
   				window.location='<c:url value="/admin/shipping/shippingOptions.html" />';
 			});
 			
-			$("#shipping-packaging-link").click(function() {
+			$("#shipping-packages-link").click(function() {
   				window.location='<c:url value="/admin/shipping/shippingPackaging.html" />';
 			});
 			
