@@ -39,20 +39,20 @@
 		"code": "weightBased",
 		"customModule":"true",
 		"version":"1.0",
-		"regions": ["XX"]
+		"regions": ["*"]
 	},
 	{
 		"module": "PAYMENT",
 		"code": "moneyorder",
 		"version":"",
-		"regions": ["XX"],
+		"regions": ["*"],
 		"moduleImage":"moneyorder.png"
 	},
 	{
 		"module": "PAYMENT",
 		"code": "paypal",
 		"version":"",
-		"regions": ["XX"],
+		"regions": ["*"],
 		"image":"paypal.gif",
 		"configuration":[{"env":"TEST","scheme":"https","host":"sandbox.paypal.com","port":"443","uri":"/web-services"},{"env":"PROD","scheme":"https","host":"www.paypal.com","port":"443","uri":"/web-services"}]
 
