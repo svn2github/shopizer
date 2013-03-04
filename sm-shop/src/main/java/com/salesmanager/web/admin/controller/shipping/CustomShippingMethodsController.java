@@ -9,17 +9,18 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
@@ -29,9 +30,10 @@ import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 import com.salesmanager.core.business.shipping.model.ShippingType;
 import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
-import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuotesConfiguration;
+import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuotesRegion;
+import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
@@ -55,7 +57,7 @@ public class CustomShippingMethodsController {
 	LabelUtils messages;
 	
 
-	
+	@Secured("SHIPPING")
 	@RequestMapping(value="/admin/shipping/weightBased.html", method=RequestMethod.GET)
 	public String getWeightBasedShippingMethod(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -119,6 +121,7 @@ public class CustomShippingMethodsController {
 		
 	}
 	
+	@Secured("SHIPPING")
 	@RequestMapping(value="/admin/shipping/saveWeightBasedShippingMethod.html", method=RequestMethod.POST)
 	public String saveShippingMethod(@ModelAttribute("configuration") CustomShippingQuotesConfiguration configuration, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
@@ -138,6 +141,7 @@ public class CustomShippingMethodsController {
 
 		try {
 			shippingService.saveShippingQuoteModuleConfiguration(configuration, store);
+			//TODO
 			shippingService.saveCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, configuration, store);
 
 			
@@ -165,7 +169,7 @@ public class CustomShippingMethodsController {
 	}
 	
 
-	
+	@Secured("SHIPPING")
 	@RequestMapping(value="/admin/shipping/deleteWeightBasedShippingMethod.html", method=RequestMethod.POST)
 	public String deleteShippingMethod(BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
@@ -175,6 +179,56 @@ public class CustomShippingMethodsController {
 		
 		return ControllerConstants.Tiles.Shipping.shippingMethods;
 		
+	}
+	
+	/**
+	 * Check if a region code already exist with the same name
+	 * @param request
+	 * @param response
+	 * @param locale
+	 * @return
+	 */
+	@Secured("SHIPPING")
+	@RequestMapping(value="/admin/shipping/checkRegionCode.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String checkRegionCode(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		String code = request.getParameter("code");
+
+
+		AjaxResponse resp = new AjaxResponse();
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		try {
+			
+			if(StringUtils.isBlank(code)) {
+				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
+				return resp.toJSONString();
+			}
+			
+			CustomShippingQuotesConfiguration customConfiguration = (CustomShippingQuotesConfiguration)shippingService.getCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, store);
+
+			if(customConfiguration!=null) {
+				List<CustomShippingQuotesRegion> regions =  customConfiguration.getRegions();
+				for(CustomShippingQuotesRegion region : regions) {
+					
+					if(code.equals(region.getCustomRegionName())) {
+						resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
+						return resp.toJSONString();
+					}
+					
+				}
+			}
+
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+
+		} catch (Exception e) {
+			LOGGER.error("Error while getting user", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
 	}
 
 	

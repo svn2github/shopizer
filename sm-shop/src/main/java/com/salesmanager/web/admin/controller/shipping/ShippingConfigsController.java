@@ -13,6 +13,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -52,6 +53,7 @@ public class ShippingConfigsController {
 	 * @return
 	 * @throws Exception
 	 */
+	@Secured("SHIPPING")
 	@RequestMapping(value="/admin/shipping/shippingConfigs.html", method=RequestMethod.GET)
 	public String displayShippingConfigs(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -75,6 +77,7 @@ public class ShippingConfigsController {
 		
 	}
 	
+	@Secured("SHIPPING")
 	@RequestMapping(value="/admin/shipping/saveShippingConfiguration.html", method=RequestMethod.POST)
 	public String saveShippingConfiguration(@ModelAttribute("configuration") ShippingConfiguration configuration, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
@@ -99,6 +102,7 @@ public class ShippingConfigsController {
 	}
 	
 	@SuppressWarnings({ "unchecked"})
+	@Secured("SHIPPING")
 	@RequestMapping(value="/admin/shipping/countries/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageCountries(HttpServletRequest request, HttpServletResponse response) {
 		String countryName = request.getParameter("name");
@@ -152,7 +156,7 @@ public class ShippingConfigsController {
 		return returnString;
 	}
 	
-
+	@Secured("SHIPPING")
 	@RequestMapping(value="/admin/shipping/countries/update.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String updateCountry(HttpServletRequest request, HttpServletResponse response) {
 		String values = request.getParameter("_oldValues");
