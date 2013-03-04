@@ -44,7 +44,6 @@ import com.salesmanager.core.business.system.service.MerchantConfigurationServic
 import com.salesmanager.core.business.system.service.ModuleConfigurationService;
 import com.salesmanager.core.constants.ShippingConstants;
 import com.salesmanager.core.modules.integration.IntegrationException;
-import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuotesConfiguration;
 import com.salesmanager.core.modules.integration.shipping.model.Packaging;
 import com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule;
 import com.salesmanager.core.utils.ProductPriceUtils;
@@ -170,7 +169,7 @@ public class ShippingServiceImpl implements ShippingService {
 		
 		for(IntegrationModule module : modules) {
 			if(module.getRegionsSet().contains(store.getCountry().getIsoCode())
-					|| module.getRegionsSet().contains("XX")) {
+					|| module.getRegionsSet().contains("*")) {
 				
 				returnModules.add(module);
 			}
