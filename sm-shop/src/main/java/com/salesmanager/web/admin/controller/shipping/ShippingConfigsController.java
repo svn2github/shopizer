@@ -90,9 +90,9 @@ public class ShippingConfigsController {
 		
 		shippingConfiguration.setShippingType(configuration.getShippingType());
 		
-		shippingService.saveShippingConfiguration(configuration, store);
+		shippingService.saveShippingConfiguration(shippingConfiguration, store);
 		
-		model.addAttribute("configuration", configuration);
+		model.addAttribute("configuration", shippingConfiguration);
 		model.addAttribute("success","success");
 		return "shipping-configs";
 		

@@ -138,6 +138,8 @@ public class CustomShippingMethodsController {
 
 		try {
 			shippingService.saveShippingQuoteModuleConfiguration(configuration, store);
+			shippingService.saveCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, configuration, store);
+
 			
 			
 		} catch (Exception e) {
@@ -146,8 +148,6 @@ public class CustomShippingMethodsController {
 					
 					List<String> errorCodes = ((IntegrationException)e).getErrorFields();
 					for(String errorCode : errorCodes) {
-						//ObjectError error = new ObjectError(new StringBuilder().append(errorCode).append("-error").toString(),messages.getMessage("message.fielderror", locale));
-						//result.addError(error);
 						model.addAttribute(errorCode,messages.getMessage("message.fielderror", locale));
 					}
 					return ControllerConstants.Tiles.Shipping.shippingMethod;
@@ -157,9 +157,7 @@ public class CustomShippingMethodsController {
 			}
 		}
 		
-		//save custom configuration
-		//shippingService
-		
+
 		model.addAttribute("success","success");
 		return ControllerConstants.Tiles.Shipping.shippingMethod;
 		
