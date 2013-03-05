@@ -130,6 +130,16 @@ public interface ShippingService {
 			CustomIntegrationConfiguration shippingConfiguration,
 			MerchantStore store) throws ServiceException;
 
+	/**
+	 * Removes a custom shipping quote
+	 * module
+	 * @param moduleCode
+	 * @param store
+	 * @throws ServiceException
+	 */
+	void removeCustomShippingQuoteModuleConfiguration(String moduleCode,
+			MerchantStore store) throws ServiceException;
+
 
 
 }

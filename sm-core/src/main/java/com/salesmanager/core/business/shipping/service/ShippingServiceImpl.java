@@ -248,6 +248,26 @@ public class ShippingServiceImpl implements ShippingService {
 	}
 	
 	@Override
+	public void removeCustomShippingQuoteModuleConfiguration(String moduleCode, MerchantStore store) throws ServiceException {
+		
+		
+
+		try {
+			
+			removeShippingQuoteModuleConfiguration(moduleCode,store);
+			MerchantConfiguration merchantConfiguration = merchantConfigurationService.getMerchantConfiguration(moduleCode, store);
+			if(merchantConfiguration!=null) {
+				merchantConfigurationService.delete(merchantConfiguration);
+			} 
+			
+			
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	
+	}
+	
+	@Override
 	public Map<String,IntegrationConfiguration> getShippingModulesConfigured(MerchantStore store) throws ServiceException {
 		try {
 			
