@@ -17,6 +17,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -63,10 +64,11 @@ public class CustomShippingMethodsController {
 
 
 		this.setMenu(model, request);
-		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		Language language = (Language)request.getAttribute("LANGUAGE");
+
+		populateModel(model, request, response);
+			
 		
-		ShippingConfiguration shippingConfiguration =  shippingService.getShippingConfiguration(store);
+/*		ShippingConfiguration shippingConfiguration =  shippingService.getShippingConfiguration(store);
 		
 		if(shippingConfiguration==null) {
 			shippingConfiguration = new ShippingConfiguration();
@@ -85,7 +87,6 @@ public class CustomShippingMethodsController {
 				}
 			}
 		}
-		
 		configuration.setModuleCode(WEIGHT_BASED_SHIPPING_METHOD);
 		
 		//get custom information
@@ -116,7 +117,36 @@ public class CustomShippingMethodsController {
 		model.addAttribute("configuration", configuration);
 		model.addAttribute("customConfiguration", customConfiguration);
 		model.addAttribute("shippingCountries", shippingCountries);
+		*/
+		
+		
 		return ControllerConstants.Tiles.Shipping.shippingMethod;
+		
+		
+	}
+	
+	
+	@Secured("SHIPPING")
+	@RequestMapping(value="/admin/shipping/addCustomRegion.html", method=RequestMethod.POST)
+	public String addCustomRegion(@ModelAttribute("region") String region, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+
+		this.setMenu(model, request);
+		populateModel(model, request, response);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		CustomShippingQuotesConfiguration customConfiguration = (CustomShippingQuotesConfiguration)shippingService.getCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, store);
+
+		List<CustomShippingQuotesRegion> regions = customConfiguration.getRegions();
+		
+		
+		for(CustomShippingQuotesRegion customRegion : regions) {
+			if(customRegion.equals(region)) {
+				ObjectError error = new ObjectError("dateBusinessSince",messages.getMessage("message.invalid.date", locale));
+				result.addError(error);
+			}
+		}
+		
+		return null;
+		
 		
 		
 	}
@@ -175,7 +205,8 @@ public class CustomShippingMethodsController {
 		
 		this.setMenu(model, request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		//shippingService.removeShippingQuoteModuleConfiguration(code, store);
+		shippingService.removeCustomShippingQuoteModuleConfiguration(WEIGHT_BASED_SHIPPING_METHOD, store);
+		
 		
 		return ControllerConstants.Tiles.Shipping.shippingMethods;
 		
@@ -230,7 +261,135 @@ public class CustomShippingMethodsController {
 		
 		return returnString;
 	}
+	
+	@Secured("SHIPPING")
+	@RequestMapping(value = "/admin/shipping/weightBased/page.html", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	String pageStores(HttpServletRequest request,
+			HttpServletResponse response) {
 
+		AjaxResponse resp = new AjaxResponse();
+
+
+		try {
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+			CustomShippingQuotesConfiguration customConfiguration = (CustomShippingQuotesConfiguration)shippingService.getCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, store);
+
+			List<CustomShippingQuotesRegion> quotes = customConfiguration.getRegions();
+			for (CustomShippingQuotesRegion quote : quotes) {
+					List<String> countries = quote.getCountries();
+					for(String country : countries) {
+						Map<String,String> entry = new HashMap<String,String> ();
+						entry.put("region", quote.getCustomRegionName());
+						entry.put("country", country);
+						resp.addDataEntry(entry);
+					}
+			}
+
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+
+		} catch (Exception e) {
+			LOGGER.error("Error while paging products", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+		}
+
+		String returnString = resp.toJSONString();
+
+		return returnString;
+	}
+	
+	/**
+	 * Edit custom region
+	 * @param region
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @param locale
+	 * @return
+	 * @throws Exception
+	 */
+	@Secured("SHIPPING")
+	@RequestMapping(value="/admin/shipping/weightBased/edit.html", method=RequestMethod.GET)
+	public String displayMerchantStore(@ModelAttribute("region") String region, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+		setMenu(model,request);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		CustomShippingQuotesConfiguration customConfiguration = (CustomShippingQuotesConfiguration)shippingService.getCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, store);
+		CustomShippingQuotesRegion aRegion = null;
+
+		List<CustomShippingQuotesRegion> regions = customConfiguration.getRegions();
+		for(CustomShippingQuotesRegion customRegion : regions) {
+			if(customRegion.getCustomRegionName().equals(region)) {
+				aRegion = customRegion;
+				break;
+			}
+		}
+		
+		model.addAttribute("customRegion", aRegion);
+
+
+		return ControllerConstants.Tiles.Shipping.customShippingWeightBased;
+	}
+	
+
+	private void populateModel(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		
+		ShippingConfiguration shippingConfiguration =  shippingService.getShippingConfiguration(store);
+		
+		if(shippingConfiguration==null) {
+			shippingConfiguration = new ShippingConfiguration();
+			shippingConfiguration.setShippingType(ShippingType.INTERNATIONAL);
+		}
+		
+
+		//get configured shipping modules
+		Map<String,IntegrationConfiguration> configuredModules = shippingService.getShippingModulesConfigured(store);
+		IntegrationConfiguration configuration = new IntegrationConfiguration();
+		if(configuredModules!=null) {
+			for(String key : configuredModules.keySet()) {
+				if(key.equals(WEIGHT_BASED_SHIPPING_METHOD)) {
+					configuration = configuredModules.get(key);
+					break;
+				}
+			}
+		}
+		configuration.setModuleCode(WEIGHT_BASED_SHIPPING_METHOD);
+		
+		//get custom information
+		CustomShippingQuotesConfiguration customConfiguration = (CustomShippingQuotesConfiguration)shippingService.getCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, store);
+
+		//get supported countries
+		List<String> includedCountries = shippingService.getSupportedCountries(store);
+		List<Country> shippingCountries = new ArrayList<Country>();
+		if(shippingConfiguration.getShippingType().equals(ShippingType.INTERNATIONAL.name())){
+			Map<String,Country> countries = countryService.getCountriesMap(language);
+			for(String key : countries.keySet()) {
+				Country country = (Country)countries.get(key);
+				if(!includedCountries.contains(key)) {
+					shippingCountries.add(country);
+				}
+			}
+		} else {//if national only store country
+			if(!includedCountries.contains(store.getCountry().getIsoCode())) {
+				shippingCountries.add(store.getCountry());
+			}
+		}
+		
+		
+		List<String> environments = new ArrayList<String>();
+		environments.add(Constants.TEST_ENVIRONMENT);
+		environments.add(Constants.PRODUCTION_ENVIRONMENT);
+		
+		model.addAttribute("configuration", configuration);
+		model.addAttribute("customConfiguration", customConfiguration);
+		model.addAttribute("shippingCountries", shippingCountries);
+
+		
+	}
 	
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {
 		
