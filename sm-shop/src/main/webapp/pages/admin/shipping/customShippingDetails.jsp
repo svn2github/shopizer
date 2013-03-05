@@ -5,38 +5,6 @@
 
 <%@ page session="false" %>				
 				
-<script>
-	
-function validateRegion() {
-	$('#checkCodeStatus').html('<img src="<c:url value="/resources/img/ajax-loader.gif" />');
-	$('#checkCodeStatus').show();
-	var region = $("#region").val();
-	var id = "";
-	checkCode(region,id,'<c:url value="/admin/shipping/checkRegionCode.html" />');
-}
-
-function callBackCheckCode(msg,code) {
-	
-	if(code==0) {
-		$('.btn-region').removeClass('disabled');
-	}
-	if(code==9999) {
-
-		$('#checkCodeStatus').html('<font color="green"><s:message code="label.message.region.available" text="This region is available"/></font>');
-		$('#checkCodeStatus').show();
-		$('.btn-region').removeClass('disabled');
-	}
-	if(code==9998) {
-
-		$('#checkCodeStatus').html('<font color="red"><s:message code="label.message.region.exist" text="This region already exist"/></font>');
-		$('#checkCodeStatus').show();
-		$('.btn-region').addClass('disabled');
-	}
-	
-}
-	
-</script>
-
 
 <div class="tabbable">
 
@@ -49,7 +17,7 @@ function callBackCheckCode(msg,code) {
     					<div class="tab-pane active" id="shipping-section">
     					
     							<div class="sm-ui-component">
-								<h3><s:message code="module.shipping.weightBased" text="module.shipping.weightBased" /></h3>	
+								<h3><s:message code="module.shipping.weightBased" text="module.shipping.weightBased" /> - <c:out value="${configuration.customRegionName}" /></h3>	
 								<br/>
 
 								<form action="<c:url value="/admin/shipping/addCustomRegion.html"/>">  
