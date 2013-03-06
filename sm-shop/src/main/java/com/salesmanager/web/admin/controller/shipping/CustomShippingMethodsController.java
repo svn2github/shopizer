@@ -66,60 +66,7 @@ public class CustomShippingMethodsController {
 		this.setMenu(model, request);
 
 		populateModel(model, request, response);
-			
-		
-/*		ShippingConfiguration shippingConfiguration =  shippingService.getShippingConfiguration(store);
-		
-		if(shippingConfiguration==null) {
-			shippingConfiguration = new ShippingConfiguration();
-			shippingConfiguration.setShippingType(ShippingType.INTERNATIONAL);
-		}
-		
 
-		//get configured shipping modules
-		Map<String,IntegrationConfiguration> configuredModules = shippingService.getShippingModulesConfigured(store);
-		IntegrationConfiguration configuration = new IntegrationConfiguration();
-		if(configuredModules!=null) {
-			for(String key : configuredModules.keySet()) {
-				if(key.equals(WEIGHT_BASED_SHIPPING_METHOD)) {
-					configuration = configuredModules.get(key);
-					break;
-				}
-			}
-		}
-		configuration.setModuleCode(WEIGHT_BASED_SHIPPING_METHOD);
-		
-		//get custom information
-		CustomShippingQuotesConfiguration customConfiguration = (CustomShippingQuotesConfiguration)shippingService.getCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, store);
-
-		//get supported countries
-		List<String> includedCountries = shippingService.getSupportedCountries(store);
-		List<Country> shippingCountries = new ArrayList<Country>();
-		if(shippingConfiguration.getShippingType().equals(ShippingType.INTERNATIONAL.name())){
-			Map<String,Country> countries = countryService.getCountriesMap(language);
-			for(String key : countries.keySet()) {
-				Country country = (Country)countries.get(key);
-				if(!includedCountries.contains(key)) {
-					shippingCountries.add(country);
-				}
-			}
-		} else {//if national only store country
-			if(!includedCountries.contains(store.getCountry().getIsoCode())) {
-				shippingCountries.add(store.getCountry());
-			}
-		}
-		
-		
-		List<String> environments = new ArrayList<String>();
-		environments.add(Constants.TEST_ENVIRONMENT);
-		environments.add(Constants.PRODUCTION_ENVIRONMENT);
-		
-		model.addAttribute("configuration", configuration);
-		model.addAttribute("customConfiguration", customConfiguration);
-		model.addAttribute("shippingCountries", shippingCountries);
-		*/
-		
-		
 		return ControllerConstants.Tiles.Shipping.shippingMethod;
 		
 		
@@ -140,15 +87,57 @@ public class CustomShippingMethodsController {
 		
 		for(CustomShippingQuotesRegion customRegion : regions) {
 			if(customRegion.equals(region)) {
-				ObjectError error = new ObjectError("dateBusinessSince",messages.getMessage("message.invalid.date", locale));
+				ObjectError error = new ObjectError("region",messages.getMessage("message.region.exists", locale));
 				result.addError(error);
+				break;
 			}
 		}
 		
-		return null;
+		if (result.hasErrors()) {
+			return ControllerConstants.Tiles.Shipping.shippingMethod;
+		}
 		
 		
+		CustomShippingQuotesRegion quoteRegion = new CustomShippingQuotesRegion();
+		quoteRegion.setCustomRegionName(region);
 		
+		model.addAttribute("customConfiguration", customConfiguration);
+		model.addAttribute("success","success");
+		
+		return ControllerConstants.Tiles.Shipping.shippingMethod;
+	
+	}
+	
+	@Secured("SHIPPING")
+	@RequestMapping(value="/admin/shipping/addCountryToRegion.html", method=RequestMethod.POST)
+	public String addCountryToCustomRegion(@ModelAttribute("customRegion") CustomShippingQuotesRegion customRegion, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+
+		this.setMenu(model, request);
+		populateModel(model, request, response);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		CustomShippingQuotesConfiguration customConfiguration = (CustomShippingQuotesConfiguration)shippingService.getCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, store);
+
+		List<CustomShippingQuotesRegion> regions = customConfiguration.getRegions();
+		
+		
+		for(CustomShippingQuotesRegion region : regions) {
+			if(region.equals(customRegion)) {
+				ObjectError error = new ObjectError("region",messages.getMessage("mmessage.region.exists", locale));
+				result.addError(error);
+				break;
+			}
+		}
+		
+		if (result.hasErrors()) {
+			return ControllerConstants.Tiles.Shipping.shippingMethod;
+		}
+		
+		regions.add(customRegion);
+		model.addAttribute("customConfiguration", customConfiguration);
+		model.addAttribute("success","success");
+		
+		return ControllerConstants.Tiles.Shipping.shippingMethod;
+	
 	}
 	
 	@Secured("SHIPPING")
