@@ -51,6 +51,10 @@ function callBackCheckCode(msg,code) {
     							<div class="sm-ui-component">
 								<h3><s:message code="module.shipping.weightBased" text="module.shipping.weightBased" /></h3>	
 								<br/>
+								
+								<form:errors path="*" cssClass="alert alert-error" element="div" />
+								<div id="form.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
+				
 
 								<form action="<c:url value="/admin/shipping/addCustomRegion.html"/>">  
 			      					<label class="required"><s:message code="label.shipping.addregion" text="Add region" /></label>
@@ -62,15 +66,12 @@ function callBackCheckCode(msg,code) {
 								<br/>
 								
 								<c:url var="addShipping" value="/admin/shipping/addCountryToRegion.html"/> 
-		                  		<form:form method="POST" commandName="customShipping" action="${addShipping}">
-				
-									<form:errors path="*" cssClass="alert alert-error" element="div" />
-									<div id="form.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
+		                  		<form:form method="POST" commandName="customRegion" action="${addShipping}">
 				
 		                  			 <div class="control-group">
 		                        			<label><s:message code="label.region" text="Region"/></label>
 		                        			<div class="controls">
-		                        					<form:select path="regions">
+		                        					<form:select path="customRegionName">
 						  								<form:options items="${customConfiguration.regions}" itemValue="customRegionName" itemLabel="customRegionName"/>
 					       							</form:select>
 		                        			</div>
@@ -79,8 +80,8 @@ function callBackCheckCode(msg,code) {
 		                        			<label><s:message code="label.country" text="Country"/></label>
 		                        			<div class="controls">
 		                        					
-		                        					<form:select path="countries">
-						  								<form:options items="${shippingCountries}" itemValue="id" itemLabel="name"/>
+		                        					<form:select path="countries[0]">
+						  								<form:options items="${shippingCountries}" itemValue="isoCode" itemLabel="name"/>
 					       							</form:select>
 		                        			</div>
 		                 			 </div>
