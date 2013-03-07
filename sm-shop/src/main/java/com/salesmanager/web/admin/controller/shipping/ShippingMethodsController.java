@@ -167,7 +167,7 @@ public class ShippingMethodsController {
 	}
 	
 	@RequestMapping(value="/admin/shipping/deleteShippingMethod.html", method=RequestMethod.POST)
-	public String deleteShippingMethod(@RequestParam("code") String code, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	public String deleteShippingMethod(@RequestParam("code") String code, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		this.setMenu(model, request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);

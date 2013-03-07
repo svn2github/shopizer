@@ -65,6 +65,7 @@ public class ShippingPackagingController {
 		}
 
 		model.addAttribute("configuration", shippingConfiguration);
+		model.addAttribute("store",store);
 		return ControllerConstants.Tiles.Shipping.shippingPackaging;
 		
 		
@@ -83,7 +84,7 @@ public class ShippingPackagingController {
 	 */
 	@Secured("SHIPPING")
 	@RequestMapping(value="/admin/shipping/saveShippingPackaging.html", method=RequestMethod.POST)
-	public String saveShippingOptions(@ModelAttribute("configuration") ShippingConfiguration configuration, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	public String saveShippingPackaging(@ModelAttribute("configuration") ShippingConfiguration configuration, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
 
 		this.setMenu(model, request);
@@ -118,7 +119,7 @@ public class ShippingPackagingController {
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("shipping", "shipping");
-		activeMenus.put("shipping-packaging", "shipping-packaging");
+		activeMenus.put("shipping-packages", "shipping-packages");
 		
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");

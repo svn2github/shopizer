@@ -368,6 +368,8 @@ public class CustomShippingMethodsController {
 			}
 		}
 		
+		CustomShippingQuotesRegion customRegion = new CustomShippingQuotesRegion();
+		
 		
 		List<String> environments = new ArrayList<String>();
 		environments.add(Constants.TEST_ENVIRONMENT);
@@ -375,6 +377,7 @@ public class CustomShippingMethodsController {
 		
 		model.addAttribute("configuration", configuration);
 		model.addAttribute("customConfiguration", customConfiguration);
+		model.addAttribute("customRegion", customRegion);
 		model.addAttribute("shippingCountries", shippingCountries);
 
 		
