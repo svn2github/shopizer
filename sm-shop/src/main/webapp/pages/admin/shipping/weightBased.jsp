@@ -66,7 +66,7 @@ function callBackCheckCode(msg,code) {
 								<br/>
 								
 								<c:url var="addShipping" value="/admin/shipping/addCountryToRegion.html"/> 
-		                  		<form:form method="POST" commandName="customRegion" action="${addShipping}">
+		                  		<form:form method="POST" commandName="customConfiguration" action="${addShipping}">
 				
 		                  			 <div class="control-group">
 		                        			<label><s:message code="label.region" text="Region"/></label>

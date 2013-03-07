@@ -10,10 +10,10 @@
                   <div class="control-group">
                         <label class="required"><s:message code="module.shipping.ups.identifier" text="Access key"/></label>
 	                        <div class="controls">
-	                        		<form:input cssClass="input-large highlight" path="integrationKeys['account']" />
+	                        		<form:input cssClass="input-large highlight" path="integrationKeys['accessKey']" />
 	                        </div>
 	                        <span class="help-inline">
-	                        	<c:if test="${identifier!=null}">
+	                        	<c:if test="${accessKey!=null}">
 	                        	<span id="identifiererrors" class="error"><s:message code="module.shipping.usps.message.identifier" text="Field in error"/></span>
 	                        	</c:if>
 	                        </span>
@@ -32,7 +32,7 @@
                   </div>
                   
                   <div class="control-group">
-                        <label class="required"><s:message code="module.shipping.ups.password" text="Password/></label>
+                        <label class="required"><s:message code="module.shipping.ups.password" text="Password"/></label>
 	                        <div class="controls">
 	                        		<form:password cssClass="input-large highlight" path="integrationKeys['password']" />
 	                        </div>

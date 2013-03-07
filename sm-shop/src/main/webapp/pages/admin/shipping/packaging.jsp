@@ -35,7 +35,7 @@
 								<br/>
 								
 
-							<c:url var="savePackaging" value="/admin/shipping/savePackaging.html"/>
+							<c:url var="savePackaging" value="/admin/shipping/saveShippingPackaging.html"/>
 							<form:form method="POST" commandName="configuration" action="${savePackaging}">
 
       							
@@ -52,8 +52,8 @@
                   					
                   					<div class="control-group">
                         				<div class="controls">
-                                    		<s:message code="label.store.weightunit" text="Weight units" />&nbsp;<strong><c:out value="${weightUnits}"/></strong><br/>			
-											<s:message code="label.store.sizeunits" text="Size units" />&nbsp;<strong><c:out value="${sizeUnits}"/></strong><br/>
+                                    		<s:message code="label.store.weightunit" text="Weight units" />&nbsp;<strong><c:out value="${store.weightunitcode}"/></strong><br/>			
+											<s:message code="label.store.sizeunits" text="Size units" />&nbsp;<strong><c:out value="${store.seizeunitcode}"/></strong><br/>
                         				</div>
                   					</div>
                   					<div class="control-group">
