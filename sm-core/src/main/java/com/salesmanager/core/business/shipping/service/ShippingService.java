@@ -107,6 +107,17 @@ public interface ShippingService {
 			List<ShippingProduct> products, Locale locale)
 			throws ServiceException;
 	
+
+	/**
+	 * Returns a shipping module configuration given a moduleCode
+	 * @param moduleCode
+	 * @param store
+	 * @return
+	 * @throws ServiceException
+	 */
+	IntegrationConfiguration getShippingConfiguration(String moduleCode,
+			MerchantStore store) throws ServiceException;
+	
 	/**
 	 * Retrieves the custom configuration for a given module
 	 * @param moduleCode
@@ -139,6 +150,7 @@ public interface ShippingService {
 	 */
 	void removeCustomShippingQuoteModuleConfiguration(String moduleCode,
 			MerchantStore store) throws ServiceException;
+
 
 
 
