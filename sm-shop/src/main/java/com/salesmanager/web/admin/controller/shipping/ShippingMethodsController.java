@@ -16,7 +16,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -79,7 +78,7 @@ public class ShippingMethodsController {
 	}
 	@Secured("SHIPPING")
 	@RequestMapping(value="/admin/shipping/shippingMethod.html", method=RequestMethod.GET)
-	public String getShippingMethod(@RequestParam("code") String code, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String displayShippingMethod(@RequestParam("code") String code, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 
 		this.setMenu(model, request);
@@ -87,17 +86,9 @@ public class ShippingMethodsController {
 		
 
 		//get configured shipping modules
-		Map<String,IntegrationConfiguration> configuredModules = shippingService.getShippingModulesConfigured(store);
-		IntegrationConfiguration configuration = new IntegrationConfiguration();
-		if(configuredModules!=null) {
-			for(String key : configuredModules.keySet()) {
-				if(key.equals(code)) {
-					
-					configuration = configuredModules.get(key);
-					
-					
-				}
-			}
+		IntegrationConfiguration configuration = shippingService.getShippingConfiguration(code, store);
+		if(configuration==null) {
+			configuration = new IntegrationConfiguration();
 		}
 		
 		configuration.setModuleCode(code);
@@ -138,8 +129,6 @@ public class ShippingMethodsController {
 					
 					List<String> errorCodes = ((IntegrationException)e).getErrorFields();
 					for(String errorCode : errorCodes) {
-						//ObjectError error = new ObjectError(new StringBuilder().append(errorCode).append("-error").toString(),messages.getMessage("message.fielderror", locale));
-						//result.addError(error);
 						model.addAttribute(errorCode,messages.getMessage("message.fielderror", locale));
 					}
 					return ControllerConstants.Tiles.Shipping.shippingMethod;
