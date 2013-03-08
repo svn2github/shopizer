@@ -8,7 +8,6 @@
     <!-- Le styles -->
     
     <link href="<c:url value="/resources/templates/bootstrap/css/bootstrap.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/templates/bootstrap/css/bootstrap-responsive.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/templates/bootstrap/css/theme.css" />" rel="stylesheet">
  
  
@@ -21,8 +20,15 @@
 
 
 <!-- Le styles -->
- 
+    <link href="css/bootstrap.css" rel="stylesheet">
     <style type="text/css">
+      body {
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
 
 	.minicart {
     		width: 350px;

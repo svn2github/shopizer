@@ -38,7 +38,7 @@ response.setDateHeader ("Expires", -1);
                 <jsp:include page="/pages/shop/templates/bootstrap/sections/shopLinks.jsp" />
  	</head>
  
- 	<body class="body">
+ 	<body>
  	
  	<div class="container">
 	<tiles:insertAttribute name="header"/>

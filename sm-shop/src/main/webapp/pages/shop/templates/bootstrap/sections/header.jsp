@@ -23,15 +23,16 @@ response.setDateHeader ("Expires", -1);
 					</ul>
 				</div>
 				<div class="span5">
-					<div class="btn-group pull-right" style="padding-top: 8px;">
 
+					<div class="btn-group pull-right" style="padding-top: 8px;">
 						<i class="icon-shopping-cart icon-black"></i>
-						<a id="open-cart" class="open noboxshadow dropdown-toggle" data-toggle="dropdown" href="#" style="box-shadow:none;">My Cart</a> 
+						<a id="open-cart" class="open noboxshadow dropdown-toggle" data-toggle="dropdown" href="#" style="box-shadow:none;">My Cart</a>
 						<span id="cartinfo">
 							<span id="cartqty">(0 items)</span>&nbsp;<span id="cartprice">$0.00</span>
 						</span> 
-			            <ul class="dropdown-menu minicart">
-			              <li>
+						
+			            	<ul class="dropdown-menu minicart">
+			              	<li>
 								<div class="cartbox">
 									<div id="shoppingcart">
 										<h3>Shopping Cart</h3><br/>
@@ -68,9 +69,42 @@ response.setDateHeader ("Expires", -1);
 			
 					  </li>
 					</ul>
-			</div>
+			     </div>
+
+
+					<div class="btn-group pull-right" style="padding-top: 8px;padding-right:12px;">
+					<ul class="nav" style="z-index:500000;">
+						<li class="dropdown">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+								Logon <b class="caret"></b> </a>
+							<ul class="dropdown-menu">
+								<li>
+									<a href="#">Action</a>
+								</li>
+								<li>
+									<a href="#">Another action</a>
+								</li>
+								<li>
+									<a href="#">Something else here</a>
+								</li>
+								<li class="divider"></li>
+								<li>
+									<a href="#">Separated link</a>
+								</li>
+							</ul>
+						</li>
+
+					</ul>
+					</div>
+
+
 	</div>
-</div><!--
+</div>
+
+
+
+
+<!--
 
 
 
