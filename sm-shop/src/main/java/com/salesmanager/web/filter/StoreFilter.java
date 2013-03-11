@@ -84,6 +84,8 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				
 				language = languageService.getByCode("en");
 				request.getSession().setAttribute("LANGUAGE", language);
+				
+				//TODO store default language
 			}
 			
 			//Locale locale = (Locale) request.getSession().getAttribute("LOCALE");
@@ -176,40 +178,6 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			return true;
 		   
 	   }
-	   
-/*		private void loadData() throws ServiceException {
-	
-			//List<SystemConfiguration> configurations = systemConfigurationService.list();
-			
-			
-			String loadTestData = appConfiguration.getProperty(ApplicationConstants.POPULATE_TEST_DATA);
-			boolean loadData =  !StringUtils.isBlank(loadTestData) && loadTestData.equals(SystemConstants.CONFIG_VALUE_TRUE);
-			
-			
-			if(loadData) {
-				
-				SystemConfiguration configuration = systemConfigurationService.getByKey(ApplicationConstants.TEST_DATA_LOADED);
-			
-				if(configuration!=null) {
-						if(configuration.getKey().equals(ApplicationConstants.TEST_DATA_LOADED)) {
-							if(configuration.getValue().equals(SystemConstants.CONFIG_VALUE_TRUE)) {
-								return;		
-							}
-						}		
-				}
-				
-				initStoreData.initInitialData();
-				
-				configuration = new SystemConfiguration();
-				configuration.getAuditSection().setModifiedBy(SystemConstants.SYSTEM_USER);
-				configuration.setKey(ApplicationConstants.TEST_DATA_LOADED);
-				configuration.setValue(SystemConstants.CONFIG_VALUE_TRUE);
-				systemConfigurationService.create(configuration);
-				
-				
-			}
-		}*/
-
 
 	
 	

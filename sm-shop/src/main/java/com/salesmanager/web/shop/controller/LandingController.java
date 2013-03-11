@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.content.model.content.Content;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -21,6 +22,9 @@ public class LandingController {
 	
 	@Autowired
 	ContentService contentService;
+	
+	//@Autowired
+	//CategoryService categoryService;
 	
 	@RequestMapping(value={"/shop/home.html","/shop/","/shop"}, method=RequestMethod.GET)
 	public String displayLanding(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -42,15 +46,18 @@ public class LandingController {
 		
 		//model.addAttribute("activeMenus",activeMenus);
 		
-		//get store information
-		
-		
-		//get last 10 orders
+
 		if(content!=null) {
 			model.addAttribute("page",content.getDescriptions().get(0));
 		}
 		
-		return "landing.bootstrap";
+		//root categories
+		
+		//featured items
+		
+		StringBuilder template = new StringBuilder().append("landing.").append(store.getStoreTemplate());
+		
+		return "landing.bootstrap";//template.toString()
 	}
 
 }
