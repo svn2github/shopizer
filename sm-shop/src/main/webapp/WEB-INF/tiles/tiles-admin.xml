@@ -105,8 +105,9 @@
   		<put-attribute name="body" value="/pages/admin/products/reviews.jsp" /> 
   	</definition>
   	
+  	
   	<definition name="admin-shipping-custom" template="/layout/admin/layout.jsp">
-  		<put-attribute name="body" value="/pages/admin/shipping/customShipping.jsp" /> 
+  		<put-attribute name="body" value="/pages/admin/shipping/customShippingDetails.jsp" /> 
   	</definition>
   	
   	<definition name="catalogue-categories" template="/layout/admin/layout.jsp">
