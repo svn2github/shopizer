@@ -44,7 +44,7 @@ public interface ControllerConstants
             final String shippingMethods="shipping-methods";
             final String shippingOptions="shipping-options";
             final String shippingPackaging="shipping-packaging";
-            final String customShippingWeightBased="shipping-custom-weightbased";
+            final String customShippingWeightBased="admin-shipping-custom";
         }
         
         interface Order{

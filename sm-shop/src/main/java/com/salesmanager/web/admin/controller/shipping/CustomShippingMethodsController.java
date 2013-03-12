@@ -32,8 +32,11 @@ import com.salesmanager.core.business.shipping.model.ShippingType;
 import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.modules.integration.IntegrationException;
+import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuoteWeightItem;
 import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuotesConfiguration;
 import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuotesRegion;
+import com.salesmanager.core.utils.ProductPriceUtils;
+import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
@@ -53,6 +56,9 @@ public class CustomShippingMethodsController {
 	
 	@Autowired
 	private CountryService countryService;
+	
+	@Autowired
+	private ProductPriceUtils priceUtil;
 	
 	@Autowired
 	LabelUtils messages;
@@ -254,7 +260,7 @@ public class CustomShippingMethodsController {
 	@Secured("SHIPPING")
 	@RequestMapping(value = "/admin/shipping/weightBased/page.html", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
-	String pageStores(HttpServletRequest request,
+	String pageCustomShipping(HttpServletRequest request,
 			HttpServletResponse response) {
 
 		AjaxResponse resp = new AjaxResponse();
@@ -299,7 +305,7 @@ public class CustomShippingMethodsController {
 	 */
 	@Secured("SHIPPING")
 	@RequestMapping(value="/admin/shipping/weightBased/edit.html", method=RequestMethod.GET)
-	public String displayMerchantStore(@ModelAttribute("region") String region, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	public String editCustomShipping(@ModelAttribute("region") String region, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		setMenu(model,request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
@@ -319,6 +325,97 @@ public class CustomShippingMethodsController {
 
 		return ControllerConstants.Tiles.Shipping.customShippingWeightBased;
 	}
+	
+	
+	@Secured("SHIPPING")
+	@RequestMapping(value = "/admin/shipping/weightBasedDetails/page.html", method = RequestMethod.POST, produces = "application/json")
+	public @ResponseBody
+	String pageCustomShippingDetails(HttpServletRequest request,
+			HttpServletResponse response) {
+		
+		String region = request.getParameter("region");
+		
+		AjaxResponse resp = new AjaxResponse();
+		
+		if(StringUtils.isBlank(region)){
+			
+			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorString("Product id is not valid");
+			String returnString = resp.toJSONString();
+			return returnString;
+			
+		}
+
+
+		try {
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+			CustomShippingQuotesConfiguration customConfiguration = (CustomShippingQuotesConfiguration)shippingService.getCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, store);
+
+			List<CustomShippingQuotesRegion> quotes = customConfiguration.getRegions();
+			for (CustomShippingQuotesRegion quote : quotes) {
+
+					if(quote.getCustomRegionName().equals(region)) {
+
+						List<CustomShippingQuoteWeightItem> quoteItems = quote.getQuoteItems();
+						for(CustomShippingQuoteWeightItem quoteItem : quoteItems) {
+							Map<String,String> entry = new HashMap<String,String> ();
+							entry.put("price", priceUtil.getAdminFormatedAmountWithCurrency(store,quoteItem.getPrice()));
+							entry.put("weight", String.valueOf(quoteItem.getMaximumWeight()));
+							resp.addDataEntry(entry);
+						}
+					}
+			}
+
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+
+		} catch (Exception e) {
+			LOGGER.error("Error while paging products", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+		}
+
+		String returnString = resp.toJSONString();
+
+		return returnString;
+	}
+	
+	
+	
+	
+	@Secured("SHIPPING")
+	@RequestMapping(value="/admin/shipping/weightBased/addPrice.html", method=RequestMethod.POST)
+	public String addPrice(@ModelAttribute("customQuote") CustomShippingQuoteWeightItem customQuote, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+
+		this.setMenu(model, request);
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		CustomShippingQuotesConfiguration customConfiguration = (CustomShippingQuotesConfiguration)shippingService.getCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, store);
+
+		List<CustomShippingQuotesRegion> regions = customConfiguration.getRegions();
+		
+		
+		for(CustomShippingQuotesRegion region : regions) {
+			if(region.equals(customRegion)) {
+				ObjectError error = new ObjectError("region",messages.getMessage("mmessage.region.exists", locale));
+				result.addError(error);
+				break;
+			}
+		}
+		
+		if (result.hasErrors()) {
+			return ControllerConstants.Tiles.Shipping.shippingMethod;
+		}
+		
+		regions.add(customRegion);
+		model.addAttribute("customConfiguration", customConfiguration);
+		model.addAttribute("success","success");
+		
+		return ControllerConstants.Tiles.Shipping.shippingMethod;
+	
+	}
+	
+	
+	
 	
 
 	private void populateModel(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
