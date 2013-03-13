@@ -7,24 +7,25 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.web.constants.Constants;
 
-public class ContentImageUrlTag extends TagSupport {
+public class StoreLogoUrlTag extends TagSupport {
 	
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6319855234657139862L;
-	private static final Logger LOGGER = LoggerFactory.getLogger(ContentImageUrlTag.class);
-
-	private MerchantStore merchantStore;
-	private String imageName;
-	private String imageType;
+	private static final Logger LOGGER = LoggerFactory.getLogger(StoreLogoUrlTag.class);
+	private static final String LOGO_TYPE = "LOGO";
+	private static final String RESOURCES = "resources";
+	private static final String IMG = "img";
+	private static final String SHOPIZER_LOGO = "shopizer_small.png";
 
 
 	public int doStartTag() throws JspException {
@@ -62,7 +63,6 @@ public class ContentImageUrlTag extends TagSupport {
 			if(configurations!=null) {
 				scheme = (String)configurations.get("scheme");
 			}
-			
 
 			
 			imagePath.append(scheme).append("://")
@@ -72,10 +72,24 @@ public class ContentImageUrlTag extends TagSupport {
 			
 			
 			
-			imagePath	//.append(scheme).append("://").append(merchantStore.getDomainName())\
-				.append(Constants.STATIC_URI).append("/")
-				.append(merchantStore.getCode()).append("/").append(this.getImageType())
-				.append("/").append(this.getImageName());
+			
+			if(StringUtils.isBlank(merchantStore.getStoreLogo())){
+
+				imagePath
+					.append(RESOURCES).append("/")
+					.append(IMG).append("/").append(SHOPIZER_LOGO);
+			} else {
+				
+				imagePath
+					.append(Constants.STATIC_URI).append("/")
+					.append(merchantStore.getCode()).append("/").append(LOGO_TYPE)
+					.append("/").append(merchantStore.getStoreLogo());
+				
+			}
+			
+
+			
+
 			
 
 			pageContext.getOut().print(imagePath.toString());
@@ -92,29 +106,9 @@ public class ContentImageUrlTag extends TagSupport {
 		return EVAL_PAGE;
 	}
 
-	public void setMerchantStore(MerchantStore merchantStore) {
-		this.merchantStore = merchantStore;
-	}
 
-	public MerchantStore getMerchantStore() {
-		return merchantStore;
-	}
 
-	public void setImageName(String imageName) {
-		this.imageName = imageName;
-	}
 
-	public String getImageName() {
-		return imageName;
-	}
-
-	public void setImageType(String imageType) {
-		this.imageType = imageType;
-	}
-
-	public String getImageType() {
-		return imageType;
-	}
 
 
 

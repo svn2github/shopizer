@@ -395,22 +395,29 @@ public class CustomShippingMethodsController {
 		
 		
 		for(CustomShippingQuotesRegion region : regions) {
-			if(region.equals(customRegion)) {
-				ObjectError error = new ObjectError("region",messages.getMessage("mmessage.region.exists", locale));
-				result.addError(error);
-				break;
+			List<CustomShippingQuoteWeightItem> quotes = region.getQuoteItems();
+			
+			for(CustomShippingQuoteWeightItem quote : quotes) {
+				
+				if(quote.getMaximumWeight()==customQuote.getMaximumWeight()){
+					ObjectError error = new ObjectError("maximumWeight",messages.getMessage("label.message.maximumWeight.exist", locale));
+					result.addError(error);
+					break;
+				}
 			}
 		}
 		
+		model.addAttribute("customConfiguration", customConfiguration);
+		
 		if (result.hasErrors()) {
-			return ControllerConstants.Tiles.Shipping.shippingMethod;
+			return ControllerConstants.Tiles.Shipping.customShippingWeightBased;
 		}
 		
-		regions.add(customRegion);
-		model.addAttribute("customConfiguration", customConfiguration);
+
+		
 		model.addAttribute("success","success");
 		
-		return ControllerConstants.Tiles.Shipping.shippingMethod;
+		return ControllerConstants.Tiles.Shipping.customShippingWeightBased;
 	
 	}
 	
