@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -31,7 +32,8 @@ import com.salesmanager.core.constants.SchemaConstant;
 
 @Entity
 @EntityListeners(value = AuditListener.class)
-@Table(name = "CONTENT", schema=SchemaConstant.SALESMANAGER_SCHEMA)
+@Table(name = "CONTENT", schema= SchemaConstant.SALESMANAGER_SCHEMA,uniqueConstraints=
+    @UniqueConstraint(columnNames = {"MERCHANT_ID", "CODE"}) )
 public class Content extends SalesManagerEntity<Long, Content> implements Serializable {
 
 	
@@ -56,7 +58,7 @@ public class Content extends SalesManagerEntity<Long, Content> implements Serial
 	private MerchantStore merchantStore;
 	
 	@NotEmpty
-	@Column(name="CODE", unique=true, length=100, nullable=false)
+	@Column(name="CODE", length=100, nullable=false)
 	private String code;
 	
 	@Column(name = "VISIBLE")

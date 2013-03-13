@@ -18,6 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.validation.Valid;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -26,10 +27,14 @@ import com.salesmanager.core.business.common.model.audit.AuditSection;
 import com.salesmanager.core.business.common.model.audit.Auditable;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.constants.SchemaConstant;
 
 @Entity
 @EntityListeners(value = AuditListener.class)
-@Table(name = "CATEGORY", schema="SALESMANAGER")
+@Table(name = "CATEGORY", schema= SchemaConstant.SALESMANAGER_SCHEMA,uniqueConstraints=
+    @UniqueConstraint(columnNames = {"MERCHANT_ID", "CODE"}) )
+
+
 public class Category extends SalesManagerEntity<Long, Category> implements Auditable {
 	private static final long serialVersionUID = -846291242449186747L;
 	
@@ -76,7 +81,7 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 	private String lineage;
 	
 	@NotEmpty
-	@Column(name="CODE", unique=true, length=100, nullable=false)
+	@Column(name="CODE", length=100, nullable=false)
 	private String code;
 
 	public String getCode() {

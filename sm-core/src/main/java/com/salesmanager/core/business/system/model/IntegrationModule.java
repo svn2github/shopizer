@@ -28,6 +28,8 @@ import com.salesmanager.core.constants.SchemaConstant;
 @Entity
 @EntityListeners(value = AuditListener.class)
 @Table(name = "MODULE_CONFIGURATION", schema= SchemaConstant.SALESMANAGER_SCHEMA)
+
+
 public class IntegrationModule extends SalesManagerEntity<Long, IntegrationModule> implements Serializable, Auditable {
 
 	
@@ -49,7 +51,7 @@ public class IntegrationModule extends SalesManagerEntity<Long, IntegrationModul
 	@Column(name="MODULE")
 	private String module;
 	
-	@Column(name="CODE", nullable=false, unique=true)
+	@Column(name="CODE", nullable=false)
 	private String code;
 	
 	@Column(name="REGIONS")

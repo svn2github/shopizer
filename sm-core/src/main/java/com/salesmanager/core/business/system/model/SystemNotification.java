@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import com.salesmanager.core.business.common.model.audit.AuditListener;
 import com.salesmanager.core.business.common.model.audit.AuditSection;
@@ -28,7 +29,9 @@ import com.salesmanager.core.constants.SchemaConstant;
 
 @Entity
 @EntityListeners(value = AuditListener.class)
-@Table(name = "SYSTEM_NOTIFICATION", schema= SchemaConstant.SALESMANAGER_SCHEMA)
+
+@Table(name = "SYSTEM_NOTIFICATION", schema= SchemaConstant.SALESMANAGER_SCHEMA,uniqueConstraints=
+    @UniqueConstraint(columnNames = {"MERCHANT_ID", "KEY"}) )
 public class SystemNotification extends SalesManagerEntity<Long, SystemNotification> implements Serializable, Auditable {
 
 	/**
@@ -42,7 +45,7 @@ public class SystemNotification extends SalesManagerEntity<Long, SystemNotificat
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
 	
-	@Column(name="KEY", unique=true)
+	@Column(name="KEY")
 	private String key;
 	
 	@Column(name="VALUE")
