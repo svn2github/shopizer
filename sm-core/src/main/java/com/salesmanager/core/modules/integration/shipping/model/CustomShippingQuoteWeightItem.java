@@ -6,6 +6,16 @@ import org.json.simple.JSONObject;
 public class CustomShippingQuoteWeightItem extends CustomShippingQuoteItem implements JSONAware {
 	
 	private int maximumWeight;
+	
+	private String priceText;
+
+	public String getPriceText() {
+		return priceText;
+	}
+
+	public void setPriceText(String priceText) {
+		this.priceText = priceText;
+	}
 
 	public void setMaximumWeight(int maximumWeight) {
 		this.maximumWeight = maximumWeight;
