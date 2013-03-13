@@ -56,6 +56,15 @@
 
 
 <tag>
+ 		 <!-- Builds the store logo URL -->
+         <name>storeLogo</name>
+         <tag-class>com.salesmanager.web.tags.StoreLogoUrlTag</tag-class>
+         <body-content>scriptless</body-content>
+
+</tag>
+
+
+<tag>
  		 <!-- Builds the product URL -->
          <name>productUrl</name>
          <tag-class>com.salesmanager.web.tags.ProductDescriptionUrlTag</tag-class>

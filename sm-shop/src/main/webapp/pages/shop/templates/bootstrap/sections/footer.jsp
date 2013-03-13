@@ -18,11 +18,8 @@ response.setDateHeader ("Expires", -1);
                 <div class="row">                   
                     <div class="span3">
 						<div class="company">
-							<h4>My Store</h4>
 							<p>
-								Shopizer<br>
-								this street address<br>
-								Tel: +444-888-9999
+								<jsp:include page="/common/preBuiltBlocks/storeAddress.jsp"/>
 							</p>
 						</div>
                     </div>

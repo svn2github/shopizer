@@ -20,6 +20,40 @@
 								<h3><s:message code="module.shipping.weightBased" text="module.shipping.weightBased" /> - <c:out value="${configuration.customRegionName}" /></h3>	
 								<br/>
 
+								<c:url var="addPrice" value="/admin/shipping/weightBased/addPrice.html"/>
+								<form:form method="POST" commandName="customQuote" action="${addPrice}">
+
+      							
+      								<form:errors path="*" cssClass="alert alert-error" element="div" />
+									<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
+								
+								
+								    <div class="control-group">
+                        				<label><s:message code="label.shipping.addregion" text="Add region" /></label>
+                        				<div class="controls">
+											<input type="text" class="span3" name="maximumWeight" id="maximumWeight">
+                        				</div>
+	                                	<span class="help-inline"><form:errors path="maximumWeight" cssClass="error" /></span>
+	                        		</div>
+	                        		
+	                        		<div class="control-group">
+                        				<label><s:message code="label.shipping.addregion" text="Add region" /></label>
+                        				<div class="controls">
+											<input type="text" class="span3" name="priceText" id="priceText" onblur="validatecode()">
+                        				</div>
+	                                	<span class="help-inline"><form:errors path="priceText" cssClass="error" /></span>
+	                        		</div>
+	                        		
+	                        		<div class="form-actions">
+                  						<div class="pull-right">
+                  							<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>
+                  						</div>
+            	 					</div>
+								
+								
+								</form:form>
+
+
 								<form action="<c:url value="/admin/shipping/weightBased/addPrice.html"/>">  
 			      					<label class="required"><s:message code="label.shipping.addregion" text="Add region" /></label>
 			      					<input type="text" class="span3" name="region" id="region" onblur="validatecode()"><!-- must be unique -->  
