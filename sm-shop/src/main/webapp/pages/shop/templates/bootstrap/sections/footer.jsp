@@ -9,6 +9,7 @@ response.setDateHeader ("Expires", -1);
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %>  
  
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
@@ -51,7 +52,7 @@ response.setDateHeader ("Expires", -1);
 		    <div id="footer-bottom">
 				<div class="container">
 				   <div class="row">
-					<div class="span12 text"> Copyright My Store </div>
+					<div class="span12 text"><sm:storeCopy/>&nbsp;<s:message code="label.generic.providedby" /> <a href="http://www.shopizer.com" class="footer-href" target="_blank">Shopizer</div>
 				   </div>
 				 </div>
 		    </div>

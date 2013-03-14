@@ -17,9 +17,9 @@ response.setDateHeader ("Expires", -1);
 <div class="row" id="mainmenu">
 				<div class="span7">
 					<ul id="links" class="nav nav-pills pull-left">
-						<li class="active"><a href="http://wbpreview.com/previews/WB0M3G9S1/index.html" title="Bitsy Shop">Home</a></li>
-						<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html" title="All specials">Specials</a></li>
-						<li><a href="http://wbpreview.com/previews/WB0M3G9S1/contact.html" title="Contact">Contact</a></li>						
+						<li class="active"><a href="http://#previews/WB0M3G9S1/index.html" title="Bitsy Shop">Home</a></li>
+						<li><a href="http://#previews/WB0M3G9S1/products.html" title="All specials">Specials</a></li>
+						<li><a href="http://#previews/WB0M3G9S1/contact.html" title="Contact">Contact</a></li>						
 					</ul>
 				</div>
 				<div class="span5">
@@ -95,10 +95,68 @@ response.setDateHeader ("Expires", -1);
 						</li>
 
 					</ul>
+					</div><!--
+					http://mifsud.me/adding-dropdown-login-form-bootstraps-navbar/
+					
+					$(function() {
+					  // Setup drop down menu
+					  $('.dropdown-toggle').dropdown();
+					 
+					  // Fix input element click problem
+					  $('.dropdown input, .dropdown label').click(function(e) {
+					    e.stopPropagation();
+					  });
+					});
+					
+					<div class="navbar navbar-fixed-top">
+						  <div class="navbar-inner">
+						    <div class="container"> Collapsable nav bar 
+						      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+						        <span class="icon-bar"></span>
+						        <span class="icon-bar"></span>
+						        <span class="icon-bar"></span>
+						      </a>
+						 
+						       Your site name for the upper left corner of the site 
+						      <a class="brand">My Site</a>
+						 
+						       Start of the nav bar content 
+						      <div class="nav-collapse"> Other nav bar content 
+						        ...
+						        ...
+						 
+						         The drop down menu 
+						        <ul class="nav pull-right">
+						          <li><a href="/users/sign_up">Sign Up</a></li>
+						          <li class="divider-vertical"></li>
+						          <li class="dropdown">
+						            <a class="dropdown-toggle" href="#" data-toggle="dropdown">Sign In <strong class="caret"></strong></a>
+						            <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
+						               
+						               
+						               <form action="[YOUR ACTION]" method="post" accept-charset="UTF-8">
+										  <input id="user_username" style="margin-bottom: 15px;" type="text" name="user[username]" size="30" />
+										  <input id="user_password" style="margin-bottom: 15px;" type="password" name="user[password]" size="30" />
+										  <input id="user_remember_me" style="float: left; margin-right: 10px;" type="checkbox" name="user[remember_me]" value="1" />
+										  <label class="string optional" for="user_remember_me"> Remember me</label>
+										 
+										  <input class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px;" type="submit" name="commit" value="Sign In" />
+										</form>
+						               
+						               
+						               
+						            </div>
+						          </li>
+						        </ul>
+						      </div>
+						    </div>
+						  </div>
 					</div>
+					
+					
 
 
-	</div>
+	--></div>
 </div>
 
 

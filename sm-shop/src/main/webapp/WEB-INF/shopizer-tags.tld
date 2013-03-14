@@ -63,6 +63,14 @@
 
 </tag>
 
+<tag>
+ 		 <!-- Builds the copyright -->
+         <name>storeCopy</name>
+         <tag-class>com.salesmanager.web.tags.StoreFooterTag</tag-class>
+         <body-content>scriptless</body-content>
+
+</tag>
+
 
 <tag>
  		 <!-- Builds the product URL -->
