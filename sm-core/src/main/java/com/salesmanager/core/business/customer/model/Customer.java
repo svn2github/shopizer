@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -12,6 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -20,11 +23,14 @@ import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cascade;
+
 import com.salesmanager.core.business.catalog.product.model.review.ProductReview;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.zone.model.Zone;
+import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.constants.SchemaConstant;
 import com.salesmanager.core.utils.CloneUtils;
 
@@ -109,6 +115,23 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 	
 	@Embedded
 	private Billing billing = null;
+	
+	
+	@ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.REFRESH})
+	@JoinTable(name = "CUSTOMER_GROUP", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
+			@JoinColumn(name = "CUSTOMER_ID", nullable = false, updatable = false) }
+			, 
+			inverseJoinColumns = { @JoinColumn(name = "GROUP_ID", 
+					nullable = false, updatable = false) }
+	)
+	@Cascade({
+		org.hibernate.annotations.CascadeType.DETACH,
+		org.hibernate.annotations.CascadeType.LOCK,
+		org.hibernate.annotations.CascadeType.REFRESH,
+		org.hibernate.annotations.CascadeType.REPLICATE
+		
+	})
+	private List<Group> groups = new ArrayList<Group>();
 	
 	public Customer() {
 	}
@@ -295,5 +318,13 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 
 	public Billing getBilling() {
 		return billing;
+	}
+
+	public void setGroups(List<Group> groups) {
+		this.groups = groups;
+	}
+
+	public List<Group> getGroups() {
+		return groups;
 	}
 }

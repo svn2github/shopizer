@@ -11,6 +11,7 @@ import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.user.model.Group;
+import com.salesmanager.core.business.user.model.GroupType;
 import com.salesmanager.core.business.user.model.QGroup;
 
 @Repository("groupDao")
@@ -61,12 +62,13 @@ public class GroupDaoImpl extends SalesManagerEntityDaoImpl<Integer, Group> impl
 	}
 
 	@Override
-	public List<Group> listGroup() {
+	public List<Group> listGroup(GroupType groupType) {
 		QGroup qGroup = QGroup.group;
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qGroup)
+			.where(qGroup.groupType.eq(groupType))
 			.orderBy(qGroup.id.asc());
 		
 		return query.listDistinct(qGroup);

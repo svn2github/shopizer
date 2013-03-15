@@ -1,14 +1,14 @@
 package com.salesmanager.core.business.user.model;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -43,6 +43,10 @@ public class Group extends SalesManagerEntity<Integer, Group> implements Auditab
 	public Group() {
 		
 	}
+	
+	@Column (name ="GROUP_TYPE")
+	@Enumerated(value = EnumType.STRING)
+	private GroupType groupType;
 	
 	@NotEmpty
 	@Column(name="GROUP_NAME", unique=true)
@@ -93,6 +97,14 @@ public class Group extends SalesManagerEntity<Integer, Group> implements Auditab
 
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
+	}
+
+	public void setGroupType(GroupType groupType) {
+		this.groupType = groupType;
+	}
+
+	public GroupType getGroupType() {
+		return groupType;
 	}
 
 
