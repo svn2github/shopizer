@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.user.model.Group;
+import com.salesmanager.core.business.user.model.GroupType;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
 import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
@@ -75,7 +76,7 @@ public class GroupsController {
 			HttpServletResponse response) throws Exception {
 
 		setMenu(model, request);
-		List<Group> groups = groupService.listGroup();
+		List<Group> groups = groupService.listGroup(GroupType.ADMIN);
 		model.addAttribute("groups", groups);
 
 		return "admin-user-groups";

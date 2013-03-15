@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
@@ -51,6 +52,10 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
+import com.salesmanager.core.business.user.model.Group;
+import com.salesmanager.core.business.user.model.GroupType;
+import com.salesmanager.core.business.user.service.GroupService;
+import com.salesmanager.web.constants.Constants;
 
 @Component
 public class InitStoreData implements InitData {
@@ -108,6 +113,12 @@ public class InitStoreData implements InitData {
 	
 	@Autowired
 	protected OrderService orderService;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	protected GroupService   groupService;
 
 	public void initInitialData() throws ServiceException {
 		
@@ -555,34 +566,44 @@ public class InitStoreData implements InitData {
 		    productPriceService.create(dprice6);
 
 		    
-		    //Create a customer
+		    //Create a customer (user name[nick] : shopizer password : password)
 
 		    Customer customer = new Customer();
 			customer.setFirstname("Leonardo");
 			customer.setMerchantStore(store);
 			customer.setLastname("DiCaprio");
-			customer.setCity("city");
-			customer.setEmailAddress("test@test.com");
+			customer.setCity("Boucherville");
+			customer.setEmailAddress("test@shopizer.com");
 			customer.setGender("M");						
 			customer.setTelephone("444-555-6666");
-			customer.setAnonymous(true);
-			customer.setCompany("ifactory");
+			customer.setAnonymous(false);
+			customer.setCompany("CSTI Consulting");
 			customer.setDateOfBirth(new Date());
-			customer.setFax("555-666-7777");
-			customer.setNewsletter('c');
-			customer.setNick("My nick");
 			customer.setPostalCode("J4B-8J9");			
 			customer.setStreetAddress("358 Du Languadoc");
 			customer.setTelephone("444-555-6666");
 			customer.setCountry(canada);
 			customer.setZone(zone);
+			customer.setNick("shopizer");
+			
+			String password = passwordEncoder.encodePassword("password", null);
+			customer.setPassword(password);
+			
+			List<Group> groups = groupService.listGroup(GroupType.CUSTOMER);
+			  
+
+			for(Group group : groups) {
+				  if(group.getGroupName().equals(Constants.GROUP_CUSTOMER)) {
+					  customer.getGroups().add(group);
+				  }
+			}
 			
 		    Delivery delivery = new Delivery();
 		    delivery.setAddress("358 Du Languadoc");
-		    delivery.setCity( "Boucherville" );
+		    delivery.setCity( "Boucherville DiCaprio" );
 		    delivery.setCountry(canada);
 		    delivery.setCountryCode(canada.getIsoCode());
-		    delivery.setName("Delivery Name" );
+		    delivery.setName("Leonardo" );
 		    delivery.setPostalCode("J4B-8J9" );
 		    delivery.setZone(zone);	    
 		    

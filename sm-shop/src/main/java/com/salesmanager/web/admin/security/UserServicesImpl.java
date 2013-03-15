@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.user.model.Group;
+import com.salesmanager.core.business.user.model.GroupType;
 import com.salesmanager.core.business.user.model.Permission;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
@@ -197,7 +198,7 @@ public class UserServicesImpl implements WebUserServices{
 
 		  String password = passwordEncoder.encodePassword("password", null);
 		  
-		  List<Group> groups = groupService.listGroup();
+		  List<Group> groups = groupService.listGroup(GroupType.ADMIN);
 		  
 		  //creation of the super admin admin:password)
 		  com.salesmanager.core.business.user.model.User user = new com.salesmanager.core.business.user.model.User("admin",password,"admin@shopizer.com");

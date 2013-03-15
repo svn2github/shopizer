@@ -33,6 +33,7 @@ import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.user.model.Group;
+import com.salesmanager.core.business.user.model.GroupType;
 import com.salesmanager.core.business.user.model.User;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.UserService;
@@ -280,7 +281,7 @@ public class UserController {
 		
 		//get groups
 		List<Group> groups = new ArrayList<Group>();
-		List<Group> userGroups = groupService.listGroup();
+		List<Group> userGroups = groupService.listGroup(GroupType.ADMIN);
 		for(Group group : userGroups) {
 			if(!group.getGroupName().equals(Constants.GROUP_SUPERADMIN)) {
 				groups.add(group);

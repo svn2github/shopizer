@@ -15,6 +15,7 @@ import com.salesmanager.core.business.reference.init.service.InitializationDatab
 import com.salesmanager.core.business.system.model.SystemConfiguration;
 import com.salesmanager.core.business.system.service.SystemConfigurationService;
 import com.salesmanager.core.business.user.model.Group;
+import com.salesmanager.core.business.user.model.GroupType;
 import com.salesmanager.core.business.user.model.Permission;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
@@ -69,11 +70,17 @@ public class InitializationLoader {
 				//security groups and permissions
 
 				  Group gsuperadmin = new Group("SUPERADMIN");
+				  gsuperadmin.setGroupType(GroupType.ADMIN);
 				  Group gadmin = new Group("ADMIN");
+				  gadmin.setGroupType(GroupType.ADMIN);
 				  Group gcatalogue = new Group("ADMIN_CATALOGUE");
+				  gcatalogue.setGroupType(GroupType.ADMIN);
 				  Group gstore = new Group("ADMIN_STORE");
+				  gstore.setGroupType(GroupType.ADMIN);
 				  Group gorder = new Group("ADMIN_ORDER");
+				  gorder.setGroupType(GroupType.ADMIN);
 				  Group gcontent = new Group("ADMIN_CONTENT");
+				  gcontent.setGroupType(GroupType.ADMIN);
 
 				  groupService.create(gsuperadmin);
 				  groupService.create(gadmin);
@@ -162,6 +169,20 @@ public class InitializationLoader {
 				
 				
 				  userDetailsService.createDefaultAdmin();
+				  
+				  
+				  //load customer groups and permissions
+				  Group gcustomer = new Group("CUSTOMER");
+				  gcustomer.setGroupType(GroupType.CUSTOMER);
+				  
+				  groupService.create(gcustomer);
+				  
+				  Permission gcustomerpermission = new Permission("AUTH_CUSTOMER");
+				  gcustomerpermission.getGroups().add(gcustomer);
+				  permissionService.create(gcustomerpermission);
+				  
+				  
+				  
 				  loadData();
 
 			}

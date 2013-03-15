@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.salesmanager.core.business.user.model.Group;
+import com.salesmanager.core.business.user.model.GroupType;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.web.admin.entity.web.Menu;
 
@@ -37,7 +38,7 @@ public class SecurityController {
 	public String displayGroupss(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
-		List<Group> groups = groupService.listGroup();
+		List<Group> groups = groupService.listGroup(GroupType.ADMIN);
 		
 		model.addAttribute("groups", groups);
 		
