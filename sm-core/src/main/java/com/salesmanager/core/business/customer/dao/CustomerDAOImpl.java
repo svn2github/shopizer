@@ -12,6 +12,7 @@ import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.QCountry;
 import com.salesmanager.core.business.reference.zone.model.QZone;
+import com.salesmanager.core.business.user.model.QGroup;
 
 @Repository("customerDao")
 public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> implements CustomerDAO {
@@ -69,6 +70,25 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.leftJoin(qCustomer.country,qCountry).fetch()
 			.leftJoin(qCustomer.zone,qZone).fetch()
 			.where(qCustomer.firstname.eq(name));
+		
+		return query.list(qCustomer);
+	}
+	
+	@Override
+	public Customer getByNick(String nick){
+		QCustomer qCustomer = QCustomer.customer;
+		QCountry qCountry = QCountry.country;
+		QZone qZone = QZone.zone;
+		QGroup qGroup = QGroup.group;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCustomer)
+			.join(qCustomer.merchantStore).fetch()
+			.leftJoin(qCustomer.country,qCountry).fetch()
+			.leftJoin(qCustomer.zone,qZone).fetch()
+			.leftJoin(qGroup.group,qGroup).fetch()
+			.where(qCustomer.nick.eq(nick));
 		
 		return query.list(qCustomer);
 	}

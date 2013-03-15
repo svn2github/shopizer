@@ -32,6 +32,11 @@ public class CustomerServiceImpl extends SalesManagerEntityServiceImpl<Long, Cus
 	}
 	
 	@Override
+	public Customer getByNick(String nick) {
+		return customerDAO.getByNick(nick);	
+}
+	
+	@Override
 	public List<Customer> listByStore(MerchantStore store) {
 		return customerDAO.listByStore(store);
 	}
