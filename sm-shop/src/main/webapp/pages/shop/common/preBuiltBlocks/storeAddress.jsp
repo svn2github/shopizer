@@ -9,7 +9,7 @@
 <!-- 
 //is content allowed
 -->
-<c:if test="${preBuiltBlocks["storeAddress"]!=null}">
+<c:if test="${preBuiltBlocks['storeAddress']!=null}">
  <address>  
  	<strong><c:out value="${requestScope.store.storename}"/></strong><br/>  
  	<c:out value="${requestScope.store.storeaddress}"/><br/>

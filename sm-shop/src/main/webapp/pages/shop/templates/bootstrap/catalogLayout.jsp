@@ -53,7 +53,7 @@ response.setDateHeader ("Expires", -1);
       <div class="row-fluid">
 			<tiles:insertAttribute name="body"/>   
       </div><!--/row-->
-      <hr>
+      <hr>FOOTER
 	  <tiles:insertAttribute name="footer"/>
     <!--</div>-->
 	</div>

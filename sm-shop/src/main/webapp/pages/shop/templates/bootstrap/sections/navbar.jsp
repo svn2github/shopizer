@@ -27,7 +27,7 @@ response.setDateHeader ("Expires", -1);
                 		</c:when>
                 		<c:otherwise>
                 			<a href="<c:url value="/shop/"/>">
-                				<h1><c:out value="${requestScope.store.storename}"</h1>
+                				<h1><c:out value="${requestScope.store.storename}"/></h1>
                 			</a>  
                 		</c:otherwise>
                 	</c:choose>                    

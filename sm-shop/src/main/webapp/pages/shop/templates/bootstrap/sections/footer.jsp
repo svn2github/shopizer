@@ -20,7 +20,7 @@ response.setDateHeader ("Expires", -1);
                     <div class="span3">
 						<div class="company">
 							<p>
-								<jsp:include page="/common/preBuiltBlocks/storeAddress.jsp"/>
+								<jsp:include page="/pages/shop/common/preBuiltBlocks/storeAddress.jsp"/>
 							</p>
 						</div>
                     </div>
@@ -52,7 +52,7 @@ response.setDateHeader ("Expires", -1);
 		    <div id="footer-bottom">
 				<div class="container">
 				   <div class="row">
-					<div class="span12 text"><sm:storeCopy/>&nbsp;<s:message code="label.generic.providedby" /> <a href="http://www.shopizer.com" class="footer-href" target="_blank">Shopizer</div>
+					<div class="span12 text">[STORE COPY]&nbsp;<s:message code="label.generic.providedby" /> <a href="http://www.shopizer.com" class="footer-href" target="_blank">Shopizer</div>
 				   </div>
 				 </div>
 		    </div>
