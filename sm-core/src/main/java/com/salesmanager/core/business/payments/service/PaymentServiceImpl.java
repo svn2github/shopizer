@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.payments.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,8 +10,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.payments.model.Payment;
+import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
@@ -72,6 +77,22 @@ public class PaymentServiceImpl implements PaymentService {
 		return modules;
 		
 		
+	}
+
+	@Override
+	public Transaction processPayment(Order order, Customer customer,
+			MerchantStore store, Payment payment, BigDecimal amount)
+			throws ServiceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Transaction processRefund(Order order, Customer customer,
+			MerchantStore store, Payment payment, BigDecimal amount)
+			throws ServiceException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 

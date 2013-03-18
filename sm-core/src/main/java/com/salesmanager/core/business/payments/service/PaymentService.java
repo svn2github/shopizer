@@ -1,10 +1,15 @@
 package com.salesmanager.core.business.payments.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.payments.model.Payment;
+import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 
@@ -17,5 +22,8 @@ public interface PaymentService {
 
 	Map<String, IntegrationConfiguration> getPaymentModulesConfigured(
 			MerchantStore store) throws ServiceException;
+	
+	Transaction processPayment(Order order, Customer customer, MerchantStore store, Payment payment, BigDecimal amount) throws ServiceException;
+	Transaction processRefund(Order order, Customer customer, MerchantStore store, Payment payment, BigDecimal amount) throws ServiceException;
 
 }

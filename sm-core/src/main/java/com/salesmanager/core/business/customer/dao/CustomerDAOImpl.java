@@ -90,7 +90,7 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.leftJoin(qGroup.group,qGroup).fetch()
 			.where(qCustomer.nick.eq(nick));
 		
-		return query.list(qCustomer);
+		return query.uniqueResult(qCustomer);
 	}
 	
 	@Override
