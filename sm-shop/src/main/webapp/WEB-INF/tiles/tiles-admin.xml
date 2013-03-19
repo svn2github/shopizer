@@ -203,7 +203,11 @@
   		<put-attribute name="body" value="/pages/admin/components/fileBrowser.jsp" /> 
   	</definition>
   	
-
+	<definition name="admin-orders-edit" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/orders/order.jsp" /> 
+  	</definition>
+  	
+  	
   	
   	
   	
