@@ -21,6 +21,8 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.system.model.IntegrationModule;
+import com.salesmanager.core.business.system.service.ModuleConfigurationService;
 import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
@@ -49,9 +51,11 @@ public class OrdersController {
 	@Autowired
 	private ProductPriceUtils priceUtil;
 	
+	@Autowired
+	protected ModuleConfigurationService moduleConfigurationService;
+	 
 	private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.class);
-	
-	
+
 	
 	
 	@RequestMapping(value="/admin/orders/list.html", method=RequestMethod.GET)
@@ -87,10 +91,11 @@ public class OrdersController {
 			
 			int startRow = Integer.parseInt(request.getParameter("_startRow"));
 			int endRow = Integer.parseInt(request.getParameter("_endRow"));
+			String	paymentModule = "";
 			
 			Language language = (Language)request.getAttribute("LANGUAGE");
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-			
+			List<IntegrationModule> paymentModules = moduleConfigurationService.getIntegrationModules( "PAYMENT" );
 
 			
 			//TODO add filters as criteria
@@ -107,9 +112,24 @@ public class OrdersController {
 				entry.put("amount", priceUtil.getAdminFormatedAmountWithCurrency(store,order.getTotal()));//todo format total
 				entry.put("date", DateUtil.formatDate(order.getDatePurchased()));
 				entry.put("status", order.getStatus().name());
-				entry.put("paymentModule", messages.getMessage(new StringBuilder().append("module.paymentModule.").append(order.getPaymentModuleCode()).toString(), locale));
-				resp.addDataEntry(entry);
 				
+				
+				if ( paymentModules!= null && paymentModules.size() > 0 ) 
+				{	
+					for ( int index = 0; index < paymentModules.size(); index++ )
+					{
+						if ( paymentModules.get(index).getCode().equalsIgnoreCase( order.getPaymentModuleCode() ) )
+						{
+							 paymentModule = paymentModules.get(index).getCode();
+							 break;
+						}
+					}
+
+				}
+
+//				entry.put("paymentModule", messages.getMessage(new StringBuilder().append("module.paymentModule.").append(order.getPaymentModuleCode()).toString(), locale));
+				entry.put("paymentModule", paymentModule );
+				resp.addDataEntry(entry);				
 				
 			}
 			
