@@ -1,10 +1,16 @@
 package com.salesmanager.core.business.order.service;
 
 import java.util.List;
+import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
+import com.salesmanager.core.business.catalog.product.service.ProductServiceImpl;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -16,6 +22,8 @@ import com.salesmanager.core.utils.ProductPriceUtils;
 
 @Service("orderService")
 public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order> implements OrderService {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl.class);
 	
 	@Autowired
 	private ProductPriceUtils productPriceUtils;
@@ -51,5 +59,19 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		
 		//TODO delete sub objects
 		super.delete(order);
+	}
+	
+	@Override	
+	public void saveOrUpdate(Order order) throws ServiceException {
+				
+		if(order.getId()!=null && order.getId()>0) {
+			LOGGER.debug("Updating Order");	
+			super.update(order);
+			
+		} else {
+			LOGGER.debug("Creating Order");	
+			super.create(order);
+
+		}
 	}
 }
