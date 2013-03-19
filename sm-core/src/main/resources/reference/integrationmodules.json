@@ -56,6 +56,24 @@
 		"image":"paypal.gif",
 		"configuration":[{"env":"TEST","scheme":"https","host":"sandbox.paypal.com","port":"443","uri":"/web-services"},{"env":"PROD","scheme":"https","host":"www.paypal.com","port":"443","uri":"/web-services"}]
 
+	},
+	{
+		"module": "PAYMENT",
+		"code": "authorizenet",
+		"version":"",
+		"regions": ["US"],
+		"image":"authorizenet.gif",
+		"configuration":[{"env":"TEST","scheme":"https","host":"sandbox.paypal.com","port":"443","uri":"/web-services"},{"env":"PROD","scheme":"https","host":"www.paypal.com","port":"443","uri":"/web-services"}]
+
+	},
+	{
+		"module": "PAYMENT",
+		"code": "beanstream",
+		"version":"",
+		"regions": ["US","CA"],
+		"image":"beanstream.gif",
+		"configuration":[{"env":"TEST","scheme":"https","host":"sandbox.paypal.com","port":"443","uri":"/web-services"},{"env":"PROD","scheme":"https","host":"www.paypal.com","port":"443","uri":"/web-services"}]
+
 	}
 
 ] 
