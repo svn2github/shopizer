@@ -21,6 +21,12 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.OrderBy;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -118,7 +124,7 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	
 	//TODO enum
 	@Column (name ="SHIPPING_METHOD")
-	private String shippingMethod;
+	private String shippingMethod; 
 	
 	@Column (name ="SHIPPING_MODULE_CODE")
 	private String shippingModuleCode;
@@ -145,13 +151,114 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	private Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
 	
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	@OrderBy(clause = "sort_order asc")
 	private Set<OrderTotal> orderTotal = new HashSet<OrderTotal>();
 	
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	@OrderBy(clause = "ORDER_STATUS_HISTORY_ID asc")
 	private Set<OrderStatusHistory> orderHistory = new HashSet<OrderStatusHistory>();
 	
 	public Order() {
 	}
+	
+	@Size(min=1, max=64, message="Enter valid Customer First Name")
+	@Column (name ="CUSTOMER_FIRSTNAME", length=64 , nullable=false)
+	private String customer_Firstname;
+	
+	@Size(min=1, max=64, message="Enter valid Customer First Name")
+	@Column (name ="CUSTOMER_LASTNAME", length=64 , nullable=false)
+	private String customer_Lastname;
+	
+	@Size(min=1, max=256, message="Enter valid Customer Address")
+	@Column (name ="CUSTOMER_STREET_ADDRESS",length=256 ,  nullable=false)
+	private String customer_Street_Address;
+	
+	@Size(min=1, max=100, message="Enter valid Customer City")
+	@Column (name ="CUSTOMER_CITY", length=100 , nullable=false)
+	private String customer_City;
+	
+	@Column (name ="CUSTOMER_STATE", length=100)
+	private String customer_State;
+	
+	@Size(min=1, max=20, message="Enter valid Customer Postal Code")
+	@Column (name ="CUSTOMER_POSTCODE", length=20 , nullable=false)
+	private String customer_PostCode;
+	
+	@Size(min=1, max=20, message="Enter valid Customer Phone")
+	@Column (name ="CUSTOMER_TELEPHONE", length=20 , nullable=false)
+	private String customer_Telephone;
+	
+	@Email
+	@Size(min=1, max=64, message="Enter valid Customer Email Address")
+	@Column (name ="CUSTOMER_EMAIL_ADDRESS", length=50)
+	private String customer_Email_Address;
+	
+	
+	public String getCustomer_Firstname() {
+		return customer_Firstname;
+	}
+
+	public void setCustomer_Firstname(String customer_Firstname) {
+		this.customer_Firstname = customer_Firstname;
+	}
+
+	public String getCustomer_Lastname() {
+		return customer_Lastname;
+	}
+
+	public void setCustomer_Lastname(String customer_Lastname) {
+		this.customer_Lastname = customer_Lastname;
+	}
+
+	public String getCustomer_Street_Address() {
+		return customer_Street_Address;
+	}
+
+	public void setCustomer_Street_Address(String customer_Street_Address) {
+		this.customer_Street_Address = customer_Street_Address;
+	}
+
+	public String getCustomer_City() {
+		return customer_City;
+	}
+
+	public void setCustomer_City(String customer_City) {
+		this.customer_City = customer_City;
+	}
+
+	public String getCustomer_State() {
+		return customer_State;
+	}
+
+	public void setCustomer_State(String customer_State) {
+		this.customer_State = customer_State;
+	}
+
+	public String getCustomer_PostCode() {
+		return customer_PostCode;
+	}
+
+	public void setCustomer_PostCode(String customer_PostCode) {
+		this.customer_PostCode = customer_PostCode;
+	}
+
+	public String getCustomer_Telephone() {
+		return customer_Telephone;
+	}
+
+	public void setCustomer_Telephone(String customer_Telephone) {
+		this.customer_Telephone = customer_Telephone;
+	}
+
+	public String getCustomer_Email_Address() {
+		return customer_Email_Address;
+	}
+
+	public void setCustomer_Email_Address(String customer_Email_Address) {
+		this.customer_Email_Address = customer_Email_Address;
+	}
+
+	
 
 	@Override
 	public Long getId() {
