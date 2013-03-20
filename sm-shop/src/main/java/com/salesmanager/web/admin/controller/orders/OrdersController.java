@@ -74,7 +74,7 @@ public class OrdersController {
 	}
 	
 	
-	@SuppressWarnings({ "unchecked"})
+	@SuppressWarnings({ "unchecked", "unused"})
 	@RequestMapping(value="/admin/orders/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageOrders(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 

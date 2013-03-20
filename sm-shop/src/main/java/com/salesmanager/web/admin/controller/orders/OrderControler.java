@@ -1,26 +1,18 @@
 package com.salesmanager.web.admin.controller.orders;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-//import java.util.regex.Pattern;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hamcrest.Matcher;
-//import org.hamcrest.Matcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,21 +26,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
-import com.salesmanager.core.business.catalog.product.service.ProductService;
-import com.salesmanager.core.business.customer.service.CustomerService;
-import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.model.OrderTotal;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
-import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
 import com.salesmanager.core.business.order.service.OrderService;
-import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.utils.ProductPriceUtils;
-import com.salesmanager.web.admin.controller.products.ProductController;
 import com.salesmanager.web.admin.entity.web.Menu;
-import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.DateUtil;
 import com.salesmanager.web.utils.LabelUtils;
 
@@ -66,21 +49,14 @@ public class OrderControler {
 	@Autowired
 	LabelUtils messages;
 	
-	@Autowired
-	private ProductPriceUtils priceUtil;
-	
-	@Autowired
-	private ProductService productService;
+
 	
 	@Autowired
 	private OrderService orderService;
 	
-	@Autowired
-	private CustomerService customerService;
+
 	
-	private Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
-	private Set<OrderTotal> orderTotal = new HashSet<OrderTotal>();
-	private Set<OrderStatusHistory> orderHistory = new HashSet<OrderStatusHistory>();
+
 	
 	
 	@Secured("ORDER")
@@ -91,18 +67,25 @@ public class OrderControler {
 
 	}
 
+	@SuppressWarnings("unused")
 	private String displayOrder(Long orderId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		//	System.out.println( "total sort order, title, value = " + ototal.getSortOrder() + " , " + ototal.getTitle() + " , " + ototal.getValue() );
+
+		
+		
 
 
 		//display menu
 		setMenu(model,request);
 		   
 		com.salesmanager.web.entity.order.Order order = new com.salesmanager.web.entity.order.Order();
-		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		Language language = (Language)request.getAttribute("LANGUAGE");
+
 		
-		if(orderId!=null && orderId!=0) {		//edit mode					
+		if(orderId!=null && orderId!=0) {		//edit mode		
+			
+			Set<OrderProduct> orderProducts = null;
+			Set<OrderTotal> orderTotal = null;
+			Set<OrderStatusHistory> orderHistory = null;
 		
 			Order dbOrder = orderService.getById(orderId);
 			order.setId( orderId );
@@ -129,6 +112,11 @@ public class OrderControler {
 		String email_regEx = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}\\b";
 		Pattern pattern = Pattern.compile(email_regEx);
 		OrderStatusHistory orderStatusHistory = new OrderStatusHistory();
+		
+		
+		Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
+		Set<OrderTotal> orderTotal = new HashSet<OrderTotal>();
+		Set<OrderStatusHistory> orderHistory = new HashSet<OrderStatusHistory>();
 
 		com.salesmanager.core.business.order.model.Order newOrder = orderService.getById(entityOrder.getOrder().getId() );
 		
