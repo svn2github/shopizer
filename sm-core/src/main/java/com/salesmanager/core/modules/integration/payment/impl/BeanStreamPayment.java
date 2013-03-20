@@ -1,7 +1,6 @@
 package com.salesmanager.core.modules.integration.payment.impl;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.order.model.Order;
@@ -15,7 +14,7 @@ import com.salesmanager.core.modules.integration.payment.model.PaymentModule;
 public class BeanStreamPayment implements PaymentModule {
 
 	@Override
-	public Map<String, String> initTransaction(Customer customer, Order order,
+	public Transaction initTransaction(Customer customer, Order order,
 			BigDecimal amount, Payment payment,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {

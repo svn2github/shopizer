@@ -1,7 +1,6 @@
 package com.salesmanager.core.modules.integration.payment.model;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.order.model.Order;
@@ -21,7 +20,7 @@ public interface PaymentModule {
 	 * @return
 	 * @throws IntegrationException
 	 */
-	public Map<String, String> initTransaction(
+	public Transaction initTransaction(
 			Customer customer, Order order, BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException;
 	

@@ -18,7 +18,9 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.payments.model.Payment;
+import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.payments.model.Transaction;
+import com.salesmanager.core.business.payments.model.TransactionType;
 import com.salesmanager.core.business.shipping.model.ShippingQuote;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
@@ -107,9 +109,7 @@ public class PaymentServiceImpl implements PaymentService {
 	public Transaction processPayment(Order order, Customer customer,
 			MerchantStore store, Payment payment, BigDecimal amount)
 			throws ServiceException {
-		// TODO Auto-generated method stub
-		
-		
+
 		Validate.notNull(order);
 		Validate.notNull(customer);
 		Validate.notNull(store);
@@ -142,11 +142,21 @@ public class PaymentServiceImpl implements PaymentService {
 		
 		IntegrationModule integrationModule = getPaymentMethod(store,payment.getModuleName());
 		
+		TransactionType transactionType = payment.getTransactionType();
+		
+		if(transactionType == TransactionType.AUTHORIZE)  {
+			return module.authorize(customer, order, amount, payment, configuration, integrationModule);
+		} else if(transactionType == TransactionType.AUTHORIZECAPTURE)  {
+			return module.authorizeAndCapture(customer, order, amount, payment, configuration, integrationModule);
+		} else if(transactionType == TransactionType.CAPTURE)  {
+			return module.capture(customer, order, amount, payment, configuration, integrationModule);
+		} else if(transactionType == TransactionType.INIT)  {
+			return module.initTransaction(customer, order, amount, payment, configuration, integrationModule);
+		}
+		
+		throw new ServiceException("Wrong transaction type " + transactionType.name());
+		
 
-		
-		//check transaction type
-		
-		return null;
 	}
 
 	@Override
