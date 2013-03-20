@@ -17,6 +17,13 @@
     			<entry key="usps" value-ref="usps"/>
     			<entry key="ups" value-ref="ups"/>
     </util:map>
+    
+    <!-- Payment integration modules -->
+	<util:map id="paymentModules" map-class="java.util.HashMap" key-type="java.lang.String" value-type="com.salesmanager.core.modules.integration.payment.model.PaymentModule">
+    			<entry key="beanstream" value-ref="beanstream"/>
+    			<entry key="paypal" value-ref="paypal"/>
+    			<entry key="authorizenet" value-ref="authorizenet"/>
+    </util:map>
 
 
 	<!-- Shipping -->
@@ -31,6 +38,13 @@
 	<bean id="boxPackaging"
 		class="com.salesmanager.core.modules.integration.shipping.impl.DefaultPackagingImpl"/>
 	
+	<!-- Payment -->
+	<bean id="beanstream"
+		class="com.salesmanager.core.modules.integration.payment.impl.BeanStreamPayment"/>
+	<bean id="paypal"
+		class="com.salesmanager.core.modules.integration.payment.impl.PaypalPayment"/>
+	<bean id="authorizenet"
+		class="com.salesmanager.core.modules.integration.payment.impl.AuthorizeNetPayment"/>
 	
 	<!-- CMS -->
 	<!-- Product images manager-->
