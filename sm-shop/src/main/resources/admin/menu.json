@@ -199,8 +199,17 @@
 "menu":{
 "code":"configuration",
 "icon":"icon-wrench", 
-"url":"/admin/configurations/list.html", 
+"url":"/admin/configuration/accounts.html", 
 "role":"AUTH",
+"menus":[
+	{"menu":{
+		"code":"accounts-conf","url":"/admin/configuration/accounts.html","role":"AUTH","order":0
+	}},
+	{"menu":{
+		"code":"email-conf","url":"/admin/configuration/email.html","role":"AUTH","order":0
+	}}
+]
+}},
 "order":10
 }}
 ]}
