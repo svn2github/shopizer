@@ -51,5 +51,10 @@ public interface ControllerConstants
             final String orders="admin-orders";
         }
         
+        interface Configuration{
+            final String accounts="config-accounts";
+            final String email="config-email";
+        }
+        
     }
 }
