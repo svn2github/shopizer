@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
+import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +19,14 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.Transaction;
+import com.salesmanager.core.business.shipping.model.ShippingQuote;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
 import com.salesmanager.core.business.system.service.ModuleConfigurationService;
+import com.salesmanager.core.modules.integration.payment.model.PaymentModule;
+import com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule;
 
 @Service("paymentService")
 public class PaymentServiceImpl implements PaymentService {
@@ -34,6 +40,10 @@ public class PaymentServiceImpl implements PaymentService {
 	
 	@Autowired
 	private ModuleConfigurationService moduleConfigurationService;
+	
+	@Autowired
+	@Resource(name="paymentModules")
+	private Map<String,PaymentModule> paymentModules;
 	
 	@Override
 	public List<IntegrationModule> getPaymentMethods(MerchantStore store) throws ServiceException {
@@ -50,6 +60,20 @@ public class PaymentServiceImpl implements PaymentService {
 		}
 		
 		return returnModules;
+	}
+	
+	@Override
+	public IntegrationModule getPaymentMethod(MerchantStore store, String moduleName) throws ServiceException {
+		List<IntegrationModule> modules =  getPaymentMethods(store);
+
+		for(IntegrationModule module : modules) {
+			if(module.getModule().equals(moduleName)) {
+				
+				return module;
+			}
+		}
+		
+		return null;
 	}
 	
 	@Override
@@ -84,6 +108,44 @@ public class PaymentServiceImpl implements PaymentService {
 			MerchantStore store, Payment payment, BigDecimal amount)
 			throws ServiceException {
 		// TODO Auto-generated method stub
+		
+		
+		Validate.notNull(order);
+		Validate.notNull(customer);
+		Validate.notNull(store);
+		Validate.notNull(payment);
+		Validate.notNull(amount);
+		
+		
+		//must have a shipping module configured
+		Map<String, IntegrationConfiguration> modules = this.getPaymentModulesConfigured(store);
+		if(modules==null){
+			throw new ServiceException("No payment module configured");
+		}
+		
+		IntegrationConfiguration configuration = modules.get(payment.getModuleName());
+		
+		if(configuration==null) {
+			throw new ServiceException("Payment module " + payment.getModuleName() + " is not configured");
+		}
+		
+		if(!configuration.isActive()) {
+			throw new ServiceException("Payment module " + payment.getModuleName() + " is not active");
+		}
+		
+		
+		PaymentModule module = this.paymentModules.get(payment.getModuleName());
+		
+		if(module==null) {
+			throw new ServiceException("Payment module " + payment.getModuleName() + " does not exist");
+		}
+		
+		IntegrationModule integrationModule = getPaymentMethod(store,payment.getModuleName());
+		
+
+		
+		//check transaction type
+		
 		return null;
 	}
 

@@ -4,6 +4,8 @@ public abstract class Payment {
 	
 	private PaymentType paymentType;
 	private TransactionType transactionType;
+	
+	private String moduleName;
 
 	public void setPaymentType(PaymentType paymentType) {
 		this.paymentType = paymentType;
@@ -19,6 +21,14 @@ public abstract class Payment {
 
 	public TransactionType getTransactionType() {
 		return transactionType;
+	}
+
+	public void setModuleName(String moduleName) {
+		this.moduleName = moduleName;
+	}
+
+	public String getModuleName() {
+		return moduleName;
 	}
 
 }

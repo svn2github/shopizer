@@ -26,4 +26,14 @@ public interface PaymentService {
 	Transaction processPayment(Order order, Customer customer, MerchantStore store, Payment payment, BigDecimal amount) throws ServiceException;
 	Transaction processRefund(Order order, Customer customer, MerchantStore store, Payment payment, BigDecimal amount) throws ServiceException;
 
+	/**
+	 * Get a specific Payment module
+	 * @param store
+	 * @param moduleName
+	 * @return
+	 * @throws ServiceException
+	 */
+	IntegrationModule getPaymentMethod(MerchantStore store, String moduleName)
+			throws ServiceException;
+
 }
