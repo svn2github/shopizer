@@ -24,6 +24,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.json.simple.JSONAware;
+
 import com.salesmanager.core.business.common.model.audit.AuditListener;
 import com.salesmanager.core.business.common.model.audit.AuditSection;
 import com.salesmanager.core.business.common.model.audit.Auditable;
@@ -35,7 +37,7 @@ import com.salesmanager.core.constants.SchemaConstant;
 @Entity
 @EntityListeners(value = AuditListener.class)
 @Table(name = "SM_TRANSACTION", schema= SchemaConstant.SALESMANAGER_SCHEMA)
-public class Transaction extends SalesManagerEntity<Long, Transaction> implements Serializable, Auditable {
+public class Transaction extends SalesManagerEntity<Long, Transaction> implements Serializable, Auditable, JSONAware {
 	
 	/**
 	 * 
@@ -154,6 +156,12 @@ public class Transaction extends SalesManagerEntity<Long, Transaction> implement
 
 	public void setTransactionDetails(Map<String, String> transactionDetails) {
 		this.transactionDetails = transactionDetails;
+	}
+
+	@Override
+	public String toJSONString() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

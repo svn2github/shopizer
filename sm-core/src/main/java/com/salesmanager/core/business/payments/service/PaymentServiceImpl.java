@@ -18,17 +18,14 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.payments.model.Payment;
-import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.payments.model.TransactionType;
-import com.salesmanager.core.business.shipping.model.ShippingQuote;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
 import com.salesmanager.core.business.system.service.ModuleConfigurationService;
 import com.salesmanager.core.modules.integration.payment.model.PaymentModule;
-import com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule;
 
 @Service("paymentService")
 public class PaymentServiceImpl implements PaymentService {
@@ -42,6 +39,9 @@ public class PaymentServiceImpl implements PaymentService {
 	
 	@Autowired
 	private ModuleConfigurationService moduleConfigurationService;
+	
+	@Autowired
+	private TransactionService transactionService;;
 	
 	@Autowired
 	@Resource(name="paymentModules")
@@ -143,18 +143,23 @@ public class PaymentServiceImpl implements PaymentService {
 		IntegrationModule integrationModule = getPaymentMethod(store,payment.getModuleName());
 		
 		TransactionType transactionType = payment.getTransactionType();
-		
+		Transaction transaction = null;
 		if(transactionType == TransactionType.AUTHORIZE)  {
-			return module.authorize(customer, order, amount, payment, configuration, integrationModule);
+			transaction = module.authorize(customer, order, amount, payment, configuration, integrationModule);
 		} else if(transactionType == TransactionType.AUTHORIZECAPTURE)  {
-			return module.authorizeAndCapture(customer, order, amount, payment, configuration, integrationModule);
+			transaction = module.authorizeAndCapture(customer, order, amount, payment, configuration, integrationModule);
 		} else if(transactionType == TransactionType.CAPTURE)  {
-			return module.capture(customer, order, amount, payment, configuration, integrationModule);
+			transaction = module.capture(customer, order, amount, payment, configuration, integrationModule);
 		} else if(transactionType == TransactionType.INIT)  {
-			return module.initTransaction(customer, order, amount, payment, configuration, integrationModule);
+			transaction = module.initTransaction(customer, order, amount, payment, configuration, integrationModule);
 		}
 		
-		throw new ServiceException("Wrong transaction type " + transactionType.name());
+		if(transactionType != TransactionType.INIT) {
+			transactionService.create(transaction);
+		}
+		
+		return transaction;
+
 		
 
 	}

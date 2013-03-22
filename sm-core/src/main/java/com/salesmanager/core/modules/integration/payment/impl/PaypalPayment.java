@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -18,10 +19,13 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.Transaction;
+import com.salesmanager.core.business.payments.model.TransactionType;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
+import com.salesmanager.core.business.system.model.MerchantLog;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
+import com.salesmanager.core.business.system.service.MerchantLogService;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.payment.model.PaymentModule;
 import com.salesmanager.core.utils.ProductPriceUtils;
@@ -33,6 +37,9 @@ public class PaypalPayment implements PaymentModule {
 	
 	@Autowired
 	private MerchantConfigurationService merchantConfigurationService;
+	
+	@Autowired
+	private MerchantLogService merchantLogService;
 
 	@Override
 	public Transaction initTransaction(Customer customer, Order order,
@@ -141,7 +148,7 @@ public class PaypalPayment implements PaymentModule {
 					+ "&LOCALECODE="
 					+ sLocale
 					+ "&ReturnUrl="
-					+ returnUrl
+					+ sReturnUrl
 					+ "&CANCELURL="
 					+ cancelUrl
 					+ "&CURRENCYCODE=" + order.getCurrency();
@@ -193,9 +200,195 @@ public class PaypalPayment implements PaymentModule {
 
 	@Override
 	public Transaction capture(Customer customer, Order order,
-			BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module) throws IntegrationException {
+			BigDecimal amount, com.salesmanager.core.business.payments.model.Payment payment, IntegrationConfiguration configuration, IntegrationModule module) throws IntegrationException {
 		// TODO Auto-generated method stub
-		return null;
+		
+		
+		
+		
+
+/*		ConfigurationRequest vo = new ConfigurationRequest(order
+				.getMerchantId());
+		MerchantService mservice = (MerchantService) ServiceFactory
+				.getService(ServiceFactory.MerchantService);
+
+		IntegrationProperties properties;
+
+		String nvpstr = "";
+
+		try {
+
+			ConfigurationResponse config = mservice.getConfigurationByModule(
+					vo, PaymentConstants.PAYMENT_PAYPALNAME);
+			if (config == null) {
+				throw new TransactionException("Payment module "
+						+ PaymentConstants.PAYMENT_PAYPALNAME
+						+ " cannot be retreived from MerchantConfiguration");
+			}
+			properties = (IntegrationProperties) config
+					.getConfiguration("properties");
+
+		} catch (Exception e) {
+			throw new TransactionException(e);
+		}
+
+		if (properties == null) {
+			throw new TransactionException(
+					"Integration properties are null for merchantId "
+							+ order.getMerchantId());
+		}*/
+
+		/*
+		 * '------------------------------------ ' The currencyCodeType and
+		 * paymentType ' are set to the selections made on the Integration
+		 * Assistant '------------------------------------
+		 */
+		
+		String nvpstr = "";
+
+		//PREAUTH - SALE
+		String transactionType = configuration.getIntegrationKeys().get("TRANSACTION_TYPE");
+
+		TransactionType trType = TransactionType.CAPTURE;
+		
+		if(transactionType.equals("PREAUTH")) {
+			trType = TransactionType.AUTHORIZE;
+		}
+
+		/*
+		 * '------------------------------------ ' The currencyCodeType and
+		 * paymentType ' are set to the selections made on the Integration
+		 * Assistant '------------------------------------
+		 */
+		String currencyCodeType = order.getCurrency().getCode();
+
+		com.salesmanager.core.business.payments.model.PaypalPayment paypalPayment = ((com.salesmanager.core.business.payments.model.PaypalPayment)payment);
+
+		
+		String token = paypalPayment.getPaymentToken();
+		String payerID = paypalPayment.getPayerId();
+
+		if (token == null) {
+			throw new IntegrationException(
+					"processTransaction Paypal TOKEN is null in PaypalPayment");
+		}
+
+		if (payerID == null) {
+			throw new IntegrationException(
+					"processTransaction Paypal PAYERID is null in PaypalPayment");
+		}
+		
+		try {
+		
+		String sAmount = productPriceUtils.getAdminFormatedAmount(order.getMerchant(), amount);
+
+/*		String amount = CurrencyUtil.displayFormatedAmountNoCurrency(order
+				.getTotal(), Constants.CURRENCY_CODE_USD);
+		if (order.getTotal().toString().equals(
+				new BigDecimal("0.00").toString())) {
+			// check if recuring
+			if (order.getRecursiveAmount().floatValue() > 0) {
+				amount = CurrencyUtil.displayFormatedAmountNoCurrency(order
+						.getRecursiveAmount(), order.getCurrency());
+			} else {
+				amount = "0";
+			}
+		}*/
+
+		
+
+			// InetAddress addr = InetAddress.getLocalHost();
+
+			// Get IP Address
+			// byte[] ipAddr = addr.getAddress();
+
+			// String ip = new String(ipAddr);
+
+			// IPN
+			// String ipnUrl = ReferenceUtil.buildSecureServerUrl() +
+			// (String)conf.getString("core.salesmanager.checkout.paypalIpn");
+
+			nvpstr = "&TOKEN=" + token + "&PAYERID=" + payerID
+					+ "&PAYMENTACTION=" + transactionType + "&AMT=" + sAmount
+					+ "&INVNUM=" + order.getId();
+
+			// nvpstr = nvpstr + "&CURRENCYCODE=" + currencyCodeType +
+			// "&IPADDRESS=" + ip.toString();
+			nvpstr = nvpstr + "&CURRENCYCODE=" + currencyCodeType;
+
+			
+			Map<String,String> nvp = httpcall(configuration, module, "DoExpressCheckoutPayment",
+					nvpstr);
+			
+
+			String strAck = nvp.get("ACK").toString();
+			
+			String transactionId = (String) nvp.get("TRANSACTIONID");
+			String correlationId = (String) nvp.get("CORRELATIONID");
+			
+			StringBuilder valueBuffer = new StringBuilder();
+			for (String key : nvp.keySet()) {
+				valueBuffer.append("[").append(key).append("=").append(
+						(String) nvp.get(key)).append("]");
+			}
+			
+
+			
+
+			
+			if (strAck != null && strAck.equalsIgnoreCase("Success")) {
+				
+				
+				
+				Transaction transaction = new Transaction();
+				transaction.setAmount(amount);
+				transaction.setOrder(order);
+				transaction.setTransactionDate(new Date());
+				transaction.setTransactionType(trType);
+				transaction.setPaymentType(payment.getPaymentType());
+				transaction.getTransactionDetails().put("TRANSACTIONID", transactionId);
+				transaction.getTransactionDetails().put("CORRELATIONID", correlationId);
+				
+				return transaction;
+
+			} else {
+
+				String ErrorCode = nvp.get("L_ERRORCODE0").toString();
+				String ErrorShortMsg = nvp.get("L_SHORTMESSAGE0").toString();
+				String ErrorLongMsg = nvp.get("L_LONGMESSAGE0").toString();
+				String ErrorSeverityCode = nvp.get("L_SEVERITYCODE0")
+						.toString();
+
+				IntegrationException te = new IntegrationException(
+						"Paypal transaction refused " + ErrorLongMsg);
+						te.setErrorCode(IntegrationException.TRANSACTION_EXCEPTION);
+						
+						
+				merchantLogService.save(
+								new MerchantLog(order.getMerchant(),
+								"Paypal transaction refused "
+										+ ErrorLongMsg));
+
+				if (ErrorCode.equals("10415")) {// transaction already submited
+					te = new IntegrationException("Paypal transaction refused "
+							+ ErrorLongMsg);
+					te
+							.setErrorCode(IntegrationException.TRANSACTION_EXCEPTION);
+				}
+
+				throw te;
+			}
+			
+
+
+		} catch (Exception e) {
+			if (e instanceof IntegrationException) {
+				throw (IntegrationException) e;
+			}
+			throw new IntegrationException(e);
+		}
+		
+
 	}
 
 	@Override

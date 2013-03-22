@@ -13,6 +13,7 @@ public class IntegrationException extends ServiceException {
 	private static final long serialVersionUID = 1L;
 	
 	public static final int ERROR_VALIDATION_SAVE = 100;
+	public static final int TRANSACTION_EXCEPTION = 99;
 	
 	private List<String> errorFields;
 	

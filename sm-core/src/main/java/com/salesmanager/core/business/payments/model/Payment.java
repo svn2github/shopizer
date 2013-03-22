@@ -3,8 +3,7 @@ package com.salesmanager.core.business.payments.model;
 public abstract class Payment {
 	
 	private PaymentType paymentType;
-	private TransactionType transactionType;
-	
+	private TransactionType transactionType = TransactionType.CAPTURE;
 	private String moduleName;
 
 	public void setPaymentType(PaymentType paymentType) {
