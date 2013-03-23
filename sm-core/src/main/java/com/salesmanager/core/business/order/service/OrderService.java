@@ -15,7 +15,10 @@ public interface OrderService extends SalesManagerEntityService<Long, Order> {
 	
 	public List<Order> listByStore(MerchantStore merchantStore);
 
+
 	void saveOrUpdate(Order order) throws ServiceException;
+
+
 	
 
 }
