@@ -201,6 +201,7 @@
 "icon":"icon-wrench", 
 "url":"/admin/configuration/accounts.html", 
 "role":"AUTH",
+"order":10,
 "menus":[
 	{"menu":{
 		"code":"accounts-conf","url":"/admin/configuration/accounts.html","role":"AUTH","order":0
@@ -209,8 +210,6 @@
 		"code":"email-conf","url":"/admin/configuration/email.html","role":"AUTH","order":0
 	}}
 ]
-}},
-"order":10
 }}
 ]}
 
