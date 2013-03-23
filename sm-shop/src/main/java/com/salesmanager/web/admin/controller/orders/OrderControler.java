@@ -45,20 +45,12 @@ public class OrderControler {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.class);
 	
-	
 	@Autowired
 	LabelUtils messages;
 	
-
-	
 	@Autowired
 	private OrderService orderService;
-	
 
-	
-
-	
-	
 	@Secured("ORDER")
 	@RequestMapping(value="/admin/orders/editOrder.html", method=RequestMethod.GET)
 	public String displayOrderEdit(@RequestParam("id") long orderId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -69,17 +61,11 @@ public class OrderControler {
 
 	@SuppressWarnings("unused")
 	private String displayOrder(Long orderId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		//	System.out.println( "total sort order, title, value = " + ototal.getSortOrder() + " , " + ototal.getTitle() + " , " + ototal.getValue() );
-
-		
-		
-
 
 		//display menu
 		setMenu(model,request);
 		   
 		com.salesmanager.web.entity.order.Order order = new com.salesmanager.web.entity.order.Order();
-
 		
 		if(orderId!=null && orderId!=0) {		//edit mode		
 			
@@ -89,6 +75,7 @@ public class OrderControler {
 		
 			Order dbOrder = orderService.getById(orderId);
 			order.setId( orderId );
+		
 			order.setDatePurchased(DateUtil.formatDate(dbOrder.getDatePurchased()));
 			order.setOrder( dbOrder );
 			order.setBilling( dbOrder.getBilling() );
@@ -119,8 +106,6 @@ public class OrderControler {
 		Set<OrderStatusHistory> orderHistory = new HashSet<OrderStatusHistory>();
 
 		com.salesmanager.core.business.order.model.Order newOrder = orderService.getById(entityOrder.getOrder().getId() );
-		
-//		System.out.println( "saveOrder..  newOrder.getId() =  "  + newOrder.getId() );
 	
 		Date date = new Date();
 		if(!StringUtils.isBlank(entityOrder.getDatePurchased() ) ){
@@ -135,39 +120,71 @@ public class OrderControler {
 			date = null;
 		}
 		 
+		if( StringUtils.isBlank(entityOrder.getOrder().getCustomerFirstName() ) ){
+			 ObjectError error = new ObjectError("customerFirstName", messages.getMessage("NotEmpty.order.customerFirstName", locale));
+			 result.addError(error);
+		}
 		 
-		if(!StringUtils.isBlank(entityOrder.getOrder().getCustomer_Email_Address() ) ){
-			 java.util.regex.Matcher matcher = pattern.matcher(entityOrder.getOrder().getCustomer_Email_Address());
+		if( StringUtils.isBlank(entityOrder.getOrder().getCustomerLastName() ) ){
+			 ObjectError error = new ObjectError("customerLastName", messages.getMessage("NotEmpty.order.customerLastName", locale));
+			 result.addError(error);
+		}
+		
+		if( StringUtils.isBlank(entityOrder.getOrder().getCustomerStreetAddress() ) ){
+			 ObjectError error = new ObjectError("customerStreetAddress", messages.getMessage("NotEmpty.order.customerStreetAddress", locale));
+			 result.addError(error);
+		}
+		
+		if( StringUtils.isBlank(entityOrder.getOrder().getCustomerCity() ) ){
+			 ObjectError error = new ObjectError("customerCity", messages.getMessage("NotEmpty.order.customerCity", locale));
+			 result.addError(error);
+		}
+		
+		if( StringUtils.isBlank(entityOrder.getOrder().getCustomerPostCode() ) ){
+			 ObjectError error = new ObjectError("customerPostCode", messages.getMessage("NotEmpty.order.customerPostCode", locale));
+			 result.addError(error);
+		}
+		
+		if( StringUtils.isBlank(entityOrder.getOrder().getCustomerTelephone() ) ){
+			 ObjectError error = new ObjectError("customerTelephone", messages.getMessage("NotEmpty.order.customerTelephone", locale));
+			 result.addError(error);
+		}
+		
+		if(!StringUtils.isBlank(entityOrder.getOrder().getCustomerEmailAddress() ) ){
+			 java.util.regex.Matcher matcher = pattern.matcher(entityOrder.getOrder().getCustomerEmailAddress());
 			 
 			 if(!matcher.find()) {
-				ObjectError error = new ObjectError("customer_Email_Address",messages.getMessage("Email.customerEmailAddress", locale));
+				ObjectError error = new ObjectError("customerEmailAddress",messages.getMessage("Email.order.customerEmailAddress", locale));
 				result.addError(error);
 			 }
+		}else{
+			ObjectError error = new ObjectError("customerEmailAddress",messages.getMessage("NotEmpty.order.customerEmailAddress", locale));
+			result.addError(error);
 		}
 
 		 
 		if( StringUtils.isBlank(entityOrder.getOrder().getBilling().getName() ) ){
-			 ObjectError error = new ObjectError("billing_name","Billing Name: " + messages.getMessage("NotEmpty", locale));
+			 ObjectError error = new ObjectError("billingName", messages.getMessage("NotEmpty.order.billingName", locale));
 			 result.addError(error);
 		}
 		 
 		if( StringUtils.isBlank(entityOrder.getOrder().getBilling().getAddress() ) ){
-			 ObjectError error = new ObjectError("billing_address","Billing Address: " + messages.getMessage("NotEmpty", locale));
+			 ObjectError error = new ObjectError("billingAddress", messages.getMessage("NotEmpty.order.billingStreetAddress", locale));
 			 result.addError(error);
 		}
 		 
 		if( StringUtils.isBlank(entityOrder.getOrder().getBilling().getCity() ) ){
-			 ObjectError error = new ObjectError("billing_city","Billing City: " + messages.getMessage("NotEmpty", locale));
+			 ObjectError error = new ObjectError("billingCity",messages.getMessage("NotEmpty.order.billingCity", locale));
 			 result.addError(error);
 		}
 		 
 		if( StringUtils.isBlank(entityOrder.getOrder().getBilling().getState() ) ){
-			 ObjectError error = new ObjectError("billing_state","Billing State: " + messages.getMessage("NotEmpty", locale));
+			 ObjectError error = new ObjectError("billingState",messages.getMessage("NoNotEmpty.order.billingState", locale));
 			 result.addError(error);
 		}
 		 
 		if( StringUtils.isBlank(entityOrder.getOrder().getBilling().getPostalCode() ) ){
-			 ObjectError error = new ObjectError("billing_postalCode","Billing Postal Code: " + messages.getMessage("NotEmpty", locale));
+			 ObjectError error = new ObjectError("billingPostalCode", messages.getMessage("NotEmpty.order.billingPostCode", locale));
 			 result.addError(error);
 		}
 	
@@ -181,14 +198,14 @@ public class OrderControler {
 			return "admin-orders-edit";
 		}
 		
-		newOrder.setCustomer_Firstname(entityOrder.getOrder().getCustomer_Firstname() );
-		newOrder.setCustomer_Lastname(entityOrder.getOrder().getCustomer_Lastname() );
-		newOrder.setCustomer_Street_Address(entityOrder.getOrder().getCustomer_Street_Address() );
-		newOrder.setCustomer_City(entityOrder.getOrder().getCustomer_City() );
-		newOrder.setCustomer_State(entityOrder.getOrder().getCustomer_State() ); 
-		newOrder.setCustomer_PostCode(entityOrder.getOrder().getCustomer_PostCode() );
-		newOrder.setCustomer_Telephone(entityOrder.getOrder().getCustomer_Telephone() );
-		newOrder.setCustomer_Email_Address(entityOrder.getOrder().getCustomer_Email_Address() );
+		newOrder.setCustomerFirstName(entityOrder.getOrder().getCustomerFirstName() );
+		newOrder.setCustomerLastName(entityOrder.getOrder().getCustomerLastName() );
+		newOrder.setCustomerStreetAddress(entityOrder.getOrder().getCustomerStreetAddress() );
+		newOrder.setCustomerCity(entityOrder.getOrder().getCustomerCity() );
+		newOrder.setCustomerState(entityOrder.getOrder().getCustomerState() ); 
+		newOrder.setCustomerPostCode(entityOrder.getOrder().getCustomerPostCode() );
+		newOrder.setCustomerTelephone(entityOrder.getOrder().getCustomerTelephone() );
+		newOrder.setCustomerEmailAddress(entityOrder.getOrder().getCustomerEmailAddress() );
 		newOrder.setShippingMethod(entityOrder.getOrder().getShippingMethod() );
 		newOrder.setPaymentMethod(entityOrder.getOrder().getPaymentMethod() );
 		newOrder.setStatus(entityOrder.getOrder().getStatus() );		
