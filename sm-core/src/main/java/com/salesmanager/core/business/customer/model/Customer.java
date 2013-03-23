@@ -86,7 +86,7 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 	@Column(name="CUSTOMER_FAX", length=32)
 	private String fax;
 	
-	@Column(name="CUSTOMER_PASSWORD", length=20)
+	@Column(name="CUSTOMER_PASSWORD", length=50)
 	private String password;
 	
 	@Column(name="CUSTOMER_NEWSLETTER", length=1)
