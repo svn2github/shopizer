@@ -10,10 +10,10 @@ import com.salesmanager.core.business.payments.model.Transaction;
 @Service("transactionService")
 public class TransactionServiceImpl  extends SalesManagerEntityServiceImpl<Long, Transaction> implements TransactionService {
 	
-	
-	@Autowired
+
 	TransactionDao transactionDao;
 	
+	@Autowired
 	public TransactionServiceImpl(TransactionDao transactionDao) {
 		super(transactionDao);
 		this.transactionDao = transactionDao;

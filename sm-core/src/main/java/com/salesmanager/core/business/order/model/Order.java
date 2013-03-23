@@ -164,93 +164,27 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@Column (name ="CUSTOMER_LASTNAME", length=64 , nullable=false)
 	private String customerLastName;
 	
-	@Column (name ="CUSTOMER_STREET_ADDRESS",length=256 ,  nullable=false)
+	@Column (name ="CUSTOMER_STREET_ADDRESS",length=256)
 	private String customerStreetAddress;
 	
-	@Column (name ="CUSTOMER_CITY", length=100 , nullable=false)
+	@Column (name ="CUSTOMER_CITY", length=100)
 	private String customerCity;
 	
 	@Column (name ="CUSTOMER_STATE", length=100)
 	private String customerState;
 	
-	@Column (name ="CUSTOMER_POSTCODE", length=20 , nullable=false)
+	@Column (name ="CUSTOMER_POSTCODE", length=20)
 	private String customerPostCode;
 	
-	@Column (name ="CUSTOMER_TELEPHONE", length=20 , nullable=false)
+	@Column (name ="CUSTOMER_TELEPHONE", length=20)
 	private String customerTelephone;
 	
 	@Email
-	@Column (name ="CUSTOMER_EMAIL_ADDRESS", length=50)
+	@Column (name ="CUSTOMER_EMAIL_ADDRESS", length=50, nullable=false)
 	private String customerEmailAddress;
 	
 	
 
-
-	
-
-	public String getCustomerFirstName() {
-		return customerFirstName;
-	}
-
-	public void setCustomerFirstName(String customerFirstName) {
-		this.customerFirstName = customerFirstName;
-	}
-
-	public String getCustomerLastName() {
-		return customerLastName;
-	}
-
-	public void setCustomerLastName(String customerLastName) {
-		this.customerLastName = customerLastName;
-	}
-
-	public String getCustomerStreetAddress() {
-		return customerStreetAddress;
-	}
-
-	public void setCustomerStreetAddress(String customerStreetAddress) {
-		this.customerStreetAddress = customerStreetAddress;
-	}
-
-	public String getCustomerCity() {
-		return customerCity;
-	}
-
-	public void setCustomerCity(String customerCity) {
-		this.customerCity = customerCity;
-	}
-
-	public String getCustomerState() {
-		return customerState;
-	}
-
-	public void setCustomerState(String customerState) {
-		this.customerState = customerState;
-	}
-
-	public String getCustomerPostCode() {
-		return customerPostCode;
-	}
-
-	public void setCustomerPostCode(String customerPostCode) {
-		this.customerPostCode = customerPostCode;
-	}
-
-	public String getCustomerTelephone() {
-		return customerTelephone;
-	}
-
-	public void setCustomerTelephone(String customerTelephone) {
-		this.customerTelephone = customerTelephone;
-	}
-
-	public String getCustomerEmailAddress() {
-		return customerEmailAddress;
-	}
-
-	public void setCustomerEmailAddress(String customerEmailAddress) {
-		this.customerEmailAddress = customerEmailAddress;
-	}
 
 	@Override
 	public Long getId() {
@@ -495,4 +429,72 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	public void setCustomerId(Long customerId) {
 		this.customerId = customerId;
 	}
+	
+
+	
+
+	public String getCustomerFirstName() {
+		return customerFirstName;
+	}
+
+	public void setCustomerFirstName(String customerFirstName) {
+		this.customerFirstName = customerFirstName;
+	}
+
+	public String getCustomerLastName() {
+		return customerLastName;
+	}
+
+	public void setCustomerLastName(String customerLastName) {
+		this.customerLastName = customerLastName;
+	}
+
+	public String getCustomerStreetAddress() {
+		return customerStreetAddress;
+	}
+
+	public void setCustomerStreetAddress(String customerStreetAddress) {
+		this.customerStreetAddress = customerStreetAddress;
+	}
+
+	public String getCustomerCity() {
+		return customerCity;
+	}
+
+	public void setCustomerCity(String customerCity) {
+		this.customerCity = customerCity;
+	}
+
+	public String getCustomerState() {
+		return customerState;
+	}
+
+	public void setCustomerState(String customerState) {
+		this.customerState = customerState;
+	}
+
+	public String getCustomerPostCode() {
+		return customerPostCode;
+	}
+
+	public void setCustomerPostCode(String customerPostCode) {
+		this.customerPostCode = customerPostCode;
+	}
+
+	public String getCustomerTelephone() {
+		return customerTelephone;
+	}
+
+	public void setCustomerTelephone(String customerTelephone) {
+		this.customerTelephone = customerTelephone;
+	}
+
+	public String getCustomerEmailAddress() {
+		return customerEmailAddress;
+	}
+
+	public void setCustomerEmailAddress(String customerEmailAddress) {
+		this.customerEmailAddress = customerEmailAddress;
+	}
+
 }
