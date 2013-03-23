@@ -134,24 +134,24 @@
 			    		<div class="control-group">
 			    
 					     <div class="controls">
-				 				<form:input id="billing_name" cssClass="input-large highlight" path="order.billing.name"/>
+				 				<form:input id="billingName" cssClass="input-large highlight" path="order.billing.name"/>
 				 				<span class="help-inline"><form:errors path="order.billing.name" cssClass="error" /></span>
 			            </div>
 			            </div>
 			            <div class="controls">
-				 				<form:input id="billing_adress" cssClass="input-large highlight" path="order.billing.address"/>
+				 				<form:input id="billingAdress" cssClass="input-large highlight" path="order.billing.address"/>
 				 				<span class="help-inline"><form:errors path="order.billing.address" cssClass="error" /></span>
 			            </div>
 			            <div class="controls">
-				 				<form:input id="billing_city" cssClass="input-large highlight" path="order.billing.city"/>
+				 				<form:input id="billingCity" cssClass="input-large highlight" path="order.billing.city"/>
 				 				<span class="help-inline"><form:errors path="order.billing.city" cssClass="error" /></span>
 			            </div>
 			            <div class="controls">
-				 				<form:input id="billing_state" cssClass="input-large highlight" path="order.billing.state"/>
+				 				<form:input id="billingState" cssClass="input-large highlight" path="order.billing.state"/>
 				 				<span class="help-inline"><form:errors path="order.billing.state" cssClass="error" /></span>
 			            </div>
 			            <div class="controls">
-				 				<form:input id="billing_postalCode" cssClass="input-large highlight" path="order.billing.postalCode"/>
+				 				<form:input id="billingPostalCode" cssClass="input-large highlight" path="order.billing.postalCode"/>
 				 				<span class="help-inline"><form:errors path="order.billing.postalCode" cssClass="error" /></span>
 			            </div>	
 			    </address>			 
