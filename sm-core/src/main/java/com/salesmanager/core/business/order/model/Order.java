@@ -21,7 +21,6 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.OrderBy;
 import org.hibernate.validator.constraints.Email;
@@ -159,104 +158,99 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	public Order() {
 	}
 	
-	@Size(min=1, max=64, message="Enter valid Customer First Name")
 	@Column (name ="CUSTOMER_FIRSTNAME", length=64 , nullable=false)
-	private String customer_Firstname;
+	private String customerFirstName;
 	
-	@Size(min=1, max=64, message="Enter valid Customer First Name")
 	@Column (name ="CUSTOMER_LASTNAME", length=64 , nullable=false)
-	private String customer_Lastname;
+	private String customerLastName;
 	
-	@Size(min=1, max=256, message="Enter valid Customer Address")
 	@Column (name ="CUSTOMER_STREET_ADDRESS",length=256 ,  nullable=false)
-	private String customer_Street_Address;
+	private String customerStreetAddress;
 	
-	@Size(min=1, max=100, message="Enter valid Customer City")
 	@Column (name ="CUSTOMER_CITY", length=100 , nullable=false)
-	private String customer_City;
+	private String customerCity;
 	
 	@Column (name ="CUSTOMER_STATE", length=100)
-	private String customer_State;
+	private String customerState;
 	
-	@Size(min=1, max=20, message="Enter valid Customer Postal Code")
 	@Column (name ="CUSTOMER_POSTCODE", length=20 , nullable=false)
-	private String customer_PostCode;
+	private String customerPostCode;
 	
-	@Size(min=1, max=20, message="Enter valid Customer Phone")
 	@Column (name ="CUSTOMER_TELEPHONE", length=20 , nullable=false)
-	private String customer_Telephone;
+	private String customerTelephone;
 	
 	@Email
-	@Size(min=1, max=64, message="Enter valid Customer Email Address")
 	@Column (name ="CUSTOMER_EMAIL_ADDRESS", length=50)
-	private String customer_Email_Address;
+	private String customerEmailAddress;
 	
 	
-	public String getCustomer_Firstname() {
-		return customer_Firstname;
-	}
 
-	public void setCustomer_Firstname(String customer_Firstname) {
-		this.customer_Firstname = customer_Firstname;
-	}
-
-	public String getCustomer_Lastname() {
-		return customer_Lastname;
-	}
-
-	public void setCustomer_Lastname(String customer_Lastname) {
-		this.customer_Lastname = customer_Lastname;
-	}
-
-	public String getCustomer_Street_Address() {
-		return customer_Street_Address;
-	}
-
-	public void setCustomer_Street_Address(String customer_Street_Address) {
-		this.customer_Street_Address = customer_Street_Address;
-	}
-
-	public String getCustomer_City() {
-		return customer_City;
-	}
-
-	public void setCustomer_City(String customer_City) {
-		this.customer_City = customer_City;
-	}
-
-	public String getCustomer_State() {
-		return customer_State;
-	}
-
-	public void setCustomer_State(String customer_State) {
-		this.customer_State = customer_State;
-	}
-
-	public String getCustomer_PostCode() {
-		return customer_PostCode;
-	}
-
-	public void setCustomer_PostCode(String customer_PostCode) {
-		this.customer_PostCode = customer_PostCode;
-	}
-
-	public String getCustomer_Telephone() {
-		return customer_Telephone;
-	}
-
-	public void setCustomer_Telephone(String customer_Telephone) {
-		this.customer_Telephone = customer_Telephone;
-	}
-
-	public String getCustomer_Email_Address() {
-		return customer_Email_Address;
-	}
-
-	public void setCustomer_Email_Address(String customer_Email_Address) {
-		this.customer_Email_Address = customer_Email_Address;
-	}
 
 	
+
+	public String getCustomerFirstName() {
+		return customerFirstName;
+	}
+
+	public void setCustomerFirstName(String customerFirstName) {
+		this.customerFirstName = customerFirstName;
+	}
+
+	public String getCustomerLastName() {
+		return customerLastName;
+	}
+
+	public void setCustomerLastName(String customerLastName) {
+		this.customerLastName = customerLastName;
+	}
+
+	public String getCustomerStreetAddress() {
+		return customerStreetAddress;
+	}
+
+	public void setCustomerStreetAddress(String customerStreetAddress) {
+		this.customerStreetAddress = customerStreetAddress;
+	}
+
+	public String getCustomerCity() {
+		return customerCity;
+	}
+
+	public void setCustomerCity(String customerCity) {
+		this.customerCity = customerCity;
+	}
+
+	public String getCustomerState() {
+		return customerState;
+	}
+
+	public void setCustomerState(String customerState) {
+		this.customerState = customerState;
+	}
+
+	public String getCustomerPostCode() {
+		return customerPostCode;
+	}
+
+	public void setCustomerPostCode(String customerPostCode) {
+		this.customerPostCode = customerPostCode;
+	}
+
+	public String getCustomerTelephone() {
+		return customerTelephone;
+	}
+
+	public void setCustomerTelephone(String customerTelephone) {
+		this.customerTelephone = customerTelephone;
+	}
+
+	public String getCustomerEmailAddress() {
+		return customerEmailAddress;
+	}
+
+	public void setCustomerEmailAddress(String customerEmailAddress) {
+		this.customerEmailAddress = customerEmailAddress;
+	}
 
 	@Override
 	public Long getId() {
