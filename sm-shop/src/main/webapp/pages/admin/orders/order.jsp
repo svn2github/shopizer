@@ -44,7 +44,7 @@
                 <div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>   
                 <div id="store.error" class="alert alert-error" style="display:none;"><s:message code="message.error" text="An error occured"/></div>
 	
-	 	<form:hidden path="order.id" />
+	  <form:hidden path="order.id" />
  			
  		<div class="span4">  
 			
@@ -52,41 +52,42 @@
 			<address>			        
 
 	            <div class="controls">
-		 				<form:input id="customer_Firstname" cssClass="input-large highlight" path="order.customer_Firstname"/>
+		 				<form:input id="customerFirstName" cssClass="input-large highlight" path="order.customerFirstName"/>
 		 				<span class="help-inline">
-		 				<form:errors path="order.customer_Firstname" cssClass="error" /></span>
+		 				<form:errors path="order.customerFirstName" cssClass="error" /></span>
 	            </div>
-	                <div class="controls">
-		 				<form:input id="customer_Lastname" cssClass="input-large highlight" path="order.customer_Lastname"/>
-		 				<span class="help-inline"><form:errors path="order.customer_Lastname" cssClass="error" /></span>
-	            </div>
-	           <div class="controls">
-		 				<form:input id="customer_Street_Address" cssClass="input-large highlight" path="order.customer_Street_Address"/>
-		 				<span class="help-inline"><form:errors path="order.customer_Street_Address" cssClass="error" /></span>
+	            
+	            <div class="controls">
+		 				<form:input id="customerLastName" cssClass="input-large highlight" path="order.customerLastName"/>
+		 				<span class="help-inline"><form:errors path="order.customerLastName" cssClass="error" /></span>
 	            </div>
 	            <div class="controls">
-		 				<form:input id="customer_City" cssClass="input-large highlight" path="order.customer_City"/>
-		 				<span class="help-inline"><form:errors path="order.customer_City" cssClass="error" /></span>
+		 				<form:input id="customerStreetAddress" cssClass="input-large highlight" path="order.customerStreetAddress"/>
+		 				<span class="help-inline"><form:errors path="order.customerStreetAddress" cssClass="error" /></span>
+	            </div>
+	            <div class="controls">
+		 				<form:input id="customerCity" cssClass="input-large highlight" path="order.customerCity"/>
+		 				<span class="help-inline"><form:errors path="order.customerCity" cssClass="error" /></span>
 	            </div> 
 	 
-			 	<form:input  cssClass="input-large" path="order.customer_State"/><br> 
+			 	<form:input  cssClass="input-large" path="order.customerState"/><br> 
 				
 				<div class="controls">
-		 				<form:input id="customer_PostCode" cssClass="input-large highlight" path="order.customer_PostCode"/>
-		 				<span class="help-inline"><form:errors path="order.customer_PostCode" cssClass="error" /></span>
+		 				<form:input id="customerPostCode" cssClass="input-large highlight" path="order.customerPostCode"/>
+		 				<span class="help-inline"><form:errors path="order.customerPostCode" cssClass="error" /></span>
 	            </div> 
 	           
 	            <div class="controls">
-		 				P:<form:input id="customer_Telephone" cssClass="input-large highlight" path="order.customer_Telephone"/>
-		 				<span class="help-inline"><form:errors path="order.customer_Telephone" cssClass="error" /></span>
+		 				P:<form:input id="customerTelephone" cssClass="input-large highlight" path="order.customerTelephone"/>
+		 				<span class="help-inline"><form:errors path="order.customerTelephone" cssClass="error" /></span>
 	            </div>	
 	            
    
 				<dl  class="dl-horizontal">			 		
 			 		<div class="controls">
 		 	 	 		<dt>Email</dt>
-		 				<dd><form:input id="customer_Email_Address" cssClass="input-large highlight" path="order.customer_Email_Address"/></dd>
-		 				<span class="help-inline"><form:errors path="order.customer_Email_Address" cssClass="error" /></span>
+		 				<dd><form:input id="customerEmailAddress" cssClass="input-large highlight" path="order.customerEmailAddress"/></dd>
+		 				<span class="help-inline"><form:errors path="order.customerEmailAddress" cssClass="error" /></span>
 	            	</div>  
 	
 		  	 		<dt>Date purchased</dt>
