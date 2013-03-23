@@ -270,15 +270,17 @@ public class CustomShippingMethodsController {
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			CustomShippingQuotesConfiguration customConfiguration = (CustomShippingQuotesConfiguration)shippingService.getCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, store);
 
-			List<CustomShippingQuotesRegion> quotes = customConfiguration.getRegions();
-			for (CustomShippingQuotesRegion quote : quotes) {
-					List<String> countries = quote.getCountries();
-					for(String country : countries) {
-						Map<String,String> entry = new HashMap<String,String> ();
-						entry.put("region", quote.getCustomRegionName());
-						entry.put("country", country);
-						resp.addDataEntry(entry);
-					}
+			if(customConfiguration!=null) {
+				List<CustomShippingQuotesRegion> quotes = customConfiguration.getRegions();
+				for (CustomShippingQuotesRegion quote : quotes) {
+						List<String> countries = quote.getCountries();
+						for(String country : countries) {
+							Map<String,String> entry = new HashMap<String,String> ();
+							entry.put("region", quote.getCustomRegionName());
+							entry.put("country", country);
+							resp.addDataEntry(entry);
+						}
+				}
 			}
 
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
@@ -455,6 +457,12 @@ public class CustomShippingMethodsController {
 		//get custom information
 		CustomShippingQuotesConfiguration customConfiguration = (CustomShippingQuotesConfiguration)shippingService.getCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, store);
 
+		if(customConfiguration==null) {
+			customConfiguration = new CustomShippingQuotesConfiguration();
+			customConfiguration.setModuleCode(this.WEIGHT_BASED_SHIPPING_METHOD);
+		}
+		
+		
 		//get supported countries
 		List<String> includedCountries = shippingService.getSupportedCountries(store);
 		List<Country> shippingCountries = new ArrayList<Country>();
@@ -479,6 +487,7 @@ public class CustomShippingMethodsController {
 		environments.add(Constants.TEST_ENVIRONMENT);
 		environments.add(Constants.PRODUCTION_ENVIRONMENT);
 		
+		model.addAttribute("environments", environments);
 		model.addAttribute("configuration", configuration);
 		model.addAttribute("customConfiguration", customConfiguration);
 		model.addAttribute("customRegion", customRegion);

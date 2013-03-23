@@ -57,7 +57,11 @@
 	                                	<span class="help-inline"><form:errors path="environment" cssClass="error" /></span>
 	                        		</div>
 	                        		
-	                        		<jsp:include page="/pages/admin/shipping/${configuration.moduleCode}.jsp"></jsp:include> 
+	                        		
+	                        		<c:if test="${customConfiguration==null}">
+	                        			<jsp:include page="/pages/admin/shipping/${configuration.moduleCode}.jsp"></jsp:include>
+	                        		</c:if>
+
 	                        		
 	                        		<form:hidden path="moduleCode" />
 	                        		<div class="form-actions">
@@ -68,6 +72,12 @@
 					                  
 
             	 			</form:form>
+            	 			
+            	 			
+            	 			
+            	 		<c:if test="${customConfiguration!=null}">
+	                        			<jsp:include page="/pages/admin/shipping/${configuration.moduleCode}.jsp"></jsp:include>
+	                    </c:if>	
 							
 							
 		                  <c:if test="${configuration.active}">      
