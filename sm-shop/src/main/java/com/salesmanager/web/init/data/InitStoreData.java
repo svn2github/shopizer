@@ -637,6 +637,9 @@ public class InitStoreData implements InitData {
 			order.setChannel(1);//1 is online
 			order.setCurrencyValue(new BigDecimal(0.98));//compared to based currency (not necessary)
 			order.setCustomerId(customer.getId());
+			order.setCustomerFirstName("Leo");
+			order.setCustomerLastName("DiCaprio");
+			order.setCustomerEmailAddress("leo@shopizer.com");
 			order.setDelivery(delivery);
 			order.setDisplayInvoicePayments(true);
 			order.setIpAddress("ipAddress" );
