@@ -131,6 +131,7 @@ public class ShippingMethodsController {
 					for(String errorCode : errorCodes) {
 						model.addAttribute(errorCode,messages.getMessage("message.fielderror", locale));
 					}
+					model.addAttribute("validationError","validationError");
 					return ControllerConstants.Tiles.Shipping.shippingMethod;
 				}
 			} else {
