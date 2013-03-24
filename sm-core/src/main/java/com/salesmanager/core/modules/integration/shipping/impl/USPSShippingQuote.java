@@ -79,7 +79,7 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 			errorFields.add("packages");
 		}
 		
-		List<String> services = options.get("services");
+/*		List<String> services = options.get("services");
 		if(services==null || services.size()==0) {
 			if(errorFields==null) {
 				errorFields = new ArrayList<String>();
@@ -92,7 +92,7 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 				errorFields = new ArrayList<String>();
 			}
 			errorFields.add("services");
-		}
+		}*/
 		
 		if(errorFields!=null) {
 			IntegrationException ex = new IntegrationException(IntegrationException.ERROR_VALIDATION_SAVE);
