@@ -22,6 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.salesmanager.core.business.customer.model.Delivery;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
+import com.salesmanager.core.business.reference.country.service.CountryService;
+import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 import com.salesmanager.core.business.shipping.model.ShippingOption;
@@ -36,6 +39,7 @@ import com.salesmanager.core.constants.MeasureUnit;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule;
 import com.salesmanager.core.utils.DataUtils;
+import com.salesmanager.core.utils.ProductPriceUtils;
 
 /**
  * Integrates with USPS online API
@@ -48,6 +52,13 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 	
 	@Autowired
 	private MerchantLogService merchantLogService;
+	
+	@Autowired
+	private ProductPriceUtils productPriceUtils;
+	
+	@Autowired
+	private CountryService countryService;
+	
 
 	@Override
 	public void validateModuleConfiguration(
@@ -113,21 +124,21 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 			ShippingConfiguration shippingConfiguration, Locale locale)
 			throws IntegrationException {
 
-		
-		
-		BigDecimal total = orderTotal;
+	
 
 		if (packages == null) {
 			return null;
 		}
 		
-		List<ShippingOption> options = null;
+
 
 		// only applies to Canada and US
-		Country country = delivery.getCountry();
-		if(!country.getIsoCode().equals("US") || !country.equals("CA")) {
-			throw new IntegrationException("Canadapost Not configured for shipping in country " + country.getIsoCode());
-		}
+/*		Country country = delivery.getCountry();
+		if(!country.getIsoCode().equals("US") || !country.getIsoCode().equals("US")){
+			throw new IntegrationException("USPS Not configured for shipping in country " + country.getIsoCode());
+		}*/
+		
+
 
 		// supports en and fr
 		String language = locale.getLanguage();
@@ -142,6 +153,9 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 			total = CurrencyUtil.convertToCurrency(total, store.getCurrency(),
 					Constants.CURRENCY_CODE_CAD);
 		}*/
+		
+		Language lang = store.getDefaultLanguage();
+		
 
 		
 		GetMethod httpget = null;
@@ -149,6 +163,10 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 		String pack = configuration.getIntegrationOptions().get("packages").get(0);
 
 		try {
+			
+			Map<String,Country> countries = countryService.getCountriesMap(lang);
+
+			Country destination = countries.get(delivery.getCountry().getIsoCode());
 			
 		
 			
@@ -201,9 +219,7 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 
 			StringBuilder xmldatabuffer = new StringBuilder();
 
-			Country customerCountry = delivery.getCountry();
 
-		
 			double totalW = 0;
 			double totalH = 0;
 			double totalL = 0;
@@ -341,6 +357,7 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 				xmldatabuffer.append("<Size>");
 				xmldatabuffer.append(size);
 				xmldatabuffer.append("</Size>");
+				xmldatabuffer.append("<Machinable>true</Machinable>");//TODO must be changed if not machinable
 				xmldatabuffer.append("<ShipDate>");
 				xmldatabuffer.append(shipDate);
 				xmldatabuffer.append("</ShipDate>");
@@ -353,13 +370,13 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 				xmldatabuffer.append(ounces);
 				xmldatabuffer.append("</Ounces>");
 				xmldatabuffer.append("<MailType>");
-				xmldatabuffer.append("Package");//TODO try Envelope
+				xmldatabuffer.append(pack);
 				xmldatabuffer.append("</MailType>");
 				xmldatabuffer.append("<ValueOfContents>");
-				xmldatabuffer.append(orderTotal);
+				xmldatabuffer.append(productPriceUtils.getAdminFormatedAmount(store, orderTotal));
 				xmldatabuffer.append("</ValueOfContents>");
 				xmldatabuffer.append("<Country>");
-				xmldatabuffer.append(delivery.getCountry().getName());
+				xmldatabuffer.append(destination.getName());
 				xmldatabuffer.append("</Country>");
 			}
 
@@ -391,7 +408,7 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 
 			xmldatabuffer.append("</Package>");
 
-			String xmlfooter = "</RateRequest>";
+			String xmlfooter = "</RateV3Request>";
 			if(!store.getCountry().getIsoCode().equals(delivery.getCountry().getIsoCode())) {
 				xmlfooter = "</IntlRateRequest>";
 			}
@@ -444,7 +461,9 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 
 			if(store.getCountry().getIsoCode().equals(delivery.getCountry().getIsoCode())) {
 
-				digester.addCallMethod("RateV3Response/Package/Error",
+				digester.addCallMethod("Error/Description",
+						"setError", 0);
+				digester.addCallMethod("RateV3Response/Package/Error/Description",
 						"setError", 0);
 				digester
 						.addObjectCreate(
@@ -454,22 +473,24 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 						"CLASSID", "optionId");
 				digester.addCallMethod(
 						"RateV3Response/Package/Postage/MailService",
-						"optionName", 0);
+						"setOptionName", 0);
 				digester.addCallMethod(
 						"RateV3Response/Package/Postage/MailService",
-						"optionCode", 0);
+						"setOptionCode", 0);
 				digester.addCallMethod("RateV3Response/Package/Postage/Rate",
-						"optionPrice", 0);
-				digester
-						.addCallMethod(
-								"RateV3Response/Package/Postage/Commitment/CommitmentDate",
-								"estimatedNumberOfDays", 0);
+						"setOptionPriceText", 0);
+				//digester
+				//		.addCallMethod(
+				//				"RateV3Response/Package/Postage/Commitment/CommitmentDate",
+				//				"estimatedNumberOfDays", 0);
 				digester.addSetNext("RateV3Response/Package/Postage",
 						"addOption");
 
 			} else {
 	
-				digester.addCallMethod("IntlRateResponse/Package/Error",
+				digester.addCallMethod("Error/Description",
+						"setError", 0);
+				digester.addCallMethod("IntlRateResponse/Package/Error/Description",
 						"setError", 0);
 				digester
 						.addObjectCreate(
@@ -486,9 +507,9 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 				digester.addCallMethod(
 						"IntlRateResponse/Package/Service/Postage",
 						"setOptionPriceText", 0);
-				digester.addCallMethod(
-						"IntlRateResponse/Package/Service/SvcCommitments",
-						"setEstimatedNumberOfDays", 0);
+				//digester.addCallMethod(
+				//		"IntlRateResponse/Package/Service/SvcCommitments",
+				//		"setEstimatedNumberOfDays", 0);
 				digester.addSetNext("IntlRateResponse/Package/Service",
 						"addOption");
 	
@@ -500,12 +521,18 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 			// XML document is well formed but the document is not
 			// valid</ErrorDescription><ErrorLocation><ErrorLocationElementName>AddressValidationRequest</ErrorLocationElementName></ErrorLocation></Error></Response></AddressValidationResponse>
 
+			
+			//<?xml version="1.0"?>
+			//<IntlRateResponse><Package ID="1"><Error><Number>-2147218046</Number>
+			//<Source>IntlPostage;clsIntlPostage.GetCountryAndRestirctedServiceId;clsIntlPostage.CalcAllPostageDimensionsXML;IntlRate.ProcessRequest</Source>
+			//<Description>Invalid Country Name</Description><HelpFile></HelpFile><HelpContext>1000440</HelpContext></Error></Package></IntlRateResponse>
+			
+			
 			xmlreader = new StringReader(data);
 			digester.parse(xmlreader);
 
-			if (!StringUtils.isBlank(parsed.getErrorCode())) {
-				LOGGER.error("Can't process USPS statusCode="
-						+ parsed.getErrorCode() + " message= "
+			if (!StringUtils.isBlank(parsed.getError())) {
+				LOGGER.error("Can't process USPS message= "
 						+ parsed.getError());
 				return null;
 			}
@@ -522,7 +549,7 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 			}
 		
 			if (parsed.getOptions() == null || parsed.getOptions().size() == 0) {
-				LOGGER.warn("No options returned from UPS");
+				LOGGER.warn("No options returned from USPS");
 				return null;
 			}
 

@@ -260,11 +260,7 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 	    productService.saveOrUpdate(product);
 	    
 	    
-	    //create an integration configuration
-	    IntegrationConfiguration configuration = new IntegrationConfiguration();
-	    configuration.setActive(true);
-	    configuration.setEnvironment(Environment.TEST.name());
-	    configuration.setModuleCode("canadapost");
+
 	    
 	    //configure shipping
 	    ShippingConfiguration shippingConfiguration = new ShippingConfiguration();
@@ -285,10 +281,36 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 	    
 	    shippingService.setSupportedCountries(store, supportedCountries);
 	    
+/*	    //create an integration configuration - CANADA POST
+	    IntegrationConfiguration configuration = new IntegrationConfiguration();
+	    configuration.setActive(true);
+	    configuration.setEnvironment(Environment.TEST.name());
+	    configuration.setModuleCode("canadapost");
+	    
 	    //configure module
 	    List<String> options = new ArrayList<String>();
 	    options.add("PACKAGE");
 	    configuration.getIntegrationKeys().put("account", "CPC_CS_TI_INC");
+	    configuration.getIntegrationOptions().put("packages",options);*/
+	    
+	    //create an integration configuration - USPS
+	    
+	    //overwrite shipping US
+	    Country us = countryService.getByCode("US");
+	    Zone NY = zoneService.getByCode("NY");
+	    store.setCountry(us);
+	    store.setZone(NY);
+	    store.setStorepostalcode("10451");
+	    
+	    IntegrationConfiguration configuration = new IntegrationConfiguration();
+	    configuration.setActive(true);
+	    configuration.setEnvironment(Environment.TEST.name());
+	    configuration.setModuleCode("usps");
+	    
+	    //configure module
+	    List<String> options = new ArrayList<String>();
+	    options.add("Package");
+	    configuration.getIntegrationKeys().put("account", "636CSTIC6187");
 	    configuration.getIntegrationOptions().put("packages",options);
 	    
 	    shippingService.saveShippingConfiguration(shippingConfiguration, store);
@@ -327,6 +349,12 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 	    delivery.setCountry(country);
 	    delivery.setZone(zone);
 	    delivery.setPostalCode("J4B-8J9");
+	    
+	    //overwrite delivery to US
+	    delivery.setPostalCode("90002");
+	    delivery.setCountry(us);
+	    Zone california = zoneService.getByCode("CA");
+	    delivery.setZone(california);
 	    
 	    
 	    Billing billing = new Billing();

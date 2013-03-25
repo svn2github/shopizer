@@ -23,8 +23,8 @@ public class ShippingConfiguration implements JSONAware {
 	private int boxWidth = 0;
 	private int boxHeight = 0;
 	private int boxLength = 0;
-	private int boxWeight = 0;
-	private int maxWeight = 0;
+	private double boxWeight = 0;
+	private double maxWeight = 0;
 	
 	//free shipping
 	private boolean freeShippingEnabled = false;
@@ -233,22 +233,22 @@ public class ShippingConfiguration implements JSONAware {
 	}
 
 
-	public int getBoxWeight() {
+	public double getBoxWeight() {
 		return boxWeight;
 	}
 
 
-	public void setBoxWeight(int boxWeight) {
+	public void setBoxWeight(double boxWeight) {
 		this.boxWeight = boxWeight;
 	}
 
 
-	public int getMaxWeight() {
+	public double getMaxWeight() {
 		return maxWeight;
 	}
 
 
-	public void setMaxWeight(int maxWeight) {
+	public void setMaxWeight(double maxWeight) {
 		this.maxWeight = maxWeight;
 	}
 
