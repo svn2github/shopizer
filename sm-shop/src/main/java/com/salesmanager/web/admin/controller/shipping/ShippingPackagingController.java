@@ -1,5 +1,6 @@
 package com.salesmanager.web.admin.controller.shipping;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -97,9 +98,13 @@ public class ShippingPackagingController {
 			shippingConfiguration = new ShippingConfiguration();
 		}
 		
+		DecimalFormat df = new DecimalFormat("#.##");
+		String sweight = df.format(configuration.getBoxWeight());
+		double weight = Double.parseDouble(sweight);
+		
 		shippingConfiguration.setBoxHeight(configuration.getBoxHeight());
 		shippingConfiguration.setBoxLength(configuration.getBoxLength());
-		shippingConfiguration.setBoxWeight(configuration.getBoxWeight());
+		shippingConfiguration.setBoxWeight(weight);
 		shippingConfiguration.setBoxWidth(configuration.getBoxWidth());
 		
 		shippingConfiguration.setShipPackageType(configuration.getShipPackageType());
