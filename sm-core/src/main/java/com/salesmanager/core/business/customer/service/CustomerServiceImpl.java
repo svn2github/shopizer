@@ -3,6 +3,7 @@ package com.salesmanager.core.business.customer.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.customer.dao.CustomerDAO;
@@ -14,6 +15,9 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 public class CustomerServiceImpl extends SalesManagerEntityServiceImpl<Long, Customer> implements CustomerService {
 
 	private CustomerDAO customerDAO;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
 	public CustomerServiceImpl(CustomerDAO customerDAO) {
