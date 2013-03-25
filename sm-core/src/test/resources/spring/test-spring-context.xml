@@ -26,7 +26,9 @@
   <context:component-scan base-package="com.salesmanager.test" />
   
   
-
+	<bean id="passwordEncoder"
+		class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+	</bean>
 	
 	
 	<util:properties id="shopizer-properties">
