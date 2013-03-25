@@ -13,7 +13,7 @@
 		$('#boxWidth').numeric();
 		$('#boxHeight').numeric();
 		$('#boxLength').numeric();
-		$('#boxWeight').numeric();
+		$('#boxWeight').numeric({allow:"."});
 	});
 	
 </script>
@@ -49,7 +49,7 @@
 											<form:radiobutton id="shipPackageType" path="shipPackageType" value="BOX"/>&nbsp;<s:message code="label.shipping.packaging.boxes" text="Items will be combined and shipped in a box" /><br/>
                         				</div>
                   					</div>
-                  					
+                  					<div class="well">
                   					<div class="control-group">
                         				<div class="controls">
                                     		<s:message code="label.store.weightunit" text="Weight units" />&nbsp;<strong><c:out value="${store.weightunitcode}"/></strong><br/>			
@@ -87,7 +87,7 @@
                         				</div>
                         				<span class="help-inline"><form:errors path="boxWeight" cssClass="error" /></span>
                   					</div>                   					
-
+									</div>
 
 	                        		<div class="form-actions">
                   						<div class="pull-right">

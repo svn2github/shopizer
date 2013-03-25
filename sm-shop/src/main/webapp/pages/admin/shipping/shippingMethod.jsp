@@ -80,7 +80,7 @@
 	                    </c:if>	
 							
 							
-		                  <c:if test="${configuration.active && validationError!=null}">      
+		                  <c:if test="${configuration.active && validationError==null}">      
 		                  <c:url var="removeModule" value="/admin/shipping/deleteShippingMethod.html"/>
 		                  <form:form method="POST" enctype="multipart/form-data" commandName="code" action="${removeModule}">
 									<input type="hidden" name="code" value="${configuration.moduleCode}" />
