@@ -40,6 +40,11 @@ public class PaypalPayment implements PaymentModule {
 	
 	@Autowired
 	private MerchantLogService merchantLogService;
+	
+	
+	
+	
+	
 
 	@Override
 	public Transaction initTransaction(Customer customer, Order order,
@@ -200,7 +205,7 @@ public class PaypalPayment implements PaymentModule {
 
 	@Override
 	public Transaction capture(Customer customer, Order order,
-			BigDecimal amount, com.salesmanager.core.business.payments.model.Payment payment, IntegrationConfiguration configuration, IntegrationModule module) throws IntegrationException {
+			BigDecimal amount, com.salesmanager.core.business.payments.model.Payment payment, Transaction trx, IntegrationConfiguration configuration, IntegrationModule module) throws IntegrationException {
 		// TODO Auto-generated method stub
 		
 		
@@ -403,12 +408,129 @@ public class PaypalPayment implements PaymentModule {
 			BigDecimal amount, Payment payment,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		
+		
+		try {
+
+			/*
+			 * '------------------------------------ ' The currencyCodeType and
+			 * paymentType ' are set to the selections made on the Integration
+			 * Assistant '------------------------------------
+			 */
+
+
+
+			// REQUEST
+			// requiredSecurityParameters]&METHOD=RefundTransaction&AUTHORIZATIONID=
+			// &AMT=99.12&REFUNDTYPE=Full|Partial
+
+			// IPN
+			// String ipnUrl = ReferenceUtil.buildSecureServerUrl() +
+			// (String)conf.getString("core.salesmanager.checkout.paypalIpn");
+
+			String refundType = "Full";
+			boolean partial = false;
+			if (amount.doubleValue() < order.getTotal().doubleValue()) {
+				partial = true;
+			}
+			if (partial) {
+				refundType = "Partial";
+			}
+
+			// String nvpstr = "&TRANSACTIONID=" + transactionId +
+			// "&REFUNDTYPE=" + refundType + "&IPADDRESS=" + ip.toString();
+			String nvpstr = "&TRANSACTIONID=" + transaction.getTransactionDetails().get("TRANSACTIONID") + "&REFUNDTYPE="
+					+ refundType + "&CURRENCYCODE=" + order.getCurrency() + "&IPADDRESS=";
+
+
+			if (partial) {
+				nvpstr = nvpstr + "&AMT=" + amount + "&NOTE=Partial refund";
+			}
+
+			Map<String,String> nvp = httpcall(configuration, module, "RefundTransaction",
+					nvpstr);
+			String strAck = nvp.get("ACK").toString();
+			
+
+			
+			StringBuilder valueBuffer = new StringBuilder();
+			for (String key : nvp.keySet()) {
+				valueBuffer.append("[").append(key).append("=").append(
+						(String) nvp.get(key)).append("]");
+			}
+			
+
+			if (strAck != null && strAck.equalsIgnoreCase("Success")) {
+				
+				
+				String responseTransactionId = (String) nvp
+				.get("REFUNDTRANSACTIONID");
+				
+				/**
+				 * RESPONSE
+				 * [successResponseFields]&AUTHORIZATIONID=
+				 * &TRANSACTIONID
+				 * =&PARENTTRANSACTIONID=
+				 * &RECEIPTID
+				 * =&TRANSACTIONTYPE=express-checkout
+				 * &PAYMENTTYPE=instant&ORDERTIME=2006-08-15T17:31:38Z&AMT=99.12
+				 * &CURRENCYCODE=USD&FEEAMT=3.29&TAXAMT=0.00&PAYMENTSTATUS=
+				 * Completed &PENDINGREASON=None&REASONCODE=None
+				 **/
+				
+				Transaction refund = new Transaction();
+				refund.setAmount(amount);
+				refund.setOrder(order);
+				refund.setTransactionDate(new Date());
+				refund.setTransactionType(TransactionType.REFUND);
+				refund.setPaymentType(payment.getPaymentType());
+				refund.getTransactionDetails().put("REFUNDTRANSACTIONID", responseTransactionId);
+			
+				return transaction;
+
+			} else {
+
+				String ErrorCode = nvp.get("L_ERRORCODE0").toString();
+				String ErrorShortMsg = nvp.get("L_SHORTMESSAGE0").toString();
+				String ErrorLongMsg = nvp.get("L_LONGMESSAGE0").toString();
+				String ErrorSeverityCode = nvp.get("L_SEVERITYCODE0")
+						.toString();
+
+				IntegrationException te = new IntegrationException(
+						"Paypal transaction refused " + ErrorLongMsg);
+						te.setErrorCode(IntegrationException.TRANSACTION_EXCEPTION);
+						
+						
+				merchantLogService.save(
+								new MerchantLog(order.getMerchant(),
+								"Paypal transaction refused "
+										+ ErrorLongMsg));
+
+				if (ErrorCode.equals("10415")) {// transaction already submited
+					te = new IntegrationException("Paypal transaction refused "
+							+ ErrorLongMsg);
+					te
+							.setErrorCode(IntegrationException.TRANSACTION_EXCEPTION);
+				}
+
+				throw te;
+			}
+			
+
+
+		} catch (Exception e) {
+			if (e instanceof IntegrationException) {
+				throw (IntegrationException) e;
+			}
+			throw new IntegrationException(e);
+		}
+			
+
 	}
 	
 	
-	public Map httpcall(IntegrationConfiguration keys, IntegrationModule module,
+	public Map<String,String> httpcall(IntegrationConfiguration keys, IntegrationModule module,
 			String methodName, String nvpStr) throws Exception {
 
 		// return null;

@@ -173,6 +173,9 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@Column (name ="CUSTOMER_STATE", length=100)
 	private String customerState;
 	
+	@Column (name ="CUSTOMER_COUNTRY", length=100)
+	private String customerCountry;
+	
 	@Column (name ="CUSTOMER_POSTCODE", length=20)
 	private String customerPostCode;
 	
@@ -495,6 +498,14 @@ public class Order extends SalesManagerEntity<Long, Order> {
 
 	public void setCustomerEmailAddress(String customerEmailAddress) {
 		this.customerEmailAddress = customerEmailAddress;
+	}
+
+	public void setCustomerCountry(String customerCountry) {
+		this.customerCountry = customerCountry;
+	}
+
+	public String getCustomerCountry() {
+		return customerCountry;
 	}
 
 }

@@ -29,7 +29,7 @@ public interface PaymentModule {
 			throws IntegrationException;
 	
 	public Transaction capture(
-			Customer customer, Order order, BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module)
+			Customer customer, Order order, BigDecimal amount, Payment payment, Transaction transaction, IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException;
 	
 	public Transaction authorizeAndCapture(

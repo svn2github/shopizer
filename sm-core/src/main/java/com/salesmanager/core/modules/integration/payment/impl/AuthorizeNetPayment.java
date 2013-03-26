@@ -33,7 +33,7 @@ public class AuthorizeNetPayment implements PaymentModule {
 
 	@Override
 	public Transaction capture(Customer customer, Order order,
-			BigDecimal amount, Payment payment,
+			BigDecimal amount, Payment payment, Transaction transaction, 
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
 		// TODO Auto-generated method stub
