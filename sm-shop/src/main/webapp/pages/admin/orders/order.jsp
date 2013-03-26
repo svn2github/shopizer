@@ -41,36 +41,54 @@
          <form:form method="POST" enctype="multipart/form-data" commandName="order" action="${orderSave}">
 	   
                 <form:errors path="*" cssClass="alert alert-error" element="div" />
-                <div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>   
-                <div id="store.error" class="alert alert-error" style="display:none;"><s:message code="message.error" text="An error occured"/></div>
-	
-	  <form:hidden path="order.id" />
+	                <div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>   
+	                <div id="store.error" class="alert alert-error" style="display:none;"><s:message code="message.error" text="An error occured"/></div>
+		
+		  			<form:hidden path="order.id" />
+		  			<form:hidden path="order.customerId" />
  			
  		<div class="span4">  
 			
 			<h6> <s:message code="label.customer.address2" text="Customer Address"/> </h6>
 			<address>			        
 
+				<label><s:message code="label.customer.firstname" text="First Name"/></label>
 	            <div class="controls">
-		 				<form:input id="customerFirstName" cssClass="input-large highlight" path="order.customerFirstName"/>
-		 				<span class="help-inline">
-		 				<form:errors path="order.customerFirstName" cssClass="error" /></span>
+	            		
+			 				<form:input id="customerFirstName" cssClass="input-large highlight" path="order.customerFirstName"/>
+			 				<span class="help-inline">
+			 				<form:errors path="order.customerFirstName" cssClass="error" /></span>
 	            </div>
 	            
+	            <label><s:message code="label.customer.lastname" text="Last Name"/></label>
 	            <div class="controls">
-		 				<form:input id="customerLastName" cssClass="input-large highlight" path="order.customerLastName"/>
-		 				<span class="help-inline"><form:errors path="order.customerLastName" cssClass="error" /></span>
+		 					<form:input id="customerLastName" cssClass="input-large highlight" path="order.customerLastName"/>
+		 					<span class="help-inline"><form:errors path="order.customerLastName" cssClass="error" /></span>
 	            </div>
+	            
+	            <label><s:message code="label.customer.streetaddress" text="StreetAddress"/></label>
 	            <div class="controls">
+	            		
 		 				<form:input id="customerStreetAddress" cssClass="input-large highlight" path="order.customerStreetAddress"/>
 		 				<span class="help-inline"><form:errors path="order.customerStreetAddress" cssClass="error" /></span>
 	            </div>
+	            
+	            <label><s:message code="label.customer.city" text="City"/></label>
 	            <div class="controls">
 		 				<form:input id="customerCity" cssClass="input-large highlight" path="order.customerCity"/>
 		 				<span class="help-inline"><form:errors path="order.customerCity" cssClass="error" /></span>
 	            </div> 
 	 
-			 	<form:input  cssClass="input-large" path="order.customerState"/><br> 
+	 
+	 			<label><s:message code="label.customer.zone" text="State"/></label>
+	 			<div class="controls">
+			 	<form:input  cssClass="input-large" path="order.customerState"/>
+			 	</div> 
+			 	
+			 	<label><s:message code="label.customer.country" text="Country"/></label>
+	 			<div class="controls">
+			 	<form:input  cssClass="input-large" path="order.customerCountry"/>
+			 	</div> 
 				
 				<div class="controls">
 		 				<form:input id="customerPostCode" cssClass="input-large highlight" path="order.customerPostCode"/>
@@ -78,19 +96,19 @@
 	            </div> 
 	           
 	            <div class="controls">
-		 				P:<form:input id="customerTelephone" cssClass="input-large highlight" path="order.customerTelephone"/>
+		 				<form:input id="customerTelephone" cssClass="input-large highlight" path="order.customerTelephone"/>
 		 				<span class="help-inline"><form:errors path="order.customerTelephone" cssClass="error" /></span>
 	            </div>	
 	            
    
 				<dl  class="dl-horizontal">			 		
 			 		<div class="controls">
-		 	 	 		<dt>Email</dt>
+		 	 	 		<dt><s:message code="label.customer.email" text="Email"/></dt>
 		 				<dd><form:input id="customerEmailAddress" cssClass="input-large highlight" path="order.customerEmailAddress"/></dd>
 		 				<span class="help-inline"><form:errors path="order.customerEmailAddress" cssClass="error" /></span>
 	            	</div>  
 	
-		  	 		<dt>Date purchased</dt>
+		  	 		<dt><s:message code="label.order.date" text="Order date"/></dt>
 		 			<dd><form:input  cssClass="input-large" path="datePurchased"  class="small" type="text"
 							 data-date-format="<%=com.salesmanager.core.constants.Constants.DEFAULT_DATE_FORMAT%>" />
 							  <script type="text/javascript">
@@ -98,17 +116,17 @@
                               </script>
 					</dd>
 							
-					<dt>Payment method</dt>
+					<dt><s:message code="label.order.paymentmode" text="Payment mode"/></dt>
 		 			<dd><form:input  cssClass="input-large" path="order.paymentMethod"/></dd>
 						
-					<dt>Shipping method</dt>
+					<dt><s:message code="label.shipping.mode" text="Shipping mode"/></dt>
 					<dd><form:input  cssClass="input-large" path="order.shippingMethod"/></dd>			
 				</dl> 
 			</address>
 			</div>
 			
 		 	<div class="offset5">			
-				<h6>Shipping address</h6>
+				<h6><s:message code="label.customer.shippinginformation" text="Shipping information"/></h6>
 				<address>
 			            <div class="controls">
 				 				<form:input  cssClass="input-large" path="order.delivery.name"/>				 							
@@ -129,7 +147,7 @@
 			
 				<br/>
 	
-			    <h6>Billing address</h6>
+			    <h6><s:message code="label.customer.billinginformation" text="Billing information"/></h6>
 			    <address>
 			    		<div class="control-group">
 			    
@@ -159,7 +177,6 @@
 		
  		  <div class="span8">
 			<div class="form-actions">
-              <button class="btn btn-medium btn-primary" type="button">Edit</button>
               <button class="btn btn-medium btn-danger" type="button">Apply refund</button>
       		</div>
       	  </div> 
