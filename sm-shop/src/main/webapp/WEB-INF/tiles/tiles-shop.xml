@@ -47,6 +47,13 @@
   		<put-attribute name="body" value="/pages/shop/templates/{1}/pages/product.jsp" />
   		<put-attribute name="footer" value="/pages/shop/templates/{1}/sections/footer.jsp" />
   	</definition>
+  	
+  	
+  	<!-- Shopping cart TO ADD HEADER, NAV, FOOTER-->
+  	<definition name="maincart" template="/pages/shop/common/layout/commonLayout.jsp">
+  		<put-attribute name="body" value="/pages/shop/common/cart/cart.jsp" />
+  	</definition>
+  	
 
   	
 </tiles-definitions>
