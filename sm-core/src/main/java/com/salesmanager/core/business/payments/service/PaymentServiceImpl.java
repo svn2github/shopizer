@@ -26,6 +26,7 @@ import com.salesmanager.core.business.system.model.MerchantConfiguration;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
 import com.salesmanager.core.business.system.service.ModuleConfigurationService;
 import com.salesmanager.core.modules.integration.payment.model.PaymentModule;
+import com.salesmanager.core.utils.reference.ConfigurationModulesLoader;
 
 @Service("paymentService")
 public class PaymentServiceImpl implements PaymentService {
@@ -81,16 +82,23 @@ public class PaymentServiceImpl implements PaymentService {
 	@Override
 	public Map<String,IntegrationConfiguration> getPaymentModulesConfigured(MerchantStore store) throws ServiceException {
 		
-		Map<String,IntegrationConfiguration> modules = new HashMap<String,IntegrationConfiguration>();
-		MerchantConfiguration configuration = merchantConfigurationService.getMerchantConfiguration(PAYMENT_MODULES, store);
-		if(configuration!=null) {
-			if(!StringUtils.isBlank(configuration.getValue())) {
-				
-				
-				
+		try {
+		
+			Map<String,IntegrationConfiguration> modules = new HashMap<String,IntegrationConfiguration>();
+			MerchantConfiguration merchantConfiguration = merchantConfigurationService.getMerchantConfiguration(PAYMENT_MODULES, store);
+			if(merchantConfiguration!=null) {
+				if(!StringUtils.isBlank(merchantConfiguration.getValue())) {
+					
+					modules = ConfigurationModulesLoader.loadIntegrationConfigurations(merchantConfiguration.getValue());
+					
+					
+				}
 			}
+			return modules;
+		
+		} catch (Exception e) {
+			throw new ServiceException(e);
 		}
-		return modules;
 	}
 	
 
