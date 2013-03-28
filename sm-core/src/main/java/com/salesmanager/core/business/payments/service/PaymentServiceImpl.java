@@ -149,7 +149,12 @@ public class PaymentServiceImpl implements PaymentService {
 		} else if(transactionType == TransactionType.AUTHORIZECAPTURE)  {
 			transaction = module.authorizeAndCapture(customer, order, amount, payment, configuration, integrationModule);
 		} else if(transactionType == TransactionType.CAPTURE)  {
-			transaction = module.capture(customer, order, amount, payment, configuration, integrationModule);
+			//get the previous transaction
+			Transaction trx = transactionService.getCapturableTransaction(order);
+			if(trx==null) {
+				throw new ServiceException("No capturable transaction for order id " + order.getId());
+			}
+			transaction = module.capture(customer, order, amount, payment, trx, configuration, integrationModule);
 		} else if(transactionType == TransactionType.INIT)  {
 			transaction = module.initTransaction(customer, order, amount, payment, configuration, integrationModule);
 		}
