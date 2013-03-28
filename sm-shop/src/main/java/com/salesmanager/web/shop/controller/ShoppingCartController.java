@@ -44,7 +44,7 @@ public class ShoppingCartController {
 	}
 	
 	/**
-	 * Add an item to the ShoppingCart
+	 * Add an item to the ShoppingCart (AJAX exposed method)
 	 * @param id
 	 * @param quantity
 	 * @param request
@@ -81,7 +81,7 @@ public class ShoppingCartController {
 	}
 	
 	/**
-	 * Removes an item from the Shopping Cart
+	 * Removes an item from the Shopping Cart (AJAX exposed method)
 	 * @param id
 	 * @param request
 	 * @param response
@@ -108,6 +108,31 @@ public class ShoppingCartController {
 		//return the JSON structure in AjaxResponse
 		
 		//store the shopping cart in the http session
+		
+		AjaxResponse resp = new AjaxResponse();
+		
+		resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+		
+		return resp.toJSONString();
+		
+		
+	}
+	
+	/**
+	 * Update the quantity of an item in the Shopping Cart (AJAX exposed method)
+	 * @param id
+	 * @param quantity
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value={"/shop/updateShoppingCartItem.html"}, method=RequestMethod.GET)
+	public @ResponseBody
+	String updateShoppingCartItem(@ModelAttribute Long id, @ModelAttribute Integer quantity, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+
+
 		
 		AjaxResponse resp = new AjaxResponse();
 		
