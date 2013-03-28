@@ -25,6 +25,7 @@ import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
 import com.salesmanager.core.business.system.service.ModuleConfigurationService;
+import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.payment.model.PaymentModule;
 import com.salesmanager.core.utils.reference.ConfigurationModulesLoader;
 
@@ -101,17 +102,49 @@ public class PaymentServiceImpl implements PaymentService {
 		}
 	}
 	
+	@Override
+	public void savePaymentModuleConfiguration(IntegrationConfiguration configuration, MerchantStore store) throws ServiceException {
+		
+		//validate entries
+		try {
+			
+			String moduleCode = configuration.getModuleCode();
+			PaymentModule module = (PaymentModule)paymentModules.get(moduleCode);
+			if(module==null) {
+				throw new ServiceException("Payment module " + moduleCode + " does not exist");
+			}
+			//quoteModule.validateModuleConfiguration(configuration, store);
+			
+		} catch (IntegrationException ie) {
+			throw ie;
+		}
+		
+		try {
+			Map<String,IntegrationConfiguration> modules = new HashMap<String,IntegrationConfiguration>();
+			MerchantConfiguration merchantConfiguration = merchantConfigurationService.getMerchantConfiguration(PAYMENT_MODULES, store);
+			if(merchantConfiguration!=null) {
+				if(!StringUtils.isBlank(merchantConfiguration.getValue())) {
+					modules = ConfigurationModulesLoader.loadIntegrationConfigurations(merchantConfiguration.getValue());
+				}
+			} else {
+				merchantConfiguration = new MerchantConfiguration();
+				merchantConfiguration.setMerchantStore(store);
+				merchantConfiguration.setKey(PAYMENT_MODULES);
+			}
+			modules.put(configuration.getModuleCode(), configuration);
+			
+			String configs =  ConfigurationModulesLoader.toJSONString(modules);
+			merchantConfiguration.setValue(configs);
+			merchantConfigurationService.saveOrUpdate(merchantConfiguration);
+			
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+}
+	
 
 	
-	private Map<String,IntegrationConfiguration> parseConfiguration(String value) throws Exception {
-		
-		Map<String,IntegrationConfiguration> modules = new HashMap<String,IntegrationConfiguration>();
-		
-		
-		return modules;
-		
-		
-	}
+
 
 	@Override
 	public Transaction processPayment(Order order, Customer customer,

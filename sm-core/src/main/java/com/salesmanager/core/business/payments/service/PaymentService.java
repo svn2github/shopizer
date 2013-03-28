@@ -36,4 +36,13 @@ public interface PaymentService {
 	IntegrationModule getPaymentMethod(MerchantStore store, String moduleName)
 			throws ServiceException;
 
+	/**
+	 * Saves a payment module configuration
+	 * @param configuration
+	 * @param store
+	 * @throws ServiceException
+	 */
+	void savePaymentModuleConfiguration(IntegrationConfiguration configuration,
+			MerchantStore store) throws ServiceException;
+
 }
