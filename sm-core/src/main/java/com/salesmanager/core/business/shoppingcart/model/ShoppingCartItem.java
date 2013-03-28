@@ -42,6 +42,9 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "SHP_CRT_ITM_SEQ_NEXT_VAL")
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
+	
+	@Column(name="QUANTITY")
+	private Integer quantity;
 
 	@Embedded
 	private AuditSection auditSection = new AuditSection();
@@ -113,6 +116,14 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 
 	public BigDecimal getItemPrice() {
 		return itemPrice;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
 	}
 
 
