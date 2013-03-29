@@ -99,6 +99,7 @@ public class StoreBrandingController {
             //Update store
             store.setStoreLogo(imageName);
             merchantStoreService.update(store);
+            request.getSession().setAttribute(Constants.ADMIN_STORE, store);
   
 		}
 		

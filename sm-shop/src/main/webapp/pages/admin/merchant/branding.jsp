@@ -81,7 +81,7 @@
 				                                    <input class="input-file" id="image" name="image[0]" type="file"><br/>
 				                                </c:when>
 				                                <c:otherwise>
-				                                	<img src="<%=request.getContextPath()%>/<sm:contentImage imageName="${store.storeLogo}" imageType="LOGO"/>">
+				                                	<img src="<sm:contentImage imageName="${store.storeLogo}" imageType="LOGO"/>">
 				                                </c:otherwise>
 			                            </c:choose>
 										

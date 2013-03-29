@@ -27,10 +27,10 @@ response.setDateHeader ("Expires", -1);
  
      <head>
         	 	<meta charset="utf-8">
-    			<title>//TODO<s:message code="label.storeadministration" text="Store administration" /></title>
+    			<title>//TODO TAGLIB<c:out value="${requestScope.MERCHANT_STORE.storename}"/></title>
     			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    			<meta name="description" content="">
-    			<meta name="author" content="<c:out value="${requestScope.store.name}"/>">
+    			<meta name="description" content="//TODO TAGLIB">
+    			<meta name="author" content="<c:out value="${requestScope.MERCHANT_STORE.storename}"/>">
     			<!-- The one provided with the system -->
     			<script src="<c:url value="/resources/js/bootstrap/jquery.js" />"></script>
 
@@ -50,7 +50,7 @@ response.setDateHeader ("Expires", -1);
 
 	
     <!--<div class="container-fluid">-->
-      <div class="row-fluid">
+      <div class="row">
 			<tiles:insertAttribute name="body"/>   
       </div><!--/row-->
       <hr>FOOTER
