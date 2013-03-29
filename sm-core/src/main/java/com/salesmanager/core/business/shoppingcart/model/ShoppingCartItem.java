@@ -38,7 +38,7 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "SHP_CART_ATTR_ITEM_ID", unique=true, nullable=false)
+	@Column(name = "SHP_CART_ITEM_ID", unique=true, nullable=false)
 	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "SHP_CRT_ITM_SEQ_NEXT_VAL")
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
@@ -57,7 +57,7 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	@JoinColumn(name = "CUSTOMER_ID", nullable = false)
 	private Customer customer;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "product")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "shoppingCartItem")
 	private Set<ShoppingCartAttributeItem> attributes = new HashSet<ShoppingCartAttributeItem>();
 	
 	@Transient

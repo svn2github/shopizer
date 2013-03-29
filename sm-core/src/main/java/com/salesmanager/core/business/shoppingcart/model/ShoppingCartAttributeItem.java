@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 
+import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.business.common.model.audit.AuditListener;
@@ -47,6 +48,21 @@ public class ShoppingCartAttributeItem extends SalesManagerEntity<Long, Shopping
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="OPTION_VALUE_ID", nullable=false)
 	private ProductOptionValue productOptionValue;
+	
+	
+	@ManyToOne(targetEntity = ShoppingCartItem.class)
+	@JoinColumn(name = "SHP_CART_ITEM_ID", nullable = false)
+	private ShoppingCartItem shoppingCartItem;
+	
+	
+
+	public ShoppingCartItem getShoppingCartItem() {
+		return shoppingCartItem;
+	}
+
+	public void setShoppingCartItem(ShoppingCartItem shoppingCartItem) {
+		this.shoppingCartItem = shoppingCartItem;
+	}
 
 	@Override
 	public AuditSection getAuditSection() {
