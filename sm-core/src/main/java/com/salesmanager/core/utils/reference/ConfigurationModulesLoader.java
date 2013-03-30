@@ -64,18 +64,25 @@ public class ConfigurationModulesLoader {
             	IntegrationConfiguration configuration = new IntegrationConfiguration();
             	
             	String moduleCode = (String)object.get("moduleCode");
-            	configuration.setActive((Boolean)object.get("active"));
-            	configuration.setEnvironment((String)object.get("environment"));
+            	if(object.get("active")!=null) {
+            		configuration.setActive((Boolean)object.get("active"));
+            	}
+            	if(object.get("environment")!=null) {
+            		configuration.setEnvironment((String)object.get("environment"));
+            	}
             	configuration.setModuleCode(moduleCode);
             	
             	modules.put(moduleCode, configuration);
 
+            	if(object.get("integrationKeys")!=null) {
+            		Map<String,String> confs = (Map<String,String> )object.get("integrationKeys");
+            		configuration.setIntegrationKeys(confs);
+            	}
             	
-            	Map<String,String> confs = (Map<String,String> )object.get("integrationKeys");
-            	configuration.setIntegrationKeys(confs);
-            	
-            	Map<String,List<String>> options = (Map<String,List<String>> )object.get("integrationOptions");
-            	configuration.setIntegrationOptions(options);
+            	if(object.get("integrationKeys")!=null) {
+            		Map<String,List<String>> options = (Map<String,List<String>> )object.get("integrationOptions");
+            		configuration.setIntegrationOptions(options);
+            	}
 
             	
             }

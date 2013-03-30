@@ -42,32 +42,35 @@ public class CustomShippingQuotesRegion implements JSONAware {
 		
 
 		data.put("customRegionName", this.getCustomRegionName());
-		StringBuilder coutriesList = new StringBuilder();
-		int countCountry = 0;
-		coutriesList.append("[");
-		for(String country : countries) {
-			coutriesList.append("\"").append(country).append("\"");
-			countCountry ++;
-			if(countCountry<countries.size()) {
-				coutriesList.append(",");
+		if(countries!=null) {
+			StringBuilder coutriesList = new StringBuilder();
+			int countCountry = 0;
+			coutriesList.append("[");
+			for(String country : countries) {
+				coutriesList.append("\"").append(country).append("\"");
+				countCountry ++;
+				if(countCountry<countries.size()) {
+					coutriesList.append(",");
+				}
 			}
+			coutriesList.append("]");
+			data.put("countries", coutriesList.toString());
 		}
-		coutriesList.append("]");
-		data.put("countries", coutriesList.toString());
 		
-		StringBuilder quotesList = new StringBuilder();
-		int countQuotes = 0;
-		quotesList.append("[");
-		for(CustomShippingQuoteWeightItem quote : quoteItems) {
-			quotesList.append(quote.toJSONString());
-			countQuotes ++;
-			if(countQuotes<quoteItems.size()) {
-				quotesList.append(",");
+		if(quoteItems!=null) {
+			StringBuilder quotesList = new StringBuilder();
+			int countQuotes = 0;
+			quotesList.append("[");
+			for(CustomShippingQuoteWeightItem quote : quoteItems) {
+				quotesList.append(quote.toJSONString());
+				countQuotes ++;
+				if(countQuotes<quoteItems.size()) {
+					quotesList.append(",");
+				}
 			}
+			quotesList.append("]");
+			data.put("quoteItems", quotesList.toString());
 		}
-		quotesList.append("]");
-		data.put("quoteItems", quotesList.toString());
-		
 		
 		return data.toJSONString();
 		

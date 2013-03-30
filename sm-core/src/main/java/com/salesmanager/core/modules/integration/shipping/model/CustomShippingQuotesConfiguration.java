@@ -24,22 +24,44 @@ public class CustomShippingQuotesConfiguration extends IntegrationConfiguration 
 	
 	@SuppressWarnings("unchecked")
 	public String toJSONString() {
-		JSONObject data = new JSONObject();
+		//JSONObject data = new JSONObject();
+		
+		//data.put("active", super.isActive());
+		//data.put("moduleCode", this.getModuleCode());
+		
+		
+		StringBuilder returnString = new StringBuilder();
+		returnString.append("{");
+		returnString.append("\"moduleCode\"").append(":\"").append(this.getModuleCode()).append("\"");
+		returnString.append(",");
+		returnString.append("\"active\"").append(":").append(this.isActive());
 		
 
-		data.put("moduleCode", this.getModuleCode());
-		StringBuilder regionsList = new StringBuilder();
-		int countRegion = 0;
-		regionsList.append("[");
-		for(CustomShippingQuotesRegion region : regions) {
-			regionsList.append(region.toJSONString());
-			countRegion ++;
-			if(countRegion<regions.size()) {
-				regionsList.append(",");
+
+		if(regions!=null && regions.size()>0) {
+			
+			returnString.append(",");
+			//org.json.simple.JSONArray array=new org.json.simple.JSONArray();
+			StringBuilder regionsList = new StringBuilder();
+			int countRegion = 0;
+			regionsList.append("[");
+			for(CustomShippingQuotesRegion region : regions) {
+				regionsList.append(region.toJSONString());
+				countRegion ++;
+				if(countRegion<regions.size()) {
+					regionsList.append(",");
+				}
 			}
+			regionsList.append("]");
+			returnString.append("\"regions\"").append(":").append(regionsList.toString());
 		}
 
-		return data.toJSONString();
+		//return data.toJSONString();
+		returnString.append("}");
+		return returnString.toString();
+		
+		
+		
 
 	}
 
