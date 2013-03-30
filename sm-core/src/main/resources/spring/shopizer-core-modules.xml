@@ -16,6 +16,7 @@
     			<entry key="canadapost" value-ref="canadapost"/>
     			<entry key="usps" value-ref="usps"/>
     			<entry key="ups" value-ref="ups"/>
+    			<entry key="weightBased" value-ref="weightBased"/>
     </util:map>
     
     <!-- Payment integration modules -->
@@ -33,6 +34,8 @@
 		class="com.salesmanager.core.modules.integration.shipping.impl.USPSShippingQuote"/>
 	<bean id="ups"
 		class="com.salesmanager.core.modules.integration.shipping.impl.UPSShippingQuote"/>
+	<bean id="weightBased"
+		class="com.salesmanager.core.modules.integration.shipping.impl.CustomWeightBasedShippingQuote"/>
 
 	<!-- Default packaging -->
 	<bean id="boxPackaging"
