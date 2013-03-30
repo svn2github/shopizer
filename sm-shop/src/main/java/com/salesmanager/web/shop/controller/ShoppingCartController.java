@@ -38,7 +38,7 @@ public class ShoppingCartController {
 		//set each item price in ShoppingCartItem.price
 		//return the ShoppingCartItem entity list in the model
 		
-		return ControllerConstants.Tiles.ShoppingCart.shoppingCart;
+		return ControllerConstants.Tiles.ShoppingCart.shoppingCart + ".bootstrap";
 		
 		
 	}

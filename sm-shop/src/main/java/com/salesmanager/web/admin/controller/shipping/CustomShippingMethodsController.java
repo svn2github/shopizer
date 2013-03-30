@@ -107,6 +107,9 @@ public class CustomShippingMethodsController {
 		CustomShippingQuotesRegion quoteRegion = new CustomShippingQuotesRegion();
 		quoteRegion.setCustomRegionName(region);
 		
+		customConfiguration.getRegions().add(quoteRegion);
+		shippingService.saveCustomShippingConfiguration(this.WEIGHT_BASED_SHIPPING_METHOD, customConfiguration, store);
+		
 		model.addAttribute("customConfiguration", customConfiguration);
 		model.addAttribute("success","success");
 		
@@ -147,7 +150,7 @@ public class CustomShippingMethodsController {
 	}
 	
 	@Secured("SHIPPING")
-	@RequestMapping(value="/admin/shipping/saveWeightBasedShippingMethod.html", method=RequestMethod.POST)
+	@RequestMapping(value="/admin/shipping/saveweightBasedShippingMethod.html", method=RequestMethod.POST)
 	public String saveShippingMethod(@ModelAttribute("configuration") CustomShippingQuotesConfiguration configuration, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
 

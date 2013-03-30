@@ -36,7 +36,7 @@ public class StoreLogoUrlTag extends TagSupport {
 			HttpServletRequest request = (HttpServletRequest) pageContext
 					.getRequest();
 			
-			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 			
 			
 			HttpSession session = request.getSession();
@@ -67,7 +67,6 @@ public class StoreLogoUrlTag extends TagSupport {
 			
 			imagePath.append(scheme).append("://")
 			.append(merchantStore.getDomainName())
-			.append("/")
 			.append(request.getContextPath());
 			
 			
