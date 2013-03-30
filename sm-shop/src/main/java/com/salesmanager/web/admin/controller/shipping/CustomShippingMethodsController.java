@@ -156,6 +156,7 @@ public class CustomShippingMethodsController {
 
 		this.setMenu(model, request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		populateModel(model, request, response);
 		
 		String moduleCode = configuration.getModuleCode();
 		LOGGER.debug("Saving module code " + moduleCode);
