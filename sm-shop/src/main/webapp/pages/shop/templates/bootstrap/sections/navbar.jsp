@@ -20,9 +20,9 @@ response.setDateHeader ("Expires", -1);
 
 <!-- Start Navbar-->
             <div class="row show-grid">
-                <div class="span3 logo">
+                <div class="span4 logo">
                 	<c:choose>
-                		<c:when test="test=${requestScope.MERCHANT_STORE.storeLogo!=null}">
+                		<c:when test="${requestScope.MERCHANT_STORE.storeLogo!=null}">
                 			<img class="logoImage" src="<sm:storeLogo/>" />
                 		</c:when>
                 		<c:otherwise>
@@ -32,7 +32,7 @@ response.setDateHeader ("Expires", -1);
                 		</c:otherwise>
                 	</c:choose>                    
                 </div>
-                <div class="span9 offset0">
+                <div class="span8 offset0">
 
 
 						<div class="row">

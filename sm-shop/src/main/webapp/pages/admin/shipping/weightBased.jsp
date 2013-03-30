@@ -39,11 +39,8 @@ function callBackCheckCode(msg,code) {
 
 
 
-								<form:errors path="*" cssClass="alert alert-error" element="div" />
-								<div id="form.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
-				
 
-								<form action="<c:url value="/admin/shipping/addCustomRegion.html"/>" class="form-inline">  
+								<form action="<c:url value="/admin/shipping/addCustomRegion.html"/>" method="POST" class="form-inline">  
 			      					<label class="required"><s:message code="label.shipping.addregion" text="Add region" /></label>
 			      					<input type="text" class="span3" name="region" id="region" onblur="validatecode()"><!-- must be unique -->  
 			      					<span class="help-inline"><div id="checkCodeStatus" style="display:none;"></div></span>

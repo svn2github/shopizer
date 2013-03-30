@@ -33,6 +33,13 @@
 							<s:message code="module.shipping.${configuration.moduleCode}.note" text=""/><br/>
 							
 							<c:url var="saveShippingMethod" value="/admin/shipping/saveShippingMethod.html"/>
+							
+							<c:if test="${customConfiguration!=null}">
+										<c:url var="saveShippingMethod" value="/admin/shipping/save${configuration.moduleCode}ShippingMethod.html"/>
+	               
+	                    	</c:if>
+							
+							
 							<form:form method="POST" commandName="configuration" action="${saveShippingMethod}">
 
       							

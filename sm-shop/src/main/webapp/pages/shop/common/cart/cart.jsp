@@ -1,4 +1,4 @@
-
+		<br/><br/>
 		<table class="table table-bordered table-striped"> 
 			<thead> 
 				<tr> 
@@ -61,6 +61,4 @@
 		</div>
 
 
-		</div> 
-	</form>
-</div>
+		
