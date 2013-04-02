@@ -3,6 +3,7 @@ package com.salesmanager.web.admin.controller.orders;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +32,9 @@ import com.salesmanager.core.business.order.model.OrderTotal;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
 import com.salesmanager.core.business.order.service.OrderService;
+import com.salesmanager.core.business.reference.country.model.Country;
+import com.salesmanager.core.business.reference.country.service.CountryService;
+import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.utils.DateUtil;
 import com.salesmanager.web.utils.LabelUtils;
@@ -50,6 +54,9 @@ public class OrderControler {
 	
 	@Autowired
 	private OrderService orderService;
+	
+	@Autowired
+	CountryService countryService;
 
 	@Secured("ORDER")
 	@RequestMapping(value="/admin/orders/editOrder.html", method=RequestMethod.GET)
@@ -66,7 +73,8 @@ public class OrderControler {
 		setMenu(model,request);
 		   
 		com.salesmanager.web.entity.order.Order order = new com.salesmanager.web.entity.order.Order();
-		
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		List<Country> countries = countryService.getCountries(language);
 		if(orderId!=null && orderId!=0) {		//edit mode		
 			
 			Set<OrderProduct> orderProducts = null;
@@ -87,6 +95,7 @@ public class OrderControler {
 			
 		}	
 		
+		model.addAttribute("countries", countries);
 		model.addAttribute("order",order);
 		return "admin-orders-edit";
 	}
