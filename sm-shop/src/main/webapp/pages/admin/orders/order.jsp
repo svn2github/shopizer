@@ -90,11 +90,13 @@
 			 	<form:input  cssClass="input-large" path="order.customerCountry"/>
 			 	</div> 
 				
+				<label><s:message code="label.customer.postalcode" text="Postal code"/></label>
 				<div class="controls">
 		 				<form:input id="customerPostCode" cssClass="input-large highlight" path="order.customerPostCode"/>
 		 				<span class="help-inline"><form:errors path="order.customerPostCode" cssClass="error" /></span>
 	            </div> 
 	           
+	           <label><s:message code="label.customer.telephone" text="Phone"/></label>
 	            <div class="controls">
 		 				<form:input id="customerTelephone" cssClass="input-large highlight" path="order.customerTelephone"/>
 		 				<span class="help-inline"><form:errors path="order.customerTelephone" cssClass="error" /></span>
@@ -128,18 +130,29 @@
 		 	<div class="offset5">			
 				<h6><s:message code="label.customer.shippinginformation" text="Shipping information"/></h6>
 				<address>
+						<label><s:message code="label.customer.shipping.name" text="Shipping name"/></label>
 			            <div class="controls">
 				 				<form:input  cssClass="input-large" path="order.delivery.name"/>				 							
 			            </div>
+			            <label><s:message code="label.customer.shipping.streetaddress" text="Shipping address"/></label>
 			            <div class="controls">
 				 				<form:input  cssClass="input-large" path="order.delivery.address"/>		 				
 			            </div>
+			            <label><s:message code="label.customer.shipping.city" text="Shipping city"/></label>
 			            <div class="controls">
 				 				<form:input  cssClass="input-large" path="order.delivery.city"/>
 			            </div>
+			            <label><s:message code="label.customer.shipping.zone" text="State / province"/></label>
 			            <div class="controls">
 				 				<form:input  cssClass="input-large" path="order.delivery.state"/>
 			            </div>
+			            <label><s:message code="label.customer.shipping.country" text="Country"/></label>
+			            <div class="controls">
+				 				<form:select cssClass="country-list highlight" path="order.delivery.countryCode">
+					  					<form:options items="${countries}" itemValue="isoCode" itemLabel="name"/>
+				       			</form:select>
+			            </div>
+			            <label><s:message code="label.customer.shipping.postalcode" text="Postal code"/></label>
 			            <div class="controls">
 				 				<form:input  cssClass="input-large" path="order.delivery.postalCode"/>
 			            </div>	            	            	            	            				
