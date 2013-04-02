@@ -41,9 +41,15 @@ function callBackCheckCode(msg,code) {
 
 
 								<form action="<c:url value="/admin/shipping/addCustomRegion.html"/>" method="POST" class="form-inline">  
+			      					<form:errors path="*" cssClass="alert alert-error" element="div" />
 			      					<label class="required"><s:message code="label.shipping.addregion" text="Add region" /></label>
 			      					<input type="text" class="span3" name="region" id="region" onblur="validatecode()"><!-- must be unique -->  
 			      					<span class="help-inline"><div id="checkCodeStatus" style="display:none;"></div></span>
+			      					<span class="help-inline">
+	                        			<c:if test="${regionexistError!=null}">
+	                        				<span id="identifiererrors" class="error"><s:message code="message.region.exists" text="Field in error"/></span>
+	                        			</c:if>
+	                        		</span>
 			      					<button type="submit" class="btn btn-success"><s:message code="label.shipping.addregion" text="Add region"/></button>
 			      				</form>	
 								<br/>
@@ -51,7 +57,7 @@ function callBackCheckCode(msg,code) {
 								<c:url var="addShipping" value="/admin/shipping/addCountryToRegion.html"/> 
 		                  		<form:form method="POST" commandName="customRegion" action="${addShipping}" cssClass="form-inline">
 				
-		                  			 
+		                  			 		
 		                        			<label><s:message code="label.region" text="Region"/></label>
 		                        			
 		                        					<form:select path="customRegionName">
