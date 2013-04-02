@@ -92,7 +92,8 @@ public class CustomShippingMethodsController {
 		
 		
 		for(CustomShippingQuotesRegion customRegion : regions) {
-			if(customRegion.equals(region)) {
+			if(customRegion.getCustomRegionName().equals(region)) {
+				model.addAttribute("regionexistError","regionexistError");
 				ObjectError error = new ObjectError("region",messages.getMessage("message.region.exists", locale));
 				result.addError(error);
 				break;
@@ -278,11 +279,13 @@ public class CustomShippingMethodsController {
 				List<CustomShippingQuotesRegion> quotes = customConfiguration.getRegions();
 				for (CustomShippingQuotesRegion quote : quotes) {
 						List<String> countries = quote.getCountries();
-						for(String country : countries) {
-							Map<String,String> entry = new HashMap<String,String> ();
-							entry.put("region", quote.getCustomRegionName());
-							entry.put("country", country);
-							resp.addDataEntry(entry);
+						if(countries!=null) {
+							for(String country : countries) {
+								Map<String,String> entry = new HashMap<String,String> ();
+								entry.put("region", quote.getCustomRegionName());
+								entry.put("country", country);
+								resp.addDataEntry(entry);
+							}
 						}
 				}
 			}
@@ -290,7 +293,7 @@ public class CustomShippingMethodsController {
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
 
 		} catch (Exception e) {
-			LOGGER.error("Error while paging products", e);
+			LOGGER.error("Error while paging custom weight based", e);
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 		}
 
@@ -470,8 +473,9 @@ public class CustomShippingMethodsController {
 		//get supported countries
 		List<String> includedCountries = shippingService.getSupportedCountries(store);
 		List<Country> shippingCountries = new ArrayList<Country>();
-		if(shippingConfiguration.getShippingType().equals(ShippingType.INTERNATIONAL.name())){
-			Map<String,Country> countries = countryService.getCountriesMap(language);
+		Map<String,Country> countries = countryService.getCountriesMap(language);
+		if(shippingConfiguration.getShippingType().name().equals(ShippingType.INTERNATIONAL.name())){
+			
 			for(String key : countries.keySet()) {
 				Country country = (Country)countries.get(key);
 				if(!includedCountries.contains(key)) {
@@ -480,7 +484,7 @@ public class CustomShippingMethodsController {
 			}
 		} else {//if national only store country
 			if(!includedCountries.contains(store.getCountry().getIsoCode())) {
-				shippingCountries.add(store.getCountry());
+				shippingCountries.add((Country)countries.get(store.getCountry().getIsoCode()));
 			}
 		}
 		
