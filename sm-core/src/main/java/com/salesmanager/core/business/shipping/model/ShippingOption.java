@@ -16,6 +16,7 @@ public class ShippingOption implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private BigDecimal optionPrice;
+
 	private String optionName;
 	private String optionCode;
 	private String optionDeliveryDate;
@@ -38,6 +39,10 @@ public class ShippingOption implements Serializable {
 		}
 		
 		return optionPrice;
+	}
+	
+	public void setOptionPrice(BigDecimal optionPrice) {
+		this.optionPrice = optionPrice;
 	}
 
 	public void setOptionCode(String optionCode) {

@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.BigDecimalValidator;
 import org.apache.commons.validator.routines.CurrencyValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
@@ -21,6 +23,7 @@ import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.constants.Constants;
+import com.salesmanager.core.modules.integration.shipping.impl.CanadaPostShippingQuote;
 
 
 /**
@@ -37,6 +40,9 @@ public class ProductPriceUtils {
 	private final static char THOUSANDPOINT = ',';
 	
 	private final static Locale DEFAULT_LOCALE = Locale.US;
+	private final static Currency DEFAULT_CURRENCY = Currency.getInstance(Locale.US);
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProductPriceUtils.class);
 
 	
 	
@@ -248,6 +254,44 @@ public class ProductPriceUtils {
 
 		return nf.format(amount);
 	}
+	
+	
+	/**
+	 * This method has to be used to format store front amounts
+	 * @param store
+	 * @param amount
+	 * @return
+	 * @throws Exception
+	 */
+	public String getStoreFormatedAmountWithCurrency(MerchantStore store, BigDecimal amount) throws Exception {
+		if(amount==null) {
+			return "";
+		}
+		
+		String currencyCode = store.getCurrency().getName();
+		
+		Currency currency = DEFAULT_CURRENCY;
+		try {
+			currency = Currency.getInstance(currencyCode);
+		} catch (Exception e) {
+			LOGGER.error("Cannot create currency instance for " + store.getCurrency().getName());
+		}
+
+		
+		
+		
+		
+	    final NumberFormat currencyInstance = NumberFormat.getCurrencyInstance();
+	    currencyInstance.setCurrency(currency);
+		
+	    
+	    return currencyInstance.format(amount.doubleValue());
+		
+
+    }
+	
+
+
 	
 	/**
 	 * This method will return the required formated amount

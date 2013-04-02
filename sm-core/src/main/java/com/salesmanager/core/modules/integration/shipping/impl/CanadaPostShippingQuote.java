@@ -213,7 +213,7 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 								MeasureUnit.CM.name()))).append("</height>");
 				request.append("<description>").append(pack.getItemName())
 						.append("</description>");
-				request.append("<readyToShip/>");
+				request.append("<readyToShip/>");//item is properly packed
 				request.append("</item>");
 			}
 			
