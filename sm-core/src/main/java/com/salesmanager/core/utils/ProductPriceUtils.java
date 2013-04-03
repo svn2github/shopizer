@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Currency;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -23,7 +24,6 @@ import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.constants.Constants;
-import com.salesmanager.core.modules.integration.shipping.impl.CanadaPostShippingQuote;
 
 
 /**
@@ -78,86 +78,20 @@ public class ProductPriceUtils {
 	 * This method calculates the final price taking into account
 	 * all attributes included in the product object. The calculation is based
 	 * on the default price.
-	 * @param product
-	 * @return
+	 * Attributes may be null
+	 * @param Product
+	 * @param List<ProductAttribute>
+	 * @return FinalPrice
 	 */
-	public FinalPrice getFinalOrderPrice(Product product) {
+	public FinalPrice getFinalOrderPrice(Product product, List<ProductAttribute> attributes) {
 
 
-/*		FinalPrice finalPrice = new FinalPrice();
-
-		Date today = new Date();
-		
-		
-		BigDecimal defaultPrice = new BigDecimal(0);
-
-		Set<ProductAvailability> availabilities = product.getAvailabilities();
-		for(ProductAvailability availability : availabilities) {
-			if(availability.getRegion().equals(Constants.ALL_REGIONS)) {
-				Set<ProductPrice> prices = availability.getPrices();
-				for(ProductPrice price : prices) {
-					
-					if(price.isDefaultPrice()) {
-						defaultPrice = price.getProductPriceAmount();
-						//calculate discount price
-						boolean hasDiscount = false;
-						if(price.getProductPriceSpecialStartDate()!=null
-								|| price.getProductPriceSpecialEndDate()!=null) {
-							
-							
-							if(price.getProductPriceSpecialStartDate()!=null) {
-								if(price.getProductPriceSpecialStartDate().before(today)) {
-									if(price.getProductPriceSpecialEndDate()!=null) {
-											if(price.getProductPriceSpecialEndDate().after(today)) {
-												hasDiscount = true;
-												finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
-											}
-									} 
-										
-								}
-							}
-							
-							
-							if(!hasDiscount && price.getProductPriceSpecialStartDate()==null && price.getProductPriceSpecialEndDate()!=null) {
-								if(price.getProductPriceSpecialEndDate().after(today)) {
-									hasDiscount = true;
-									finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
-								}
-							}
-						}
-						
-						
-						//calculate attribute
-						if(product.getAttributes()!=null && product.getAttributes().size()>0) {
-							
-						}
-						
-						
-						if(hasDiscount) {
-							
-							finalPrice.setDiscounted(true);
-							finalPrice.setDiscountedPrice(price.getProductPriceSpecialAmount());
-							double arith = price.getProductPriceSpecialAmount().doubleValue() / price.getProductPriceAmount().doubleValue();
-							double fsdiscount = 100 - arith * 100;
-							Float percentagediscount = new Float(fsdiscount);
-							int percent = percentagediscount.intValue();
-							finalPrice.setDiscountPercent(percent);
-							
-						}
-	
-					}
-					
-				}
-			}
-			
-		}*/
-		
 		FinalPrice finalPrice = calculateFinalPrice(product);
 		
 		//attributes
 		BigDecimal attributePrice = new BigDecimal(0);
-		if(product.getAttributes()!=null && product.getAttributes().size()>0) {
-			for(ProductAttribute attribute : product.getAttributes()) {
+		if(attributes!=null && attributes.size()>0) {
+			for(ProductAttribute attribute : attributes) {
 				attributePrice = attributePrice.add(attribute.getOptionValuePrice());
 			}
 		}
