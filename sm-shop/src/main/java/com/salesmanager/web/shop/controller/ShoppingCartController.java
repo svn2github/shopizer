@@ -61,6 +61,9 @@ public class ShoppingCartController {
 		
 		//get any shopping cart for this user
 		//calculate the price of each item by using ProductPriceUtils in sm-core
+		//for each product in the shopping cart get the product
+		//invoke productPriceUtils.getFinalOrderPrice
+		//from FinalPrice get final price which is the calculated price given attributes and discounts
 		//set each item price in ShoppingCartItem.price
 		
 		//add new item shoppingCartService.create
