@@ -162,25 +162,35 @@
 	
 			    <h6><s:message code="label.customer.billinginformation" text="Billing information"/></h6>
 			    <address>
-			    		<div class="control-group">
-			    
+
+			    		 <label><s:message code="label.customer.billing.name" text="Billing name"/></label>
 					     <div class="controls">
 				 				<form:input id="billingName" cssClass="input-large highlight" path="order.billing.name"/>
 				 				<span class="help-inline"><form:errors path="order.billing.name" cssClass="error" /></span>
-			            </div>
-			            </div>
+			             </div>
+
+			            <label><s:message code="label.customer.billing.streetaddress" text="Billing address"/></label>
 			            <div class="controls">
 				 				<form:input id="billingAdress" cssClass="input-large highlight" path="order.billing.address"/>
 				 				<span class="help-inline"><form:errors path="order.billing.address" cssClass="error" /></span>
 			            </div>
+			            <label><s:message code="label.customer.billing.city" text="Billing city"/></label>
 			            <div class="controls">
 				 				<form:input id="billingCity" cssClass="input-large highlight" path="order.billing.city"/>
 				 				<span class="help-inline"><form:errors path="order.billing.city" cssClass="error" /></span>
 			            </div>
+			            <label><s:message code="label.customer.billing.zone" text="Billing state / province"/></label>
 			            <div class="controls">
 				 				<form:input id="billingState" cssClass="input-large highlight" path="order.billing.state"/>
 				 				<span class="help-inline"><form:errors path="order.billing.state" cssClass="error" /></span>
 			            </div>
+			            <label><s:message code="label.customer.billing.country" text="Country"/></label>
+			            <div class="controls">
+				 				<form:select cssClass="country-list highlight" path="order.billing.countryCode">
+					  					<form:options items="${countries}" itemValue="isoCode" itemLabel="name"/>
+				       			</form:select>
+			            </div>
+			            <label><s:message code="label.customer.billing.postalcode" text="Billing postal code"/></label>
 			            <div class="controls">
 				 				<form:input id="billingPostalCode" cssClass="input-large highlight" path="order.billing.postalCode"/>
 				 				<span class="help-inline"><form:errors path="order.billing.postalCode" cssClass="error" /></span>
@@ -190,7 +200,7 @@
 		
  		  <div class="span8">
 			<div class="form-actions">
-              <button class="btn btn-medium btn-danger" type="button">Apply refund</button>
+              <button class="btn btn-medium btn-danger" type="button"><s:message code="label.order.refund" text="Apply refund"/></button>
       		</div>
       	  </div> 
       
@@ -200,10 +210,10 @@
 		      <table class="table table-bordered table-striped"> 
 					<thead> 
 						<tr> 
-							<th colspan="2" width="55%">Item</th> 
-							<th colspan="1" width="15%">Quantity</th> 
-							<th width="15%">Price</th>
-							<th width="15%">Total</th>  
+							<th colspan="2" width="55%"><s:message code="label.order.item" text="Item"/></th> 
+							<th colspan="1" width="15%"><s:message code="label.quantity" text="Quantity"/></th> 
+							<th width="15%"><s:message code="label.order.price" text="Price"/></th>
+							<th width="15%"><s:message code="label.order.total" text="Total"/></th>  
 						</tr> 
 					</thead> 
 					
@@ -240,7 +250,7 @@
             <br/>   
             <div class="span8">
 		           <div class="control-group">
-		                  <label>Status</label>	 
+		                  <label><s:message code="label.entity.status" text="Status"/></label>	 
 		                  <div class="controls">      
 	                   			<form:select path="order.status">
 				  						<form:options items="${orderStatusList}" />
@@ -249,7 +259,7 @@
 		           </div>  
 		     					
            	       <div class="control-group">
-                       <label>History</label>
+                       <label><s:message code="label.order.history" text="History"/></label>
                        <div class="controls">
 							 <dl class="dl-horizontal">
 								<c:forEach items="${order.order.orderHistory}" var="orderHistory" varStatus="counter">
@@ -260,7 +270,7 @@
               	   </div> 
               
 	     		   <div class="control-group">  
-	                    <label>Status</label>
+	                    <label><s:message code="label.entity.status" text="Status"/></label>
 	                     <div class="controls">
 	                         <form:textarea  cols="10" rows="3" path="orderHistoryComment"/>
 	                    </div> 
@@ -273,8 +283,8 @@
             <br/>              
               
              <ul class="nav nav-pills">
-							<li><a href="#">Send email invoice</a></li>
-							<li class="disabled"><a href="#">Print packing slip</a></li>
+							<li><a href="#"><s:message code="label.order.sendinvoice" text="Send email invoice"/></a></li>
+							<li class="disabled"><a href="#"><s:message code="label.order.packing" text="Print packing slip"/></a></li>
 		    </ul> 
     
     
