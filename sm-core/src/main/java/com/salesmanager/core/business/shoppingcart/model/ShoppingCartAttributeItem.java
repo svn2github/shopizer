@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.business.common.model.audit.AuditListener;
@@ -41,14 +42,10 @@ public class ShoppingCartAttributeItem extends SalesManagerEntity<Long, Shopping
 	private AuditSection auditSection = new AuditSection();
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="OPTION_ID", nullable=false)
-	private ProductOption productOption;
+	@JoinColumn(name="ATTRIBUTE_ID", nullable=false)
+	private ProductAttribute productAttribute;
 	
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="OPTION_VALUE_ID", nullable=false)
-	private ProductOptionValue productOptionValue;
-	
+
 	
 	@ManyToOne(targetEntity = ShoppingCartItem.class)
 	@JoinColumn(name = "SHP_CART_ITEM_ID", nullable = false)
@@ -88,20 +85,12 @@ public class ShoppingCartAttributeItem extends SalesManagerEntity<Long, Shopping
 		
 	}
 
-	public void setProductOption(ProductOption productOption) {
-		this.productOption = productOption;
+	public void setProductAttribute(ProductAttribute productAttribute) {
+		this.productAttribute = productAttribute;
 	}
 
-	public ProductOption getProductOption() {
-		return productOption;
-	}
-
-	public void setProductOptionValue(ProductOptionValue productOptionValue) {
-		this.productOptionValue = productOptionValue;
-	}
-
-	public ProductOptionValue getProductOptionValue() {
-		return productOptionValue;
+	public ProductAttribute getProductAttribute() {
+		return productAttribute;
 	}
 
 
