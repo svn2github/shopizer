@@ -43,7 +43,7 @@
                         				</div>
                   					</div>
 
-                  					<div class="control-group">
+                  					<div class="control-group well">
                         				<label><s:message code="label.shipping.freeshipping" text="Apply free shipping"/></label>
                         				<div class="controls">
                                     		<form:checkbox id="freeShippingEnabled" path="freeShippingEnabled" /><br/>
@@ -58,6 +58,15 @@
                         				<label><s:message code="label.shipping.handlingfees" text="Handling fees"/></label>
                         				<div class="controls">
 											<form:input cssClass="input-large" path="handlingFeesText" />
+                        				</div>
+	                                	<span class="help-inline"><form:errors path="handlingFeesText" cssClass="error" /></span>
+	                        		</div>
+	                        		
+	                        		<div class="control-group">
+                        				<div class="controls">
+											<form:radiobutton id="shipOptionPriceType" path="shipOptionPriceType" value="ALL"/>&nbsp;<s:message code="label.shipping.allquotes" text="All quotes" /><br/>			
+											<form:radiobutton id="shipOptionPriceType" path="shipOptionPriceType" value="LEAST"/>&nbsp;<s:message code="label.shipping.leastexpensivequotes" text="Least expensive" /><br/>
+											<form:radiobutton id="shipOptionPriceType" path="shipOptionPriceType" value="HIGHEST"/>&nbsp;<s:message code="label.shipping.moreexpensivequotes" text="Highest price" />
                         				</div>
 	                                	<span class="help-inline"><form:errors path="handlingFeesText" cssClass="error" /></span>
 	                        		</div>
