@@ -11,9 +11,9 @@ import java.util.Date;
  */
 public class FinalPrice {
 	
-	private BigDecimal discountedPrice = null;
-	private BigDecimal originalPrice = null;
-	private BigDecimal finalPrice = null;
+	private BigDecimal discountedPrice = null;//final price if a discount is applied
+	private BigDecimal originalPrice = null;//original price
+	private BigDecimal finalPrice = null;//final price discount or not
 	private boolean discounted = false;
 	private int discountPercent = 0;
 	
