@@ -141,7 +141,7 @@ public class ShippingOptionsController {
 		shippingConfiguration.setFreeShippingEnabled(configuration.isFreeShippingEnabled());
 		shippingConfiguration.setTaxOnShipping(configuration.isTaxOnShipping());
 		shippingConfiguration.setShipFreeType(configuration.getShipFreeType());
-		
+		shippingConfiguration.setShipOptionPriceType(configuration.getShipOptionPriceType());
 
 		shippingService.saveShippingConfiguration(shippingConfiguration, store);
 		
