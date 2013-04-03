@@ -45,4 +45,15 @@ public interface PaymentService {
 	void savePaymentModuleConfiguration(IntegrationConfiguration configuration,
 			MerchantStore store) throws ServiceException;
 
+	/**
+	 * Validates if the credit card input information are correct
+	 * @param number
+	 * @param type
+	 * @param month
+	 * @param date
+	 * @throws ServiceException
+	 */
+	void validateCreditCard(String number, int type, String month, String date)
+			throws ServiceException;
+
 }

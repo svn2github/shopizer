@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -27,6 +29,7 @@ import com.salesmanager.core.business.system.service.MerchantConfigurationServic
 import com.salesmanager.core.business.system.service.ModuleConfigurationService;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.payment.model.PaymentModule;
+import com.salesmanager.core.utils.CreditCardUtilException;
 import com.salesmanager.core.utils.reference.ConfigurationModulesLoader;
 
 @Service("paymentService")
@@ -216,6 +219,131 @@ public class PaymentServiceImpl implements PaymentService {
 			throws ServiceException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public void validateCreditCard(String number, int type, String month, String date)
+	throws ServiceException {
+
+		try {
+			Integer.parseInt(month);
+			Integer.parseInt(date);
+		} catch (NumberFormatException nfe) {
+			throw new ServiceException("Invalid date format");
+		}
+		
+		if (number.equals("")) {
+			throw new ServiceException("Invalid number");
+		}
+		
+		Matcher m = Pattern.compile("[^\\d\\s.-]").matcher(number);
+		
+		if (m.find()) {
+			throw new ServiceException("Invalid number");
+		}
+		
+		Matcher matcher = Pattern.compile("[\\s.-]").matcher(number);
+		
+		number = matcher.replaceAll("");
+		validateCreditCardDate(Integer.parseInt(month), Integer.parseInt(date));
+		validateCreditCardNumber(number, "xyz");
+	}
+
+	private void validateCreditCardDate(int m, int y) throws ServiceException {
+		java.util.Calendar cal = new java.util.GregorianCalendar();
+		int monthNow = cal.get(java.util.Calendar.MONTH) + 1;
+		int yearNow = cal.get(java.util.Calendar.YEAR);
+		if (yearNow > y) {
+			throw new ServiceException("Invalid date");
+		}
+		// OK, change implementation
+		if (yearNow == y && monthNow > m) {
+			throw new ServiceException("Invalid date");
+		}
+	
+	}
+	
+	private void validateCreditCardNumber(String number, String type)
+	throws ServiceException {
+
+		
+/*		case MASTERCARD:
+			if (number.length() != 16
+					|| Integer.parseInt(number.substring(0, 2)) < 51
+					|| Integer.parseInt(number.substring(0, 2)) > 55) {
+				throw new CreditCardUtilException(LabelUtil.getInstance()
+						.getText("errors.creditcard.invalidnumber"));
+			}
+			break;
+		
+		case VISA:
+			if ((number.length() != 13 && number.length() != 16)
+					|| Integer.parseInt(number.substring(0, 1)) != 4) {
+				throw new CreditCardUtilException(LabelUtil.getInstance()
+						.getText("errors.creditcard.invalidnumber"));
+			}
+			break;
+		
+		case AMEX:
+			if (number.length() != 15
+					|| (Integer.parseInt(number.substring(0, 2)) != 34 && Integer
+							.parseInt(number.substring(0, 2)) != 37)) {
+				throw new CreditCardUtilException(LabelUtil.getInstance()
+						.getText("errors.creditcard.invalidnumber"));
+			}
+			break;
+		
+		case DISCOVER:
+			if (number.length() != 16
+					|| Integer.parseInt(number.substring(0, 5)) != 6011) {
+				throw new CreditCardUtilException(LabelUtil.getInstance()
+						.getText("errors.creditcard.invalidnumber"));
+			}
+			break;
+		
+		case DINERS:
+			if (number.length() != 14
+					|| ((Integer.parseInt(number.substring(0, 2)) != 36 && Integer
+							.parseInt(number.substring(0, 2)) != 38)
+							&& Integer.parseInt(number.substring(0, 3)) < 300 || Integer
+							.parseInt(number.substring(0, 3)) > 305)) {
+				throw new CreditCardUtilException(LabelUtil.getInstance()
+						.getText("errors.creditcard.invalidnumber"));
+			}
+			break;
+		}*/
+		luhnValidate(number);
+	}
+
+	// The Luhn algorithm is basically a CRC type
+	// system for checking the validity of an entry.
+	// All major credit cards use numbers that will
+	// pass the Luhn check. Also, all of them are based
+	// on MOD 10.
+	
+	private void luhnValidate(String numberString)
+			throws ServiceException {
+		char[] charArray = numberString.toCharArray();
+		int[] number = new int[charArray.length];
+		int total = 0;
+	
+		for (int i = 0; i < charArray.length; i++) {
+			number[i] = Character.getNumericValue(charArray[i]);
+		}
+	
+		for (int i = number.length - 2; i > -1; i -= 2) {
+			number[i] *= 2;
+	
+			if (number[i] > 9)
+				number[i] -= 9;
+		}
+	
+		for (int i = 0; i < number.length; i++)
+			total += number[i];
+	
+		if (total % 10 != 0)
+			throw new ServiceException("Invalid number");
+	
 	}
 	
 
