@@ -98,10 +98,6 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 
 	    dprice.getDescriptions().add(dpd);
 
-	    //productPriceService.create(dprice);
-	    
-
-	    
 
 	    // PRODUCT 2  (height 3 inches x 4 inches length x 5 inches width) 2 pounds
 
@@ -122,7 +118,6 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 
 	    product2.getDescriptions().add(description);
 
-	    //productService.create(product2);
 
 	    // Availability
 	    ProductAvailability availability2 = new ProductAvailability();
@@ -145,8 +140,6 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 
 	    dprice2.getDescriptions().add(dpd);
 
-	    //productPriceService.create(dprice2);
-	    
 	    //add an attribute to product 2 that will augment weight of 1 pound
 	    ProductAttribute attribute = new ProductAttribute();
 	    attribute.setProduct(product2);
