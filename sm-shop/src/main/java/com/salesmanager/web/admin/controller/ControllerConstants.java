@@ -47,6 +47,10 @@ public interface ControllerConstants
             final String customShippingWeightBased="admin-shipping-custom";
         }
         
+        interface Payment{
+        	final String paymentMethods="payment-methods";
+        }
+        
         interface Order{
             final String orders="admin-orders";
         }

@@ -72,7 +72,7 @@ public class ShippingMethodsController {
 		model.addAttribute("configuredModules", configuredModules);
 	
 		
-		return "shipping-methods";
+		return ControllerConstants.Tiles.Shipping.shippingMethods;
 		
 		
 	}
