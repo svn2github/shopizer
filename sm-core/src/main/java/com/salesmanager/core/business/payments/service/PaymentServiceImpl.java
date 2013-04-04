@@ -29,7 +29,6 @@ import com.salesmanager.core.business.system.service.MerchantConfigurationServic
 import com.salesmanager.core.business.system.service.ModuleConfigurationService;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.payment.model.PaymentModule;
-import com.salesmanager.core.utils.CreditCardUtilException;
 import com.salesmanager.core.utils.reference.ConfigurationModulesLoader;
 
 @Service("paymentService")
