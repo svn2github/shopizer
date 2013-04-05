@@ -74,7 +74,8 @@
 			<beans:list>
   				<beans:value>bundles/shopizer</beans:value>
   				<beans:value>bundles/messages</beans:value>
-  				<beans:value>bundles/shipping</beans:value>    
+  				<beans:value>bundles/shipping</beans:value>
+  				<beans:value>bundles/payment</beans:value>    
   			</beans:list>
   		</beans:property>
   	</beans:bean>
