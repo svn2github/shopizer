@@ -159,7 +159,7 @@
 "menu":{
 "code":"payment",
 "icon":"icon-cog", 
-"url":"/admin/payment/paymentMethods.html", 
+"url":"/admin/payments/paymentMethods.html", 
 "role":"PAYMENT",
 "order":6
 }},
