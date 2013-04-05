@@ -131,10 +131,19 @@ public class CustomShippingMethodsController {
 		
 		
 		for(CustomShippingQuotesRegion region : regions) {
-			if(region.equals(customRegion)) {
-				ObjectError error = new ObjectError("region",messages.getMessage("mmessage.region.exists", locale));
-				result.addError(error);
-				break;
+			if(region.getCustomRegionName().equals(customRegion.getCustomRegionName())) {
+				List<String> countries = region.getCountries();
+				if(countries!=null) {
+					for(String countryCode : countries) {
+						if(countryCode.equals(customRegion.getCountries().get(0))) {
+							ObjectError error = new ObjectError("region",messages.getMessage("mmessage.region.exists", locale));
+							result.addError(error);
+							break;
+						}
+					}
+				}
+				
+				region.getCountries().add(customRegion.getCountries().get(0));
 			}
 		}
 		
@@ -142,7 +151,8 @@ public class CustomShippingMethodsController {
 			return ControllerConstants.Tiles.Shipping.shippingMethod;
 		}
 		
-		regions.add(customRegion);
+
+		shippingService.saveCustomShippingConfiguration(this.WEIGHT_BASED_SHIPPING_METHOD, customConfiguration, store);
 		model.addAttribute("customConfiguration", customConfiguration);
 		model.addAttribute("success","success");
 		
