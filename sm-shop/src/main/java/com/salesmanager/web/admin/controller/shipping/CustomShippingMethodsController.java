@@ -141,9 +141,14 @@ public class CustomShippingMethodsController {
 							break;
 						}
 					}
+					
+					countries.add(customRegion.getCountries().get(0));
+					
+				} else {
+					List<String> countriesList = new ArrayList<String>();
+					countriesList.add(customRegion.getCountries().get(0));
+					region.setCountries(countriesList);
 				}
-				
-				region.getCountries().add(customRegion.getCountries().get(0));
 			}
 		}
 		
