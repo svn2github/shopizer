@@ -329,7 +329,7 @@ public class CustomShippingMethodsController {
 	 */
 	@Secured("SHIPPING")
 	@RequestMapping(value="/admin/shipping/weightBased/edit.html", method=RequestMethod.GET)
-	public String editCustomShipping(@ModelAttribute("region") String region, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	public String editCustomShipping(@ModelAttribute("customRegionName") String region, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		setMenu(model,request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);

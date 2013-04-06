@@ -35,6 +35,7 @@ import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.utils.DateUtil;
 import com.salesmanager.web.utils.LabelUtils;
@@ -97,7 +98,7 @@ public class OrderControler {
 		
 		model.addAttribute("countries", countries);
 		model.addAttribute("order",order);
-		return "admin-orders-edit";
+		return ControllerConstants.Tiles.Order.ordersEdit;
 	}
 	
 
@@ -188,7 +189,7 @@ public class OrderControler {
 		}
 		 
 		if( StringUtils.isBlank(entityOrder.getOrder().getBilling().getState() ) ){
-			 ObjectError error = new ObjectError("billingState",messages.getMessage("NoNotEmpty.order.billingState", locale));
+			 ObjectError error = new ObjectError("billingState",messages.getMessage("NotEmpty.order.billingState", locale));
 			 result.addError(error);
 		}
 		 
@@ -204,7 +205,7 @@ public class OrderControler {
 			entityOrder.getOrder().setOrderTotal(orderTotal);
 			entityOrder.getOrder().setOrderHistory(orderHistory);
 			
-			return "admin-orders-edit";
+			return ControllerConstants.Tiles.Order.ordersEdit;
 		}
 		
 		newOrder.setCustomerFirstName(entityOrder.getOrder().getCustomerFirstName() );
@@ -250,7 +251,7 @@ public class OrderControler {
 		model.addAttribute("success","success");
 	
 		
-		return "admin-orders-edit";
+		return ControllerConstants.Tiles.Order.ordersEdit;
 	}
 	
 	

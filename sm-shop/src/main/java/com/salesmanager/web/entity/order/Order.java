@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.Embedded;
-import com.salesmanager.core.business.generic.model.SalesManagerEntity;
+
 import com.salesmanager.core.business.order.model.Billing;
 import com.salesmanager.core.business.order.model.Delivery;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
@@ -14,6 +14,10 @@ import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
 public class Order implements Serializable {
 	
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long Id;
 	private String orderHistoryComment = "";
 	
