@@ -102,27 +102,41 @@
 		 				<span class="help-inline"><form:errors path="order.customerTelephone" cssClass="error" /></span>
 	            </div>	
 	            
-   
-				<dl  class="dl-horizontal">			 		
-			 		<div class="controls">
-		 	 	 		<dt><s:message code="label.customer.email" text="Email"/></dt>
-		 				<dd><form:input id="customerEmailAddress" cssClass="input-large highlight" path="order.customerEmailAddress"/></dd>
+	            
+	           <label><s:message code="label.customer.email" text="Email"/></label>
+	            <div class="controls">
+		 				<form:input id="customerEmailAddress" cssClass="input-large highlight" path="order.customerEmailAddress"/>
 		 				<span class="help-inline"><form:errors path="order.customerEmailAddress" cssClass="error" /></span>
-	            	</div>  
-	
-		  	 		<dt><s:message code="label.order.date" text="Order date"/></dt>
-		 			<dd><form:input  cssClass="input-large" path="datePurchased"  class="small" type="text"
+	            </div>
+	            
+	            
+	            <label><s:message code="label.order.date" text="Order date"/></label>
+	            <div class="controls">
+		 				<form:input id="customerEmailAddress" cssClass="input-large highlight" path="order.customerEmailAddress"/>
+		 				<span class="help-inline"><form:errors path="order.customerEmailAddress" cssClass="error" /></span>
+	            </div>		
+   
+				<s:message code="label.order.date" text="Order date"/>			 		
+			 	<div class="controls">
+							<form:input  cssClass="input-large" path="datePurchased"  class="small" type="text"
 							 data-date-format="<%=com.salesmanager.core.constants.Constants.DEFAULT_DATE_FORMAT%>" />
 							  <script type="text/javascript">
                                  $('#datePurchased').datepicker();
                               </script>
-					</dd>
-							
-					<dt><s:message code="label.order.paymentmode" text="Payment mode"/></dt>
-		 			<dd><form:input  cssClass="input-large" path="order.paymentMethod"/></dd>
-						
-					<dt><s:message code="label.shipping.mode" text="Shipping mode"/></dt>
-					<dd><form:input  cssClass="input-large" path="order.shippingMethod"/></dd>			
+		 						<span class="help-inline"><form:errors path="datePurchased" cssClass="error" /></span>
+	            </div>  
+	
+
+	            <label><s:message code="label.order.paymentmode" text="Payment mode"/></label>
+	            <div class="controls">
+		 			 <c:out value="${order.order.paymentMethod}"/><form:hidden  path="order.paymentMethod"/><br/><br/>
+	            </div>	
+	            
+	            <label><s:message code="label.order.shippingmethod" text="Shipping method"/></label>
+	            <div class="controls">
+		 			 <c:out value="${order.order.shippingMethod}"/><form:hidden  path="order.shippingMethod"/>
+	            </div>	
+	
 				</dl> 
 			</address>
 			</div>
