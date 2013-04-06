@@ -256,6 +256,13 @@ public class ShippingServiceImpl implements ShippingService {
 				
 				
 			} 
+			
+			MerchantConfiguration configuration = merchantConfigurationService.getMerchantConfiguration(moduleCode, store);
+			
+			if(configuration!=null) {//custom module
+
+				merchantConfigurationService.delete(configuration);
+			}
 
 			
 		} catch (Exception e) {

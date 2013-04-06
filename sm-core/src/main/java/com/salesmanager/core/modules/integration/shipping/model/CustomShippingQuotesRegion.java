@@ -36,13 +36,18 @@ public class CustomShippingQuotesRegion implements JSONAware {
 		return customRegionName;
 	}
 	
-	@SuppressWarnings("unchecked")
+
 	public String toJSONString() {
-		JSONObject data = new JSONObject();
 		
 
-		data.put("customRegionName", this.getCustomRegionName());
+		StringBuilder returnString = new StringBuilder();
+		returnString.append("{");
+		returnString.append("\"customRegionName\"").append(":\"").append(this.getCustomRegionName()).append("\"");
+		
+		
+		
 		if(countries!=null) {
+			returnString.append(",");
 			StringBuilder coutriesList = new StringBuilder();
 			int countCountry = 0;
 			coutriesList.append("[");
@@ -53,11 +58,13 @@ public class CustomShippingQuotesRegion implements JSONAware {
 					coutriesList.append(",");
 				}
 			}
+			
 			coutriesList.append("]");
-			data.put("countries", coutriesList.toString());
+			returnString.append("\"countries\"").append(":").append(coutriesList.toString());
 		}
 		
 		if(quoteItems!=null) {
+			returnString.append(",");
 			StringBuilder quotesList = new StringBuilder();
 			int countQuotes = 0;
 			quotesList.append("[");
@@ -68,11 +75,11 @@ public class CustomShippingQuotesRegion implements JSONAware {
 					quotesList.append(",");
 				}
 			}
-			quotesList.append("]");
-			data.put("quoteItems", quotesList.toString());
+
+			returnString.append("\"quoteItems\"").append(":\"").append(quotesList.toString());
 		}
-		
-		return data.toJSONString();
+		returnString.append("}");
+		return returnString.toString();
 		
 		
 	}

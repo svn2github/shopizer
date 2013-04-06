@@ -38,7 +38,7 @@ public class ShippingConfiguration implements JSONAware {
 	//JSON bindings
 	private String shipType;
 	private String shipBaseType;
-	private String shipOptionPriceType;
+	private String shipOptionPriceType = ShippingOptionPriceType.ALL.name();
 	private String shipPackageType;
 	private String shipDescription;
 	private String shipFreeType;
