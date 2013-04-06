@@ -5,45 +5,15 @@
 
 <%@ page session="false" %>				
 				
-<script>
-	
-function validateRegion() {
-	$('#checkCodeStatus').html('<img src="<c:url value="/resources/img/ajax-loader.gif" />');
-	$('#checkCodeStatus').show();
-	var region = $("#region").val();
-	var id = "";
-	checkCode(region,id,'<c:url value="/admin/shipping/checkRegionCode.html" />');
-}
 
-function callBackCheckCode(msg,code) {
-	
-	if(code==0) {
-		$('.btn-region').removeClass('disabled');
-	}
-	if(code==9999) {
-
-		$('#checkCodeStatus').html('<font color="green"><s:message code="label.message.region.available" text="This region is available"/></font>');
-		$('#checkCodeStatus').show();
-		$('.btn-region').removeClass('disabled');
-	}
-	if(code==9998) {
-
-		$('#checkCodeStatus').html('<font color="red"><s:message code="label.message.region.exist" text="This region already exist"/></font>');
-		$('#checkCodeStatus').show();
-		$('.btn-region').addClass('disabled');
-	}
-	
-}
-	
-</script>
 
 
 
 
 								<form action="<c:url value="/admin/shipping/addCustomRegion.html"/>" method="POST" class="form-inline">  
 			      					<form:errors path="*" cssClass="alert alert-error" element="div" />
-			      					<label class="required"><s:message code="label.shipping.addregion" text="Add region" /></label>
-			      					<input type="text" class="span3" name="region" id="region" onblur="validatecode()"><!-- must be unique -->  
+			      					1- <label class="required"><s:message code="label.shipping.addregion" text="Add region" /></label>
+			      					<input type="text" class="span3" name="region" id="region"><!-- must be unique -->  
 			      					<span class="help-inline"><div id="checkCodeStatus" style="display:none;"></div></span>
 			      					<span class="help-inline">
 	                        			<c:if test="${regionexistError!=null}">
@@ -58,7 +28,7 @@ function callBackCheckCode(msg,code) {
 		                  		<form:form method="POST" commandName="customRegion" action="${addShipping}" cssClass="form-inline">
 				
 		                  			 		
-		                        			<label><s:message code="label.region" text="Region"/></label>
+		                        			2- <label><s:message code="label.region" text="Region"/></label>
 		                        			
 		                        					<form:select path="customRegionName">
 						  								<form:options items="${customConfiguration.regions}" itemValue="customRegionName" itemLabel="customRegionName"/>
@@ -92,6 +62,23 @@ function callBackCheckCode(msg,code) {
 				
 				            	 <jsp:include page="/pages/admin/components/list.jsp"></jsp:include> 
 								 <!-- End listing grid include -->
+								 
+								<br/><br/>
+								<c:url var="addPrice" value="/admin/shipping/weightBased/edit.html"/> 
+		                  		<form:form method="POST" commandName="customRegion" action="${addPrice}" cssClass="form-inline">
+				
+		                  			 		
+		                        			3- <label><s:message code="label.region" text="Region"/></label>
+		                        			
+		                        					<form:select path="customRegionName">
+						  								<form:options items="${customConfiguration.regions}" itemValue="customRegionName" itemLabel="customRegionName"/>
+					       							</form:select>
+
+		                 			
+	                        		 
+                  							<button type="submit" class="btn btn-success"><s:message code="label.entity.details" text="Details"/></button>
+
+			      				</form:form>
 			      				
 			      				
 
