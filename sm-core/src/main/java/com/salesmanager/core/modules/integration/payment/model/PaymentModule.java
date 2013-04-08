@@ -3,6 +3,7 @@ package com.salesmanager.core.modules.integration.payment.model;
 import java.math.BigDecimal;
 
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.Transaction;
@@ -11,6 +12,8 @@ import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.modules.integration.IntegrationException;
 
 public interface PaymentModule {
+	
+	public void validateModuleConfiguration(IntegrationConfiguration integrationConfiguration, MerchantStore store) throws IntegrationException;
 	
 	/**
 	 * Returns token-value related to the initialization of the transaction This

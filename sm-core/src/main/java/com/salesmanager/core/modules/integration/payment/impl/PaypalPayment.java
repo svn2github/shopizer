@@ -8,14 +8,18 @@ import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.Transaction;
@@ -679,6 +683,45 @@ public class PaypalPayment implements PaymentModule {
 			}
 		}
 		return nvp;
+	}
+
+	@Override
+	public void validateModuleConfiguration(
+			IntegrationConfiguration integrationConfiguration,
+			MerchantStore store) throws IntegrationException {
+		
+		
+		List<String> errorFields = null;
+		
+		//validate integrationKeys['account']
+		Map<String,String> keys = integrationConfiguration.getIntegrationKeys();
+		if(keys==null || StringUtils.isBlank(keys.get("account"))) {
+			errorFields = new ArrayList<String>();
+			errorFields.add("identifier");
+		}
+		
+		if(keys==null || StringUtils.isBlank(keys.get("api"))) {
+			errorFields = new ArrayList<String>();
+			errorFields.add("api");
+		}
+		
+		if(keys==null || StringUtils.isBlank(keys.get("signature"))) {
+			errorFields = new ArrayList<String>();
+			errorFields.add("signature");
+		}
+
+
+		
+
+		if(errorFields!=null) {
+			IntegrationException ex = new IntegrationException(IntegrationException.ERROR_VALIDATION_SAVE);
+			ex.setErrorFields(errorFields);
+			throw ex;
+			
+		}
+		
+		
+		
 	}
 
 

@@ -115,7 +115,7 @@ public class PaymentServiceImpl implements PaymentService {
 			if(module==null) {
 				throw new ServiceException("Payment module " + moduleCode + " does not exist");
 			}
-			//quoteModule.validateModuleConfiguration(configuration, store);
+			module.validateModuleConfiguration(configuration, store);
 			
 		} catch (IntegrationException ie) {
 			throw ie;
