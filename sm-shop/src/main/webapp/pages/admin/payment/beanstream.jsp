@@ -8,37 +8,37 @@
 
                  
                  <div class="control-group">
-                        <label class="required"><s:message code="module.payment.paypal.userid" text="Paypal user id"/></label>
+                        <label class="required"><s:message code="module.payment.beanstream.merchantid" text="Merchant id"/></label>
 	                        <div class="controls">
-	                        		<form:input cssClass="input-large highlight" path="integrationKeys['account']" />
+	                        		<form:input cssClass="input-large highlight" path="integrationKeys['merchantid']" />
 	                        </div>
 	                        <span class="help-inline">
-	                        	<c:if test="${identifier!=null}">
-	                        	<span id="identifiererrors" class="error"><s:message code="module.payment.paypal.message.identifier" text="Field in error"/></span>
+	                        	<c:if test="${merchantid!=null}">
+	                        	<span id="identifiererrors" class="error"><s:message code="module.payment.beanstream.message.merchantid" text="Field in error"/></span>
 	                        	</c:if>
 	                        </span>
                   </div>
                   
                    <div class="control-group">
-                        <label class="required"><s:message code="module.payment.paypal.apikey" text="Paypal API key"/></label>
+                        <label class="required"><s:message code="module.payment.beanstream.username" text="Username"/></label>
 	                        <div class="controls">
-									<form:input cssClass="input-large highlight" path="integrationKeys['api']" />
+									<form:input cssClass="input-large highlight" path="integrationKeys['username']" />
 	                        </div>
 	                        <span class="help-inline">
-	                        	<c:if test="${api!=null}">
-	                        		<span id="apikeyerrors" class="error"><s:message code="module.payment.paypal.message.api" text="Field in error"/></span>
+	                        	<c:if test="${username!=null}">
+	                        		<span id="apikeyerrors" class="error"><s:message code="module.payment.beanstream.message.username" text="Field in error"/></span>
 	                        	</c:if>
 	                        </span>
                   </div>
 
                    <div class="control-group">
-                        <label class="required"><s:message code="module.payment.paypal.signature" text="Paypal API signature"/></label>
+                        <label class="required"><s:message code="module.payment.beanstream.password" text="Password"/></label>
 	                        <div class="controls">
-									<form:input cssClass="input-large highlight" path="integrationKeys['signature']" />
+									<form:input cssClass="input-large highlight" path="integrationKeys['password']" />
 	                        </div>
 	                        <span class="help-inline">
-	                        	<c:if test="${signature!=null}">
-	                        		<span id="apisignatureerrors" class="error"><s:message code="module.payment.paypal.message.signature" text="Field in error"/></span>
+	                        	<c:if test="${password!=null}">
+	                        		<span id="apisignatureerrors" class="error"><s:message code="module.payment.beanstream.message.password" text="Field in error"/></span>
 	                        	</c:if>
 	                        </span>
                   </div>
