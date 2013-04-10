@@ -315,6 +315,11 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	public List<Category> listByDepth(MerchantStore store, int depth) {
 		return categoryDao.listByDepth(store, depth);
 	}
+	
+	@Override
+	public List<Category> listByDepth(MerchantStore store, int depth, Language language) {
+		return categoryDao.listByDepth(store, depth, language);
+	}
 
 	@Override
 	public List<Category> getByName(MerchantStore store, String name, Language language) throws ServiceException {
