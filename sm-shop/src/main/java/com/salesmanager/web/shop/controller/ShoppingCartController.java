@@ -58,8 +58,31 @@ public class ShoppingCartController {
 		
 
 		//Looks in the HttpSession to see if a customer is logged in
+		//Looks in the HttpSession to see if a shopping cart exists
 		
-		//get any shopping cart for this user
+		
+		//if a customer exists in http session
+			//if a cart does not exist in httpsession
+				//get cart from database
+					//if a cart exist in the database add the item to the cart and put cart in httpsession and save to the database
+					//else a cart does not exist in the database, create a new one, set the customer id, set the cart in the httpsession
+			//else a cart exist in the httpsession, add item to httpsession cart and save to the database
+		//else no customer in httpsession
+			//if a cart does not exist in httpsession
+				//create a new one, set the cart in the httpsession
+			//else a cart exist in the httpsession, add item to httpsession cart and save to the database
+		
+		
+		/**
+		 * my concern is with the following : 
+		 * 	what if you add item in the shopping cart as an anonymous user
+		 *  later on you log in to process with checkout but the system retrieves a previous shopping cart saved in the database for that customer
+		 *  in that case we need to synchronize both carts and the original one (the one with the customer id) supercedes the current cart in session
+		 *  the sustem will have to deal with the original one and remove the latest
+		 */
+		
+		
+		//**more implementation details
 		//calculate the price of each item by using ProductPriceUtils in sm-core
 		//for each product in the shopping cart get the product
 		//invoke productPriceUtils.getFinalOrderPrice
