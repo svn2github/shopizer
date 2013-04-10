@@ -3,7 +3,6 @@ package com.salesmanager.core.business.catalog.category.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +11,6 @@ import com.salesmanager.core.business.catalog.category.dao.CategoryDao;
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.image.ProductImageService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -311,6 +309,11 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		}
 		
 
+	}
+	
+	@Override
+	public List<Category> listByDepth(MerchantStore store, int depth) {
+		return categoryDao.listByDepth(store, depth);
 	}
 
 	@Override

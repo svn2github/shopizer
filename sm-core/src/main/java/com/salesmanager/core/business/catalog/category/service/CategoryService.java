@@ -48,6 +48,8 @@ public interface CategoryService extends SalesManagerEntityService<Long, Categor
 
 	void saveOrUpdate(Category category) throws ServiceException;
 
+	List<Category> listByDepth(MerchantStore store, int depth);
+
 
 	
 	

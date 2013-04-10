@@ -111,6 +111,23 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		return query.listDistinct(qCategory);
 	}
 	
+	@Override
+	public List<Category> listByDepth(MerchantStore store, int depth) {
+		QCategory qCategory = QCategory.category;
+		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCategory)
+			.leftJoin(qCategory.descriptions, qDescription).fetch()
+			.leftJoin(qCategory.merchantStore).fetch()
+			.where(qCategory.depth.eq(depth)
+			.and(qCategory.merchantStore.id.eq(store.getId())))
+			.orderBy(qCategory.lineage.asc(), qCategory.lineage.asc(), qCategory.depth.asc(), qDescription.language.id.desc());
+		
+		return query.listDistinct(qCategory);
+	}
+	
 	
 
 	@Override

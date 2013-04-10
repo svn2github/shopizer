@@ -25,4 +25,6 @@ public interface CategoryDao extends SalesManagerEntityDao<Long, Category> {
 
 	Category getById(Long id);
 
+	List<Category> listByDepth(MerchantStore store, int depth);
+
 }
