@@ -61,5 +61,11 @@ public interface ControllerConstants
             final String email="config-email";
         }
         
+        interface Tax{
+            final String taxClasses="tax-classes";
+            final String taxConfiguration="tax-configuration";
+            final String taxRates="tax-rates";
+        }
+        
     }
 }
