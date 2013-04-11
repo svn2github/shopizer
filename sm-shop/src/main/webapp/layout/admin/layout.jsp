@@ -311,6 +311,17 @@ response.setDateHeader ("Expires", -1);
   				window.location='<c:url value="/admin/configuration/email.html" />';
 			});
 			
+			$("#taxclass-link").click(function() {
+  				window.location='<c:url value="/admin/tax/taxclass/list.html" />';
+			});
+			
+			$("#taxconfiguration-link").click(function() {
+  				window.location='<c:url value="/admin/tax/taxconfiguration/list.html" />';
+			});
+			
+			$("#taxrates-link").click(function() {
+  				window.location='<c:url value="/admin/tax/taxrates/list.html" />';
+			});		
 
 		}); 
 		

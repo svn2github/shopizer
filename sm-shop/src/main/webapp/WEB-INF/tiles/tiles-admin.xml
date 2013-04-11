@@ -214,7 +214,21 @@
   		<put-attribute name="body" value="/pages/admin/orders/order.jsp" /> 
   	</definition>
   	
+  		<definition name="admin-orders-edit" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/orders/order.jsp" /> 
+  	</definition>
   	
+  	<definition name="tax-classes" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/tax/taxClass.jsp" /> 
+  	</definition>
+  	
+  	<definition name="tax-configuration" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/tax/taxConfiguration.jsp" /> 
+  	</definition>
+  	
+   	<definition name="tax-rates" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/tax/taxRates.jsp" /> 
+  	</definition> 	
   	
   	
   	
