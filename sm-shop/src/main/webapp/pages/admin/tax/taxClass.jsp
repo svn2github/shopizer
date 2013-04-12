@@ -48,6 +48,7 @@
 				                  
 				                  
 				                  	<form:hidden path="id" />
+				                  	<form:hidden path="merchantStore.id" value="${requestScope.store.id}" />
 							
 							        <div class="form-actions">
 				                  		<div class="pull-right">
@@ -56,6 +57,23 @@
 				            	    </div>
 				 
 				            	 </form:form>
+				            	 
+				            	 
+				            	 <br/><br/>
+				            	 <!-- Listing grid include -->
+								 <c:set value="/admin/tax/taxclass/paging.html" var="pagingUrl" scope="request"/>
+								 <c:set value="/admin/tax/taxclass/remove.html" var="removeUrl" scope="request"/>
+								 <c:set value="/admin/tax/taxclass/list.html" var="refreshUrl" scope="request"/>
+								 <c:set value="/admin/tax/taxclass/edit.html" var="editUrl" scope="request"/>
+								 <c:set var="entityId" value="taxClassId" scope="request"/>
+								 <c:set var="componentTitleKey" value="label.tax.taxclass.title" scope="request"/>
+								 <c:set var="gridHeader" value="/pages/admin/tax/taxClass-gridHeader.jsp" scope="request"/>
+								 <c:set var="canRemoveEntry" value="true" scope="request"/>
+
+				
+				            	 <jsp:include page="/pages/admin/components/list.jsp"></jsp:include> 
+								 <!-- End listing grid include -->
+				     
 	      			     
       					</div>
       					
