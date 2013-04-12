@@ -1,11 +1,8 @@
 package com.salesmanager.core.business.tax.model.taxclass;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,12 +10,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
@@ -27,7 +24,8 @@ import com.salesmanager.core.business.tax.model.taxrate.TaxRate;
 import com.salesmanager.core.constants.SchemaConstant;
 
 @Entity
-@Table(name = "TAX_CLASS", schema = SchemaConstant.SALESMANAGER_SCHEMA)
+@Table(name = "TAX_CLASS", schema = SchemaConstant.SALESMANAGER_SCHEMA,uniqueConstraints=
+    @UniqueConstraint(columnNames = {"MERCHANT_ID", "TAX_CLASS_CODE"}) )
 public class TaxClass extends SalesManagerEntity<Long, TaxClass> {
 	private static final long serialVersionUID = -325750148480212355L;
 	
@@ -44,6 +42,7 @@ public class TaxClass extends SalesManagerEntity<Long, TaxClass> {
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
 	
+	@Valid
 	@Column(name="TAX_CLASS_CODE", length=10)
 	private String code;
 	
