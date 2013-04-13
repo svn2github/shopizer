@@ -162,7 +162,7 @@
 			            </div>
 			            <label><s:message code="label.customer.shipping.country" text="Country"/></label>
 			            <div class="controls">
-				 				<form:select cssClass="country-list highlight" path="order.delivery.countryCode">
+				 				<form:select cssClass="country-list" path="order.delivery.countryCode">
 					  					<form:options items="${countries}" itemValue="isoCode" itemLabel="name"/>
 				       			</form:select>
 			            </div>
