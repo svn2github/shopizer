@@ -109,7 +109,11 @@ public class OrderControler {
 		String email_regEx = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}\\b";
 		Pattern pattern = Pattern.compile(email_regEx);
 		OrderStatusHistory orderStatusHistory = new OrderStatusHistory();
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		List<Country> countries = countryService.getCountries(language);
 		
+		
+		model.addAttribute("countries", countries);
 		
 		Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
 		Set<OrderTotal> orderTotal = new HashSet<OrderTotal>();
