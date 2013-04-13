@@ -7,4 +7,4 @@
 
 
 					{title:"<s:message code="label.shipping.maximumWeight" text="Maximum weight"/>", name:"maximumWeight", primaryKey:true, canEdit:false, canFilter:false},
-        			{title:"<s:message code="label.generic.price" text="Price"/>", name:"price", canEdit:false, canFilter:true}
+        			{title:"<s:message code="label.generic.price" text="Price"/>", name:"price", canEdit:false, canFilter:false}

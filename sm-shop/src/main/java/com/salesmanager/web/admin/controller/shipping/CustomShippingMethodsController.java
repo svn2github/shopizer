@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
@@ -213,6 +214,50 @@ public class CustomShippingMethodsController {
 		
 	}
 	
+	@Secured("SHIPPING")
+	@RequestMapping(value="/admin/shipping/weightBased/remove.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String deleteCategory(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		String country = request.getParameter("country");
+
+		AjaxResponse resp = new AjaxResponse();
+
+
+		try {
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+			CustomShippingQuotesConfiguration customConfiguration = (CustomShippingQuotesConfiguration)shippingService.getCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, store);
+
+			if(customConfiguration!=null) {
+				
+				List<CustomShippingQuotesRegion> quotes = customConfiguration.getRegions();
+				for (CustomShippingQuotesRegion quote : quotes) {
+						List<String> countries = quote.getCountries();
+						List<String> newCountries = new ArrayList<String>();
+						if(countries!=null) {
+							for(String cntry : countries) {
+								if(!cntry.equals(country)) {
+									newCountries.add(cntry);
+								}
+							}
+						}
+						quote.setCountries(newCountries);
+				}
+				
+			}
+			
+			shippingService.saveCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, customConfiguration, store);
+
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+
+		} catch (Exception e) {
+			LOGGER.error("Error while paging custom weight based", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+		}
+
+		String returnString = resp.toJSONString();
+
+		return returnString;
+	}
+	
 
 	@Secured("SHIPPING")
 	@RequestMapping(value="/admin/shipping/deleteWeightBasedShippingMethod.html", method=RequestMethod.POST)
@@ -381,11 +426,13 @@ public class CustomShippingMethodsController {
 					if(quote.getCustomRegionName().equals(region)) {
 
 						List<CustomShippingQuoteWeightItem> quoteItems = quote.getQuoteItems();
-						for(CustomShippingQuoteWeightItem quoteItem : quoteItems) {
-							Map<String,String> entry = new HashMap<String,String> ();
-							entry.put("price", priceUtil.getAdminFormatedAmountWithCurrency(store,quoteItem.getPrice()));
-							entry.put("weight", String.valueOf(quoteItem.getMaximumWeight()));
-							resp.addDataEntry(entry);
+						if(quoteItems!=null) {
+							for(CustomShippingQuoteWeightItem quoteItem : quoteItems) {
+								Map<String,String> entry = new HashMap<String,String> ();
+								entry.put("price", priceUtil.getAdminFormatedAmountWithCurrency(store,quoteItem.getPrice()));
+								entry.put("weight", String.valueOf(quoteItem.getMaximumWeight()));
+								resp.addDataEntry(entry);
+							}
 						}
 					}
 			}
@@ -507,8 +554,7 @@ public class CustomShippingMethodsController {
 		
 		
 		List<String> environments = new ArrayList<String>();
-		environments.add(Constants.TEST_ENVIRONMENT);
-		environments.add(Constants.PRODUCTION_ENVIRONMENT);
+		environments.add(Constants.PRODUCTION_ENVIRONMENT);//only production
 		
 		model.addAttribute("environments", environments);
 		model.addAttribute("configuration", configuration);
