@@ -3,7 +3,6 @@ package com.salesmanager.core.modules.integration.shipping.model;
 import java.util.List;
 
 import org.json.simple.JSONAware;
-import org.json.simple.JSONObject;
 
 public class CustomShippingQuotesRegion implements JSONAware {
 	
