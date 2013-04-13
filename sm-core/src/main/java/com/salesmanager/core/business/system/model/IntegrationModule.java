@@ -61,6 +61,13 @@ public class IntegrationModule extends SalesManagerEntity<Long, IntegrationModul
 	@Type(type = "org.hibernate.type.StringClobType")
 	private String configuration;
 	
+	@Column(name="DETAILS")
+	@Type(type = "org.hibernate.type.StringClobType")
+	private String configDetails;
+	
+
+
+
 	@Column(name="IMAGE")
 	private String image;
 	
@@ -76,8 +83,23 @@ public class IntegrationModule extends SalesManagerEntity<Long, IntegrationModul
 	@Transient
 	private Map<String,ModuleConfig> moduleConfigs = new HashMap<String,ModuleConfig>();
 	
+	
+	@Transient
+	private Map<String,String> details = new HashMap<String,String>();
 
 	
+	public Map<String, String> getDetails() {
+		return details;
+	}
+
+
+
+	public void setDetails(Map<String, String> details) {
+		this.details = details;
+	}
+
+
+
 	@Embedded
 	private AuditSection auditSection = new AuditSection();
 
@@ -207,6 +229,15 @@ public class IntegrationModule extends SalesManagerEntity<Long, IntegrationModul
 		return customModule;
 	}
 
+	public String getConfigDetails() {
+		return configDetails;
+	}
+
+
+
+	public void setConfigDetails(String configDetails) {
+		this.configDetails = configDetails;
+	}
 
 
 

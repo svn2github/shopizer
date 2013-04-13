@@ -18,7 +18,7 @@ import com.salesmanager.core.business.system.model.ModuleConfig;
 @Component
 public class IntegrationModulesLoader {
 	
-	@SuppressWarnings("unused")
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(IntegrationModulesLoader.class);
 	
 
@@ -63,7 +63,30 @@ public class IntegrationModulesLoader {
             		module.setCustomModule(b);
             	}
             	//module.setRegions(regions)
-            	
+            	if(object.get("details")!=null) {
+            		
+            		Map<String,String> details = (Map<String,String>)object.get("details");
+            		module.setDetails(details);
+            		
+            		//maintain the original json structure
+            		StringBuilder detailsStructure = new StringBuilder();
+            		int count = 0;
+            		detailsStructure.append("{");
+            		for(String key : details.keySet()) {
+            			String jsonKeyString = mapper.writeValueAsString(key);
+            			detailsStructure.append(jsonKeyString);
+            			detailsStructure.append(":");
+            			String jsonValueString = mapper.writeValueAsString(details.get(key));
+            			detailsStructure.append(jsonValueString);
+	            		if(count<(details.size()-1)) {
+	            			detailsStructure.append(",");
+	            		}
+	            		count++;
+            		}
+            		detailsStructure.append("}");
+            		module.setConfigDetails(detailsStructure.toString());
+            		
+            	}
             	
             	
             	List confs = (List)object.get("configuration");

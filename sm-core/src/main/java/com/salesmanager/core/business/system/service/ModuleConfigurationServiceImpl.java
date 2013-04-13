@@ -62,6 +62,19 @@ public class ModuleConfigurationServiceImpl extends
 						}
 					}
 					
+					
+					String details = mod.getConfigDetails();
+					if(details!=null) {
+						
+						//Map objects = mapper.readValue(config, Map.class);
+
+						Map<String,String> objDetails= (Map<String, String>) JSONValue.parse(details); 
+						mod.setDetails(objDetails);
+
+						
+					}
+					
+					
 					String configs = mod.getConfiguration();
 					if(configs!=null) {
 						

@@ -60,7 +60,7 @@ public class IntegrationConfiguration implements JSONAware {
 		//returnString.append("\"customModule\"").append(":").append(this.isCustomModule());
 		//returnString.append(",");
 		returnString.append("\"environment\"").append(":\"").append(this.getEnvironment()).append("\"");
-		returnString.append("}");
+		//returnString.append("}");
 		return returnString.toString();
 		
 	}

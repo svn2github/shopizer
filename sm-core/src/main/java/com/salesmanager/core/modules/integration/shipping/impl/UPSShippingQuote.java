@@ -134,8 +134,11 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 
 		// only applies to Canada and US
 		Country country = delivery.getCountry();
-		if(!country.getIsoCode().equals("US") || !country.equals("CA")) {
-			throw new IntegrationException("Canadapost Not configured for shipping in country " + country.getIsoCode());
+		
+
+		
+		if(!(country.getIsoCode().equals("US") || country.getIsoCode().equals("CA"))) {
+			throw new IntegrationException("UPS Not configured for shipping in country " + country.getIsoCode());
 		}
 
 		// supports en and fr
@@ -152,10 +155,6 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 		String userId = keys.get("userId");
 		String password = keys.get("password");
 		
-		//CoreModuleService cis = null;
-		//StringBuffer xmlbuffer = new StringBuffer();
-		//BufferedReader reader = null;
-		//PostMethod httppost = null;
 		
 		String host = null;
 		String protocol = null;
@@ -427,10 +426,10 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 					.addCallMethod(
 							"RatingServiceSelectionResponse/RatedShipment/TotalCharges/MonetaryValue",
 							"setOptionPriceText", 0);
-			digester
-					.addCallMethod(
-							"RatingServiceSelectionResponse/RatedShipment/TotalCharges/CurrencyCode",
-							"setCurrency", 0);
+			//digester
+			//		.addCallMethod(
+			//				"RatingServiceSelectionResponse/RatedShipment/TotalCharges/CurrencyCode",
+			//				"setCurrency", 0);
 			digester
 					.addCallMethod(
 							"RatingServiceSelectionResponse/RatedShipment/Service/Code",
@@ -523,6 +522,22 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 			
 
 			List<ShippingOption> shippingOptions = parsed.getOptions();
+			
+			if(shippingOptions!=null) {
+				
+				Map<String,String> details = module.getDetails();
+				
+				for(ShippingOption option : shippingOptions) {
+					
+					String name = details.get(option.getOptionCode());
+					
+					option.setOptionName(name);
+					
+					
+				}
+				
+				
+			}
 			
 /*			if (options != null) {
 
