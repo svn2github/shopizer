@@ -191,7 +191,7 @@
 "menu":{
 "code":"tax",
 "icon":"icon-book", 
-"url":"/admin/tax/taxes.html", 
+"url":"/admin/tax/taxclass/list.html", 
 "role":"TAX",
 "order":9,
 "menus":[
