@@ -109,12 +109,7 @@
 		 				<span class="help-inline"><form:errors path="order.customerEmailAddress" cssClass="error" /></span>
 	            </div>
 	            
-	            
-	            <label><s:message code="label.order.date" text="Order date"/></label>
-	            <div class="controls">
-		 				<form:input id="customerEmailAddress" cssClass="input-large highlight" path="order.customerEmailAddress"/>
-		 				<span class="help-inline"><form:errors path="order.customerEmailAddress" cssClass="error" /></span>
-	            </div>		
+	
    
 				<s:message code="label.order.date" text="Order date"/>			 		
 			 	<div class="controls">
