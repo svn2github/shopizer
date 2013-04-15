@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
@@ -137,7 +136,7 @@ public class CustomShippingMethodsController {
 				if(countries!=null) {
 					for(String countryCode : countries) {
 						if(countryCode.equals(customRegion.getCountries().get(0))) {
-							ObjectError error = new ObjectError("region",messages.getMessage("mmessage.region.exists", locale));
+							ObjectError error = new ObjectError("region",messages.getMessage("message.region.exists", locale));
 							result.addError(error);
 							break;
 						}
@@ -359,6 +358,53 @@ public class CustomShippingMethodsController {
 
 		String returnString = resp.toJSONString();
 
+		return returnString;
+	}
+	
+	@Secured("SHIPPING")
+	@RequestMapping(value="/admin/shipping/weightBased/remove.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String removeCountry(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		String country = request.getParameter("country");
+
+		
+		AjaxResponse resp = new AjaxResponse();
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		if(StringUtils.isBlank(country)) {
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			return resp.toJSONString();
+		}
+		
+		try {
+			
+
+			
+			CustomShippingQuotesConfiguration customConfiguration = (CustomShippingQuotesConfiguration)shippingService.getCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, store);
+
+			if(customConfiguration!=null) {
+				List<CustomShippingQuotesRegion> regions =  customConfiguration.getRegions();
+				for(CustomShippingQuotesRegion region : regions) {
+					List<String> countries = region.getCountries();
+					List<String> newCountries = new ArrayList<String>();
+					for(String cntry : countries) {
+						if(!country.equals(cntry)) {
+							newCountries.add(cntry);
+						}
+					}
+					region.setCountries(newCountries);	
+				}
+			}
+
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+
+		} catch (Exception e) {
+			LOGGER.error("Error while getting user", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
 		return returnString;
 	}
 	

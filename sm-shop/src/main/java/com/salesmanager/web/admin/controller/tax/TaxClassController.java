@@ -43,6 +43,12 @@ public class TaxClassController {
 	public String displayTaxClasses(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model, request);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		TaxClass taxClass = new TaxClass();
+		taxClass.setMerchantStore(store);
+		
+		model.addAttribute("taxClass", taxClass);
+		
 		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Tax.taxClasses;
 	}
 	
@@ -82,7 +88,7 @@ public class TaxClassController {
 	
 	@Secured("TAX")
 	@RequestMapping(value="/admin/tax/taxclass/save.html", method=RequestMethod.POST)
-	public String saveUser(@Valid @ModelAttribute("taxClass") TaxClass taxClass, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+	public String saveTaxClass(@Valid @ModelAttribute("taxClass") TaxClass taxClass, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
 		
 		setMenu(model, request);
