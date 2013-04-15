@@ -182,7 +182,7 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@Column (name ="CUSTOMER_TELEPHONE", length=20)
 	private String customerTelephone;
 	
-	@Email
+	//@Email
 	@Column (name ="CUSTOMER_EMAIL_ADDRESS", length=50, nullable=false)
 	private String customerEmailAddress;
 	
