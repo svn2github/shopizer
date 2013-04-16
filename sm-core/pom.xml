@@ -337,13 +337,13 @@
 		</dependency>
 		
 		<!-- Local dependency -->
-		<dependency>
+<!-- 		<dependency>
       		<groupId>authorizenet</groupId>
       		<artifactId>tools</artifactId>
       		<version>1.4.2</version>
       		<scope>system</scope>
       		<systemPath>${basedir}/lib/anet-java-sdk-1.4.6.jar</systemPath>
-    	</dependency>
+    	</dependency> -->
 
 
 		<!-- Test dependencies -->
