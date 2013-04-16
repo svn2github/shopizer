@@ -71,7 +71,17 @@
 				            	 <jsp:include page="/pages/admin/components/list.jsp"></jsp:include> 
 								 <!-- End listing grid include -->
 			      				
-			      				
+			      				<br/><br/>
+			      				<c:url var="removeRegion" value="/admin/shipping/weightBased/deleteRegion.html"/>
+		                  		<form:form method="POST" enctype="multipart/form-data" commandName="region" action="${removeRegion}">
+									<input type="hidden" name="region" value="${customRegion.customRegionName}" />
+			                        <div class="form-actions">
+			                            <div class="pull-right">
+			                                    <button type="submit" class="btn"><s:message code="label.generic.remove" text="Remove"/></button>
+			                            </div>
+			                   		</div>
+		
+		                   		</form:form>
 
 
       					</div>
