@@ -10,6 +10,7 @@ response.setDateHeader ("Expires", -1);
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%@ page import="java.util.Calendar" %>
  
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
@@ -141,7 +142,7 @@ response.setDateHeader ("Expires", -1);
   
   
 		<footer> 
- 			<p>&copy; Shopizer 2010-2013</p> 
+ 			<p>&copy; Shopizer 2010-<%=Calendar.getInstance().get(Calendar.YEAR);%></p> 
 		</footer> 
   
   
@@ -194,9 +195,6 @@ response.setDateHeader ("Expires", -1);
 			$("#catalogue-link").click(function() {
 				window.location='<c:url value="/admin/products/products.html" />';
 			});
-			
-			
-			
 			$("#catalogue-categories-hierarchy-link").click(function() {
 				window.location='<c:url value="/admin/categories/hierarchy.html" />';
 			});
@@ -233,7 +231,6 @@ response.setDateHeader ("Expires", -1);
 			$("#create-user-link").click(function() {
   				window.location='<c:url value="/admin/users/createUser.html" />';
 			});
-			
 			$("#security-permissions-link").click(function() {
   				window.location='<c:url value="/admin/user/permissions.html" />';
 			});
@@ -246,27 +243,21 @@ response.setDateHeader ("Expires", -1);
 			$("#customer-create-link").click(function() {
   				window.location='<c:url value="/admin/customers/customer.html" />';
 			});
-			
 			$("#storeDetails-link").click(function() {
   				window.location='<c:url value="/admin/store/store.html" />';
 			});
-			
 			$("#create-store-link").click(function() {
   				window.location='<c:url value="/admin/store/storeCreate.html" />';
 			});
-			
 			$("#store-list-link").click(function() {
   				window.location='<c:url value="/admin/store/list.html" />';
 			});
-			
 			$("#storeBranding-link").click(function() {
   				window.location='<c:url value="/admin/store/storeBranding.html" />';
 			});
-			
 			$("#storeLanding-link").click(function() {
   				window.location='<c:url value="/admin/store/storeLanding.html" />';
 			});
-			
 			$("#content-link").click(function() {
   				window.location='<c:url value="/admin/content/contentImages.html" />';
 			});
@@ -316,7 +307,7 @@ response.setDateHeader ("Expires", -1);
 			});
 			
 			$("#taxconfiguration-link").click(function() {
-  				window.location='<c:url value="/admin/tax/taxconfiguration/list.html" />';
+  				window.location='<c:url value="/admin/tax/taxconfiguration/edit.html" />';
 			});
 			
 			$("#taxrates-link").click(function() {
