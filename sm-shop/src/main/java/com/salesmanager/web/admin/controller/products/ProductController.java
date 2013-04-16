@@ -212,7 +212,7 @@ public class ProductController {
 			product.setDescriptions(descriptions);
 			
 			
-			product.setDateAvailable(DateUtil.formatDate(productAvailability.getProductDateAvailable()));
+			product.setDateAvailable(DateUtil.formatDate(dbProduct.getDateAvailable()));
 
 
 		} else {
