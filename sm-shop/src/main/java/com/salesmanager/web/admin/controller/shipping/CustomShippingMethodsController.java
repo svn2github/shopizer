@@ -214,8 +214,8 @@ public class CustomShippingMethodsController {
 	}
 	
 	@Secured("SHIPPING")
-	@RequestMapping(value="/admin/shipping/weightBased/remove.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String deleteCategory(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+	@RequestMapping(value="/admin/shipping/weightBased/removeCountry.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String deleteCountry(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String country = request.getParameter("country");
 
 		AjaxResponse resp = new AjaxResponse();
@@ -245,7 +245,7 @@ public class CustomShippingMethodsController {
 			
 			shippingService.saveCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, customConfiguration, store);
 
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 
 		} catch (Exception e) {
 			LOGGER.error("Error while paging custom weight based", e);
@@ -361,8 +361,8 @@ public class CustomShippingMethodsController {
 		return returnString;
 	}
 	
-	@Secured("SHIPPING")
-	@RequestMapping(value="/admin/shipping/weightBased/remove.html", method=RequestMethod.POST, produces="application/json")
+/*	@Secured("SHIPPING")
+	@RequestMapping(value="/admin/shipping/weightBased/removeCountry.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeCountry(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String country = request.getParameter("country");
 
@@ -406,7 +406,7 @@ public class CustomShippingMethodsController {
 		String returnString = resp.toJSONString();
 		
 		return returnString;
-	}
+	}*/
 	
 	/**
 	 * Edit custom region
@@ -500,7 +500,7 @@ public class CustomShippingMethodsController {
 	
 	@Secured("SHIPPING")
 	@RequestMapping(value="/admin/shipping/weightBased/addPrice.html", method=RequestMethod.POST)
-	public String addPrice(@ModelAttribute("customQuote") CustomShippingQuoteWeightItem customQuote, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	public String addPrice(@ModelAttribute("region") String customRegion, @ModelAttribute("customQuote") CustomShippingQuoteWeightItem customQuote, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
 		this.setMenu(model, request);
 		
@@ -512,14 +512,20 @@ public class CustomShippingMethodsController {
 		
 		
 		for(CustomShippingQuotesRegion region : regions) {
-			List<CustomShippingQuoteWeightItem> quotes = region.getQuoteItems();
-			
-			for(CustomShippingQuoteWeightItem quote : quotes) {
-				
-				if(quote.getMaximumWeight()==customQuote.getMaximumWeight()){
-					ObjectError error = new ObjectError("maximumWeight",messages.getMessage("label.message.maximumWeight.exist", locale));
-					result.addError(error);
-					break;
+			if(region.equals(customRegion)) {
+				List<CustomShippingQuoteWeightItem> quotes = region.getQuoteItems();
+				if(quotes!=null) {
+					for(CustomShippingQuoteWeightItem quote : quotes) {
+						
+						if(quote.getMaximumWeight()==customQuote.getMaximumWeight()){
+							ObjectError error = new ObjectError("maximumWeight",messages.getMessage("label.message.maximumWeight.exist", locale));
+							result.addError(error);
+							break;
+						}
+					}
+				} else {
+					quotes = new ArrayList<CustomShippingQuoteWeightItem>();
+					quotes.add(customQuote);
 				}
 			}
 		}
@@ -536,6 +542,36 @@ public class CustomShippingMethodsController {
 		
 		return ControllerConstants.Tiles.Shipping.customShippingWeightBased;
 	
+	}
+	
+	@Secured("SHIPPING")
+	@RequestMapping(value="/admin/shipping/weightBased/deleteRegion.html", method=RequestMethod.POST)
+	public String deleteRegion(@ModelAttribute("customRegionName") String region, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+		this.setMenu(model, request);
+		
+		
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		
+		CustomShippingQuotesConfiguration customConfiguration = (CustomShippingQuotesConfiguration)shippingService.getCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, store);
+
+		List<CustomShippingQuotesRegion> regions = customConfiguration.getRegions();
+		
+		List<CustomShippingQuotesRegion> newRegions = new ArrayList<CustomShippingQuotesRegion>();
+		for(CustomShippingQuotesRegion reg : regions) {
+
+			if(!reg.equals(region)) {
+				newRegions.add(reg);
+			}
+		}
+
+		customConfiguration.setRegions(newRegions);
+		shippingService.saveCustomShippingConfiguration(this.WEIGHT_BASED_SHIPPING_METHOD, customConfiguration, store);
+		populateModel(model, request, response);
+		model.addAttribute("success","success");
+		return ControllerConstants.Tiles.Shipping.shippingMethod;
 	}
 	
 	
