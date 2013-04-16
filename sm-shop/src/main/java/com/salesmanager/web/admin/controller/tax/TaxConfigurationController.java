@@ -1,15 +1,19 @@
 package com.salesmanager.web.admin.controller.tax;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -44,6 +48,22 @@ public class TaxConfigurationController {
 		model.addAttribute("taxConfiguration", taxConfiguration);
 		
 		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Tax.taxConfiguration;
+	}
+	
+	@Secured("TAX")
+	@RequestMapping(value="/admin/tax/taxconfiguration/save.html", method=RequestMethod.POST)
+	public String saveTaxConfiguration(@Valid @ModelAttribute("taxConfiguration") TaxConfiguration taxConfiguration, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+		
+		
+		setMenu(model, request);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		taxService.saveTaxConfiguration(taxConfiguration, store);
+		
+		model.addAttribute("success","success");
+		
+		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Tax.taxClasses;
+		
 	}
 	
 	
