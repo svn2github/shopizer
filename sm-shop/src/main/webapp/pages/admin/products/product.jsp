@@ -23,6 +23,15 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 	
 	$(function(){
 		$('#sku').alphanumeric();
+		$('#productPriceAmount').numeric({allow:"."});
+		$('#quantity').numeric();
+		$('#ordermin').numeric();
+		$('#ordermax').numeric();
+		$('#order').numeric();
+		$('#weight').numeric({allow:"."});
+		$('#width').numeric({allow:"."});
+		$('#length').numeric({allow:"."});
+		$('#hight').numeric({allow:"."});
 		<c:forEach items="${product.descriptions}" var="description" varStatus="counter">		
 			$("#name${counter.index}").friendurl({id : 'seUrl${counter.index}'});
 		</c:forEach>
@@ -289,7 +298,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 
                         <label><s:message code="label.productedit.qtyavailable" text="Quantity available"/></label>
                         <div class="controls">
-                                    <form:input cssClass="highlight" path="availability.productQuantity"/>
+                                    <form:input id="quantity" cssClass="highlight" path="availability.productQuantity"/>
                                     <span class="help-inline"><form:errors path="availability.productQuantity" cssClass="error" /></span>
                         </div>
                   </div>
@@ -299,7 +308,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                   <div class="control-group">
                         <label><s:message code="label.product.ordermin" text="Quantity order minimum"/></label>
                         <div class="controls">
-                                    <form:input cssClass="highlight" path="availability.productQuantityOrderMin"/>
+                                    <form:input id="ordermin" cssClass="highlight" path="availability.productQuantityOrderMin"/>
                                     <span class="help-inline"><form:errors path="availability.productQuantityOrderMin" cssClass="error" /></span>
 
                         </div>
@@ -310,7 +319,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                   <div class="control-group">
                         <label><s:message code="label.product.ordermax" text="Quantity order maximum"/></label>
                         <div class="controls">
-                                    <form:input cssClass="highlight" path="availability.productQuantityOrderMax"/>
+                                    <form:input id="ordermax" cssClass="highlight" path="availability.productQuantityOrderMax"/>
                                     <span class="help-inline"><form:errors path="availability.productQuantityOrderMax" cssClass="error" /></span>
                         </div>
                   </div>
@@ -323,7 +332,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                  <div class="control-group">
                         <label><s:message code="label.product.weight" text="Weight"/></label>
                         <div class="controls">
-                                    <form:input cssClass="" path="product.productWeight"/>
+                                    <form:input id="weight" cssClass="" path="product.productWeight"/>
                                     <span class="help-inline"><form:errors path="product.productWeight" cssClass="error" /></span>
                         </div>
                   </div>
@@ -331,7 +340,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                  <div class="control-group">
                         <label><s:message code="label.product.height" text="Height"/></label>
                         <div class="controls">
-                                    <form:input cssClass="" path="product.productHeight"/>
+                                    <form:input id="height" cssClass="" path="product.productHeight"/>
                                     <span class="help-inline"><form:errors path="product.productHeight" cssClass="error" /></span>
                         </div>
                   </div>
@@ -340,7 +349,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                  <div class="control-group">
                         <label><s:message code="label.product.width" text="Width"/></label>
                         <div class="controls">
-                                    <form:input cssClass="" path="product.productWidth"/>
+                                    <form:input id="width" cssClass="" path="product.productWidth"/>
                                     <span class="help-inline"><form:errors path="product.productWidth" cssClass="error" /></span>
                         </div>
                   </div>
@@ -348,7 +357,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                   <div class="control-group">
                         <label><s:message code="label.product.length" text="Length"/></label>
                         <div class="controls">
-                                    <form:input cssClass="" path="product.productLength"/>
+                                    <form:input id="length" cssClass="" path="product.productLength"/>
                                     <span class="help-inline"><form:errors path="product.productLength" cssClass="error" /></span>
                         </div>
                   </div>          
@@ -356,7 +365,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                   <div class="control-group">
                         <label><s:message code="label.entity.order" text="Sort order"/></label>
                         <div class="controls">
-                                    <form:input cssClass="" path="product.sortOrder"/>
+                                    <form:input id="order" cssClass="" path="product.sortOrder"/>
                                     <span class="help-inline"><form:errors path="product.sortOrder" cssClass="error" /></span>
                         </div>
                   </div>                 

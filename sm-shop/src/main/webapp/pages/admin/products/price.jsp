@@ -10,12 +10,13 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 <link href="<c:url value="/resources/css/bootstrap/css/datepicker.css" />" rel="stylesheet"></link>
 <script src="<c:url value="/resources/js/bootstrap/bootstrap-datepicker.js" />"></script>			
 <script src="<c:url value="/resources/js/jquery.formatCurrency-1.4.0.js" />"></script>
+<script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
 <script src="<c:url value="/resources/js/functions.js" />"></script>
 
 
 <script type="text/javascript">
 	$(function(){
-	
+			
 			$('#productSpecialPriceAmount').blur(function() {
 				$('#help-price').html(null);
 				$(this).formatCurrency({ roundToDecimalPlace: 2, eventOnDecimalsEntered: true, symbol: ''});
@@ -48,6 +49,8 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 					$('#help-special-price').html(errorMsg);
 				}
 			});
+			
+			$('#productSpecialPriceAmount').numeric({allow:"."});
 
 
 	});

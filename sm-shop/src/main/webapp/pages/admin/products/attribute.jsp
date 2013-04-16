@@ -6,14 +6,18 @@
 <script type="text/javascript">
 var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong format" />';
 </script>				
-<script src="<c:url value="/resources/js/functions.js" />"></script>
 
+<script src="<c:url value="/resources/js/jquery.formatCurrency-1.4.0.js" />"></script>
+<script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
+<script src="<c:url value="/resources/js/functions.js" />"></script>
 
 <script type="text/javascript">
 
 $(document).ready(function() {
 
-
+	$('#productPriceAmount').numeric({allow:"."});
+	$('#order').numeric();
+	$('#weight').numeric({allow:"."});
 	$("#productOption").change(function() {
 		if($('#attributeDisplayOnly').attr('checked')) {
 			checkReadOnlyAttribute($(this).val());
@@ -168,7 +172,7 @@ function checkReadOnlyAttribute(optionId){
                         <label><s:message code="label.product.productoptions.price" text="Price"/></label>
                         <div class="controls">
                                     <form:input id="productPriceAmount" cssClass="highlight" path="attributePrice"/>
-                                    <span class="help-inline"><form:errors path="attributePrice" cssClass="error" /></span>
+                                    <span id="help-price" class="help-inline"><form:errors path="attributePrice" cssClass="error" /></span>
                         </div>
                   </div>
                   
@@ -176,7 +180,7 @@ function checkReadOnlyAttribute(optionId){
                   <div class="control-group">
                         <label class="required"><s:message code="label.entity.order" text="Order"/></label>
                         <div class="controls">
-                                    <form:input cssClass="highlight" path="attributeSortOrder"/>
+                                    <form:input id="order" cssClass="highlight" path="attributeSortOrder"/>
                                     <span class="help-inline"><form:errors path="attributeSortOrder" cssClass="error" /></span>
 
                         </div>
@@ -206,7 +210,7 @@ function checkReadOnlyAttribute(optionId){
                   <div class="control-group">
                         <label class="required"><s:message code="label.product.attribute.otherweight" text="Additional weight"/></label>
                         <div class="controls">
-                                    <form:input cssClass="highlight" path="attributeAdditionalWeight"/>
+                                    <form:input id="weight" cssClass="highlight" path="attributeAdditionalWeight"/>
                                     <span class="help-inline"><form:errors path="attributeAdditionalWeight" cssClass="error" /></span>
 
                         </div>
