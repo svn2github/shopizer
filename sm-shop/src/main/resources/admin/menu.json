@@ -191,12 +191,12 @@
 "menu":{
 "code":"tax",
 "icon":"icon-book", 
-"url":"/admin/tax/taxclass/list.html", 
+"url":"/admin/tax/taxconfiguration/edit.html", 
 "role":"TAX",
 "order":9,
 "menus":[
 	{"menu":{
-		"code":"taxconfiguration","url":"/admin/tax/taxconfiguration/list.html","role":"TAX","order":0
+		"code":"taxconfiguration","url":"/admin/tax/taxconfiguration/edit.html","role":"TAX","order":0
 	}},
 	{"menu":{
 		"code":"taxclass","url":"/admin/tax/taxclass/list.html","role":"TAX","order":1
