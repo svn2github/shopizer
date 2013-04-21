@@ -22,6 +22,7 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cascade;
 
@@ -95,11 +96,11 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 	@Column(name="CUSTOMER_ANONYMOUS")
 	private boolean anonymous;
 	
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="COUNTRY_ID", nullable=false)
 	private Country country;
 	
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="ZONE_ID", nullable=true)
 	private Zone zone;
 	
@@ -111,10 +112,10 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 	private MerchantStore merchantStore;
 	
 	@Embedded
-	private Delivery delivery = null;
+	private com.salesmanager.core.business.common.model.Delivery delivery = null;
 	
 	@Embedded
-	private Billing billing = null;
+	private com.salesmanager.core.business.common.model.Billing billing = null;
 	
 	
 	@ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.REFRESH})
@@ -132,6 +133,16 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 		
 	})
 	private List<Group> groups = new ArrayList<Group>();
+	
+	@Transient
+	private String showCustomerStateList;
+	
+	@Transient
+	private String showBillingStateList;
+	
+	@Transient
+	private String showDeliveryStateList;
+	
 	
 	public Customer() {
 	}
@@ -304,19 +315,19 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 		return merchantStore;
 	}
 
-	public void setDelivery(Delivery delivery) {
+	public void setDelivery(com.salesmanager.core.business.common.model.Delivery delivery) {
 		this.delivery = delivery;
 	}
 
-	public Delivery getDelivery() {
+	public com.salesmanager.core.business.common.model.Delivery getDelivery() {
 		return delivery;
 	}
 
-	public void setBilling(Billing billing) {
+	public void setBilling(com.salesmanager.core.business.common.model.Billing billing) {
 		this.billing = billing;
 	}
 
-	public Billing getBilling() {
+	public com.salesmanager.core.business.common.model.Billing getBilling() {
 		return billing;
 	}
 
@@ -327,4 +338,28 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 	public List<Group> getGroups() {
 		return groups;
 	}
+	public String getShowCustomerStateList() {
+		return showCustomerStateList;
+	}
+
+	public void setShowCustomerStateList(String showCustomerStateList) {
+		this.showCustomerStateList = showCustomerStateList;
+	}
+
+	public String getShowBillingStateList() {
+		return showBillingStateList;
+	}
+
+	public void setShowBillingStateList(String showBillingStateList) {
+		this.showBillingStateList = showBillingStateList;
+	}
+
+	public String getShowDeliveryStateList() {
+		return showDeliveryStateList;
+	}
+
+	public void setShowDeliveryStateList(String showDeliveryStateList) {
+		this.showDeliveryStateList = showDeliveryStateList;
+	}
+	
 }

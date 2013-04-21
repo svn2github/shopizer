@@ -25,6 +25,8 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.OrderBy;
 import org.hibernate.validator.constraints.Email;
 
+import com.salesmanager.core.business.common.model.Billing;
+import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.orderaccount.OrderAccount;

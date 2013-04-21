@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -468,7 +468,7 @@ public class BeanStreamPayment implements PaymentModule {
 		
 
 		
-		messageString.append("ordProvince=").append(order.getBilling().getState()).append("&");
+		messageString.append("ordProvince=").append(order.getBilling().getZone()).append("&");
 		messageString.append("ordPostalCode=").append(order.getBilling().getPostalCode()).append("&");
 		messageString.append("ordCountry=").append(order.getCustomerCountry()).append("&");
 		messageString.append("ordPhoneNumber=").append(order.getCustomerTelephone()).append("&");
@@ -534,7 +534,7 @@ public class BeanStreamPayment implements PaymentModule {
 			
 
 			
-			messageLogString.append("ordProvince=").append(order.getBilling().getState()).append("&");
+			messageLogString.append("ordProvince=").append(order.getBilling().getZone()).append("&");
 			messageLogString.append("ordPostalCode=").append(order.getBilling().getPostalCode()).append("&");
 			messageLogString.append("ordCountry=").append(order.getCustomerCountry()).append("&");
 			messageLogString.append("ordPhoneNumber=").append(order.getCustomerTelephone()).append("&");

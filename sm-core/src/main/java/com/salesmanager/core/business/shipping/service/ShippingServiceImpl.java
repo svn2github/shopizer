@@ -21,9 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
-import com.salesmanager.core.business.customer.model.Billing;
+import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.customer.model.Customer;
-import com.salesmanager.core.business.customer.model.Delivery;
+import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
@@ -437,22 +437,22 @@ public class ShippingServiceImpl implements ShippingService {
 			
 			
 			//create delivery
-			Delivery delivery = customer.getDelivery();
-			Billing billing = customer.getBilling();
+			com.salesmanager.core.business.common.model.Delivery delivery = customer.getDelivery();
+			com.salesmanager.core.business.common.model.Billing billing = customer.getBilling();
 			
 
 			//determine shipping basis
 			if(shippingConfiguration.getShippingBasisType().name().equals(ShippingBasisType.BILLING)) {
 					
-					delivery = new Delivery();
+					delivery = new com.salesmanager.core.business.common.model.Delivery();
 					if(billing!=null) {
 						delivery.setAddress(billing.getAddress());
 						delivery.setCity(billing.getCity());
 						delivery.setCompany(billing.getCompany());
-						delivery.setCountryCode(billing.getCountryCode());
+//						delivery.setCountryCode(billing.getCountryCode());
 						delivery.setName(billing.getName());
 						delivery.setPostalCode(billing.getPostalCode());
-						delivery.setState(billing.getState());
+//						delivery.setState(billing.getState());
 						delivery.setZone(billing.getZone());
 						delivery.setCountry(billing.getCountry());
 					}
@@ -460,13 +460,13 @@ public class ShippingServiceImpl implements ShippingService {
 			} 
 				
 			if(delivery==null) {
-				delivery = new Delivery();
+				delivery = new com.salesmanager.core.business.common.model.Delivery();
 				delivery.setAddress(customer.getStreetAddress());
 				delivery.setCity(customer.getCity());
 				delivery.setCompany(customer.getCompany());
 				delivery.setName(customer.getFirstname() + " " + customer.getLastname());
 				delivery.setPostalCode(customer.getPostalCode());
-				delivery.setState(customer.getState());
+//				delivery.setState(customer.getState());
 				delivery.setZone(customer.getZone());
 				delivery.setCountry(customer.getCountry());
 			}
