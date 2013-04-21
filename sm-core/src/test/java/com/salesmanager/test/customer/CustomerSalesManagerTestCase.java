@@ -6,9 +6,9 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import com.salesmanager.core.business.customer.model.Billing;
+import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.customer.model.Customer;
-import com.salesmanager.core.business.customer.model.Delivery;
+import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;

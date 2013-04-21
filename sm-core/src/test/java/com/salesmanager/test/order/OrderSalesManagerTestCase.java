@@ -15,9 +15,9 @@ import com.salesmanager.core.business.catalog.product.model.description.ProductD
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDescription;
 import com.salesmanager.core.business.catalog.product.model.type.ProductType;
-import com.salesmanager.core.business.customer.model.Billing;
+import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.customer.model.Customer;
-import com.salesmanager.core.business.customer.model.Delivery;
+import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
@@ -116,7 +116,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 	    delivery.setAddress("358 Du Languadoc");
 	    delivery.setCity( "Boucherville" );
 	    delivery.setCountry(country);
-	    delivery.setCountryCode(CA_COUNTRY_CODE);
+//	    delivery.setCountryCode(CA_COUNTRY_CODE);
 	    delivery.setName("Delivery Name" );
 	    delivery.setPostalCode("J4B-8J9" );
 	    delivery.setZone(zone);	    
@@ -126,7 +126,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 	    billing.setCity("Boucherville");
 	    billing.setCompany("CSTI Consulting");
 	    billing.setCountry(country);
-	    billing.setCountryCode(CA_COUNTRY_CODE);
+//	    billing.setCountryCode(CA_COUNTRY_CODE);
 	    billing.setName("CSTI Consulting");
 	    billing.setPostalCode("J4B-8J9");
 	    billing.setZone(zone);
@@ -296,7 +296,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 	    billing.setCity("Billing city");
 	    billing.setCompany("Billing company");
 	    billing.setCountry(country);
-	    billing.setCountryCode(CA_COUNTRY_CODE);
+//	    billing.setCountryCode(CA_COUNTRY_CODE);
 	    billing.setName("Billing name");
 	    billing.setPostalCode("Billing postal code");
 	    billing.setState("Billing state");
