@@ -157,7 +157,7 @@
 			            </div>
 			            <label><s:message code="label.customer.shipping.country" text="Country"/></label>
 			            <div class="controls">
-				 				<form:select cssClass="country-list" path="order.delivery.countryCode">
+				 				<form:select cssClass="country-list" path="order.delivery.country.isoCode">
 					  					<form:options items="${countries}" itemValue="isoCode" itemLabel="name"/>
 				       			</form:select>
 			            </div>
@@ -195,7 +195,7 @@
 			            </div>
 			            <label><s:message code="label.customer.billing.country" text="Country"/></label>
 			            <div class="controls">
-				 				<form:select cssClass="country-list highlight" path="order.billing.countryCode">
+				 				<form:select cssClass="country-list highlight" path="order.billing.country.isoCode">
 					  					<form:options items="${countries}" itemValue="isoCode" itemLabel="name"/>
 				       			</form:select>
 			            </div>
