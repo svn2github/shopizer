@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.salesmanager.core.business.customer.model.Delivery;
+import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
@@ -225,7 +225,7 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 				request.append("<provOrState>").append(delivery.getZone().getCode())
 					.append("</provOrState>");
 			} else {
-				request.append("<provOrState>").append(delivery.getState())
+				request.append("<provOrState>").append(delivery.getZone())
 				.append("</provOrState>");				
 			}
 			request.append("<country>")

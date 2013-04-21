@@ -8,7 +8,7 @@ import java.util.Locale;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.salesmanager.core.business.customer.model.Delivery;
+import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
