@@ -48,7 +48,7 @@ import com.salesmanager.web.utils.LabelUtils;
 @Controller
 public class OrderControler {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.class);
+private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.class);
 	
 	@Autowired
 	LabelUtils messages;
@@ -83,9 +83,13 @@ public class OrderControler {
 			Set<OrderStatusHistory> orderHistory = null;
 		
 			Order dbOrder = orderService.getById(orderId);
+//			System.out.println( "\n\n***********order null = " + (dbOrder ==null ) + " ,  orderid = " + orderId );
 			order.setId( orderId );
 		
-			order.setDatePurchased(DateUtil.formatDate(dbOrder.getDatePurchased()));
+			if( dbOrder.getDatePurchased() !=null ){
+				order.setDatePurchased(DateUtil.formatDate(dbOrder.getDatePurchased()));
+			}
+			
 			order.setOrder( dbOrder );
 			order.setBilling( dbOrder.getBilling() );
 			order.setDelivery(dbOrder.getDelivery() );
@@ -98,7 +102,7 @@ public class OrderControler {
 		
 		model.addAttribute("countries", countries);
 		model.addAttribute("order",order);
-		return ControllerConstants.Tiles.Order.ordersEdit;
+		return "admin-orders-edit";
 	}
 	
 
@@ -108,19 +112,11 @@ public class OrderControler {
 		
 		String email_regEx = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}\\b";
 		Pattern pattern = Pattern.compile(email_regEx);
-		OrderStatusHistory orderStatusHistory = new OrderStatusHistory();
-		Language language = (Language)request.getAttribute("LANGUAGE");
-		List<Country> countries = countryService.getCountries(language);
-		
-		
-		model.addAttribute("countries", countries);
 		
 		Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
 		Set<OrderTotal> orderTotal = new HashSet<OrderTotal>();
 		Set<OrderStatusHistory> orderHistory = new HashSet<OrderStatusHistory>();
-
-		com.salesmanager.core.business.order.model.Order newOrder = orderService.getById(entityOrder.getOrder().getId() );
-	
+		
 		Date date = new Date();
 		if(!StringUtils.isBlank(entityOrder.getDatePurchased() ) ){
 			try {
@@ -192,7 +188,7 @@ public class OrderControler {
 			 result.addError(error);
 		}
 		 
-		if( StringUtils.isBlank(entityOrder.getOrder().getBilling().getState() ) ){
+		if( StringUtils.isBlank(entityOrder.getOrder().getBilling().getState())){
 			 ObjectError error = new ObjectError("billingState",messages.getMessage("NotEmpty.order.billingState", locale));
 			 result.addError(error);
 		}
@@ -210,7 +206,18 @@ public class OrderControler {
 			entityOrder.getOrder().setOrderHistory(orderHistory);
 			
 			return ControllerConstants.Tiles.Order.ordersEdit;
+		/*	"admin-orders-edit";  */
 		}
+		
+		OrderStatusHistory orderStatusHistory = new OrderStatusHistory();		
+
+		com.salesmanager.core.business.order.model.Order newOrder = orderService.getById(entityOrder.getOrder().getId() );
+	
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		List<Country> countries = countryService.getCountries(language);
+		
+		Country deliveryCountry = countryService.getByCode( entityOrder.getOrder().getDelivery().getCountry().getIsoCode()); 
+		Country billingCountry  = countryService.getByCode( entityOrder.getOrder().getBilling().getCountry().getIsoCode()) ;
 		
 		newOrder.setCustomerFirstName(entityOrder.getOrder().getCustomerFirstName() );
 		newOrder.setCustomerLastName(entityOrder.getOrder().getCustomerLastName() );
@@ -220,6 +227,7 @@ public class OrderControler {
 		newOrder.setCustomerPostCode(entityOrder.getOrder().getCustomerPostCode() );
 		newOrder.setCustomerTelephone(entityOrder.getOrder().getCustomerTelephone() );
 		newOrder.setCustomerEmailAddress(entityOrder.getOrder().getCustomerEmailAddress() );
+		newOrder.setCustomerCountry(entityOrder.getOrder().getCustomerCountry() );
 		newOrder.setShippingMethod(entityOrder.getOrder().getShippingMethod() );
 		newOrder.setPaymentMethod(entityOrder.getOrder().getPaymentMethod() );
 		newOrder.setStatus(entityOrder.getOrder().getStatus() );		
@@ -235,27 +243,24 @@ public class OrderControler {
 			orderStatusHistory.setOrder(newOrder);
 			newOrder.getOrderHistory().add( orderStatusHistory );
 			entityOrder.setOrderHistoryComment( "" );
-		}
+		}		
 		
-		newOrder.getBilling().setName(entityOrder.getOrder().getBilling().getName() );
-		newOrder.getBilling().setAddress(entityOrder.getOrder().getBilling().getAddress() );
-		newOrder.getBilling().setCity(entityOrder.getOrder().getBilling().getCity() );
-		newOrder.getBilling().setState(entityOrder.getOrder().getBilling().getState() ); 
-		newOrder.getBilling().setPostalCode( entityOrder.getOrder().getBilling().getPostalCode() );
+		newOrder.setDelivery( entityOrder.getOrder().getDelivery() );
+		newOrder.setBilling( entityOrder.getOrder().getBilling() );
 		
-		newOrder.getDelivery().setName(entityOrder.getOrder().getDelivery().getName() );
-		newOrder.getDelivery().setAddress(entityOrder.getOrder().getDelivery().getAddress() );
-		newOrder.getDelivery().setCity(entityOrder.getOrder().getDelivery().getCity() );
-		newOrder.getDelivery().setState(entityOrder.getOrder().getDelivery().getState() ); 
-		newOrder.getDelivery().setPostalCode( entityOrder.getOrder().getDelivery().getPostalCode() );
+		newOrder.getDelivery().setCountry(deliveryCountry );
+		newOrder.getBilling().setCountry(billingCountry );	
 		
 		orderService.saveOrUpdate(newOrder);
 		entityOrder.setOrder(newOrder);
+		
+		model.addAttribute("countries", countries);
 		model.addAttribute("order", entityOrder);
 		model.addAttribute("success","success");
 	
 		
-		return ControllerConstants.Tiles.Order.ordersEdit;
+		return  ControllerConstants.Tiles.Order.ordersEdit;
+	/*	"admin-orders-edit";  */
 	}
 	
 	

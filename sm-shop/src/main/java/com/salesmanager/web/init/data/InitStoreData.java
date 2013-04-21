@@ -29,9 +29,9 @@ import com.salesmanager.core.business.catalog.product.service.image.ProductImage
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
 import com.salesmanager.core.business.catalog.product.service.price.ProductPriceService;
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
-import com.salesmanager.core.business.customer.model.Billing;
+import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.customer.model.Customer;
-import com.salesmanager.core.business.customer.model.Delivery;
+import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -602,7 +602,7 @@ public class InitStoreData implements InitData {
 		    delivery.setAddress("358 Du Languadoc");
 		    delivery.setCity( "Boucherville DiCaprio" );
 		    delivery.setCountry(canada);
-		    delivery.setCountryCode(canada.getIsoCode());
+//		    delivery.setCountryCode(canada.getIsoCode());
 		    delivery.setName("Leonardo" );
 		    delivery.setPostalCode("J4B-8J9" );
 		    delivery.setZone(zone);	    
@@ -612,7 +612,7 @@ public class InitStoreData implements InitData {
 		    billing.setCity("Boucherville");
 		    billing.setCompany("CSTI Consulting");
 		    billing.setCountry(canada);
-		    billing.setCountryCode(canada.getIsoCode());
+//		    billing.setCountryCode(canada.getIsoCode());
 		    billing.setName("CSTI Consulting");
 		    billing.setPostalCode("J4B-8J9");
 		    billing.setZone(zone);

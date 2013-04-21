@@ -6,8 +6,9 @@ import java.util.List;
 
 import javax.persistence.Embedded;
 
-import com.salesmanager.core.business.order.model.Billing;
-import com.salesmanager.core.business.order.model.Delivery;
+import com.salesmanager.core.business.common.model.Billing;
+import com.salesmanager.core.business.common.model.Delivery;
+
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
 
 
@@ -26,10 +27,10 @@ public class Order implements Serializable {
 	private  com.salesmanager.core.business.order.model.Order order;
 	
 	@Embedded
-	private Delivery delivery = null;
+	private com.salesmanager.core.business.common.model.Delivery delivery = null;
 	
 	@Embedded
-	private Billing billing = null;
+	private com.salesmanager.core.business.common.model.Billing billing = null;
 	
 	
 	

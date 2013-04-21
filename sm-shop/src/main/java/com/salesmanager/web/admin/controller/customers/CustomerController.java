@@ -3,16 +3,20 @@ package com.salesmanager.web.admin.controller.customers;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,15 +26,22 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
 public class CustomerController {
+	
+	@Autowired
+	LabelUtils messages;
 	
 	@Autowired
 	CustomerService customerService;
@@ -40,6 +51,9 @@ public class CustomerController {
 	
 	@Autowired
 	ZoneService zoneService;
+	
+	@Autowired
+	LanguageService languageService;
 	
 	
 	/**
@@ -62,7 +76,7 @@ public class CustomerController {
 		
 		Menu currentMenu = (Menu)menus.get("customer");
 		model.addAttribute("currentMenu",currentMenu);
-		model.addAttribute("activeMenus",activeMenus);		//
+		model.addAttribute("activeMenus",activeMenus);
 		
 		Customer customer = null;
 		
@@ -71,7 +85,6 @@ public class CustomerController {
 			
 			//get from DB
 			customer = customerService.getById(id);
-					
 			
 		} else {
 			 customer = new Customer();
@@ -87,42 +100,180 @@ public class CustomerController {
 		model.addAttribute("zones", zones);
 		model.addAttribute("countries", countries);
 		model.addAttribute("customer", customer);
-		return "admin-customer";
-		
-		
+		return "admin-customer";	
 		
 	}
 	
-	
+	@Secured("CUSTOMER")
 	@RequestMapping(value="/admin/customers/save.html", method=RequestMethod.POST)
-	public String saveCustomer(@Valid @ModelAttribute("customer") Customer customer, BindingResult result, Model model, HttpServletRequest request) throws Exception{
+	public String saveCustomer(@Valid @ModelAttribute("customer") Customer customer, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception{
 	
+		String email_regEx = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}\\b";
+		Pattern pattern = Pattern.compile(email_regEx);
+		
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		List<Language> languages = languageService.getLanguages();
+		
+		//get countries
+		List<Country> countries = countryService.getCountries(language);
+		
+		if( StringUtils.isBlank(customer.getFirstname() ) ){
+			 ObjectError error = new ObjectError("customerFirstName", messages.getMessage("NotEmpty.customer.FirstName", locale));
+			 result.addError(error);
+		}
+		 
+		if( StringUtils.isBlank(customer.getLastname() ) ){
+			 ObjectError error = new ObjectError("customerLastName", messages.getMessage("NotEmpty.customer.LastName", locale));
+			 result.addError(error);
+		}
+		
+		if( StringUtils.isBlank(customer.getStreetAddress() ) ){
+			 ObjectError error = new ObjectError("customerStreetAddress", messages.getMessage("NotEmpty.customer.StreetAddress", locale));
+			 result.addError(error);
+		}
+		
+		if( StringUtils.isBlank(customer.getCity() ) ){
+			 ObjectError error = new ObjectError("customerCity", messages.getMessage("NotEmpty.customer.City", locale));
+			 result.addError(error);
+		}
+		
+		if( StringUtils.isBlank(customer.getPostalCode() ) ){
+			 ObjectError error = new ObjectError("customerPostCode", messages.getMessage("NotEmpty.customer.PostCode", locale));
+			 result.addError(error);
+		}
+		
+		if( StringUtils.isBlank(customer.getTelephone() ) ){
+			 ObjectError error = new ObjectError("customerTelephone", messages.getMessage("NotEmpty.customer.Telephone", locale));
+			 result.addError(error);
+		}
+		
+		if(!StringUtils.isBlank(customer.getEmailAddress() ) ){
+			 java.util.regex.Matcher matcher = pattern.matcher(customer.getEmailAddress());
+			 
+			 if(!matcher.find()) {
+				ObjectError error = new ObjectError("customerEmailAddress",messages.getMessage("Email.customer.EmailAddress", locale));
+				result.addError(error);
+			 }
+		}else{
+			ObjectError error = new ObjectError("customerEmailAddress",messages.getMessage("NotEmpty.customer.EmailAddress", locale));
+			result.addError(error);
+		}
+		
+		if( StringUtils.isBlank(customer.getBilling().getCompany() ) ){
+			 ObjectError error = new ObjectError("billingName", messages.getMessage("NotEmpty.customer.billingCompany", locale));
+			 result.addError(error);
+		}
+		 
+		if( StringUtils.isBlank(customer.getBilling().getName() ) ){
+			 ObjectError error = new ObjectError("billingName", messages.getMessage("NotEmpty.customer.billingName", locale));
+			 result.addError(error);
+		}
+		
+		if( StringUtils.isBlank(customer.getBilling().getAddress() ) ){
+			 ObjectError error = new ObjectError("billingAddress", messages.getMessage("NotEmpty.customer.billingStreetAddress", locale));
+			 result.addError(error);
+		}
+		 
+		if( StringUtils.isBlank(customer.getBilling().getCity() ) ){
+			 ObjectError error = new ObjectError("billingCity",messages.getMessage("NotEmpty.customer.billingCity", locale));
+			 result.addError(error);
+		}
+		 
+		if( customer.getShowBillingStateList().equalsIgnoreCase("yes" ) && customer.getBilling().getZone().getCode() == null ){
+			 ObjectError error = new ObjectError("billingState",messages.getMessage("NotEmpty.customer.billingState", locale));
+			 result.addError(error);
+			 
+		}else if( customer.getShowBillingStateList().equalsIgnoreCase("no" ) && customer.getBilling().getState() == null ){
+				 ObjectError error = new ObjectError("billingState",messages.getMessage("NotEmpty.customer.billingState", locale));
+				 result.addError(error);
+			
+		}
+		 
+		if( StringUtils.isBlank(customer.getBilling().getPostalCode() ) ){
+			 ObjectError error = new ObjectError("billingPostalCode", messages.getMessage("NotEmpty.customer.billingPostCode", locale));
+			 result.addError(error);
+		}
 		
 		//check if error from the @valid
 		if (result.hasErrors()) {
+			model.addAttribute("countries", countries);
 			return "admin-customer";
 		}
-		
-		
-		
-		customerService.save(customer);
-		
-		//display menu
-		Map<String,String> activeMenus = new HashMap<String,String>();
-		activeMenus.put("customer", "customer");
-		activeMenus.put("customer-create", "customer-create");
-		@SuppressWarnings("unchecked")
-		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
 				
-		Menu currentMenu = (Menu)menus.get("customer");
-		model.addAttribute("currentMenu",currentMenu);
-		model.addAttribute("activeMenus",activeMenus);
+		Customer newCustomer = new Customer();
+
+		if( customer.getId()!=null && customer.getId().longValue()>0 ) {
+			newCustomer = customerService.getById( customer.getId() );
+			
+		}else{
+			//  new customer set marchant_Id
+			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+			newCustomer.setMerchantStore(merchantStore);
+		}
+		
+		newCustomer.setFirstname( customer.getFirstname() );
+		newCustomer.setLastname( customer.getLastname() );
+		newCustomer.setEmailAddress(customer.getEmailAddress() );		
+		newCustomer.setTelephone( customer.getTelephone() );
+		newCustomer.setStreetAddress( customer.getStreetAddress() );
+		newCustomer.setCity( customer.getCity() );
+		newCustomer.setPostalCode( customer.getPostalCode() );
+		
+		
+		//get Customer country/zone
+		Country country = countryService.getByCode(customer.getCountry().getIsoCode());  		
+		Country deliveryCountry = countryService.getByCode( customer.getDelivery().getCountry().getIsoCode()); 
+		Country billingCountry  = countryService.getByCode( customer.getBilling().getCountry().getIsoCode()) ;
+
+//		System.out.println( "************deliveryCountry.getIsoCode() = " + deliveryCountry.getIsoCode() );
+		Zone zone = customer.getZone();
+		Zone deliveryZone = customer.getDelivery().getZone();
+		Zone billingZone  = customer.getBilling().getZone();
+		
+		if (customer.getShowCustomerStateList().equalsIgnoreCase("yes" )) {
+			zone = zoneService.getByCode(zone.getCode());
+			newCustomer.setState( null );			
+		}else if (customer.getShowCustomerStateList().equalsIgnoreCase("no" )){
+			zone = null ;
+			newCustomer.setState( customer.getState() );			
+		}
+		
+		if (customer.getShowDeliveryStateList().equalsIgnoreCase("yes" )) {
+			deliveryZone = zoneService.getByCode(customer.getDelivery().getZone().getCode());
+			customer.getDelivery().setState( null );
+			
+		}else if (customer.getShowDeliveryStateList().equalsIgnoreCase("no" )){
+			deliveryZone = null ;
+			customer.getDelivery().setState( customer.getDelivery().getState() );
+		}
+	
+		if (customer.getShowBillingStateList().equalsIgnoreCase("yes" )) {
+			billingZone = zoneService.getByCode(customer.getBilling().getZone().getCode());
+			customer.getBilling().setState( null );
+			
+		}else if (customer.getShowBillingStateList().equalsIgnoreCase("no" )){
+			billingZone = null ;
+			customer.getBilling().setState( customer.getBilling().getState() );
+		}
+				
+		newCustomer.setZone( zone);
+		newCustomer.setCountry(country );
+		
+		customer.getDelivery().setZone(  deliveryZone);
+		customer.getDelivery().setCountry(deliveryCountry );
+		newCustomer.setDelivery( customer.getDelivery() );
+		
+		customer.getBilling().setZone(  billingZone);
+		customer.getBilling().setCountry(billingCountry );
+		newCustomer.setBilling( customer.getBilling()  );
+		
+		customerService.saveOrUpdate(newCustomer);
+		
+		model.addAttribute("customer", newCustomer);
+		model.addAttribute("countries", countries);
 		model.addAttribute("success","success");
 		
 		return "admin-customer";
-				
-		
-		
 		
 	}
 
@@ -189,7 +340,7 @@ public class CustomerController {
 			
 			for (Customer customer : customers) {
 				
-				res.append("{id:" + ++i + ",name:\'" + customer.getFirstname()
+				res.append("{id:" + customer.getId() + ",name:\'" + customer.getFirstname()
 						+ " " + customer.getLastname() + "\',country:\' "
 						+ customer.getCountry().getIsoCode()
 						+ " \' ,active:\'true\'}");
