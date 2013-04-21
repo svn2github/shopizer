@@ -17,8 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
-import javax.validation.Valid;
 import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
