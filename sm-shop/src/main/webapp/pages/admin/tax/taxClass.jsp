@@ -5,8 +5,6 @@
 <%@ page session="false" %>				
 				
 
-<script src="<c:url value="/resources/js/ckeditor/ckeditor.js" />"></script>
-
 
 
 
