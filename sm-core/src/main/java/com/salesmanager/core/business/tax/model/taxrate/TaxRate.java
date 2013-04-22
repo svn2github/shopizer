@@ -30,15 +30,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Transient;
 
 import com.salesmanager.core.business.common.model.audit.AuditListener;
 import com.salesmanager.core.business.common.model.audit.AuditSection;
 import com.salesmanager.core.business.common.model.audit.Auditable;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.reference.geozone.model.GeoZone;
+import com.salesmanager.core.business.reference.country.model.Country;
+import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 import com.salesmanager.core.constants.SchemaConstant;
 
@@ -63,6 +66,13 @@ public class TaxRate  extends SalesManagerEntity<Long, TaxRate> implements Audit
 	@Column(name = "TAX_RATE" , nullable= false , precision=7, scale=4)
 	private BigDecimal taxRate;
 	
+	/**
+	 * This transient object property
+	 * is a utility used only to submit from a free text
+	 */
+	@Transient
+	private String taxRatePrice = "0";
+	
 	@Column(name = "PIGGYBACK")
 	private boolean piggyback;
 	
@@ -79,9 +89,17 @@ public class TaxRate  extends SalesManagerEntity<Long, TaxRate> implements Audit
 	@OneToMany(mappedBy = "taxRate", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<TaxRateDescription> descriptions = new ArrayList<TaxRateDescription>();
 	
-	@ManyToOne(targetEntity = GeoZone.class)
-	@JoinColumn(name = "GEOZONE_ID")
-	private GeoZone geoZone;
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Country.class)
+	@JoinColumn(name="COUNTRY_ID", nullable=false, updatable=true)
+	private Country country;
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="ZONE_ID", nullable=true, updatable=true)
+	private Zone zone;
+
+	@Column(name = "STORE_STATE_PROV", length=100)
+	private String storeStateProvince;
+	
 	
 	public TaxRate() {
 	}
@@ -146,13 +164,7 @@ public class TaxRate  extends SalesManagerEntity<Long, TaxRate> implements Audit
 		this.descriptions = descriptions;
 	}
 
-	public GeoZone getGeoZone() {
-		return geoZone;
-	}
 
-	public void setGeoZone(GeoZone geoZone) {
-		this.geoZone = geoZone;
-	}
 
 	public MerchantStore getMerchantStore() {
 		return merchantStore;
@@ -160,5 +172,37 @@ public class TaxRate  extends SalesManagerEntity<Long, TaxRate> implements Audit
 
 	public void setMerchantStore(MerchantStore merchantStore) {
 		this.merchantStore = merchantStore;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
+	}
+
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setZone(Zone zone) {
+		this.zone = zone;
+	}
+
+	public Zone getZone() {
+		return zone;
+	}
+
+	public void setStoreStateProvince(String storeStateProvince) {
+		this.storeStateProvince = storeStateProvince;
+	}
+
+	public String getStoreStateProvince() {
+		return storeStateProvince;
+	}
+
+	public void setTaxRatePrice(String taxRatePrice) {
+		this.taxRatePrice = taxRatePrice;
+	}
+
+	public String getTaxRatePrice() {
+		return taxRatePrice;
 	}
 }
