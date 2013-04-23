@@ -35,6 +35,7 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
+import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.common.model.audit.AuditListener;
 import com.salesmanager.core.business.common.model.audit.AuditSection;
 import com.salesmanager.core.business.common.model.audit.Auditable;
@@ -98,7 +99,14 @@ public class TaxRate  extends SalesManagerEntity<Long, TaxRate> implements Audit
 	private Zone zone;
 
 	@Column(name = "STORE_STATE_PROV", length=100)
-	private String storeStateProvince;
+	private String stateProvince;
+	
+	@ManyToOne
+	@JoinColumn(name = "PARENT_ID")
+	private TaxRate parent;
+	
+	@OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<TaxRate> taxRates = new ArrayList<TaxRate>();
 	
 	
 	public TaxRate() {
@@ -190,13 +198,7 @@ public class TaxRate  extends SalesManagerEntity<Long, TaxRate> implements Audit
 		return zone;
 	}
 
-	public void setStoreStateProvince(String storeStateProvince) {
-		this.storeStateProvince = storeStateProvince;
-	}
 
-	public String getStoreStateProvince() {
-		return storeStateProvince;
-	}
 
 	public void setTaxRatePrice(String taxRatePrice) {
 		this.taxRatePrice = taxRatePrice;
@@ -204,5 +206,29 @@ public class TaxRate  extends SalesManagerEntity<Long, TaxRate> implements Audit
 
 	public String getTaxRatePrice() {
 		return taxRatePrice;
+	}
+
+	public void setTaxRates(List<TaxRate> taxRates) {
+		this.taxRates = taxRates;
+	}
+
+	public List<TaxRate> getTaxRates() {
+		return taxRates;
+	}
+
+	public void setParent(TaxRate parent) {
+		this.parent = parent;
+	}
+
+	public TaxRate getParent() {
+		return parent;
+	}
+
+	public void setStateProvince(String stateProvince) {
+		this.stateProvince = stateProvince;
+	}
+
+	public String getStateProvince() {
+		return stateProvince;
 	}
 }

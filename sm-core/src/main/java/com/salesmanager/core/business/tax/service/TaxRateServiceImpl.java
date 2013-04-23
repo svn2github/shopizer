@@ -1,0 +1,34 @@
+package com.salesmanager.core.business.tax.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.salesmanager.core.business.generic.exception.ServiceException;
+import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.tax.dao.taxrate.TaxRateDao;
+import com.salesmanager.core.business.tax.model.taxrate.TaxRate;
+
+@Service("taxRateService")
+public class TaxRateServiceImpl extends SalesManagerEntityServiceImpl<Long, TaxRate>
+		implements TaxRateService {
+
+	private TaxRateDao taxRateDao;
+	
+	@Autowired
+	public TaxRateServiceImpl(TaxRateDao taxRateDao) {
+		super(taxRateDao);
+		
+		this.taxRateDao = taxRateDao;
+	}
+
+	@Override
+	public List<TaxRate> listByStore(MerchantStore store)
+			throws ServiceException {
+		return taxRateDao.listByStore(store);
+	}
+	
+
+}
