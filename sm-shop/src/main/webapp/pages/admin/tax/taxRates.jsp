@@ -47,15 +47,10 @@ function getZones(countryCode){
 					$('.zone-list').show();  
 					$('#storestateprovince').hide();
 					$(".zone-list").addItems(data);
-					<c:if test="${store.zone!=null}">
-						$('.zone-list').val('<c:out value="${store.zone.code}"/>');
-					</c:if>
 				} else {
 					$('.zone-list').hide();             
 					$('#storestateprovince').show();
-					<c:if test="${store.storestateprovince!=null}">
-						$('#storestateprovince').val('<c:out value="${store.storestateprovince}"/>');
-					</c:if>
+
 				}
 			} else {
 				$('.zone-list').hide();             
@@ -99,9 +94,7 @@ function getZones(countryCode){
 				                    <div class="control-group">
 				                        <label><s:message code="label.country" text="Country"/></label>
 					                        <div class="controls">
-					                        				                        			
-		                        					
-		                        					<form:select path="country">
+		                        					<form:select path="country" cssClass="country-list highlight">
 						  								<form:options items="${countries}" itemValue="isoCode" itemLabel="name"/>
 					       							</form:select>
 					                        </div>
@@ -111,14 +104,12 @@ function getZones(countryCode){
 				                        <label><s:message code="label.storezone" text="Store state / province"/></label>
 				                        <div class="controls">
 				                        					<form:select cssClass="zone-list highlight" path="zone"/>
-				                        					<input type="text" class="input-large highlight" id="storestateprovince" name="storestateprovince" /> 
+				                        					<input type="text" class="input-large highlight" id="stateProvince" name="stateProvince" /> 
 				                                   			<span class="help-inline"><form:errors path="zone.code" cssClass="error" /></span>
 				                        </div>
 	                  				</div>
 	                  				
 	                  				<c:forEach items="${taxRate.descriptions}" var="description" varStatus="counter">
-
-                 
 
 				                        <div class="control-group">
 				
@@ -151,7 +142,10 @@ function getZones(countryCode){
 				                   <div class="control-group">
 			                        	<label><s:message code="label.product.available" text="Product available"/></label>
 			                        	<div class="controls">
-			                                    <form:checkbox path="piggyback" />
+			                                    <form:checkbox path="piggyback" /><br/>
+			                                    <form:select path="country" cssClass="hidden">
+						  								<form:options items="${taxRates}" itemValue="id" itemLabel="descriptions[0].name"/>
+					       						</form:select>
 			                        	</div>
                   					</div>
 
