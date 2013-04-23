@@ -111,7 +111,7 @@
 	            
 	
    
-				<s:message code="label.order.date" text="Order date"/>			 		
+				<s:message code="label.customer.order.date" text="Order date"/>			 		
 			 	<div class="controls">
 							<form:input  cssClass="input-large" path="datePurchased"  class="small" type="text"
 							 data-date-format="<%=com.salesmanager.core.constants.Constants.DEFAULT_DATE_FORMAT%>" />

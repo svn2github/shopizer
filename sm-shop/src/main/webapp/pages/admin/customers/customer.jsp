@@ -356,24 +356,24 @@ function getBillingZones(countryCode){
 				<h6>Shipping address</h6>
 				<address>
 			            <div class="controls">
-		              		<label><s:message code="label.customer.firstname22" text="Company"/></label>
+		              		<label><s:message code="label.customer.shipping.company" text="Company"/></label>
 		              		<form:input  cssClass="input-large"  maxlength="100" path="delivery.company"/>	
 			            </div>
 			            <div class="controls">
-		              		<label><s:message code="label.customer.firstname22" text="Name"/></label>
+		              		<label><s:message code="label.customer.shipping.name" text="Name"/></label>
 		              		<form:input  cssClass="input-large"  maxlength="64" path="delivery.name"/>	
 			            </div>
 			            <div class="controls">
-			            	<label><s:message code="label.customer.firstname22" text="Street Address"/></label>
+			            	<label><s:message code="label.customer.shipping.streetaddress" text="Street Address"/></label>
 				 			<form:input  cssClass="input-large"  maxlength="256" path="delivery.address"/>		 				
 			            </div>
 			            <div class="controls">
-			            	<label><s:message code="label.customer.firstname22" text="City"/></label>
+			            	<label><s:message code="label.customer.shipping.city" text="City"/></label>
 				 			<form:input  cssClass="input-large"  maxlength="100" path="delivery.city"/>
 			            </div>
 	            
  	 		           <div class="control-group">
-	                        <label><s:message code="label.customer.country" text="Country"/></label>
+	                        <label><s:message code="label.customer.shipping.country" text="Country"/></label>
 	                        <div class="controls"> 				       							
 	       							<form:select cssClass="delivery-country-list highlight" path="delivery.country.isoCode">
 		  								<form:options items="${countries}" itemValue="isoCode" itemLabel="name"/>
@@ -383,7 +383,7 @@ function getBillingZones(countryCode){
 	                    </div>  
      	  	         
 	                    <div class="control-group"> 
-	                        <label><s:message code="label.customer.zone" text="State / Province"/></label>
+	                        <label><s:message code="label.customer.shipping.zone" text="State / Province"/></label>
 	                        <div class="controls">		       							
 	       							<form:select cssClass="delivery-zone-list" path="delivery.zone.code"/>
                       				<form:input  class="input-large" id="delstateOther"  maxlength="100" name="delstateOther" path="delivery.state" /> 				       							
@@ -392,7 +392,7 @@ function getBillingZones(countryCode){
 	                    </div>  
 	                    
 	                    <div class="controls">
-	                   		<label><s:message code="label.customer.firstname22" text="Postal code"/></label>
+	                   		<label><s:message code="label.customer.shipping.postalcode" text="Postal code"/></label>
 			 				<form:input id="deliveryPostalCode" cssClass="input-large" maxlength="20"  path="delivery.postalCode"/>
 			 				<span class="help-inline"><form:errors path="delivery.postalCode" cssClass="error" /></span>
 			            </div>	       	            	            	            				
@@ -403,24 +403,24 @@ function getBillingZones(countryCode){
 			    <h6>Billing address</h6>
 				<address>
 						<div class="controls">
-		              		<label><s:message code="label.customer.firstname22" text="Company"/></label>
+		              		<label><s:message code="label.customer.billing.company" text="Company"/></label>
 		              		<form:input  cssClass="input-large highlight"  maxlength="100" path="billing.company"/>	
 			            </div>
 			            <div class="controls">
-		              		<label><s:message code="label.customer.firstname22" text="Name"/></label>
+		              		<label><s:message code="label.customer.billing.name" text="Name"/></label>
 			 				<form:input  cssClass="input-large highlight"  maxlength="64"  path="billing.name"/>				 							
 			            </div>
 			            <div class="controls">
-			            	<label><s:message code="label.customer.firstname22" text="Street Address"/></label>
+			            	<label><s:message code="label.customer.billing.streetaddress" text="Street Address"/></label>
 				 			<form:input  cssClass="input-large highlight"  maxlength="256"  path="billing.address"/>		 				
 			            </div>
 			            <div class="controls">
-			            	<label><s:message code="label.customer.firstname22" text="City"/></label>
+			            	<label><s:message code="label.customer.billing.city" text="City"/></label>
 				 			<form:input  cssClass="input-large highlight"  maxlength="100" path="billing.city"/>
 			            </div>
 		            
  	 		            <div class="control-group">
-	                        <label><s:message code="label.customer.country" text="Country"/></label>
+	                        <label><s:message code="label.customer.billing.country" text="Country"/></label>
 	                        <div class="controls"> 				       							
 	       							<form:select cssClass="billing-country-list highlight" path="billing.country.isoCode">
 		  								<form:options items="${countries}" itemValue="isoCode" itemLabel="name"/>
@@ -430,7 +430,7 @@ function getBillingZones(countryCode){
 	                    </div> 
 	                 
 	                    <div class="control-group"> 
-	                        <label><s:message code="label.customer.zone" text="State / Province"/></label>
+	                        <label><s:message code="label.customer.billing.zone" text="State / Province"/></label>
 	                        <div class="controls">		       							
 	       							<form:select cssClass="billing-zone-list highlight" path="billing.zone.code"/>
                       				<form:input  class="input-large highlight" id="bilstateOther" maxlength="100"  name="bilstateOther" path="billing.state" /> 				       							
@@ -439,7 +439,7 @@ function getBillingZones(countryCode){
 	                    </div>  
 	                  
 	                    <div class="controls">
-	                   		<label><s:message code="label.customer.firstname22" text="Postal code"/></label>
+	                   		<label><s:message code="label.customer.billing.postalcode" text="Postal code"/></label>
 			 				<form:input id="billingPostalCode" cssClass="input-large highlight" maxlength="20"  path="billing.postalCode"/>
 			 				<span class="help-inline"><form:errors path="billing.postalCode" cssClass="error" /></span>
 			            </div>	     
