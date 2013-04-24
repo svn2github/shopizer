@@ -2,6 +2,9 @@ package com.salesmanager.core.business.order.model;
 
 import java.math.BigDecimal;
 
+
+
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,6 +19,13 @@ import org.hibernate.annotations.Type;
 
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.constants.SchemaConstant;
+
+
+/**
+ * Order line items related to an order.
+ * @author casams1
+ *
+ */
 
 @Entity
 @Table (name="ORDER_TOTAL" , schema=SchemaConstant.SALESMANAGER_SCHEMA)
