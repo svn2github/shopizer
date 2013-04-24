@@ -15,7 +15,6 @@ import javax.persistence.TableGenerator;
 
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.reference.country.model.Country;
-import com.salesmanager.core.business.tax.model.taxrate.TaxRate;
 
 @Entity
 @Table(name = "GEOZONE", schema="SALESMANAGER")
@@ -35,8 +34,7 @@ public class GeoZone extends SalesManagerEntity<Long, GeoZone> {
 	@OneToMany(mappedBy = "geoZone", targetEntity = Country.class)
 	private List<Country> countries = new ArrayList<Country>();
 	
-	@OneToMany(mappedBy = "geoZone")
-	private List<TaxRate> taxRates = new ArrayList<TaxRate>();
+
 	
 	@Column(name = "GEOZONE_NAME")
 	private String name;
@@ -90,11 +88,5 @@ public class GeoZone extends SalesManagerEntity<Long, GeoZone> {
 		this.descriptions = descriptions;
 	}
 
-	public List<TaxRate> getTaxRates() {
-		return taxRates;
-	}
 
-	public void setTaxRates(List<TaxRate> taxRates) {
-		this.taxRates = taxRates;
-	}
 }
