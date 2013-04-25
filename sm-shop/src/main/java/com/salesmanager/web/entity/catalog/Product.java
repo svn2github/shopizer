@@ -48,7 +48,7 @@ public class Product implements Serializable {
 	
 	private String dateAvailable;
 
-	
+	private ProductDescription description = null;
 	
 	public String getDateAvailable() {
 		return dateAvailable;
@@ -99,6 +99,12 @@ public class Product implements Serializable {
 	}
 	public ProductImage getProductImage() {
 		return productImage;
+	}
+	public void setDescription(ProductDescription description) {
+		this.description = description;
+	}
+	public ProductDescription getDescription() {
+		return description;
 	}
 	
 
