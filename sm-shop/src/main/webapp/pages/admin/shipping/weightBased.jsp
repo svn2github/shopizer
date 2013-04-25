@@ -44,7 +44,7 @@
 
 		                 			
 	                        		 
-                  							<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>
+                  							<button type="submit" class="btn btn-success"><s:message code="label.generic.add" text="Add"/></button>
 
 			      				</form:form>	
 			      				
