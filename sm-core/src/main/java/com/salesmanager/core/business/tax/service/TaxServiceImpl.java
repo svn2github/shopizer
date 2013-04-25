@@ -25,7 +25,7 @@ import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 public class TaxServiceImpl 
 		implements TaxService {
 	
-	private final static String SHIPPING_CONFIGURATION = "SHIPPING_CONFIG";
+	private final static String TAX_CONFIGURATION = "TAX_CONFIG";
 	
 	@Autowired
 	private MerchantConfigurationService merchantConfigurationService;
@@ -33,7 +33,7 @@ public class TaxServiceImpl
 	@Override
 	public TaxConfiguration getTaxConfiguration(MerchantStore store) throws ServiceException {
 		
-		MerchantConfiguration configuration = merchantConfigurationService.getMerchantConfiguration(SHIPPING_CONFIGURATION, store);
+		MerchantConfiguration configuration = merchantConfigurationService.getMerchantConfiguration(TAX_CONFIGURATION, store);
 		TaxConfiguration taxConfiguration = null;
 		if(configuration!=null) {
 			String value = configuration.getValue();
@@ -52,12 +52,12 @@ public class TaxServiceImpl
 	@Override
 	public void saveTaxConfiguration(TaxConfiguration shippingConfiguration, MerchantStore store) throws ServiceException {
 		
-		MerchantConfiguration configuration = merchantConfigurationService.getMerchantConfiguration(SHIPPING_CONFIGURATION, store);
+		MerchantConfiguration configuration = merchantConfigurationService.getMerchantConfiguration(TAX_CONFIGURATION, store);
 
 		if(configuration==null) {
 			configuration = new MerchantConfiguration();
 			configuration.setMerchantStore(store);
-			configuration.setKey(SHIPPING_CONFIGURATION);
+			configuration.setKey(TAX_CONFIGURATION);
 		}
 		
 		String value = shippingConfiguration.toJSONString();

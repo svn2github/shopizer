@@ -19,7 +19,6 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.dao.MerchantStoreDao;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.merchant.model.MerchantStore_;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
@@ -69,14 +68,11 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 		super(merchantStoreDao);
 		this.merchantStoreDao = merchantStoreDao;
 	}
+
 	
-	public MerchantStore getMerchantStore(Integer merchantStoreId) throws ServiceException {
-		return merchantStoreDao.getMerchantStore(merchantStoreId);
-	}
-	
-	@Override
+	//@Override
 	public MerchantStore getMerchantStore(String merchantStoreCode) throws ServiceException {
-		return super.getByField(MerchantStore_.code, merchantStoreCode);
+		return merchantStoreDao.getMerchantStore(merchantStoreCode);
 	}
 	
 	@Override
@@ -90,37 +86,6 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 	}
 	
 
-	@Override
-	public void addProduct(MerchantStore merchantStore, Product product) throws ServiceException {
-		//if(!merchantStore.getProducts().contains(product)) {
-		//	merchantStore.getProducts().add(product);
-		//	update(merchantStore);
-		//}
-	}
-
-	@Override
-	public void addProducts(MerchantStore merchantStore, List<Product> products) throws ServiceException {
-		//if(!merchantStore.getProducts().contains(products)) {
-			//merchantStore.getProducts().addAll(products);
-			//update(merchantStore);
-		//}
-	}
-
-	@Override
-	public void removeProduct(MerchantStore merchantStore, Product product) throws ServiceException {
-		//if(merchantStore.getProducts().contains(product)) {
-			//merchantStore.getProducts().remove(product);
-			//update(merchantStore);
-		//}
-	}
-
-	@Override
-	public void removeProducts(MerchantStore merchantStore, List<Product> products) throws ServiceException {
-		//if(merchantStore.getProducts().contains(products)) {
-			//merchantStore.getProducts().removeAll(products);
-			//update(merchantStore);
-		//}
-	}
 	
 	@Override
 	public Collection<Product> getProducts(MerchantStore merchantStore) throws ServiceException {
