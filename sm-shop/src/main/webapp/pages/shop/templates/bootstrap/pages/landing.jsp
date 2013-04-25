@@ -53,15 +53,18 @@ response.setDateHeader ("Expires", -1);
 			<!--<div class="row">-->
 				<div class="span12">
 					<ul class="nav nav-tabs home" id="product-tab">
-						<li class="active"><a href="#tab1">Top Seller</a></li>
+						<li class="active"><a href="#tab1">Featured items</a></li>
 						<li><a href="#tab2">Specials</a></li>
-						<li><a href="#tab3">Fearture Products</a></li>
+						<li><a href="#tab3">Top sellers</a></li>
 					</ul>							 
 					<div class="tab-content">
 						<div class="tab-pane active" id="tab1">
 							<div class="row">
 								<div class="span12">
 									<ul class="thumbnails product-list">
+									
+										<!-- Iterate over featuredItems -->
+									
 										<li class="span3">
 											<div class="product-box">                                        
 												<a href="http://#WB0M3G9S1/product_detail.html"><h4>Fusce id molestie massa</h4></a>
