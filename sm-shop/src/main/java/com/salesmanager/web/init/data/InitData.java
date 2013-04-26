@@ -1,7 +1,9 @@
 package com.salesmanager.web.init.data;
 
+import com.salesmanager.core.business.generic.exception.ServiceException;
+
 public interface InitData {
 	
-	void initInitialData() throws Exception;
+	public void initInitialData() throws ServiceException;
 
 }

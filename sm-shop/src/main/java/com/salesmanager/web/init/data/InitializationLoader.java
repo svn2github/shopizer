@@ -7,10 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
-import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.init.service.InitializationDatabase;
 import com.salesmanager.core.business.system.model.SystemConfiguration;
 import com.salesmanager.core.business.system.service.SystemConfigurationService;
@@ -20,7 +18,6 @@ import com.salesmanager.core.business.user.model.Permission;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
 import com.salesmanager.core.constants.SystemConstants;
-import com.salesmanager.web.admin.security.UserServicesImpl;
 import com.salesmanager.web.admin.security.WebUserServices;
 import com.salesmanager.web.constants.ApplicationConstants;
 import com.salesmanager.web.utils.AppConfiguration;
@@ -40,6 +37,7 @@ public class InitializationLoader {
 	private InitializationDatabase initializationDatabase;
 	
 	@Autowired
+	//private com.salesmanager.web.init.data.InitData initStoreData;//TODO specify implementation in spring file
 	private com.salesmanager.web.init.data.InitStoreData initStoreData;
 	
 	@Autowired
@@ -181,7 +179,7 @@ public class InitializationLoader {
 				  gcustomerpermission.getGroups().add(gcustomer);
 				  permissionService.create(gcustomerpermission);
 				  
-				  
+				  //TODO add prebuiltBlocks
 				  
 				  loadData();
 
