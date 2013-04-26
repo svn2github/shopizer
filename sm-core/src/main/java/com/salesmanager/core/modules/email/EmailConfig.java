@@ -1,6 +1,9 @@
 package com.salesmanager.core.modules.email;
 
-public class EmailConfig {
+import org.json.simple.JSONAware;
+import org.json.simple.JSONObject;
+
+public class EmailConfig implements JSONAware {
 	
 	private String hostName;
 	private String smtpHost;
@@ -11,6 +14,15 @@ public class EmailConfig {
 	private boolean starttls = false;
 	
 	private String emailTemplatesPath = null;
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public String toJSONString() {
+		//TODO populate
+		JSONObject data = new JSONObject();
+		data.put("host", this.getSmtpHost());
+		return data.toJSONString();
+	}
 	
 	
 	public String getHostName() {

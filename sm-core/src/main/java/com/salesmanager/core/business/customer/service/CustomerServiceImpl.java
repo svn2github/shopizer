@@ -13,6 +13,7 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.modules.email.HtmlEmailSender;
 
 @Service("customerService")
 public class CustomerServiceImpl extends SalesManagerEntityServiceImpl<Long, Customer> implements CustomerService {
@@ -23,6 +24,9 @@ public class CustomerServiceImpl extends SalesManagerEntityServiceImpl<Long, Cus
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private HtmlEmailSender htmlEmailSender;
 	
 	@Autowired
 	public CustomerServiceImpl(CustomerDAO customerDAO) {
@@ -62,5 +66,26 @@ public class CustomerServiceImpl extends SalesManagerEntityServiceImpl<Long, Cus
 			super.create(customer);
 
 		}
+	}
+	
+	public void resetCustomerPassword(Customer customer, MerchantStore store) throws ServiceException {
+		
+		
+		//generate random password
+		
+		//encode using the passwordEncoder
+		
+		//set in customer object
+		
+		//get email template [NEED TO TALK ABOUT THIS]
+		
+		//get emailConfig - see ConfigurationController in sm-shop
+		
+		//send new password to the customer [use htmlEmailSender]
+		
+		//save customer object
+		
+		
+		
 	}
 }
