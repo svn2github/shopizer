@@ -45,16 +45,37 @@ public class ConfigurationController {
 	
 	
 	@Secured("AUTH")
-	@RequestMapping(value="/admin/configuration/email.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/configuration/emailConfig.html", method=RequestMethod.GET)
 	public String displayEmailSettings(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		this.setMenu(model, request);
+		
+		//must be able to store smtp server settings
+		/*
+		protocol=smtp
+		host=smtpout.secureserver.net
+		port=3535
+		username=support@shopizer.com
+		password=buzz
+
+		auth=true
+		starttls.enable=false
+		 */
+		//see sm-core / system.model.email.EmailConfig
+		
+		//save in MerchantConfiguration using key EMAIL_CONFIG (see similar shippingService.saveShippingConfiguration and shippingService.getShippingConfiguration)
+		
+		//may use the default configuration from spring if nothing is configured see shopizer-core-modules.xml)
+		
+		
 		
 		//Get from MerchantConfiguration KEY - JSON VALUE
 		
 		return ControllerConstants.Tiles.Configuration.email;
 		
 	}
+	
+
 	
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {
 		
