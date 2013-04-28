@@ -45,6 +45,9 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	
 	@Column(name="QUANTITY")
 	private Integer quantity;
+	
+	@Column(name="ITEM_NUMBER")
+	private Integer cartItemNuber;
 
 	@Embedded
 	private AuditSection auditSection = new AuditSection();
@@ -126,7 +129,14 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 		return quantity;
 	}
 
+	public Integer getCartItemNuber() {
+		return cartItemNuber;
+	}
 
+	public void setCartItemNuber(Integer cartItemNuber) {
+		this.cartItemNuber = cartItemNuber;
+	}
 
+  
 
 }
