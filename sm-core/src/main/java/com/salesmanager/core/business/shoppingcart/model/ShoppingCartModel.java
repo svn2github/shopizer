@@ -5,7 +5,7 @@ package com.salesmanager.core.business.shoppingcart.model;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -49,6 +49,15 @@ public class ShoppingCartModel extends SalesManagerEntity<Long, ShoppingCartMode
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
 	
+	/**
+	 * Will be used to fetch shopping cart model from the controller
+	 * this code will also be stored in the ShoppingCartData which will be
+	 * used in the UI.
+	 * 
+	 */
+	@Column(name = "SHP_CART_Code", unique=true, nullable=false)
+	private String shoppingCartCode;
+	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shoppingCart")
 	private Set<ShoppingCartItem> lineItems;
     
@@ -62,7 +71,7 @@ public class ShoppingCartModel extends SalesManagerEntity<Long, ShoppingCartMode
 		this.auditSection = audit;
 		
 	}
-
+	
 	@Override
 	public Long getId() {
 		return id;
@@ -81,6 +90,16 @@ public class ShoppingCartModel extends SalesManagerEntity<Long, ShoppingCartMode
 	public void setLineItems(Set<ShoppingCartItem> lineItems) {
 		this.lineItems = lineItems;
 	}
+
+    public String getShoppingCartCode()
+    {
+        return shoppingCartCode;
+    }
+
+    public void setShoppingCartCode( String shoppingCartCode )
+    {
+        this.shoppingCartCode = shoppingCartCode;
+    }
 	
 	
 
