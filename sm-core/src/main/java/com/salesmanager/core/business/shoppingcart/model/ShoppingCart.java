@@ -55,7 +55,7 @@ public class ShoppingCart extends SalesManagerEntity<Long, ShoppingCart> impleme
 	 * used in the UI.
 	 * 
 	 */
-	@Column(name = "SHP_CART_Code", unique=true, nullable=false)
+	@Column(name = "SHP_CART_CODE", unique=true, nullable=false)
 	private String shoppingCartCode;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shoppingCart")
