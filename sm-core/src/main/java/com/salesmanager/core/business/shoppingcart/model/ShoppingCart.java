@@ -35,7 +35,7 @@ import com.salesmanager.core.constants.SchemaConstant;
 @Entity
 @EntityListeners(value = AuditListener.class)
 @Table(name = "SHOPPING_CART", schema=SchemaConstant.SALESMANAGER_SCHEMA)
-public class ShoppingCartModel extends SalesManagerEntity<Long, ShoppingCartModel> implements Auditable{
+public class ShoppingCart extends SalesManagerEntity<Long, ShoppingCart> implements Auditable{
 
 	
 	private static final long serialVersionUID = 1L;
