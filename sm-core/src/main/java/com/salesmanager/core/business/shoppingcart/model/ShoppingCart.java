@@ -25,7 +25,7 @@ import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.constants.SchemaConstant;
 
 /**
- * <p>Shopping cart model is responsible for storing and carrying
+ * <p>Shopping cart is responsible for storing and carrying
  * shopping cart information.Shopping Cart consists of {@link ShoppingCartItem}
  * which represents individual lines items associated with the shopping cart</p> 
  * @author Umesh Awasthi
