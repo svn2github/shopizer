@@ -36,7 +36,6 @@ import com.salesmanager.core.business.system.model.MerchantLog;
 import com.salesmanager.core.business.system.service.MerchantLogService;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.payment.model.PaymentModule;
-import com.salesmanager.core.utils.CreditCardUtils;
 import com.salesmanager.core.utils.ProductPriceUtils;
 
 public class AuthorizeNetPayment implements PaymentModule {
@@ -48,8 +47,12 @@ public class AuthorizeNetPayment implements PaymentModule {
 	@Autowired
 	private MerchantLogService merchantLogService;
 	
+
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(BeanStreamPayment.class);
 
+	
+	
 
 	public Transaction initTransaction(Customer customer, Order order,
 			BigDecimal amount, Payment payment,
@@ -358,7 +361,8 @@ public class AuthorizeNetPayment implements PaymentModule {
 			//create transaction object
 
 			//return parseResponse(type,transaction,respText,nvp,order);
-			return this.parseResponse(transactionType, paymentType, nvp, order, amount);
+			//return this.parseResponse(transactionType, paymentType, nvp, order, amount);
+			return null;
 			
 			
 		} catch(Exception e) {
@@ -430,7 +434,7 @@ public class AuthorizeNetPayment implements PaymentModule {
 		
 
 		
-/*		Environment env = Environment.PRODUCTION;
+		Environment env = Environment.PRODUCTION;
 		if(bSandbox) {
 			env = Environment.SANDBOX;
 		}
@@ -470,7 +474,7 @@ public class AuthorizeNetPayment implements PaymentModule {
 	    } else {
 	      System.out.println("Error.</br>");
 	      System.out.println(result.getReasonResponseCode() + " : " + result.getResponseText());
-	    }*/
+	    }
 
 			
 			//Transaction response = this.sendTransaction(messageString.toString(), transactionType, type, payment.getPaymentType(), order, amount, configuration, module);
@@ -493,9 +497,11 @@ public class AuthorizeNetPayment implements PaymentModule {
 	
 	
 	private Transaction parseResponse(TransactionType transactionType,
-			PaymentType paymentType, Map<String,String> nvp,
+			PaymentType paymentType, Result result,
 			Order order, BigDecimal amount) throws Exception {
 		
+		
+		//result.
 		
 		Transaction transaction = new Transaction();
 		transaction.setAmount(amount);
@@ -503,10 +509,10 @@ public class AuthorizeNetPayment implements PaymentModule {
 		transaction.setTransactionDate(new Date());
 		transaction.setTransactionType(transactionType);
 		transaction.setPaymentType(paymentType);
-		transaction.getTransactionDetails().put("TRANSACTIONID", (String)nvp.get("TRNID"));
-		transaction.getTransactionDetails().put("TRNAPPROVED", (String)nvp.get("TRNAPPROVED"));
-		transaction.getTransactionDetails().put("TRNORDERNUMBER", (String)nvp.get("TRNORDERNUMBER"));
-		transaction.getTransactionDetails().put("MESSAGETEXT", (String)nvp.get("MESSAGETEXT"));
+		//transaction.getTransactionDetails().put("TRANSACTIONID", result.);
+		//transaction.getTransactionDetails().put("TRNAPPROVED", (String)nvp.get("TRNAPPROVED"));
+		//transaction.getTransactionDetails().put("TRNORDERNUMBER", (String)nvp.get("TRNORDERNUMBER"));
+		//transaction.getTransactionDetails().put("MESSAGETEXT", (String)nvp.get("MESSAGETEXT"));
 		
 		return transaction;
 		
