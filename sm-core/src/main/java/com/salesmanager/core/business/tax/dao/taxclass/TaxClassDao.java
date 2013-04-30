@@ -10,4 +10,6 @@ public interface TaxClassDao  extends SalesManagerEntityDao<Long, TaxClass> {
 
 	List<TaxClass> listByStore(MerchantStore store);
 
+	TaxClass getByCode(String code);
+
 }

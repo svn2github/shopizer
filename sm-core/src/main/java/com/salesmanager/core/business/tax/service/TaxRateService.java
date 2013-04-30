@@ -19,4 +19,10 @@ public interface TaxRateService extends SalesManagerEntityService<Long, TaxRate>
 			TaxClass taxClass, MerchantStore store, Language language)
 			throws ServiceException;
 
+	List<TaxRate> listByCountryStateProvinceAndTaxClass(Country country,
+			String stateProvince, TaxClass taxClass, MerchantStore store,
+			Language language) throws ServiceException;
+	
+	
+
 }

@@ -33,4 +33,20 @@ public class TaxClassDaoImpl extends SalesManagerEntityDaoImpl<Long, TaxClass> i
 		List<TaxClass> taxes = query.list(qTax);
 		return taxes;
 	}
+	
+	
+	@Override
+	public TaxClass getByCode(String code) {
+		QTaxClass qTax = QTaxClass.taxClass;
+
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qTax)
+			.leftJoin(qTax.merchantStore).fetch()
+			.where(qTax.code.eq(code));
+		
+		return query.uniqueResult(qTax);
+	}
+	
+	
 }

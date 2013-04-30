@@ -38,5 +38,12 @@ public class TaxRateServiceImpl extends SalesManagerEntityServiceImpl<Long, TaxR
 	public List<TaxRate> listByCountryZoneAndTaxClass(Country country, Zone zone, TaxClass taxClass, MerchantStore store, Language language) throws ServiceException {
 		return taxRateDao.listByCountryZoneAndTaxClass(country, zone, taxClass, store, language);
 	}
+	
+	@Override
+	public List<TaxRate> listByCountryStateProvinceAndTaxClass(Country country, String stateProvince, TaxClass taxClass, MerchantStore store, Language language) throws ServiceException {
+		return taxRateDao.listByCountryStateProvinceAndTaxClass(country, stateProvince, taxClass, store, language);
+	}
+		
 
+	
 }

@@ -28,4 +28,11 @@ public class TaxClassServiceImpl extends SalesManagerEntityServiceImpl<Long, Tax
 	public List<TaxClass> listByStore(MerchantStore store) throws ServiceException {	
 		return taxClassDao.listByStore(store);
 	}
+	
+	@Override
+	public TaxClass getByCode(String code) throws ServiceException {
+		return taxClassDao.getByCode(code);
+	}
+	
+
 }

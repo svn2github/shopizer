@@ -44,7 +44,9 @@ public class TaxRateDaoImpl extends SalesManagerEntityDaoImpl<Long, TaxRate> imp
 			.leftJoin(qTax.zone).fetch()
 			.leftJoin(qTax.parent).fetch()
 			.where(qTax.merchantStore.id.eq(store.getId())
-			.and(qTax.zone.id.eq(zone.getId()))
+			.and(
+					qTax.isNotNull().and(qTax.zone.id.eq(zone.getId())).or(qTax.isNull())
+			)
 			.and(qTax.country.id.eq(country.getId())
 			.and(qTaxDescription.language.id.eq(language.getId())))
 			);
@@ -53,4 +55,34 @@ public class TaxRateDaoImpl extends SalesManagerEntityDaoImpl<Long, TaxRate> imp
 		return taxes;
 
 	}
+	
+	
+	@Override
+	public List<TaxRate> listByCountryStateProvinceAndTaxClass(Country country, String stateProvince, TaxClass taxClass, MerchantStore store, Language language) {
+		
+		
+		QTaxRate qTax = QTaxRate.taxRate1;
+		QTaxRateDescription qTaxDescription = QTaxRateDescription.taxRateDescription;
+
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qTax)
+			.leftJoin(qTax.merchantStore).fetch()
+			.leftJoin(qTax.descriptions,qTaxDescription).fetch()
+			.join(qTax.country).fetch()
+			.leftJoin(qTax.parent).fetch()
+			.where(qTax.merchantStore.id.eq(store.getId())
+			.and(
+					qTax.stateProvince.eq(stateProvince)
+			)
+			.and(qTax.country.id.eq(country.getId())
+			.and(qTaxDescription.language.id.eq(language.getId())))
+			);
+		
+		List<TaxRate> taxes = query.list(qTax);
+		return taxes;
+
+	}
+	
+	
 }

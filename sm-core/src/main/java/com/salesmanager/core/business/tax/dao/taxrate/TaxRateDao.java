@@ -17,4 +17,8 @@ public interface TaxRateDao  extends SalesManagerEntityDao<Long, TaxRate> {
 	List<TaxRate> listByCountryZoneAndTaxClass(Country country, Zone zone,
 			TaxClass taxClass, MerchantStore store, Language language);
 
+	List<TaxRate> listByCountryStateProvinceAndTaxClass(Country country,
+			String stateProvince, TaxClass taxClass, MerchantStore store,
+			Language language);
+
 }

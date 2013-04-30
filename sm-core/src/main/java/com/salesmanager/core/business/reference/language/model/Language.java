@@ -30,6 +30,8 @@ import com.salesmanager.core.constants.SchemaConstant;
 public class Language extends SalesManagerEntity<Integer, Language> implements Auditable {
 	private static final long serialVersionUID = -7676627812941330669L;
 	
+
+	
 	@Id
 	@Column(name="LANGUAGE_ID")
 	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT",
