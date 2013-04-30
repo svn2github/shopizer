@@ -16,8 +16,8 @@
 			      					<input type="text" class="span3" name="region" id="region"><!-- must be unique -->  
 			      					<span class="help-inline"><div id="checkCodeStatus" style="display:none;"></div></span>
 			      					<span class="help-inline">
-	                        			<c:if test="${regionexistError!=null}">
-	                        				<span id="identifiererrors" class="error"><s:message code="message.region.exists" text="Field in error"/></span>
+	                        			<c:if test="${errorMessage!=null}">
+	                        				<span id="identifiererrors" class="error"><c:out value="${errorMessage}"/></span>
 	                        			</c:if>
 	                        		</span>
 			      					<button type="submit" class="btn btn-success"><s:message code="label.shipping.addregion" text="Add region"/></button>
@@ -41,7 +41,11 @@
 		                        					<form:select path="countries[0]">
 						  								<form:options items="${shippingCountries}" itemValue="isoCode" itemLabel="name"/>
 					       							</form:select>
-
+			      							<span class="help-inline">
+	                        					<c:if test="${errorMessageAssociation!=null}">
+	                        						<span id="identifiererrors" class="error"><c:out value="${errorMessage}"/></span>
+	                        					</c:if>
+	                        				</span>
 		                 			
 	                        		 
                   							<button type="submit" class="btn btn-success"><s:message code="label.generic.add" text="Add"/></button>
