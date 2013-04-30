@@ -46,7 +46,7 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	@ManyToOne(targetEntity = ShoppingCart.class)
 	@JoinColumn(name = "SHP_CART_ID", nullable = false)
 	private ShoppingCart shoppingCart;
-	
+
 	@Column(name="QUANTITY")
 	private Integer quantity;
 	
@@ -133,6 +133,12 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 		this.cartItemNuber = cartItemNuber;
 	}
 
-  
+	public ShoppingCart getShoppingCart() {
+		return shoppingCart;
+	}
+
+	public void setShoppingCart(ShoppingCart shoppingCart) {
+		this.shoppingCart = shoppingCart;
+	}
 
 }
