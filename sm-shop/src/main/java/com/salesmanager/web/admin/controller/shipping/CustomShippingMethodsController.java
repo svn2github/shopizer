@@ -90,10 +90,16 @@ public class CustomShippingMethodsController {
 
 		List<CustomShippingQuotesRegion> regions = customConfiguration.getRegions();
 		
+		if(StringUtils.isBlank(region)) {
+			model.addAttribute("errorMessage",messages.getMessage("message.region.null", locale));
+			ObjectError error = new ObjectError("region",messages.getMessage("message.region.null", locale));
+			result.addError(error);
+		}
+		
 		
 		for(CustomShippingQuotesRegion customRegion : regions) {
 			if(customRegion.getCustomRegionName().equals(region)) {
-				model.addAttribute("regionexistError","regionexistError");
+				model.addAttribute("errorMessage",messages.getMessage("message.region.null", locale));
 				ObjectError error = new ObjectError("region",messages.getMessage("message.region.exists", locale));
 				result.addError(error);
 				break;
@@ -130,12 +136,20 @@ public class CustomShippingMethodsController {
 		List<CustomShippingQuotesRegion> regions = customConfiguration.getRegions();
 		
 		
+		if(StringUtils.isBlank(customRegion.getCustomRegionName())) {
+			model.addAttribute("errorMessageAssociation",messages.getMessage("message.region.null", locale));
+			ObjectError error = new ObjectError("region",messages.getMessage("message.region.exists", locale));
+			result.addError(error);
+		}
+		
+		
 		for(CustomShippingQuotesRegion region : regions) {
 			if(region.getCustomRegionName().equals(customRegion.getCustomRegionName())) {
 				List<String> countries = region.getCountries();
 				if(countries!=null) {
 					for(String countryCode : countries) {
 						if(countryCode.equals(customRegion.getCountries().get(0))) {
+							model.addAttribute("errorMessageAssociation",messages.getMessage("message.region.exists", locale));
 							ObjectError error = new ObjectError("region",messages.getMessage("message.region.exists", locale));
 							result.addError(error);
 							break;
@@ -435,6 +449,10 @@ public class CustomShippingMethodsController {
 			}
 		}
 		
+		if(aRegion==null) {
+			return "redirect:/admin/shipping/shippingMethods.html";
+		}
+		
 		model.addAttribute("customRegion", aRegion);
 
 
@@ -455,7 +473,7 @@ public class CustomShippingMethodsController {
 		if(StringUtils.isBlank(region)){
 			
 			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
-			resp.setErrorString("Product id is not valid");
+			resp.setErrorString("Region is not valid");
 			String returnString = resp.toJSONString();
 			return returnString;
 			
@@ -510,6 +528,22 @@ public class CustomShippingMethodsController {
 
 		List<CustomShippingQuotesRegion> regions = customConfiguration.getRegions();
 		
+
+		for(CustomShippingQuotesRegion customReg : regions) {
+			if(customReg.getCustomRegionName().equals(customRegion)) {
+				model.addAttribute("customRegion", customReg);
+				break;
+			}
+		}
+		
+
+		if(StringUtils.isBlank(customQuote.getPriceText())) {
+			ObjectError error = new ObjectError("priceText",messages.getMessage("message.invalid.price", locale));
+			result.addError(error);
+		}
+		
+
+		
 		
 		for(CustomShippingQuotesRegion region : regions) {
 			if(region.equals(customRegion)) {
@@ -562,7 +596,7 @@ public class CustomShippingMethodsController {
 		List<CustomShippingQuotesRegion> newRegions = new ArrayList<CustomShippingQuotesRegion>();
 		for(CustomShippingQuotesRegion reg : regions) {
 
-			if(!reg.equals(region)) {
+			if(!reg.getCustomRegionName().equals(region)) {
 				newRegions.add(reg);
 			}
 		}
