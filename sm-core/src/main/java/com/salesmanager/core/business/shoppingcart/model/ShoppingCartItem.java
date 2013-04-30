@@ -43,6 +43,10 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
 	
+	@ManyToOne(targetEntity = ShoppingCart.class)
+	@JoinColumn(name = "SHP_CART_ID", nullable = false)
+	private ShoppingCart shoppingCart;
+	
 	@Column(name="QUANTITY")
 	private Integer quantity;
 	
@@ -56,9 +60,7 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	@JoinColumn(name = "PRODUCT_ID", nullable = false)
 	private Product product;
 	
-	@ManyToOne(targetEntity = Customer.class)
-	@JoinColumn(name = "CUSTOMER_ID", nullable = false)
-	private Customer customer;
+
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "shoppingCartItem")
 	private Set<ShoppingCartAttributeItem> attributes = new HashSet<ShoppingCartAttributeItem>();
@@ -66,13 +68,7 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	@Transient
 	private BigDecimal itemPrice;
 
-	public Customer getCustomer() {
-		return customer;
-	}
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
 
 	@Override
 	public AuditSection getAuditSection() {

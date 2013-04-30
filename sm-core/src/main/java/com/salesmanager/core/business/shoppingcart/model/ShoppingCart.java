@@ -14,6 +14,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
@@ -21,6 +23,7 @@ import javax.persistence.TableGenerator;
 import com.salesmanager.core.business.common.model.audit.AuditListener;
 import com.salesmanager.core.business.common.model.audit.AuditSection;
 import com.salesmanager.core.business.common.model.audit.Auditable;
+import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.constants.SchemaConstant;
 
@@ -60,6 +63,10 @@ public class ShoppingCart extends SalesManagerEntity<Long, ShoppingCart> impleme
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shoppingCart")
 	private Set<ShoppingCartItem> lineItems;
+	
+	@ManyToOne(targetEntity = Customer.class)
+	@JoinColumn(name = "CUSTOMER_ID", nullable = false)
+	private Customer customer;
     
 	@Override
 	public AuditSection getAuditSection() {
