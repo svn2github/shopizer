@@ -546,7 +546,7 @@ public class CustomShippingMethodsController {
 		
 		
 		for(CustomShippingQuotesRegion region : regions) {
-			if(region.equals(customRegion)) {
+			if(region.getCustomRegionName().equals(customRegion)) {
 				List<CustomShippingQuoteWeightItem> quotes = region.getQuoteItems();
 				if(quotes!=null) {
 					for(CustomShippingQuoteWeightItem quote : quotes) {
