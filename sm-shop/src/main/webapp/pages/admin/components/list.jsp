@@ -25,8 +25,11 @@
 										if (status != 0) {
 											if(status==9999) {//operation completed
 												//reload
-												<c:if test="${afterRemoveUrl!=null || refreshUrl!=null}">
+												<c:if test="${afterRemoveUrl!=null}">
 													window.location='<c:url value="${afterRemoveUrl}" />';
+												</c:if>
+												<c:if test="${refreshUrl!=null}">
+													window.location='<c:url value="${refreshUrl}" />';
 												</c:if>
 											} else {
 
