@@ -11,6 +11,9 @@ import org.json.simple.JSONObject;
 public class TaxConfiguration implements JSONAware {
 	
 	private TaxBasisCalculation taxBasisCalculation = TaxBasisCalculation.SHIPPINGADDRESS;
+	
+	private boolean collectTaxIfDifferentProvinceOfStoreCountry = true;
+	private boolean collectTaxIfDifferentCountryOfStoreCountry = false;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -27,6 +30,24 @@ public class TaxConfiguration implements JSONAware {
 
 	public TaxBasisCalculation getTaxBasisCalculation() {
 		return taxBasisCalculation;
+	}
+
+	public void setCollectTaxIfDifferentProvinceOfStoreCountry(
+			boolean collectTaxIfDifferentProvinceOfStoreCountry) {
+		this.collectTaxIfDifferentProvinceOfStoreCountry = collectTaxIfDifferentProvinceOfStoreCountry;
+	}
+
+	public boolean isCollectTaxIfDifferentProvinceOfStoreCountry() {
+		return collectTaxIfDifferentProvinceOfStoreCountry;
+	}
+
+	public void setCollectTaxIfDifferentCountryOfStoreCountry(
+			boolean collectTaxIfDifferentCountryOfStoreCountry) {
+		this.collectTaxIfDifferentCountryOfStoreCountry = collectTaxIfDifferentCountryOfStoreCountry;
+	}
+
+	public boolean isCollectTaxIfDifferentCountryOfStoreCountry() {
+		return collectTaxIfDifferentCountryOfStoreCountry;
 	}
 
 }

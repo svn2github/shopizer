@@ -141,6 +141,35 @@ public class TaxServiceImpl
 			stateProvince = store.getStorestateprovince();
 		}
 		
+		//check other conditions
+		//do not collect tax on other provinces of same country
+		if(!taxConfiguration.isCollectTaxIfDifferentProvinceOfStoreCountry()) {
+			if((zone!=null && store.getZone()!=null) && (zone.getId().longValue() != store.getZone().getId().longValue())) {
+				return null;
+			}
+			if(!StringUtils.isBlank(stateProvince)) {
+				if(store.getZone()!=null) {
+					if(!store.getZone().getName().equals(stateProvince)) {
+						return null;
+					}
+				}
+				else if(!StringUtils.isBlank(store.getStorestateprovince())) {
+
+					if(!store.getStorestateprovince().equals(stateProvince)) {
+						return null;
+					}
+				}
+			}
+		}
+		
+		//collect tax in different countries
+		if(taxConfiguration.isCollectTaxIfDifferentCountryOfStoreCountry()) {
+			//use store country
+			country = store.getCountry();
+			zone = store.getZone();
+			stateProvince = store.getStorestateprovince();
+		}
+		
 		Map<Long,TaxClass> taxClasses =  new HashMap<Long,TaxClass>();
 			
 		//put items in a map by tax class id
