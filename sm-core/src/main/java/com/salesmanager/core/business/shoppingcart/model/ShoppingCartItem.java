@@ -20,11 +20,9 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
-import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.common.model.audit.AuditListener;
 import com.salesmanager.core.business.common.model.audit.AuditSection;
 import com.salesmanager.core.business.common.model.audit.Auditable;
-import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.constants.SchemaConstant;
 
@@ -56,9 +54,8 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	@Embedded
 	private AuditSection auditSection = new AuditSection();
 	
-	@ManyToOne(targetEntity = Product.class)
-	@JoinColumn(name = "PRODUCT_ID", nullable = false)
-	private Product product;
+	@Column(name="PRODUCT_ID")
+	private Long productId;
 	
 
 	
@@ -93,13 +90,7 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 		
 	}
 
-	public void setProduct(Product product) {
-		this.product = product;
-	}
 
-	public Product getProduct() {
-		return product;
-	}
 
 	public void setAttributes(Set<ShoppingCartAttributeItem> attributes) {
 		this.attributes = attributes;
@@ -139,6 +130,14 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 
 	public void setShoppingCart(ShoppingCart shoppingCart) {
 		this.shoppingCart = shoppingCart;
+	}
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
+
+	public Long getProductId() {
+		return productId;
 	}
 
 }
