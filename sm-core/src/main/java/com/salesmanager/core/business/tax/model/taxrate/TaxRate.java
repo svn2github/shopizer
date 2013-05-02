@@ -67,6 +67,9 @@ public class TaxRate  extends SalesManagerEntity<Long, TaxRate> implements Audit
 	@Column(name = "TAX_RATE" , nullable= false , precision=7, scale=4)
 	private BigDecimal taxRate;
 	
+	@Column(name = "TAX_CODE")
+	private String code;
+	
 	/**
 	 * This transient object property
 	 * is a utility used only to submit from a free text
@@ -230,5 +233,13 @@ public class TaxRate  extends SalesManagerEntity<Long, TaxRate> implements Audit
 
 	public String getStateProvince() {
 		return stateProvince;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getCode() {
+		return code;
 	}
 }

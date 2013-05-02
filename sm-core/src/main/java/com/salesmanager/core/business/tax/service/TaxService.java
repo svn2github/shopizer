@@ -1,8 +1,14 @@
 package com.salesmanager.core.business.tax.service;
 
+import java.util.List;
+import java.util.Locale;
+
+import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.order.model.OrderSummary;
 import com.salesmanager.core.business.tax.model.TaxConfiguration;
+import com.salesmanager.core.business.tax.model.TaxItem;
 
 
 public interface TaxService {
@@ -24,6 +30,18 @@ public interface TaxService {
 	 */
 	void saveTaxConfiguration(TaxConfiguration shippingConfiguration,
 			MerchantStore store) throws ServiceException;
+
+	/**
+	 * Calculates tax over an OrderSummary
+	 * @param orderSummary
+	 * @param customer
+	 * @param store
+	 * @param locale
+	 * @return
+	 * @throws ServiceException
+	 */
+	List<TaxItem> calculateTax(OrderSummary orderSummary, Customer customer,
+			MerchantStore store, Locale locale) throws ServiceException;
 
 
 }

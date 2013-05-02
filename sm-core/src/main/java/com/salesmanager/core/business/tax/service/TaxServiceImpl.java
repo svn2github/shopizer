@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -90,6 +91,7 @@ public class TaxServiceImpl
 		
 	}
 	
+	@Override
 	public List<TaxItem> calculateTax(OrderSummary orderSummary, Customer customer, MerchantStore store, Locale locale) throws ServiceException {
 		
 
@@ -99,9 +101,6 @@ public class TaxServiceImpl
 			language = store.getDefaultLanguage();
 		}
 
-
-		BigDecimal totalTaxAmount = new BigDecimal(0);
-		
 		List<ShoppingCartItem> items = orderSummary.getProducts();
 		
 		List<TaxItem> taxLines = new ArrayList<TaxItem>();
@@ -183,7 +182,7 @@ public class TaxServiceImpl
 		}
 		
 		
-		
+		List<TaxItem> taxItems = new ArrayList<TaxItem>();
 		
 		//iterate through the tax class and get appropriate rates
 		for(Long taxClassId : taxClassAmountMap.keySet()) {
@@ -211,16 +210,41 @@ public class TaxServiceImpl
 				
 				double value  = (afterTaxAmount.doubleValue() * taxRateDouble)/100;
 				afterTaxAmount = new BigDecimal(value);
+				TaxItem taxItem = new TaxItem();
+				taxItem.setItemPrice(afterTaxAmount);
+				taxItem.setLabel(taxRate.getDescriptions().get(0).getName());
+				taxItem.setTaxRate(taxRate);
+				taxItems.add(taxItem);
 				
 			}
 			
 		}
+		
+		
+		
+		Map<String,TaxItem> taxItemsMap = new HashMap<String,TaxItem>();
+		//consolidate tax rates of same code
+		for(TaxItem taxItem : taxItems) {
+			
+			TaxRate taxRate = taxItem.getTaxRate();
+			if(!taxItemsMap.containsKey(taxRate.getCode())) {
+				taxItemsMap.put(taxRate.getCode(), taxItem);
+			} 
+			
+			TaxItem item = taxItemsMap.get(taxRate.getCode());
+			BigDecimal amount = item.getItemPrice();
+			amount.add(taxItem.getItemPrice());			
+			
+		}
 			
 			
+		@SuppressWarnings("rawtypes")
+		Set values = taxItemsMap.entrySet();
+		
+		@SuppressWarnings("unchecked")
+		List<TaxItem> list = new ArrayList<TaxItem>(values);
+		return list;
 
-		
-		
-		return null;
 	}
 
 
