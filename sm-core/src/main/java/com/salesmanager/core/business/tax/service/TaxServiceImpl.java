@@ -265,6 +265,10 @@ public class TaxServiceImpl
 			amount.add(taxItem.getItemPrice());			
 			
 		}
+		
+		if(taxItemsMap.size()==0) {
+			return null;
+		}
 			
 			
 		@SuppressWarnings("rawtypes")
