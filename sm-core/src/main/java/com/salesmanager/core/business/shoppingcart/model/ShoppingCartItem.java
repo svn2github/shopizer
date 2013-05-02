@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
+import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.common.model.audit.AuditListener;
 import com.salesmanager.core.business.common.model.audit.AuditSection;
 import com.salesmanager.core.business.common.model.audit.Auditable;
@@ -64,6 +65,9 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	
 	@Transient
 	private BigDecimal itemPrice;
+	
+	@Transient
+	private Product product;
 
 
 
@@ -138,6 +142,14 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 
 	public Long getProductId() {
 		return productId;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public Product getProduct() {
+		return product;
 	}
 
 }
