@@ -13,7 +13,7 @@ import com.salesmanager.core.business.tax.model.TaxItem;
 import com.salesmanager.core.business.tax.model.taxrate.TaxRate;
 
 
-public interface TaxService extends SalesManagerEntityService<Long, TaxRate>  {
+public interface TaxService   {
 
 	/**
 	 * Retrieves tax configurations (TaxConfiguration) for a given MerchantStore
