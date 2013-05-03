@@ -142,7 +142,7 @@ public class TaxTestCase extends AbstractSalesManagerCoreTestCase {
 	    tpsDescription.setDescription("TPS Sales Tax");
 	    tpsDescription.setTaxRate(tps);
 	    
-	    taxService.create(tps);
+	    taxRateService.create(tps);
 	    
 	    
 	    TaxRate tvq = new TaxRate();
@@ -161,7 +161,7 @@ public class TaxTestCase extends AbstractSalesManagerCoreTestCase {
 	    tvqDescription.setDescription("TVQ Sales Tax");
 	    tvqDescription.setTaxRate(tvq);
 	    
-	    taxService.create(tvq);
+	    taxRateService.create(tvq);
 	    
 	    //create a Customer with origin QC - CA
 		Customer customer = new Customer();
