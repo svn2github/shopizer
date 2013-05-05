@@ -75,7 +75,7 @@ public class CustomShippingQuotesRegion implements JSONAware {
 				}
 			}
 
-			returnString.append("\"quoteItems\"").append(":\"").append(quotesList.toString());
+			returnString.append("\"quoteItems\"").append(":").append(quotesList.toString());
 		}
 		returnString.append("}");
 		return returnString.toString();
