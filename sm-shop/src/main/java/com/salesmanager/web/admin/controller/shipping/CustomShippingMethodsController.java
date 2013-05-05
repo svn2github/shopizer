@@ -1,5 +1,6 @@
 package com.salesmanager.web.admin.controller.shipping;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -528,6 +529,14 @@ public class CustomShippingMethodsController {
 
 		List<CustomShippingQuotesRegion> regions = customConfiguration.getRegions();
 		
+		try {
+			BigDecimal price = new BigDecimal(customQuote.getPriceText());
+			customQuote.setPrice(price);
+		} catch(Exception e) {
+			ObjectError error = new ObjectError("priceText",messages.getMessage("message.invalid.price", locale));
+			result.addError(error);
+		}
+		
 
 		for(CustomShippingQuotesRegion customReg : regions) {
 			if(customReg.getCustomRegionName().equals(customRegion)) {
@@ -555,11 +564,14 @@ public class CustomShippingMethodsController {
 							ObjectError error = new ObjectError("maximumWeight",messages.getMessage("label.message.maximumWeight.exist", locale));
 							result.addError(error);
 							break;
+						} else {
+							quotes.add(customQuote);
 						}
 					}
 				} else {
 					quotes = new ArrayList<CustomShippingQuoteWeightItem>();
 					quotes.add(customQuote);
+					region.setQuoteItems(quotes);
 				}
 			}
 		}
@@ -570,7 +582,7 @@ public class CustomShippingMethodsController {
 			return ControllerConstants.Tiles.Shipping.customShippingWeightBased;
 		}
 		
-
+		shippingService.saveCustomShippingConfiguration(this.WEIGHT_BASED_SHIPPING_METHOD, customConfiguration, store);
 		
 		model.addAttribute("success","success");
 		
