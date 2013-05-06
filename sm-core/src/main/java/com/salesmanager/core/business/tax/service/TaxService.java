@@ -5,12 +5,10 @@ import java.util.Locale;
 
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
-import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.OrderSummary;
 import com.salesmanager.core.business.tax.model.TaxConfiguration;
 import com.salesmanager.core.business.tax.model.TaxItem;
-import com.salesmanager.core.business.tax.model.taxrate.TaxRate;
 
 
 public interface TaxService   {
