@@ -62,6 +62,7 @@ public class TaxTestCase extends AbstractSalesManagerCoreTestCase {
 	    Language en = languageService.getByCode("en");
 	    Country country = countryService.getByCode("CA");
 	    Zone zone = zoneService.getByCode("QC");
+	    Zone on = zoneService.getByCode("ON");
 	    TaxClass defaultTaxClass = taxClassService.getByCode(TaxClass.DEFAULT_TAX_CLASS);
 
 	    MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
@@ -140,7 +141,10 @@ public class TaxTestCase extends AbstractSalesManagerCoreTestCase {
 	    TaxRateDescription tpsDescription = new TaxRateDescription();
 	    tpsDescription.setName("TPS");
 	    tpsDescription.setDescription("TPS Sales Tax");
+	    tpsDescription.setLanguage(en);
 	    tpsDescription.setTaxRate(tps);
+	    
+	    tps.getDescriptions().add(tpsDescription);
 	    
 	    taxRateService.create(tps);
 	    
@@ -159,9 +163,33 @@ public class TaxTestCase extends AbstractSalesManagerCoreTestCase {
 	    TaxRateDescription tvqDescription = new TaxRateDescription();
 	    tvqDescription.setName("TVQ");
 	    tvqDescription.setDescription("TVQ Sales Tax");
+	    tvqDescription.setLanguage(en);
 	    tvqDescription.setTaxRate(tvq);
 	    
+	    tvq.getDescriptions().add(tvqDescription);
+	    
 	    taxRateService.create(tvq);
+	    
+	    
+	    TaxRate hst = new TaxRate();
+	    hst.setCode("HST");
+	    hst.setCountry(country);
+	    hst.setZone(on);
+	    hst.setMerchantStore(store);
+	    hst.setTaxClass(defaultTaxClass);
+	    hst.setTaxPriority(0);
+	    hst.setTaxRate(new BigDecimal(14));
+
+	    
+	    TaxRateDescription hstDescription = new TaxRateDescription();
+	    hstDescription.setName("HST");
+	    hstDescription.setDescription("Harmonized Sales Tax");
+	    hstDescription.setLanguage(en);
+	    hstDescription.setTaxRate(hst);
+	    
+	    hst.getDescriptions().add(hstDescription);
+	    
+	    taxRateService.create(hst);
 	    
 	    //create a Customer with origin QC - CA
 		Customer customer = new Customer();
@@ -184,13 +212,13 @@ public class TaxTestCase extends AbstractSalesManagerCoreTestCase {
 		customer.setStreetAddress("Street 1");
 		customer.setTelephone("123123");
 		customer.setCountry(country);
-		customer.setZone(zone);
+		customer.setZone(on);
 		
 	    Delivery delivery = new Delivery();
 	    delivery.setAddress("Shipping address");
 	    delivery.setCity("Boucherville");
 	    delivery.setCountry(country);
-	    delivery.setZone(zone);
+	    delivery.setZone(on);
 	    delivery.setPostalCode("J4B-8J9");
 	    
 	    List<TaxItem> taxLines = taxService.calculateTax(orderSummary, customer, store, Locale.ENGLISH);
