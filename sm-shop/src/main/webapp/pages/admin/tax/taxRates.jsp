@@ -80,7 +80,7 @@ function getZones(countryCode){
     						<div class="tab-pane active" id="taxrates-section">
 
 								<div class="sm-ui-component">	
-								<h3><s:message code="label.tax.taxclass.title" text="Tax classes" /></h3>	
+								<h3><s:message code="menu.taxrates" text="Tax rates" /></h3>	
 								<br/>
 
 								<c:url var="saveTaxRate" value="/admin/tax/taxrate/save.html"/>
@@ -113,7 +113,7 @@ function getZones(countryCode){
 
 				                        <div class="control-group">
 				
-				                              <label class="required"><s:message code="label.productedit.productname" text="Product name"/> (<c:out value="${description.language.code}"/>)</label>
+				                              <label class="required"><s:message code="menu.taxrates.name" text="Tax name"/> (<c:out value="${description.language.code}"/>)</label>
 				                              <div class="controls">
 				                                          <form:input cssClass="input-large highlight" id="name${counter.index}" path="descriptions[${counter.index}].name"/>
 				                                          <span class="help-inline"><form:errors path="descriptions[${counter.index}].name" cssClass="error" /></span>
@@ -123,31 +123,34 @@ function getZones(countryCode){
 				                       
 				                    </c:forEach>
 				                    
-				                   <div class="control-group">
-				                        <label class="required"><s:message code="label.product.price" text="Price"/></label>
+				                    <div class="control-group">
+				                        <label class="required"><s:message code="menu.taxrates.code" text="Code"/></label>
 				
 				                        <div class="controls">
-				                                    <form:input id="productPriceAmount" cssClass="highlight" path="taxRatePrice"/>
-				                                    <span id="help-price" class="help-inline"><form:errors path="taxRatePrice" cssClass="error" /></span>
+				                                    <form:input id="code" cssClass="highlight" path="code"/>
+				                                    <span id="help-price" class="help-inline"><form:errors path="code" cssClass="error" /></span>
+				                        </div>
+                  				   </div>
+				                    
+				                   <div class="control-group">
+				                        <label class="required"><s:message code="menu.taxrates.rate" text="Rate"/></label>
+				
+				                        <div class="controls">
+				                                    <form:input id="rateText" cssClass="highlight" path="rateText"/>
+				                                    <span id="help-price" class="help-inline"><form:errors path="rateText" cssClass="error" /></span>
 				                        </div>
                   				   </div>
 				                    
 				                    <div class="control-group">
 				                        <label class="required"><s:message code="label.tax.taxclass.name" text="Tax class name"/></label>
 					                        <div class="controls">
-					                        		<form:input cssClass="input-large" path="title" />
+					                        		<form:select path=taxClass cssClass="highlight">
+						  								<form:options items="${taxClasses}" itemValue="id" itemLabel="code"/>
+					       							</form:select>
 					                        </div>
 				                    </div>
 				                    
-				                   <div class="control-group">
-			                        	<label><s:message code="label.product.available" text="Product available"/></label>
-			                        	<div class="controls">
-			                                    <form:checkbox path="piggyback" /><br/>
-			                                    <form:select path="country" cssClass="hidden">
-						  								<form:options items="${taxRates}" itemValue="id" itemLabel="descriptions[0].name"/>
-					       						</form:select>
-			                        	</div>
-                  					</div>
+
 
 				                  	<form:hidden path="merchantStore.id" value="${requestScope.store.id}" />
 							
@@ -162,13 +165,13 @@ function getZones(countryCode){
 				            	 
 				            	 <br/><br/>
 				            	 <!-- Listing grid include -->
-								 <c:set value="/admin/tax/taxclass/paging.html" var="pagingUrl" scope="request"/>
-								 <c:set value="/admin/tax/taxclass/remove.html" var="removeUrl" scope="request"/>
-								 <c:set value="/admin/tax/taxclass/list.html" var="refreshUrl" scope="request"/>
-								 <c:set value="/admin/tax/taxclass/edit.html" var="editUrl" scope="request"/>
-								 <c:set var="entityId" value="taxClassId" scope="request"/>
+								 <c:set value="/admin/tax/taxrates/paging.html" var="pagingUrl" scope="request"/>
+								 <c:set value="/admin/tax/taxrates/remove.html" var="removeUrl" scope="request"/>
+								 <c:set value="/admin/tax/taxrates/list.html" var="refreshUrl" scope="request"/>
+								 <c:set value="/admin/tax/taxrates/edit.html" var="editUrl" scope="request"/>
+								 <c:set var="entityId" value="taxRateId" scope="request"/>
 								 <c:set var="componentTitleKey" value="label.tax.taxclass.title" scope="request"/>
-								 <c:set var="gridHeader" value="/pages/admin/tax/taxClass-gridHeader.jsp" scope="request"/>
+								 <c:set var="gridHeader" value="/pages/admin/tax/taxRates-gridHeader.jsp" scope="request"/>
 								 <c:set var="canRemoveEntry" value="true" scope="request"/>
 
 				
