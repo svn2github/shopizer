@@ -2,11 +2,12 @@ package com.salesmanager.core.business.tax.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -227,20 +228,27 @@ public class TaxServiceImpl
 			if(taxRates==null || taxRates.size()==0){
 				continue;
 			}
-			BigDecimal afterTaxAmount = new BigDecimal(0);
-			BigDecimal beforeTaxAmount = taxClassAmountMap.get(taxClassId);
+			BigDecimal taxedItemValue = null;
+			BigDecimal totalTaxedItemValue = new BigDecimal(0);
+			BigDecimal beforeTaxeAmount = taxClassAmountMap.get(taxClassId);
 			for(TaxRate taxRate : taxRates) {
 				
 				double taxRateDouble = taxRate.getTaxRate().doubleValue();
 				
+
 				if(taxRate.isPiggyback()) {
-					beforeTaxAmount.add(afterTaxAmount);
+					if(totalTaxedItemValue.doubleValue()>0) {
+						beforeTaxeAmount = totalTaxedItemValue;
+					}
+					
 				}
 				
-				double value  = (afterTaxAmount.doubleValue() * taxRateDouble)/100;
-				afterTaxAmount = new BigDecimal(value);
+				double value  = (beforeTaxeAmount.doubleValue() * taxRateDouble)/100;
+				taxedItemValue = new BigDecimal(value);
+				totalTaxedItemValue = beforeTaxeAmount.add(taxedItemValue);
+				
 				TaxItem taxItem = new TaxItem();
-				taxItem.setItemPrice(afterTaxAmount);
+				taxItem.setItemPrice(taxedItemValue);
 				taxItem.setLabel(taxRate.getDescriptions().get(0).getName());
 				taxItem.setTaxRate(taxRate);
 				taxItems.add(taxItem);
@@ -251,7 +259,7 @@ public class TaxServiceImpl
 		
 		
 		
-		Map<String,TaxItem> taxItemsMap = new HashMap<String,TaxItem>();
+		Map<String,TaxItem> taxItemsMap = new TreeMap<String,TaxItem>();
 		//consolidate tax rates of same code
 		for(TaxItem taxItem : taxItems) {
 			
@@ -262,7 +270,7 @@ public class TaxServiceImpl
 			
 			TaxItem item = taxItemsMap.get(taxRate.getCode());
 			BigDecimal amount = item.getItemPrice();
-			amount.add(taxItem.getItemPrice());			
+			amount = amount.add(taxItem.getItemPrice());			
 			
 		}
 		
@@ -272,7 +280,8 @@ public class TaxServiceImpl
 			
 			
 		@SuppressWarnings("rawtypes")
-		Set values = taxItemsMap.entrySet();
+		Collection<TaxItem> values = taxItemsMap.values();
+		
 		
 		@SuppressWarnings("unchecked")
 		List<TaxItem> list = new ArrayList<TaxItem>(values);

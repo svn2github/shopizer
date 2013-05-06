@@ -111,7 +111,18 @@ public class TaxRate  extends SalesManagerEntity<Long, TaxRate> implements Audit
 	@OneToMany(mappedBy = "parent", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<TaxRate> taxRates = new ArrayList<TaxRate>();
 	
+	@Transient
+	private String rateText;
 	
+	
+	public String getRateText() {
+		return rateText;
+	}
+
+	public void setRateText(String rateText) {
+		this.rateText = rateText;
+	}
+
 	public TaxRate() {
 	}
 

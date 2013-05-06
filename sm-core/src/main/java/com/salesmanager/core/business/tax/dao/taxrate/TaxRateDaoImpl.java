@@ -49,7 +49,7 @@ public class TaxRateDaoImpl extends SalesManagerEntityDaoImpl<Long, TaxRate> imp
 			)
 			.and(qTax.country.id.eq(country.getId())
 			.and(qTaxDescription.language.id.eq(language.getId())))
-			);
+			).orderBy(qTax.taxPriority.asc());
 		
 		List<TaxRate> taxes = query.list(qTax);
 		return taxes;
@@ -77,7 +77,7 @@ public class TaxRateDaoImpl extends SalesManagerEntityDaoImpl<Long, TaxRate> imp
 			)
 			.and(qTax.country.id.eq(country.getId())
 			.and(qTaxDescription.language.id.eq(language.getId())))
-			);
+			).orderBy(qTax.taxPriority.asc());
 		
 		List<TaxRate> taxes = query.list(qTax);
 		return taxes;
