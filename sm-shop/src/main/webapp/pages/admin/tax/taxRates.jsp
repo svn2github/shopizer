@@ -144,7 +144,7 @@ function getZones(countryCode){
 				                    <div class="control-group">
 				                        <label class="required"><s:message code="label.tax.taxclass.name" text="Tax class name"/></label>
 					                        <div class="controls">
-					                        		<form:select path=taxClass cssClass="highlight">
+					                        		<form:select path="taxClass" cssClass="highlight">
 						  								<form:options items="${taxClasses}" itemValue="id" itemLabel="code"/>
 					       							</form:select>
 					                        </div>
