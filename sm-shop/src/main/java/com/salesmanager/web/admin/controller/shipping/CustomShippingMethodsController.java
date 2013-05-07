@@ -538,6 +538,14 @@ public class CustomShippingMethodsController {
 		}
 		
 
+		int weight = customQuote.getMaximumWeight();
+		if(weight<=0) {
+			ObjectError error = new ObjectError("maximumWeight",messages.getMessage("message.maximumWeight.invalid", locale));
+			result.addError(error);	
+		}
+
+		
+
 		for(CustomShippingQuotesRegion customReg : regions) {
 			if(customReg.getCustomRegionName().equals(customRegion)) {
 				model.addAttribute("customRegion", customReg);

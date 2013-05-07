@@ -85,7 +85,7 @@ function getZones(countryCode){
 
 								<c:url var="saveTaxRate" value="/admin/tax/taxrate/save.html"/>
 
-								<form:form method="POST" modelAttribute="taxClass" action="${saveTaxRate}">	
+								<form:form method="POST" modelAttribute="taxRate" action="${saveTaxRate}">	
 				      				<form:errors path="*" cssClass="alert alert-error" element="div" />
 									<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
 												
