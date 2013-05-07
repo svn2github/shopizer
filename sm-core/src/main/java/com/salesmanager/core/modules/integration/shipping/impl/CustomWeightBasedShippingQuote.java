@@ -119,12 +119,13 @@ public class CustomWeightBasedShippingQuote implements ShippingQuoteModule {
 						//see the price associated with the width
 						List<CustomShippingQuoteWeightItem> quoteItems = region.getQuoteItems();
 						for(CustomShippingQuoteWeightItem quoteItem : quoteItems) {
-							if(quoteItem.getMaximumWeight()> weight) {
+							if(weight<= quoteItem.getMaximumWeight()) {
 								shippingOption = new ShippingOption();
 								shippingOption.setOptionCode("CUSTOMWEIGHT");
 								shippingOption.setOptionId("CUSTOMWEIGHT");
 								shippingOption.setOptionPrice(quoteItem.getPrice());
 								shippingOption.setOptionPriceText(productPriceUtils.getStoreFormatedAmountWithCurrency(store, quoteItem.getPrice()));
+								break;
 							}
 						}
 						
@@ -137,6 +138,7 @@ public class CustomWeightBasedShippingQuote implements ShippingQuoteModule {
 			
 			if(shippingOption!=null) {
 				List<ShippingOption> options = new ArrayList<ShippingOption>();
+				options.add(shippingOption);
 				return options;
 			}
 			
