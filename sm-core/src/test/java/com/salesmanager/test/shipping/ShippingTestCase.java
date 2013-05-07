@@ -35,6 +35,9 @@ import com.salesmanager.core.business.shipping.model.ShippingType;
 import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.system.model.Environment;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
+import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuoteWeightItem;
+import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuotesConfiguration;
+import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuotesRegion;
 import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;
 
 public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
@@ -364,6 +367,195 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 	    delivery.setPostalCode("J4B-8J9");
 	    
 	    //overwrite delivery to US (USPS)
+/*	    delivery.setPostalCode("90002");
+	    delivery.setCountry(us);
+	    Zone california = zoneService.getByCode("CA");
+	    delivery.setZone(california);*/
+	    
+	    
+	    Billing billing = new Billing();
+	    billing.setAddress("Billing address");
+	    billing.setCountry(country);
+	    billing.setZone(zone);
+	    billing.setPostalCode("J4B-8J9");
+	    
+	    customer.setBilling(billing);
+	    customer.setDelivery(delivery);
+		
+		customerService.create(customer);
+	    
+	    ShippingQuote shippingQuote = shippingService.getShippingQuote(store, customer, shippingProducts, Locale.US);
+
+	    Assert.notNull(shippingQuote);
+	    
+	}
+
+	
+	
+	
+	
+	
+	@Test
+	public void testGetCustomShippingQuotesByWeight() throws ServiceException {
+
+	    Language en = languageService.getByCode("en");
+	    Country country = countryService.getByCode("CA");
+	    Zone zone = zoneService.getByCode("QC");
+
+	    MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
+	    ProductType generalType = productTypeService.getProductType(ProductType.GENERAL_TYPE);
+	    
+	    //set valid store postal code
+	    store.setStorepostalcode("J4B-9J9");
+
+	    Product product = new Product();
+	    product.setProductHeight(new BigDecimal(4));
+	    product.setProductLength(new BigDecimal(3));
+	    product.setProductWidth(new BigDecimal(5));
+	    product.setProductWeight(new BigDecimal(8));
+	    product.setSku("TESTSKU");
+	    product.setType(generalType);
+	    product.setMerchantStore(store);
+
+	    // Product description
+	    ProductDescription description = new ProductDescription();
+	    description.setName("Product 1");
+	    description.setLanguage(en);
+	    description.setProduct(product);
+
+	    product.getDescriptions().add(description);
+	    
+
+	    // Availability
+	    ProductAvailability availability = new ProductAvailability();
+	    availability.setProductDateAvailable(new Date());
+	    availability.setProductQuantity(100);
+	    availability.setRegion("*");
+	    availability.setProduct(product);// associate with product
+
+	    ProductPrice dprice = new ProductPrice();
+	    dprice.setDefaultPrice(true);
+	    dprice.setProductPriceAmount(new BigDecimal(29.99));
+	    dprice.setProductAvailability(availability);
+
+	    ProductPriceDescription dpd = new ProductPriceDescription();
+	    dpd.setName("Base price");
+	    dpd.setProductPrice(dprice);
+	    dpd.setLanguage(en);
+
+	    dprice.getDescriptions().add(dpd);
+	    availability.getPrices().add(dprice);
+	    
+	    product.getAvailabilities().add(availability);
+	    
+	    productService.saveOrUpdate(product);
+	    
+	    
+
+	    
+	    //configure shipping
+	    ShippingConfiguration shippingConfiguration = new ShippingConfiguration();
+	    shippingConfiguration.setShippingBasisType(ShippingBasisType.SHIPPING);//based on shipping or billing address
+	    shippingConfiguration.setShippingType(ShippingType.INTERNATIONAL);
+	    shippingConfiguration.setShippingPackageType(ShippingPackageType.ITEM);//individual item pricing or box packaging (see unit test above)
+	    //only if package type is package
+	    shippingConfiguration.setBoxHeight(5);
+	    shippingConfiguration.setBoxLength(5);
+	    shippingConfiguration.setBoxWidth(5);
+	    shippingConfiguration.setBoxWeight(1);
+	    shippingConfiguration.setMaxWeight(10);
+	    
+	    List<String> supportedCountries = new ArrayList<String>();
+	    supportedCountries.add("CA");
+	    supportedCountries.add("US");
+	    supportedCountries.add("UK");
+	    supportedCountries.add("FR");
+	    
+	    shippingService.setSupportedCountries(store, supportedCountries);
+	    
+
+	    CustomShippingQuotesConfiguration customConfiguration = new CustomShippingQuotesConfiguration();
+		customConfiguration.setModuleCode("weightBased");
+		customConfiguration.setActive(true);
+		
+		CustomShippingQuotesRegion northRegion = new CustomShippingQuotesRegion();
+		northRegion.setCustomRegionName("NORTH");
+		
+		List<String> countries = new ArrayList<String>();
+		countries.add("CA");
+		countries.add("US");
+		
+		northRegion.setCountries(countries);
+		
+		CustomShippingQuoteWeightItem caQuote4 = new CustomShippingQuoteWeightItem();
+		caQuote4.setMaximumWeight(4);
+		caQuote4.setPrice(new BigDecimal(20));
+		CustomShippingQuoteWeightItem caQuote10 = new CustomShippingQuoteWeightItem();
+		caQuote10.setMaximumWeight(10);
+		caQuote10.setPrice(new BigDecimal(50));
+		CustomShippingQuoteWeightItem caQuote100 = new CustomShippingQuoteWeightItem();
+		caQuote100.setMaximumWeight(100);
+		caQuote100.setPrice(new BigDecimal(120));
+		List<CustomShippingQuoteWeightItem> quotes = new ArrayList<CustomShippingQuoteWeightItem>();
+		quotes.add(caQuote4);
+		quotes.add(caQuote10);
+		quotes.add(caQuote100);
+		
+		northRegion.setQuoteItems(quotes);
+		
+		customConfiguration.getRegions().add(northRegion);
+	    
+	    
+	    //create an integration configuration - USPS
+	    
+	    IntegrationConfiguration configuration = new IntegrationConfiguration();
+	    configuration.setActive(true);
+	    configuration.setEnvironment(Environment.TEST.name());
+	    configuration.setModuleCode("weightBased");
+	    
+	    //configure module
+
+
+
+	    shippingService.saveShippingConfiguration(shippingConfiguration, store);
+	    shippingService.saveShippingQuoteModuleConfiguration(configuration, store);//create the basic configuration
+	    shippingService.saveCustomShippingConfiguration("weightBased", customConfiguration, store);//and the custom configuration
+	    
+	    //now create ShippingProduct
+	    ShippingProduct shippingProduct1 = new ShippingProduct(product);
+	    List<ShippingProduct> shippingProducts = new ArrayList<ShippingProduct>();
+	    shippingProducts.add(shippingProduct1);
+	    
+		Customer customer = new Customer();
+		customer.setFirstname("Test");
+		customer.setMerchantStore(store);
+		customer.setLastname("User");
+		customer.setCity("city");
+		customer.setEmailAddress("test@test.com");
+		customer.setGender("M");
+		customer.setTelephone("00000");
+		customer.setAnonymous(true);
+		customer.setCompany("ifactory");
+		customer.setDateOfBirth(new Date());
+		customer.setFax("fax");
+		customer.setNewsletter('c');
+		customer.setNick("My nick");
+		customer.setPassword("123456");
+		customer.setPostalCode("000");
+		customer.setState("state");
+		customer.setStreetAddress("Street 1");
+		customer.setTelephone("123123");
+		customer.setCountry(country);
+		customer.setZone(zone);
+		
+	    Delivery delivery = new Delivery();
+	    delivery.setAddress("Shipping address");
+	    delivery.setCity("Boucherville");
+	    delivery.setCountry(country);
+	    delivery.setZone(zone);
+	    delivery.setPostalCode("J4B-8J9");
+	    
+	    //overwrite delivery to US
 /*	    delivery.setPostalCode("90002");
 	    delivery.setCountry(us);
 	    Zone california = zoneService.getByCode("CA");
