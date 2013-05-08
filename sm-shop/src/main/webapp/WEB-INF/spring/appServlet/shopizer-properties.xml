@@ -30,6 +30,12 @@
 				<prop key="POPULATE_TEST_DATA">true</prop>
 	</util:properties>
 	
+	
+	<!-- templates -->
+	<util:list id="templates" >
+		<value>bootstrap</value>
+    </util:list>
+	
  
  
  

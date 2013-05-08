@@ -63,12 +63,7 @@
 						<s:message code="message.success" text="Request successfull" />
 					</div>
 					
-<%-- 					<div class="control-group">
-						<div class="controls">
-								<input type="hidden" name="contentImages.merchantStoreId" value="1"/>
-							<span class="help-inline"></span>
-						</div>
-					</div> --%>
+
 				
 					<!-- hidden when creating the product -->
 					<div class="control-group">
@@ -100,6 +95,38 @@
 						</div>
 					</div>
 				</form:form>
+				
+				<br/>
+				<br/>
+				<c:url var="saveTemplate" value="/admin/store/saveTemplate.html" />
+				<form:form method="POST" enctype="multipart/form-data" commandName="store" action="${saveTemplate}">
+
+					<form:errors path="*" cssClass="alert alert-error" element="div" />
+					<div id="store.success" class="alert alert-success"
+						style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>">
+						<s:message code="message.success" text="Request successfull" />
+					</div>
+					
+
+				
+					<!-- hidden when creating the product -->
+					<div class="control-group">
+						<label><s:message code="label.store.template" text="Theme"/></label>
+						<div class="controls">
+	                        		<form:select items="${templates}" path="storeTemplate" /> 
+	                                <span class="help-inline"></span>
+						</div>
+					</div>
+					<div class="form-actions">
+						<div class="pull-right">
+							<button type="submit" class="btn btn-success">
+								<s:message code="button.label.submit2" text="Submit" />
+							</button>
+						</div>
+					</div>
+				</form:form>
+				
+				
 			</div>
 		</div>
 	</div>	
