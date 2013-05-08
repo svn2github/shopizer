@@ -45,9 +45,7 @@ public class IntegrationModule extends SalesManagerEntity<Long, IntegrationModul
 	private Long id;
 	
 	
-	//TODO enum creates table not found
-	//@Column(name="MODULE", nullable=false, columnDefinition = "enum('PAYMENT','SHIPPING')") 
-	//@Enumerated(EnumType.STRING)
+
 	@Column(name="MODULE")
 	private String module;
 	
