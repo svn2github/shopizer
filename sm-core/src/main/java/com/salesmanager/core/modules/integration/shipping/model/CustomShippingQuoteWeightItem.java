@@ -35,4 +35,6 @@ public class CustomShippingQuoteWeightItem extends CustomShippingQuoteItem imple
 		return data.toJSONString();
 	}
 
+
+
 }
