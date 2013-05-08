@@ -197,7 +197,7 @@ public class CategoryController {
 			}
 		}
 		
-		
+		category.getAuditSection().setModifiedBy(request.getRemoteUser());
 		categoryService.saveOrUpdate(category);
 
 			
@@ -400,7 +400,7 @@ public class CategoryController {
 			}
 			
 
-			
+			parent.getAuditSection().setModifiedBy(request.getRemoteUser());
 			categoryService.addChild(parent, child);
 			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 

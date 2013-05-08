@@ -3,8 +3,10 @@ package com.salesmanager.web.admin.controller.merchant;
 
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +15,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,7 +55,6 @@ public class StoreBrandingController {
 	@Autowired
 	ZoneService zoneService;
 	
-	
 	@Autowired
 	LanguageService languageService;
 	
@@ -62,6 +64,10 @@ public class StoreBrandingController {
 	@Autowired
 	private ContentService contentService;
 	
+	@Autowired 
+	@Qualifier("templates") 
+	List<String> templates;
+	
 	@Secured("STORE")
 	@RequestMapping(value="/admin/store/storeBranding.html", method=RequestMethod.GET)
 	public String displayStoreBranding(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -69,6 +75,9 @@ public class StoreBrandingController {
 		setMenu(model,request);
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		//display templates
+		model.addAttribute("templates", templates);
 		
 		model.addAttribute("store", store);
 		
@@ -103,6 +112,27 @@ public class StoreBrandingController {
   
 		}
 		
+		model.addAttribute("success","success");
+		model.addAttribute("store", store);
+
+		return "admin-store-branding";
+	}
+	
+	@Secured("STORE")
+	@RequestMapping(value="/admin/store/saveTemplate.html", method=RequestMethod.POST)
+	public String saveTemplate(@ModelAttribute(value="store") final MerchantStore store, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		setMenu(model,request);
+
+		MerchantStore sessionstore = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		sessionstore.setStoreTemplate(store.getStoreTemplate());
+		
+		merchantStoreService.saveOrUpdate(sessionstore);
+		
+		request.setAttribute(Constants.ADMIN_STORE, sessionstore);
+
+		model.addAttribute("success","success");
 		model.addAttribute("store", store);
 
 		return "admin-store-branding";
