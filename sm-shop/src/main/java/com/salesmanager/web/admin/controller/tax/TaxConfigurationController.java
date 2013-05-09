@@ -62,7 +62,7 @@ public class TaxConfigurationController {
 		
 		model.addAttribute("success","success");
 		
-		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Tax.taxClasses;
+		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Tax.taxConfiguration;
 		
 	}
 	

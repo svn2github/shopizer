@@ -24,7 +24,7 @@
 								<h3><s:message code="label.tax.taxconfiguration" text="Tax basis calculation" /></h3>	
 								<br/>
 
-								<c:url var="saveTaxConfiguration" value="/admin/tax/taxconfiguration/edit.html"/>
+								<c:url var="saveTaxConfiguration" value="/admin/tax/taxconfiguration/save.html"/>
 
 								<form:form method="POST" modelAttribute="taxConfiguration" action="${saveTaxConfiguration}">	
 				      				<form:errors path="*" cssClass="alert alert-error" element="div" />

@@ -66,6 +66,7 @@ public class TaxRatesController {
 		}
 		
 		taxRate.setMerchantStore(store);
+		taxRate.setCountry(store.getCountry());
 		
 		List<TaxRate> taxRates = taxRateService.listByStore(store);
 		List<TaxClass> taxClasses = taxClassService.listByStore(store);

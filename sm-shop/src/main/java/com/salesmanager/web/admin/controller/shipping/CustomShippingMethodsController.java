@@ -2,6 +2,8 @@ package com.salesmanager.web.admin.controller.shipping;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -10,6 +12,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +36,7 @@ import com.salesmanager.core.business.shipping.model.ShippingType;
 import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.modules.integration.IntegrationException;
+import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuoteItem;
 import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuoteWeightItem;
 import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuotesConfiguration;
 import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuotesRegion;
@@ -200,9 +204,19 @@ public class CustomShippingMethodsController {
 		model.addAttribute("configuration", configuration);
 
 		try {
+			
+			
+			CustomShippingQuotesConfiguration dbConfig = (CustomShippingQuotesConfiguration) shippingService.getCustomShippingConfiguration(this.WEIGHT_BASED_SHIPPING_METHOD, store);
+			
+			
 			shippingService.saveShippingQuoteModuleConfiguration(configuration, store);
-			//TODO
-			shippingService.saveCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, configuration, store);
+			if(dbConfig!=null) {
+				dbConfig.setActive(configuration.isActive());
+				shippingService.saveCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, dbConfig, store);
+			} else {
+				shippingService.saveCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, configuration, store);
+			}
+			
 
 			
 			
@@ -231,7 +245,7 @@ public class CustomShippingMethodsController {
 	@Secured("SHIPPING")
 	@RequestMapping(value="/admin/shipping/weightBased/removeCountry.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String deleteCountry(HttpServletRequest request, HttpServletResponse response, Locale locale) {
-		String country = request.getParameter("country");
+		String country = request.getParameter("regionCode");
 
 		AjaxResponse resp = new AjaxResponse();
 
@@ -254,6 +268,66 @@ public class CustomShippingMethodsController {
 							}
 						}
 						quote.setCountries(newCountries);
+				}
+				
+			}
+			
+			shippingService.saveCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, customConfiguration, store);
+
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+
+		} catch (Exception e) {
+			LOGGER.error("Error while paging custom weight based", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+		}
+
+		String returnString = resp.toJSONString();
+
+		return returnString;
+	}
+	
+	
+	@Secured("SHIPPING")
+	@RequestMapping(value="/admin/shipping/weightBased/removePrice.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String deletePrice(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		String weight = request.getParameter("weight");
+		String region = request.getParameter("region");
+		int maxWeight = 0;
+		try {
+			maxWeight = Integer.parseInt(weight);
+		} catch (Exception e) {
+			LOGGER.error("Weight (integer) malformed " + weight);
+		}
+
+		AjaxResponse resp = new AjaxResponse();
+
+
+		try {
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+			CustomShippingQuotesConfiguration customConfiguration = (CustomShippingQuotesConfiguration)shippingService.getCustomShippingConfiguration(WEIGHT_BASED_SHIPPING_METHOD, store);
+
+			if(customConfiguration!=null) {
+				
+				List<CustomShippingQuotesRegion> quotes = customConfiguration.getRegions();
+				
+				for (CustomShippingQuotesRegion quote : quotes) {
+					
+					
+						if(quote.getCustomRegionName().equals(region)) {
+							List<CustomShippingQuoteWeightItem> quoteItems = quote.getQuoteItems();
+							
+							if(quoteItems!=null) {
+								List<CustomShippingQuoteWeightItem> newQuoteItems = new ArrayList<CustomShippingQuoteWeightItem>();
+								for(CustomShippingQuoteWeightItem q : quoteItems) {
+									if(maxWeight!=q.getMaximumWeight()) {
+										newQuoteItems.add(q);
+									}
+								}
+								quote.setQuoteItems(newQuoteItems);
+								break;
+							}
+						}
+				
 				}
 				
 			}
@@ -358,8 +432,9 @@ public class CustomShippingMethodsController {
 						if(countries!=null) {
 							for(String country : countries) {
 								Map<String,String> entry = new HashMap<String,String> ();
-								entry.put("region", countriesMap.get(quote.getCustomRegionName()).getName());
-								entry.put("country", country);
+								entry.put("regionCode", country);
+								entry.put("region", quote.getCustomRegionName());
+								entry.put("country", countriesMap.get(country).getName());
 								resp.addDataEntry(entry);
 							}
 						}
@@ -473,6 +548,7 @@ public class CustomShippingMethodsController {
 	
 	
 	
+	@SuppressWarnings("unchecked")
 	@Secured("SHIPPING")
 	@RequestMapping(value="/admin/shipping/weightBased/addPrice.html", method=RequestMethod.POST)
 	public String addPrice(@ModelAttribute("region") String customRegion, @ModelAttribute("customQuote") CustomShippingQuoteWeightItem customQuote, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
@@ -515,11 +591,12 @@ public class CustomShippingMethodsController {
 			result.addError(error);
 		}
 		
-
+		CustomShippingQuotesRegion currentRegion = null;
 		
 		
 		for(CustomShippingQuotesRegion region : regions) {
 			if(region.getCustomRegionName().equals(customRegion)) {
+				currentRegion = region;
 				List<CustomShippingQuoteWeightItem> quotes = region.getQuoteItems();
 				if(quotes!=null) {
 					for(CustomShippingQuoteWeightItem quote : quotes) {
@@ -528,10 +605,9 @@ public class CustomShippingMethodsController {
 							ObjectError error = new ObjectError("maximumWeight",messages.getMessage("label.message.maximumWeight.exist", locale));
 							result.addError(error);
 							break;
-						} else {
-							quotes.add(customQuote);
-						}
+						} 
 					}
+					quotes.add(customQuote);
 				} else {
 					quotes = new ArrayList<CustomShippingQuoteWeightItem>();
 					quotes.add(customQuote);
@@ -547,6 +623,18 @@ public class CustomShippingMethodsController {
 		}
 		
 		//order weights
+		if(currentRegion!=null) {
+			List<CustomShippingQuoteWeightItem> quotes = currentRegion.getQuoteItems();
+			if(quotes!=null) {
+				
+				
+				BeanComparator beanComparator = new BeanComparator("maximumWeight");
+				Collections.sort(quotes, beanComparator);
+				
+
+			}
+		}
+		
 		
 		shippingService.saveCustomShippingConfiguration(this.WEIGHT_BASED_SHIPPING_METHOD, customConfiguration, store);
 		

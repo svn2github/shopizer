@@ -115,8 +115,9 @@ $(document).ready(function() {
 			      				
 								 <!-- Listing grid include -->
 								 <c:set value="/admin/shipping/weightBasedDetails/page.html?region=${customRegion.customRegionName}" var="pagingUrl" scope="request"/>
-								 <c:set value="/admin/shipping/weightBasedDetails/remove.html?region=${customRegion.customRegionName}" var="removeUrl" scope="request"/>
+								 <c:set value="/admin/shipping/weightBased/removePrice.html?region=${customRegion.customRegionName}" var="removeUrl" scope="request"/>
 								 <c:set var="entityId" value="maximumWeight" scope="request"/>
+								 <c:set value="/admin/shipping/weightBased/edit.html?customRegionName=${customRegion.customRegionName}" var="afterRemoveUrl" scope="request"/>
 								 <c:set var="componentTitleKey" value="module.shipping.weightBased" scope="request"/>
 								 <c:set var="gridHeader" value="/pages/admin/shipping/weightBasedDetails-gridHeader.jsp" scope="request"/>
 								 <c:set var="canRemoveEntry" value="true" scope="request"/>

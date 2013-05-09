@@ -58,7 +58,7 @@
 								 <c:set value="/admin/shipping/weightBased/removeCountry.html" var="removeUrl" scope="request"/>
 								 <c:set value="/admin/shipping/weightBased/edit.html" var="editUrl" scope="request"/>
 								 <c:set value="/admin/shipping/weightBased.html" var="refreshUrl" scope="request"/>
-								 <c:set var="entityId" value="region" scope="request"/>
+								 <c:set var="entityId" value="regionCode" scope="request"/>
 								 <c:set var="groupByEntity" value="region" scope="request"/>
 								 <c:set var="componentTitleKey" value="module.shipping.weightBased" scope="request"/>
 								 <c:set var="gridHeader" value="/pages/admin/shipping/weightBased-gridHeader.jsp" scope="request"/>
