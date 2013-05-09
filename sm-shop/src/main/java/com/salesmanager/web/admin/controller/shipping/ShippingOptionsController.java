@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,7 +118,7 @@ public class ShippingOptionsController {
 		}
 		
 		BigDecimal submitedOrderPrice = null;
-		if(configuration.getOrderTotalFreeShippingText()!=null){
+		if(!StringUtils.isBlank(configuration.getOrderTotalFreeShippingText())){
 			try {
 				submitedOrderPrice = priceUtil.getAmount(configuration.getOrderTotalFreeShippingText());
 				shippingConfiguration.setOrderTotalFreeShipping(submitedOrderPrice);
@@ -128,7 +129,7 @@ public class ShippingOptionsController {
 		}
 		
 		BigDecimal submitedHandlingPrice = null;
-		if(configuration.getHandlingFeesText()!=null){
+		if(!StringUtils.isBlank(configuration.getHandlingFeesText())){
 			try {
 				submitedHandlingPrice = priceUtil.getAmount(configuration.getHandlingFeesText());
 				shippingConfiguration.setHandlingFees(submitedHandlingPrice);

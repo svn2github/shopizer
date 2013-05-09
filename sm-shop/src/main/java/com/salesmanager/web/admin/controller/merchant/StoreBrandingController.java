@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -64,8 +65,9 @@ public class StoreBrandingController {
 	@Autowired
 	private ContentService contentService;
 	
-	@Autowired 
-	@Qualifier("templates") 
+	//@Autowired 
+	//@Qualifier("templates") 
+	@Resource(name="templates")
 	List<String> templates;
 	
 	@Secured("STORE")
@@ -112,6 +114,9 @@ public class StoreBrandingController {
   
 		}
 		
+		//display templates
+		model.addAttribute("templates", templates);
+		
 		model.addAttribute("success","success");
 		model.addAttribute("store", store);
 
@@ -130,10 +135,13 @@ public class StoreBrandingController {
 		
 		merchantStoreService.saveOrUpdate(sessionstore);
 		
-		request.setAttribute(Constants.ADMIN_STORE, sessionstore);
+		request.setAttribute(Constants.ADMIN_STORE, sessionstore);		
+		
+		//display templates
+		model.addAttribute("templates", templates);
 
 		model.addAttribute("success","success");
-		model.addAttribute("store", store);
+		model.addAttribute("store", sessionstore);
 
 		return "admin-store-branding";
 	}
