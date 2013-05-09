@@ -3,12 +3,92 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 
-<%@ page session="false" %>				
+<%@ page session="false" %>
+<script type="text/javascript">
+var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong format" />';
+</script>				
+
+<script src="<c:url value="/resources/js/jquery.formatCurrency-1.4.0.js" />"></script>
+<script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
+<script src="<c:url value="/resources/js/functions.js" />"></script>				
 				
-<script>
-	
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+	$('#orderTotalFreeShippingText').numeric({allow:"."});
+	$('#handlingFeesText').numeric({allow:"."});
 
 	
+	$('#orderTotalFreeShippingText').blur(function() {
+		$('#help-orderTotalFreeShippingText').html(null);
+		$(this).formatCurrency({ roundToDecimalPlace: 2, eventOnDecimalsEntered: true, symbol: ''});
+	})
+	.keyup(function(e) {
+			var e = window.event || e;
+			var keyUnicode = e.charCode || e.keyCode;
+			if (e !== undefined) {
+				switch (keyUnicode) {
+					case 16: break; // Shift
+					case 17: break; // Ctrl
+					case 18: break; // Alt
+					case 27: this.value = ''; break; // Esc: clear entry
+					case 35: break; // End
+					case 36: break; // Home
+					case 37: break; // cursor left
+					case 38: break; // cursor up
+					case 39: break; // cursor right
+					case 40: break; // cursor down
+					case 78: break; // N (Opera 9.63+ maps the "." from the number key section to the "N" key too!) (See: http://unixpapa.com/js/key.html search for ". Del")
+					case 110: break; // . number block (Opera 9.63+ maps the "." from the number block to the "N" key (78) !!!)
+					case 190: break; // .
+					default: $(this).formatCurrency({ colorize: true, negativeFormat: '-%s%n', roundToDecimalPlace: -1, eventOnDecimalsEntered: true, symbol: ''});
+				}
+			}
+		})
+	.bind('decimalsEntered', function(e, cents) {
+		if (String(cents).length > 2) {
+			var errorMsg = priceFormatMessage + ' (0.' + cents + ')';
+			$('#help-orderTotalFreeShippingText').html(errorMsg);
+		}
+	});
+	
+	
+	$('#handlingFeesText').blur(function() {
+		$('#help-handlingFeesText').html(null);
+		$(this).formatCurrency({ roundToDecimalPlace: 2, eventOnDecimalsEntered: true, symbol: ''});
+	})
+	.keyup(function(e) {
+			var e = window.event || e;
+			var keyUnicode = e.charCode || e.keyCode;
+			if (e !== undefined) {
+				switch (keyUnicode) {
+					case 16: break; // Shift
+					case 17: break; // Ctrl
+					case 18: break; // Alt
+					case 27: this.value = ''; break; // Esc: clear entry
+					case 35: break; // End
+					case 36: break; // Home
+					case 37: break; // cursor left
+					case 38: break; // cursor up
+					case 39: break; // cursor right
+					case 40: break; // cursor down
+					case 78: break; // N (Opera 9.63+ maps the "." from the number key section to the "N" key too!) (See: http://unixpapa.com/js/key.html search for ". Del")
+					case 110: break; // . number block (Opera 9.63+ maps the "." from the number block to the "N" key (78) !!!)
+					case 190: break; // .
+					default: $(this).formatCurrency({ colorize: true, negativeFormat: '-%s%n', roundToDecimalPlace: -1, eventOnDecimalsEntered: true, symbol: ''});
+				}
+			}
+		})
+	.bind('decimalsEntered', function(e, cents) {
+		if (String(cents).length > 2) {
+			var errorMsg = priceFormatMessage + ' (0.' + cents + ')';
+			$('#help-handlingFeesText').html(errorMsg);
+		}
+	});
+	
+});	
+
 </script>
 
 
@@ -49,17 +129,17 @@
                                     		<form:checkbox id="freeShippingEnabled" path="freeShippingEnabled" /><br/>
                                     		<form:radiobutton id="shipFreeType" path="shipFreeType" value="NATIONAL"/>&nbsp;<s:message code="label.shipping.national" text="National" /><br/>			
 											<form:radiobutton id="shipFreeType" path="shipFreeType" value="INTERNATIONAL"/>&nbsp;<s:message code="label.shipping.international" text="International" /><br/>
-											<form:input cssClass="input-large" path="orderTotalFreeShippingText" />&nbsp;<s:message code="label.shipping.freeshippingamount" text="Order total over" />
+											<form:input cssClass="input-large" id="orderTotalFreeShippingText" path="orderTotalFreeShippingText" />&nbsp;<s:message code="label.shipping.freeshippingamount" text="Order total over" />
                         				</div>
-                        				<span class="help-inline"><form:errors path="orderTotalFreeShippingText" cssClass="error" /></span>
+                        				<span id="help-orderTotalFreeShippingText" class="help-inline"><form:errors path="orderTotalFreeShippingText" cssClass="error" /></span>
                   					</div>
                   					
                   					<div class="control-group">
                         				<label><s:message code="label.shipping.handlingfees" text="Handling fees"/></label>
                         				<div class="controls">
-											<form:input cssClass="input-large" path="handlingFeesText" />
+											<form:input cssClass="input-large" id="handlingFeesText" path="handlingFeesText" />
                         				</div>
-	                                	<span class="help-inline"><form:errors path="handlingFeesText" cssClass="error" /></span>
+	                                	<span id="help-handlingFeesText" class="help-inline"><form:errors path="handlingFeesText" cssClass="error" /></span>
 	                        		</div>
 	                        		
 	                        		<div class="control-group">
