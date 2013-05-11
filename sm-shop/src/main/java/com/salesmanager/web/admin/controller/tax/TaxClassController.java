@@ -25,8 +25,11 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 import com.salesmanager.core.business.tax.service.TaxClassService;
 import com.salesmanager.core.business.user.model.User;
+import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuotesConfiguration;
+import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuotesRegion;
 import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
+import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
@@ -163,6 +166,38 @@ public class TaxClassController {
 		String returnString = resp.toJSONString();
 		
 		return returnString;
+		
+	}
+	
+	@Secured("TAX")
+	@RequestMapping(value="/admin/tax/taxclass/edit.html", method=RequestMethod.GET)
+	public String editCustomShipping(@ModelAttribute("id") String id, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+		setMenu(model,request);
+
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+
+		TaxClass taxClass = null;
+		try {
+			Long taxClassId = Long.parseLong(id);
+			taxClass = taxClassService.getById(taxClassId);
+		} catch (Exception e) {
+			LOGGER.error("Cannot parse taxclassid " + id);
+			return "redirect:/admin/tax/taxclass/list.html";
+		}
+		
+		if(taxClass==null || taxClass.getMerchantStore().getId()!=store.getId()) {
+			return "redirect:/admin/tax/taxclass/list.html";
+		}
+		
+		
+		
+		
+		model.addAttribute("taxClass", taxClass);
+		
+		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Tax.taxClass;
+		
+		
 		
 	}
 
