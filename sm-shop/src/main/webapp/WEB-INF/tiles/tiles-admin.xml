@@ -222,6 +222,11 @@
   		<put-attribute name="body" value="/pages/admin/tax/taxClass.jsp" /> 
   	</definition>
   	
+  	
+  	<definition name="tax-class" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/tax/taxClassDetails.jsp" /> 
+  	</definition>
+  	
   	<definition name="tax-configuration" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/tax/taxConfiguration.jsp" /> 
   	</definition>
