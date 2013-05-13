@@ -67,7 +67,6 @@ $.fn.addItems = function(data) {
         return this.each(function() {
             var list = this;
             $.each(data, function(index, itemData) {
-            	//alert(itemData.name + " " + itemData.id)
                 var option = new Option(itemData.name, itemData.id);
                 list.add(option);
             });
@@ -91,9 +90,16 @@ function getZones(countryCode){
 					$('.zone-list').show();  
 					$('#stateProvince').hide();
 					$(".zone-list").addItems(data);
+					<c:if test="${taxRate.zone!=null}">
+						$('.zone-list').val('<c:out value="${taxRate.zone.id}"/>');
+						$('#stateProvince').val('');
+					</c:if>
 				} else {
 					$('.zone-list').hide();             
 					$('#stateProvince').show();
+					<c:if test="${taxRate.stateProvince!=null}">
+						$('#stateProvince').val('<c:out value="${taxRate.stateProvince}"/>');
+					</c:if>
 
 				}
 			} else {
@@ -122,12 +128,12 @@ function getZones(countryCode){
   					 	<div class="tab-content">
 
     						<div class="tab-pane active" id="taxrates-section">
-
+								<a href="<c:url value="/admin/tax/taxrates/list.html"/>"><s:message code="label.generic.back" text="Back" /></a><br/><br/>
 								<div class="sm-ui-component">	
-								<h3><s:message code="menu.taxrates" text="Tax rates" /></h3>	
+								<h3><s:message code="menu.taxrates.rate" text="Tax rate" /></h3>	
 								<br/>
 
-								<c:url var="saveTaxRate" value="/admin/tax/taxrates/save.html"/>
+								<c:url var="saveTaxRate" value="/admin/tax/taxrates/update.html"/>
 
 								<form:form method="POST" modelAttribute="taxRate" action="${saveTaxRate}">	
 				      				<form:errors path="*" cssClass="alert alert-error" element="div" />
@@ -148,7 +154,7 @@ function getZones(countryCode){
 				                        <label><s:message code="label.storezone" text="Store state / province"/></label>
 				                        <div class="controls">
 				                        					<form:select cssClass="zone-list " path="zone.id"/>
-				                        					<input type="text" class="input-large" id="stateProvince" name="stateProvince" /> 
+				                        					<input type="text" class="input-large" value="${taxRate.stateProvince}" id="stateProvince" name="stateProvince" /> 
 				                                   			<span class="help-inline"><form:errors path="zone.code" cssClass="error" /></span>
 				                        </div>
 	                  				</div>
@@ -164,8 +170,10 @@ function getZones(countryCode){
 				                              </div>
 				
 				                       </div>
+				                       <form:hidden path="descriptions[${counter.index}].id" />
 				                       <form:hidden path="descriptions[${counter.index}].language.id" />
 				                       <form:hidden path="descriptions[${counter.index}].language.code" />
+				                       <form:hidden path="descriptions[${counter.index}].taxRate.id" />
 				                       
 				                    </c:forEach>
 				                    
@@ -217,6 +225,7 @@ function getZones(countryCode){
 
 
 				                  	<form:hidden path="merchantStore.id" value="${requestScope.store.id}" />
+				                  	<form:hidden path="id" />
 							
 							        <div class="form-actions">
 				                  		<div class="pull-right">
@@ -226,33 +235,12 @@ function getZones(countryCode){
 				 
 				            	 </form:form>
 				            	 
-				            	 
-				            	 <br/><br/>
-				            	 <!-- Listing grid include -->
-								 <c:set value="/admin/tax/taxrates/page.html" var="pagingUrl" scope="request"/>
-								 <c:set value="/admin/tax/taxrates/remove.html" var="removeUrl" scope="request"/>
-								 <c:set value="/admin/tax/taxrates/list.html" var="refreshUrl" scope="request"/>
-								 <c:set value="/admin/tax/taxrates/edit.html" var="editUrl" scope="request"/>
-								 <c:set var="entityId" value="taxRateId" scope="request"/>
-								 <c:set var="componentTitleKey" value="label.tax.taxclass.title" scope="request"/>
-								 <c:set var="gridHeader" value="/pages/admin/tax/taxRates-gridHeader.jsp" scope="request"/>
-								 <c:set var="canRemoveEntry" value="true" scope="request"/>
 
-				
-				            	 <jsp:include page="/pages/admin/components/list.jsp"></jsp:include> 
-								 <!-- End listing grid include -->
 				     
 	      			     
       					</div>
       					
 
-      			     
-      			     
-
-
-      			     
-      			     
-    
 
 
    					</div>

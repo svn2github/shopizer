@@ -17,12 +17,12 @@
   					 	<div class="tab-content">
 
     						<div class="tab-pane active" id="taxrates-section">
-
+								<a href="<c:url value="/admin/tax/taxclass/list.html"/>"><s:message code="label.generic.back" text="Back" /></a><br/><br/>
 								<div class="sm-ui-component">	
 								<h3><s:message code="label.tax.taxclass.title" text="Tax classes" /></h3>	
 								<br/>
 
-								<c:url var="saveTaxClass" value="/admin/tax/taxclass/save.html"/>
+								<c:url var="saveTaxClass" value="/admin/tax/taxclass/update.html"/>
 
 								<form:form method="POST" modelAttribute="taxClass" action="${saveTaxClass}">	
 				      				<form:errors path="*" cssClass="alert alert-error" element="div" />
@@ -58,15 +58,7 @@
 
 	      			     
       					</div>
-      					
 
-      			     
-      			     
-
-
-      			     
-      			     
-    
 
 
    					</div>

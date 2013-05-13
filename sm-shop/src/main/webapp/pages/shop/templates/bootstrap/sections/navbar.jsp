@@ -15,63 +15,41 @@ response.setDateHeader ("Expires", -1);
 <%@page pageEncoding="UTF-8"%>
 
 
+            <!-- Start Navbar-->
+            <div class="row-fluid show-grid">
 
-
-
-<!-- Start Navbar-->
-            <div class="row show-grid">
-                <div class="span4 logo">
-                	<c:choose>
+				<div class="span12">
+					<nav class="pull-left logo">
+						 <c:choose>
                 		<c:when test="${requestScope.MERCHANT_STORE.storeLogo!=null}">
                 			<img class="logoImage" src="<sm:storeLogo/>" />
                 		</c:when>
                 		<c:otherwise>
+                			<h1>
                 			<a href="<c:url value="/shop/"/>">
-                				<h1><c:out value="${requestScope.MERCHANT_STORE.storename}"/></h1>
+                				<c:out value="${requestScope.MERCHANT_STORE.storename}"/>
                 			</a>  
+                			</h1>
                 		</c:otherwise>
-                	</c:choose>                    
-                </div>
-                <div class="span8 offset0">
+                	  </c:choose>  
+					</nav>
 
 
-						<div class="row">
-						<nav class="pull-right" id="menu">
-						                    <ul class="sf-js-enabled sf-shadow">
-						                        <li class="">
-						                            <a class="current" href="#">
-						                                <span class="name">Home Page</span>
-						                                <span class="desc">welcome page</span>
-						                            </a>
-						                        </li>
-						                        <li class="">
-						                            <a href="#" class="sf-with-ul">
-						                                <span class="name">Category 1</span>
-						                                <span class="desc">Highlight</span>
-						                            </a>
-						
-						                        </li>
-										
-						                        <li class="">
-						                            <a href="#" class="sf-with-ul">
-						                                <span class="name">Category 2</span>
-						                                <span class="desc">highlight</span>
-						                            </a>
-						                        </li>
-						                    </ul>
+						<nav id="menu" class="pull-right">
+                    					<ul id="mainMenuLinks" class="sf-js-enabled sf-shadow"><li class="">                             <a href="index.html" class="current">                                 <span class="name">Home</span>                                        <span class="desc">Home</span>                                  </a>                         </li><li class="">                             <a class="sf-with-ul" href="category.html?category=short-sleeves">                                 <span class="name">Short Sleeves</span>                                        <span class="desc">Cool t shirts</span>                                  </a>                         </li><li class="">                             <a class="sf-with-ul" href="category.html?category=long-sleeves">                                 <span class="name">Long Sleeves</span>                                        <span class="desc">Surf shirts</span>                                  </a>                         </li></ul>
 						</nav>
-					</div>
-					<div class="row pull-right">
-										<form class="form-search">
-											<div class="row">
-												<input class="span3" id="inputSearch" type="text"> 
-												<button type="submit" class="btn">Search</button>
-											</div>
-										</form>
-					</div>
 
-
-
-                </div>
+				</div>
             </div>
- <!-- End Navbar-->
+            		
+			<div class="row-fluid">
+
+					<div style="padding-top: 4px;margin-right:8px;" class="btn-group pull-right">
+						<form class="form-inline">
+ 							<input type="text" placeholder="" class="input-medium">
+
+							<button class="btn" type="submit">Search</button>
+						</form>
+					</div>
+			</div>
+			<!-- End Navbar-->

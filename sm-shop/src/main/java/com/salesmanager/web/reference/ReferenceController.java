@@ -69,12 +69,13 @@ public class ReferenceController {
 			
 			for(Zone zone : zones) {
 			
-			@SuppressWarnings("rawtypes")
-			Map entry = new HashMap();
-			entry.put("name", zone.getName());
-			entry.put("code", zone.getCode());
-
-			resp.addDataEntry(entry);
+				@SuppressWarnings("rawtypes")
+				Map entry = new HashMap();
+				entry.put("name", zone.getName());
+				entry.put("code", zone.getCode());
+				entry.put("id", zone.getId());
+	
+				resp.addDataEntry(entry);
 			
 			}
 			

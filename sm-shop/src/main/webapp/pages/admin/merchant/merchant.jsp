@@ -70,6 +70,7 @@ function getZones(countryCode){
 					$(".zone-list").addItems(data);
 					<c:if test="${store.zone!=null}">
 						$('.zone-list').val('<c:out value="${store.zone.code}"/>');
+						$('#storestateprovince').val('');
 					</c:if>
 				} else {
 					$('.zone-list').hide();             

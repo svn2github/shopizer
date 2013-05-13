@@ -234,7 +234,10 @@
    	<definition name="tax-rates" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/tax/taxRates.jsp" /> 
   	</definition> 	
-  	
+
+   	<definition name="tax-rate" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/tax/taxRateDetails.jsp" /> 
+  	</definition>   	
   	
   	
 </tiles-definitions>

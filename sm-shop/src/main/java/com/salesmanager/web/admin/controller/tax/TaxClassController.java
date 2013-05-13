@@ -16,30 +16,31 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 import com.salesmanager.core.business.tax.service.TaxClassService;
-import com.salesmanager.core.business.user.model.User;
-import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuotesConfiguration;
-import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuotesRegion;
 import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
-import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
-import com.salesmanager.web.utils.UserUtils;
 
 @Controller
 public class TaxClassController {
 	
 	@Autowired
 	private TaxClassService taxClassService = null;
+	
+	@Autowired
+	private ProductService productService=null;
 	
 	@Autowired
 	LabelUtils messages;
@@ -103,11 +104,73 @@ public class TaxClassController {
 		
 		setMenu(model, request);
 		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+
+		
+		//requires code and name
+		if(taxClass.getCode().equals(TaxClass.DEFAULT_TAX_CLASS)) {
+			ObjectError error = new ObjectError("code",messages.getMessage("message.taxclass.alreadyexist", locale));
+			result.addError(error);
+		}
+		
+
+		
+		//check if the code already exist
+		TaxClass taxClassDb = taxClassService.getByCode(taxClass.getCode(),store);
+		
+		if(taxClassDb!=null) {
+			ObjectError error = new ObjectError("code",messages.getMessage("message.taxclass.alreadyexist", locale));
+			result.addError(error);
+		}
+		
+		if (result.hasErrors()) {
+			return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Tax.taxClasses;
+		}
+		
 		taxClassService.create(taxClass);
 		
 		model.addAttribute("success","success");
 		
 		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Tax.taxClasses;
+		
+	}
+	
+	
+	@Secured("TAX")
+	@RequestMapping(value="/admin/tax/taxclass/update.html", method=RequestMethod.POST)
+	public String updateTaxClass(@Valid @ModelAttribute("taxClass") TaxClass taxClass, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+		
+		
+		setMenu(model, request);
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+
+		
+		//requires code and name
+		if(taxClass.getCode().equals(TaxClass.DEFAULT_TAX_CLASS)) {
+			ObjectError error = new ObjectError("code",messages.getMessage("message.taxclass.alreadyexist", locale));
+			result.addError(error);
+		}
+		
+
+		
+		//check if the code already exist
+		TaxClass taxClassDb = taxClassService.getByCode(taxClass.getCode(),store);
+		
+		if(taxClassDb!=null && taxClassDb.getId().longValue()!=taxClass.getId().longValue()) {
+			ObjectError error = new ObjectError("code",messages.getMessage("message.taxclass.alreadyexist", locale));
+			result.addError(error);
+		}
+		
+		if (result.hasErrors()) {
+			return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Tax.taxClass;
+		}
+		
+		taxClassService.update(taxClass);
+		
+		model.addAttribute("success","success");
+		
+		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Tax.taxClass;
 		
 	}
 	
@@ -147,9 +210,25 @@ public class TaxClassController {
 				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
 				return resp.toJSONString();
 			}
-
 			
 			TaxClass taxClass = taxClassService.getById(lTaxClassId);
+			
+			if(taxClass==null) {
+				LOGGER.error("Invalid taxClassId " + taxClassId);
+				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
+				return resp.toJSONString();
+			}
+			
+			//look if the taxclass is used for products
+			List<Product> products = productService.listByTaxClass(taxClass);
+
+			if(products!=null && products.size()>0) {
+				resp.setStatusMessage(messages.getMessage("message.product.association", locale));
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
+				return resp.toJSONString();
+			}
+			
 			
 			taxClassService.delete(taxClass);
 			
@@ -158,7 +237,7 @@ public class TaxClassController {
 		
 		
 		} catch (Exception e) {
-			LOGGER.error("Error while deleting product price", e);
+			LOGGER.error("Error while deleting tax class", e);
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 			resp.setErrorMessage(e);
 		}
@@ -171,7 +250,7 @@ public class TaxClassController {
 	
 	@Secured("TAX")
 	@RequestMapping(value="/admin/tax/taxclass/edit.html", method=RequestMethod.GET)
-	public String editCustomShipping(@ModelAttribute("id") String id, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	public String editTaxClass(@ModelAttribute("id") String id, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		setMenu(model,request);
 

@@ -13,94 +13,47 @@ response.setDateHeader ("Expires", -1);
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 
-        <script type="text/javascript">
-            $(document).ready(function(){
-				$('.dropdown-toggle').dropdown();
-						 
-				// Fix input element click problem
-				$('.dropdown input, .dropdown label .dropdown button').click(function(e) {
-						e.stopPropagation();
-				});
-            });
-        </script>
+			<!-- header -->
+			<div id="mainmenu" class="row-fluid">
+				
+					<ul class="nav nav-pills pull-left" id="linkMenuLinks"><li class="active"><a href="index.html">Home</a></li><li><a href="#contactformlink">Contact</a></li></ul>
 
 
-<div class="row" id="mainmenu">
-				<div class="span7">
-					<ul id="links" class="nav nav-pills pull-left">
-						<li class="active"><a href="http://#previews/WB0M3G9S1/index.html" title="Bitsy Shop">Home</a></li>
-						<li><a href="http://#previews/WB0M3G9S1/products.html" title="All specials">Specials</a></li>
-						<li><a href="http://#previews/WB0M3G9S1/contact.html" title="Contact">Contact</a></li>						
-					</ul>
-				</div>
-				<div class="span5">
-
-					<!-- Shopping Cart -->
-					<div class="btn-group pull-right" style="padding-top: 8px;">
-						<i class="icon-shopping-cart icon-black"></i>
-						<a id="open-cart" class="open noboxshadow dropdown-toggle" data-toggle="dropdown" href="#" style="box-shadow:none;">My Cart</a>
-						<span id="cartinfo">
-							<span id="cartqty">(0 items)</span>&nbsp;<span id="cartprice">$0.00</span>
-						</span> 
-						
-			            	<ul class="dropdown-menu minicart">
-			              	<li>
-								<div class="cartbox">
-									<div id="shoppingcart">
-										<h3>Shopping Cart</h3><br/>
+					<div style="padding-top: 8px;padding-bottom:10px;" class="btn-group pull-right">
+            					<i class="icon-shopping-cart icon-black"></i>
+            					<a style="box-shadow:none;color:FF8C00;" href="#" data-toggle="dropdown" class="open noboxshadow dropdown-toggle" id="open-cart">My Cart</a>
+           		 			<span id="cartinfo">
+                  					<span id="cartqty">(1 item)</span>&nbsp;<span id="cartprice">$29.99</span>
+            					</span>
+            					<ul class="dropdown-menu minicart">
+              						<li>
+                  						<div class="cartbox" id="cart-box">
+                  							<div class="box-content clearfix">
+                  								<h3 class="lbw">Shopping Cart</h3>&nbsp;<span style="width:15%;display:none;" id="checkout-wait"><img src="img/misc/wait18trans.gif"></span><br>
+		                  						<div id="shoppingcart">
+		                  						<table style="margin-bottom: 5px" class="table">
+		                  						<tbody><tr id="42" class="cart-product">
+		                  						<td><img width="40" height="40" src="img/products/shirt1.jpg"></td>
+		                  						<td>1 Short sleeves white</td><td>$29.99</td>
+		                  						<td><button productid="42" class="close removeProductIcon">x</button></td>
+		                  						</tr></tbody></table>
+		                  						
+		                  						<div style="padding-right:4px;" class="row">
+		                  						<div class="pull-right">Shipping costs of $10.00 : $10.00</div>
+		                  						</div><div class="total-box">
+		                  						
+		                  						<div class="pull-right"><font class="total-box-label">Total : <font class="total-box-price"><strong><span id="checkout-total-plus">$39.99</span></strong></font></font></div>
+		                  						</div>
+		                  						<br/>
+		                  						<button class="btn" style="width:100%" type="submit">Check out</button>
+		                  						</div>
+	                  						</div>
+                  						</div>
+              						</li>
+            					</ul>
 					
-										<table class="table">
-							
-							
-											<tr>
-												<td></td>
-												<td>Product 1</td>
-												<td><button class="close">&times;</button></td>
-											</tr>
-											<tr>
-												<td></td>
-												<td>Product 1</td>
-												<td><button class="close">&times;</button></td>
-											</tr>	
-										</table>
-										<div class="total-box">
-												<span style="float:right">
-											
-													<font class="total-box-label">Total&nbsp;<font class="total-box-price">$183.98 CAD</font></font>
-						
-												</span>
-										</div>
-										<br/>
-					
-										<div class="pull-right"> 
-											<a class="btn btn-success" href="#"><i class="icon-shopping-cart icon-white"></i> Checkout</a> 
-										</div>
-					
-								  </div>
-							</div>
-					  </li>
-					</ul>
-			     </div>
+					</div>
 
-				<!-- Customer Logon //TODO common include-->
-				<div class="btn-group pull-right" style="padding-top: 8px;padding-right:12px;">
-					<ul class="nav" style="z-index:500000;">
-						          <li class="dropdown">
-						            <a class="dropdown-toggle" href="#" data-toggle="dropdown">Sign In <strong class="caret"></strong></a>
-						            <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
 
-						               <form action="[YOUR ACTION]" method="post" accept-charset="UTF-8">
-										  <input id="user_username" style="margin-bottom: 15px;" type="text" name="user[username]" size="30" />
-										  <input id="user_password" style="margin-bottom: 15px;" type="password" name="user[password]" size="30" />
-										  <input id="user_remember_me" style="float: left; margin-right: 10px;" type="checkbox" name="user[remember_me]" value="1" />
-										  <label class="string optional" for="user_remember_me"> Remember me</label>
-										 
-										  <input class="btn btn-primary" style="clear: left; width: 100%; height: 32px; font-size: 13px;" type="submit" name="commit" value="Sign In" />
-										</form>
-
-						            </div>
-						          </li>
-					</ul>
-				</div>
-		</div>
-</div>
+			</div>
+			<!-- End main menu -->

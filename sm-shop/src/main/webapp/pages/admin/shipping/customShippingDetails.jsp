@@ -21,7 +21,7 @@ $(document).ready(function() {
 
 	
 	$('#priceText').blur(function() {
-		$('#help-price').html(null);
+		$('#help-priceText').html(null);
 		$(this).formatCurrency({ roundToDecimalPlace: 2, eventOnDecimalsEntered: true, symbol: ''});
 	})
 	.keyup(function(e) {

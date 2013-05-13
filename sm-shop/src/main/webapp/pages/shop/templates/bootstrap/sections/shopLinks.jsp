@@ -8,6 +8,7 @@
     <!-- Le styles -->
     
     <link href="<c:url value="/resources/templates/bootstrap/css/bootstrap.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/templates/bootstrap/css/bootstrap-responsive.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/templates/bootstrap/css/theme.css" />" rel="stylesheet">
  
  
@@ -16,7 +17,7 @@
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <!--<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>-->
-    <![endif]-->
+    <!--[endif]-->
 
 
 <!-- Le styles -->

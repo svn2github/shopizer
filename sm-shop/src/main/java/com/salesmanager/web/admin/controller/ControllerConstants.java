@@ -18,6 +18,11 @@ public interface ControllerConstants
             final String addContentImages="admin-contentImages-add";
             final String contentImages="admin-content-images";
             final String fileBrowser="admin-content-filebrowser";
+ 
+        }
+        
+        interface Content{
+            final String contentPages="admin-content-pages";
         }
         
         interface Product{
@@ -66,6 +71,7 @@ public interface ControllerConstants
             final String taxClass="tax-class";
             final String taxConfiguration="tax-configuration";
             final String taxRates="tax-rates";
+            final String taxRate="tax-rate";
         }
         
     }
