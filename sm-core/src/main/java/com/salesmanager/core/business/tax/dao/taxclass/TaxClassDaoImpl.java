@@ -48,5 +48,31 @@ public class TaxClassDaoImpl extends SalesManagerEntityDaoImpl<Long, TaxClass> i
 		return query.uniqueResult(qTax);
 	}
 	
+	@Override
+	public TaxClass getByCode(String code, MerchantStore store) {
+		QTaxClass qTax = QTaxClass.taxClass;
+
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qTax)
+			.leftJoin(qTax.merchantStore).fetch()
+			.where(qTax.code.eq(code).and(qTax.merchantStore.id.eq(store.getId())));
+		
+		return query.uniqueResult(qTax);
+	}
+	
+	@Override
+	public TaxClass getById(Long id) {
+		QTaxClass qTax = QTaxClass.taxClass;
+
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qTax)
+			.leftJoin(qTax.merchantStore).fetch()
+			.where(qTax.id.eq(id));
+		
+		return query.uniqueResult(qTax);
+	}
+	
 	
 }

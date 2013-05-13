@@ -15,7 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.UniqueConstraint;
-import javax.validation.Valid;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
@@ -42,16 +43,16 @@ public class TaxClass extends SalesManagerEntity<Long, TaxClass> {
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
 	
-	@Valid
-	@Column(name="TAX_CLASS_CODE", length=10)
+	@NotEmpty
+	@Column(name="TAX_CLASS_CODE", nullable=false, length=10)
 	private String code;
 	
+	@NotEmpty
 	@Column(name = "TAX_CLASS_TITLE" , nullable=false , length=32 )
 	private String title;
 	
 
-	
-	@SuppressWarnings("unused")
+
 	@OneToMany(mappedBy = "taxClass", targetEntity = Product.class)
 	private List<Product> products = new ArrayList<Product>();
 	

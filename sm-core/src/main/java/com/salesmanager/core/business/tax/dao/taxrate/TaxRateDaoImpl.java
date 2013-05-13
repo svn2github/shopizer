@@ -25,7 +25,104 @@ public class TaxRateDaoImpl extends SalesManagerEntityDaoImpl<Long, TaxRate> imp
 	
 	@Override
 	public List<TaxRate> listByStore(MerchantStore store) {
-		return null;
+		
+		
+		QTaxRate qTax = QTaxRate.taxRate1;
+		QTaxRateDescription qTaxDescription = QTaxRateDescription.taxRateDescription;
+
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qTax)
+			.leftJoin(qTax.merchantStore).fetch()
+			.leftJoin(qTax.descriptions,qTaxDescription).fetch()
+			.join(qTax.country).fetch()
+			.leftJoin(qTax.zone).fetch()
+			.leftJoin(qTax.parent).fetch()
+			.where(qTax.merchantStore.id.eq(store.getId())
+			).orderBy(qTax.taxPriority.asc());
+		
+		List<TaxRate> taxes = query.list(qTax);
+		return taxes;
+		
+		
+		
+	}
+	
+	@Override
+	public List<TaxRate> listByStore(MerchantStore store, Language language) {
+		
+		
+		QTaxRate qTax = QTaxRate.taxRate1;
+		QTaxRateDescription qTaxDescription = QTaxRateDescription.taxRateDescription;
+
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qTax)
+			.leftJoin(qTax.merchantStore).fetch()
+			.leftJoin(qTax.descriptions,qTaxDescription).fetch()
+			.join(qTax.country).fetch()
+			.leftJoin(qTax.zone).fetch()
+			.leftJoin(qTax.parent).fetch()
+			.where(qTax.merchantStore.id.eq(store.getId())
+			.and(qTaxDescription.language.id.eq(language.getId())))
+			.orderBy(qTax.taxPriority.asc());
+		
+		List<TaxRate> taxes = query.list(qTax);
+		return taxes;
+		
+		
+		
+	}
+	
+	@Override
+	public TaxRate getByCode(String code, MerchantStore store) {
+		
+		
+		QTaxRate qTax = QTaxRate.taxRate1;
+		QTaxRateDescription qTaxDescription = QTaxRateDescription.taxRateDescription;
+
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qTax)
+			.leftJoin(qTax.merchantStore).fetch()
+			.leftJoin(qTax.descriptions,qTaxDescription).fetch()
+			.join(qTax.country).fetch()
+			.leftJoin(qTax.zone).fetch()
+			.leftJoin(qTax.parent).fetch()
+			.where(qTax.merchantStore.id.eq(store.getId())
+			.and(qTax.code.eq(code))		
+			).orderBy(qTax.taxPriority.asc());
+		
+		TaxRate tax = query.uniqueResult(qTax);
+		return tax;
+		
+		
+		
+	}
+	
+	@Override
+	public TaxRate getById(Long id) {
+		
+		
+		QTaxRate qTax = QTaxRate.taxRate1;
+		QTaxRateDescription qTaxDescription = QTaxRateDescription.taxRateDescription;
+
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qTax)
+			.leftJoin(qTax.merchantStore).fetch()
+			.leftJoin(qTax.descriptions,qTaxDescription).fetch()
+			.join(qTax.country).fetch()
+			.leftJoin(qTax.zone).fetch()
+			.leftJoin(qTax.parent).fetch()
+			.where(qTax.id.eq(id)
+			).orderBy(qTax.taxPriority.asc());
+		
+		TaxRate tax = query.uniqueResult(qTax);
+		return tax;
+		
+		
+		
 	}
 	
 	@Override

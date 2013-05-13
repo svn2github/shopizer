@@ -35,11 +35,21 @@ public class TaxClassServiceImpl extends SalesManagerEntityServiceImpl<Long, Tax
 	}
 	
 	@Override
+	public TaxClass getByCode(String code, MerchantStore store) throws ServiceException {
+		return taxClassDao.getByCode(code, store);
+	}
+	
+	@Override
 	public void delete(TaxClass taxClass) throws ServiceException {
 		
 		TaxClass t = this.getById(taxClass.getId());
 		super.delete(t);
 		
+	}
+	
+	@Override
+	public TaxClass getById(Long id) {
+		return taxClassDao.getById(id);
 	}
 	
 

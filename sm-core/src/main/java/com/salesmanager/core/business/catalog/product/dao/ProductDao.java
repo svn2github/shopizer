@@ -10,6 +10,7 @@ import com.salesmanager.core.business.catalog.product.model.ProductList;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDao;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 
 public interface ProductDao extends SalesManagerEntityDao<Long, Product> {
 	
@@ -37,5 +38,7 @@ public interface ProductDao extends SalesManagerEntityDao<Long, Product> {
 	ProductList listByStore(MerchantStore store, Language language, ProductCriteria criteria);
 
 	List<Product> listByStore(MerchantStore store);
+
+	List<Product> listByTaxClass(TaxClass taxClass);
 	
 }

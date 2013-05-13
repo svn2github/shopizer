@@ -32,6 +32,7 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 import com.salesmanager.core.utils.CoreConfiguration;
 
 @Service("productService")
@@ -154,6 +155,12 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		
 		return productDao.listByStore(store);
 	}
+	
+	@Override
+	public List<Product> listByTaxClass(TaxClass taxClass) {
+		return productDao.listByTaxClass(taxClass);
+	}
+		
 
 	@Override
 	public ProductList getProductsForLocale(Category category,

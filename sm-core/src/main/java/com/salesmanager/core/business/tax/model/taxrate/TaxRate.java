@@ -34,8 +34,11 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
 
-import com.salesmanager.core.business.catalog.category.model.Category;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.salesmanager.core.business.common.model.audit.AuditListener;
 import com.salesmanager.core.business.common.model.audit.AuditSection;
 import com.salesmanager.core.business.common.model.audit.Auditable;
@@ -48,7 +51,13 @@ import com.salesmanager.core.constants.SchemaConstant;
 
 @Entity
 @EntityListeners(value = AuditListener.class)
-@Table(name = "TAX_RATE" , schema = SchemaConstant.SALESMANAGER_SCHEMA )
+@Table(name = "TAX_RATE" , schema = SchemaConstant.SALESMANAGER_SCHEMA,uniqueConstraints={
+		@UniqueConstraint(columnNames={
+				"TAX_CODE",
+				"MERCHANT_ID"
+			})
+		}
+	)
 public class TaxRate  extends SalesManagerEntity<Long, TaxRate> implements Auditable {
 	private static final long serialVersionUID = 3356827741612925066L;
 	
@@ -62,21 +71,16 @@ public class TaxRate  extends SalesManagerEntity<Long, TaxRate> implements Audit
 	private AuditSection auditSection = new AuditSection();
 	
 	@Column(name = "TAX_PRIORITY")
-	private Integer taxPriority;
+	private Integer taxPriority = 0;
 	
 	@Column(name = "TAX_RATE" , nullable= false , precision=7, scale=4)
 	private BigDecimal taxRate;
 	
+	@NotEmpty
 	@Column(name = "TAX_CODE")
 	private String code;
 	
-	/**
-	 * This transient object property
-	 * is a utility used only to submit from a free text
-	 */
-	@Transient
-	private String taxRatePrice = "0";
-	
+
 	@Column(name = "PIGGYBACK")
 	private boolean piggyback;
 	
@@ -90,6 +94,7 @@ public class TaxRate  extends SalesManagerEntity<Long, TaxRate> implements Audit
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
 	private MerchantStore merchantStore;
 	
+	@Valid
 	@OneToMany(mappedBy = "taxRate", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<TaxRateDescription> descriptions = new ArrayList<TaxRateDescription>();
 	
@@ -212,15 +217,6 @@ public class TaxRate  extends SalesManagerEntity<Long, TaxRate> implements Audit
 		return zone;
 	}
 
-
-
-	public void setTaxRatePrice(String taxRatePrice) {
-		this.taxRatePrice = taxRatePrice;
-	}
-
-	public String getTaxRatePrice() {
-		return taxRatePrice;
-	}
 
 	public void setTaxRates(List<TaxRate> taxRates) {
 		this.taxRates = taxRates;

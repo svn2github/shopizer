@@ -35,6 +35,19 @@ public class TaxRateServiceImpl extends SalesManagerEntityServiceImpl<Long, TaxR
 	}
 	
 	@Override
+	public List<TaxRate> listByStore(MerchantStore store, Language language)
+			throws ServiceException {
+		return taxRateDao.listByStore(store, language);
+	}
+	
+	
+	@Override
+	public TaxRate getByCode(String code, MerchantStore store)
+			throws ServiceException {
+		return taxRateDao.getByCode(code,store);
+	}
+	
+	@Override
 	public List<TaxRate> listByCountryZoneAndTaxClass(Country country, Zone zone, TaxClass taxClass, MerchantStore store, Language language) throws ServiceException {
 		return taxRateDao.listByCountryZoneAndTaxClass(country, zone, taxClass, store, language);
 	}
@@ -42,6 +55,14 @@ public class TaxRateServiceImpl extends SalesManagerEntityServiceImpl<Long, TaxR
 	@Override
 	public List<TaxRate> listByCountryStateProvinceAndTaxClass(Country country, String stateProvince, TaxClass taxClass, MerchantStore store, Language language) throws ServiceException {
 		return taxRateDao.listByCountryStateProvinceAndTaxClass(country, stateProvince, taxClass, store, language);
+	}
+	
+	@Override
+	public void delete(TaxRate taxRate) throws ServiceException {
+		
+		TaxRate t = this.getById(taxRate.getId());
+		super.delete(t);
+		
 	}
 		
 

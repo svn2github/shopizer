@@ -12,6 +12,7 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 
 
 public interface ProductService extends SalesManagerEntityService<Long, Product> {
@@ -48,6 +49,8 @@ public interface ProductService extends SalesManagerEntityService<Long, Product>
 	void saveOrUpdate(Product product) throws ServiceException;
 
 	List<Product> listByStore(MerchantStore store);
+
+	List<Product> listByTaxClass(TaxClass taxClass);
 	
 
 }
