@@ -83,6 +83,23 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 	
 	@Override
+	public IntegrationConfiguration getPaymentConfiguration(String moduleCode, MerchantStore store) throws ServiceException {
+
+		
+		Map<String,IntegrationConfiguration> configuredModules = getPaymentModulesConfigured(store);
+		if(configuredModules!=null) {
+			for(String key : configuredModules.keySet()) {
+				if(key.equals(moduleCode)) {
+					return configuredModules.get(key);	
+				}
+			}
+		}
+		
+		return null;
+		
+	}
+	
+	@Override
 	public Map<String,IntegrationConfiguration> getPaymentModulesConfigured(MerchantStore store) throws ServiceException {
 		
 		try {

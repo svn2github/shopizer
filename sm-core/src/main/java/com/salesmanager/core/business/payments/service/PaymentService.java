@@ -56,4 +56,15 @@ public interface PaymentService {
 	void validateCreditCard(String number, int type, String month, String date)
 			throws ServiceException;
 
+	/**
+	 * Get the integration configuration
+	 * for a specific payment module
+	 * @param moduleCode
+	 * @param store
+	 * @return
+	 * @throws ServiceException
+	 */
+	IntegrationConfiguration getPaymentConfiguration(String moduleCode,
+			MerchantStore store) throws ServiceException;
+
 }
