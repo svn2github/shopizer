@@ -177,6 +177,10 @@
   		<put-attribute name="body" value="/pages/admin/payment/paymentMethods.jsp" /> 
   	</definition>
   	
+  	<definition name="payment-method" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/payment/paymentMethod.jsp" /> 
+  	</definition>
+  	
   	<definition name="shipping-options" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/shipping/shippingOptions.jsp" /> 
   	</definition>

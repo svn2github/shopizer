@@ -5,12 +5,51 @@
 <%@ page session="false" %>		
 
 
+<script src="<c:url value="/resources/js/ckeditor/ckeditor.js" />"></script>
+
+
 
                  
                  <div class="control-group">
                         <label class="required"><s:message code="module.payment.moneyorder.adress" text="Cheque must be made to this address"/></label>
 	                        <div class="controls">
 	                        		<form:input cssClass="input-large highlight" path="integrationKeys['address']" />
+	                        		
+	                        		<textarea cols="30" id="integrationKeys['address']" name="integrationKeys['address']">
+                        				<c:out value="${configuration.integrationKeys['address']}"/>
+                        			 </textarea>
+	                        		
+			                        <script type="text/javascript">
+									//<![CDATA[
+			
+										CKEDITOR.replace('integrationKeys['address']',
+										{
+											skin : 'office2003',
+											toolbar : 
+											[
+												['Source','-','Save','NewPage','Preview'], 
+												['Cut','Copy','Paste','PasteText','-','Print'], 
+												['Undo','Redo','-','Find','-','SelectAll','RemoveFormat'], '/', 
+												['Bold','Italic','Underline','Strike','-','Subscript','Superscript'], 
+												['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'], 
+												['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'], 
+												['Link','Unlink','Anchor'], 
+												['Image','Flash','Table','HorizontalRule','SpecialChar','PageBreak'], '/', 
+												['Styles','Format','Font','FontSize'], ['TextColor','BGColor'], 
+												['Maximize', 'ShowBlocks'] 
+											],
+											
+											filebrowserWindowWidth : '720',
+			        						filebrowserWindowHeight : '740',
+											filebrowserImageBrowseUrl :    '<c:url value="/admin/content/fileBrowser.html"/>'
+											
+			
+										});
+			
+									//]]>
+									</script>	                        		
+	                        		
+	                        		
 	                        </div>
 	                        <span class="help-inline">
 	                        	<c:if test="${address!=null}">
