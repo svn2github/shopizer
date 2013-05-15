@@ -54,6 +54,7 @@ public interface ControllerConstants
         
         interface Payment{
         	final String paymentMethods="payment-methods";
+        	final String paymentMethod="payment-method";
         }
         
         interface Order{

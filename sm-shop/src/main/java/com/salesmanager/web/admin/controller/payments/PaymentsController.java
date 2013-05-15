@@ -1,25 +1,33 @@
 package com.salesmanager.web.admin.controller.payments;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.payments.service.PaymentService;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
+import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
 public class PaymentsController {
@@ -27,6 +35,9 @@ public class PaymentsController {
 	
 	@Autowired
 	private PaymentService paymentService;
+	
+	@Autowired
+	LabelUtils messages;
 
 	
 	@RequestMapping(value="/admin/payments/paymentMethods.html", method=RequestMethod.GET)
@@ -51,6 +62,77 @@ public class PaymentsController {
 		
 		return ControllerConstants.Tiles.Payment.paymentMethods;
 
+	}
+	
+	@Secured("PAYMENT")
+	@RequestMapping(value="/admin/payments/paymentMethod.html", method=RequestMethod.GET)
+	public String displayPaymentMethod(@RequestParam("code") String code, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+
+		this.setMenu(model, request);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+
+		//get configured shipping modules
+		IntegrationConfiguration configuration = paymentService.getPaymentConfiguration(code, store);
+		if(configuration==null) {
+			configuration = new IntegrationConfiguration();
+		}
+		
+		configuration.setModuleCode(code);
+		
+		List<String> environments = new ArrayList<String>();
+		environments.add(Constants.TEST_ENVIRONMENT);
+		environments.add(Constants.PRODUCTION_ENVIRONMENT);
+		
+		model.addAttribute("configuration", configuration);
+		model.addAttribute("environments", environments);
+		return ControllerConstants.Tiles.Payment.paymentMethod;
+		
+		
+	}
+	
+	@Secured("PAYMENT")
+	@RequestMapping(value="/admin/payments/savePaymentMethod.html", method=RequestMethod.POST)
+	public String savePaymentMethod(@ModelAttribute("configuration") IntegrationConfiguration configuration, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+
+
+		this.setMenu(model, request);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+
+		
+		List<String> environments = new ArrayList<String>();
+		environments.add(Constants.TEST_ENVIRONMENT);
+		environments.add(Constants.PRODUCTION_ENVIRONMENT);
+
+		model.addAttribute("environments", environments);
+		model.addAttribute("configuration", configuration);
+
+		try {
+			paymentService.savePaymentModuleConfiguration(configuration, store);
+		} catch (Exception e) {
+			if(e instanceof IntegrationException) {
+				if(((IntegrationException)e).getErrorCode()==IntegrationException.ERROR_VALIDATION_SAVE) {
+					
+					List<String> errorCodes = ((IntegrationException)e).getErrorFields();
+					for(String errorCode : errorCodes) {
+						model.addAttribute(errorCode,messages.getMessage("message.fielderror", locale));
+					}
+					model.addAttribute("validationError","validationError");
+					return ControllerConstants.Tiles.Payment.paymentMethod;
+				}
+			} else {
+				throw new Exception(e);
+			}
+		}
+		
+		
+		
+		model.addAttribute("success","success");
+		return ControllerConstants.Tiles.Payment.paymentMethod;
+		
+		
 	}
 	
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {
