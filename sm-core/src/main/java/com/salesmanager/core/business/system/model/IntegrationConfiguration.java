@@ -18,6 +18,10 @@ import org.json.simple.JSONObject;
  */
 public class IntegrationConfiguration implements JSONAware {
 	
+
+	public final static String TEST_ENVIRONMENT = "TEST";
+	public final static String PRODUCTION_ENVIRONMENT = "PRODUCTION";
+	
 	private String moduleCode;
 	private boolean active;
 	//private boolean customModule;

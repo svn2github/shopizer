@@ -8,8 +8,10 @@ import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.payments.model.CreditCardPayment;
 import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.payments.model.Transaction;
@@ -58,7 +61,6 @@ public class BeanStreamPayment implements PaymentModule {
 			BigDecimal amount, Payment payment,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
-		// TODO Auto-generated method stub
 		return processTransaction(TransactionType.AUTHORIZE,
 				order,
 				amount,
@@ -83,7 +85,7 @@ public class BeanStreamPayment implements PaymentModule {
 		
 				String trnID = transaction.getTransactionDetails().get("TRANSACTIONID");
 				
-				String amnt = productPriceUtils.getAdminFormatedAmount(order.getMerchant(), order.getTotal());
+				String amnt = productPriceUtils.getAdminFormatedAmount(order.getMerchant(), amount);
 				
 				/**
 				merchant_id=123456789&requestType=BACKEND
@@ -439,7 +441,7 @@ public class BeanStreamPayment implements PaymentModule {
 		
 		String orderNumber = new StringBuilder().append(order.getId()).append(new Date().getTime()).toString();
 		
-		String amnt = productPriceUtils.getAdminFormatedAmount(order.getMerchant(), order.getTotal());
+		String amnt = productPriceUtils.getAdminFormatedAmount(order.getMerchant(), amount);
 		
 		
 		StringBuilder messageString = new StringBuilder();
@@ -450,17 +452,18 @@ public class BeanStreamPayment implements PaymentModule {
 		} else if(type == TransactionType.AUTHORIZECAPTURE) {
 			transactionType = "P";
 		} 
+		
+		CreditCardPayment creditCardPayment = (CreditCardPayment)payment;
 
 		messageString.append("requestType=BACKEND&");
 		messageString.append("merchant_id=").append(configuration.getIntegrationKeys().get("MERCHANT_ID")).append("&");
 		messageString.append("trnType=").append(transactionType).append("&");
 		messageString.append("orderNumber=").append(orderNumber).append("&");
-		messageString.append("trnCardOwner=").append(order.getCcOwner()).append("&");
-		messageString.append("trnCardNumber=").append(order.getCcNumber()).append("&");
-		messageString.append("trnExpMonth=").append(order.getCcExpires().substring(0, 2)).append("&");
-		messageString.append("trnExpYear=").append(order.getCcExpires().substring(2,
-				order.getCcExpires().length())).append("&");
-		messageString.append("trnCardCvd=").append(order.getCcCvv()).append("&");
+		messageString.append("trnCardOwner=").append(creditCardPayment.getCardOwner()).append("&");
+		messageString.append("trnCardNumber=").append(creditCardPayment.getCreditCardNumber()).append("&");
+		messageString.append("trnExpMonth=").append(creditCardPayment.getExpirationMonth()).append("&");
+		messageString.append("trnExpYear=").append(creditCardPayment.getExpirationYear()).append("&");
+		messageString.append("trnCardCvd=").append(creditCardPayment.getCredidCardValidationNumber()).append("&");
 		messageString.append("trnAmount=").append(amnt).append("&");
 		messageString.append("ordName=").append(order.getBilling().getName()).append("&");
 		messageString.append("ordAddress1=").append(order.getBilling().getAddress()).append("&");
@@ -521,12 +524,11 @@ public class BeanStreamPayment implements PaymentModule {
 			messageLogString.append("merchant_id=").append(configuration.getIntegrationKeys().get("MERCHANT_ID")).append("&");
 			messageLogString.append("trnType=").append(type).append("&");
 			messageLogString.append("orderNumber=").append(orderNumber).append("&");
-			messageLogString.append("trnCardOwner=").append(order.getCcOwner()).append("&");
-			messageLogString.append("trnCardNumber=").append(CreditCardUtils.maskCardNumber(order.getCcNumber())).append("&");
-			messageLogString.append("trnExpMonth=").append(order.getCcExpires().substring(0, 2)).append("&");
-			messageString.append("trnExpYear=").append(order.getCcExpires().substring(2,
-					order.getCcExpires().length())).append("&");
-			messageLogString.append("trnCardCvd=").append(order.getCcCvv()).append("&");
+			messageLogString.append("trnCardOwner=").append(creditCardPayment.getCardOwner()).append("&");
+			messageLogString.append("trnCardNumber=").append(CreditCardUtils.maskCardNumber(creditCardPayment.getCreditCardNumber())).append("&");
+			messageLogString.append("trnExpMonth=").append(creditCardPayment.getExpirationMonth()).append("&");
+			messageString.append("trnExpYear=").append(creditCardPayment.getExpirationYear()).append("&");
+			messageLogString.append("trnCardCvd=").append(creditCardPayment.getCredidCardValidationNumber()).append("&");
 			messageLogString.append("trnAmount=").append(amnt).append("&");
 			messageLogString.append("ordName=").append(order.getBilling().getName()).append("&");
 			messageLogString.append("ordAddress1=").append(order.getBilling().getAddress()).append("&");
@@ -630,7 +632,46 @@ public class BeanStreamPayment implements PaymentModule {
 	public void validateModuleConfiguration(
 			IntegrationConfiguration integrationConfiguration,
 			MerchantStore store) throws IntegrationException {
-		// TODO Auto-generated method stub
+		
+		
+		List<String> errorFields = null;
+		
+		
+		Map<String,String> keys = integrationConfiguration.getIntegrationKeys();
+		
+		//validate integrationKeys['merchantid']
+		if(keys==null || StringUtils.isBlank(keys.get("merchantid"))) {
+			errorFields = new ArrayList<String>();
+			errorFields.add("merchantid");
+		}
+		
+		//validate integrationKeys['username']
+		if(keys==null || StringUtils.isBlank(keys.get("username"))) {
+			if(errorFields==null) {
+				errorFields = new ArrayList<String>();
+			}
+			errorFields.add("username");
+		}
+		
+		
+		//validate integrationKeys['password']
+		if(keys==null || StringUtils.isBlank(keys.get("password"))) {
+			if(errorFields==null) {
+				errorFields = new ArrayList<String>();
+			}
+			errorFields.add("password");
+		}
+
+
+		
+		if(errorFields!=null) {
+			IntegrationException ex = new IntegrationException(IntegrationException.ERROR_VALIDATION_SAVE);
+			ex.setErrorFields(errorFields);
+			throw ex;
+			
+		}
+		
+		
 		
 	}
 

@@ -19,6 +19,8 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.payments.model.CreditCard;
+import com.salesmanager.core.business.payments.model.CreditCardPayment;
 import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.payments.model.TransactionType;
@@ -200,6 +202,11 @@ public class PaymentServiceImpl implements PaymentService {
 			throw new ServiceException("Payment module " + payment.getModuleName() + " does not exist");
 		}
 		
+		if(payment instanceof CreditCardPayment) {
+			CreditCardPayment creditCardPayment = (CreditCardPayment)payment;
+			validateCreditCard(creditCardPayment.getCreditCardNumber(),creditCardPayment.getCreditCard(),creditCardPayment.getExpirationMonth(),creditCardPayment.getExpirationYear());
+		}
+		
 		IntegrationModule integrationModule = getPaymentMethod(store,payment.getModuleName());
 		
 		TransactionType transactionType = payment.getTransactionType();
@@ -223,6 +230,8 @@ public class PaymentServiceImpl implements PaymentService {
 			transactionService.create(transaction);
 		}
 		
+		//TODO populate order
+		
 		return transaction;
 
 		
@@ -238,31 +247,34 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 	
 	@Override
-	public void validateCreditCard(String number, int type, String month, String date)
+	public void validateCreditCard(String number, CreditCard creditCard, String month, String date)
 	throws ServiceException {
 
 		try {
 			Integer.parseInt(month);
 			Integer.parseInt(date);
 		} catch (NumberFormatException nfe) {
-			throw new ServiceException("Invalid date format");
+			ServiceException ex = new ServiceException(ServiceException.EXCEPTION_VALIDATION,"Invalid date format","messages.error.creditcard.dateformat");
+			throw ex;
 		}
 		
-		if (number.equals("")) {
-			throw new ServiceException("Invalid number");
+		if (StringUtils.isBlank(number)) {
+			ServiceException ex = new ServiceException(ServiceException.EXCEPTION_VALIDATION,"Invalid card number","messages.error.creditcard.number");
+			throw ex;
 		}
 		
 		Matcher m = Pattern.compile("[^\\d\\s.-]").matcher(number);
 		
 		if (m.find()) {
-			throw new ServiceException("Invalid number");
+			ServiceException ex = new ServiceException(ServiceException.EXCEPTION_VALIDATION,"Invalid card number","messages.error.creditcard.number");
+			throw ex;
 		}
 		
 		Matcher matcher = Pattern.compile("[\\s.-]").matcher(number);
 		
 		number = matcher.replaceAll("");
 		validateCreditCardDate(Integer.parseInt(month), Integer.parseInt(date));
-		validateCreditCardNumber(number, "xyz");
+		validateCreditCardNumber(number, creditCard);
 	}
 
 	private void validateCreditCardDate(int m, int y) throws ServiceException {
@@ -270,18 +282,21 @@ public class PaymentServiceImpl implements PaymentService {
 		int monthNow = cal.get(java.util.Calendar.MONTH) + 1;
 		int yearNow = cal.get(java.util.Calendar.YEAR);
 		if (yearNow > y) {
-			throw new ServiceException("Invalid date");
+			ServiceException ex = new ServiceException(ServiceException.EXCEPTION_VALIDATION,"Invalid date format","messages.error.creditcard.dateformat");
+			throw ex;
 		}
 		// OK, change implementation
 		if (yearNow == y && monthNow > m) {
-			throw new ServiceException("Invalid date");
+			ServiceException ex = new ServiceException(ServiceException.EXCEPTION_VALIDATION,"Invalid date format","messages.error.creditcard.dateformat");
+			throw ex;
 		}
 	
 	}
 	
-	private void validateCreditCardNumber(String number, String type)
+	private void validateCreditCardNumber(String number, CreditCard creditCard)
 	throws ServiceException {
 
+		//TODO implement
 		
 /*		case MASTERCARD:
 			if (number.length() != 16
@@ -357,8 +372,10 @@ public class PaymentServiceImpl implements PaymentService {
 		for (int i = 0; i < number.length; i++)
 			total += number[i];
 	
-		if (total % 10 != 0)
-			throw new ServiceException("Invalid number");
+		if (total % 10 != 0) {
+			ServiceException ex = new ServiceException(ServiceException.EXCEPTION_VALIDATION,"Invalid card number","messages.error.creditcard.number");
+			throw ex;
+		}
 	
 	}
 	

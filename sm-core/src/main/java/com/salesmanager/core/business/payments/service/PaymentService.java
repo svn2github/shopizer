@@ -8,6 +8,7 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.payments.model.CreditCard;
 import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
@@ -53,7 +54,7 @@ public interface PaymentService {
 	 * @param date
 	 * @throws ServiceException
 	 */
-	void validateCreditCard(String number, int type, String month, String date)
+	void validateCreditCard(String number, CreditCard creditCard, String month, String date)
 			throws ServiceException;
 
 	/**
