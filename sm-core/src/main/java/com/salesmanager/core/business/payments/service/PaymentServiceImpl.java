@@ -161,7 +161,42 @@ public class PaymentServiceImpl implements PaymentService {
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}
-}
+   }
+	
+	@Override
+	public void removePaymentModuleConfiguration(String moduleCode, MerchantStore store) throws ServiceException {
+		
+		
+
+		try {
+			Map<String,IntegrationConfiguration> modules = new HashMap<String,IntegrationConfiguration>();
+			MerchantConfiguration merchantConfiguration = merchantConfigurationService.getMerchantConfiguration(PAYMENT_MODULES, store);
+			if(merchantConfiguration!=null) {
+				if(!StringUtils.isBlank(merchantConfiguration.getValue())) {
+					modules = ConfigurationModulesLoader.loadIntegrationConfigurations(merchantConfiguration.getValue());
+				}
+				
+				modules.remove(moduleCode);
+				String configs =  ConfigurationModulesLoader.toJSONString(modules);
+				merchantConfiguration.setValue(configs);
+				merchantConfigurationService.saveOrUpdate(merchantConfiguration);
+				
+				
+			} 
+			
+			MerchantConfiguration configuration = merchantConfigurationService.getMerchantConfiguration(moduleCode, store);
+			
+			if(configuration!=null) {//custom module
+
+				merchantConfigurationService.delete(configuration);
+			}
+
+			
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	
+	}
 	
 
 	

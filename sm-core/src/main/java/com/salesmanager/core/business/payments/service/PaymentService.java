@@ -68,4 +68,7 @@ public interface PaymentService {
 	IntegrationConfiguration getPaymentConfiguration(String moduleCode,
 			MerchantStore store) throws ServiceException;
 
+	void removePaymentModuleConfiguration(String moduleCode, MerchantStore store)
+			throws ServiceException;
+
 }

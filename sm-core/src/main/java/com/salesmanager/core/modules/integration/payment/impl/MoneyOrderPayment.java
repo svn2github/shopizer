@@ -1,7 +1,12 @@
 package com.salesmanager.core.modules.integration.payment.impl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -21,6 +26,27 @@ public class MoneyOrderPayment implements PaymentModule {
 	public void validateModuleConfiguration(
 			IntegrationConfiguration integrationConfiguration,
 			MerchantStore store) throws IntegrationException {
+		
+		List<String> errorFields = null;
+		
+		
+		Map<String,String> keys = integrationConfiguration.getIntegrationKeys();
+		
+		//validate integrationKeys['address']
+		if(keys==null || StringUtils.isBlank(keys.get("address"))) {
+			errorFields = new ArrayList<String>();
+			errorFields.add("address");
+		}
+		
+		if(errorFields!=null) {
+			IntegrationException ex = new IntegrationException(IntegrationException.ERROR_VALIDATION_SAVE);
+			ex.setErrorFields(errorFields);
+			throw ex;
+			
+		}
+		
+		
+		
 			return;
 
 	}

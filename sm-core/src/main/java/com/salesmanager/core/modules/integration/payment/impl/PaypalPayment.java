@@ -697,16 +697,20 @@ public class PaypalPayment implements PaymentModule {
 		Map<String,String> keys = integrationConfiguration.getIntegrationKeys();
 		if(keys==null || StringUtils.isBlank(keys.get("account"))) {
 			errorFields = new ArrayList<String>();
-			errorFields.add("identifier");
+			errorFields.add("account");
 		}
 		
 		if(keys==null || StringUtils.isBlank(keys.get("api"))) {
-			errorFields = new ArrayList<String>();
+			if(errorFields==null) {
+				errorFields = new ArrayList<String>();
+			}
 			errorFields.add("api");
 		}
 		
 		if(keys==null || StringUtils.isBlank(keys.get("signature"))) {
-			errorFields = new ArrayList<String>();
+			if(errorFields==null) {
+				errorFields = new ArrayList<String>();
+			}
 			errorFields.add("signature");
 		}
 
