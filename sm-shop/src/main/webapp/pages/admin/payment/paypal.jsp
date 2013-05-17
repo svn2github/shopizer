@@ -13,7 +13,7 @@
 	                        		<form:input cssClass="input-large highlight" path="integrationKeys['account']" />
 	                        </div>
 	                        <span class="help-inline">
-	                        	<c:if test="${identifier!=null}">
+	                        	<c:if test="${account!=null}">
 	                        	<span id="identifiererrors" class="error"><s:message code="module.payment.paypal.message.identifier" text="Field in error"/></span>
 	                        	</c:if>
 	                        </span>

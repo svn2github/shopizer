@@ -32,7 +32,7 @@
 
 							<s:message code="module.payment.${configuration.moduleCode}.note" text=""/><br/>
 							
-							<c:url var="savePaymentMethod" value="/admin/shipping/savePaymentMethod.html"/>
+							<c:url var="savePaymentMethod" value="/admin/payments/savePaymentMethod.html"/>
 							
 							<c:if test="${customConfiguration!=null}">
 										<c:url var="saveShippingMethod" value="/admin/shipping/save${configuration.moduleCode}ShippingMethod.html"/>
@@ -66,7 +66,7 @@
 	                        		
 	                        		
 	                        		<c:if test="${customConfiguration==null}">
-	                        			<jsp:include page="/pages/admin/shipping/${configuration.moduleCode}.jsp"></jsp:include>
+	                        			<jsp:include page="/pages/admin/payment/${configuration.moduleCode}.jsp"></jsp:include>
 	                        		</c:if>
 
 	                        		
@@ -83,12 +83,12 @@
             	 			
             	 			
             	 		<c:if test="${customConfiguration!=null}">
-	                        			<jsp:include page="/pages/admin/payment/${configuration.moduleCode}.jsp"></jsp:include>
+	                        			<jsp:include page="/pages/admin/payments/${configuration.moduleCode}.jsp"></jsp:include>
 	                    </c:if>	
 							
 							
 		                  <c:if test="${configuration.active && validationError==null}">      
-		                  <c:url var="removeModule" value="/admin/payment/deletePaymentMethod.html"/>
+		                  <c:url var="removeModule" value="/admin/payments/deletePaymentMethod.html"/>
 		                  <form:form method="POST" enctype="multipart/form-data" commandName="code" action="${removeModule}">
 									<input type="hidden" name="code" value="${configuration.moduleCode}" />
 			                        <div class="form-actions">

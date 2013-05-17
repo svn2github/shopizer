@@ -32,7 +32,7 @@
 
 
 							
-							<c:url var="savePaymentMethods" value="/admin/payment/savePaymentMethods.html"/>
+							<c:url var="savePaymentMethods" value="/admin/payments/savePaymentMethods.html"/>
 							<form:form method="POST" commandName="configuration" action="${savePaymentMethods}">
 
       							
@@ -59,10 +59,10 @@
 						      			  					<label>
 						      			  						<c:choose>
 						      			  							<c:when test="${module.customModule==true}">
-						      			  								<a href="<c:url value="/admin/payment/${module.code}.html"/>"><s:message code="module.payment.${module.code}" text="No label found - ${module.code}"/></a>
+						      			  								<a href="<c:url value="/admin/payments/${module.code}.html"/>"><s:message code="module.payment.${module.code}" text="No label found - ${module.code}"/></a>
 						      			  							</c:when>
 						      			  							<c:otherwise>
-						      			  								<a href="<c:url value="/admin/payment/paymentMethod.html?code="/><c:out value="${module.code}"/>"><s:message code="module.payment.${module.code}" text="No label found - ${module.code}"/></a>
+						      			  								<a href="<c:url value="/admin/payments/paymentMethod.html?code="/><c:out value="${module.code}"/>"><s:message code="module.payment.${module.code}" text="No label found - ${module.code}"/></a>
 						      			  							</c:otherwise>
 						      			  						</c:choose>
 						      			  					</label>

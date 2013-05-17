@@ -11,9 +11,14 @@
 
                  
                  <div class="control-group">
-                        <label class="required"><s:message code="module.payment.moneyorder.adress" text="Cheque must be made to this address"/></label>
+                        <label class="required"><strong><s:message code="module.payment.moneyorder.adress" text="Cheque must be made to this address"/></strong></label>
 	                        <div class="controls">
-	                        		<form:input cssClass="input-large highlight" path="integrationKeys['address']" />
+	                        <span class="help-inline">
+	                        	<c:if test="${address!=null}">
+	                        		<span id="identifiererrors" class="error"><s:message code="module.payment.moneyorder.message.address" text="Field in error"/></span>
+	                        	</c:if>
+	                        </span>
+	                        		<br/>
 	                        		
 	                        		<textarea cols="30" id="integrationKeys['address']" name="integrationKeys['address']">
                         				<c:out value="${configuration.integrationKeys['address']}"/>
@@ -22,7 +27,7 @@
 			                        <script type="text/javascript">
 									//<![CDATA[
 			
-										CKEDITOR.replace('integrationKeys['address']',
+										CKEDITOR.replace("integrationKeys['address']",
 										{
 											skin : 'office2003',
 											toolbar : 
@@ -51,11 +56,7 @@
 	                        		
 	                        		
 	                        </div>
-	                        <span class="help-inline">
-	                        	<c:if test="${address!=null}">
-	                        		<span id="identifiererrors" class="error"><s:message code="module.payment.moneyorder.message.address" text="Field in error"/></span>
-	                        	</c:if>
-	                        </span>
+
                   </div>
                   
      
