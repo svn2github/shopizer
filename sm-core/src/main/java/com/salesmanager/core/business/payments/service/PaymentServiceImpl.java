@@ -203,11 +203,11 @@ public class PaymentServiceImpl implements PaymentService {
 
 
 	@Override
-	public Transaction processPayment(Order order, Customer customer,
+	public Transaction processPayment(Customer customer,
 			MerchantStore store, Payment payment, BigDecimal amount)
 			throws ServiceException {
 
-		Validate.notNull(order);
+
 		Validate.notNull(customer);
 		Validate.notNull(store);
 		Validate.notNull(payment);
@@ -332,52 +332,51 @@ public class PaymentServiceImpl implements PaymentService {
 	throws ServiceException {
 
 		//TODO implement
-		
-/*		case MASTERCARD:
+		if(CreditCard.MASTERCARD.equals(creditCard.name())) {
 			if (number.length() != 16
 					|| Integer.parseInt(number.substring(0, 2)) < 51
 					|| Integer.parseInt(number.substring(0, 2)) > 55) {
-				throw new CreditCardUtilException(LabelUtil.getInstance()
-						.getText("errors.creditcard.invalidnumber"));
+				ServiceException ex = new ServiceException(ServiceException.EXCEPTION_VALIDATION,"Invalid card number","messages.error.creditcard.number");
+				throw ex;
 			}
-			break;
+		}
 		
-		case VISA:
+		if(CreditCard.VISA.equals(creditCard.name())) {
 			if ((number.length() != 13 && number.length() != 16)
 					|| Integer.parseInt(number.substring(0, 1)) != 4) {
-				throw new CreditCardUtilException(LabelUtil.getInstance()
-						.getText("errors.creditcard.invalidnumber"));
+				ServiceException ex = new ServiceException(ServiceException.EXCEPTION_VALIDATION,"Invalid card number","messages.error.creditcard.number");
+				throw ex;
 			}
-			break;
+		}
 		
-		case AMEX:
+		if(CreditCard.AMEX.equals(creditCard.name())) {
 			if (number.length() != 15
 					|| (Integer.parseInt(number.substring(0, 2)) != 34 && Integer
 							.parseInt(number.substring(0, 2)) != 37)) {
-				throw new CreditCardUtilException(LabelUtil.getInstance()
-						.getText("errors.creditcard.invalidnumber"));
+				ServiceException ex = new ServiceException(ServiceException.EXCEPTION_VALIDATION,"Invalid card number","messages.error.creditcard.number");
+				throw ex;
 			}
-			break;
+		}
 		
-		case DISCOVER:
-			if (number.length() != 16
-					|| Integer.parseInt(number.substring(0, 5)) != 6011) {
-				throw new CreditCardUtilException(LabelUtil.getInstance()
-						.getText("errors.creditcard.invalidnumber"));
-			}
-			break;
-		
-		case DINERS:
+		if(CreditCard.DINERS.equals(creditCard.name())) {
 			if (number.length() != 14
 					|| ((Integer.parseInt(number.substring(0, 2)) != 36 && Integer
 							.parseInt(number.substring(0, 2)) != 38)
 							&& Integer.parseInt(number.substring(0, 3)) < 300 || Integer
 							.parseInt(number.substring(0, 3)) > 305)) {
-				throw new CreditCardUtilException(LabelUtil.getInstance()
-						.getText("errors.creditcard.invalidnumber"));
+				ServiceException ex = new ServiceException(ServiceException.EXCEPTION_VALIDATION,"Invalid card number","messages.error.creditcard.number");
+				throw ex;
 			}
-			break;
-		}*/
+		}
+		
+		if(CreditCard.DISCOVERY.equals(creditCard.name())) {
+			if (number.length() != 16
+					|| Integer.parseInt(number.substring(0, 5)) != 6011) {
+				ServiceException ex = new ServiceException(ServiceException.EXCEPTION_VALIDATION,"Invalid card number","messages.error.creditcard.number");
+				throw ex;
+			}
+		}
+
 		luhnValidate(number);
 	}
 

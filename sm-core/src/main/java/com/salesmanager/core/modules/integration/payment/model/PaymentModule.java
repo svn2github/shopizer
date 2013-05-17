@@ -24,23 +24,23 @@ public interface PaymentModule {
 	 * @throws IntegrationException
 	 */
 	public Transaction initTransaction(
-			Customer customer, Order order, BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module)
+			MerchantStore store, Customer customer, BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException;
 	
 	public Transaction authorize(
-			Customer customer, Order order, BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module)
+			MerchantStore store, Customer customer, BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException;
 	
 	public Transaction capture(
-			Customer customer, Order order, BigDecimal amount, Payment payment, Transaction transaction, IntegrationConfiguration configuration, IntegrationModule module)
+			MerchantStore store, Customer customer, BigDecimal amount, Payment payment, Transaction transaction, IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException;
 	
 	public Transaction authorizeAndCapture(
-			Customer customer, Order order, BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module)
+			MerchantStore store, Customer customer, BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException;
 	
 	public Transaction refund(
-			Transaction transaction, Order order, BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module)
+			boolean partial, MerchantStore store, Transaction transaction, BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException;
 
 }

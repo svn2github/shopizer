@@ -24,7 +24,7 @@ public interface PaymentService {
 	Map<String, IntegrationConfiguration> getPaymentModulesConfigured(
 			MerchantStore store) throws ServiceException;
 	
-	Transaction processPayment(Order order, Customer customer, MerchantStore store, Payment payment, BigDecimal amount) throws ServiceException;
+	Transaction processPayment(Customer customer, MerchantStore store, Payment payment, BigDecimal amount) throws ServiceException;
 	Transaction processRefund(Order order, Customer customer, MerchantStore store, Payment payment, BigDecimal amount) throws ServiceException;
 
 	/**

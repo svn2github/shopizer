@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class PaypalPayment implements PaymentModule {
 	
 
 	@Override
-	public Transaction initTransaction(Customer customer, Order order,
+	public Transaction initTransaction(MerchantStore store, Customer customer,
 			BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module) throws IntegrationException {
 		// TODO Auto-generated method stub
 		
@@ -109,10 +110,10 @@ public class PaypalPayment implements PaymentModule {
 		try {
 		
 		//TODO add $ ?
-		String sAmount = productPriceUtils.getAdminFormatedAmount(order.getMerchant(), amount);
+		String sAmount = productPriceUtils.getAdminFormatedAmount(store, amount);
 
 
-		MerchantConfiguration returnUrl = merchantConfigurationService.getMerchantConfiguration("PAYPAL_RETURN_URL", order.getMerchant());
+		MerchantConfiguration returnUrl = merchantConfigurationService.getMerchantConfiguration("PAYPAL_RETURN_URL", store);
 
 		if(returnUrl==null) {
 			throw new IntegrationException("Paypal return url not configured");
@@ -126,7 +127,7 @@ public class PaypalPayment implements PaymentModule {
 		 **/
 
 
-			String country = order.getMerchant().getCountry().getIsoCode();
+			String country = store.getCountry().getIsoCode();
 			if ("AU".equals(country)) {
 				sLocale = "AU";
 			} else if ("DE".equals(country)) {
@@ -160,7 +161,7 @@ public class PaypalPayment implements PaymentModule {
 					+ sReturnUrl
 					+ "&CANCELURL="
 					+ cancelUrl
-					+ "&CURRENCYCODE=" + order.getCurrency();
+					+ "&CURRENCYCODE=" + store.getCurrency();
 		} catch (Exception e) {
 			throw new IntegrationException(e);
 		}
@@ -201,14 +202,14 @@ public class PaypalPayment implements PaymentModule {
 	}
 
 	@Override
-	public Transaction authorize(Customer customer, Order order,
+	public Transaction authorize(MerchantStore store, Customer customer,
 			BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module) throws IntegrationException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Transaction capture(Customer customer, Order order,
+	public Transaction capture(MerchantStore store, Customer customer,
 			BigDecimal amount, com.salesmanager.core.business.payments.model.Payment payment, Transaction trx, IntegrationConfiguration configuration, IntegrationModule module) throws IntegrationException {
 		// TODO Auto-generated method stub
 		
@@ -269,7 +270,7 @@ public class PaypalPayment implements PaymentModule {
 		 * paymentType ' are set to the selections made on the Integration
 		 * Assistant '------------------------------------
 		 */
-		String currencyCodeType = order.getCurrency().getCode();
+		String currencyCodeType = store.getCurrency().getCode();
 
 		com.salesmanager.core.business.payments.model.PaypalPayment paypalPayment = ((com.salesmanager.core.business.payments.model.PaypalPayment)payment);
 
@@ -289,7 +290,7 @@ public class PaypalPayment implements PaymentModule {
 		
 		try {
 		
-		String sAmount = productPriceUtils.getAdminFormatedAmount(order.getMerchant(), amount);
+		String sAmount = productPriceUtils.getAdminFormatedAmount(store, amount);
 
 /*		String amount = CurrencyUtil.displayFormatedAmountNoCurrency(order
 				.getTotal(), Constants.CURRENCY_CODE_USD);
@@ -316,10 +317,13 @@ public class PaypalPayment implements PaymentModule {
 			// IPN
 			// String ipnUrl = ReferenceUtil.buildSecureServerUrl() +
 			// (String)conf.getString("core.salesmanager.checkout.paypalIpn");
+		
+			String uniqueId = UUID.randomUUID().toString();
+
 
 			nvpstr = "&TOKEN=" + token + "&PAYERID=" + payerID
 					+ "&PAYMENTACTION=" + transactionType + "&AMT=" + sAmount
-					+ "&INVNUM=" + order.getId();
+					+ "&INVNUM=" + uniqueId;
 
 			// nvpstr = nvpstr + "&CURRENCYCODE=" + currencyCodeType +
 			// "&IPADDRESS=" + ip.toString();
@@ -351,7 +355,7 @@ public class PaypalPayment implements PaymentModule {
 				
 				Transaction transaction = new Transaction();
 				transaction.setAmount(amount);
-				transaction.setOrder(order);
+				//transaction.setOrder(order);
 				transaction.setTransactionDate(new Date());
 				transaction.setTransactionType(trType);
 				transaction.setPaymentType(payment.getPaymentType());
@@ -374,7 +378,7 @@ public class PaypalPayment implements PaymentModule {
 						
 						
 				merchantLogService.save(
-								new MerchantLog(order.getMerchant(),
+								new MerchantLog(store,
 								"Paypal transaction refused "
 										+ ErrorLongMsg));
 
@@ -401,14 +405,14 @@ public class PaypalPayment implements PaymentModule {
 	}
 
 	@Override
-	public Transaction authorizeAndCapture(Customer customer, Order order,
+	public Transaction authorizeAndCapture(MerchantStore store, Customer customer,
 			BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module) throws IntegrationException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Transaction refund(Transaction transaction, Order order,
+	public Transaction refund(boolean partial, MerchantStore store, Transaction transaction,
 			BigDecimal amount, Payment payment,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
@@ -434,10 +438,6 @@ public class PaypalPayment implements PaymentModule {
 			// (String)conf.getString("core.salesmanager.checkout.paypalIpn");
 
 			String refundType = "Full";
-			boolean partial = false;
-			if (amount.doubleValue() < order.getTotal().doubleValue()) {
-				partial = true;
-			}
 			if (partial) {
 				refundType = "Partial";
 			}
@@ -445,7 +445,7 @@ public class PaypalPayment implements PaymentModule {
 			// String nvpstr = "&TRANSACTIONID=" + transactionId +
 			// "&REFUNDTYPE=" + refundType + "&IPADDRESS=" + ip.toString();
 			String nvpstr = "&TRANSACTIONID=" + transaction.getTransactionDetails().get("TRANSACTIONID") + "&REFUNDTYPE="
-					+ refundType + "&CURRENCYCODE=" + order.getCurrency() + "&IPADDRESS=";
+					+ refundType + "&CURRENCYCODE=" + store.getCurrency() + "&IPADDRESS=";
 
 
 			if (partial) {
@@ -485,7 +485,7 @@ public class PaypalPayment implements PaymentModule {
 				
 				Transaction refund = new Transaction();
 				refund.setAmount(amount);
-				refund.setOrder(order);
+				//refund.setOrder(order);
 				refund.setTransactionDate(new Date());
 				refund.setTransactionType(TransactionType.REFUND);
 				refund.setPaymentType(payment.getPaymentType());
@@ -507,7 +507,7 @@ public class PaypalPayment implements PaymentModule {
 						
 						
 				merchantLogService.save(
-								new MerchantLog(order.getMerchant(),
+								new MerchantLog(store,
 								"Paypal transaction refused "
 										+ ErrorLongMsg));
 

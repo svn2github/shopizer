@@ -52,7 +52,7 @@ public class MoneyOrderPayment implements PaymentModule {
 	}
 
 	@Override
-	public Transaction initTransaction(Customer customer, Order order,
+	public Transaction initTransaction(MerchantStore store, Customer customer,
 			BigDecimal amount, Payment payment,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
@@ -61,7 +61,7 @@ public class MoneyOrderPayment implements PaymentModule {
 	}
 
 	@Override
-	public Transaction authorize(Customer customer, Order order,
+	public Transaction authorize(MerchantStore store, Customer customer,
 			BigDecimal amount, Payment payment,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
@@ -70,7 +70,7 @@ public class MoneyOrderPayment implements PaymentModule {
 	}
 
 	@Override
-	public Transaction capture(Customer customer, Order order,
+	public Transaction capture(MerchantStore store, Customer customer,
 			BigDecimal amount, Payment payment, Transaction transaction,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
@@ -79,7 +79,7 @@ public class MoneyOrderPayment implements PaymentModule {
 	}
 
 	@Override
-	public Transaction authorizeAndCapture(Customer customer, Order order,
+	public Transaction authorizeAndCapture(MerchantStore store, Customer customer,
 			BigDecimal amount, Payment payment,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
@@ -87,7 +87,6 @@ public class MoneyOrderPayment implements PaymentModule {
 		
 		Transaction transaction = new Transaction();
 		transaction.setAmount(amount);
-		transaction.setOrder(order);
 		transaction.setTransactionDate(new Date());
 		transaction.setTransactionType(TransactionType.AUTHORIZECAPTURE);
 		transaction.setPaymentType(PaymentType.MONEYORDER);
@@ -100,7 +99,7 @@ public class MoneyOrderPayment implements PaymentModule {
 	}
 
 	@Override
-	public Transaction refund(Transaction transaction, Order order,
+	public Transaction refund(boolean partial, MerchantStore store, Transaction transaction,
 			BigDecimal amount, Payment payment,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
