@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.payments.model.TransactionType;
 import com.salesmanager.core.business.payments.service.PaymentService;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
@@ -77,6 +78,13 @@ public class PaymentsController {
 		IntegrationConfiguration configuration = paymentService.getPaymentConfiguration(code, store);
 		if(configuration==null) {
 			configuration = new IntegrationConfiguration();
+			configuration.setEnvironment(Constants.PRODUCTION_ENVIRONMENT);
+			
+			Map<String,String> keys = new HashMap<String,String>();
+			keys.put("transaction", TransactionType.AUTHORIZECAPTURE.name());
+			
+			configuration.setIntegrationKeys(keys);
+			
 		}
 		
 		configuration.setModuleCode(code);
@@ -132,6 +140,17 @@ public class PaymentsController {
 		model.addAttribute("success","success");
 		return ControllerConstants.Tiles.Payment.paymentMethod;
 		
+		
+	}
+	
+	@RequestMapping(value="/admin/payments/deletePaymentMethod.html", method=RequestMethod.POST)
+	public String deletePaymentMethod(@RequestParam("code") String code, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+		this.setMenu(model, request);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		paymentService.removePaymentModuleConfiguration(code, store);
+		
+		return "redirect:/admin/payments/paymentMethods.html";
 		
 	}
 	
