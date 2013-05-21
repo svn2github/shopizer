@@ -55,7 +55,7 @@
 					<property name="connectionFactoryClass"
 						value="org.infinispan.loaders.jdbc.connectionfactory.SimpleConnectionFactory" />
 					<property name="connectionUrl"
-						value="jdbc:h2:file:c:/shopizer_infinispan_mixed_cs;DB_CLOSE_DELAY=-1" />
+						value="jdbc:h2:file:c:/shopizer_cms_infinispan_mixed_cs;DB_CLOSE_DELAY=-1" />
 					<property name="userName" value="sa" />
 					<property name="driverClass" value="org.h2.Driver" />
 					<property name="idColumnTypeForStrings" value="VARCHAR(255)" />
@@ -73,6 +73,8 @@
 
 
 		</loaders>
+		
+		<!--<eviction maxEntries="0" strategy="LRU"/>-->
 
 		<transaction
 
@@ -81,7 +83,10 @@
 
 	</namedCache>
 	
-	
+	<namedCache name="Cache">
+		<eviction strategy="LRU" maxEntries="2000" />
+	</namedCache>
+
 	<namedCache name="FilesRepository">
 		 <invocationBatching enabled="true"/>
 	     <loaders passivation="false" shared="false" preload="false">
