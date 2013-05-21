@@ -52,6 +52,17 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	
 	
 	@Override
+	public void addProductImages(Product product, List<ProductImage> productImages) throws ServiceException {
+		
+		
+		for(ProductImage productImage : productImages) {
+			addProductImage(product,productImage);			
+		}
+		
+	}
+	
+	
+	@Override
 	public void addProductImage(Product product, ProductImage productImage) throws ServiceException {
 		
 		

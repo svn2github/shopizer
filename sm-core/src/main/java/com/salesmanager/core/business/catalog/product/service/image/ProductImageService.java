@@ -57,5 +57,8 @@ public interface ProductImageService extends SalesManagerEntityService<Long, Pro
 	 */
 	OutputContentImage getProductImage(String storeCode, Long productId,
 			String fileName) throws ServiceException;
+
+	void addProductImages(Product product, List<ProductImage> productImages)
+			throws ServiceException;
 	
 }
