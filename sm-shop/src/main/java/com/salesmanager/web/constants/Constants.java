@@ -3,6 +3,7 @@ package com.salesmanager.web.constants;
 public class Constants {
 	
 
+	public final static String LANGUAGE = "LANGUAGE";
 	
 	public final static String ADMIN_STORE = "ADMIN_STORE";
 	public final static String ADMIN_USER = "ADMIN_USER";
@@ -30,5 +31,12 @@ public class Constants {
 	public final static String STORE_CONFIGURATION = "STORECONFIGURATION";
 	
 	public final static String HTTP_SCHEME= "http";
+	
+	public final static String MISSED_CACHE_KEY = "MISSED";
+	public final static String CONTENT_CACHE_KEY = "CONTENT";
+	public final static String CATEGORIES_CACHE_KEY = "CATEGORIES";
+	
+	public final static String REQUEST_CONTENT_OBJECTS = "REQ_CONTENT";
+	public final static String REQUEST_TOP_CATEGORIES = "REQ_TOP_CATEGORIES";
 
 }

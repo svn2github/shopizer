@@ -1,5 +1,10 @@
 package com.salesmanager.web.filter;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -8,12 +13,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.salesmanager.core.business.catalog.category.model.Category;
+import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
+import com.salesmanager.core.business.catalog.category.service.CategoryService;
+import com.salesmanager.core.business.content.model.content.Content;
+import com.salesmanager.core.business.content.model.content.ContentDescription;
+import com.salesmanager.core.business.content.model.content.ContentType;
+import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.init.service.InitializationDatabase;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.system.service.SystemConfigurationService;
+import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.web.admin.security.UserServicesImpl;
 import com.salesmanager.web.constants.Constants;
@@ -37,6 +50,12 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	
 	@Autowired
 	private CoreConfiguration configuration;
+	
+	@Autowired
+	private ContentService contentService;
+	
+	@Autowired
+	private CategoryService categoryService;
 	
 	@Autowired
 	private InitializationDatabase initializationDatabase;
@@ -97,7 +116,8 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			
 			
 			
-			request.setAttribute("LANGUAGE", language);
+			request.setAttribute(Constants.LANGUAGE, language);
+			Locale locale = request.getLocale();
 			
 			try {
 				
@@ -124,8 +144,60 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				}
 				
 				request.setAttribute(Constants.MERCHANT_STORE, store);
+
 				
-				//get global objects
+				/**
+				 * Get global objects
+				 * Themes are built on a similar way displaying
+				 * Header, Body and Footer
+				 * Header and Footer are displayed on each page
+				 * Some themes also contain side bars which may include
+				 * similar emements
+				 * 
+				 * Elements from Header :
+				 * - CMS links
+				 * - Customer
+				 * - Mini shopping cart
+				 * - Store name / logo
+				 * - Top categories
+				 * - Search
+				 * 
+				 * Elements from Footer :
+				 * - CMS links
+				 * - Store address
+				 * - Global payment information
+				 * - Global shipping information
+				 */
+				
+
+				//get from the cache first
+				/**
+				 * The cache for each object contains 2 objects, a Cache and a Missed-Cache
+				 * Get objects from the cache
+				 * If not null use those objects
+				 * If null, get entry from missed-cache
+				 * If missed-cache not null then nothing exist
+				 * If missed-cache null, add missed-cache entry and load from the database
+				 * If objects from database not null store in cache
+				 */
+				
+				/******* CMS Objects ********/
+				this.getContentObjects(store, language, request);
+				
+				/******* CMS Pages **********/
+				
+				/******* Top Categories ********/
+				this.getTopCategories(store, language, request);
+				
+				/******* Configuration objects *******/
+
+				
+				
+				
+
+				
+				
+				//Get page titles
 				
 				//TODO and by language
 /*				Content content = contentService.getByCode("LANDING_PAGE", store);
@@ -178,8 +250,178 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			return true;
 		   
 	   }
+	   
+	   private void getContentObjects(MerchantStore store, Language language, HttpServletRequest request) throws Exception {
+		   
+		   CacheUtils cache = CacheUtils.getInstance();
+			/**
+			 * CMS links
+			 * Those links are implemented as pages (Content)
+			 * ContentDescription will provide attributes name for the
+			 * label to be displayed and seUrl for the friendly url page
+			 */
+			
+			//build the key
+			/**
+			 * The cache is kept as a Map<String,Object>
+			 * The key is CONTENT_<MERCHANT_ID>_<LOCALE>
+			 * The value is a List of Content object
+			 */
+			
+			StringBuilder contentKey = new StringBuilder();
+			contentKey
+			.append(Constants.CONTENT_CACHE_KEY)
+			.append(store.getId())
+			.append(language.getCode());
+			
+			StringBuilder contentKeyMissed = new StringBuilder();
+			contentKeyMissed
+			.append(contentKey.toString())
+			.append(Constants.MISSED_CACHE_KEY);
+			
+			//get from the cache
+			Map<String, List<Content>> contents = (Map<String, List<Content>>) cache.getFromCache(contentKey.toString());
+			
+			Boolean missedContent = null;
+			if(contents==null) {
+				//get from missed cache
 
-	
+				
+				missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
+				
+			}
+			
+			if(contents==null && missedContent==null) {
+
+				//Get boxes and sections from the database
+				List<ContentType> contentTypes = new ArrayList<ContentType>();
+				contentTypes.add(ContentType.BOX);
+				contentTypes.add(ContentType.SECTION);
+				
+				List<Content> contentPages = contentService.listByType(contentTypes, store, language);
+				
+				if(contentPages!=null && contentPages.size()>0) {
+					
+					//create a Map<String,List<Content>
+					for(Content content : contentPages) {
+
+						List<ContentDescription> descriptions = content.getDescriptions();
+						for(ContentDescription contentDescription : descriptions) {
+							Language lang = contentDescription.getLanguage();
+							String key = new StringBuilder()
+							.append(Constants.CONTENT_CACHE_KEY)
+							.append(store.getId())
+							.append(lang.getCode()).toString();
+							List<Content> contentList = null;
+							if(!contents.containsKey(key)) {
+								contentList = new ArrayList<Content>();
+								contents.put(key, contentList);
+							}
+							contentList.add(content);
+						}
+						
+					}
+					
+					//put in cache
+					cache.putInCache(contents, contentKey.toString());
+					
+				} else {
+					
+					//put in missed cache
+					cache.putInCache(new Boolean(true), contentKeyMissed.toString());
+					
+				}
+				
+			}
+			
+			if(contents!=null && contents.size()>0) {
+				request.setAttribute(Constants.REQUEST_CONTENT_OBJECTS, contents);
+			}
+		   
+	   }
+
+	   private void getTopCategories(MerchantStore store, Language language, HttpServletRequest request) throws Exception {
+		   
+		   CacheUtils cache = CacheUtils.getInstance();
+			/**
+			 * Top categories
+			 * Top categories are implemented as Category entity
+			 * CategoryDescription will provide attributes name for the
+			 * label to be displayed and seUrl for the friendly url page
+			 */
+			
+			//build the key
+			/**
+			 * The categories is kept as a Map<String,Object>
+			 * The key is CATEGORY_<MERCHANT_ID>_<LOCALE>
+			 * The value is a List of Category object
+			 */
+			
+			StringBuilder contentKey = new StringBuilder();
+			contentKey
+			.append(Constants.CATEGORIES_CACHE_KEY)
+			.append(store.getId())
+			.append(language.getCode());
+			
+			StringBuilder contentKeyMissed = new StringBuilder();
+			contentKeyMissed
+			.append(contentKey.toString())
+			.append(Constants.MISSED_CACHE_KEY);
+			
+			//get from the cache
+			Map<String, List<Category>> objects = (Map<String, List<Category>>) cache.getFromCache(contentKey.toString());
+			
+			Boolean missedContent = null;
+			if(objects==null) {
+				missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
+			}
+			
+			if(objects==null && missedContent==null) {
+
+				//Get top categories from the database
+				
+				List<Category> categories = categoryService.listByDepth(store, 0, language);
+				
+				if(categories!=null && categories.size()>0) {
+					
+					//create a Map<String,List<Content>
+					for(Category category : categories) {
+
+						List<CategoryDescription> descriptions = category.getDescriptions();
+						for(CategoryDescription description : descriptions) {
+							Language lang = description.getLanguage();
+							String key = new StringBuilder()
+							.append(Constants.CONTENT_CACHE_KEY)
+							.append(store.getId())
+							.append(lang.getCode()).toString();
+							
+							List<Category> cacheCategories = null;
+							if(!objects.containsKey(key)) {
+								cacheCategories = new ArrayList<Category>();
+								objects.put(key, cacheCategories);
+							}
+							cacheCategories.add(category);
+						}
+						
+					}
+					
+					//put in cache
+					cache.putInCache(objects, contentKey.toString());
+					
+				} else {
+					
+					//put in missed cache
+					cache.putInCache(new Boolean(true), contentKeyMissed.toString());
+					
+				}
+				
+			}
+			
+			if(objects!=null && objects.size()>0) {
+				request.setAttribute(Constants.REQUEST_TOP_CATEGORIES, objects);
+			}
+		   
+	   }
 	
 
 }
