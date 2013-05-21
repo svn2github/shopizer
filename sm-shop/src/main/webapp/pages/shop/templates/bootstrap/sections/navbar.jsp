@@ -9,7 +9,8 @@ response.setDateHeader ("Expires", -1);
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %> 
+<%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %>
+<%@ taglib uri="/WEB-INF/shopizer-functions.tld" prefix="display" %>  
  
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
@@ -36,7 +37,10 @@ response.setDateHeader ("Expires", -1);
 
 
 						<nav id="menu" class="pull-right">
-                    					<ul id="mainM
+                    					<ul id="mainMenu">
+                    					<c:forEach items="${display:topCategories(request)}" var="item">
+    										${item} <br />
+										</c:forEach>
 										
 										<li class="">  
                     					                           <a href="index.html" class="current">          

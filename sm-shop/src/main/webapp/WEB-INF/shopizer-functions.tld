@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+ 
+ <taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
+   <description><![CDATA["Shopizer functions"]]></description>
+   <display-name>"Shopizer Functions"</display-name>
+   <tlib-version>2.2</tlib-version>
+   <short-name>functions</short-name>
+   <uri>/shopizer-functions</uri>
+
+
+<function>
+	        <name>topCategories</name>
+	        <function-class>com.salesmanager.web.tags.DisplayFunctions</function-class>
+	        <function-signature>com.salesmanager.core.business.catalog.category.model.Category getTopCategories(javax.servlet.http.HttpServletRequest request)</function-signature>
+</function>
+
+
+
+</taglib>
+
+ 
