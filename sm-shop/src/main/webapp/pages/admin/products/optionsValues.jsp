@@ -31,7 +31,7 @@
 				 <c:set value="/admin/optionsvalues/remove.html" var="removeUrl" scope="request"/>
 				 <c:set value="/admin/options/editOptionValue.html" var="editUrl" scope="request"/>
 				 <c:set value="/admin/options/optionvalues.html" var="afterRemoveUrl" scope="request"/>
-				 <c:set var="entityId" value="optionId" scope="request"/>
+				 <c:set var="entityId" value="optionValueId" scope="request"/>
 				 <c:set var="componentTitleKey" value="label.product.productoptionsvalues.list" scope="request"/>
 				 <c:set var="gridHeader" value="/pages/admin/products/optionsValues-gridHeader.jsp" scope="request"/>
 				 <c:set var="canRemoveEntry" value="true" scope="request"/>

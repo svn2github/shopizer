@@ -36,7 +36,13 @@ response.setDateHeader ("Expires", -1);
 
 
 						<nav id="menu" class="pull-right">
-                    					<ul id="mainMenuLinks" class="sf-js-enabled sf-shadow"><li class="">                             <a href="index.html" class="current">                                 <span class="name">Home</span>                                        <span class="desc">Home</span>                                  </a>                         </li><li class="">                             <a class="sf-with-ul" href="category.html?category=short-sleeves">                                 <span class="name">Short Sleeves</span>                                        <span class="desc">Cool t shirts</span>                                  </a>                         </li><li class="">                             <a class="sf-with-ul" href="category.html?category=long-sleeves">                                 <span class="name">Long Sleeves</span>                                        <span class="desc">Surf shirts</span>                                  </a>                         </li></ul>
+                    					<ul id="mainM
+										
+										<li class="">  
+                    					                           <a href="index.html" class="current">          
+                    					                                                  <span class="name">Home</span>     
+                    		<span class="desc">Home</span>                                  </a>                         </li><li class="">                             <a class="sf-with-ul" href="category.html?category=short-sleeves">   
+                    		                              <span class="name">Short Sleeves</span>                                        <span class="desc">Cool t shirts</span>                                  </a>                         </li><li class="">                             <a class="sf-with-ul" href="category.html?category=long-sleeves">                                 <span class="name">Long Sleeves</span>                                        <span class="desc">Surf shirts</span>                                  </a>                         </li></ul>
 						</nav>
 
 				</div>

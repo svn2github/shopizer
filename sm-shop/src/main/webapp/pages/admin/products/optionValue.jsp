@@ -94,14 +94,14 @@
                   
 
                  <div class="control-group">
-                        <label><s:message code="label.product.image" text="Image"/>&nbsp;<c:if test="${optionValue.productOptionValueImage!=null}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage('${optionValue.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if></label>
+                        <label><s:message code="label.product.image" text="Image"/>&nbsp;<c:if test="${optionValue.productOptionValueImage!=null && optionValue.productOptionValueImage!=''}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage('${optionValue.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if></label>
                         <div class="controls" id="imageControl">
                         		<c:choose>
-	                        		<c:when test="${optionValue.productOptionValueImage==null}">
+	                        		<c:when test="${optionValue.productOptionValueImage==null || optionValue.productOptionValueImage==''}">
 	                                    <input class="input-file" id="image" name="image" type="file">
 	                                </c:when>
 	                                <c:otherwise>
-	                                	<img src="<%=request.getContextPath()%><sm:contentImage imageName="${optionValue.productOptionValueImage}" imageType="PROPERTY"/>" width="80">
+	                                	<img src="<sm:contentImage imageName="${optionValue.productOptionValueImage}" imageType="PROPERTY"/>" width="80">
 	                                </c:otherwise>
                                 </c:choose>
                         </div>

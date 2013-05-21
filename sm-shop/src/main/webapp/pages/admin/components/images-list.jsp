@@ -42,6 +42,7 @@
 								    animateTileChange:true,
 								    recordClick:"selectImage(record.name)",
 								    fields: [
+										{name:"id", cellStyle: "name"},
 								        {name:"picture", type:"image", imageWidth:150, imageURLPrefix:"<c:url value='/static/'/>"},
 								        {name:"name", cellStyle: "name"}
 								    ],
@@ -72,7 +73,7 @@
 								        			$.ajax({
 								        				  type: 'POST',
 								        				  url: '<c:url value="${removeUrl}"/>',
-								        				  data: 'name=' + record.name,
+								        				  data: 'id=' + record.id + '&name=' + record.name,
 								        				  dataType: 'json',
 								        				  success: function(response){
 								        			

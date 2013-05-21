@@ -379,7 +379,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 	                                    <input class="input-file" id="image" name="image" type="file">
 	                                </c:when>
 	                                <c:otherwise>
-	                                	<img src="<%=request.getContextPath()%>/<sm:productImage imageName="${product.productImage.productImage}" product="${product.product}"/>" width="200"/>
+	                                	<img src="<sm:productImage imageName="${product.productImage.productImage}" product="${product.product}"/>" width="200"/>
 	                                </c:otherwise>
                                 </c:choose>
                         </div>
