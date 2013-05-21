@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.salesmanager.core.business.content.model.content.Content;
+import com.salesmanager.core.business.content.model.content.ContentType;
 import com.salesmanager.core.business.content.model.content.QContent;
 import com.salesmanager.core.business.content.model.content.QContentDescription;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
@@ -22,7 +23,7 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 	}
 	
 	@Override
-	public List<Content> listByType(String contentType, MerchantStore store, Language language) throws ServiceException {
+	public List<Content> listByType(ContentType contentType, MerchantStore store, Language language) throws ServiceException {
 
 		QContent qContent = QContent.content;
 		QContentDescription qContentDescription = QContentDescription.contentDescription;
@@ -35,7 +36,28 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 			.leftJoin(qContent.merchantStore).fetch()
 			.where(qContentDescription.language.id.eq(language.getId())
 			.and(qContent.merchantStore.id.eq(store.getId()))
-			.and(qContent.contentType.eq(contentType))
+			.and(qContent.contentType.eq(contentType.name()))
+			);
+		
+		List<Content> contents = query.list(qContent);
+		
+		return contents;
+	}
+	
+	@Override
+	public List<Content> listByType(ContentType contentType, MerchantStore store) throws ServiceException {
+
+		QContent qContent = QContent.content;
+		QContentDescription qContentDescription = QContentDescription.contentDescription;
+		
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qContent)
+			.leftJoin(qContent.descriptions, qContentDescription).fetch()
+			.leftJoin(qContent.merchantStore).fetch()
+			.where(qContent.merchantStore.id.eq(store.getId())
+			.and(qContent.contentType.eq(contentType.name()))
 			);
 		
 		List<Content> contents = query.list(qContent);
@@ -58,6 +80,27 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 			.leftJoin(qContent.merchantStore).fetch()
 			.where(qContentDescription.language.id.eq(language.getId())
 			.and(qContent.merchantStore.id.eq(store.getId()))
+			.and(qContent.contentType.in(contentType))
+			);
+		
+		List<Content> contents = query.list(qContent);
+		
+		return contents;
+	}
+	
+	@Override
+	public List<Content> listByType(List<String> contentType, MerchantStore store) throws ServiceException {
+
+		QContent qContent = QContent.content;
+		QContentDescription qContentDescription = QContentDescription.contentDescription;
+		
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qContent)
+			.leftJoin(qContent.descriptions, qContentDescription).fetch()
+			.leftJoin(qContent.merchantStore).fetch()
+			.where(qContent.merchantStore.id.eq(store.getId())
 			.and(qContent.contentType.in(contentType))
 			);
 		

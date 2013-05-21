@@ -3,6 +3,7 @@ package com.salesmanager.core.business.content.service;
 import java.util.List;
 
 import com.salesmanager.core.business.content.model.content.Content;
+import com.salesmanager.core.business.content.model.content.ContentType;
 import com.salesmanager.core.business.content.model.image.ContentImage;
 import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
@@ -27,10 +28,10 @@ public interface ContentService
     extends SalesManagerEntityService<Long, Content>
 {
 
-    public List<Content> listByType( String contentType, MerchantStore store, Language language )
+    public List<Content> listByType( ContentType contentType, MerchantStore store, Language language )
         throws ServiceException;
 
-    public List<Content> listByType( List<String> contentType, MerchantStore store, Language language )
+    public List<Content> listByType( List<ContentType> contentType, MerchantStore store, Language language )
         throws ServiceException;
 
     Content getByCode( String code, MerchantStore store )
@@ -128,6 +129,12 @@ public interface ContentService
 	 * @throws ServiceException
 	 */
 	void addProperty(final String merchantStoreCode, CMSContentImage cmsContentImage)
+			throws ServiceException;
+
+	List<Content> listByType(ContentType contentType, MerchantStore store)
+			throws ServiceException;
+
+	List<Content> listByType(List<ContentType> contentType, MerchantStore store)
 			throws ServiceException;
 
 }

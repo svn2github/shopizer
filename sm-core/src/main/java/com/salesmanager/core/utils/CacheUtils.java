@@ -1,5 +1,8 @@
 package com.salesmanager.core.utils;
 
+import org.infinispan.Cache;
+import org.infinispan.manager.DefaultCacheManager;
+import org.infinispan.manager.EmbeddedCacheManager;
 import org.jboss.cache.CacheFactory;
 import org.jboss.cache.DefaultCacheFactory;
 import org.jboss.cache.Fqn;
@@ -18,6 +21,12 @@ public class CacheUtils {
 
 	private org.jboss.cache.Node refCache;
 	
+	private String repositoryFileName = "cms/infinispan_configuration.xml";
+	
+	private Cache<Object, Object> localCache = null;
+	
+
+	
 	
 	private CacheUtils() {
 		
@@ -29,6 +38,9 @@ public class CacheUtils {
 			   org.jboss.cache.Node rootNode = cache.getRoot();
 			   Fqn refFqn = Fqn.fromString("/ref/");
 			   refCache = rootNode.addChild(refFqn);
+			   
+			   //localCache =  new DefaultCacheManager(repositoryFileName).getCache("Cache"); 
+
 			
 			
 		} catch (Exception e) {
@@ -54,7 +66,7 @@ public class CacheUtils {
 	public void putInCache(Object object, String keyName) throws Exception {
 		
 		refCache.put(keyName, object);
-
+		//localCache.put(keyName, object);
 		
 	}
 	
@@ -62,6 +74,7 @@ public class CacheUtils {
 	public Object getFromCache(String keyName) throws Exception {
 		
 		 return refCache.get(keyName);
+		 //return localCache.get(keyName);
 		
 	}
 	

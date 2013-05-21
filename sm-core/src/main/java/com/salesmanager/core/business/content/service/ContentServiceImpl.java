@@ -15,6 +15,7 @@ import org.springframework.util.Assert;
 
 import com.salesmanager.core.business.content.dao.ContentDao;
 import com.salesmanager.core.business.content.model.content.Content;
+import com.salesmanager.core.business.content.model.content.ContentType;
 import com.salesmanager.core.business.content.model.image.ContentImage;
 import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.InputContentImage;
@@ -48,19 +49,43 @@ public class ContentServiceImpl
     }
 
     @Override
-    public List<Content> listByType( final String contentType, final MerchantStore store, final Language language )
+    public List<Content> listByType( final ContentType contentType, final MerchantStore store, final Language language )
         throws ServiceException
     {
 
         return contentDao.listByType( contentType, store, language );
     }
+    
+    @Override
+    public List<Content> listByType( final ContentType contentType, final MerchantStore store )
+    throws ServiceException
+    {
+
+    return contentDao.listByType( contentType, store );
+    }
 
     @Override
-    public List<Content> listByType( final List<String> contentType, final MerchantStore store, final Language language )
+    public List<Content> listByType( final List<ContentType> contentType, final MerchantStore store, final Language language )
         throws ServiceException
     {
 
-        return contentDao.listByType( contentType, store, language );
+    	List<String> contentTypes = new ArrayList<String>();
+    	for(ContentType type : contentType) {
+    		contentTypes.add(type.name());
+    	}
+        return contentDao.listByType( contentTypes, store, language );
+    }
+    
+    @Override
+    public List<Content> listByType( final List<ContentType> contentType, final MerchantStore store )
+    throws ServiceException
+    {
+
+		List<String> contentTypes = new ArrayList<String>();
+		for(ContentType type : contentType) {
+			contentTypes.add(type.name());
+		}
+	    return contentDao.listByType( contentTypes, store );
     }
 
     @Override
