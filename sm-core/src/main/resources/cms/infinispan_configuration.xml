@@ -52,10 +52,14 @@
 					<property name="timestampColumnNameForBinary" value="TIMESTAMP_COLUMN" />
 					<property name="timestampColumnTypeForStrings" value="BIGINT" />
 					<property name="timestampColumnTypeForBinary" value="BIGINT" />
+					<!-- <property name="connectionFactoryClass"
+						value="org.infinispan.loaders.jdbc.connectionfactory.PooledConnectionFactory" /> -->
 					<property name="connectionFactoryClass"
 						value="org.infinispan.loaders.jdbc.connectionfactory.SimpleConnectionFactory" />
 					<property name="connectionUrl"
-						value="jdbc:h2:file:c:/shopizer_cms_infinispan_mixed_cs;DB_CLOSE_DELAY=-1" />
+
+						value="jdbc:h2:file:/Users//csamson777/Documents/workspace2/shopizer_infinispan_mixed_cs;DB_CLOSE_DELAY=-1" />
+
 					<property name="userName" value="sa" />
 					<property name="driverClass" value="org.h2.Driver" />
 					<property name="idColumnTypeForStrings" value="VARCHAR(255)" />
@@ -93,7 +97,7 @@
 	          <loader class="org.infinispan.loaders.file.FileCacheStore" fetchPersistentState="false"
 	               ignoreModifications="false" purgeOnStartup="false">
 	            <properties>
-	                 <property name="location" value="C:/infinispan/store"/>
+	                 <property name="location" value="/Users//csamson777/Documents/workspace2/store"/>
 	               </properties>
 	          </loader>
 	     </loaders>
