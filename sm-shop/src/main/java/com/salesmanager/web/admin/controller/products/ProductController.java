@@ -730,7 +730,7 @@ public class ProductController {
 			
 			Long id = Long.parseLong(iid);
 			ProductImage productImage = productImageService.getById(id);
-			if(productImage==null || productImage.getProduct().getMerchantStore().getId()!=store.getId()) {
+			if(productImage==null || productImage.getProduct().getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 
 				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
 				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			

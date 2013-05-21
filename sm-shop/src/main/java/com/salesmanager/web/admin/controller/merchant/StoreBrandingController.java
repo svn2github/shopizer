@@ -35,7 +35,7 @@ import com.salesmanager.core.business.reference.language.service.LanguageService
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.modules.cms.common.CMSContentImage;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
-import com.salesmanager.web.admin.entity.merchant.ContentImages;
+import com.salesmanager.web.admin.entity.content.ContentImages;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 

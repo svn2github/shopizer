@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
@@ -41,6 +42,9 @@ public class LandingController {
 	
 	@Autowired
 	private ProductPriceUtils productPriceUtils;
+	
+	@Autowired
+	private CategoryService categoryService;
 	
 	//@Autowired
 	//CategoryService categoryService;
@@ -89,7 +93,10 @@ public class LandingController {
 			featuredItems.add(proxyProduct);
 		}
 		
+		//List<Category> categories = categoryService.listByDepth(store, 0);
+		
 		model.addAttribute("featuredItems", featuredItems);
+		//model.addAttribute("categories", categories);
 		
 		StringBuilder template = new StringBuilder().append("landing.").append(store.getStoreTemplate());
 		

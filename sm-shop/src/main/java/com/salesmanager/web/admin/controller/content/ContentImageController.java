@@ -32,9 +32,10 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.modules.cms.common.CMSContentImage;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
-import com.salesmanager.web.admin.entity.merchant.ContentImages;
+import com.salesmanager.web.admin.entity.content.ContentImages;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.utils.ImageFilePathUtils;
 
 
 @Controller
@@ -103,8 +104,9 @@ public class ContentImageController {
 
 					@SuppressWarnings("rawtypes")
 					Map entry = new HashMap();
-					entry.put("picture", new StringBuilder().append(store.getCode()).append("/").append(ImageContentType.CONTENT.name()).append("/").append(name).toString());
+					entry.put("picture", ImageFilePathUtils.buildStaticImageFilePath(store, name));
 					entry.put("name", name);
+					entry.put("id", name);
 					resp.addDataEntry(entry);
 
 				}

@@ -1,7 +1,6 @@
 package com.salesmanager.web.admin.controller.products;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,12 +26,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionDescription;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValueDescription;
-import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionValueService;
 import com.salesmanager.core.business.content.model.image.ImageContentType;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
@@ -42,7 +37,6 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.modules.cms.common.CMSContentImage;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
-import com.salesmanager.web.admin.entity.merchant.ContentImages;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;

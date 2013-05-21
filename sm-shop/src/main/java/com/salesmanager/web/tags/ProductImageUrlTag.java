@@ -7,13 +7,13 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.utils.ImageFilePathUtils;
 
 public class ProductImageUrlTag extends TagSupport {
 	
@@ -74,8 +74,7 @@ public class ProductImageUrlTag extends TagSupport {
 			
 			//.append(scheme).append("://").append(merchantStore.getDomainName())
 				.append(Constants.STATIC_URI)
-				.append("/").append(merchantStore.getCode()).append("/PRODUCT/")
-				.append(this.getProduct().getId()).append("/").append(this.getImageName());
+				.append("/").append(ImageFilePathUtils.buildProductImageFilePath(merchantStore, product, this.getImageName())).toString();
 
 			
 
