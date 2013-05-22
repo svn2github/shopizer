@@ -21,6 +21,12 @@ public interface ControllerConstants
  
         }
         
+        interface ContentFiles{
+            final String addContentFiles="admin-content-files-add";
+
+ 
+        }
+        
         interface Content{
             final String contentPages="admin-content-pages";
         }
