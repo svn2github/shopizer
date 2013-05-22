@@ -1,8 +1,6 @@
 package com.salesmanager.test.payment;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +11,6 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.salesmanager.core.business.catalog.product.model.type.ProductType;
 import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.customer.model.Customer;
@@ -29,7 +26,6 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
-import com.salesmanager.core.business.shipping.model.ShippingProduct;
 import com.salesmanager.core.business.system.model.Environment;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 
@@ -97,9 +93,9 @@ public class AuthorizeNetPaymentTestCase {
 		    
 		    //configure module
 	
-		    configuration.getIntegrationKeys().put("userId", "csamson777");
-		    configuration.getIntegrationKeys().put("accessKey", "AC66279FF8020AE0");
-		    configuration.getIntegrationKeys().put("password", "william");
+		    configuration.getIntegrationKeys().put("appLoginId", "4wd9TkD2W4T2");
+		    configuration.getIntegrationKeys().put("transactionId", "4T52pR6vDJVqp446");
+		    
 		    
 		    Order order = new Order();
 		    
