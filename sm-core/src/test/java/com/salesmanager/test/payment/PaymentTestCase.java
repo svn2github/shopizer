@@ -13,10 +13,8 @@ import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.payments.model.CreditCard;
 import com.salesmanager.core.business.payments.model.CreditCardPayment;
-import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.payments.service.PaymentService;
 import com.salesmanager.core.business.reference.country.model.Country;
@@ -81,11 +79,7 @@ public class PaymentTestCase extends AbstractSalesManagerCoreTestCase {
 	    customer.setBilling(billing);
 	    customer.setDelivery(delivery);
 	    
-	    //create Order
-	    Order order = new Order();
-	    order.setBilling(billing);
-	    order.setDelivery(delivery);
-	    order.setMerchant(store);
+
 	    
 	    //create Payment
 	    CreditCardPayment payment = new CreditCardPayment();
@@ -115,7 +109,7 @@ public class PaymentTestCase extends AbstractSalesManagerCoreTestCase {
 		
 		paymentService.savePaymentModuleConfiguration(paymentConfiguration, store);
 		
-		paymentService.processPayment(order, customer, store, payment, new BigDecimal(20));
+		//paymentService.processPayment(customer, store, payment, new BigDecimal(20));
 		
 		
 	}
