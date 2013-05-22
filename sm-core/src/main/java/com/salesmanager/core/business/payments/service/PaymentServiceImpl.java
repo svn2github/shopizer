@@ -212,6 +212,11 @@ public class PaymentServiceImpl implements PaymentService {
 		Validate.notNull(store);
 		Validate.notNull(payment);
 		Validate.notNull(amount);
+		Validate.notNull(payment.getTransactionType());
+		
+		if(payment.getTransactionType().name().equals(TransactionType.CAPTURE.name())) {
+			throw new ServiceException("This method does not allow to process capture transaction. Use processCapturePayment");
+		}
 		
 		
 		//must have a shipping module configured
@@ -247,26 +252,85 @@ public class PaymentServiceImpl implements PaymentService {
 		TransactionType transactionType = payment.getTransactionType();
 		Transaction transaction = null;
 		if(transactionType == TransactionType.AUTHORIZE)  {
-			transaction = module.authorize(customer, order, amount, payment, configuration, integrationModule);
+			transaction = module.authorize(store, customer, amount, payment, configuration, integrationModule);
 		} else if(transactionType == TransactionType.AUTHORIZECAPTURE)  {
-			transaction = module.authorizeAndCapture(customer, order, amount, payment, configuration, integrationModule);
-		} else if(transactionType == TransactionType.CAPTURE)  {
-			//get the previous transaction
-			Transaction trx = transactionService.getCapturableTransaction(order);
-			if(trx==null) {
-				throw new ServiceException("No capturable transaction for order id " + order.getId());
-			}
-			transaction = module.capture(customer, order, amount, payment, trx, configuration, integrationModule);
+			transaction = module.authorizeAndCapture(store, customer, amount, payment, configuration, integrationModule);
 		} else if(transactionType == TransactionType.INIT)  {
-			transaction = module.initTransaction(customer, order, amount, payment, configuration, integrationModule);
+			transaction = module.initTransaction(store, customer, amount, payment, configuration, integrationModule);
 		}
 		
 		if(transactionType != TransactionType.INIT) {
 			transactionService.create(transaction);
 		}
+
+		return transaction;
+
 		
-		//TODO populate order
+
+	}
+	
+	@Override
+	public Transaction processCapturePayment(Order order, Customer customer,
+			MerchantStore store, Payment payment, BigDecimal amount)
+			throws ServiceException {
+
+
+		Validate.notNull(customer);
+		Validate.notNull(store);
+		Validate.notNull(payment);
+		Validate.notNull(amount);
+		Validate.notNull(order);
+		Validate.notNull(payment.getTransactionType());
 		
+		if(!payment.getTransactionType().name().equals(TransactionType.CAPTURE.name())) {
+			throw new ServiceException("This method is for capture transaction only");
+		}
+		
+		
+		//must have a shipping module configured
+		Map<String, IntegrationConfiguration> modules = this.getPaymentModulesConfigured(store);
+		if(modules==null){
+			throw new ServiceException("No payment module configured");
+		}
+		
+		IntegrationConfiguration configuration = modules.get(payment.getModuleName());
+		
+		if(configuration==null) {
+			throw new ServiceException("Payment module " + payment.getModuleName() + " is not configured");
+		}
+		
+		if(!configuration.isActive()) {
+			throw new ServiceException("Payment module " + payment.getModuleName() + " is not active");
+		}
+		
+		
+		PaymentModule module = this.paymentModules.get(payment.getModuleName());
+		
+		if(module==null) {
+			throw new ServiceException("Payment module " + payment.getModuleName() + " does not exist");
+		}
+		
+		if(payment instanceof CreditCardPayment) {
+			CreditCardPayment creditCardPayment = (CreditCardPayment)payment;
+			validateCreditCard(creditCardPayment.getCreditCardNumber(),creditCardPayment.getCreditCard(),creditCardPayment.getExpirationMonth(),creditCardPayment.getExpirationYear());
+		}
+		
+		IntegrationModule integrationModule = getPaymentMethod(store,payment.getModuleName());
+		
+		TransactionType transactionType = payment.getTransactionType();
+
+			//get the previous transaction
+		Transaction trx = transactionService.getCapturableTransaction(order);
+		if(trx==null) {
+			throw new ServiceException("No capturable transaction for order id " + order.getId());
+		}
+		Transaction transaction = module.capture(store, customer, amount, payment, trx, configuration, integrationModule);
+
+		
+		if(transactionType != TransactionType.INIT) {
+			transactionService.create(transaction);
+		}
+
 		return transaction;
 
 		

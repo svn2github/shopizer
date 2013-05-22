@@ -71,4 +71,8 @@ public interface PaymentService {
 	void removePaymentModuleConfiguration(String moduleCode, MerchantStore store)
 			throws ServiceException;
 
+	Transaction processCapturePayment(Order order, Customer customer,
+			MerchantStore store, Payment payment, BigDecimal amount)
+			throws ServiceException;
+
 }
