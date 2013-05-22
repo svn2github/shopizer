@@ -90,6 +90,16 @@ public class StaticContentFileManagerImpl extends StaticContentFileManager
         // TODO Auto-generated method stub
         
     }
+	@Override
+	public List<OutputStaticContentData> getStaticContentData(
+			String merchantStoreCode) throws ServiceException {
+		return getStaticContent.getStaticContentData(merchantStoreCode);
+	}
+	@Override
+	public List<String> getStaticContentDataName(String merchantStoreCode)
+			throws ServiceException {
+		return getStaticContent.getStaticContentDataName(merchantStoreCode);
+	}
     
    
     

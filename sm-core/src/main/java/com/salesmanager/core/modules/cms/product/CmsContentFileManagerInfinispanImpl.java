@@ -69,7 +69,7 @@ public class CmsContentFileManagerInfinispanImpl
 
     }
 
-    @SuppressWarnings( "unchecked" )
+
     @Override
     public List<String> getImageNames( final String merchantStoreCode, final ImageContentType imageContentType )
         throws ServiceException
@@ -78,10 +78,7 @@ public class CmsContentFileManagerInfinispanImpl
         {
             throw new ServiceException( "CmsImageFileManagerInfinispan has a null cacheManager.getTreeCache()" );
         }
-        
 
-
-        	final List<String> returnNames = new ArrayList<String>();
 
             final Node<String, Object> merchantNode = getMerchantNode( merchantStoreCode);
             if ( merchantNode == null )

@@ -128,7 +128,7 @@ public interface ContentService
 	 * @param cmsContentImage
 	 * @throws ServiceException
 	 */
-	void addProperty(final String merchantStoreCode, CMSContentImage cmsContentImage)
+	void addOptionImage(final String merchantStoreCode, CMSContentImage cmsContentImage)
 			throws ServiceException;
 
 	List<Content> listByType(ContentType contentType, MerchantStore store)

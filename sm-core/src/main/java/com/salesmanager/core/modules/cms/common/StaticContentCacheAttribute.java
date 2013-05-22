@@ -24,9 +24,7 @@ public class StaticContentCacheAttribute extends CacheAttribute implements Seria
    
     private static final long serialVersionUID = -1482978134467061295L;
     private String dataType;
-    private Map<String,InputStream> staticDataEntities = new HashMap<String,InputStream>();
-   
-    
+
     public String getDataType()
     {
         return dataType;
@@ -35,14 +33,7 @@ public class StaticContentCacheAttribute extends CacheAttribute implements Seria
     {
         this.dataType = dataType;
     }
-    public Map<String, InputStream> getStaticDataEntities()
-    {
-        return staticDataEntities;
-    }
-    public void setStaticDataEntities( Map<String, InputStream> staticDataEntities )
-    {
-        this.staticDataEntities = staticDataEntities;
-    }
+
     
     
     

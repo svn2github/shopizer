@@ -9,9 +9,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.FileNameMap;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.infinispan.tree.Fqn;
 import org.infinispan.tree.Node;
@@ -210,13 +214,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
                 return null;
             }
             
-            final InputStream stream=contentAttribute.getStaticDataEntities().get( contentFileName );
-            File file=null;
-            OutputStream outputStream = new FileOutputStream(file);
-            IOUtils.copy(stream, outputStream);
-            outputStream.close();
             
-           
             
             final byte[] fileBytes=contentAttribute.getEntities().get( contentFileName );
             if ( fileBytes == null )
@@ -231,8 +229,9 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
             
             outputStaticContentData=new OutputStaticContentData();
             outputStaticContentData.setFile( output );
+            //TODO fix null
             outputStaticContentData.setFileContentType( URLConnection.guessContentTypeFromStream( input ) );
-            outputStaticContentData.setFileName( URLConnection.guessContentTypeFromStream( input ) );
+            outputStaticContentData.setFileName( contentFileName );
             outputStaticContentData.setContentType( StaticContentType.valueOf( contentAttribute.getDataType() ) );
             
         }
@@ -243,6 +242,16 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
         }
        return outputStaticContentData != null ? outputStaticContentData : null;
     }
+    
+    
+	@Override
+	public List<OutputStaticContentData> getStaticContentData(
+			String merchantStoreCode) throws ServiceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+    
+    
 
     @Override
     public void removeStaticContent( String merchantStoreCode, ContentData contentData )
@@ -288,4 +297,53 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
     public void setCacheManager(CacheManager cacheManager) {
         this.cacheManager = cacheManager;
     }
+
+
+    /**
+     * Queries the CMS to retrieve all static content files. Only the name of the file will be returned to the client
+     * @param merchantStoreCode
+     * @return
+     * @throws ServiceException
+     */
+	@Override
+	public List<String> getStaticContentDataName(final String merchantStoreCode)
+			throws ServiceException {
+		
+		
+		
+	       if ( cacheManager.getTreeCache() == null )
+	        {
+	            throw new ServiceException( "CmsStaticContentFileManagerInfinispan has a null cacheManager.getTreeCache()" );
+	        }
+
+	        try
+	        {
+	            final Node<String, Object> merchantNode = getMerchantNodeForStaticContent(merchantStoreCode );
+
+	            
+	            if ( merchantNode == null )
+	            {
+	                LOGGER.warn( "Unable to find content attribute for given merchant" );
+	                return Collections.<String> emptyList();
+	            }
+	            
+
+	            if ( MapUtils.isEmpty( merchantNode.getData()) )
+	            {
+	                LOGGER.warn( "No Content for merchant store with code {}", merchantStoreCode);
+	                return Collections.<String> emptyList();
+	            }
+	            
+	             return new ArrayList<String>(merchantNode.getData().keySet());
+
+	        }
+	        catch ( final Exception e )
+	        {
+	            LOGGER.error( "Error while fetching file for {} merchant ", merchantStoreCode);
+	            throw new ServiceException( e );
+	        }
+
+	}
+
+
 }

@@ -164,7 +164,7 @@ public class ContentServiceImpl
     }
     
     @Override
-    public void addProperty( final String merchantStoreCode, final CMSContentImage cmsContentImage )
+    public void addOptionImage( final String merchantStoreCode, final CMSContentImage cmsContentImage )
     throws ServiceException {
     	
     	
