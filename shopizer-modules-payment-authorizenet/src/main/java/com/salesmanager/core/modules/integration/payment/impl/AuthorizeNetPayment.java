@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.UUID;
 
 import net.authorize.Environment;
 import net.authorize.Merchant;
@@ -26,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.payments.model.CreditCardPayment;
 import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.payments.model.Transaction;
@@ -54,7 +56,7 @@ public class AuthorizeNetPayment implements PaymentModule {
 	
 	
 
-	public Transaction initTransaction(Customer customer, Order order,
+	public Transaction initTransaction(MerchantStore store, Customer customer,
 			BigDecimal amount, Payment payment,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
@@ -63,13 +65,14 @@ public class AuthorizeNetPayment implements PaymentModule {
 	}
 
 
-	public Transaction authorize(Customer customer, Order order,
+	public Transaction authorize(MerchantStore store, Customer customer,
 			BigDecimal amount, Payment payment,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
 		// TODO Auto-generated method stub
-		return processTransaction(TransactionType.AUTHORIZE,
-				order,
+		return processTransaction(
+				store,
+				TransactionType.AUTHORIZE,
 				amount,
 				payment,
 				configuration,
@@ -77,7 +80,7 @@ public class AuthorizeNetPayment implements PaymentModule {
 	}
 
 
-	public Transaction capture(Customer customer, Order order,
+	public Transaction capture(MerchantStore store, Customer customer,
 			BigDecimal amount, Payment payment, Transaction transaction, 
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
@@ -92,7 +95,7 @@ public class AuthorizeNetPayment implements PaymentModule {
 		
 				String trnID = transaction.getTransactionDetails().get("TRANSACTIONID");
 				
-				String amnt = productPriceUtils.getAdminFormatedAmount(order.getMerchant(), order.getTotal());
+				String amnt = productPriceUtils.getAdminFormatedAmount(store, amount);
 				
 				/**
 				merchant_id=123456789&requestType=BACKEND
@@ -114,7 +117,7 @@ public class AuthorizeNetPayment implements PaymentModule {
 		
 
 
-				Transaction response = this.sendTransaction(messageString.toString(), "PAC", TransactionType.CAPTURE, payment.getPaymentType(), order, amount, configuration, module);
+				Transaction response = this.sendTransaction(store, messageString.toString(), "PAC", TransactionType.CAPTURE, payment.getPaymentType(), amount, configuration, module);
 				
 				return response;
 				
@@ -129,12 +132,13 @@ public class AuthorizeNetPayment implements PaymentModule {
 	}
 
 
-	public Transaction authorizeAndCapture(Customer customer, Order order,
+	public Transaction authorizeAndCapture(MerchantStore store, Customer customer,
 			BigDecimal amount, Payment payment,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
-		return processTransaction(TransactionType.AUTHORIZECAPTURE,
-				order,
+		return processTransaction(
+				store,
+				TransactionType.AUTHORIZECAPTURE,
 				amount,
 				payment,
 				configuration,
@@ -142,7 +146,7 @@ public class AuthorizeNetPayment implements PaymentModule {
 	}
 
 
-	public Transaction refund(Transaction transaction, Order order,
+	public Transaction refund(boolean partial, MerchantStore store, Transaction transaction,
 			BigDecimal amount, Payment payment,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
@@ -182,7 +186,7 @@ public class AuthorizeNetPayment implements PaymentModule {
 	
 			String trnID = transaction.getTransactionDetails().get("TRANSACTIONID");
 			
-			String amnt = productPriceUtils.getAdminFormatedAmount(order.getMerchant(), order.getTotal());
+			String amnt = productPriceUtils.getAdminFormatedAmount(store, amount);
 			
 			/**
 			merchant_id=123456789&requestType=BACKEND
@@ -214,7 +218,7 @@ public class AuthorizeNetPayment implements PaymentModule {
 
 
 			
-			Transaction response = this.sendTransaction(messageString.toString(), "R", TransactionType.REFUND, payment.getPaymentType(), order, amount, configuration, module);
+			Transaction response = this.sendTransaction(store, messageString.toString(), "R", TransactionType.REFUND, payment.getPaymentType(), amount, configuration, module);
 			
 			return response;
 			
@@ -242,11 +246,11 @@ public class AuthorizeNetPayment implements PaymentModule {
 	
 	
 	private Transaction sendTransaction(
+			MerchantStore store,
 			String transaction, 
 			String beanstreamType, 
 			TransactionType transactionType,
 			PaymentType paymentType,
-			Order order,
 			BigDecimal amount,
 			IntegrationConfiguration configuration,
 			IntegrationModule module
@@ -347,7 +351,7 @@ public class AuthorizeNetPayment implements PaymentModule {
 			if(transactionApproved.equals("0")) {
 
 				merchantLogService.save(
-						new MerchantLog(order.getMerchant(),
+						new MerchantLog(store,
 						"Can't process BeanStream message "
 								 + messageText + " return code id " + messageId));
 	
@@ -361,7 +365,7 @@ public class AuthorizeNetPayment implements PaymentModule {
 			//create transaction object
 
 			//return parseResponse(type,transaction,respText,nvp,order);
-			//return this.parseResponse(transactionType, paymentType, nvp, order, amount);
+			//return this.parseResponse(transactionType, paymentType, nvp, amount);
 			return null;
 			
 			
@@ -412,8 +416,8 @@ public class AuthorizeNetPayment implements PaymentModule {
 	
 	
 	
-	private Transaction processTransaction(TransactionType type,
-			Order order,
+	
+	private Transaction processTransaction(MerchantStore store, TransactionType type,
 			BigDecimal amount, Payment payment,
 			IntegrationConfiguration configuration, IntegrationModule module) throws IntegrationException {
 		
@@ -430,8 +434,8 @@ public class AuthorizeNetPayment implements PaymentModule {
 		try {
 			
 		
-		String orderNumber = new StringBuilder().append(order.getId()).append(new Date().getTime()).toString();
-		
+		//String orderNumber = new StringBuilder().append(order.getId()).append(new Date().getTime()).toString();
+		String orderNumber =UUID.randomUUID().toString();
 
 		
 		Environment env = Environment.PRODUCTION;
@@ -444,20 +448,22 @@ public class AuthorizeNetPayment implements PaymentModule {
 			trx = net.authorize.TransactionType.AUTH_ONLY;
 		}
 		
-	    String apiLoginID = configuration.getIntegrationKeys().get("API_LOGIN");
-	    String transactionKey = configuration.getIntegrationKeys().get("TRANSACTION_KEY");
+	    String apiLoginID = configuration.getIntegrationKeys().get("appLoginId");
+	    String transactionKey = configuration.getIntegrationKeys().get("transactionId");
 	    Merchant merchant = Merchant.createMerchant(env,
 	        apiLoginID, transactionKey);
+	    
+	    CreditCardPayment creditCardPayment = (CreditCardPayment)payment;
 
 	    // create credit card
 	    CreditCard creditCard = CreditCard.createCreditCard();
-	    creditCard.setCreditCardNumber(order.getCcNumber());
-	    creditCard.setExpirationMonth(order.getCcExpires());//TODO
-	    creditCard.setExpirationYear("2015");
+	    creditCard.setCreditCardNumber(creditCardPayment.getCreditCardNumber());
+	    creditCard.setExpirationMonth(creditCardPayment.getExpirationMonth());
+	    creditCard.setExpirationYear(creditCardPayment.getExpirationYear());
 
 	    // create transaction
 	    net.authorize.aim.Transaction transaction = merchant.createAIMTransaction(
-	        trx, order.getTotal());
+	        trx, amount);
 	    transaction.setCreditCard(creditCard);
 
 	    Result<Transaction> result = (Result<Transaction>)merchant
