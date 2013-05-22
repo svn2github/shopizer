@@ -5,6 +5,7 @@ package com.salesmanager.core.modules.cms.content;
 
 import java.util.List;
 
+import com.salesmanager.core.business.content.model.content.StaticContentType;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.modules.cms.common.ContentData;
 import com.salesmanager.core.modules.cms.common.InputStaticContentData;
@@ -92,13 +93,13 @@ public class StaticContentFileManagerImpl extends StaticContentFileManager
     }
 	@Override
 	public List<OutputStaticContentData> getStaticContentData(
-			String merchantStoreCode) throws ServiceException {
-		return getStaticContent.getStaticContentData(merchantStoreCode);
+			String merchantStoreCode, StaticContentType staticContentType) throws ServiceException {
+		return getStaticContent.getStaticContentData(merchantStoreCode, staticContentType);
 	}
 	@Override
-	public List<String> getStaticContentDataName(String merchantStoreCode)
+	public List<String> getStaticContentDataName(String merchantStoreCode, StaticContentType staticContentType)
 			throws ServiceException {
-		return getStaticContent.getStaticContentDataName(merchantStoreCode);
+		return getStaticContent.getStaticContentDataName(merchantStoreCode, staticContentType);
 	}
     
    

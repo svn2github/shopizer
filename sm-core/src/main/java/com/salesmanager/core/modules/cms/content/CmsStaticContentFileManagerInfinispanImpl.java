@@ -14,6 +14,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
@@ -229,8 +230,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
             
             outputStaticContentData=new OutputStaticContentData();
             outputStaticContentData.setFile( output );
-            //TODO fix null
-            outputStaticContentData.setFileContentType( URLConnection.guessContentTypeFromStream( input ) );
+            outputStaticContentData.setFileContentType( URLConnection.getFileNameMap().getContentTypeFor(contentFileName) );
             outputStaticContentData.setFileName( contentFileName );
             outputStaticContentData.setContentType( StaticContentType.valueOf( contentAttribute.getDataType() ) );
             
@@ -246,9 +246,82 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
     
 	@Override
 	public List<OutputStaticContentData> getStaticContentData(
-			String merchantStoreCode) throws ServiceException {
-		// TODO Auto-generated method stub
+			String merchantStoreCode, StaticContentType staticContentType) throws ServiceException {
+
+		
+		
+        if ( cacheManager.getTreeCache() == null )
+        {
+            throw new ServiceException( "CmsStaticContentFileManagerInfinispan has a null cacheManager.getTreeCache()" );
+        }
+        OutputStaticContentData outputStaticContentData=null;
+        InputStream input = null;
+        try
+        {
+            final Node<String, Object> merchantNode = getMerchantNodeForStaticContent(merchantStoreCode );
+            if ( merchantNode == null )
+            {
+                LOGGER.warn( "merchant node is null" );
+                return null;
+            }
+            
+
+            final StaticContentCacheAttribute contentAttribute = (StaticContentCacheAttribute) merchantNode.get( staticContentType.name() );
+
+            if ( contentAttribute == null )
+            {
+                LOGGER.warn( "Unable to find content attribute for given merchant" );
+                return null;
+            }
+            
+            
+            Map<String, byte[]> entries = contentAttribute.getEntities();
+            
+            if(entries != null) {
+            	
+            	for(String key : entries.keySet()) {
+            		
+            		
+            		byte[] fileBytes = entries.get(key);
+            		
+                    if ( fileBytes == null )
+                    {
+                        LOGGER.warn( "file byte is null, no file found" );
+                        continue;
+                    }
+                    input=new ByteArrayInputStream( fileBytes );
+                   
+                    final ByteArrayOutputStream output = new ByteArrayOutputStream();
+                    IOUtils.copy( input, output );
+                    
+                    outputStaticContentData=new OutputStaticContentData();
+                    outputStaticContentData.setFile( output );
+                    outputStaticContentData.setFileContentType( URLConnection.getFileNameMap().getContentTypeFor(key) );
+                    outputStaticContentData.setFileName( key );
+                    outputStaticContentData.setContentType( StaticContentType.valueOf( contentAttribute.getDataType() ) );
+            		
+            		
+            		
+            	}
+            	
+            	
+            }
+            
+            
+            
+
+            
+        }
+        catch ( final Exception e )
+        {
+            LOGGER.error( "Error while fetching file for {} merchant ", merchantStoreCode);
+            throw new ServiceException( e );
+        }
+
+		
 		return null;
+		
+		
 	}
     
     
@@ -306,7 +379,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
      * @throws ServiceException
      */
 	@Override
-	public List<String> getStaticContentDataName(final String merchantStoreCode)
+	public List<String> getStaticContentDataName(final String merchantStoreCode, StaticContentType staticContentType)
 			throws ServiceException {
 		
 		

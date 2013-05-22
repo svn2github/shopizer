@@ -20,7 +20,7 @@ public abstract class StaticContentData implements Serializable
    
     private static final long serialVersionUID = 1L;
     private String fileName;
-    private StaticContentType contentType;
+    private StaticContentType contentType = StaticContentType.STATIC_DATA;
     private String fileContentType;
     
     public String getFileName()
