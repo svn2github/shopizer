@@ -11,6 +11,8 @@ import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
 import java.io.ByteArrayOutputStream;
+
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -34,10 +36,6 @@ public class StaticContentTestCase extends AbstractSalesManagerCoreTestCase {
 	
 	@Test
 	public void testCreateStaticContent() throws Exception {
-		
-	    Language en = languageService.getByCode("en");
-	    Country country = countryService.getByCode("CA");
-	    Zone zone = zoneService.getByCode("QC");
 
 	    MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
 	    
@@ -57,13 +55,14 @@ public class StaticContentTestCase extends AbstractSalesManagerCoreTestCase {
 	     InputStaticContentData staticContent = new InputStaticContentData();
 	     staticContent.setFile(inputStream);
 	     staticContent.setFileName(file.getName());
-	     staticContent.setContentType(StaticContentType.STATIC_DATA);
+	     staticContent.setContentType(StaticContentType.STATIC_DATA);//default to static data
         
 	     staticContentService.addStaticContentData(store.getCode(), staticContent);
 
         //now get the file
 	     
-	     OutputStaticContentData getData = staticContentService.getStaticContentData(store.getCode(), file.getName());
+	     OutputStaticContentData getData = staticContentService.getStaticContentData(store.getCode(), StaticContentType.STATIC_DATA ,file.getName());
+	     Assert.assertNotNull(getData);
 	     if(getData != null) {
 	    	 
 	    	 System.out.println(getData.getFileName());
@@ -76,6 +75,11 @@ public class StaticContentTestCase extends AbstractSalesManagerCoreTestCase {
 	    	 
 	     }
 
+	}
+	
+	@Test
+	public void testCreateMultipleStaticContent() throws Exception {
+		
 	}
 	
 
