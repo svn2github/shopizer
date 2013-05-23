@@ -12,7 +12,7 @@ import com.salesmanager.web.constants.Constants;
 public class DisplayFunctions {
 	
 	
-	public com.salesmanager.core.business.catalog.category.model.Category getTopCategories(javax.servlet.http.HttpServletRequest request) {
+	public List<Category> getTopCategories(javax.servlet.http.HttpServletRequest request) {
 		
 		List<Category> returnCategories = new ArrayList<Category>();
 		//get the current language

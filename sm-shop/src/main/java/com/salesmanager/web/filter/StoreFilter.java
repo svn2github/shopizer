@@ -1,6 +1,7 @@
 package com.salesmanager.web.filter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -313,8 +314,12 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 							.append(store.getId())
 							.append(lang.getCode()).toString();
 							List<Content> contentList = null;
+							if(contents==null) {
+								contents = new HashMap<String, List<Content>>();
+							}
 							if(!contents.containsKey(key)) {
 								contentList = new ArrayList<Content>();
+
 								contents.put(key, contentList);
 							}
 							contentList.add(content);
@@ -391,13 +396,17 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 						for(CategoryDescription description : descriptions) {
 							Language lang = description.getLanguage();
 							String key = new StringBuilder()
-							.append(Constants.CONTENT_CACHE_KEY)
+							.append(Constants.CATEGORIES_CACHE_KEY)
 							.append(store.getId())
 							.append(lang.getCode()).toString();
 							
 							List<Category> cacheCategories = null;
+							if(objects==null) {
+								objects = new HashMap<String, List<Category>>();
+							}
 							if(!objects.containsKey(key)) {
 								cacheCategories = new ArrayList<Category>();
+
 								objects.put(key, cacheCategories);
 							}
 							cacheCategories.add(category);
