@@ -24,7 +24,6 @@
 		
 		 <mvc:interceptor>
   			<mvc:mapping path="/shop/**"/>
-  			<mvc:mapping path="/admin/**"/>
   			<bean class="com.salesmanager.web.filter.StoreFilter"/>
  		</mvc:interceptor>
 		
