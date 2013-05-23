@@ -189,7 +189,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
      * @throws ServiceException
      */
     @Override
-    public OutputStaticContentData getStaticContentData( String merchantStoreCode, String contentFileName )
+    public OutputStaticContentData getStaticContentData( String merchantStoreCode, StaticContentType staticContentType, String contentFileName )
         throws ServiceException
     {
        
@@ -207,7 +207,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
                 LOGGER.warn( "merchant node is null" );
                 return null;
             }
-            final StaticContentCacheAttribute contentAttribute = (StaticContentCacheAttribute) merchantNode.get( contentFileName);
+            final StaticContentCacheAttribute contentAttribute = (StaticContentCacheAttribute) merchantNode.get( staticContentType.name() );
 
             if ( contentAttribute == null )
             {

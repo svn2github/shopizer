@@ -47,10 +47,10 @@ public class StaticContentFileManagerImpl extends StaticContentFileManager
     }
     
     @Override
-    public OutputStaticContentData getStaticContentData( String merchantStoreCode, String contentName )
+    public OutputStaticContentData getStaticContentData( String merchantStoreCode, StaticContentType staticContentType, String contentName )
         throws ServiceException
     {
-      return  getStaticContent.getStaticContentData( merchantStoreCode, contentName );
+      return  getStaticContent.getStaticContentData( merchantStoreCode, staticContentType, contentName );
       
     }
     

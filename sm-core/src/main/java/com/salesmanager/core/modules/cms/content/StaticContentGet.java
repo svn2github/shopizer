@@ -14,7 +14,7 @@ import com.salesmanager.core.modules.cms.common.OutputStaticContentData;
 public interface StaticContentGet
 {
 
-	public OutputStaticContentData getStaticContentData(final String merchantStoreCode, String contentName) throws ServiceException;
+	public OutputStaticContentData getStaticContentData(final String merchantStoreCode, StaticContentType staticContentType, String contentName) throws ServiceException;
     public List<String> getStaticContentDataName(final String merchantStoreCode,StaticContentType staticContentType) throws ServiceException;
     public List<OutputStaticContentData> getStaticContentData(final String merchantStoreCode, StaticContentType staticContentType) throws ServiceException;
 }

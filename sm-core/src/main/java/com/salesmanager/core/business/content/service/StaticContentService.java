@@ -5,6 +5,7 @@ package com.salesmanager.core.business.content.service;
 
 import java.util.List;
 
+import com.salesmanager.core.business.content.model.content.StaticContentType;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.modules.cms.common.InputStaticContentData;
 import com.salesmanager.core.modules.cms.common.OutputStaticContentData;
@@ -63,7 +64,7 @@ public interface StaticContentService
      * @return {@link OutputStaticContentData}
      * @throws ServiceException
      */
-    public OutputStaticContentData getStaticContentData( final String merchantStoreCode, final String fileName )
+    public OutputStaticContentData getStaticContentData( final String merchantStoreCode, StaticContentType staticContentType, final String fileName )
         throws ServiceException;
     
     

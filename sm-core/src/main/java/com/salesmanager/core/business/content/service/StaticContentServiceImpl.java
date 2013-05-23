@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import com.salesmanager.core.business.content.model.content.StaticContentType;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.modules.cms.common.InputStaticContentData;
 import com.salesmanager.core.modules.cms.common.OutputStaticContentData;
@@ -84,17 +85,18 @@ public class StaticContentServiceImpl implements StaticContentService
      * 
      * @param store Merchant merchantStoreCode
      * @param fileName name of requested file
+     * @param staticContentType
      * @return {@link OutputStaticContentData}
      * @throws ServiceException
      */
     @Override
-    public OutputStaticContentData getStaticContentData( String merchantStoreCode, String fileName )
+    public OutputStaticContentData getStaticContentData( String merchantStoreCode, StaticContentType staticContentType, String fileName )
         throws ServiceException
     {
         LOG.info( "Starting to fetch static content file for with name {} for merchant with Code {} ", fileName,merchantStoreCode);
         Assert.notNull( merchantStoreCode, "Merchant store Id can not be null" );
         Assert.notNull( fileName, "file name can not be null" );
-        return  staticContentFileManager.getStaticContentData( merchantStoreCode, fileName );
+        return  staticContentFileManager.getStaticContentData( merchantStoreCode, staticContentType, fileName );
     }
 
 
