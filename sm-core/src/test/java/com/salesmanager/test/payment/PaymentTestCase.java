@@ -16,6 +16,7 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.payments.model.CreditCard;
 import com.salesmanager.core.business.payments.model.CreditCardPayment;
 import com.salesmanager.core.business.payments.model.PaymentType;
+import com.salesmanager.core.business.payments.model.TransactionType;
 import com.salesmanager.core.business.payments.service.PaymentService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -91,6 +92,7 @@ public class PaymentTestCase extends AbstractSalesManagerCoreTestCase {
 		payment.setExpirationMonth("04");
 		payment.setExpirationYear("16");
 		payment.setCreditCard(CreditCard.MASTERCARD);
+		payment.setTransactionType(TransactionType.AUTHORIZECAPTURE);
 	    
 		
 		IntegrationConfiguration paymentConfiguration = new IntegrationConfiguration();
@@ -109,7 +111,9 @@ public class PaymentTestCase extends AbstractSalesManagerCoreTestCase {
 		
 		paymentService.savePaymentModuleConfiguration(paymentConfiguration, store);
 		
-		//paymentService.processPayment(customer, store, payment, new BigDecimal(20));
+
+		paymentService.processPayment(customer, store, payment, new BigDecimal(20));
+
 		
 		
 	}
