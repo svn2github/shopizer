@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
@@ -102,13 +103,13 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
             //StaticContentCacheAttribute contentAttribute = (StaticContentCacheAttribute) merchantNode.get( inputStaticContentData.getContentType().name() );
             //if ( contentAttribute == null )
             //{
-            StaticContentCacheAttribute contentAttribute = new StaticContentCacheAttribute();
+            //StaticContentCacheAttribute contentAttribute = new StaticContentCacheAttribute();
             //}
-            contentAttribute.getEntities().put( inputStaticContentData.getFileName(), IOUtils.toByteArray( inputStaticContentData.getFile() ));
+            //contentAttribute.getEntities().put( inputStaticContentData.getFileName(), IOUtils.toByteArray( inputStaticContentData.getFile() ));
             //contentAttribute.getStaticDataEntities().put( inputStaticContentData.getFileName(), inputStaticContentData.getFile() );
-            contentAttribute.setDataType( inputStaticContentData.getContentType().name() );
+            //contentAttribute.setDataType( inputStaticContentData.getContentType().name() );
            
-            merchantNode.put( inputStaticContentData.getFileName(), contentAttribute );
+            merchantNode.put( inputStaticContentData.getFileName(), IOUtils.toByteArray( inputStaticContentData.getFile() ) );
             LOGGER.info( "Content data added successfully." );
         }
         catch ( final Exception e )
@@ -135,6 +136,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
      * @see StaticContentCacheAttribute
      */
     @Override
+    //TODO BE REVISED
     public void addStaticFiles( final String merchantStoreCode, final List<InputStaticContentData> inputStaticContentDataList )
         throws ServiceException
     {
@@ -205,7 +207,17 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
                 LOGGER.warn( "merchant node is null" );
                 return null;
             }
-            final StaticContentCacheAttribute contentAttribute = (StaticContentCacheAttribute) merchantNode.get( contentFileName );
+            
+            
+            final byte[] fileBytes= (byte[]) merchantNode.get( contentFileName );
+            
+            if ( fileBytes == null )
+            {
+                LOGGER.warn( "file byte is null, no file found" );
+                return null;
+            }
+            
+/*            final StaticContentCacheAttribute contentAttribute = (StaticContentCacheAttribute) merchantNode.get( contentFileName );
 
             if ( contentAttribute == null )
             {
@@ -220,7 +232,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
             {
                 LOGGER.warn( "file byte is null, no file found" );
                 return null;
-            }
+            }*/
             input=new ByteArrayInputStream( fileBytes );
            
             final ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -230,7 +242,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
             outputStaticContentData.setFile( output );
             outputStaticContentData.setFileContentType( URLConnection.getFileNameMap().getContentTypeFor(contentFileName) );
             outputStaticContentData.setFileName( contentFileName );
-            outputStaticContentData.setContentType( StaticContentType.valueOf( contentAttribute.getDataType() ) );
+            outputStaticContentData.setContentType( staticContentType );
             
         }
         catch ( final Exception e )
@@ -243,6 +255,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
     
     
 	@Override
+	//TODO TO BE REVISED
 	public List<OutputStaticContentData> getStaticContentData(
 			final String merchantStoreCode, final StaticContentType staticContentType) throws ServiceException {
 
@@ -297,16 +310,10 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
                     outputStaticContentData.setFileContentType( URLConnection.getFileNameMap().getContentTypeFor(key) );
                     outputStaticContentData.setFileName( key );
                     outputStaticContentData.setContentType( StaticContentType.valueOf( contentAttribute.getDataType() ) );
-            		
-            		
-            		
+	
             	}
-            	
-            	
+
             }
-            
-            
-            
 
             
         }
@@ -344,18 +351,8 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
                 return;
   
             }
-            final StaticContentCacheAttribute contentAttribute = (StaticContentCacheAttribute) merchantNode.get( fileName );
 
-            if ( contentAttribute == null )
-            {
-                LOGGER.warn( "Unable to find content attribute for given merchant" );
-                return;
-
-            }
-            
-            contentAttribute.getEntities().remove(fileName);
-            merchantNode.put( staticContentType.name(), contentAttribute );
-            
+            merchantNode.remove(fileName);
 
         }
         catch ( final Exception e )
@@ -440,6 +437,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
      * @throws ServiceException
      */
 	@Override
+	//TODO BE REVISED
 	public List<String> getStaticContentDataName(final String merchantStoreCode, final StaticContentType staticContentType)
 			throws ServiceException {
 		
