@@ -11,7 +11,7 @@
 <function>
 	        <name>topCategories</name>
 	        <function-class>com.salesmanager.web.tags.DisplayFunctions</function-class>
-	        <function-signature>com.salesmanager.core.business.catalog.category.model.Category getTopCategories(javax.servlet.http.HttpServletRequest request)</function-signature>
+	        <function-signature>java.util.List getTopCategories(javax.servlet.http.HttpServletRequest request)</function-signature>
 </function>
 
 
