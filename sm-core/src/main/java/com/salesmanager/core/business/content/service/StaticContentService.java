@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.salesmanager.core.business.content.model.content.StaticContentType;
 import com.salesmanager.core.business.generic.exception.ServiceException;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.modules.cms.common.InputStaticContentData;
 import com.salesmanager.core.modules.cms.common.OutputStaticContentData;
 
@@ -36,11 +37,11 @@ public interface StaticContentService
      * Infinispan.
      * static content can either be digital data or any other static file.
      * 
-     * @param merchantStoreCode merchant store whose content images are being saved.
+     * @param merchantStore merchant store whose content images are being saved.
      * @param inputStaticContentData content data being stored
      * @throws ServiceException
      */
-    void addStaticContentData( final String merchantStoreCode, InputStaticContentData inputStaticContentData )
+    void addStaticContentData( final MerchantStore store, final InputStaticContentData inputStaticContentData )
         throws ServiceException;
     
     
@@ -48,11 +49,11 @@ public interface StaticContentService
      * Method responsible for storing list of static files for given Store.files for given merchant store will be stored in
      * Infinispan.
      * 
-     * @param merchantStoreCode  merchant store whose content images are being saved.
+     * @param merchantStore  merchant store whose content images are being saved.
      * @param inputStaticContentDataList list of content files being stored.
      * @throws ServiceException
      */
-    void addStaticContentDataFiles(final String merchantStoreCode,List<InputStaticContentData> inputStaticContentDataList) throws ServiceException;
+    void addStaticContentDataFiles(final MerchantStore store,final List<InputStaticContentData> inputStaticContentDataList) throws ServiceException;
     
     /**
      * Method responsible for fetching specific static content file for a given merchant store. Requested file will be
@@ -64,8 +65,16 @@ public interface StaticContentService
      * @return {@link OutputStaticContentData}
      * @throws ServiceException
      */
-    public OutputStaticContentData getStaticContentData( final String merchantStoreCode, StaticContentType staticContentType, final String fileName )
+    public OutputStaticContentData getStaticContentData( final MerchantStore store, final StaticContentType staticContentType, final String fileName )
         throws ServiceException;
+
+
+	void removeFiles(final MerchantStore store) throws ServiceException;
+
+
+	void removeFile(final MerchantStore store,
+			final StaticContentType staticContentType, final String fileName)
+			throws ServiceException;
     
     
     

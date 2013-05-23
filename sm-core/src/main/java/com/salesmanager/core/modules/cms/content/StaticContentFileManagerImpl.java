@@ -7,7 +7,6 @@ import java.util.List;
 
 import com.salesmanager.core.business.content.model.content.StaticContentType;
 import com.salesmanager.core.business.generic.exception.ServiceException;
-import com.salesmanager.core.modules.cms.common.ContentData;
 import com.salesmanager.core.modules.cms.common.InputStaticContentData;
 import com.salesmanager.core.modules.cms.common.OutputStaticContentData;
 
@@ -25,7 +24,7 @@ public class StaticContentFileManagerImpl extends StaticContentFileManager
     {
         return uploadStaticContent;
     }
-    public void setUploadStaticContent( StaticContentPut uploadStaticContent )
+    public void setUploadStaticContent( final StaticContentPut uploadStaticContent )
     {
         this.uploadStaticContent = uploadStaticContent;
     }
@@ -33,7 +32,7 @@ public class StaticContentFileManagerImpl extends StaticContentFileManager
     {
         return getStaticContent;
     }
-    public void setGetStaticContent( StaticContentGet getStaticContent )
+    public void setGetStaticContent( final StaticContentGet getStaticContent )
     {
         this.getStaticContent = getStaticContent;
     }
@@ -41,13 +40,13 @@ public class StaticContentFileManagerImpl extends StaticContentFileManager
     {
         return removeStaticContent;
     }
-    public void setRemoveStaticContent( StaticContentRemove removeStaticContent )
+    public void setRemoveStaticContent( final StaticContentRemove removeStaticContent )
     {
         this.removeStaticContent = removeStaticContent;
     }
     
     @Override
-    public OutputStaticContentData getStaticContentData( String merchantStoreCode, StaticContentType staticContentType, String contentName )
+    public OutputStaticContentData getStaticContentData( final String merchantStoreCode, final StaticContentType staticContentType, final String contentName )
         throws ServiceException
     {
       return  getStaticContent.getStaticContentData( merchantStoreCode, staticContentType, contentName );
@@ -55,7 +54,7 @@ public class StaticContentFileManagerImpl extends StaticContentFileManager
     }
     
     @Override
-    public void addStaticFile( String merchantStoreCode, InputStaticContentData inputStaticContentData )
+    public void addStaticFile( final String merchantStoreCode, final InputStaticContentData inputStaticContentData )
         throws ServiceException
     {
         uploadStaticContent.addStaticFile( merchantStoreCode, inputStaticContentData );
@@ -72,32 +71,32 @@ public class StaticContentFileManagerImpl extends StaticContentFileManager
      * @throws ServiceException
      */
     @Override
-    public void addStaticFiles( String merchantStoreCode, List<InputStaticContentData> inputStaticContentDataList )
+    public void addStaticFiles( final String merchantStoreCode, final List<InputStaticContentData> inputStaticContentDataList )
         throws ServiceException
     {
        uploadStaticContent.addStaticFiles( merchantStoreCode, inputStaticContentDataList );
     }
     @Override
-    public void removeStaticContent( String merchantStoreCode, ContentData contentData )
+    public void removeStaticContent( final String merchantStoreCode, final StaticContentType staticContentType, final String fileName)
         throws ServiceException
     {
-     //
+    	removeStaticContent.removeStaticContent(merchantStoreCode, staticContentType, fileName);
         
     }
     @Override
-    public void removeStaticContents( String merchantStoreCode )
+    public void removeStaticContents( final String merchantStoreCode )
         throws ServiceException
     {
-        // TODO Auto-generated method stub
+    	removeStaticContent.removeStaticContents(merchantStoreCode);
         
     }
 	@Override
 	public List<OutputStaticContentData> getStaticContentData(
-			String merchantStoreCode, StaticContentType staticContentType) throws ServiceException {
+			final String merchantStoreCode, final StaticContentType staticContentType) throws ServiceException {
 		return getStaticContent.getStaticContentData(merchantStoreCode, staticContentType);
 	}
 	@Override
-	public List<String> getStaticContentDataName(String merchantStoreCode, StaticContentType staticContentType)
+	public List<String> getStaticContentDataName(final String merchantStoreCode, final StaticContentType staticContentType)
 			throws ServiceException {
 		return getStaticContent.getStaticContentDataName(merchantStoreCode, staticContentType);
 	}

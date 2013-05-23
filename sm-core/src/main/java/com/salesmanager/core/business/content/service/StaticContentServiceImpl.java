@@ -13,6 +13,7 @@ import org.springframework.util.Assert;
 
 import com.salesmanager.core.business.content.model.content.StaticContentType;
 import com.salesmanager.core.business.generic.exception.ServiceException;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.modules.cms.common.InputStaticContentData;
 import com.salesmanager.core.modules.cms.common.OutputStaticContentData;
 import com.salesmanager.core.modules.cms.content.StaticContentFileManager;
@@ -48,14 +49,15 @@ public class StaticContentServiceImpl implements StaticContentService
      * @throws ServiceException
      */
     @Override
-    public void addStaticContentData( String merchantStoreCode, InputStaticContentData inputStaticContentData )
+    public void addStaticContentData( final MerchantStore store, final InputStaticContentData inputStaticContentData )
         throws ServiceException
     {
        
-        LOG.info( "Adding static content file for merchant with Code {} ", merchantStoreCode);
-        Assert.notNull( merchantStoreCode, "Merchant store Id can not be null" );
+        
+        Assert.notNull( store, "Merchant store can not be null" );
         Assert.notNull( inputStaticContentData, "Static Content Data can not be null" );
-        staticContentFileManager.addStaticFile( merchantStoreCode, inputStaticContentData );
+        LOG.info( "Adding static content file for merchant with Code {} ", store.getCode());
+        staticContentFileManager.addStaticFile( store.getCode(), inputStaticContentData );
         
     }
     
@@ -68,14 +70,14 @@ public class StaticContentServiceImpl implements StaticContentService
      * @throws ServiceException service exception
      */
     @Override
-    public void addStaticContentDataFiles( String merchantStoreCode,
-                                           List<InputStaticContentData> inputStaticContentDataList )
+    public void addStaticContentDataFiles( final MerchantStore store,
+                                           final List<InputStaticContentData> inputStaticContentDataList )
         throws ServiceException
     {
-        Assert.notNull( merchantStoreCode, "Merchant store ID can not be null" );
+        Assert.notNull( store, "Merchant store can not be null" );
         Assert.notEmpty( inputStaticContentDataList, "Images list can not be empty" );
         LOG.info( "Adding total {} files for given merchant",inputStaticContentDataList.size() );
-        staticContentFileManager.addStaticFiles( merchantStoreCode, inputStaticContentDataList );
+        staticContentFileManager.addStaticFiles( store.getCode(), inputStaticContentDataList );
     }
     
     /**
@@ -90,14 +92,46 @@ public class StaticContentServiceImpl implements StaticContentService
      * @throws ServiceException
      */
     @Override
-    public OutputStaticContentData getStaticContentData( String merchantStoreCode, StaticContentType staticContentType, String fileName )
+    public OutputStaticContentData getStaticContentData( final MerchantStore store, final StaticContentType staticContentType, String fileName )
         throws ServiceException
     {
-        LOG.info( "Starting to fetch static content file for with name {} for merchant with Code {} ", fileName,merchantStoreCode);
-        Assert.notNull( merchantStoreCode, "Merchant store Id can not be null" );
+        
+        Assert.notNull( store, "Merchant store can not be null" );
         Assert.notNull( fileName, "file name can not be null" );
-        return  staticContentFileManager.getStaticContentData( merchantStoreCode, staticContentType, fileName );
+        LOG.info( "Starting to fetch static content file for with name {} for merchant with Code {} ", fileName,store.getCode());
+        return  staticContentFileManager.getStaticContentData( store.getCode(), staticContentType, fileName );
     }
+    
+    /**
+     * Removes all static content for a given merchant store
+     * @param merchantStoreCode
+     * @throws ServiceException
+     */
+    @Override
+    public void removeFiles( final MerchantStore store)
+    throws ServiceException
+	{
+	    Assert.notNull( store, "Merchant Store can not be null" );
+	    staticContentFileManager.removeStaticContents(store.getCode());
+	    
+	}
+    
+    /**
+     * Removes a specific file as a specific content type
+     * @param merchantStoreCode
+     * @param staticContentType
+     * @param fileName
+     * @throws ServiceException
+     */
+    @Override
+    public void removeFile( final MerchantStore store, final StaticContentType staticContentType, final String fileName )
+    throws ServiceException {
+    	Assert.notNull( store, "Merchant Store can not be null" );
+    	Assert.notNull( staticContentType, "StaticContentType can not be null" );
+    	Assert.notNull( fileName, "fileName can not be null" );
+    	staticContentFileManager.removeStaticContent(store.getCode(), staticContentType, fileName);
+    }
+
 
 
    
