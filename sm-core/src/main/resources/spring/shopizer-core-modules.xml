@@ -62,6 +62,9 @@
 		<property name="removeImage">
 				<ref bean="cmsProductImage" />
 		</property>
+				<property name="configuration">
+				<ref bean="productImagesConfiguration" />
+		</property>
 	</bean>
 	
 	<!-- CMS implementation for product images-->
@@ -71,6 +74,9 @@
 						<ref bean="imageCacheManager" />
 				</property>
 	</bean>
+	
+	<bean id="productImagesConfiguration"
+		class="com.salesmanager.core.utils.CoreConfiguration"/>
 	
 	<!-- Content images manager-->
 	<bean id="contentFileManager"
