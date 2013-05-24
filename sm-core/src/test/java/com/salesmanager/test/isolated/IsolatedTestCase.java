@@ -441,7 +441,7 @@ public class IsolatedTestCase
         final OutputContentImage outputContentImage = contentService.getContentImage(store.getCode(), ImageContentType.CONTENT, imageName );
         //final OutputContentImage outputContentImage = contentService.getContentImage( store, "" );
         System.out.println( outputContentImage.getImage() );
-        System.out.println( outputContentImage.getImageName() );
+        System.out.println( outputContentImage.getFileName() );
 
     }
     
@@ -452,7 +452,7 @@ public class IsolatedTestCase
         if(CollectionUtils.isNotEmpty( contentImagesList )){
             System.out.println("Total " + contentImagesList.size()+ " Images found");
            for(final OutputContentImage outputContentImage :contentImagesList){
-               System.out.println(outputContentImage.getImageName());
+               System.out.println(outputContentImage.getFileName());
            }
         }
         else{
@@ -463,9 +463,10 @@ public class IsolatedTestCase
     @Test
     public void removeContentImage() throws ServiceException{
         final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        final InputContentImage contentImage = new InputContentImage( ImageContentType.CONTENT );
-        contentImage.setImageName("demoCmsImage");
-        contentService.removeImage( store.getCode(), contentImage );
+        final InputContentImage contentImage = new InputContentImage( );
+        contentImage.setImageContentType(ImageContentType.CONTENT );
+        contentImage.setFileName("demoCmsImage");
+        //contentService.removeImage( store.getCode(), contentImage );
         
     }
     
@@ -497,7 +498,7 @@ public class IsolatedTestCase
         for ( final OutputContentImage image : images )
         {
 
-            System.out.println( image.getImageName() );
+            System.out.println( image.getFileName() );
             System.out.println( image.getImageContentType() );
         }
 

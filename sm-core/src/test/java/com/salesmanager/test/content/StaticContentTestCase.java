@@ -49,11 +49,11 @@ public class StaticContentTestCase extends AbstractSalesManagerCoreTestCase {
 	     InputStaticContentData staticContent = new InputStaticContentData();
 	     staticContent.setFile(inputStream);
 	     staticContent.setFileName(file.getName());
-	     staticContent.setContentType(StaticContentType.STATIC_DATA);//default to static data
+	     staticContent.setContentType(StaticContentType.STATIC_FILE);//default to static data
         
-	     staticContentService.addStaticContentData(store, staticContent);
+	     staticContentService.addFile(store, staticContent);
 	     
-	     staticContentService.getStaticContentData(store, StaticContentType.STATIC_DATA, file.getName());
+	     staticContentService.getFile(store, StaticContentType.STATIC_FILE, file.getName());
 
         //now get the file
 	     
@@ -73,7 +73,7 @@ public class StaticContentTestCase extends AbstractSalesManagerCoreTestCase {
 	     
 	     //remove the file
 	     
-	     staticContentService.removeFile(store, StaticContentType.STATIC_DATA, file.getName());
+	     staticContentService.removeFile(store, StaticContentType.STATIC_FILE, file.getName());
 
 	}
 	
@@ -101,7 +101,7 @@ public class StaticContentTestCase extends AbstractSalesManagerCoreTestCase {
 	    InputStaticContentData staticContent = new InputStaticContentData();
 	    staticContent.setFile(inputStream);
 	    staticContent.setFileName(file.getName());
-	    staticContent.setContentType(StaticContentType.STATIC_DATA);//default to static data
+	    staticContent.setContentType(StaticContentType.STATIC_FILE);//default to static data
 	    
 	    
 	    // FILE 2
@@ -121,13 +121,13 @@ public class StaticContentTestCase extends AbstractSalesManagerCoreTestCase {
 	    InputStaticContentData staticContent2 = new InputStaticContentData();
 	    staticContent2.setFile(inputStream2);
 	    staticContent2.setFileName(file2.getName());
-	    staticContent2.setContentType(StaticContentType.STATIC_DATA);//default to static data
+	    staticContent2.setContentType(StaticContentType.STATIC_FILE);//default to static data
 	    
 	    List<InputStaticContentData> staticFiles = new ArrayList<InputStaticContentData>();
 	    staticFiles.add(staticContent);
 	    staticFiles.add(staticContent2);
 		
-	    staticContentService.addStaticContentDataFiles(store, staticFiles);
+	    staticContentService.addFiles(store, staticFiles);
 	    
 	    //get file names
 	    //staticContentService.get
