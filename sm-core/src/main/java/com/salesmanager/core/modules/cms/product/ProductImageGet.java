@@ -10,7 +10,15 @@ import com.salesmanager.core.modules.cms.common.ImageGet;
 
 public interface ProductImageGet extends ImageGet{
 	
-	public OutputContentImage getProductImage(final String merchantStoreCode, final Long productId, final String imageName) throws ServiceException;
+	/**
+	 * Used for accessing the path directly
+	 * @param merchantStoreCode
+	 * @param product
+	 * @param imageName
+	 * @return
+	 * @throws ServiceException
+	 */
+	public OutputContentImage getProductImage(final String merchantStoreCode, final String productCode, final String imageName) throws ServiceException;
 	public OutputContentImage getProductImage(ProductImage productImage) throws ServiceException;
 	public List<OutputContentImage> getImages(Product product) throws ServiceException;
 

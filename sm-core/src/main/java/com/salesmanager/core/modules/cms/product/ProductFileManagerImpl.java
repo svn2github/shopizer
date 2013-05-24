@@ -23,6 +23,8 @@ public class ProductFileManagerImpl extends ProductFileManager {
 	private ProductImagePut uploadImage;
 	private ProductImageGet getImage;
 	private ProductImageRemove removeImage;
+	
+	private CoreConfiguration configuration;
 
 
 	public ProductImageRemove getRemoveImage() {
@@ -35,7 +37,7 @@ public class ProductFileManagerImpl extends ProductFileManager {
 	}
 
 
-	public void uploadProductImage(CoreConfiguration configuration, ProductImage productImage, InputContentImage contentImage)
+	public void addProductImage(ProductImage productImage, InputContentImage contentImage)
 			throws ServiceException {
 			
 			
@@ -53,7 +55,7 @@ public class ProductFileManagerImpl extends ProductFileManager {
 
 
 				//upload original
-				uploadImage.uploadProductImage(configuration, productImage, contentImage);
+				uploadImage.addProductImage(productImage, contentImage);
 	
 /*				//default large
 				InputContentImage largeContentImage = new InputContentImage(ImageContentType.PRODUCT);
@@ -87,7 +89,7 @@ public class ProductFileManagerImpl extends ProductFileManager {
 					
 					FileNameMap fileNameMap = URLConnection.getFileNameMap();
 					
-					String contentType = fileNameMap.getContentTypeFor(contentImage.getImageName());
+					String contentType = fileNameMap.getContentTypeFor(contentImage.getFileName());
 					
 					
 					BufferedImage cropped = contentImage.getBufferedImage();
@@ -277,8 +279,8 @@ public class ProductFileManagerImpl extends ProductFileManager {
 
 	@Override
 	public OutputContentImage getProductImage(String merchantStoreCode,
-			Long productId, String imageName) throws ServiceException {
-		return getImage.getProductImage(merchantStoreCode, productId, imageName);
+			String productCode, String imageName) throws ServiceException {
+		return getImage.getProductImage(merchantStoreCode, productCode, imageName);
 	}
 
 

@@ -25,7 +25,6 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.modules.cms.common.CacheAttribute;
 import com.salesmanager.core.modules.cms.impl.CacheManager;
-import com.salesmanager.core.utils.CoreConfiguration;
 
 /**
  * Manager for storing in retrieving image files from the CMS This is a layer on top of Infinispan
@@ -82,7 +81,7 @@ public class CmsImageFileManagerInfinispanImpl
      */
 
     @Override
-    public void uploadProductImage( CoreConfiguration configuration, ProductImage productImage,
+    public void addProductImage( ProductImage productImage,
                                     InputContentImage contentImage )
         throws ServiceException
     {
@@ -97,7 +96,7 @@ public class CmsImageFileManagerInfinispanImpl
 
  
             // product key
-            String productPath = String.valueOf( productImage.getProduct().getId() );
+            String productPath = String.valueOf( productImage.getProduct().getSku() );
 
             Node<String, Object> merchantNode = getMerchantNode(productImage.getProduct().getMerchantStore().getCode());
 
@@ -113,7 +112,7 @@ public class CmsImageFileManagerInfinispanImpl
             }
 
             byte[] imageBytes = contentImage.getFile().toByteArray();
-            productAttribute.getEntities().put( contentImage.getImageName(), imageBytes );
+            productAttribute.getEntities().put( contentImage.getFileName(), imageBytes );
 
             merchantNode.put( productPath, productAttribute );
 
@@ -132,7 +131,7 @@ public class CmsImageFileManagerInfinispanImpl
         throws ServiceException
     {
 
-       return getProductImage(productImage.getProduct().getMerchantStore().getCode(),productImage.getProduct().getId(),productImage.getProductImage());
+       return getProductImage(productImage.getProduct().getMerchantStore().getCode(),productImage.getProduct().getSku(),productImage.getProductImage());
 
     }
 
@@ -169,7 +168,7 @@ public class CmsImageFileManagerInfinispanImpl
                 return null;
             }
 
-            CacheAttribute productAttribute = (CacheAttribute) merchantNode.get( String.valueOf( product.getId() ) );
+            CacheAttribute productAttribute = (CacheAttribute) merchantNode.get( String.valueOf( product.getSku() ) );
 
             if ( productAttribute == null )
             {
@@ -192,8 +191,8 @@ public class CmsImageFileManagerInfinispanImpl
                 String contentType = fileNameMap.getContentTypeFor( imageName );
 
                 contentImage.setImage( output );
-                contentImage.setImageContentType( contentType );
-                contentImage.setImageName( imageName );
+                contentImage.setMimeType( contentType );
+                contentImage.setFileName( imageName );
 
                 images.add( contentImage );
 
@@ -259,7 +258,7 @@ public class CmsImageFileManagerInfinispanImpl
         try
         {
 
-            String productPath = String.valueOf( productImage.getProduct().getId() );
+            String productPath = String.valueOf( productImage.getProduct().getSku() );
 
             Node<String, Object> merchantNode = getMerchantNode(productImage.getProduct().getMerchantStore().getCode());
 
@@ -304,7 +303,7 @@ public class CmsImageFileManagerInfinispanImpl
         try
         {
 
-        	String productPath = String.valueOf( product.getId() );
+        	String productPath = String.valueOf( product.getSku());
         	
             Node<String, Object> merchantNode = getMerchantNode(product.getMerchantStore().getCode());
 
@@ -372,8 +371,8 @@ public class CmsImageFileManagerInfinispanImpl
                     String contentType = fileNameMap.getContentTypeFor( imageName );
 
                     contentImage.setImage( output );
-                    contentImage.setImageContentType( contentType );
-                    contentImage.setImageName( imageName );
+                    contentImage.setMimeType( contentType );
+                    contentImage.setFileName( imageName );
 
                     images.add( contentImage );
 
@@ -397,7 +396,7 @@ public class CmsImageFileManagerInfinispanImpl
 
 	@Override
 	public OutputContentImage getProductImage(String merchantStoreCode,
-			Long productId, String imageName) throws ServiceException {
+			String productCode, String imageName) throws ServiceException {
         if ( cacheManager.getTreeCache() == null )
         {
             throw new ServiceException( "CmsImageFileManagerInfinispan has a null cacheManager.getTreeCache()" );
@@ -406,7 +405,7 @@ public class CmsImageFileManagerInfinispanImpl
         OutputContentImage contentImage = new OutputContentImage();
         try
         {
-        	String productPath = String.valueOf( productId );
+        	String productPath = String.valueOf( productCode );
 
             Node<String, Object> merchantNode = getMerchantNode(merchantStoreCode);
 
@@ -437,8 +436,8 @@ public class CmsImageFileManagerInfinispanImpl
             String contentType = fileNameMap.getContentTypeFor( imageName );
 
             contentImage.setImage( output );
-            contentImage.setImageContentType( contentType );
-            contentImage.setImageName( imageName );
+            contentImage.setMimeType( contentType );
+            contentImage.setFileName( imageName );
 
         }
         catch ( Exception e )

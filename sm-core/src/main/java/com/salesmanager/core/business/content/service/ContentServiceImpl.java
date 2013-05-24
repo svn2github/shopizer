@@ -140,8 +140,9 @@ public class ContentServiceImpl
         //validate formats
         
         
-        final InputContentImage contentImage = new InputContentImage( ImageContentType.CONTENT );
-        contentImage.setImageName( cmsContentImage.getImageName() );
+        final InputContentImage contentImage = new InputContentImage();
+        contentImage.setImageContentType( ImageContentType.CONTENT );
+        contentImage.setFileName( cmsContentImage.getImageName() );
 
         addImage(merchantStoreCode,cmsContentImage,contentImage);
        
@@ -155,8 +156,9 @@ public class ContentServiceImpl
     	
 		    Assert.notNull( merchantStoreCode, "Merchant store Id can not be null" );
 		    Assert.notNull( cmsContentImage, "CMSContent image can not be null" );
-		    final InputContentImage contentImage = new InputContentImage( ImageContentType.LOGO );
-		    contentImage.setImageName( cmsContentImage.getImageName() );
+		    final InputContentImage contentImage = new InputContentImage();
+		    contentImage.setImageContentType(ImageContentType.LOGO);
+		    contentImage.setFileName( cmsContentImage.getImageName() );
 		
 		    addImage(merchantStoreCode,cmsContentImage,contentImage);
 		   
@@ -170,9 +172,10 @@ public class ContentServiceImpl
     	
 		    Assert.notNull( merchantStoreCode, "Merchant store Id can not be null" );
 		    Assert.notNull( cmsContentImage, "CMSContent image can not be null" );
-		    final InputContentImage contentImage = new InputContentImage( ImageContentType.PROPERTY );
-		    contentImage.setImageName( cmsContentImage.getImageName() );
-		   addImage(merchantStoreCode,cmsContentImage,contentImage);
+		    final InputContentImage contentImage = new InputContentImage( );
+		    contentImage.setImageContentType(ImageContentType.PROPERTY);
+		    contentImage.setFileName( cmsContentImage.getImageName() );
+		    addImage(merchantStoreCode,cmsContentImage,contentImage);
 		   
 
     }
@@ -183,10 +186,10 @@ public class ContentServiceImpl
     	try
 	    {
 	        LOG.info( "Adding content image for merchant id {}", merchantStoreCode);
-	        if ( contentImage.getContentType() == null ){
-	            contentImage.setImageContentType( URLConnection.guessContentTypeFromStream( cmsContentImage.getFile() ) );
+	        if ( contentImage.getMimeType() == null ){
+	            contentImage.setMimeType( URLConnection.guessContentTypeFromStream( cmsContentImage.getFile() ) );
 	        }else{
-	            contentImage.setImageContentType( cmsContentImage.getContentType() );
+	            contentImage.setMimeType( cmsContentImage.getContentType() );
 	        }
 	
 	        ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -225,17 +228,18 @@ public class ContentServiceImpl
         LOG.info( "Adding total {} images for given merchant",contentImagesList.size() );
         final List<InputContentImage> inputContentImagesList=new ArrayList<InputContentImage>();
         for(final CMSContentImage cmsContentImage:contentImagesList){
-            final InputContentImage contentImage = new InputContentImage( ImageContentType.CONTENT );
-            contentImage.setImageName( cmsContentImage.getImageName() );
+            final InputContentImage contentImage = new InputContentImage();
+            contentImage.setImageContentType(ImageContentType.CONTENT);
+            contentImage.setFileName( cmsContentImage.getImageName() );
             try
             {
                 if ( cmsContentImage.getContentType() == null )
                 {
-                    contentImage.setImageContentType( URLConnection.guessContentTypeFromStream( cmsContentImage.getFile() ) );
+                    contentImage.setMimeType( URLConnection.guessContentTypeFromStream( cmsContentImage.getFile() ) );
                 }
                 else
                 {
-                    contentImage.setImageContentType( cmsContentImage.getContentType() );
+                    contentImage.setMimeType( cmsContentImage.getContentType() );
                 }
 
                 final ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -264,12 +268,13 @@ public class ContentServiceImpl
      * @throws ServiceException
      */
     @Override
-    public void removeImage( final String merchantStoreCode,final ContentImage contentImage )
+    public void removeImage( final String merchantStoreCode, final ImageContentType imageContentType, final String imageName)
         throws ServiceException
     {
         Assert.notNull( merchantStoreCode, "Merchant Store Id can not be null" );
-        Assert.notNull( contentImage, "Content Image can not be null" );
-        contentFileManager.removeImage( merchantStoreCode, contentImage );
+        Assert.notNull( imageContentType, "Content Image type can not be null" );
+        Assert.notNull( imageName, "Content Image type can not be null" );
+        contentFileManager.removeImage( merchantStoreCode, imageContentType, imageName );
  }
     
     /**

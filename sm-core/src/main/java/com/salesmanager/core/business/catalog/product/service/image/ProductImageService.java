@@ -8,6 +8,7 @@ import com.salesmanager.core.business.catalog.product.service.ProductImageEnum;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 
 
 public interface ProductImageService extends SalesManagerEntityService<Long, ProductImage> {
@@ -49,13 +50,13 @@ public interface ProductImageService extends SalesManagerEntityService<Long, Pro
 	/**
 	 * Returns an image file from required identifier. This method is
 	 * used by the image servlet
-	 * @param storeCode
-	 * @param productId
+	 * @param store
+	 * @param product
 	 * @param fileName
 	 * @return
 	 * @throws ServiceException
 	 */
-	OutputContentImage getProductImage(String storeCode, Long productId,
+	OutputContentImage getProductImage(final String storeCode, final String productCode,
 			String fileName) throws ServiceException;
 
 	void addProductImages(Product product, List<ProductImage> productImages)

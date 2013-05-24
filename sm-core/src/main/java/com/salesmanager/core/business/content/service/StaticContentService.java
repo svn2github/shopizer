@@ -41,7 +41,7 @@ public interface StaticContentService
      * @param inputStaticContentData content data being stored
      * @throws ServiceException
      */
-    void addStaticContentData( final MerchantStore store, final InputStaticContentData inputStaticContentData )
+    void addFile( final MerchantStore store, final InputStaticContentData inputStaticContentData )
         throws ServiceException;
     
     
@@ -53,7 +53,7 @@ public interface StaticContentService
      * @param inputStaticContentDataList list of content files being stored.
      * @throws ServiceException
      */
-    void addStaticContentDataFiles(final MerchantStore store,final List<InputStaticContentData> inputStaticContentDataList) throws ServiceException;
+    void addFiles(final MerchantStore store,final List<InputStaticContentData> inputStaticContentDataList) throws ServiceException;
     
     /**
      * Method responsible for fetching specific static content file for a given merchant store. Requested file will be
@@ -65,7 +65,7 @@ public interface StaticContentService
      * @return {@link OutputStaticContentData}
      * @throws ServiceException
      */
-    public OutputStaticContentData getStaticContentData( final MerchantStore store, final StaticContentType staticContentType, final String fileName )
+    public OutputStaticContentData getFile( final MerchantStore store, final StaticContentType staticContentType, final String fileName )
         throws ServiceException;
 
 

@@ -2,7 +2,7 @@ package com.salesmanager.core.business.content.model.image;
 
 import java.io.ByteArrayOutputStream;
 
-public class OutputContentImage extends ContentImage {
+public class OutputContentImage extends ImageContentFile {
 	
 	private ByteArrayOutputStream image;
 	

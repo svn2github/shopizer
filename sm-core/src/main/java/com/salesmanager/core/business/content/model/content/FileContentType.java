@@ -19,7 +19,7 @@ package com.salesmanager.core.business.content.model.content;
  * @since 1.2
  *
  */
-public enum StaticContentType
+public enum FileContentType
 {
   STATIC_FILE,IMAGE
 }

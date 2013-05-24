@@ -81,10 +81,10 @@ public class ContentFileManagerImpl
      * @throws ServiceException
      */
     @Override
-    public void removeImage(final String merchantStoreCode, final ContentImage contentImage )
+    public void removeImage(final String merchantStoreCode, final ImageContentType imageContentType, final String imageName)
         throws ServiceException
     {
-      removeImage.removeImage( merchantStoreCode, contentImage );
+      removeImage.removeImage( merchantStoreCode, imageContentType, imageName );
    }
 
     /**

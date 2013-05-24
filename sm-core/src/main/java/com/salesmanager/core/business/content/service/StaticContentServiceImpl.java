@@ -49,7 +49,7 @@ public class StaticContentServiceImpl implements StaticContentService
      * @throws ServiceException
      */
     @Override
-    public void addStaticContentData( final MerchantStore store, final InputStaticContentData inputStaticContentData )
+    public void addFile( final MerchantStore store, final InputStaticContentData inputStaticContentData )
         throws ServiceException
     {
        
@@ -70,7 +70,7 @@ public class StaticContentServiceImpl implements StaticContentService
      * @throws ServiceException service exception
      */
     @Override
-    public void addStaticContentDataFiles( final MerchantStore store,
+    public void addFiles( final MerchantStore store,
                                            final List<InputStaticContentData> inputStaticContentDataList )
         throws ServiceException
     {
@@ -92,7 +92,7 @@ public class StaticContentServiceImpl implements StaticContentService
      * @throws ServiceException
      */
     @Override
-    public OutputStaticContentData getStaticContentData( final MerchantStore store, final StaticContentType staticContentType, String fileName )
+    public OutputStaticContentData getFile( final MerchantStore store, final StaticContentType staticContentType, String fileName )
         throws ServiceException
     {
         

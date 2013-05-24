@@ -22,6 +22,7 @@ import com.salesmanager.core.business.content.model.image.InputContentImage;
 import com.salesmanager.core.business.content.model.image.OutputContentImage;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.modules.cms.product.ProductFileManager;
 import com.salesmanager.core.utils.CoreConfiguration;
 
@@ -75,13 +76,14 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 			
 		
 			//upload the image in the CMS
-			InputContentImage contentImage = new InputContentImage(ImageContentType.PRODUCT);
+			InputContentImage contentImage = new InputContentImage();
 			//contentImage.setFile(productImage.getImage());
 			contentImage.setDefaultImage(productImage.isDefaultImage());
-			contentImage.setImageName(productImage.getProductImage());
+			contentImage.setImageContentType(ImageContentType.PRODUCT);
+			contentImage.setFileName(productImage.getProductImage());
 			FileNameMap fileNameMap = URLConnection.getFileNameMap();
 			String contentType = fileNameMap.getContentTypeFor(productImage.getProductImage());
-			contentImage.setImageContentType(contentType);
+			contentImage.setMimeType(contentType);
 			
 
 			String extension = contentType.substring(contentType.indexOf("/")+1,contentType.length());
@@ -93,7 +95,7 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 
 
 			
-			productFileManager.uploadProductImage(configuration, productImage, contentImage);
+			productFileManager.addProductImage(productImage, contentImage);
 	
 			//insert ProductImage
 			this.saveOrUpdate(productImage);
@@ -179,8 +181,8 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	}
 	
 	@Override
-	public OutputContentImage getProductImage(final String storeCode, final Long productId, final String fileName) throws ServiceException {
-		OutputContentImage outputImage = productFileManager.getProductImage(storeCode,productId,fileName);
+	public OutputContentImage getProductImage(final String storeCode, final String productCode, final String fileName) throws ServiceException {
+		OutputContentImage outputImage = productFileManager.getProductImage(storeCode,productCode,fileName);
 		return outputImage;
 		
 	}

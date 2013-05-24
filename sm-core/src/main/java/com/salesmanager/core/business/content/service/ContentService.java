@@ -69,11 +69,12 @@ public interface ContentService
     /**
      * Method to remove given content image.Images are stored in underlying system based on there name.
      * Name will be used to search given image for removal
-     * @param contentImage
+     * @param imageContentType
+     * @param imageName
      * @param merchantStoreCode merchant store code
      * @throws ServiceException
      */
-    public void removeImage( final String merchantStoreCode,final ContentImage contentImage ) throws ServiceException;
+    public void removeImage( final String merchantStoreCode, final ImageContentType imageContentType, final String imageName) throws ServiceException;
     
     
     /**
