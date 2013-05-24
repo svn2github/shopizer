@@ -155,11 +155,9 @@ public class StoreBrandingController {
 		
 		try {
 			
-			OutputContentImage contentImage = new OutputContentImage();
-			contentImage.setImageName(store.getStoreLogo());
-			contentImage.setContentType(ImageContentType.LOGO);
+
 			
-			contentService.removeImage(store.getCode(), contentImage);
+			contentService.removeImage(store.getCode(), ImageContentType.LOGO, store.getStoreLogo());
 			
 			store.setStoreLogo(null);
 			merchantStoreService.update(store);

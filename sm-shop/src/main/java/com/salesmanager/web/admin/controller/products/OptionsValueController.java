@@ -361,11 +361,9 @@ public class OptionsValueController {
 			
 			ProductOptionValue optionValue = productOptionValueService.getById(store, id);
 			
-			OutputContentImage contentImage = new OutputContentImage();
-			contentImage.setImageName(optionValue.getProductOptionValueImage());
-			contentImage.setContentType(ImageContentType.PROPERTY);
+
 			
-			contentService.removeImage(store.getCode(), contentImage);
+			contentService.removeImage(store.getCode(), ImageContentType.PROPERTY, optionValue.getProductOptionValueImage());
 			
 			store.setStoreLogo(null);
 			optionValue.setProductOptionValueImage(null);

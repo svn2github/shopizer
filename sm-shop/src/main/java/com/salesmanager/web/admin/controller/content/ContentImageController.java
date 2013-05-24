@@ -214,11 +214,9 @@ public class ContentImageController {
 		
 		try {
 			
-			OutputContentImage contentImage = new OutputContentImage();
-			contentImage.setImageName(imageName);
-			contentImage.setContentType(ImageContentType.CONTENT);
+
 			
-			contentService.removeImage(store.getCode(), contentImage);
+			contentService.removeImage(store.getCode(), ImageContentType.CONTENT, imageName);
 
 		
 		
