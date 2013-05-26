@@ -27,7 +27,7 @@ public class ImageFilePathUtils {
 	 */
 	public static String buildProductImageFilePath(MerchantStore store, Product product, String imageName) {
 		return new StringBuilder().append(store.getCode()).append("/").append(ImageContentType.PRODUCT.name()).append("/")
-				.append(product.getId()).append("/").append(imageName).toString();
+				.append(product.getSku()).append("/").append(imageName).toString();
 	}
 
 }

@@ -70,8 +70,8 @@ public class ImagesController {
 	}
 	
 
-	@RequestMapping("/static/{storeCode}/{imageType}/{productId}/{imageName}.{extension}")
-	public @ResponseBody byte[] printImage(@PathVariable final String storeCode, @PathVariable final Long productId, @PathVariable final String imageType, @PathVariable final String imageName, @PathVariable final String extension) throws IOException {
+	@RequestMapping("/static/{storeCode}/{imageType}/{productCode}/{imageName}.{extension}")
+	public @ResponseBody byte[] printImage(@PathVariable final String storeCode, @PathVariable final String productCode, @PathVariable final String imageType, @PathVariable final String imageName, @PathVariable final String extension) throws IOException {
 
 		// product image
 		// example -> /static/1/PRODUCT/120/product1.jpg
@@ -90,7 +90,7 @@ public class ImagesController {
 		
 		OutputContentImage image = null;
 		try {
-			image = productImageService.getProductImage(storeCode, productId, new StringBuilder().append(imageName).append(".").append(extension).toString());
+			image = productImageService.getProductImage(storeCode, productCode, new StringBuilder().append(imageName).append(".").append(extension).toString());
 		} catch (ServiceException e) {
 			LOGGER.error("Cannot retrieve image " + imageName, e);
 		}
