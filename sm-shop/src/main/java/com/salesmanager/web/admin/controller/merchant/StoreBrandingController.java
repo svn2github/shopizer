@@ -1,6 +1,7 @@
 package com.salesmanager.web.admin.controller.merchant;
 
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -24,8 +25,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.salesmanager.core.business.content.model.image.ImageContentType;
-import com.salesmanager.core.business.content.model.image.OutputContentImage;
+import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.content.InputContentFile;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
@@ -99,9 +100,9 @@ public class StoreBrandingController {
 
 			String imageName = contentImages.getImage().get(0).getOriginalFilename();
             InputStream inputStream = contentImages.getImage().get(0).getInputStream();
-            CMSContentImage cmsContentImage = new CMSContentImage();
-            cmsContentImage.setImageName(imageName);
-            cmsContentImage.setContentType( contentImages.getImage().get(0).getContentType() );
+            InputContentFile cmsContentImage = new InputContentFile();
+            cmsContentImage.setFileName(imageName);
+            cmsContentImage.setMimeType( contentImages.getImage().get(0).getContentType());
             cmsContentImage.setFile( inputStream );
             contentService.addLogo(store.getCode(), cmsContentImage);
 			
@@ -157,7 +158,7 @@ public class StoreBrandingController {
 			
 
 			
-			contentService.removeImage(store.getCode(), ImageContentType.LOGO, store.getStoreLogo());
+			contentService.removeImage(store.getCode(), FileContentType.LOGO, store.getStoreLogo());
 			
 			store.setStoreLogo(null);
 			merchantStoreService.update(store);

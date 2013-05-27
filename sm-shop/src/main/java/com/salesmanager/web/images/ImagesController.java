@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.product.service.image.ProductImageService;
-import com.salesmanager.core.business.content.model.image.ImageContentType;
-import com.salesmanager.core.business.content.model.image.OutputContentImage;
+import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.content.OutputContentFile;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 
@@ -43,25 +43,25 @@ public class ImagesController {
 
 		// example -> /static/mystore/CONTENT/myImage.png
 		
-		ImageContentType imgType = null;
+		FileContentType imgType = null;
 		
-		if(ImageContentType.LOGO.name().equals(imageType)) {
-			imgType = ImageContentType.LOGO;
+		if(FileContentType.LOGO.name().equals(imageType)) {
+			imgType = FileContentType.LOGO;
 		}
 		
-		if(ImageContentType.CONTENT.name().equals(imageType)) {
-			imgType = ImageContentType.CONTENT;
+		if(FileContentType.IMAGE.name().equals(imageType)) {
+			imgType = FileContentType.IMAGE;
 		}
 		
-		if(ImageContentType.PROPERTY.name().equals(imageType)) {
-			imgType = ImageContentType.PROPERTY;
+		if(FileContentType.PROPERTY.name().equals(imageType)) {
+			imgType = FileContentType.PROPERTY;
 		}
 		
-		OutputContentImage image =contentService.getContentImage(storeCode, imgType, new StringBuilder().append(imageName).append(".").append(extension).toString());
+		OutputContentFile image =contentService.getContentImage(storeCode, imgType, new StringBuilder().append(imageName).append(".").append(extension).toString());
 		
 		
 		if(image!=null) {
-			return image.getImage().toByteArray();
+			return image.getFile().toByteArray();
 		} else {
 			//empty image placeholder
 			return null;
@@ -78,24 +78,24 @@ public class ImagesController {
 		
 		// 
 		
-		ImageContentType imgType = null;
+		FileContentType imgType = null;
 		
-		if(imageType.equals(ImageContentType.PRODUCT)) {
-			imgType = ImageContentType.PRODUCT;
+		if(imageType.equals(FileContentType.PRODUCT)) {
+			imgType = FileContentType.PRODUCT;
 		}
 		
-		if(imageType.equals(ImageContentType.PROPERTY)) {
-			imgType = ImageContentType.PROPERTY;
+		if(imageType.equals(FileContentType.PROPERTY)) {
+			imgType = FileContentType.PROPERTY;
 		}
 		
-		OutputContentImage image = null;
+		OutputContentFile image = null;
 		try {
 			image = productImageService.getProductImage(storeCode, productCode, new StringBuilder().append(imageName).append(".").append(extension).toString());
 		} catch (ServiceException e) {
 			LOGGER.error("Cannot retrieve image " + imageName, e);
 		}
 		if(image!=null) {
-			return image.getImage().toByteArray();
+			return image.getFile().toByteArray();
 		} else {
 			//empty image placeholder
 			return null;

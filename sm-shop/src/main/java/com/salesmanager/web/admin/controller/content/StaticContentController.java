@@ -154,8 +154,8 @@ public class StaticContentController {
             LOGGER.info("Saving {} content images for merchant {}",contentImages.getImage().size(),store.getId());
             for(final MultipartFile multipartFile:contentImages.getImage()){
                 if(!multipartFile.isEmpty()){
-                    final ByteArrayInputStream inputStream = new ByteArrayInputStream( multipartFile.getBytes() );
-                    final CMSContentImage cmsContentImage = new CMSContentImage();
+                    ByteArrayInputStream inputStream = new ByteArrayInputStream( multipartFile.getBytes() );
+                    CMSContentImage cmsContentImage = new CMSContentImage();
                     cmsContentImage.setImageName(multipartFile.getOriginalFilename() );
                     cmsContentImage.setContentType( multipartFile.getContentType() );
                     cmsContentImage.setFile( inputStream );

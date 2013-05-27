@@ -1,7 +1,7 @@
 package com.salesmanager.web.utils;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.content.model.image.ImageContentType;
+import com.salesmanager.core.business.content.model.content.FileContentType;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 
 public class ImageFilePathUtils {
@@ -14,7 +14,7 @@ public class ImageFilePathUtils {
 	 * @return
 	 */
 	public static String buildStaticImageFilePath(MerchantStore store, String imageName) {
-		return new StringBuilder().append(store.getCode()).append("/").append(ImageContentType.CONTENT.name()).append("/").append(imageName).toString();
+		return new StringBuilder().append(store.getCode()).append("/").append(FileContentType.IMAGE.name()).append("/").append(imageName).toString();
 	}
 	
 	/**
@@ -26,7 +26,7 @@ public class ImageFilePathUtils {
 	 * @return
 	 */
 	public static String buildProductImageFilePath(MerchantStore store, Product product, String imageName) {
-		return new StringBuilder().append(store.getCode()).append("/").append(ImageContentType.PRODUCT.name()).append("/")
+		return new StringBuilder().append(store.getCode()).append("/").append(FileContentType.PRODUCT.name()).append("/")
 				.append(product.getSku()).append("/").append(imageName).toString();
 	}
 

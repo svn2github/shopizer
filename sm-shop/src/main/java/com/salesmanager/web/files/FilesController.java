@@ -12,8 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.salesmanager.core.business.content.model.image.ImageContentType;
-import com.salesmanager.core.business.content.model.image.OutputContentImage;
+import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.content.OutputContentFile;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 
@@ -42,10 +42,10 @@ public class FilesController {
 
 		// example -> /static/mystore/CONTENT/myImage.png
 		
-		ImageContentType imgType = null;
+		FileContentType imgType = null;
 		
 		// needs to query the new API
-		OutputContentImage image =contentService.getContentImage(storeCode, imgType, new StringBuilder().append(fileName).append(".").append(extension).toString());
+		OutputContentFile image =contentService.getContentImage(storeCode, imgType, new StringBuilder().append(fileName).append(".").append(extension).toString());
 		
 /*		try {
 		      // get your file as InputStream
@@ -85,11 +85,11 @@ public class FilesController {
 		
 		//Need to query the files CMS for merchant and product ( not the order )
 		
-		ImageContentType imgType = null;
+		FileContentType imgType = null;
 		
 
 		
-		OutputContentImage image = null;
+		OutputContentFile image = null;
 		//try {
 			//image = productImageService.getProductImage(storeCode, productId, new StringBuilder().append(imageName).append(".").append(extension).toString());
 		//} catch (ServiceException e) {

@@ -214,35 +214,7 @@ public class ProductImagesController {
         return ControllerConstants.Tiles.Product.productImages;
 	}
 	
-	@RequestMapping(value="/admin/products/image/removeImage.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String removeImage(HttpServletRequest request, HttpServletResponse response, Locale locale) {
-		String imageId = request.getParameter("id");
 
-		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		
-		AjaxResponse resp = new AjaxResponse();
-
-		
-		try {
-			
-			//OutputContentImage contentImage = new OutputContentImage();
-			//contentImage.setImageName(imageName);
-			//contentImage.setContentType(ImageContentType.CONTENT);
-			
-			//contentService.removeImage(store.getCode(), contentImage);
-
-		
-		
-		} catch (Exception e) {
-			LOGGER.error("Error while deleting product", e);
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-			resp.setErrorMessage(e);
-		}
-		
-		String returnString = resp.toJSONString();
-		
-		return returnString;
-	}
 	
 	
 

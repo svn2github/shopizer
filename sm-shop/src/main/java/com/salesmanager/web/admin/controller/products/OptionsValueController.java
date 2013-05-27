@@ -29,8 +29,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValueDescription;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionValueService;
-import com.salesmanager.core.business.content.model.image.ImageContentType;
-import com.salesmanager.core.business.content.model.image.OutputContentImage;
+import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.content.InputContentFile;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -221,9 +221,9 @@ public class OptionsValueController {
 
 			String imageName = optionValue.getImage().getOriginalFilename();
             InputStream inputStream = optionValue.getImage().getInputStream();
-            CMSContentImage cmsContentImage = new CMSContentImage();
-            cmsContentImage.setImageName(imageName);
-            cmsContentImage.setContentType( optionValue.getImage().getContentType() );
+            InputContentFile cmsContentImage = new InputContentFile();
+            cmsContentImage.setFileName(imageName);
+            cmsContentImage.setMimeType( optionValue.getImage().getContentType() );
             cmsContentImage.setFile( inputStream );
             contentService.addOptionImage(store.getCode(), cmsContentImage);
             
@@ -283,7 +283,7 @@ public class OptionsValueController {
 				ProductOptionValueDescription description = option.getDescriptions().iterator().next();
 				
 				entry.put("name", description.getName());
-				entry.put("image", new StringBuilder().append(store.getCode()).append("/").append(ImageContentType.PROPERTY.name()).append("/").append(option.getProductOptionValueImage()).toString());
+				entry.put("image", new StringBuilder().append(store.getCode()).append("/").append(FileContentType.PROPERTY.name()).append("/").append(option.getProductOptionValueImage()).toString());
 				resp.addDataEntry(entry);
 				
 				
@@ -363,7 +363,7 @@ public class OptionsValueController {
 			
 
 			
-			contentService.removeImage(store.getCode(), ImageContentType.PROPERTY, optionValue.getProductOptionValueImage());
+			contentService.removeImage(store.getCode(), FileContentType.PROPERTY, optionValue.getProductOptionValueImage());
 			
 			store.setStoreLogo(null);
 			optionValue.setProductOptionValueImage(null);
