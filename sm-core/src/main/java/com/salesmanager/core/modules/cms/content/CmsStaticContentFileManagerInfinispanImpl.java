@@ -19,11 +19,10 @@ import org.infinispan.tree.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.salesmanager.core.business.content.model.content.StaticContentType;
-import com.salesmanager.core.business.content.model.image.InputContentImage;
+import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.content.InputContentFile;
+import com.salesmanager.core.business.content.model.content.OutputContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
-import com.salesmanager.core.modules.cms.common.InputStaticContentData;
-import com.salesmanager.core.modules.cms.common.OutputStaticContentData;
 import com.salesmanager.core.modules.cms.common.StaticContentCacheAttribute;
 import com.salesmanager.core.modules.cms.impl.CacheManager;
 
@@ -79,7 +78,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
      * <p>
      * Merchant store code will be used to create cache node where merchant data will be stored,input data will
      * contain name, file as well type of data being stored.
-     * @see StaticContentType
+     * @see FileContentType
      * </p>
      *  
      * @param merchantStoreCode merchant store for whom data is being stored
@@ -88,7 +87,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
      * 
      */
     @Override
-    public void addStaticFile( final String merchantStoreCode, final InputStaticContentData inputStaticContentData )
+    public void addStaticFile( final String merchantStoreCode, final InputContentFile inputStaticContentData )
         throws ServiceException
     {
         if ( cacheManager.getTreeCache() == null )
@@ -136,7 +135,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
      */
     @Override
     //TODO BE REVISED
-    public void addStaticFiles( final String merchantStoreCode, final List<InputStaticContentData> inputStaticContentDataList )
+    public void addStaticFiles( final String merchantStoreCode, final List<InputContentFile> inputStaticContentDataList )
         throws ServiceException
     {
         if ( cacheManager.getTreeCache() == null )
@@ -147,7 +146,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
         try
         {
           final Node<String, Object> merchantNode = getMerchantNodeForStaticContent(merchantStoreCode);
-          for(final InputStaticContentData inputStaticContentData:inputStaticContentDataList){
+          for(final InputContentFile inputStaticContentData:inputStaticContentDataList){
  
                 //String cmsType = inputStaticContentData.getContentType().name();
                 //StaticContentCacheAttribute contentAttribute = (StaticContentCacheAttribute) merchantNode.get( cmsType );
@@ -158,7 +157,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
                 //}
                 
                contentAttribute.getEntities().put( inputStaticContentData.getFileName(), IOUtils.toByteArray( inputStaticContentData.getFile() ));
-               contentAttribute.setDataType( inputStaticContentData.getContentType().name() );
+               contentAttribute.setDataType( inputStaticContentData.getFileContentType().name() );
                merchantNode.put( inputStaticContentData.getFileName(), contentAttribute );
                
             }
@@ -188,7 +187,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
      * @throws ServiceException
      */
     @Override
-    public OutputStaticContentData getStaticContentData( final String merchantStoreCode, final StaticContentType staticContentType, final String contentFileName )
+    public OutputContentFile getStaticContentData( final String merchantStoreCode, final FileContentType fileContentType, final String contentFileName )
         throws ServiceException
     {
        
@@ -196,7 +195,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
         {
             throw new ServiceException( "CmsStaticContentFileManagerInfinispan has a null cacheManager.getTreeCache()" );
         }
-        OutputStaticContentData outputStaticContentData=null;
+        OutputContentFile outputStaticContentData=null;
         InputStream input = null;
         try
         {
@@ -237,11 +236,11 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
             final ByteArrayOutputStream output = new ByteArrayOutputStream();
             IOUtils.copy( input, output );
             
-            outputStaticContentData=new OutputStaticContentData();
+            outputStaticContentData=new OutputContentFile();
             outputStaticContentData.setFile( output );
-            outputStaticContentData.setFileContentType( URLConnection.getFileNameMap().getContentTypeFor(contentFileName) );
+            outputStaticContentData.setMimeType( URLConnection.getFileNameMap().getContentTypeFor(contentFileName) );
             outputStaticContentData.setFileName( contentFileName );
-            outputStaticContentData.setContentType( staticContentType );
+            outputStaticContentData.setFileContentType( fileContentType );
             
         }
         catch ( final Exception e )
@@ -255,8 +254,8 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
     
 	@Override
 	//TODO TO BE REVISED
-	public List<OutputStaticContentData> getStaticContentData(
-			final String merchantStoreCode, final StaticContentType staticContentType) throws ServiceException {
+	public List<OutputContentFile> getStaticContentData(
+			final String merchantStoreCode, final FileContentType staticContentType) throws ServiceException {
 
 		
 		
@@ -264,7 +263,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
         {
             throw new ServiceException( "CmsStaticContentFileManagerInfinispan has a null cacheManager.getTreeCache()" );
         }
-        OutputStaticContentData outputStaticContentData=null;
+        OutputContentFile outputStaticContentData=null;
         InputStream input = null;
         try
         {
@@ -304,11 +303,11 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
                     final ByteArrayOutputStream output = new ByteArrayOutputStream();
                     IOUtils.copy( input, output );
                     
-                    outputStaticContentData=new OutputStaticContentData();
+                    outputStaticContentData=new OutputContentFile();
                     outputStaticContentData.setFile( output );
-                    outputStaticContentData.setFileContentType( URLConnection.getFileNameMap().getContentTypeFor(key) );
+                    outputStaticContentData.setMimeType( URLConnection.getFileNameMap().getContentTypeFor(key) );
                     outputStaticContentData.setFileName( key );
-                    outputStaticContentData.setContentType( StaticContentType.valueOf( contentAttribute.getDataType() ) );
+                    outputStaticContentData.setFileContentType( FileContentType.valueOf( contentAttribute.getDataType() ) );
 	
             	}
 
@@ -331,7 +330,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
     
 
     @Override
-    public void removeStaticContent( final String merchantStoreCode, final StaticContentType staticContentType, final String fileName )
+    public void removeStaticContent( final String merchantStoreCode, final FileContentType staticContentType, final String fileName )
         throws ServiceException
     {
 
@@ -437,7 +436,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
      */
 	@Override
 	//TODO BE REVISED
-	public List<String> getStaticContentDataName(final String merchantStoreCode, final StaticContentType staticContentType)
+	public List<String> getStaticContentDataName(final String merchantStoreCode, final FileContentType staticContentType)
 			throws ServiceException {
 		
 		

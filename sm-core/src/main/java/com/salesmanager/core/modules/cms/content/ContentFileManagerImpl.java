@@ -2,10 +2,11 @@ package com.salesmanager.core.modules.cms.content;
 
 import java.util.List;
 
-import com.salesmanager.core.business.content.model.image.ContentImage;
-import com.salesmanager.core.business.content.model.image.ImageContentType;
-import com.salesmanager.core.business.content.model.image.InputContentImage;
-import com.salesmanager.core.business.content.model.image.OutputContentImage;
+
+import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.content.InputContentFile;
+import com.salesmanager.core.business.content.model.content.OutputContentFile;
+
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.modules.cms.product.CmsContentFileManagerInfinispanImpl;
 
@@ -29,7 +30,7 @@ public class ContentFileManagerImpl
      * @throws ServiceException
      */
     @Override
-    public void addImage(final String merchantStoreCode, final InputContentImage image )
+    public void addImage(final String merchantStoreCode, final InputContentFile image )
         throws ServiceException
     {
 
@@ -46,7 +47,7 @@ public class ContentFileManagerImpl
      * @throws ServiceException
      */
     @Override
-    public void addImages( final String merchantStoreCode, final List<InputContentImage> imagesList )
+    public void addImages( final String merchantStoreCode, final List<InputContentFile> imagesList )
         throws ServiceException
     {
         uploadImage.addImages( merchantStoreCode, imagesList );
@@ -64,7 +65,7 @@ public class ContentFileManagerImpl
      * @throws ServiceException
      */
     @Override
-    public List<OutputContentImage> getImages( final String merchantStoreCode, final ImageContentType imageContentType )
+    public List<OutputContentFile> getImages( final String merchantStoreCode, final FileContentType imageContentType )
         throws ServiceException
     {
         return getImage.getImages( merchantStoreCode, imageContentType );
@@ -81,7 +82,7 @@ public class ContentFileManagerImpl
      * @throws ServiceException
      */
     @Override
-    public void removeImage(final String merchantStoreCode, final ImageContentType imageContentType, final String imageName)
+    public void removeImage(final String merchantStoreCode, final FileContentType imageContentType, final String imageName)
         throws ServiceException
     {
       removeImage.removeImage( merchantStoreCode, imageContentType, imageName );
@@ -114,7 +115,7 @@ public class ContentFileManagerImpl
      * @throws ServiceException
      */
     @Override
-    public OutputContentImage getImage(final String merchantStoreCode, final String imageName, final ImageContentType imageContentType )
+    public OutputContentFile getImage(final String merchantStoreCode, final String imageName, final FileContentType imageContentType )
         throws ServiceException
     {
         return getImage.getImage( merchantStoreCode, imageName, imageContentType );
@@ -161,7 +162,7 @@ public class ContentFileManagerImpl
      * @throws ServiceException
      */
     @Override
-    public List<String> getImageNames(final String merchantStoreCode, final ImageContentType imageContentType )
+    public List<String> getImageNames(final String merchantStoreCode, final FileContentType imageContentType )
         throws ServiceException
     {
        

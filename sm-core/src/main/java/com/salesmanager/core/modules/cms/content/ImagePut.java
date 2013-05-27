@@ -2,13 +2,13 @@ package com.salesmanager.core.modules.cms.content;
 
 import java.util.List;
 
-import com.salesmanager.core.business.content.model.image.InputContentImage;
+import com.salesmanager.core.business.content.model.content.InputContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 
 public interface ImagePut {
 	
 	
-	public void addImage(final String merchantStoreCode, InputContentImage image) throws ServiceException;
-	public void addImages(final String merchantStoreCode, List<InputContentImage> imagesList) throws ServiceException;
+	public void addImage(final String merchantStoreCode, InputContentFile image) throws ServiceException;
+	public void addImages(final String merchantStoreCode, List<InputContentFile> imagesList) throws ServiceException;
 
 }

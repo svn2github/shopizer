@@ -5,10 +5,11 @@ package com.salesmanager.core.modules.cms.content;
 
 import java.util.List;
 
-import com.salesmanager.core.business.content.model.content.StaticContentType;
+import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.content.InputContentFile;
+import com.salesmanager.core.business.content.model.content.OutputContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
-import com.salesmanager.core.modules.cms.common.InputStaticContentData;
-import com.salesmanager.core.modules.cms.common.OutputStaticContentData;
+
 
 /**
  * @author Umesh Awasthi
@@ -46,7 +47,7 @@ public class StaticContentFileManagerImpl extends StaticContentFileManager
     }
     
     @Override
-    public OutputStaticContentData getStaticContentData( final String merchantStoreCode, final StaticContentType staticContentType, final String contentName )
+    public OutputContentFile getStaticContentData( final String merchantStoreCode, final FileContentType staticContentType, final String contentName )
         throws ServiceException
     {
       return  getStaticContent.getStaticContentData( merchantStoreCode, staticContentType, contentName );
@@ -54,7 +55,7 @@ public class StaticContentFileManagerImpl extends StaticContentFileManager
     }
     
     @Override
-    public void addStaticFile( final String merchantStoreCode, final InputStaticContentData inputStaticContentData )
+    public void addStaticFile( final String merchantStoreCode, final InputContentFile inputStaticContentData )
         throws ServiceException
     {
         uploadStaticContent.addStaticFile( merchantStoreCode, inputStaticContentData );
@@ -71,13 +72,13 @@ public class StaticContentFileManagerImpl extends StaticContentFileManager
      * @throws ServiceException
      */
     @Override
-    public void addStaticFiles( final String merchantStoreCode, final List<InputStaticContentData> inputStaticContentDataList )
+    public void addStaticFiles( final String merchantStoreCode, final List<InputContentFile> inputStaticContentDataList )
         throws ServiceException
     {
        uploadStaticContent.addStaticFiles( merchantStoreCode, inputStaticContentDataList );
     }
     @Override
-    public void removeStaticContent( final String merchantStoreCode, final StaticContentType staticContentType, final String fileName)
+    public void removeStaticContent( final String merchantStoreCode, final FileContentType staticContentType, final String fileName)
         throws ServiceException
     {
     	removeStaticContent.removeStaticContent(merchantStoreCode, staticContentType, fileName);
@@ -91,12 +92,12 @@ public class StaticContentFileManagerImpl extends StaticContentFileManager
         
     }
 	@Override
-	public List<OutputStaticContentData> getStaticContentData(
-			final String merchantStoreCode, final StaticContentType staticContentType) throws ServiceException {
+	public List<OutputContentFile> getStaticContentData(
+			final String merchantStoreCode, final FileContentType staticContentType) throws ServiceException {
 		return getStaticContent.getStaticContentData(merchantStoreCode, staticContentType);
 	}
 	@Override
-	public List<String> getStaticContentDataName(final String merchantStoreCode, final StaticContentType staticContentType)
+	public List<String> getStaticContentDataName(final String merchantStoreCode, final FileContentType staticContentType)
 			throws ServiceException {
 		return getStaticContent.getStaticContentDataName(merchantStoreCode, staticContentType);
 	}
