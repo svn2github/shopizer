@@ -5,7 +5,8 @@ package com.salesmanager.core.modules.cms.common;
 
 import java.io.Serializable;
 
-import com.salesmanager.core.business.content.model.content.StaticContentType;
+import com.salesmanager.core.business.content.model.content.FileContentType;
+
 
 /**
  * Abstract class for Static content data containing common attributes
@@ -20,7 +21,7 @@ public abstract class StaticContentData implements Serializable
    
     private static final long serialVersionUID = 1L;
     private String fileName;
-    private StaticContentType contentType = StaticContentType.STATIC_FILE;
+    private FileContentType contentType = FileContentType.STATIC_FILE;
     private String fileContentType;
     
     public String getFileName()
@@ -31,14 +32,7 @@ public abstract class StaticContentData implements Serializable
     {
         this.fileName = fileName;
     }
-    public StaticContentType getContentType()
-    {
-        return contentType;
-    }
-    public void setContentType( StaticContentType contentType )
-    {
-        this.contentType = contentType;
-    }
+
     public String getFileContentType()
     {
         return fileContentType;
@@ -47,6 +41,12 @@ public abstract class StaticContentData implements Serializable
     {
         this.fileContentType = fileContentType;
     }
+	public void setContentType(FileContentType contentType) {
+		this.contentType = contentType;
+	}
+	public FileContentType getContentType() {
+		return contentType;
+	}
     
     
 }
