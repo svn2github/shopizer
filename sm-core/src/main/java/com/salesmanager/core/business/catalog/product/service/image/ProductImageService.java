@@ -5,10 +5,10 @@ import java.util.List;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.service.ProductImageEnum;
-import com.salesmanager.core.business.content.model.image.OutputContentImage;
+import com.salesmanager.core.business.content.model.content.ImageContentFile;
+import com.salesmanager.core.business.content.model.content.OutputContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
-import com.salesmanager.core.business.merchant.model.MerchantStore;
 
 
 public interface ProductImageService extends SalesManagerEntityService<Long, ProductImage> {
@@ -22,7 +22,7 @@ public interface ProductImageService extends SalesManagerEntityService<Long, Pro
 	 * @param file
 	 * @throws ServiceException
 	 */
-	void addProductImage(Product product, ProductImage productImage)
+	void addProductImage(Product product, ProductImage productImage, ImageContentFile inputImage)
 			throws ServiceException;
 
 	/**
@@ -31,7 +31,7 @@ public interface ProductImageService extends SalesManagerEntityService<Long, Pro
 	 * @return
 	 * @throws ServiceException
 	 */
-	OutputContentImage getProductImage(ProductImage productImage, ProductImageEnum size)
+	OutputContentFile getProductImage(ProductImage productImage, ProductImageEnum size)
 			throws ServiceException;
 
 	/**
@@ -40,7 +40,7 @@ public interface ProductImageService extends SalesManagerEntityService<Long, Pro
 	 * @return
 	 * @throws ServiceException
 	 */
-	List<OutputContentImage> getProductImages(Product product)
+	List<OutputContentFile> getProductImages(Product product)
 			throws ServiceException;
 
 	void removeProductImage(ProductImage productImage) throws ServiceException;
@@ -56,7 +56,7 @@ public interface ProductImageService extends SalesManagerEntityService<Long, Pro
 	 * @return
 	 * @throws ServiceException
 	 */
-	OutputContentImage getProductImage(final String storeCode, final String productCode,
+	OutputContentFile getProductImage(String storeCode, String productCode,
 			String fileName) throws ServiceException;
 
 	void addProductImages(Product product, List<ProductImage> productImages)

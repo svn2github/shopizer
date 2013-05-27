@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.catalog.product.service;
 
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -28,6 +29,8 @@ import com.salesmanager.core.business.catalog.product.service.availability.Produ
 import com.salesmanager.core.business.catalog.product.service.image.ProductImageService;
 import com.salesmanager.core.business.catalog.product.service.price.ProductPriceService;
 import com.salesmanager.core.business.catalog.product.service.relationship.ProductRelationshipService;
+import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.content.ImageContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -299,7 +302,15 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 			for(ProductImage image : images) {
 				if(image.getImage()!=null && (image.getId()==null || image.getId()==0L)) {
 					image.setProduct(product);
-					productImageService.addProductImage(product, image);
+					
+			        InputStream inputStream = image.getImage();
+			        ImageContentFile cmsContentImage = new ImageContentFile();
+			        cmsContentImage.setFileName( image.getProductImage() );
+			        cmsContentImage.setFile( inputStream );
+			        cmsContentImage.setFileContentType(FileContentType.PRODUCT);
+					
+					
+					productImageService.addProductImage(product, image, cmsContentImage);
 				} else {
 					productImageService.update(image);
 				}
