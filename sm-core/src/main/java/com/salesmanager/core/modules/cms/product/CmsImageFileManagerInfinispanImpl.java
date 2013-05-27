@@ -2,6 +2,8 @@ package com.salesmanager.core.modules.cms.product;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
@@ -18,9 +20,11 @@ import org.slf4j.LoggerFactory;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
-import com.salesmanager.core.business.content.model.image.ImageContentType;
-import com.salesmanager.core.business.content.model.image.InputContentImage;
-import com.salesmanager.core.business.content.model.image.OutputContentImage;
+import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.content.ImageContentFile;
+import com.salesmanager.core.business.content.model.content.InputContentFile;
+import com.salesmanager.core.business.content.model.content.OutputContentFile;
+
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.modules.cms.common.CacheAttribute;
@@ -82,7 +86,7 @@ public class CmsImageFileManagerInfinispanImpl
 
     @Override
     public void addProductImage( ProductImage productImage,
-                                    InputContentImage contentImage )
+    		InputContentFile contentImage )
         throws ServiceException
     {
 
@@ -110,9 +114,22 @@ public class CmsImageFileManagerInfinispanImpl
                 productAttribute = new CacheAttribute();
                 productAttribute.setEntityId( productPath );
             }
+            
+            
+            File file1 = new File( "c:/doc/carl/Merchant.jpg" );
+            if ( !file1.exists() || !file1.canRead() )
+            {
+                throw new ServiceException( "Can't read" + file1.getAbsolutePath() );
+            }
 
-            byte[] imageBytes = contentImage.getFile().toByteArray();
-            productAttribute.getEntities().put( contentImage.getFileName(), imageBytes );
+            
+            InputStream isFile = contentImage.getFile();
+            
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            IOUtils.copy( isFile, output );
+
+            
+            productAttribute.getEntities().put( contentImage.getFileName(), output.toByteArray() );
 
             merchantNode.put( productPath, productAttribute );
 
@@ -127,7 +144,7 @@ public class CmsImageFileManagerInfinispanImpl
     }
 
     @Override
-    public OutputContentImage getProductImage( ProductImage productImage )
+    public OutputContentFile getProductImage( ProductImage productImage )
         throws ServiceException
     {
 
@@ -136,7 +153,7 @@ public class CmsImageFileManagerInfinispanImpl
     }
 
 
-    public List<OutputContentImage> getImages( MerchantStore store, ImageContentType imageContentType )
+    public List<OutputContentFile> getImages( MerchantStore store, FileContentType imageContentType )
         throws ServiceException
     {
 
@@ -145,7 +162,7 @@ public class CmsImageFileManagerInfinispanImpl
     }
 
     @Override
-    public List<OutputContentImage> getImages( Product product )
+    public List<OutputContentFile> getImages( Product product )
         throws ServiceException
     {
 
@@ -154,7 +171,7 @@ public class CmsImageFileManagerInfinispanImpl
             throw new ServiceException( "CmsImageFileManagerInfinispan has a null cacheManager.getTreeCache()" );
         }
 
-        List<OutputContentImage> images = new ArrayList<OutputContentImage>();
+        List<OutputContentFile> images = new ArrayList<OutputContentFile>();
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
 
         try
@@ -182,7 +199,7 @@ public class CmsImageFileManagerInfinispanImpl
 
                 byte[] imageBytes = imgs.get( imageName );
 
-                OutputContentImage contentImage = new OutputContentImage();
+                OutputContentFile contentImage = new OutputContentFile();
 
                 InputStream input = new ByteArrayInputStream( imageBytes );
                 ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -190,7 +207,7 @@ public class CmsImageFileManagerInfinispanImpl
 
                 String contentType = fileNameMap.getContentTypeFor( imageName );
 
-                contentImage.setImage( output );
+                contentImage.setFile( output );
                 contentImage.setMimeType( contentType );
                 contentImage.setFileName( imageName );
 
@@ -329,13 +346,13 @@ public class CmsImageFileManagerInfinispanImpl
 
 
     @Override
-	public List<OutputContentImage> getImages(final String merchantStoreCode,
-			ImageContentType imageContentType) throws ServiceException {
+	public List<OutputContentFile> getImages(final String merchantStoreCode,
+			FileContentType imageContentType) throws ServiceException {
         if ( cacheManager.getTreeCache() == null )
         {
             throw new ServiceException( "CmsImageFileManagerInfinispan has a null cacheManager.getTreeCache()" );
         }
-        List<OutputContentImage> images = new ArrayList<OutputContentImage>();
+        List<OutputContentFile> images = new ArrayList<OutputContentFile>();
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
 
         try
@@ -362,7 +379,7 @@ public class CmsImageFileManagerInfinispanImpl
 
                     byte[] imageBytes = imgs.get( imageName );
 
-                    OutputContentImage contentImage = new OutputContentImage();
+                    OutputContentFile contentImage = new OutputContentFile();
 
                     InputStream input = new ByteArrayInputStream( imageBytes );
                     ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -370,7 +387,7 @@ public class CmsImageFileManagerInfinispanImpl
 
                     String contentType = fileNameMap.getContentTypeFor( imageName );
 
-                    contentImage.setImage( output );
+                    contentImage.setFile( output );
                     contentImage.setMimeType( contentType );
                     contentImage.setFileName( imageName );
 
@@ -395,14 +412,14 @@ public class CmsImageFileManagerInfinispanImpl
 	}
 
 	@Override
-	public OutputContentImage getProductImage(String merchantStoreCode,
+	public OutputContentFile getProductImage(String merchantStoreCode,
 			String productCode, String imageName) throws ServiceException {
         if ( cacheManager.getTreeCache() == null )
         {
             throw new ServiceException( "CmsImageFileManagerInfinispan has a null cacheManager.getTreeCache()" );
         }
         InputStream input = null;
-        OutputContentImage contentImage = new OutputContentImage();
+        OutputContentFile contentImage = new OutputContentFile();
         try
         {
         	String productPath = String.valueOf( productCode );
@@ -435,7 +452,7 @@ public class CmsImageFileManagerInfinispanImpl
             FileNameMap fileNameMap = URLConnection.getFileNameMap();
             String contentType = fileNameMap.getContentTypeFor( imageName );
 
-            contentImage.setImage( output );
+            contentImage.setFile( output );
             contentImage.setMimeType( contentType );
             contentImage.setFileName( imageName );
 

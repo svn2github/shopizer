@@ -16,9 +16,10 @@ import org.infinispan.tree.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.salesmanager.core.business.content.model.image.ImageContentType;
-import com.salesmanager.core.business.content.model.image.InputContentImage;
-import com.salesmanager.core.business.content.model.image.OutputContentImage;
+import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.content.InputContentFile;
+import com.salesmanager.core.business.content.model.content.OutputContentFile;
+
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.modules.cms.common.CacheAttribute;
 import com.salesmanager.core.modules.cms.content.ContentImageGet;
@@ -70,7 +71,7 @@ public class CmsContentFileManagerInfinispanImpl
 
 
     @Override
-    public List<String> getImageNames( final String merchantStoreCode, final ImageContentType imageContentType )
+    public List<String> getImageNames( final String merchantStoreCode, final FileContentType imageContentType )
         throws ServiceException
     {
         if ( cacheManager.getTreeCache() == null )
@@ -115,7 +116,7 @@ public class CmsContentFileManagerInfinispanImpl
      * @throws ServiceException
      */
     @Override
-    public List<OutputContentImage> getImages( final String merchantStoreCode, final ImageContentType imageContentType )
+    public List<OutputContentFile> getImages( final String merchantStoreCode, final FileContentType imageContentType )
         throws ServiceException
     {
         if ( cacheManager.getTreeCache() == null )
@@ -124,39 +125,39 @@ public class CmsContentFileManagerInfinispanImpl
             throw new ServiceException( "CmsImageFileManagerInfinispan has a null cacheManager.getTreeCache()" );
         }
 
-        OutputContentImage contentImage = null;
+        OutputContentFile contentImage = null;
         InputStream input = null;
-        List<OutputContentImage> contentImagesList = null;
+        List<OutputContentFile> contentImagesList = null;
         try
         {
             final Node<String, Object> merchantNode = getMerchantNode(merchantStoreCode);
             if ( merchantNode == null )
             {
                 LOGGER.warn( "merchant node is null" );
-                return Collections.<OutputContentImage> emptyList();
+                return Collections.<OutputContentFile> emptyList();
             }
             final CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( imageContentType.name() );
 
             if ( contentAttribute == null )
             {
                 LOGGER.warn( "Unable to find content attribute for given merchant" );
-                return Collections.<OutputContentImage> emptyList();
+                return Collections.<OutputContentFile> emptyList();
             }
 
             if ( MapUtils.isEmpty( contentAttribute.getEntities() ) )
             {
                 LOGGER.warn( "No Content image for merchant with code {}", merchantStoreCode);
-                return Collections.<OutputContentImage> emptyList();
+                return Collections.<OutputContentFile> emptyList();
             }
 
-            contentImagesList = new ArrayList<OutputContentImage>();
+            contentImagesList = new ArrayList<OutputContentFile>();
             for ( final Map.Entry<String, byte[]> entry : contentAttribute.getEntities().entrySet() )
             {
                 input = new ByteArrayInputStream( entry.getValue() );
                 final ByteArrayOutputStream output = new ByteArrayOutputStream();
                 IOUtils.copy( input, output );
-                contentImage = new OutputContentImage();
-                contentImage.setImage( output );
+                contentImage = new OutputContentFile();
+                contentImage.setFile( output );
                 contentImage.setMimeType( URLConnection.guessContentTypeFromStream( input ) );
                 contentImage.setFileName( entry.getKey() );
                 contentImagesList.add( contentImage );
@@ -167,7 +168,7 @@ public class CmsContentFileManagerInfinispanImpl
             LOGGER.error( "Error while fetching content image for {} merchant ", merchantStoreCode);
             throw new ServiceException( e );
         }
-        return contentImagesList != null ? contentImagesList : Collections.<OutputContentImage> emptyList();
+        return contentImagesList != null ? contentImagesList : Collections.<OutputContentFile> emptyList();
     }
 
     /**
@@ -218,7 +219,7 @@ public class CmsContentFileManagerInfinispanImpl
      * @throws ServiceException
      */
     @Override
-    public void removeImage(final String merchantStoreCode, final ImageContentType imageContentType, final String imageName)
+    public void removeImage(final String merchantStoreCode, final FileContentType imageContentType, final String imageName)
         throws ServiceException
     {
         LOGGER.info( "Removing image {}  for {} merchant ",imageName,merchantStoreCode);
@@ -268,8 +269,8 @@ public class CmsContentFileManagerInfinispanImpl
      * @throws ServiceException
      */
     @Override
-    public OutputContentImage getImage(final String merchantStoreCode, final String imageName,
-                                        final ImageContentType imageContentType )
+    public OutputContentFile getImage(final String merchantStoreCode, final String imageName,
+                                        final FileContentType imageContentType )
         throws ServiceException
     {
 
@@ -278,7 +279,7 @@ public class CmsContentFileManagerInfinispanImpl
             throw new ServiceException( "CmsImageFileManagerInfinispan has a null cacheManager.getTreeCache()" );
         }
 
-        OutputContentImage contentImage = null;
+        OutputContentFile contentImage = null;
         InputStream input = null;
 
         try
@@ -307,10 +308,10 @@ public class CmsContentFileManagerInfinispanImpl
                 return null;
             }
             input = new ByteArrayInputStream( imageBytes );
-            final ByteArrayOutputStream output = new ByteArrayOutputStream();
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
             IOUtils.copy( input, output );
-            contentImage = new OutputContentImage();
-            contentImage.setImage( output );
+            contentImage = new OutputContentFile();
+            contentImage.setFile( output );
             contentImage.setMimeType( URLConnection.guessContentTypeFromStream( input ) );
             contentImage.setFileName( imageName );
         }
@@ -341,7 +342,7 @@ public class CmsContentFileManagerInfinispanImpl
      */
 
     @Override
-    public void addImage( final String merchantStoreCode, final InputContentImage image )
+    public void addImage( final String merchantStoreCode, final InputContentFile image )
         throws ServiceException
     {
 
@@ -356,16 +357,21 @@ public class CmsContentFileManagerInfinispanImpl
 
             final Node<String, Object> merchantNode = getMerchantNode(merchantStoreCode);
             // object for a given merchant containing all images
-            CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( image.getImageContentType().name() );
+            CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( image.getFileContentType().name() );
 
             if ( contentAttribute == null )
             {
                 contentAttribute = new CacheAttribute();
                 // contentAttribute.setEntityId( IMAGE_CONTENT );
             }
+            
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            IOUtils.copy( image.getFile(), output );
+            
+            System.out.println(output.toByteArray());
 
-            contentAttribute.getEntities().put( image.getFileName(), image.getFile().toByteArray() );
-            merchantNode.put( image.getImageContentType().name(), contentAttribute );
+            contentAttribute.getEntities().put( image.getFileName(), output.toByteArray() );
+            merchantNode.put( image.getFileContentType().name(), contentAttribute );
             LOGGER.info( "Content image added successfully." );
 
         }
@@ -394,7 +400,7 @@ public class CmsContentFileManagerInfinispanImpl
      * @see CmsFileManagerInfinispan
      */
     @Override
-    public void addImages(final String merchantStoreCode, final List<InputContentImage> imagesList )
+    public void addImages(final String merchantStoreCode, final List<InputContentFile> imagesList )
         throws ServiceException
     {
         if ( cacheManager.getTreeCache() == null )
@@ -409,9 +415,9 @@ public class CmsContentFileManagerInfinispanImpl
             final Node<String, Object> merchantNode = getMerchantNode(merchantStoreCode);
             // object for a given merchant containing all images
 
-            for(final InputContentImage image:imagesList){
+            for(final InputContentFile image:imagesList){
             	
-            	String cmsType = image.getImageContentType().name();
+            	String cmsType = image.getFileContentType().name();
             	
                 CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( cmsType );
 
@@ -420,8 +426,11 @@ public class CmsContentFileManagerInfinispanImpl
                     contentAttribute = new CacheAttribute();
                    
                 }
+                
+                final ByteArrayOutputStream output = new ByteArrayOutputStream();
+                IOUtils.copy( image.getFile(), output );
             	
-                contentAttribute.getEntities().put( image.getFileName(), image.getFile().toByteArray() );
+                contentAttribute.getEntities().put( image.getFileName(), output.toByteArray() );
                 merchantNode.put( cmsType, contentAttribute );
             }
             

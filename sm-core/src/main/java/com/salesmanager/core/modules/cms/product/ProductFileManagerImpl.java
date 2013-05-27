@@ -9,9 +9,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
-import com.salesmanager.core.business.content.model.image.ImageContentType;
-import com.salesmanager.core.business.content.model.image.InputContentImage;
-import com.salesmanager.core.business.content.model.image.OutputContentImage;
+import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.content.ImageContentFile;
+import com.salesmanager.core.business.content.model.content.InputContentFile;
+import com.salesmanager.core.business.content.model.content.OutputContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.core.utils.ProductImageCropUtils;
@@ -27,6 +28,16 @@ public class ProductFileManagerImpl extends ProductFileManager {
 	private CoreConfiguration configuration;
 
 
+	public CoreConfiguration getConfiguration() {
+		return configuration;
+	}
+
+
+	public void setConfiguration(CoreConfiguration configuration) {
+		this.configuration = configuration;
+	}
+
+
 	public ProductImageRemove getRemoveImage() {
 		return removeImage;
 	}
@@ -37,7 +48,7 @@ public class ProductFileManagerImpl extends ProductFileManager {
 	}
 
 
-	public void addProductImage(ProductImage productImage, InputContentImage contentImage)
+	public void addProductImage(ProductImage productImage, InputContentFile contentImage)
 			throws ServiceException {
 			
 			
@@ -82,7 +93,7 @@ public class ProductFileManagerImpl extends ProductFileManager {
 				
 				//String ssmallImageHeight = configuration.getProperty("SMALL_IMAGE_HEIGHT_SIZE");
 				//String ssmallImageWidth = configuration.getProperty("SMALL_IMAGE_WIDTH_SIZE");
-	
+/*	
 					
 				if(!StringUtils.isBlank(slargeImageHeight) && !StringUtils.isBlank(slargeImageWidth)) { //&& !StringUtils.isBlank(ssmallImageHeight) && !StringUtils.isBlank(ssmallImageWidth)) {
 					
@@ -126,7 +137,7 @@ public class ProductFileManagerImpl extends ProductFileManager {
 						
 						//do not keep a large image for now, just take care of the regular image and a small image
 						
-/*						//resize large
+						//resize large
 						BufferedImage largeResizedImage = ProductImageSizeUtils.resize(cropped, largeImageWidth, largeImageHeight);
 						File tempLarge = File.createTempFile(new StringBuilder().append(productImage.getProduct().getId()).append("tmpLarge").toString(), "." + extension );
 						ImageIO.write(largeResizedImage, extension, tempLarge);
@@ -147,11 +158,11 @@ public class ProductFileManagerImpl extends ProductFileManager {
 						output.flush();
 						output.close();
 						
-						tempLarge.delete();*/
+						tempLarge.delete();
 						
 						
 						
-/*						//resize small
+						//resize small
 						BufferedImage smallResizedImage = ProductImageSizeUtils.resize(cropped, smallImageWidth, smallImageHeight);
 						File tempSmall = File.createTempFile(new StringBuilder().append(productImage.getProduct().getId()).append("tmpSmall").toString(), "." + extension );
 						ImageIO.write(smallResizedImage, extension, tempSmall);
@@ -174,13 +185,13 @@ public class ProductFileManagerImpl extends ProductFileManager {
 						output.flush();
 						output.close();
 						
-						tempSmall.delete();*/
+						tempSmall.delete();
 					
 					}
 
 				}
 
-			
+*/			
 				
 				
 			} catch (Exception e) {
@@ -194,21 +205,21 @@ public class ProductFileManagerImpl extends ProductFileManager {
 	}
 
 	
-	public OutputContentImage getProductImage(ProductImage productImage) throws ServiceException {
+	public OutputContentFile getProductImage(ProductImage productImage) throws ServiceException {
 		//will return original
 		return getImage.getProductImage(productImage);
 	}
 
 	
 	@Override
-	public List<OutputContentImage> getImages(final String merchantStoreCode, ImageContentType imageContentType)
+	public List<OutputContentFile> getImages(final String merchantStoreCode, FileContentType imageContentType)
 			throws ServiceException {
 		//will return original
-		return getImage.getImages(merchantStoreCode,ImageContentType.PRODUCT);
+		return getImage.getImages(merchantStoreCode,FileContentType.PRODUCT);
 	}
 	
 	@Override
-	public List<OutputContentImage> getImages(Product product)
+	public List<OutputContentFile> getImages(Product product)
 			throws ServiceException {
 		return getImage.getImages(product);
 	}
@@ -278,7 +289,7 @@ public class ProductFileManagerImpl extends ProductFileManager {
 
 
 	@Override
-	public OutputContentImage getProductImage(String merchantStoreCode,
+	public OutputContentFile getProductImage(String merchantStoreCode,
 			String productCode, String imageName) throws ServiceException {
 		return getImage.getProductImage(merchantStoreCode, productCode, imageName);
 	}
