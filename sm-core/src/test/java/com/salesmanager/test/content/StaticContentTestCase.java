@@ -1,25 +1,20 @@
 package com.salesmanager.test.content;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.salesmanager.core.business.content.model.content.StaticContentType;
+import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.content.InputContentFile;
 import com.salesmanager.core.business.content.service.StaticContentService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.modules.cms.common.InputStaticContentData;
-import com.salesmanager.core.modules.cms.common.OutputStaticContentData;
 import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;
 
 public class StaticContentTestCase extends AbstractSalesManagerCoreTestCase {
@@ -46,14 +41,14 @@ public class StaticContentTestCase extends AbstractSalesManagerCoreTestCase {
 		is = IOUtils.toByteArray( new FileInputStream( file ) );
 		inputStream = new ByteArrayInputStream( is );
 
-	     InputStaticContentData staticContent = new InputStaticContentData();
+	     InputContentFile staticContent = new InputContentFile();
 	     staticContent.setFile(inputStream);
 	     staticContent.setFileName(file.getName());
-	     staticContent.setContentType(StaticContentType.STATIC_FILE);//default to static data
+	     staticContent.setFileContentType(FileContentType.STATIC_FILE);//default to static data
         
 	     staticContentService.addFile(store, staticContent);
 	     
-	     staticContentService.getFile(store, StaticContentType.STATIC_FILE, file.getName());
+	     staticContentService.getFile(store, FileContentType.STATIC_FILE, file.getName());
 
         //now get the file
 	     
@@ -73,7 +68,7 @@ public class StaticContentTestCase extends AbstractSalesManagerCoreTestCase {
 	     
 	     //remove the file
 	     
-	     staticContentService.removeFile(store, StaticContentType.STATIC_FILE, file.getName());
+	     staticContentService.removeFile(store, FileContentType.STATIC_FILE, file.getName());
 
 	}
 	
@@ -98,10 +93,10 @@ public class StaticContentTestCase extends AbstractSalesManagerCoreTestCase {
 		is = IOUtils.toByteArray( new FileInputStream( file ) );
 		inputStream = new ByteArrayInputStream( is );
 
-	    InputStaticContentData staticContent = new InputStaticContentData();
+	    InputContentFile staticContent = new InputContentFile();
 	    staticContent.setFile(inputStream);
 	    staticContent.setFileName(file.getName());
-	    staticContent.setContentType(StaticContentType.STATIC_FILE);//default to static data
+	    staticContent.setFileContentType(FileContentType.STATIC_FILE);//default to static data
 	    
 	    
 	    // FILE 2
@@ -118,12 +113,12 @@ public class StaticContentTestCase extends AbstractSalesManagerCoreTestCase {
 		is2 = IOUtils.toByteArray( new FileInputStream( file2 ) );
 		inputStream2 = new ByteArrayInputStream( is2 );
 
-	    InputStaticContentData staticContent2 = new InputStaticContentData();
+		InputContentFile staticContent2 = new InputContentFile();
 	    staticContent2.setFile(inputStream2);
 	    staticContent2.setFileName(file2.getName());
-	    staticContent2.setContentType(StaticContentType.STATIC_FILE);//default to static data
+	    staticContent2.setFileContentType(FileContentType.STATIC_FILE);//default to static data
 	    
-	    List<InputStaticContentData> staticFiles = new ArrayList<InputStaticContentData>();
+	    List<InputContentFile> staticFiles = new ArrayList<InputContentFile>();
 	    staticFiles.add(staticContent);
 	    staticFiles.add(staticContent2);
 		

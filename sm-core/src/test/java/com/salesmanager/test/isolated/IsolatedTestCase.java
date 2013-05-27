@@ -51,9 +51,7 @@ import com.salesmanager.core.business.catalog.product.service.image.ProductImage
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
 import com.salesmanager.core.business.catalog.product.service.price.ProductPriceService;
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
-import com.salesmanager.core.business.content.model.image.ImageContentType;
-import com.salesmanager.core.business.content.model.image.InputContentImage;
-import com.salesmanager.core.business.content.model.image.OutputContentImage;
+
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.content.service.StaticContentService;
 import com.salesmanager.core.business.customer.service.CustomerService;
@@ -274,7 +272,7 @@ public class IsolatedTestCase
         productImage1.setDescriptions( image1descriptions );
         productImage1.setImage( is1 );
 
-        productImageService.addProductImage( product, productImage1 );
+        //productImageService.addProductImage( product, productImage1 );
 
     }
 
@@ -373,136 +371,7 @@ public class IsolatedTestCase
 
     }
 
-    @Test
-    public void createContentImage()
-        throws ServiceException, FileNotFoundException, IOException
-    {
 
-        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        final File file1 = new File( "c:/doc/carl/IA.jpg" );
-
-        if ( !file1.exists() || !file1.canRead() )
-        {
-            throw new ServiceException( "Can't read" + file1.getAbsolutePath() );
-        }
-
-        final byte[] is = IOUtils.toByteArray( new FileInputStream( file1 ) );
-        final ByteArrayInputStream inputStream = new ByteArrayInputStream( is );
-        final CMSContentImage cmsContentImage = new CMSContentImage();
-        cmsContentImage.setImageName( "demoCmsImage" );
-        cmsContentImage.setFile( inputStream );
-        contentService.addContentImage(store.getCode(), cmsContentImage );
-        final CMSContentImage cmsContentImage1 = new CMSContentImage();
-        cmsContentImage1.setImageName( "demoCmsImage2" );
-        cmsContentImage1.setFile( inputStream );
-        contentService.addContentImage(store.getCode(), cmsContentImage1 );
-
-    }
-    
-    @Test
-    public void createContentImages()
-        throws ServiceException, FileNotFoundException, IOException
-    {
-
-        final List<CMSContentImage> contentImagesList=new ArrayList<CMSContentImage>();
-        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        final File file1 = new File( "/Umesh/contentimage/destination.png" );
-
-        if ( !file1.exists() || !file1.canRead() )
-        {
-            throw new ServiceException( "Can't read" + file1.getAbsolutePath() );
-        }
-
-        final byte[] is = IOUtils.toByteArray( new FileInputStream( file1 ) );
-        final ByteArrayInputStream inputStream = new ByteArrayInputStream( is );
-        final CMSContentImage cmsContentImage = new CMSContentImage();
-        cmsContentImage.setImageName( "demoCmsImage3" );
-        cmsContentImage.setFile( inputStream );
-        contentImagesList.add( cmsContentImage);
-        
-        final CMSContentImage cmsContentImage1 = new CMSContentImage();
-        cmsContentImage1.setImageName( "demoCmsImage4" );
-        cmsContentImage1.setFile( inputStream );
-        
-        contentImagesList.add( cmsContentImage1);
-        
-        contentService.addContentImages( store.getCode(), contentImagesList );
-
-    }
-
-    @Test
-    public void getContentImage()
-        throws ServiceException, FileNotFoundException, IOException
-    {
-
-        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        final String imageName = "demoCmsImage";
-
-        final OutputContentImage outputContentImage = contentService.getContentImage(store.getCode(), ImageContentType.CONTENT, imageName );
-        //final OutputContentImage outputContentImage = contentService.getContentImage( store, "" );
-        System.out.println( outputContentImage.getImage() );
-        System.out.println( outputContentImage.getFileName() );
-
-    }
-    
-    @Test
-    public void getAllContentImages() throws ServiceException{
-        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        final List<OutputContentImage> contentImagesList= contentService.getContentImages(store.getCode(), null );
-        if(CollectionUtils.isNotEmpty( contentImagesList )){
-            System.out.println("Total " + contentImagesList.size()+ " Images found");
-           for(final OutputContentImage outputContentImage :contentImagesList){
-               System.out.println(outputContentImage.getFileName());
-           }
-        }
-        else{
-            System.out.println("No image found for given merchant store");
-        }
-    }
-    
-    @Test
-    public void removeContentImage() throws ServiceException{
-        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        final InputContentImage contentImage = new InputContentImage( );
-        contentImage.setImageContentType(ImageContentType.CONTENT );
-        contentImage.setFileName("demoCmsImage");
-        //contentService.removeImage( store.getCode(), contentImage );
-        
-    }
-    
-    @Test
-    public void removeAllContentImages() throws ServiceException{
-        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        contentService.removeImages( store.getCode());
-    }
-    
-
-    @Test
-    public void getContentImagesNames() throws Exception{
-        final MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        final List<String> imageNames = contentService.getContentImagesNames(store.getCode(),ImageContentType.CONTENT);
-        for(final String imageName:imageNames){
-            System.out.println(imageName);
-        }
-    }
-    
-    @Test
-    public void testGetImages()
-        throws ServiceException
-    {
-
-        final Product product = productService.getById( 1L );
-
-        final List<OutputContentImage> images = productImageService.getProductImages( product );
-
-        for ( final OutputContentImage image : images )
-        {
-
-            System.out.println( image.getFileName() );
-            System.out.println( image.getImageContentType() );
-        }
-
-    }
     
 /*    @Test
     public void addStaticContentData() throws ServiceException, FileNotFoundException{
