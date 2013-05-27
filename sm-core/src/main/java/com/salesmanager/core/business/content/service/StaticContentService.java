@@ -5,11 +5,12 @@ package com.salesmanager.core.business.content.service;
 
 import java.util.List;
 
-import com.salesmanager.core.business.content.model.content.StaticContentType;
+import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.content.InputContentFile;
+import com.salesmanager.core.business.content.model.content.OutputContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.modules.cms.common.InputStaticContentData;
-import com.salesmanager.core.modules.cms.common.OutputStaticContentData;
+
 
 /**
  * Interface defining methods responsible for StaticContentService.
@@ -41,7 +42,7 @@ public interface StaticContentService
      * @param inputStaticContentData content data being stored
      * @throws ServiceException
      */
-    void addFile( final MerchantStore store, final InputStaticContentData inputStaticContentData )
+    void addFile( final MerchantStore store, final InputContentFile inputStaticContentFile )
         throws ServiceException;
     
     
@@ -53,19 +54,19 @@ public interface StaticContentService
      * @param inputStaticContentDataList list of content files being stored.
      * @throws ServiceException
      */
-    void addFiles(final MerchantStore store,final List<InputStaticContentData> inputStaticContentDataList) throws ServiceException;
+    void addFiles(final MerchantStore store,final List<InputContentFile> inputStaticContentFileList) throws ServiceException;
     
     /**
      * Method responsible for fetching specific static content file for a given merchant store. Requested file will be
-     * search in Infinispan tree cache and OutputStaticContentData will be sent, in case no filee is found null will
+     * search in Infinispan tree cache and OutputStaticContentFile will be sent, in case no filee is found null will
      * returned.
      * 
      * @param merchantStoreCode
      * @param file
-     * @return {@link OutputStaticContentData}
+     * @return {@link OutputContentFile}
      * @throws ServiceException
      */
-    public OutputStaticContentData getFile( final MerchantStore store, final StaticContentType staticContentType, final String fileName )
+    public OutputContentFile getFile( final MerchantStore store, final FileContentType staticContentType, final String fileName )
         throws ServiceException;
 
 
@@ -73,7 +74,7 @@ public interface StaticContentService
 
 
 	void removeFile(final MerchantStore store,
-			final StaticContentType staticContentType, final String fileName)
+			final FileContentType staticContentType, final String fileName)
 			throws ServiceException;
     
     

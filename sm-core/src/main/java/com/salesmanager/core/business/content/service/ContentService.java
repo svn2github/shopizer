@@ -4,14 +4,15 @@ import java.util.List;
 
 import com.salesmanager.core.business.content.model.content.Content;
 import com.salesmanager.core.business.content.model.content.ContentType;
-import com.salesmanager.core.business.content.model.image.ContentImage;
-import com.salesmanager.core.business.content.model.image.ImageContentType;
-import com.salesmanager.core.business.content.model.image.OutputContentImage;
+import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.content.InputContentFile;
+import com.salesmanager.core.business.content.model.content.OutputContentFile;
+
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.modules.cms.common.CMSContentImage;
+
 
 
 /**
@@ -51,7 +52,7 @@ public interface ContentService
      * @param contentImage content image being stored
      * @throws ServiceException
      */
-    void addContentImage( final String merchantStoreCode, CMSContentImage contentImage )
+    void addContentImage( final String merchantStoreCode, InputContentFile contentImage )
         throws ServiceException;
 
    
@@ -63,7 +64,7 @@ public interface ContentService
      * @param contentImagesList list of content images being stored.
      * @throws ServiceException
      */
-    void addContentImages(final String merchantStoreCode,List<CMSContentImage> contentImagesList) throws ServiceException;
+    void addContentImages(final String merchantStoreCode,List<InputContentFile> contentImagesList) throws ServiceException;
     
     
     /**
@@ -74,7 +75,7 @@ public interface ContentService
      * @param merchantStoreCode merchant store code
      * @throws ServiceException
      */
-    public void removeImage( final String merchantStoreCode, final ImageContentType imageContentType, final String imageName) throws ServiceException;
+    public void removeImage( String merchantStoreCode, FileContentType imageContentType, String imageName) throws ServiceException;
     
     
     /**
@@ -84,7 +85,7 @@ public interface ContentService
      * @param merchantStoreCode
      * @throws ServiceException
      */
-    public void removeImages( final String merchantStoreCode ) throws ServiceException;
+    public void removeImages( String merchantStoreCode ) throws ServiceException;
     
     /**
      * Method responsible for fetching particular content image for a given merchant store. Requested image will be
@@ -96,7 +97,7 @@ public interface ContentService
      * @return {@link OutputContentImage}
      * @throws ServiceException
      */
-    public OutputContentImage getContentImage( final String merchantStoreCode, final ImageContentType imageContentType, final String imageName )
+    public OutputContentFile getContentImage( final String merchantStoreCode, FileContentType imageContentType, final String imageName )
         throws ServiceException;
     
     
@@ -107,12 +108,12 @@ public interface ContentService
      * @return list of {@link OutputContentImage}
      * @throws ServiceException
      */
-    public List<OutputContentImage> getContentImages( final String merchantStoreCode, ImageContentType imageContentType )
+    public List<OutputContentFile> getContentImages( final String merchantStoreCode, FileContentType imageContentType )
                     throws ServiceException;
 
 	
     List<String> getContentImagesNames(final String merchantStoreCode,
-			ImageContentType imageContentType) throws ServiceException;
+			FileContentType imageContentType) throws ServiceException;
 
     /**
      * Add the store logo
@@ -120,7 +121,7 @@ public interface ContentService
      * @param cmsContentImage
      * @throws ServiceException
      */
-	void addLogo(final String merchantStoreCode, CMSContentImage cmsContentImage)
+	void addLogo(final String merchantStoreCode, InputContentFile cmsContentImage)
 			throws ServiceException;
 
 	/**
@@ -129,7 +130,7 @@ public interface ContentService
 	 * @param cmsContentImage
 	 * @throws ServiceException
 	 */
-	void addOptionImage(final String merchantStoreCode, CMSContentImage cmsContentImage)
+	void addOptionImage(final String merchantStoreCode, InputContentFile cmsContentImage)
 			throws ServiceException;
 
 	List<Content> listByType(ContentType contentType, MerchantStore store)

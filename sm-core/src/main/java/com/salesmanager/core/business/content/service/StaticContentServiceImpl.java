@@ -11,11 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import com.salesmanager.core.business.content.model.content.StaticContentType;
+
+import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.content.InputContentFile;
+import com.salesmanager.core.business.content.model.content.OutputContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.modules.cms.common.InputStaticContentData;
-import com.salesmanager.core.modules.cms.common.OutputStaticContentData;
+
 import com.salesmanager.core.modules.cms.content.StaticContentFileManager;
 
 /**
@@ -41,7 +43,7 @@ public class StaticContentServiceImpl implements StaticContentService
     StaticContentFileManager staticContentFileManager;
     /**
      * Implementation to handle and store static content data in underlying Infispan cache.
-     * It will use merchant store code to store {@link InputStaticContentData} in Infispan tree cache.
+     * It will use merchant store code to store {@link InputContentFile} in Infispan tree cache.
      * File name will be used as a key to store file in  cache.
      * 
      * @param merchantStoreCode merchant store code
@@ -49,7 +51,7 @@ public class StaticContentServiceImpl implements StaticContentService
      * @throws ServiceException
      */
     @Override
-    public void addFile( final MerchantStore store, final InputStaticContentData inputStaticContentData )
+    public void addFile( final MerchantStore store, final InputContentFile inputStaticContentData )
         throws ServiceException
     {
        
@@ -63,15 +65,15 @@ public class StaticContentServiceImpl implements StaticContentService
     
     /**
      * Implimentation responsible for adding list of static content files for given merchant store in underlying Infinispan tree
-     * cache. It will take list of {@link InputStaticContentData} and will store them for given merchant store.
+     * cache. It will take list of {@link InputContentFile} and will store them for given merchant store.
      * 
      * @param merchantStoreCode Merchant store.
-     * @param inputStaticContentDataList list of {@link InputStaticContentData} being stored.
+     * @param inputStaticContentDataList list of {@link InputContentFile} being stored.
      * @throws ServiceException service exception
      */
     @Override
     public void addFiles( final MerchantStore store,
-                                           final List<InputStaticContentData> inputStaticContentDataList )
+                                           final List<InputContentFile> inputStaticContentDataList )
         throws ServiceException
     {
         Assert.notNull( store, "Merchant store can not be null" );
@@ -88,18 +90,18 @@ public class StaticContentServiceImpl implements StaticContentService
      * @param store Merchant merchantStoreCode
      * @param fileName name of requested file
      * @param staticContentType
-     * @return {@link OutputStaticContentData}
+     * @return {@link OutputContentFile}
      * @throws ServiceException
      */
     @Override
-    public OutputStaticContentData getFile( final MerchantStore store, final StaticContentType staticContentType, String fileName )
+    public OutputContentFile getFile( final MerchantStore store, final FileContentType fileContentType, String fileName )
         throws ServiceException
     {
         
         Assert.notNull( store, "Merchant store can not be null" );
         Assert.notNull( fileName, "file name can not be null" );
         LOG.info( "Starting to fetch static content file for with name {} for merchant with Code {} ", fileName,store.getCode());
-        return  staticContentFileManager.getStaticContentData( store.getCode(), staticContentType, fileName );
+        return  staticContentFileManager.getStaticContentData( store.getCode(), fileContentType, fileName );
     }
     
     /**
@@ -124,12 +126,12 @@ public class StaticContentServiceImpl implements StaticContentService
      * @throws ServiceException
      */
     @Override
-    public void removeFile( final MerchantStore store, final StaticContentType staticContentType, final String fileName )
+    public void removeFile( final MerchantStore store, final FileContentType fileContentType, final String fileName )
     throws ServiceException {
     	Assert.notNull( store, "Merchant Store can not be null" );
-    	Assert.notNull( staticContentType, "StaticContentType can not be null" );
+    	Assert.notNull( fileContentType, "FileContentType can not be null" );
     	Assert.notNull( fileName, "fileName can not be null" );
-    	staticContentFileManager.removeStaticContent(store.getCode(), staticContentType, fileName);
+    	staticContentFileManager.removeStaticContent(store.getCode(), fileContentType, fileName);
     }
 
 
