@@ -19,7 +19,7 @@ package com.salesmanager.core.modules.cms.impl;
 public class StaticContentCacheManagerImpl extends CacheManagerImpl
 {
     private static  StaticContentCacheManagerImpl cacheManager = null;
-    private final static String NAMED_CACHE = "DataRepository";
+    private final static String NAMED_CACHE = "FilesRepository";
     
 
     private StaticContentCacheManagerImpl() {
