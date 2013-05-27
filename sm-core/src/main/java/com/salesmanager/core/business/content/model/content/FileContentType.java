@@ -21,5 +21,5 @@ package com.salesmanager.core.business.content.model.content;
  */
 public enum FileContentType
 {
-  STATIC_FILE,IMAGE
+  STATIC_FILE, IMAGE, LOGO, PRODUCT, PROPERTY
 }
