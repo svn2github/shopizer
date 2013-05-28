@@ -5,24 +5,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Date;
-import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartFile;
-
-import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
-import com.salesmanager.core.business.catalog.product.service.image.ProductImageService;
 
 import com.salesmanager.core.business.content.model.content.FileContentType;
 import com.salesmanager.core.business.content.model.content.InputContentFile;
@@ -30,10 +20,6 @@ import com.salesmanager.core.business.content.model.content.OutputContentFile;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.reference.country.model.Country;
-import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.business.reference.zone.model.Zone;
-import com.salesmanager.core.modules.cms.common.CMSContentImage;
 import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;
 
 
@@ -42,9 +28,7 @@ import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;
 /**
  * Test 
  * store logo
- * product image
- * 
- * @author casams1
+ * @author Carl Samson
  *
  */
 

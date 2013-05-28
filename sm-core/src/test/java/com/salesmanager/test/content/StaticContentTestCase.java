@@ -17,6 +17,14 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;
 
+/**
+ * Test 
+ * 
+ * - static content files (.js, .pdf etc)
+ * - static content images (jpg, gig ...)
+ * @author Carl Samson
+ *
+ */
 public class StaticContentTestCase extends AbstractSalesManagerCoreTestCase {
 	
 
@@ -48,7 +56,7 @@ public class StaticContentTestCase extends AbstractSalesManagerCoreTestCase {
         
 	     staticContentService.addFile(store, staticContent);
 	     
-	     staticContentService.getFile(store, FileContentType.STATIC_FILE, file.getName());
+	     //staticContentService.getFile(store, FileContentType.STATIC_FILE, file.getName());
 
         //now get the file
 	     
@@ -68,7 +76,7 @@ public class StaticContentTestCase extends AbstractSalesManagerCoreTestCase {
 	     
 	     //remove the file
 	     
-	     staticContentService.removeFile(store, FileContentType.STATIC_FILE, file.getName());
+	     //staticContentService.removeFile(store, FileContentType.STATIC_FILE, file.getName());
 
 	}
 	

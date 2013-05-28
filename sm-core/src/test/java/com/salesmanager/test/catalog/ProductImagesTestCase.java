@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.infinispan.Cache;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +40,82 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;
 
+import org.infinispan.manager.DefaultCacheManager;
+import org.infinispan.manager.EmbeddedCacheManager;
+import org.infinispan.tree.Fqn;
+import org.infinispan.tree.Node;
+import org.infinispan.tree.TreeCache;
+import org.infinispan.tree.TreeCacheFactory;
+
 public class ProductImagesTestCase extends AbstractSalesManagerCoreTestCase {
 	
 	private static final Date date = new Date(System.currentTimeMillis());
 	
 	@Autowired
 	private ContentService contentService;
+	
+	
+/*	@Test
+	public void testCache() throws ServiceException, FileNotFoundException, IOException {
+		
+		
+        //Cache cache = new DefaultCacheManager("cms/infinispan_configuration.xml").getCache();
+        
+		 Cache cache = new DefaultCacheManager("cms/infinispan_configuration.xml").getCache("StoreRepository");
+		 cache.getCacheConfiguration().invocationBatching().enabled();
+    
+		 TreeCacheFactory f = new TreeCacheFactory();
+    
+		 TreeCache treeCache = f.createTreeCache(cache);
+		 
+		 treeCache.start();
+		 
+
+		 
+		 
+	        final File file1 = new File( "c:/doc/carl/Merchant.jpg" );
+
+	        if ( !file1.exists() || !file1.canRead() )
+	        {
+	            throw new ServiceException( "Can't read" + file1.getAbsolutePath() );
+	        }
+
+	        final byte[] is = IOUtils.toByteArray( new FileInputStream( file1 ) );
+	        final ByteArrayInputStream inputStream = new ByteArrayInputStream( is );
+	        final ImageContentFile cmsContentImage = new ImageContentFile();
+	        cmsContentImage.setFileName( file1.getName() );
+	        cmsContentImage.setFile( inputStream );
+	        cmsContentImage.setFileContentType(FileContentType.PRODUCT);
+	        
+
+            //Node<String, Object> productNode =  merchantNode.getChild(productFqn);
+	        Fqn contentFilesFqn = Fqn.fromString("/product-merchant-DEFAULT/TB12345"); 
+            Node<String, Object> productNode = treeCache.getRoot().getChild(contentFilesFqn);
+            
+            
+            
+            if(productNode==null) {
+            	//merchantNode.addChild(productFqn);
+            	
+            	treeCache.getRoot().addChild(contentFilesFqn);
+            	productNode = treeCache.getRoot().getChild(contentFilesFqn);
+            }
+		 
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            IOUtils.copy( inputStream, output );
+		 
+            productNode.put(file1.getName(), output.toByteArray());
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+        
+
+	}
+	*/
 	
 	@Test
 	public void testCreateContentImage() throws ServiceException, FileNotFoundException, IOException {
@@ -170,15 +241,10 @@ public class ProductImagesTestCase extends AbstractSalesManagerCoreTestCase {
         ProductImage productImage = new ProductImage();
         productImage.setProductImage(file1.getName());
         productImage.setProduct(product);
-        //productImage.setImage(inputStream);
-        
-        //contentImagesList.add( productImage);
-        
 
         
         productImageService.addProductImage(product, productImage, cmsContentImage);
-        //.addProductImage(product, productImage, cmsContentImage);
-        
+
         //get productImage
         productImage = productImageService.getById(productImage.getId());
         
@@ -195,6 +261,33 @@ public class ProductImagesTestCase extends AbstractSalesManagerCoreTestCase {
    	 	
    	 	//remove productImage
    	 	productImageService.removeProductImage(productImage);
+   	 	
+   	 	
+        final File file2 = new File( "c:/doc/carl/IA.jpg" );
+
+        if ( !file2.exists() || !file2.canRead() )
+        {
+            throw new ServiceException( "Can't read" + file2.getAbsolutePath() );
+        }
+
+        final byte[] is2 = IOUtils.toByteArray( new FileInputStream( file2 ) );
+        final ByteArrayInputStream inputStream2 = new ByteArrayInputStream( is2 );
+        final ImageContentFile cmsContentImage2 = new ImageContentFile();
+        cmsContentImage2.setFileName( file2.getName() );
+        cmsContentImage2.setFile( inputStream2 );
+        cmsContentImage2.setFileContentType(FileContentType.PRODUCT);
+
+	    //final List<ProductImage> contentImagesList=new ArrayList<ProductImage>();
+
+        ProductImage productImage2 = new ProductImage();
+        productImage2.setProductImage(file2.getName());
+        productImage2.setProduct(product);
+
+        
+        productImageService.addProductImage(product, productImage2, cmsContentImage2);
+        
+   	 	//remove productImage
+   	 	productImageService.removeProductImage(productImage2);
 	    
 	    
 
