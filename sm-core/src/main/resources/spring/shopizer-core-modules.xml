@@ -126,10 +126,7 @@
 				class="com.salesmanager.core.modules.cms.impl.ImagesCacheManagerImpl" factory-method="getInstance" >
 	</bean>
 	
-	<!-- Disk -->
-	<bean id="filesCacheManager"
-				class="com.salesmanager.core.modules.cms.impl.FilesCacheManagerImpl" factory-method="getInstance" >
-	</bean>
+
 	
 	<!-- 
 	 Cache manager to handle static content data which includes
