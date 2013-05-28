@@ -71,7 +71,7 @@
 	<bean id="cmsProductImage"
 				class="com.salesmanager.core.modules.cms.product.CmsImageFileManagerInfinispanImpl" factory-method="getInstance" >
 				<property name="cacheManager">
-						<ref bean="imageCacheManager" />
+						<ref bean="storeCacheManager" />
 				</property>
 	</bean>
 	
@@ -95,7 +95,7 @@
 	<bean id="cmsContentImage"
 				class="com.salesmanager.core.modules.cms.product.CmsContentFileManagerInfinispanImpl" factory-method="getInstance" >
 				<property name="cacheManager">
-						<ref bean="imageCacheManager" />
+						<ref bean="storeCacheManager" />
 				</property>
 	</bean>
 	
@@ -103,7 +103,7 @@
 	<!-- CMS implementation for static content data -->
 	<bean id="cmsStaticContents" class="com.salesmanager.core.modules.cms.content.CmsStaticContentFileManagerInfinispanImpl" factory-method="getInstance">
 		<property name="cacheManager">
-			<ref bean="staticContentCacheManager" />
+			<ref bean="diskCacheManager" />
 		</property>
 	</bean>
 	
@@ -121,8 +121,8 @@
 	
 	<!--  end of CMS implementation for static content data -->
 	
-	<!-- Database -->
-	<bean id="imageCacheManager"
+	<!-- Store Cache Manager -->
+	<bean id="storeCacheManager"
 				class="com.salesmanager.core.modules.cms.impl.ImagesCacheManagerImpl" factory-method="getInstance" >
 	</bean>
 	
@@ -135,7 +135,9 @@
 	 2. Digital data
 	 -->
 	 
-	 <bean id="staticContentCacheManager" class="com.salesmanager.core.modules.cms.impl.StaticContentCacheManagerImpl" factory-method="getInstance" ></bean>
+	<bean id="diskCacheManager" class="com.salesmanager.core.modules.cms.impl.StaticContentCacheManagerImpl" factory-method="getInstance" >
+	
+	</bean>
 	
 	<!-- Email -->
 	<bean id="freemarkerMailConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
