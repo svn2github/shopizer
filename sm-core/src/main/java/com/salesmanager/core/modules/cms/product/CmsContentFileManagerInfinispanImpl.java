@@ -3,6 +3,7 @@ package com.salesmanager.core.modules.cms.product;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +36,8 @@ public class CmsContentFileManagerInfinispanImpl
     private static final Logger LOGGER = LoggerFactory.getLogger( CmsContentFileManagerInfinispanImpl.class );
 
     private static CmsContentFileManagerInfinispanImpl fileManager = null;
+    
+    private final static String STORE_MERCHANT = "store-merchant";
 
 
     private CacheManager cacheManager;
@@ -80,27 +83,21 @@ public class CmsContentFileManagerInfinispanImpl
         }
 
 
-            final Node<String, Object> merchantNode = getMerchantNode( merchantStoreCode);
-            if ( merchantNode == null )
-            {
-                LOGGER.warn( "merchant node is null" );
+        
+        
+        
+    		StringBuilder nodePath = new StringBuilder();
+    		nodePath.append(merchantStoreCode).append("/").append(imageContentType.name());
+    	
+    		Node<String, Object> objectNode = this.getNode(nodePath.toString());
+    		
+    		if(objectNode.getKeys().isEmpty()) {
+    			LOGGER.warn( "Unable to find content attribute for given merchant" );
                 return Collections.<String> emptyList();
-            }
-            final CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( imageContentType.name() );
-
-            if ( contentAttribute == null )
-            {
-                LOGGER.warn( "Unable to find content attribute for given merchant" );
-                return Collections.<String> emptyList();
-            }
-            if ( MapUtils.isEmpty( contentAttribute.getEntities() ) )
-            {
-                LOGGER.warn( "No Content image for merchant store with code {}", merchantStoreCode);
-                return Collections.<String> emptyList();
-            }
-            
-             return new ArrayList<String>(contentAttribute.getEntities().keySet());
-
+    		}
+    		return new ArrayList<String>(objectNode.getKeys());
+        
+        
 
 
     }
@@ -125,50 +122,50 @@ public class CmsContentFileManagerInfinispanImpl
             throw new ServiceException( "CmsImageFileManagerInfinispan has a null cacheManager.getTreeCache()" );
         }
 
-        OutputContentFile contentImage = null;
-        InputStream input = null;
-        List<OutputContentFile> contentImagesList = null;
+
+        List<OutputContentFile> images = new ArrayList<OutputContentFile>();
         try
         {
-            final Node<String, Object> merchantNode = getMerchantNode(merchantStoreCode);
+            
+        	FileNameMap fileNameMap = URLConnection.getFileNameMap();
+    		StringBuilder nodePath = new StringBuilder();
+    		nodePath.append(merchantStoreCode).append("/").append(imageContentType.name());
+
+            Node<String, Object> merchantNode = this.getNode(nodePath.toString());
+
             if ( merchantNode == null )
             {
-                LOGGER.warn( "merchant node is null" );
-                return Collections.<OutputContentFile> emptyList();
+                return null;
             }
-            final CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( imageContentType.name() );
+            
+            
+            for(String key : merchantNode.getKeys()) {
+            	
+                byte[] imageBytes = (byte[])merchantNode.get( key );
 
-            if ( contentAttribute == null )
-            {
-                LOGGER.warn( "Unable to find content attribute for given merchant" );
-                return Collections.<OutputContentFile> emptyList();
-            }
+                OutputContentFile contentImage = new OutputContentFile();
 
-            if ( MapUtils.isEmpty( contentAttribute.getEntities() ) )
-            {
-                LOGGER.warn( "No Content image for merchant with code {}", merchantStoreCode);
-                return Collections.<OutputContentFile> emptyList();
-            }
-
-            contentImagesList = new ArrayList<OutputContentFile>();
-            for ( final Map.Entry<String, byte[]> entry : contentAttribute.getEntities().entrySet() )
-            {
-                input = new ByteArrayInputStream( entry.getValue() );
-                final ByteArrayOutputStream output = new ByteArrayOutputStream();
+                InputStream input = new ByteArrayInputStream( imageBytes );
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
                 IOUtils.copy( input, output );
-                contentImage = new OutputContentFile();
+
+                String contentType = fileNameMap.getContentTypeFor( key );
+
                 contentImage.setFile( output );
-                contentImage.setMimeType( URLConnection.guessContentTypeFromStream( input ) );
-                contentImage.setFileName( entry.getKey() );
-                contentImagesList.add( contentImage );
-       }
+                contentImage.setMimeType( contentType );
+                contentImage.setFileName( key );
+
+                images.add( contentImage );
+            	
+            }
+
         }
         catch ( final Exception e )
         {
             LOGGER.error( "Error while fetching content image for {} merchant ", merchantStoreCode);
             throw new ServiceException( e );
         }
-        return contentImagesList != null ? contentImagesList : Collections.<OutputContentFile> emptyList();
+        return images;
     }
 
     /**
@@ -178,7 +175,8 @@ public class CmsContentFileManagerInfinispanImpl
      * @throws ServiceException
      * 
      */
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void removeImages( final String merchantStoreCode)
         throws ServiceException
     {
@@ -191,15 +189,14 @@ public class CmsContentFileManagerInfinispanImpl
         
         try
         {
-            final Node<String, Object> merchantNode = getMerchantNode(merchantStoreCode );
-            if ( merchantNode == null )
-            {
-                LOGGER.warn( "merchant node is null" );
-                throw new ServiceException("unable to get merchant node for CmsImageFileManagerInfinispan");
-            } 
             
-            merchantNode.clearData();
-            LOGGER.info( "All images for merchant {} removed from cache",merchantStoreCode);
+        	
+			final StringBuilder merchantPath = new StringBuilder();
+	        merchantPath.append( STORE_MERCHANT).append(merchantStoreCode );
+	        cacheManager.getTreeCache().getRoot().remove(merchantPath.toString());
+        	
+        	
+
 
         }
         catch ( final Exception e )
@@ -231,21 +228,17 @@ public class CmsContentFileManagerInfinispanImpl
         }
         try
         {
-            final Node<String, Object> merchantNode = getMerchantNode(merchantStoreCode);
-            if ( merchantNode == null )
-            {
-                LOGGER.warn( "merchant node is null" );
-                throw new ServiceException("unable to get merchant node for CmsImageFileManagerInfinispan");
-            } 
             
-            final CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( imageContentType.name());
-            if(contentAttribute ==null){
-                LOGGER.warn( "No Content data found for given merchant" );
-                return ;
-            }
-            
-            contentAttribute.getEntities().remove( imageName );
-            merchantNode.put( imageContentType.name(), contentAttribute );
+        	
+        	StringBuilder nodePath = new StringBuilder();
+        	nodePath.append(merchantStoreCode).append("/").append(imageContentType.name());
+        	
+        	
+        	Node<String, Object> imagesNode = this.getNode(nodePath.toString());
+        	
+        	imagesNode.remove(imageName);
+        	
+
             LOGGER.info( "Content image added successfully." );
             LOGGER.info( "All images for merchant {} removed from cache",merchantStoreCode);
 
@@ -279,41 +272,34 @@ public class CmsContentFileManagerInfinispanImpl
             throw new ServiceException( "CmsImageFileManagerInfinispan has a null cacheManager.getTreeCache()" );
         }
 
-        OutputContentFile contentImage = null;
-        InputStream input = null;
-
+        OutputContentFile contentImage = new OutputContentFile();
         try
         {
 
-            final Node<String, Object> merchantNode = getMerchantNode(merchantStoreCode );
-            if ( merchantNode == null )
-            {
-                LOGGER.warn( "merchant node is null" );
-                return null;
-            }
+        	
+        	FileNameMap fileNameMap = URLConnection.getFileNameMap();
+        	
+        	StringBuilder nodePath = new StringBuilder();
+        	nodePath.append(merchantStoreCode).append("/").append(imageContentType.name());
+        	
+        	Node<String,Object> imageNode = this.getNode(nodePath.toString());
+        	
+        	
+            byte[] imageBytes = (byte[])imageNode.get( imageName );
 
-            final CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( imageContentType.name());
 
-            if ( contentAttribute == null )
-            {
-                LOGGER.warn( "Unable to find content attribute for given merchant" );
-                return null;
-            }
 
-            final byte[] imageBytes = contentAttribute.getEntities().get( imageName );
-
-            if ( imageBytes == null )
-            {
-                LOGGER.warn( "Image byte is null, no image found" );
-                return null;
-            }
-            input = new ByteArrayInputStream( imageBytes );
+            InputStream input = new ByteArrayInputStream( imageBytes );
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             IOUtils.copy( input, output );
-            contentImage = new OutputContentFile();
+
+            String contentType = fileNameMap.getContentTypeFor( imageName );
+
             contentImage.setFile( output );
-            contentImage.setMimeType( URLConnection.guessContentTypeFromStream( input ) );
+            contentImage.setMimeType( contentType );
             contentImage.setFileName( imageName );
+        	
+
         }
         catch ( final Exception e )
         {
@@ -321,7 +307,7 @@ public class CmsContentFileManagerInfinispanImpl
             throw new ServiceException( e );
         }
 
-        return contentImage != null ? contentImage : null;
+        return contentImage;
 
     }
 
@@ -355,23 +341,21 @@ public class CmsContentFileManagerInfinispanImpl
         try
         {
 
-            final Node<String, Object> merchantNode = getMerchantNode(merchantStoreCode);
-            // object for a given merchant containing all images
-            CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( image.getFileContentType().name() );
+            
+        	StringBuilder nodePath = new StringBuilder();
+        	nodePath.append(merchantStoreCode).append("/").append(image.getFileContentType().name());
+        	
+        	Node<String,Object> imageNode = this.getNode(nodePath.toString());
 
-            if ( contentAttribute == null )
-            {
-                contentAttribute = new CacheAttribute();
-                // contentAttribute.setEntityId( IMAGE_CONTENT );
-            }
+
             
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             IOUtils.copy( image.getFile(), output );
             
+            imageNode.put(image.getFileName(), output.toByteArray());
+            
             System.out.println(output.toByteArray());
 
-            contentAttribute.getEntities().put( image.getFileName(), output.toByteArray() );
-            merchantNode.put( image.getFileContentType().name(), contentAttribute );
             LOGGER.info( "Content image added successfully." );
 
         }
@@ -412,26 +396,24 @@ public class CmsContentFileManagerInfinispanImpl
         try
         {
 
-            final Node<String, Object> merchantNode = getMerchantNode(merchantStoreCode);
+            //final Node<String, Object> merchantNode = getMerchantNode(merchantStoreCode);
             // object for a given merchant containing all images
 
             for(final InputContentFile image:imagesList){
             	
             	String cmsType = image.getFileContentType().name();
             	
-                CacheAttribute contentAttribute = (CacheAttribute) merchantNode.get( cmsType );
+            	StringBuilder nodePath = new StringBuilder();
+            	nodePath.append(merchantStoreCode).append("/").append(cmsType);
+            	
+            	Node<String,Object> imageNode = this.getNode(nodePath.toString());
+            	
 
-                if ( contentAttribute == null )
-                {
-                    contentAttribute = new CacheAttribute();
-                   
-                }
                 
                 final ByteArrayOutputStream output = new ByteArrayOutputStream();
                 IOUtils.copy( image.getFile(), output );
-            	
-                contentAttribute.getEntities().put( image.getFileName(), output.toByteArray() );
-                merchantNode.put( cmsType, contentAttribute );
+ 
+                imageNode.put( image.getFileName(), output.toByteArray() );
             }
             
             LOGGER.info( "Total {} content images added successfully.",imagesList.size() );
@@ -445,8 +427,30 @@ public class CmsContentFileManagerInfinispanImpl
         }
         
     }
+    
+	@SuppressWarnings("unchecked")
+	private Node<String, Object> getNode( final String node )
+    {
+        LOGGER.debug( "Fetching node for store {} from Infinispan", node );
+        final StringBuilder merchantPath = new StringBuilder();
+        merchantPath.append( STORE_MERCHANT ).append(node);
 
-    @SuppressWarnings( "unchecked" )
+        Fqn contentFilesFqn = Fqn.fromString(merchantPath.toString()); 
+
+		Node<String,Object> nd = cacheManager.getTreeCache().getRoot().getChild(contentFilesFqn); 
+        
+        if(nd==null) {
+
+            cacheManager.getTreeCache().getRoot().addChild(contentFilesFqn);
+            nd = cacheManager.getTreeCache().getRoot().getChild(contentFilesFqn); 
+
+        }
+        
+        return nd;
+
+    }
+
+/*    @SuppressWarnings( "unchecked" )
     private Node<String, Object> getMerchantNode(final String storeCode )
     {
         LOGGER.debug( "Fetching merchant node for store {} from Infinispan", storeCode );
@@ -465,7 +469,7 @@ public class CmsContentFileManagerInfinispanImpl
         
         return merchant;
 
-    }
+    }*/
 
 	public CacheManager getCacheManager() {
 		return cacheManager;

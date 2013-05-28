@@ -2,14 +2,12 @@ package com.salesmanager.core.modules.cms.product;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
@@ -22,12 +20,9 @@ import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.content.model.content.FileContentType;
 import com.salesmanager.core.business.content.model.content.ImageContentFile;
-import com.salesmanager.core.business.content.model.content.InputContentFile;
 import com.salesmanager.core.business.content.model.content.OutputContentFile;
-
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.modules.cms.common.CacheAttribute;
 import com.salesmanager.core.modules.cms.impl.CacheManager;
 
 /**
@@ -43,6 +38,8 @@ public class CmsImageFileManagerInfinispanImpl
     private static final Logger LOGGER = LoggerFactory.getLogger( CmsImageFileManagerInfinispanImpl.class );
 
     private static CmsImageFileManagerInfinispanImpl fileManager = null;
+    
+    private final static String PRODUCT_MERCHANT = "product-merchant";
 
     private CacheManager cacheManager;
 
@@ -86,7 +83,7 @@ public class CmsImageFileManagerInfinispanImpl
 
     @Override
     public void addProductImage( ProductImage productImage,
-    		InputContentFile contentImage )
+    		ImageContentFile contentImage )
         throws ServiceException
     {
 
@@ -99,39 +96,29 @@ public class CmsImageFileManagerInfinispanImpl
         {
 
  
-            // product key
-            String productPath = String.valueOf( productImage.getProduct().getSku() );
+            // node
+        	StringBuilder nodePath = new StringBuilder();
+        	nodePath.append(productImage.getProduct().getMerchantStore().getCode()).append("/").append(productImage.getProduct().getSku());
+        	
+        	
+            //String productPath = String.valueOf( productImage.getProduct().getSku() );
 
-            Node<String, Object> merchantNode = getMerchantNode(productImage.getProduct().getMerchantStore().getCode());
+            //Node<String, Object> merchantNode = getMerchantNode(productImage.getProduct().getMerchantStore().getCode());
 
 
 
-            // object for a given product containing all images
-            CacheAttribute productAttribute = (CacheAttribute) merchantNode.get( productPath );
-
-            if ( productAttribute == null )
-            {
-                productAttribute = new CacheAttribute();
-                productAttribute.setEntityId( productPath );
-            }
-            
-            
-            File file1 = new File( "c:/doc/carl/Merchant.jpg" );
-            if ( !file1.exists() || !file1.canRead() )
-            {
-                throw new ServiceException( "Can't read" + file1.getAbsolutePath() );
-            }
+            Node<String, Object> productNode = this.getNode(nodePath.toString());
 
             
             InputStream isFile = contentImage.getFile();
             
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             IOUtils.copy( isFile, output );
-
             
-            productAttribute.getEntities().put( contentImage.getFileName(), output.toByteArray() );
 
-            merchantNode.put( productPath, productAttribute );
+            // object for a given product containing all images
+            productNode.put(contentImage.getFileName(), output.toByteArray());
+
 
         }
         catch ( Exception e )
@@ -172,20 +159,49 @@ public class CmsImageFileManagerInfinispanImpl
         }
 
         List<OutputContentFile> images = new ArrayList<OutputContentFile>();
-        FileNameMap fileNameMap = URLConnection.getFileNameMap();
+        
 
         try
         {
 
 
-            Node<String, Object> merchantNode = getMerchantNode(product.getMerchantStore().getCode());
+        	FileNameMap fileNameMap = URLConnection.getFileNameMap();
+        	StringBuilder nodePath = new StringBuilder();
+        	nodePath.append(product.getMerchantStore().getCode());
+
+            Node<String, Object> merchantNode = this.getNode(nodePath.toString());
 
             if ( merchantNode == null )
             {
                 return null;
             }
+            
+            
+            for(String key : merchantNode.getKeys()) {
+            	
+                byte[] imageBytes = (byte[])merchantNode.get( key );
 
-            CacheAttribute productAttribute = (CacheAttribute) merchantNode.get( String.valueOf( product.getSku() ) );
+                OutputContentFile contentImage = new OutputContentFile();
+
+                InputStream input = new ByteArrayInputStream( imageBytes );
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                IOUtils.copy( input, output );
+
+                String contentType = fileNameMap.getContentTypeFor( key );
+
+                contentImage.setFile( output );
+                contentImage.setMimeType( contentType );
+                contentImage.setFileName( key );
+
+                images.add( contentImage );
+            	
+            	
+            }
+            
+            
+            
+
+/*            CacheAttribute productAttribute = (CacheAttribute) merchantNode.get( String.valueOf( product.getSku() ) );
 
             if ( productAttribute == null )
             {
@@ -213,9 +229,9 @@ public class CmsImageFileManagerInfinispanImpl
 
                 images.add( contentImage );
 
-            }
+            */}
 
-        }
+
         catch ( Exception e )
         {
             throw new ServiceException( e );
@@ -230,6 +246,7 @@ public class CmsImageFileManagerInfinispanImpl
 
 
 
+	@SuppressWarnings("unchecked")
 	@Override
     public void removeImages( final String merchantStoreCode )
         throws ServiceException
@@ -244,7 +261,7 @@ public class CmsImageFileManagerInfinispanImpl
 
 
 			final StringBuilder merchantPath = new StringBuilder();
-	        merchantPath.append( "product-merchant-" ).append(merchantStoreCode );
+	        merchantPath.append( PRODUCT_MERCHANT).append(merchantStoreCode );
 	        cacheManager.getTreeCache().getRoot().remove(merchantPath.toString());
 			
 
@@ -275,23 +292,16 @@ public class CmsImageFileManagerInfinispanImpl
         try
         {
 
-            String productPath = String.valueOf( productImage.getProduct().getSku() );
+        	
+        	StringBuilder nodePath = new StringBuilder();
+        	nodePath.append(productImage.getProduct().getMerchantStore().getCode()).append("/").append(productImage.getProduct().getSku());
+        	
+        	
+        	Node<String, Object> productNode = this.getNode(nodePath.toString());
+        	
+        	productNode.remove(productImage.getProductImage());
+        	
 
-            Node<String, Object> merchantNode = getMerchantNode(productImage.getProduct().getMerchantStore().getCode());
-
-            if ( merchantNode == null )
-            {
-                return;
-            }
-
-            CacheAttribute productAttribute = (CacheAttribute) merchantNode.get( productPath );
-
-            if ( productAttribute == null )
-            {
-                return;
-            }
-            
-            productAttribute.getEntities().remove(productImage.getProductImage());
             
             
 
@@ -320,7 +330,17 @@ public class CmsImageFileManagerInfinispanImpl
         try
         {
 
-        	String productPath = String.valueOf( product.getSku());
+        	
+        	StringBuilder nodePath = new StringBuilder();
+        	nodePath.append(product.getMerchantStore().getCode());
+        	
+        	
+        	Node<String, Object> merchantNode = this.getNode(nodePath.toString());
+        	
+        	merchantNode.remove(product.getSku());
+        	
+        	
+/*        	String productPath = String.valueOf( product.getSku());
         	
             Node<String, Object> merchantNode = getMerchantNode(product.getMerchantStore().getCode());
 
@@ -329,7 +349,7 @@ public class CmsImageFileManagerInfinispanImpl
                 return;
             }
             
-            merchantNode.remove(productPath);
+            merchantNode.remove(productPath);*/
             
 
         }
@@ -358,26 +378,25 @@ public class CmsImageFileManagerInfinispanImpl
         try
         {
 
+        	
+        	StringBuilder nodePath = new StringBuilder();
+        	nodePath.append(merchantStoreCode);
+        	
+        	
+        	Node<String, Object> merchantNode = this.getNode(nodePath.toString());
+        	
+        	Set<Node<String,Object>> childs = merchantNode.getChildren();
+        	
+        	Iterator<Node<String,Object>> iterator = childs.iterator();
+        	
+        	while(iterator.hasNext()) {
+        		
+        		Node<String,Object> node = iterator.next();
+        		
+                for(String key : node.getKeys()) {
+                	
 
-            Node<String, Object> merchantNode = getMerchantNode(merchantStoreCode);
-
-            if ( merchantNode == null )
-            {
-                return null;
-            }
-
-            Set<String> keys = merchantNode.getKeys();
-            for ( String key : keys )
-            {
-                // Product
-                CacheAttribute productAttribute = (CacheAttribute) merchantNode.get( key );
-
-                Map<String, byte[]> imgs = productAttribute.getEntities();
-                Set<String> imageNames = imgs.keySet();
-                for ( String imageName : imageNames )
-                {
-
-                    byte[] imageBytes = imgs.get( imageName );
+                    byte[] imageBytes = (byte[])merchantNode.get( key );
 
                     OutputContentFile contentImage = new OutputContentFile();
 
@@ -385,17 +404,20 @@ public class CmsImageFileManagerInfinispanImpl
                     ByteArrayOutputStream output = new ByteArrayOutputStream();
                     IOUtils.copy( input, output );
 
-                    String contentType = fileNameMap.getContentTypeFor( imageName );
+                    String contentType = fileNameMap.getContentTypeFor( key );
 
                     contentImage.setFile( output );
                     contentImage.setMimeType( contentType );
-                    contentImage.setFileName( imageName );
+                    contentImage.setFileName( key );
 
                     images.add( contentImage );
-
+                	
+                	
                 }
-
-            }
+        		
+        	}
+        	
+          
 
 
         }
@@ -422,16 +444,39 @@ public class CmsImageFileManagerInfinispanImpl
         OutputContentFile contentImage = new OutputContentFile();
         try
         {
-        	String productPath = String.valueOf( productCode );
+        	
+        	FileNameMap fileNameMap = URLConnection.getFileNameMap();
+        	
+        	StringBuilder nodePath = new StringBuilder();
+        	nodePath.append(merchantStoreCode).append("/").append(productCode);
+        	
+        	Node<String,Object> productNode = this.getNode(nodePath.toString());
+        	
+            byte[] imageBytes = (byte[])productNode.get( imageName );
 
-            Node<String, Object> merchantNode = getMerchantNode(merchantStoreCode);
 
-            if ( merchantNode == null )
-            {
-                return null;
-            }
 
-            CacheAttribute productAttribute = (CacheAttribute) merchantNode.get( productPath );
+            input = new ByteArrayInputStream( imageBytes );
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            IOUtils.copy( input, output );
+
+            String contentType = fileNameMap.getContentTypeFor( imageName );
+
+            contentImage.setFile( output );
+            contentImage.setMimeType( contentType );
+            contentImage.setFileName( imageName );
+
+
+        	
+        	
+        	
+
+            
+            
+            
+            
+
+/*            CacheAttribute productAttribute = (CacheAttribute) merchantNode.get( productPath );
 
             if ( productAttribute == null )
             {
@@ -454,7 +499,7 @@ public class CmsImageFileManagerInfinispanImpl
 
             contentImage.setFile( output );
             contentImage.setMimeType( contentType );
-            contentImage.setFileName( imageName );
+            contentImage.setFileName( imageName );*/
 
         }
         catch ( Exception e )
@@ -479,24 +524,26 @@ public class CmsImageFileManagerInfinispanImpl
 	}
 	
 	
-	private Node<String, Object> getMerchantNode( final String storeCode )
+
+	
+	private Node<String, Object> getNode( final String node )
     {
-        LOGGER.debug( "Fetching merchant node for store {} from Infinispan", storeCode );
+        LOGGER.debug( "Fetching node for store {} from Infinispan", node );
         final StringBuilder merchantPath = new StringBuilder();
-        merchantPath.append( "product-merchant-" ).append(storeCode );
+        merchantPath.append( PRODUCT_MERCHANT ).append(node);
 
         Fqn contentFilesFqn = Fqn.fromString(merchantPath.toString()); 
 
-		Node<String,Object> merchant = cacheManager.getTreeCache().getRoot().getChild(contentFilesFqn); 
+		Node<String,Object> nd = cacheManager.getTreeCache().getRoot().getChild(contentFilesFqn); 
         
-        if(merchant==null) {
+        if(nd==null) {
 
             cacheManager.getTreeCache().getRoot().addChild(contentFilesFqn);
-            merchant = cacheManager.getTreeCache().getRoot().getChild(contentFilesFqn); 
+            nd = cacheManager.getTreeCache().getRoot().getChild(contentFilesFqn); 
 
         }
         
-        return merchant;
+        return nd;
 
     }
 

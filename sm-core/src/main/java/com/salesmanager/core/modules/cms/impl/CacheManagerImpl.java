@@ -1,7 +1,6 @@
 package com.salesmanager.core.modules.cms.impl;
 
 import org.infinispan.Cache;
-import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.tree.TreeCache;
 import org.infinispan.tree.TreeCacheFactory;
@@ -11,9 +10,9 @@ import org.slf4j.LoggerFactory;
 public abstract class CacheManagerImpl implements CacheManager {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CacheManagerImpl.class);
-	private String repositoryFileName = "cms/infinispan_configuration.xml";
+	//private String repositoryFileName = "cms/infinispan_configuration.xml";
 	
-	private EmbeddedCacheManager manager = null;
+	//private EmbeddedCacheManager manager = null;
 	@SuppressWarnings("rawtypes")
 	private TreeCache treeCache = null;
 
@@ -23,18 +22,23 @@ public abstract class CacheManagerImpl implements CacheManager {
 		
 		try {
 			
-			 manager = new DefaultCacheManager(repositoryFileName);
-			 @SuppressWarnings("rawtypes")
-			 Cache defaultCache = manager.getCache(namedCache);
-			 defaultCache.getCacheConfiguration().invocationBatching().enabled();
-	    
-			 TreeCacheFactory f = new TreeCacheFactory();
-	    
-			 treeCache = f.createTreeCache(defaultCache);
-			 
-			 manager.start();
 
-	         LOGGER.debug("CMS started");
+				 //manager = new DefaultCacheManager(repositoryFileName);
+			
+				 VendorCacheManager cacheManager =  VendorCacheManager.getInstance();
+
+				 @SuppressWarnings("rawtypes")
+				 Cache cache = cacheManager.getManager().getCache(namedCache);
+				 cache.getCacheConfiguration().invocationBatching().enabled();
+		    
+				 TreeCacheFactory f = new TreeCacheFactory();
+		    
+				 treeCache = f.createTreeCache(cache);
+				 
+				 cache.start();
+	
+		         LOGGER.debug("CMS started");
+
 
 
       } catch (Exception e) {
@@ -50,7 +54,7 @@ public abstract class CacheManagerImpl implements CacheManager {
 	}
 	
 	public EmbeddedCacheManager getManager() {
-		return manager;
+		return VendorCacheManager.getInstance().getManager();
 	}
 
 	@SuppressWarnings("rawtypes")

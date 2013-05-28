@@ -11,7 +11,7 @@ public class ImagesCacheManagerImpl extends CacheManagerImpl {
 	
 	
 	private static  ImagesCacheManagerImpl cacheManager = null;
-	private final static String NAMED_CACHE = "DataRepository";
+	private final static String NAMED_CACHE = "StoreRepository";
 	
 
 	
