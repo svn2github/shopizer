@@ -19,8 +19,8 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.modules.cms.common.CMSContentImage;
 import com.salesmanager.core.modules.cms.content.ContentFileManager;
+import com.salesmanager.core.modules.cms.content.StaticContentFileManager;
 
 @Service( "contentService" )
 public class ContentServiceImpl
@@ -34,6 +34,9 @@ public class ContentServiceImpl
 
     @Autowired
     ContentFileManager contentFileManager;
+    
+    @Autowired
+    StaticContentFileManager staticContentFileManager;
 
     @Autowired
     public ContentServiceImpl( final ContentDao contentDao )
@@ -117,28 +120,34 @@ public class ContentServiceImpl
     }
 
     /**
-     * Method responsible for adding content image for given merchant store in underlying Infinispan tree
-     * cache. It will take  {@link CMSContentImage} and will store image for given merchant store.
+     * Method responsible for adding content file for given merchant store in underlying Infinispan tree
+     * cache. It will take  {@link InputContentFile} and will store file for given merchant store according to its type.
      * 
      * @param merchantStoreCode Merchant store
-     * @param cmsContentImage {@link CMSContentImage} being stored
+     * @param contentFile {@link InputContentFile} being stored
      * @throws ServiceException service exception
      */
     @Override
-    public void addContentImage( final String merchantStoreCode, final InputContentFile cmsContentImage )
+    public void addContentFile( final String merchantStoreCode, final InputContentFile contentFile )
         throws ServiceException
     {
         Assert.notNull( merchantStoreCode, "Merchant store Id can not be null" );
-        Assert.notNull( cmsContentImage, "CMSContent image can not be null" );
+        Assert.notNull( contentFile, "InputContentFile image can not be null" );
+        Assert.notNull( contentFile.getFileContentType(), "InputContentFile.fileContentType can not be null" );
         
-        cmsContentImage.setFileContentType( FileContentType.IMAGE );
-        addImage(merchantStoreCode,cmsContentImage);
+        if(contentFile.getFileContentType().name().equals(FileContentType.IMAGE.name())
+        		|| contentFile.getFileContentType().name().equals(FileContentType.STATIC_FILE.name())) {
+        	addFile(merchantStoreCode,contentFile);
+        } else {
+        	addImage(merchantStoreCode,contentFile);
+        }
+        
        
 
     }
     
     @Override
-    public void addLogo( final String merchantStoreCode, final InputContentFile cmsContentImage )
+    public void addLogo( final String merchantStoreCode, InputContentFile cmsContentImage )
     throws ServiceException {
     	
     	
@@ -153,7 +162,7 @@ public class ContentServiceImpl
     }
     
     @Override
-    public void addOptionImage( final String merchantStoreCode, final InputContentFile cmsContentImage )
+    public void addOptionImage( final String merchantStoreCode, InputContentFile cmsContentImage )
     throws ServiceException {
     	
     	
@@ -171,8 +180,6 @@ public class ContentServiceImpl
     	try
 	    {
 	        LOG.info( "Adding content image for merchant id {}", merchantStoreCode);
-
-	        
 	        contentFileManager.addImage( merchantStoreCode, contentImage );
 	        
 	    } catch ( Exception e )
@@ -182,12 +189,39 @@ public class ContentServiceImpl
 		
 		 }
 
-	    
+    }
+    
+    private void addFile(final String merchantStoreCode, InputContentFile contentImage ) throws ServiceException {
     	
-    	
+    	try
+	    {
+	        LOG.info( "Adding content file for merchant id {}", merchantStoreCode);
+	        staticContentFileManager.addStaticFile(merchantStoreCode, contentImage);
+	        
+	    } catch ( Exception e )
+		 {
+		        LOG.error( "Error while trying to convert input stream to buffered image", e );
+		        throw new ServiceException( e );
+		
+		 }
+
     }
 
     
+
+    
+    
+
+
+
+
+
+
+    
+
+    
+
+
     /**
      * Method responsible for adding list of content images for given merchant store in underlying Infinispan tree
      * cache. It will take list of {@link CMSContentImage} and will store them for given merchant store.
@@ -196,47 +230,20 @@ public class ContentServiceImpl
      * @param contentImagesList list of {@link CMSContentImage} being stored
      * @throws ServiceException service exception
      */
-    @Override
-    public void addContentImages( final String merchantStoreCode, final List<InputContentFile> contentImagesList )
-        throws ServiceException
-    {
+	@Override
+	public void addContentFiles(String merchantStoreCode,
+			List<InputContentFile> contentFilesList) throws ServiceException {
+		
         Assert.notNull( merchantStoreCode, "Merchant store ID can not be null" );
-        Assert.notEmpty( contentImagesList, "Images list can not be empty" );
-        LOG.info( "Adding total {} images for given merchant",contentImagesList.size() );
-/*        final List<InputContentImage> inputContentImagesList=new ArrayList<InputContentImage>();
-        for(final InputContentImage cmsContentImage:contentImagesList){
-            final InputContentImage contentImage = new InputContentImage();
-            contentImage.setImageContentType(ImageContentType.CONTENT);
-            contentImage.setFileName( cmsContentImage.getImageName() );
-            try
-            {
-                if ( cmsContentImage.getContentType() == null )
-                {
-                    contentImage.setMimeType( URLConnection.guessContentTypeFromStream( cmsContentImage.getFile() ) );
-                }
-                else
-                {
-                    contentImage.setMimeType( cmsContentImage.getContentType() );
-                }
-
-                final ByteArrayOutputStream output = new ByteArrayOutputStream();
-                IOUtils.copy( cmsContentImage.getFile(), output );
-                contentImage.setFile( output );
-                inputContentImagesList.add(contentImage);
-            }
-            catch ( final IOException e )
-            {
-                LOG.error( "Error while trying to convert input stream to buffered image", e );
-                throw new ServiceException( e );
-
-            }
-        }*/
+        Assert.notEmpty( contentFilesList, "File list can not be empty" );
+        LOG.info( "Adding total {} images for given merchant",contentFilesList.size() );
+		
         LOG.info( "Adding content images for merchant...." );
-        contentFileManager.addImages( merchantStoreCode, contentImagesList );
-   }
-    
-    
-
+        //contentFileManager.addImages( merchantStoreCode, contentImagesList );
+        staticContentFileManager.addStaticFiles(merchantStoreCode, contentFilesList);
+		
+	}
+	
     /**
      * Method to remove given content image.Images are stored in underlying system based on there name.
      * Name will be used to search given image for removal
@@ -244,16 +251,25 @@ public class ContentServiceImpl
      * @param merchantStoreCode merchant store
      * @throws ServiceException
      */
-    @Override
-    public void removeImage( final String merchantStoreCode, final FileContentType imageContentType, final String imageName)
-        throws ServiceException
-    {
+	@Override
+	public void removeFile(String merchantStoreCode,
+			FileContentType fileContentType, String fileName)
+			throws ServiceException {
         Assert.notNull( merchantStoreCode, "Merchant Store Id can not be null" );
-        Assert.notNull( imageContentType, "Content Image type can not be null" );
-        Assert.notNull( imageName, "Content Image type can not be null" );
-        contentFileManager.removeImage( merchantStoreCode, imageContentType, imageName );
- }
-    
+        Assert.notNull( fileContentType, "Content file type can not be null" );
+        Assert.notNull( fileName, "Content Image type can not be null" );
+        
+        
+        //check where to remove the file
+        if(fileContentType.name().equals(FileContentType.IMAGE.name())
+        		|| fileContentType.name().equals(FileContentType.STATIC_FILE.name())) {
+        	staticContentFileManager.removeStaticContent(merchantStoreCode, fileContentType, fileName);
+        } else {
+        	contentFileManager.removeImage( merchantStoreCode, fileContentType, fileName );
+        }
+		
+	}
+
     /**
      * Method to remove all images for a given merchant.It will take merchant store as an input and will
      * remove all images associated with given merchant store.
@@ -261,16 +277,18 @@ public class ContentServiceImpl
      * @param merchantStoreCode
      * @throws ServiceException
      */
-    @Override
-    public void removeImages( final String merchantStoreCode)
-        throws ServiceException
-    {
+	@Override
+	public void removeFiles(String merchantStoreCode) throws ServiceException {
         Assert.notNull( merchantStoreCode, "Merchant Store Id can not be null" );
-        contentFileManager.removeImages( merchantStoreCode );
         
-    }
 
-    
+        
+        contentFileManager.removeImages( merchantStoreCode );
+        staticContentFileManager.removeStaticContents(merchantStoreCode);
+		
+	}
+
+	
     /**
      * Implementation for getContentImage method defined in {@link ContentService} interface. Methods will return
      * Content image with given image name for the Merchant store or will return null if no image with given name found
@@ -281,16 +299,24 @@ public class ContentServiceImpl
      * @return {@link OutputContentImage}
      * @throws ServiceException
      */
-    @Override
-    public OutputContentFile getContentImage(final String merchantStoreCode,  final FileContentType imageContentType, final String imageName )
-        throws ServiceException
-    {
+	@Override
+	public OutputContentFile getContentFile(String merchantStoreCode,
+			FileContentType fileContentType, String fileName)
+			throws ServiceException {
         Assert.notNull( merchantStoreCode, "Merchant store ID can not be null" );
-        Assert.notNull( imageName, "CMSContent image can not be null" );
-        return contentFileManager.getImage( merchantStoreCode, imageName, imageContentType );
-    }
+        Assert.notNull( fileName, "File name can not be null" );
+        
+        if(fileContentType.name().equals(FileContentType.IMAGE.name())
+        		|| fileContentType.name().equals(FileContentType.STATIC_FILE.name())) {
+        	return staticContentFileManager.getStaticContentData(merchantStoreCode, fileContentType, fileName);
+        	
+        } else {
+        	return contentFileManager.getImage( merchantStoreCode, fileName, fileContentType );
+        }
+        
 
-    
+	}
+
     /**
      * Implementation for getContentImages method defined in {@link ContentService} interface. Methods will return list of all
      * Content image associated with given  Merchant store or will return empty list if no image is associated with
@@ -300,14 +326,13 @@ public class ContentServiceImpl
      * @return list of {@link OutputContentImage}
      * @throws ServiceException
      */
-    @Override
-    public List<OutputContentFile> getContentImages(final String merchantStoreCode, final FileContentType imageContentType )
-        throws ServiceException
-    {
+	@Override
+	public List<OutputContentFile> getContentFiles(String merchantStoreCode,
+			FileContentType fileContentType) throws ServiceException {
         Assert.notNull( merchantStoreCode, "Merchant store Id can not be null" );
-        return contentFileManager.getImages( merchantStoreCode, imageContentType );
-    }
-    
+        return staticContentFileManager.getStaticContentData(merchantStoreCode, fileContentType);
+	}
+
     /**
      * Returns the image names for a given merchant and store
      * @param merchantStoreCode
@@ -315,13 +340,18 @@ public class ContentServiceImpl
      * @return images name list
      * @throws ServiceException
      */
-    @Override
-    public List<String> getContentImagesNames(final String merchantStoreCode, final FileContentType imageContentType )
-            throws ServiceException
-        {
-            Assert.notNull( merchantStoreCode, "Merchant store Id can not be null" );
-            return contentFileManager.getImageNames(merchantStoreCode, imageContentType);
+	@Override
+	public List<String> getContentFilesNames(String merchantStoreCode,
+			FileContentType fileContentType) throws ServiceException {
+        Assert.notNull( merchantStoreCode, "Merchant store Id can not be null" );
+        
+        if(fileContentType.name().equals(FileContentType.IMAGE.name())
+        		|| fileContentType.name().equals(FileContentType.STATIC_FILE.name())) {
+        	return staticContentFileManager.getStaticContentDataName(merchantStoreCode, fileContentType);
+        } else {
+        	return contentFileManager.getImageNames(merchantStoreCode, fileContentType);
         }
+	}
 
     
 

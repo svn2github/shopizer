@@ -29,7 +29,9 @@ import com.salesmanager.core.modules.cms.impl.CacheManager;
  * Manager for storing in retrieving image files from the CMS This is a layer on top of Infinispan
  * https://docs.jboss.org/author/display/ISPN/Tree+API+Module
  * 
- * @author csamson
+ * Manages
+ * - Product images
+ * @author Carl Samson
  */
 public class CmsImageFileManagerInfinispanImpl
     implements ProductImagePut, ProductImageGet, ProductImageRemove
@@ -199,38 +201,7 @@ public class CmsImageFileManagerInfinispanImpl
             }
             
             
-            
-
-/*            CacheAttribute productAttribute = (CacheAttribute) merchantNode.get( String.valueOf( product.getSku() ) );
-
-            if ( productAttribute == null )
-            {
-                return null;
-            }
-
-            Map<String, byte[]> imgs = productAttribute.getEntities();
-            Set<String> imageNames = imgs.keySet();
-            for ( String imageName : imageNames )
-            {
-
-                byte[] imageBytes = imgs.get( imageName );
-
-                OutputContentFile contentImage = new OutputContentFile();
-
-                InputStream input = new ByteArrayInputStream( imageBytes );
-                ByteArrayOutputStream output = new ByteArrayOutputStream();
-                IOUtils.copy( input, output );
-
-                String contentType = fileNameMap.getContentTypeFor( imageName );
-
-                contentImage.setFile( output );
-                contentImage.setMimeType( contentType );
-                contentImage.setFileName( imageName );
-
-                images.add( contentImage );
-
-            */}
-
+        }
 
         catch ( Exception e )
         {
@@ -339,17 +310,7 @@ public class CmsImageFileManagerInfinispanImpl
         	
         	merchantNode.remove(product.getSku());
         	
-        	
-/*        	String productPath = String.valueOf( product.getSku());
-        	
-            Node<String, Object> merchantNode = getMerchantNode(product.getMerchantStore().getCode());
 
-            if ( merchantNode == null )
-            {
-                return;
-            }
-            
-            merchantNode.remove(productPath);*/
             
 
         }
@@ -526,6 +487,7 @@ public class CmsImageFileManagerInfinispanImpl
 	
 
 	
+	@SuppressWarnings("unchecked")
 	private Node<String, Object> getNode( final String node )
     {
         LOGGER.debug( "Fetching node for store {} from Infinispan", node );

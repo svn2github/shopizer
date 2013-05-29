@@ -8,9 +8,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.infinispan.tree.Fqn;
 import org.infinispan.tree.Node;
@@ -20,15 +18,19 @@ import org.slf4j.LoggerFactory;
 import com.salesmanager.core.business.content.model.content.FileContentType;
 import com.salesmanager.core.business.content.model.content.InputContentFile;
 import com.salesmanager.core.business.content.model.content.OutputContentFile;
-
 import com.salesmanager.core.business.generic.exception.ServiceException;
-import com.salesmanager.core.modules.cms.common.CacheAttribute;
 import com.salesmanager.core.modules.cms.content.ContentImageGet;
 import com.salesmanager.core.modules.cms.content.ContentImageRemove;
 import com.salesmanager.core.modules.cms.content.ImagePut;
 import com.salesmanager.core.modules.cms.impl.CacheManager;
 
-
+/**
+ * Manages store artifacts
+ * - Logo
+ * - Product property image
+ * @author Carl Samson
+ *
+ */
 public class CmsContentFileManagerInfinispanImpl
     implements ImagePut, ContentImageGet, ContentImageRemove
 {
@@ -353,8 +355,6 @@ public class CmsContentFileManagerInfinispanImpl
             IOUtils.copy( image.getFile(), output );
             
             imageNode.put(image.getFileName(), output.toByteArray());
-            
-            System.out.println(output.toByteArray());
 
             LOGGER.info( "Content image added successfully." );
 
@@ -396,8 +396,6 @@ public class CmsContentFileManagerInfinispanImpl
         try
         {
 
-            //final Node<String, Object> merchantNode = getMerchantNode(merchantStoreCode);
-            // object for a given merchant containing all images
 
             for(final InputContentFile image:imagesList){
             	
@@ -450,26 +448,7 @@ public class CmsContentFileManagerInfinispanImpl
 
     }
 
-/*    @SuppressWarnings( "unchecked" )
-    private Node<String, Object> getMerchantNode(final String storeCode )
-    {
-        LOGGER.debug( "Fetching merchant node for store {} from Infinispan", storeCode );
-        final StringBuilder merchantPath = new StringBuilder();
-        merchantPath.append( "content-merchant-" ).append(storeCode );
 
-        Fqn contentFilesFqn = Fqn.fromString(merchantPath.toString()); 
-        Node<String,Object> merchant = cacheManager.getTreeCache().getRoot().getChild(contentFilesFqn); 
-        
-        if(merchant==null) {
-
-            cacheManager.getTreeCache().getRoot().addChild(contentFilesFqn);
-            merchant = cacheManager.getTreeCache().getRoot().getChild(contentFilesFqn); 
-
-        }
-        
-        return merchant;
-
-    }*/
 
 	public CacheManager getCacheManager() {
 		return cacheManager;

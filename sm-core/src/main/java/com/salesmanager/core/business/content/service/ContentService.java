@@ -45,14 +45,14 @@ public interface ContentService
         throws ServiceException;
 
     /**
-     * Method responsible for storing content image for given Store.Image for given merchant store will be stored in
+     * Method responsible for storing content file for given Store.Files for given merchant store will be stored in
      * Infinispan.
      * 
      * @param merchantStoreCode merchant store whose content images are being saved.
-     * @param contentImage content image being stored
+     * @param contentFile content image being stored
      * @throws ServiceException
      */
-    void addContentImage( final String merchantStoreCode, InputContentFile contentImage )
+    void addContentFile( String merchantStoreCode, InputContentFile contentFile )
         throws ServiceException;
 
    
@@ -64,7 +64,7 @@ public interface ContentService
      * @param contentImagesList list of content images being stored.
      * @throws ServiceException
      */
-    void addContentImages(final String merchantStoreCode,List<InputContentFile> contentImagesList) throws ServiceException;
+    void addContentFiles(String merchantStoreCode,List<InputContentFile> contentFilesList) throws ServiceException;
     
     
     /**
@@ -75,7 +75,7 @@ public interface ContentService
      * @param merchantStoreCode merchant store code
      * @throws ServiceException
      */
-    public void removeImage( String merchantStoreCode, FileContentType imageContentType, String imageName) throws ServiceException;
+    public void removeFile( String merchantStoreCode, FileContentType fileContentType, String fileName) throws ServiceException;
     
     
     /**
@@ -85,7 +85,7 @@ public interface ContentService
      * @param merchantStoreCode
      * @throws ServiceException
      */
-    public void removeImages( String merchantStoreCode ) throws ServiceException;
+    public void removeFiles( String merchantStoreCode ) throws ServiceException;
     
     /**
      * Method responsible for fetching particular content image for a given merchant store. Requested image will be
@@ -97,7 +97,7 @@ public interface ContentService
      * @return {@link OutputContentImage}
      * @throws ServiceException
      */
-    public OutputContentFile getContentImage( final String merchantStoreCode, FileContentType imageContentType, final String imageName )
+    public OutputContentFile getContentFile( String merchantStoreCode, FileContentType fileContentType, String fileName )
         throws ServiceException;
     
     
@@ -108,12 +108,12 @@ public interface ContentService
      * @return list of {@link OutputContentImage}
      * @throws ServiceException
      */
-    public List<OutputContentFile> getContentImages( final String merchantStoreCode, FileContentType imageContentType )
+    public List<OutputContentFile> getContentFiles( String merchantStoreCode, FileContentType fileContentType )
                     throws ServiceException;
 
 	
-    List<String> getContentImagesNames(final String merchantStoreCode,
-			FileContentType imageContentType) throws ServiceException;
+    List<String> getContentFilesNames(String merchantStoreCode,
+			FileContentType fileContentType) throws ServiceException;
 
     /**
      * Add the store logo
@@ -121,7 +121,7 @@ public interface ContentService
      * @param cmsContentImage
      * @throws ServiceException
      */
-	void addLogo(final String merchantStoreCode, InputContentFile cmsContentImage)
+	void addLogo(String merchantStoreCode, InputContentFile cmsContentImage)
 			throws ServiceException;
 
 	/**
@@ -130,7 +130,7 @@ public interface ContentService
 	 * @param cmsContentImage
 	 * @throws ServiceException
 	 */
-	void addOptionImage(final String merchantStoreCode, InputContentFile cmsContentImage)
+	void addOptionImage(String merchantStoreCode, InputContentFile cmsContentImage)
 			throws ServiceException;
 
 	List<Content> listByType(ContentType contentType, MerchantStore store)

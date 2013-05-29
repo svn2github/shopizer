@@ -6,13 +6,12 @@ package com.salesmanager.core.modules.cms.content;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.infinispan.tree.Fqn;
 import org.infinispan.tree.Node;
@@ -23,12 +22,14 @@ import com.salesmanager.core.business.content.model.content.FileContentType;
 import com.salesmanager.core.business.content.model.content.InputContentFile;
 import com.salesmanager.core.business.content.model.content.OutputContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
-import com.salesmanager.core.modules.cms.common.StaticContentCacheAttribute;
 import com.salesmanager.core.modules.cms.impl.CacheManager;
 
 
 
 /**
+ * Manages
+ * - Images
+ * - Files (js, pdf, css...)
  * @author Umesh Awasthi
  * @since 1.2
  *
@@ -97,21 +98,12 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
         }
         try
         {
-            final Node<String, Object> merchantNode = getMerchantNodeForStaticContent(merchantStoreCode, inputStaticContentData.getFileContentType());
             
-            StaticContentCacheAttribute contentAttribute = (StaticContentCacheAttribute) merchantNode.get( inputStaticContentData.getFileContentType().name() );
-            if ( contentAttribute == null )
-            {
-            	contentAttribute = new StaticContentCacheAttribute();
-            }
-            contentAttribute.getEntities().put( inputStaticContentData.getFileName(), IOUtils.toByteArray( inputStaticContentData.getFile() ));
-            //contentAttribute.getStaticDataEntities().put( inputStaticContentData.getFileName(), inputStaticContentData.getFile() );
-            
-            //contentAttribute.setDataType( inputStaticContentData.getContentType().name() );
-           
-            //merchantNode.put( inputStaticContentData.getFileName(), IOUtils.toByteArray( inputStaticContentData.getFile() ) );
-            
-            merchantNode.put( inputStaticContentData.getFileContentType().name(),  contentAttribute );
+    		String nodePath = this.getNodePath(merchantStoreCode, inputStaticContentData.getFileContentType());
+        	
+    		final Node<String, Object> merchantNode = this.getNode(nodePath);
+    		
+    		merchantNode.put(inputStaticContentData.getFileName(), IOUtils.toByteArray( inputStaticContentData.getFile() ));
             
             LOGGER.info( "Content data added successfully." );
         }
@@ -139,7 +131,6 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
      * @see StaticContentCacheAttribute
      */
     @Override
-    //TODO BE REVISED
     public void addStaticFiles( final String merchantStoreCode, final List<InputContentFile> inputStaticContentDataList )
         throws ServiceException
     {
@@ -153,19 +144,12 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
           
           for(final InputContentFile inputStaticContentData:inputStaticContentDataList){
  
-                //String cmsType = inputStaticContentData.getContentType().name();
-                //StaticContentCacheAttribute contentAttribute = (StaticContentCacheAttribute) merchantNode.get( cmsType );
-                //if ( contentAttribute == null )
-                //{
-        	   Node<String, Object> merchantNode = getMerchantNodeForStaticContent(merchantStoreCode,inputStaticContentData.getFileContentType());
-               StaticContentCacheAttribute contentAttribute = new StaticContentCacheAttribute();
-                   
-                //}
-                
-               contentAttribute.getEntities().put( inputStaticContentData.getFileName(), IOUtils.toByteArray( inputStaticContentData.getFile() ));
-               contentAttribute.setDataType( inputStaticContentData.getFileContentType().name() );
-               merchantNode.put( inputStaticContentData.getFileName(), contentAttribute );
-               
+
+    		  String nodePath = this.getNodePath(merchantStoreCode, inputStaticContentData.getFileContentType());
+    		  final Node<String, Object> merchantNode = this.getNode(nodePath);
+    		  merchantNode.put(inputStaticContentData.getFileName(), IOUtils.toByteArray( inputStaticContentData.getFile() ));
+            
+
             }
           
           
@@ -205,14 +189,13 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
         InputStream input = null;
         try
         {
-            final Node<String, Object> merchantNode = getMerchantNodeForStaticContent(merchantStoreCode,fileContentType);
-            if ( merchantNode == null )
-            {
-                LOGGER.warn( "merchant node is null" );
-                return null;
-            }
             
-            
+        	
+    		String nodePath = this.getNodePath(merchantStoreCode, fileContentType);
+        	
+    		final Node<String, Object> merchantNode = this.getNode(nodePath);
+    		
+
             final byte[] fileBytes= (byte[]) merchantNode.get( contentFileName );
             
             if ( fileBytes == null )
@@ -220,23 +203,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
                 LOGGER.warn( "file byte is null, no file found" );
                 return null;
             }
-            
-/*            final StaticContentCacheAttribute contentAttribute = (StaticContentCacheAttribute) merchantNode.get( contentFileName );
 
-            if ( contentAttribute == null )
-            {
-                LOGGER.warn( "Unable to find content attribute for given merchant" );
-                return null;
-            }
-            
-            
-            
-            final byte[] fileBytes=contentAttribute.getEntities().get( contentFileName );
-            if ( fileBytes == null )
-            {
-                LOGGER.warn( "file byte is null, no file found" );
-                return null;
-            }*/
             input=new ByteArrayInputStream( fileBytes );
            
             final ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -259,7 +226,6 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
     
     
 	@Override
-	//TODO TO BE REVISED
 	public List<OutputContentFile> getStaticContentData(
 			final String merchantStoreCode, final FileContentType staticContentType) throws ServiceException {
 
@@ -269,55 +235,36 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
         {
             throw new ServiceException( "CmsStaticContentFileManagerInfinispan has a null cacheManager.getTreeCache()" );
         }
-        OutputContentFile outputStaticContentData=null;
-        InputStream input = null;
+        List<OutputContentFile> images = new ArrayList<OutputContentFile>();
         try
         {
-            final Node<String, Object> merchantNode = getMerchantNodeForStaticContent(merchantStoreCode,staticContentType);
-            if ( merchantNode == null )
-            {
-                LOGGER.warn( "merchant node is null" );
-                return null;
-            }
             
-
-            final StaticContentCacheAttribute contentAttribute = (StaticContentCacheAttribute) merchantNode.get( staticContentType.name() );
-
-            if ( contentAttribute == null )
-            {
-                LOGGER.warn( "Unable to find content attribute for given merchant" );
-                return null;
-            }
-            
-            
-            Map<String, byte[]> entries = contentAttribute.getEntities();
-            
-            if(entries != null) {
+        	FileNameMap fileNameMap = URLConnection.getFileNameMap();
+    		String nodePath = this.getNodePath(merchantStoreCode, staticContentType);
+        	
+    		final Node<String, Object> merchantNode = this.getNode(nodePath);
+    		
+            for(String key : merchantNode.getKeys()) {
             	
-            	for(String key : entries.keySet()) {
-            		
-            		
-            		byte[] fileBytes = entries.get(key);
-            		
-                    if ( fileBytes == null )
-                    {
-                        LOGGER.warn( "file byte is null, no file found" );
-                        continue;
-                    }
-                    input=new ByteArrayInputStream( fileBytes );
-                   
-                    final ByteArrayOutputStream output = new ByteArrayOutputStream();
-                    IOUtils.copy( input, output );
-                    
-                    outputStaticContentData=new OutputContentFile();
-                    outputStaticContentData.setFile( output );
-                    outputStaticContentData.setMimeType( URLConnection.getFileNameMap().getContentTypeFor(key) );
-                    outputStaticContentData.setFileName( key );
-                    outputStaticContentData.setFileContentType( FileContentType.valueOf( contentAttribute.getDataType() ) );
-	
-            	}
+                byte[] imageBytes = (byte[])merchantNode.get( key );
 
+                OutputContentFile contentImage = new OutputContentFile();
+
+                InputStream input = new ByteArrayInputStream( imageBytes );
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                IOUtils.copy( input, output );
+
+                String contentType = fileNameMap.getContentTypeFor( key );
+
+                contentImage.setFile( output );
+                contentImage.setMimeType( contentType );
+                contentImage.setFileName( key );
+
+                images.add( contentImage );
+            	
+            	
             }
+            
 
             
         }
@@ -328,7 +275,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
         }
 
 		
-		return null;
+		return images;
 		
 		
 	}
@@ -348,15 +295,12 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
 
         try
         {
-            final Node<String, Object> merchantNode = getMerchantNodeForStaticContent(merchantStoreCode,staticContentType);
-            if ( merchantNode == null )
-            {
-                LOGGER.warn( "merchant node is null" );
-                return;
-  
-            }
-
-            merchantNode.remove(fileName);
+            
+        	
+        	String nodePath = this.getNodePath(merchantStoreCode, staticContentType);
+        	final Node<String, Object> merchantNode = this.getNode(nodePath);
+        	
+        	merchantNode.remove(fileName);
 
         }
         catch ( final Exception e )
@@ -371,60 +315,71 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
     /**
      * Removes the data in a given merchant node
      */
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void removeStaticContents( final String merchantStoreCode )
         throws ServiceException
     {
         
-    	//TODO remove all nodes
-    	
+        LOGGER.info( "Removing all images for {} merchant ",merchantStoreCode);
         if ( cacheManager.getTreeCache() == null )
         {
-            throw new ServiceException( "CmsStaticContentFileManagerInfinispan has a null cacheManager.getTreeCache()" );
+            LOGGER.error( "Unable to find cacheManager.getTreeCache() in Infinispan.." );
+            throw new ServiceException( "CmsImageFileManagerInfinispan has a null cacheManager.getTreeCache()" );
         }
-
+        
         try
         {
-            //final Node<String, Object> merchantNode = getMerchantNodeForStaticContent(merchantStoreCode );
-            //if ( merchantNode == null )
-            //{
-            //    return;
-            //}
-
             
+        	
+			final StringBuilder merchantPath = new StringBuilder();
+	        merchantPath.append( STATIC_CONTENT_NODE).append(merchantStoreCode );
+	        cacheManager.getTreeCache().getRoot().remove(merchantPath.toString());
+        	
+        	
 
-            //merchantNode.clearData();
+
         }
         catch ( final Exception e )
         {
-            LOGGER.error( "Error while fetching file for {} merchant ", merchantStoreCode);
+            LOGGER.error( "Error while deleting content image for {} merchant ", merchantStoreCode);
             throw new ServiceException( e );
         }
 
     }
     
-    @SuppressWarnings( "unchecked" )
-    private Node<String, Object> getMerchantNodeForStaticContent(final String storeCode,final FileContentType contentType)
+	@SuppressWarnings({ "unchecked"})
+	private Node<String, Object> getNode( final String node )
     {
-        LOGGER.debug( "Fetching merchant node for store {} from Infinispan", storeCode );
+        LOGGER.debug( "Fetching node for store {} from Infinispan", node );
         final StringBuilder merchantPath = new StringBuilder();
-        //merchantPath.append(contentType.name()).append(storeCode );
-        
-        merchantPath.append(STATIC_CONTENT_NODE).append(storeCode );
+        merchantPath.append( STATIC_CONTENT_NODE ).append(node);
 
         Fqn contentFilesFqn = Fqn.fromString(merchantPath.toString()); 
-        Node<String,Object> merchant = cacheManager.getTreeCache().getRoot().getChild(contentFilesFqn); 
+
+		Node<String,Object> nd = cacheManager.getTreeCache().getRoot().getChild(contentFilesFqn); 
         
-        if(merchant==null) {
+        if(nd==null) {
 
             cacheManager.getTreeCache().getRoot().addChild(contentFilesFqn);
-            merchant = cacheManager.getTreeCache().getRoot().getChild(contentFilesFqn); 
+            nd = cacheManager.getTreeCache().getRoot().getChild(contentFilesFqn); 
 
         }
         
-        return merchant;
+        return nd;
 
     }
+    
+    private String getNodePath(final String storeCode,final FileContentType contentType) {
+    	
+		StringBuilder nodePath = new StringBuilder();
+		nodePath.append(storeCode).append("/").append(contentType.name());
+    	
+		return nodePath.toString();
+    	
+    }
+    
+
     
     public CacheManager getCacheManager() {
         return cacheManager;
@@ -442,7 +397,6 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
      * @throws ServiceException
      */
 	@Override
-	//TODO BE REVISED
 	public List<String> getStaticContentDataName(final String merchantStoreCode, final FileContentType staticContentType)
 			throws ServiceException {
 		
@@ -455,23 +409,17 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
 
 	        try
 	        {
-	            final Node<String, Object> merchantNode = getMerchantNodeForStaticContent(merchantStoreCode,staticContentType);
 
-	            
-	            if ( merchantNode == null )
-	            {
-	                LOGGER.warn( "Unable to find content attribute for given merchant" );
+	        	
+	        	
+	        	String nodePath = this.getNodePath(merchantStoreCode, staticContentType);
+	        	final Node<String, Object> objectNode = this.getNode(nodePath);
+	    		
+	    		if(objectNode.getKeys().isEmpty()) {
+	    			LOGGER.warn( "Unable to find content attribute for given merchant" );
 	                return Collections.<String> emptyList();
-	            }
-	            
-
-	            if ( MapUtils.isEmpty( merchantNode.getData()) )
-	            {
-	                LOGGER.warn( "No Content for merchant store with code {}", merchantStoreCode);
-	                return Collections.<String> emptyList();
-	            }
-	            
-	             return new ArrayList<String>(merchantNode.getData().keySet());
+	    		}
+	    		return new ArrayList<String>(objectNode.getKeys());
 
 	        }
 	        catch ( final Exception e )

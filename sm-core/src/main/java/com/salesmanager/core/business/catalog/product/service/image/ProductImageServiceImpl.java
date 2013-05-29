@@ -8,7 +8,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import org.junit.Assert;
+import org.springframework.util.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +57,7 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		try {
 			for(ProductImage productImage : productImages) {
 				
-				Assert.assertNotNull(productImage.getImage());
+				Assert.notNull(productImage.getImage());
 				
 		        InputStream inputStream = productImage.getImage();
 		        ImageContentFile cmsContentImage = new ImageContentFile();
@@ -94,8 +94,8 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		//ByteArrayOutputStream baos = null;
 		try {
 			
-			Assert.assertNotNull(inputImage.getFile());
-			Assert.assertNotNull(inputImage.getBufferedImage());
+			Assert.notNull(inputImage.getFile());
+			Assert.notNull(inputImage.getBufferedImage());
 		
 /*			//upload the image in the CMS
 			InputContentFile contentImage = new InputContentFile();

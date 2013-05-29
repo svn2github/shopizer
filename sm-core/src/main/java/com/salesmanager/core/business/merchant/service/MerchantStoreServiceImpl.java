@@ -127,7 +127,7 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 		}
 		
 		//content
-		contentService.removeImages(merchant.getCode());
+		contentService.removeFiles(merchant.getCode());
 		//TODO staticContentService.removeImages
 		
 		//category / product
