@@ -1,6 +1,7 @@
 package com.salesmanager.core.modules.cms.product;
 
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.List;
@@ -65,6 +66,9 @@ public class ProductFileManagerImpl extends ProductFileManager {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ImageIO.write( image, extension, baos );*/
 
+		BufferedImage cropped = contentImage.getBufferedImage();
+		
+		
 
 
 		//upload original
@@ -104,7 +108,7 @@ public class ProductFileManagerImpl extends ProductFileManager {
 			
 			String contentType = fileNameMap.getContentTypeFor(contentImage.getFileName());
 			
-			BufferedImage cropped = ImageIO.read(contentImage.getFile());
+			
 			//BufferedImage cropped = contentImage.getBufferedImage();
 			
 			String extension = contentType.substring(contentType.indexOf("/")+1,contentType.length());
