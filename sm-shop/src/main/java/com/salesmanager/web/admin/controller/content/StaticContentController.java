@@ -140,7 +140,7 @@ public class StaticContentController {
 	 * @throws Exception
 	 */
 	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/saveContentImages.html", method=RequestMethod.POST)
+	@RequestMapping(value="/admin/content/static/saveContentImages.html", method=RequestMethod.POST)
 	public String saveContentImages(@ModelAttribute(value="contentImages") @Valid final ContentImages contentImages, final BindingResult bindingResult,final Model model, final HttpServletRequest request) throws Exception{
 	    
 	    if (bindingResult.hasErrors()) {
