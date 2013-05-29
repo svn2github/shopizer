@@ -57,7 +57,7 @@ public class ImagesController {
 			imgType = FileContentType.PROPERTY;
 		}
 		
-		OutputContentFile image =contentService.getContentImage(storeCode, imgType, new StringBuilder().append(imageName).append(".").append(extension).toString());
+		OutputContentFile image =contentService.getContentFile(storeCode, imgType, new StringBuilder().append(imageName).append(".").append(extension).toString());
 		
 		
 		if(image!=null) {
