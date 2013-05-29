@@ -77,7 +77,7 @@
 	
 
 	
-	<!-- Content images manager-->
+	<!-- Content images manager (logo, other store artifacts)-->
 	<bean id="contentFileManager"
 		class="com.salesmanager.core.modules.cms.content.ContentFileManagerImpl">
 		<property name="uploadImage">
@@ -103,10 +103,11 @@
 	<!-- CMS implementation for static content data -->
 	<bean id="cmsStaticContents" class="com.salesmanager.core.modules.cms.content.CmsStaticContentFileManagerInfinispanImpl" factory-method="getInstance">
 		<property name="cacheManager">
-			<ref bean="diskCacheManager" />
+			<ref bean="filesCacheManager" />
 		</property>
 	</bean>
 	
+	<!-- Static content files manager (images, pdf...) -->
 	<bean id="staticContentFileManager"	class="com.salesmanager.core.modules.cms.content.StaticContentFileManagerImpl">
 		<property name="uploadStaticContent">
 				<ref bean="cmsStaticContents" />
@@ -135,7 +136,7 @@
 	 2. Digital data
 	 -->
 	 
-	<bean id="diskCacheManager" class="com.salesmanager.core.modules.cms.impl.StaticContentCacheManagerImpl" factory-method="getInstance" >
+	<bean id="filesCacheManager" class="com.salesmanager.core.modules.cms.impl.StaticContentCacheManagerImpl" factory-method="getInstance" >
 	
 	</bean>
 	
