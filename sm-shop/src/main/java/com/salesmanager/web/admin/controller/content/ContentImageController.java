@@ -36,7 +36,13 @@ import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.ImageFilePathUtils;
 
-
+/**
+ * Manage static content type image
+ * - Add images
+ * - Remove images
+ * @author Carl Samson
+ *
+ */
 @Controller
 public class ContentImageController {
 	
@@ -78,7 +84,6 @@ public class ContentImageController {
 	public String getContentImages(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		this.setMenu(model, request);
-		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		return ControllerConstants.Tiles.ContentImages.contentImages;
 		
 	}
@@ -168,7 +173,7 @@ public class ContentImageController {
 	       
         }
 	    final List<InputContentFile> contentImagesList=new ArrayList<InputContentFile>();
-        final MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+        final MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
         if(CollectionUtils.isNotEmpty( contentImages.getImage() )){
             LOGGER.info("Saving {} content images for merchant {}",contentImages.getImage().size(),store.getId());
             for(final MultipartFile multipartFile:contentImages.getImage()){
@@ -178,6 +183,7 @@ public class ContentImageController {
                     cmsContentImage.setFileName(multipartFile.getOriginalFilename() );
                     cmsContentImage.setMimeType( multipartFile.getContentType() );
                     cmsContentImage.setFile( inputStream );
+                    cmsContentImage.setFileContentType(FileContentType.IMAGE);
                     contentImagesList.add( cmsContentImage);
                 }
             }
