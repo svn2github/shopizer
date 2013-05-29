@@ -35,7 +35,6 @@ import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
-import com.salesmanager.core.modules.cms.common.CMSContentImage;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
@@ -363,7 +362,7 @@ public class OptionsValueController {
 			
 
 			
-			contentService.removeImage(store.getCode(), FileContentType.PROPERTY, optionValue.getProductOptionValueImage());
+			contentService.removeFile(store.getCode(), FileContentType.PROPERTY, optionValue.getProductOptionValueImage());
 			
 			store.setStoreLogo(null);
 			optionValue.setProductOptionValueImage(null);

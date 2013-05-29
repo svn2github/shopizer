@@ -34,7 +34,6 @@ import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.currency.service.CurrencyService;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
-import com.salesmanager.core.modules.cms.common.CMSContentImage;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.content.ContentImages;
 import com.salesmanager.web.admin.entity.web.Menu;
@@ -158,7 +157,7 @@ public class StoreBrandingController {
 			
 
 			
-			contentService.removeImage(store.getCode(), FileContentType.LOGO, store.getStoreLogo());
+			contentService.removeFile(store.getCode(), FileContentType.LOGO, store.getStoreLogo());
 			
 			store.setStoreLogo(null);
 			merchantStoreService.update(store);

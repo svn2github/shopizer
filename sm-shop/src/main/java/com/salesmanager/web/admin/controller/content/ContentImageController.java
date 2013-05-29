@@ -29,7 +29,6 @@ import com.salesmanager.core.business.content.model.content.FileContentType;
 import com.salesmanager.core.business.content.model.content.InputContentFile;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.modules.cms.common.CMSContentImage;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.content.ContentImages;
@@ -96,7 +95,7 @@ public class ContentImageController {
 
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
-			List<String> imageNames = contentService.getContentImagesNames(store.getCode(),FileContentType.IMAGE);
+			List<String> imageNames = contentService.getContentFilesNames(store.getCode(),FileContentType.IMAGE);
 			
 			if(imageNames!=null) {
 
@@ -184,7 +183,7 @@ public class ContentImageController {
             }
             
             if(CollectionUtils.isNotEmpty( contentImagesList )){
-                contentService.addContentImages( store.getCode(), contentImagesList );
+                contentService.addContentFiles( store.getCode(), contentImagesList );
             }
             else{
                 // show error message on UI
@@ -216,7 +215,7 @@ public class ContentImageController {
 			
 
 			
-			contentService.removeImage(store.getCode(), FileContentType.IMAGE, imageName);
+			contentService.removeFile(store.getCode(), FileContentType.IMAGE, imageName);
 
 		
 		

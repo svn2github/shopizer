@@ -24,9 +24,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.salesmanager.core.business.content.service.StaticContentService;
+import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.content.InputContentFile;
+import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.modules.cms.common.CMSContentImage;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.content.ContentImages;
@@ -40,7 +41,7 @@ public class StaticContentController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StaticContentController.class);
 	
 	@Autowired
-	private StaticContentService staticContentService;
+	private ContentService contentService;
 	
 	/**
 	 * Entry point for the file browser used from the javascript
@@ -105,25 +106,10 @@ public class StaticContentController {
 		return returnString;
 	}
 	
-	/**
-	 * Controller methods which allow Admin to add static content files to underlying
-	 * Infinispan cache.
-	 * @param model model object
-	 * @param request http request object
-	 * @param response http response object
-	 * @return view allowing user to add content images
-	 * @throws Exception
-	 */
-	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/static/createContentFiles.html", method=RequestMethod.GET)
-    public String displayContentFilesCreate(final Model model, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
-      
-	    return ControllerConstants.Tiles.ContentFiles.addContentFiles;
 
-    }
 	
 	/**
-	 * Method responsible for adding content images to underlying Infinispan cache.
+	 * Method responsible for adding content files to underlying Infinispan cache.
 	 * It will add given content image(s) for given merchant store in the cache.
 	 * Following steps will be performed in order to add images
 	 * <pre>
@@ -140,7 +126,7 @@ public class StaticContentController {
 	 * @throws Exception
 	 */
 	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/static/saveContentImages.html", method=RequestMethod.POST)
+	@RequestMapping(value="/admin/content/static/saveContentFiles.html", method=RequestMethod.POST)
 	public String saveContentImages(@ModelAttribute(value="contentImages") @Valid final ContentImages contentImages, final BindingResult bindingResult,final Model model, final HttpServletRequest request) throws Exception{
 	    
 	    if (bindingResult.hasErrors()) {
@@ -148,22 +134,22 @@ public class StaticContentController {
 	       return ControllerConstants.Tiles.ContentImages.addContentImages;
 	       
         }
-	    final List<CMSContentImage> contentImagesList=new ArrayList<CMSContentImage>();
+	    final List<InputContentFile> contentFilesList=new ArrayList<InputContentFile>();
         final MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
         if(CollectionUtils.isNotEmpty( contentImages.getImage() )){
             LOGGER.info("Saving {} content images for merchant {}",contentImages.getImage().size(),store.getId());
             for(final MultipartFile multipartFile:contentImages.getImage()){
                 if(!multipartFile.isEmpty()){
                     ByteArrayInputStream inputStream = new ByteArrayInputStream( multipartFile.getBytes() );
-                    CMSContentImage cmsContentImage = new CMSContentImage();
-                    cmsContentImage.setImageName(multipartFile.getOriginalFilename() );
-                    cmsContentImage.setContentType( multipartFile.getContentType() );
+                    InputContentFile cmsContentImage = new InputContentFile();
+                    cmsContentImage.setFileName(multipartFile.getOriginalFilename() );
+                    cmsContentImage.setFileContentType( FileContentType.STATIC_FILE );
                     cmsContentImage.setFile( inputStream );
-                    contentImagesList.add( cmsContentImage);
+                    contentFilesList.add( cmsContentImage);
                 }
             }
             
-            if(CollectionUtils.isNotEmpty( contentImagesList )){
+            if(CollectionUtils.isNotEmpty( contentFilesList )){
                 //contentService.addContentImages( store.getCode(), contentImagesList );
             }
             else{
