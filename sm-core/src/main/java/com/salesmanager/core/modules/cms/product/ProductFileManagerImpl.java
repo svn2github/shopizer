@@ -5,6 +5,8 @@ import java.net.FileNameMap;
 import java.net.URLConnection;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
@@ -102,8 +104,8 @@ public class ProductFileManagerImpl extends ProductFileManager {
 			
 			String contentType = fileNameMap.getContentTypeFor(contentImage.getFileName());
 			
-			
-			BufferedImage cropped = contentImage.getBufferedImage();
+			BufferedImage cropped = ImageIO.read(contentImage.getFile());
+			//BufferedImage cropped = contentImage.getBufferedImage();
 			
 			String extension = contentType.substring(contentType.indexOf("/")+1,contentType.length());
 			
