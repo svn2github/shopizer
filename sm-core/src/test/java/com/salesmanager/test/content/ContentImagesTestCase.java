@@ -74,7 +74,7 @@ public class ContentImagesTestCase extends AbstractSalesManagerCoreTestCase {
         //get the logo
         String logo = store.getStoreLogo();
 
-		OutputContentFile image =contentService.getContentImage(store.getCode(), FileContentType.LOGO, logo);
+		OutputContentFile image =contentService.getContentFile(store.getCode(), FileContentType.LOGO, logo);
 
         //print image
    	 	OutputStream outputStream = new FileOutputStream ("c:/TEMP/" + image.getFileName()); 
@@ -84,7 +84,7 @@ public class ContentImagesTestCase extends AbstractSalesManagerCoreTestCase {
 		
 		
 		//remove image
-   	 	contentService.removeImage(store.getCode(), FileContentType.LOGO, store.getStoreLogo());
+   	 	contentService.removeFile(store.getCode(), FileContentType.LOGO, store.getStoreLogo());
 		
 
 

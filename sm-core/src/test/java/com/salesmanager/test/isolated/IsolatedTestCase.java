@@ -53,7 +53,6 @@ import com.salesmanager.core.business.catalog.product.service.price.ProductPrice
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
 
 import com.salesmanager.core.business.content.service.ContentService;
-import com.salesmanager.core.business.content.service.StaticContentService;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.util.EntityManagerUtils;
@@ -76,7 +75,6 @@ import com.salesmanager.core.business.user.model.Permission;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
 import com.salesmanager.core.business.user.service.UserService;
-import com.salesmanager.core.modules.cms.common.CMSContentImage;
 import com.salesmanager.core.utils.reference.ConfigurationModulesLoader;
 import com.salesmanager.test.core.SalesManagerCoreTestExecutionListener;
 
@@ -105,8 +103,6 @@ public class IsolatedTestCase
     @Autowired
     protected ProductOptionService productOptionService;
     
-    @Autowired
-    protected StaticContentService staticContentService;
 
     @Autowired
     protected ProductOptionValueService productOptionValueService;

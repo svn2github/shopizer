@@ -1,8 +1,13 @@
 package com.salesmanager.test.content;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.salesmanager.core.business.content.model.content.FileContentType;
 import com.salesmanager.core.business.content.model.content.InputContentFile;
-import com.salesmanager.core.business.content.service.StaticContentService;
+import com.salesmanager.core.business.content.model.content.OutputContentFile;
+import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;
@@ -29,7 +35,49 @@ public class StaticContentTestCase extends AbstractSalesManagerCoreTestCase {
 	
 
 	@Autowired
-	private StaticContentService staticContentService;
+	private ContentService contentService;
+	
+	
+    @Test
+    public void createImage()
+        throws ServiceException, FileNotFoundException, IOException
+    {
+
+        MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
+        final File file1 = new File( "c:/doc/carl/shirt3.jpg" );
+
+        if ( !file1.exists() || !file1.canRead() )
+        {
+            throw new ServiceException( "Can't read" + file1.getAbsolutePath() );
+        }
+
+        final byte[] is = IOUtils.toByteArray( new FileInputStream( file1 ) );
+        final ByteArrayInputStream inputStream = new ByteArrayInputStream( is );
+        final InputContentFile cmsContentImage = new InputContentFile();
+        cmsContentImage.setFileName( file1.getName() );
+        cmsContentImage.setFile( inputStream );
+        cmsContentImage.setFileContentType(FileContentType.IMAGE);
+        
+        //Add image
+        contentService.addContentFile(store.getCode(), cmsContentImage);
+
+    
+        //get image
+		OutputContentFile image = contentService.getContentFile(store.getCode(), FileContentType.IMAGE, file1.getName());
+
+        //print image
+   	 	OutputStream outputStream = new FileOutputStream ("c:/TEMP/" + image.getFileName()); 
+
+   	 	ByteArrayOutputStream baos =  image.getFile();
+   	 	baos.writeTo(outputStream);
+		
+		
+		//remove image
+   	 	contentService.removeFile(store.getCode(), FileContentType.IMAGE, file1.getName());
+		
+
+
+    }
 	
 	@Test
 	public void testCreateStaticContent() throws Exception {
@@ -54,7 +102,7 @@ public class StaticContentTestCase extends AbstractSalesManagerCoreTestCase {
 	     staticContent.setFileName(file.getName());
 	     staticContent.setFileContentType(FileContentType.STATIC_FILE);//default to static data
         
-	     staticContentService.addFile(store, staticContent);
+	     contentService.addContentFile(store.getCode(), staticContent);
 	     
 	     //staticContentService.getFile(store, FileContentType.STATIC_FILE, file.getName());
 
@@ -130,7 +178,7 @@ public class StaticContentTestCase extends AbstractSalesManagerCoreTestCase {
 	    staticFiles.add(staticContent);
 	    staticFiles.add(staticContent2);
 		
-	    staticContentService.addFiles(store, staticFiles);
+	    contentService.addContentFiles(store.getCode(), staticFiles);
 	    
 	    //get file names
 	    //staticContentService.get
