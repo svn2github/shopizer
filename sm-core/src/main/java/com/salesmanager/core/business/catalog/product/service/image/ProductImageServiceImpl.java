@@ -1,16 +1,14 @@
 package com.salesmanager.core.business.catalog.product.service.image;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.FileNameMap;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +19,6 @@ import com.salesmanager.core.business.catalog.product.model.image.ProductImageDe
 import com.salesmanager.core.business.catalog.product.service.ProductImageEnum;
 import com.salesmanager.core.business.content.model.content.FileContentType;
 import com.salesmanager.core.business.content.model.content.ImageContentFile;
-import com.salesmanager.core.business.content.model.content.InputContentFile;
 import com.salesmanager.core.business.content.model.content.OutputContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
@@ -57,17 +54,30 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	@Override
 	public void addProductImages(Product product, List<ProductImage> productImages) throws ServiceException {
 		
-
-		for(ProductImage productImage : productImages) {
-			
-			
-	        InputStream inputStream = productImage.getImage();
-	        ImageContentFile cmsContentImage = new ImageContentFile();
-	        cmsContentImage.setFileName( productImage.getProductImage() );
-	        cmsContentImage.setFile( inputStream );
-	        cmsContentImage.setFileContentType(FileContentType.PRODUCT);
-
-			addProductImage(product,productImage,cmsContentImage);			
+		try {
+			for(ProductImage productImage : productImages) {
+				
+				Assert.assertNotNull(productImage.getImage());
+				
+		        InputStream inputStream = productImage.getImage();
+		        ImageContentFile cmsContentImage = new ImageContentFile();
+		        cmsContentImage.setFileName( productImage.getProductImage() );
+		        cmsContentImage.setFile( inputStream );
+		        cmsContentImage.setFileContentType(FileContentType.PRODUCT);
+		        
+		        
+		        
+				BufferedImage bufferedImage = ImageIO.read(inputStream);
+				cmsContentImage.setBufferedImage(bufferedImage);
+	
+		        
+	
+				addProductImage(product,productImage,cmsContentImage);			
+			}
+		
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
@@ -84,6 +94,8 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		//ByteArrayOutputStream baos = null;
 		try {
 			
+			Assert.assertNotNull(inputImage.getFile());
+			Assert.assertNotNull(inputImage.getBufferedImage());
 		
 /*			//upload the image in the CMS
 			InputContentFile contentImage = new InputContentFile();
