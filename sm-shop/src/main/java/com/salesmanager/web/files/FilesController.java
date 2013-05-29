@@ -45,7 +45,7 @@ public class FilesController {
 		FileContentType imgType = null;
 		
 		// needs to query the new API
-		OutputContentFile image =contentService.getContentImage(storeCode, imgType, new StringBuilder().append(fileName).append(".").append(extension).toString());
+		OutputContentFile image =contentService.getContentFile(storeCode, imgType, new StringBuilder().append(fileName).append(".").append(extension).toString());
 		
 /*		try {
 		      // get your file as InputStream
