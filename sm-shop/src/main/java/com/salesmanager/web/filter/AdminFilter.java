@@ -20,6 +20,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
+import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.user.model.User;
 import com.salesmanager.core.business.user.service.UserService;
 import com.salesmanager.core.utils.CacheUtils;
@@ -38,6 +40,9 @@ public class AdminFilter extends HandlerInterceptorAdapter {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private LanguageService languageService;
+	
 	public boolean preHandle(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -49,6 +54,11 @@ public class AdminFilter extends HandlerInterceptorAdapter {
 		Map<String,Menu> menus = (Map<String,Menu>) cache.getFromCache("MENUMAP");
 		
 		User user = (User)request.getSession().getAttribute(Constants.ADMIN_USER);
+		
+		
+
+		
+		
 		
 		String storeCode = MerchantStore.DEFAULT_STORE;
 		MerchantStore store = (MerchantStore)request.getSession().getAttribute(Constants.ADMIN_STORE);
@@ -88,6 +98,27 @@ public class AdminFilter extends HandlerInterceptorAdapter {
 				request.getSession().setAttribute(Constants.ADMIN_STORE, store);
 		}
 		request.setAttribute(Constants.ADMIN_STORE, store);
+		
+		
+		Language language = (Language) request.getSession().getAttribute("LANGUAGE");
+		
+		if(language==null) {
+			
+			//TODO get the Locale from Spring API, is it simply request.getLocale() ???
+			//if so then based on the Locale language locale.getLanguage() get the appropriate Language
+			//object as represented below
+			if(user!=null) {
+				language = user.getDefaultLanguage();
+			} else {
+				language = languageService.getByCode("en");
+			}
+			request.getSession().setAttribute("LANGUAGE", language);
+			
+
+		}
+		
+
+		request.setAttribute(Constants.LANGUAGE, language);
 		
 
 		if(menus==null) {
