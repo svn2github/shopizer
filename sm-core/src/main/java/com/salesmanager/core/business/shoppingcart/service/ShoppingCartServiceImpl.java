@@ -5,19 +5,40 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
-import com.salesmanager.core.business.shoppingcart.dao.ShoppingCartItemDao;
+import com.salesmanager.core.business.shoppingcart.dao.ShoppingCartDao;
+import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 
 @Service("shoppingCartService")
-public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long, ShoppingCartItem> implements ShoppingCartService {
+public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long, ShoppingCart> implements ShoppingCartService {
 
 	@Autowired
 	public ShoppingCartServiceImpl(
-			ShoppingCartItemDao shoppingCartItemDao) {
-		super(shoppingCartItemDao);
+			ShoppingCartDao shoppingCartDao) {
+		super(shoppingCartDao);
 
+	}
+	
+	
+	/**
+	 * Retrieve a {@link ShoppingCart} cart for a given customer
+	 */
+	public ShoppingCart getShoppingCart(Customer customer) throws ServiceException {
+		return null;
+	}
+	
+	/**
+	 * Save or update a {@link ShoppingCart} for a given customer
+	 */
+	public void saveOrUpdate(ShoppingCart shoppingCart) throws ServiceException {
+		if(shoppingCart.getId()==null || shoppingCart.getId().longValue()==0) {
+			super.create(shoppingCart);
+		} else {
+			super.update(shoppingCart);
+		}
 	}
 	
 	
