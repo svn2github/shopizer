@@ -1,6 +1,7 @@
 package com.salesmanager.web.admin.controller.content;
 
 import java.io.ByteArrayInputStream;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,7 +82,7 @@ public class StaticContentController {
 					@SuppressWarnings("rawtypes")
 					Map entry = new HashMap();
 					entry.put("name", name);
-					entry.put("mimeType", name);
+					entry.put("mimeType", URLConnection.getFileNameMap().getContentTypeFor(name));
 					resp.addDataEntry(entry);
 
 				}
