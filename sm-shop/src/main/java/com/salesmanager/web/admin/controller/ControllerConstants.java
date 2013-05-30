@@ -23,6 +23,7 @@ public interface ControllerConstants
         
         interface ContentFiles{
             final String addContentFiles="admin-content-files-add";
+            final String contentFiles="admin-content-files";
 
  
         }

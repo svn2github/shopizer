@@ -31,7 +31,7 @@ import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
-import com.salesmanager.web.admin.entity.content.ContentImages;
+import com.salesmanager.web.admin.entity.content.ContentFiles;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.ImageFilePathUtils;
@@ -153,7 +153,7 @@ public class ContentImageController {
 	 * <pre>
 	 * 1. Validate form data
 	 * 2. Get Merchant Store based on merchant Id.
-	 * 3. Call {@link CMSContentImage} to add image(s).
+	 * 3. Call {@link InputContentFile} to add image(s).
 	 * </pre>
 	 * 
 	 * @param contentImages
@@ -165,8 +165,9 @@ public class ContentImageController {
 	 */
 	@Secured("CONTENT")
 	@RequestMapping(value="/admin/content/saveContentImages.html", method=RequestMethod.POST)
-	public String saveContentImages(@ModelAttribute(value="contentImages") @Valid final ContentImages contentImages, final BindingResult bindingResult,final Model model, final HttpServletRequest request) throws Exception{
+	public String saveContentImages(@ModelAttribute(value="contentFiles") @Valid final ContentFiles contentImages, final BindingResult bindingResult,final Model model, final HttpServletRequest request) throws Exception{
 	    
+		this.setMenu(model, request);
 	    if (bindingResult.hasErrors()) {
 	        LOGGER.info( "Found {} Validation errors", bindingResult.getErrorCount());
 	       return ControllerConstants.Tiles.ContentImages.addContentImages;
@@ -174,9 +175,9 @@ public class ContentImageController {
         }
 	    final List<InputContentFile> contentImagesList=new ArrayList<InputContentFile>();
         final MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-        if(CollectionUtils.isNotEmpty( contentImages.getImage() )){
-            LOGGER.info("Saving {} content images for merchant {}",contentImages.getImage().size(),store.getId());
-            for(final MultipartFile multipartFile:contentImages.getImage()){
+        if(CollectionUtils.isNotEmpty( contentImages.getFile() )){
+            LOGGER.info("Saving {} content images for merchant {}",contentImages.getFile().size(),store.getId());
+            for(final MultipartFile multipartFile:contentImages.getFile()){
                 if(!multipartFile.isEmpty()){
                     ByteArrayInputStream inputStream = new ByteArrayInputStream( multipartFile.getBytes() );
                     InputContentFile cmsContentImage = new InputContentFile();
@@ -195,7 +196,7 @@ public class ContentImageController {
                 // show error message on UI
             }
         }
-        this.setMenu(model, request);
+       
         return ControllerConstants.Tiles.ContentImages.contentImages;
 	}
 	

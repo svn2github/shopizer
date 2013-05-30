@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +31,7 @@ import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
-import com.salesmanager.web.admin.entity.content.ContentImages;
+import com.salesmanager.web.admin.entity.content.ContentFiles;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 
@@ -43,29 +44,23 @@ public class StaticContentController {
 	@Autowired
 	private ContentService contentService;
 	
+
+	@Secured("CONTENT")
+	@RequestMapping(value={"/admin/content/static/contentFiles.html","/admin/content/static/contentManagement.html"}, method=RequestMethod.GET)
+	public String getContentImages(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		this.setMenu(model, request);
+		return ControllerConstants.Tiles.ContentFiles.contentFiles;
+		
+	}
+
+	
 	/**
-	 * Entry point for the file browser used from the javascript
-	 * content editor
-	 * @param model
+	 * Display files in a List grid
 	 * @param request
 	 * @param response
 	 * @return
-	 * @throws Exception
 	 */
-	//@Secured("CONTENT")
-	//@RequestMapping(value={"/admin/staticcontent/fileBrowser.html"}, method=RequestMethod.GET)
-	//public String displayFileBrowser(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-
-		//return ControllerConstants.Tiles.ContentImages.fileBrowser;
-		
-	//}
-	
-	
-	
-
-	
-	
 	@SuppressWarnings({ "unchecked"})
 	@Secured("CONTENT")
 	@RequestMapping(value="/admin/content/static/page.html", method=RequestMethod.POST, produces="application/json")
@@ -77,22 +72,21 @@ public class StaticContentController {
 
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
-/*			List<String> imageNames = staticContentService.
+			List<String> fileNames = contentService.getContentFilesNames(store.getCode(), FileContentType.STATIC_FILE);
 			
-			if(imageNames!=null) {
+			if(fileNames!=null) {
 
-				for(String name : imageNames) {
+				for(String name : fileNames) {
 
 					@SuppressWarnings("rawtypes")
 					Map entry = new HashMap();
-					entry.put("picture", ImageFilePathUtils.buildStaticImageFilePath(store, name));
 					entry.put("name", name);
-					entry.put("id", name);
+					entry.put("mimeType", name);
 					resp.addDataEntry(entry);
 
 				}
 			
-			}*/
+			}
 			
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
 
@@ -110,12 +104,12 @@ public class StaticContentController {
 	
 	/**
 	 * Method responsible for adding content files to underlying Infinispan cache.
-	 * It will add given content image(s) for given merchant store in the cache.
-	 * Following steps will be performed in order to add images
+	 * It will add given content file(s) for given merchant store in the cache.
+	 * Following steps will be performed in order to add files
 	 * <pre>
 	 * 1. Validate form data
 	 * 2. Get Merchant Store based on merchant Id.
-	 * 3. Call {@link CMSContentImage} to add image(s).
+	 * 3. Call {@link InputContentFile} to add file(s).
 	 * </pre>
 	 * 
 	 * @param contentImages
@@ -126,19 +120,20 @@ public class StaticContentController {
 	 * @throws Exception
 	 */
 	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/static/saveContentFiles.html", method=RequestMethod.POST)
-	public String saveContentImages(@ModelAttribute(value="contentImages") @Valid final ContentImages contentImages, final BindingResult bindingResult,final Model model, final HttpServletRequest request) throws Exception{
+	@RequestMapping(value="/admin/content/static/saveFiles.html", method=RequestMethod.POST)
+	public String saveFiles(@ModelAttribute(value="contentFiles") @Valid final ContentFiles contentFiles, final BindingResult bindingResult,final Model model, final HttpServletRequest request) throws Exception{
 	    
+		this.setMenu(model, request);
 	    if (bindingResult.hasErrors()) {
 	        LOGGER.info( "Found {} Validation errors", bindingResult.getErrorCount());
-	       return ControllerConstants.Tiles.ContentImages.addContentImages;
+	        return ControllerConstants.Tiles.ContentFiles.contentFiles;
 	       
         }
 	    final List<InputContentFile> contentFilesList=new ArrayList<InputContentFile>();
         final MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
-        if(CollectionUtils.isNotEmpty( contentImages.getImage() )){
-            LOGGER.info("Saving {} content images for merchant {}",contentImages.getImage().size(),store.getId());
-            for(final MultipartFile multipartFile:contentImages.getImage()){
+        if(CollectionUtils.isNotEmpty( contentFiles.getFile() )){
+            LOGGER.info("Saving {} content files for merchant {}",contentFiles.getFile().size(),store.getId());
+            for(final MultipartFile multipartFile:contentFiles.getFile()){
                 if(!multipartFile.isEmpty()){
                     ByteArrayInputStream inputStream = new ByteArrayInputStream( multipartFile.getBytes() );
                     InputContentFile cmsContentImage = new InputContentFile();
@@ -150,14 +145,51 @@ public class StaticContentController {
             }
             
             if(CollectionUtils.isNotEmpty( contentFilesList )){
-                //contentService.addContentImages( store.getCode(), contentImagesList );
+            	contentService.addContentFiles( store.getCode(), contentFilesList );
             }
             else{
                 // show error message on UI
             }
         }
-        this.setMenu(model, request);
-        return ControllerConstants.Tiles.ContentImages.contentImages;
+        
+        return ControllerConstants.Tiles.ContentFiles.contentFiles;
+	}
+	
+	
+	/**
+	 * Removes a static file from the CMS
+	 * @param request
+	 * @param response
+	 * @param locale
+	 * @return
+	 */
+	@Secured("CONTENT")
+	@RequestMapping(value="/admin/content/static/removeFile.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String removeImage(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		String imageName = request.getParameter("name");
+
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		AjaxResponse resp = new AjaxResponse();
+
+		
+		try {
+			
+
+			
+			contentService.removeFile(store.getCode(), FileContentType.STATIC_FILE, imageName);
+
+		
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while deleting product", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
 	}
 	
 	
@@ -168,7 +200,7 @@ public class StaticContentController {
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("content", "content");
-		activeMenus.put("content-images", "content-images");
+		activeMenus.put("content-files", "content-files");
 		
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");

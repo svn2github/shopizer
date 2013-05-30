@@ -35,7 +35,7 @@ import com.salesmanager.core.business.reference.currency.service.CurrencyService
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
-import com.salesmanager.web.admin.entity.content.ContentImages;
+import com.salesmanager.web.admin.entity.content.ContentFiles;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 
@@ -88,20 +88,20 @@ public class StoreBrandingController {
 	
 	@Secured("STORE")
 	@RequestMapping(value="/admin/store/saveBranding.html", method=RequestMethod.POST)
-	public String saveStoreBranding(@ModelAttribute(value="contentImages") @Valid final ContentImages contentImages, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String saveStoreBranding(@ModelAttribute(value="contentImages") @Valid final ContentFiles contentImages, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		
-		if(contentImages.getImage()!=null && contentImages.getImage().size()>0) {
+		if(contentImages.getFile()!=null && contentImages.getFile().size()>0) {
 
-			String imageName = contentImages.getImage().get(0).getOriginalFilename();
-            InputStream inputStream = contentImages.getImage().get(0).getInputStream();
+			String imageName = contentImages.getFile().get(0).getOriginalFilename();
+            InputStream inputStream = contentImages.getFile().get(0).getInputStream();
             InputContentFile cmsContentImage = new InputContentFile();
             cmsContentImage.setFileName(imageName);
-            cmsContentImage.setMimeType( contentImages.getImage().get(0).getContentType());
+            cmsContentImage.setMimeType( contentImages.getFile().get(0).getContentType());
             cmsContentImage.setFile( inputStream );
             contentService.addLogo(store.getCode(), cmsContentImage);
 			

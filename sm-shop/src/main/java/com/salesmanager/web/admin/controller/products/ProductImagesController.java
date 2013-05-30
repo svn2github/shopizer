@@ -188,9 +188,9 @@ public class ProductImagesController {
         }
 		
 	    final List<ProductImage> contentImagesList=new ArrayList<ProductImage>();
-        if(CollectionUtils.isNotEmpty( productImages.getImage() )){
-            LOGGER.info("Saving {} content images for merchant {}",productImages.getImage().size(),store.getId());
-            for(final MultipartFile multipartFile:productImages.getImage()){
+        if(CollectionUtils.isNotEmpty( productImages.getFile() )){
+            LOGGER.info("Saving {} content images for merchant {}",productImages.getFile().size(),store.getId());
+            for(final MultipartFile multipartFile:productImages.getFile()){
                 if(!multipartFile.isEmpty()){
                     ByteArrayInputStream inputStream = new ByteArrayInputStream( multipartFile.getBytes() );
                     ProductImage productImage = new ProductImage();
