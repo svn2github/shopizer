@@ -273,7 +273,7 @@ response.setDateHeader ("Expires", -1);
   				window.location='<c:url value="/admin/content/contentBoxes.html" />';
 			});
 			$("#content-files-link").click(function() {
-  				window.location='<c:url value="/admin/content/contentFiles.html" />';
+  				window.location='<c:url value="/admin/content/static/contentFiles.html" />';
 			});
 			$("#content-images-link").click(function() {
   				window.location='<c:url value="/admin/content/contentImages.html" />';

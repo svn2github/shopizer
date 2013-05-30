@@ -10,13 +10,13 @@
 		<div class="tab-pane active" id="catalogue-section">
            <div class="sm-ui-component">
 				<h3>
-					<s:message code="label.content.images" text="Images library" />
+					<s:message code="label.content.files" text="Files library" />
 				</h3>
 				
 				
-			<!--  Add content images -->
-			<c:url var="saveContentImages" value="/admin/content/saveContentImages.html" />
-			<form:form method="POST" enctype="multipart/form-data" commandName="contentFiles" action="${saveContentImages}">
+			<!--  Add content files -->
+			<c:url var="saveContentFiles" value="/admin/content/static/saveFiles.html" />
+			<form:form method="POST" enctype="multipart/form-data" commandName="contentFiles" action="${saveContentFiles}">
 			<form:errors path="*" cssClass="alert alert-error" element="div" />
 			<div id="store.success" class="alert alert-success"	style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>">
 					<s:message code="message.success" text="Request successfull" />
@@ -50,12 +50,13 @@
 				
 				<br />
 				<!-- Listing grid include -->
-				<c:set value="/admin/content/images/paging.html" var="pagingUrl" scope="request" />
-				<c:set value="/admin/content/removeImage.html" var="removeUrl" scope="request" />
-				<c:set value="/admin/content/contentImages.html" var="refreshUrl" scope="request" />
-				<c:set var="componentTitleKey" value="menu.content-images" scope="request" />
+				<c:set value="/admin/content/static/page.html" var="pagingUrl" scope="request" />
+				<c:set value="/admin/content/static/removeFile.html" var="removeUrl" scope="request" />
+				<c:set value="/admin/content/static/contentFiles.html" var="refreshUrl" scope="request" />
+				<c:set var="componentTitleKey" value="menu.content-files" scope="request" />
 				<c:set var="canRemoveEntry" value="true" scope="request" />
-				<jsp:include page="/pages/admin/components/images-list.jsp"></jsp:include>
+				<c:set var="gridHeader" value="/pages/admin/content/contentFiles-gridHeader.jsp" scope="request"/>
+				<jsp:include page="/pages/admin/components/list.jsp"></jsp:include>
 				<!-- End listing grid include -->
 			
 

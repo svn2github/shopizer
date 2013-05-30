@@ -200,8 +200,13 @@
   	<definition name="admin-content-images" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/content/contentImages.jsp" /> 
   	</definition>
+  	
   	<definition name="admin-contentImages-add" template="/layout/admin/layout.jsp"> 
   		<put-attribute name="body" value="/pages/admin/content/addContentImages.jsp" /> 
+  	</definition>
+  	
+  	<definition name="admin-content-files" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/content/contentFiles.jsp" /> 
   	</definition>
   	
   	<definition name="configuration-accounts" template="/layout/admin/layout.jsp"> 

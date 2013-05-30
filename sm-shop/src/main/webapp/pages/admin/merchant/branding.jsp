@@ -73,7 +73,7 @@
 									   <c:choose>
 				                        		<c:when test="${store.storeLogo==null}">
 				                                    
-				                                    <input class="input-file" id="image" name="image[0]" type="file"><br/>
+				                                    <input class="input-file" id="file" name="file[0]" type="file"><br/>
 				                                </c:when>
 				                                <c:otherwise>
 				                                	<img src="<sm:contentImage imageName="${store.storeLogo}" imageType="LOGO"/>">
