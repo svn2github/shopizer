@@ -1,6 +1,6 @@
 package com.salesmanager.web.admin.entity.content;
 
-public class ProductImages extends ContentImages {
+public class ProductImages extends ContentFiles {
 	
 	/**
 	 * 
