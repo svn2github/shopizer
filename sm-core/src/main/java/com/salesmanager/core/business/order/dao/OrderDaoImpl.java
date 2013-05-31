@@ -1,11 +1,25 @@
 package com.salesmanager.core.business.order.dao;
 
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Query;
+import javax.persistence.criteria.Expression;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
+import com.mysema.query.BooleanBuilder;
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
+import com.mysema.query.types.Predicate;
+import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.common.model.CriteriaOrderBy;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.order.model.OrderCriteria;
+import com.salesmanager.core.business.order.model.OrderList;
 import com.salesmanager.core.business.order.model.QOrder;
 import com.salesmanager.core.business.order.model.QOrderTotal;
 import com.salesmanager.core.business.order.model.orderproduct.QOrderProduct;
@@ -45,6 +59,107 @@ public class OrderDaoImpl  extends SalesManagerEntityDaoImpl<Long, Order> implem
 
 		
 		return query.uniqueResult(qOrder);
+		
+	}
+
+	@SuppressWarnings("unused")
+	@Override
+	public OrderList listByStore(MerchantStore store, OrderCriteria criteria) {
+
+		OrderList orderList = new OrderList();
+		StringBuilder countBuilderSelect = new StringBuilder();
+		countBuilderSelect.append("select count(p) from Order as o");
+		
+		StringBuilder countBuilderWhere = new StringBuilder();
+		countBuilderWhere.append(" where o.merchantStore.id=:mId");
+
+		if(!StringUtils.isBlank(criteria.getCustomerName())) {
+			countBuilderWhere.append(" and o.customerFirstName like:nm");
+			countBuilderWhere.append(" or o.customerLastName like:nm");
+		}
+		
+		if(!StringUtils.isBlank(criteria.getPaymentMethod())) {
+			countBuilderWhere.append(" and o.paymentMethod=:pm");
+		}
+
+		Query countQ = super.getEntityManager().createQuery(
+				countBuilderSelect.toString() + countBuilderWhere.toString());
+
+		countQ.setParameter("mId", store.getId());
+		
+		if(!StringUtils.isBlank(criteria.getCustomerName())) {
+			countQ.setParameter("nm", criteria.getCustomerName());
+		}
+		
+		if(!StringUtils.isBlank(criteria.getPaymentMethod())) {
+			countQ.setParameter("pm", criteria.getPaymentMethod());
+		}
+		
+
+
+		Number count = (Number) countQ.getSingleResult ();
+
+		orderList.setTotalCount(count.intValue());
+		
+        if(count.intValue()==0)
+        	return orderList;
+		
+		
+		
+		QOrder qOrder = QOrder.order;
+		QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+		QOrderTotal qOrderTotal = QOrderTotal.orderTotal;
+		QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+		QOrderProductAttribute qOrderProductAttribute = QOrderProductAttribute.orderProductAttribute;
+		//OrderAccount not loaded for now
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qOrder)
+			.join(qOrder.orderProducts, qOrderProduct).fetch()
+			.join(qOrder.orderTotal, qOrderTotal).fetch()
+			.leftJoin(qOrder.orderHistory, qOrderStatusHistory).fetch()
+			.leftJoin(qOrderProduct.downloads).fetch()
+			.leftJoin(qOrderProduct.orderAttributes,qOrderProductAttribute).fetch()
+			.leftJoin(qOrderProduct.prices).fetch()
+			.leftJoin(qOrderProductAttribute.productOption).fetch()
+			.leftJoin(qOrderProductAttribute.productOptionValue).fetch();
+			
+			query.where(qOrder.merchant.id.eq(store.getId()));
+			BooleanBuilder pBuilder = new BooleanBuilder();
+
+		if(!StringUtils.isBlank(criteria.getCustomerName())) {
+			if(pBuilder==null) {
+				pBuilder = new BooleanBuilder();
+			}
+			pBuilder.and(qOrder.customerFirstName.like(criteria.getCustomerName())
+					.or(qOrder.customerLastName.eq(criteria.getCustomerName())));
+
+
+		}
+		
+		if(!StringUtils.isBlank(criteria.getPaymentMethod())) {
+			if(pBuilder==null) {
+				pBuilder = new BooleanBuilder();
+			}
+			pBuilder.and(qOrder.paymentMethod.eq(criteria.getPaymentMethod()));
+		}
+		
+		if(criteria.getOrderBy().name().equals(CriteriaOrderBy.ASC)) {
+			query.orderBy(qOrder.datePurchased.asc());
+		} else {
+			query.orderBy(qOrder.datePurchased.desc());
+		}
+		
+		if(criteria.getMaxCount()>0) {
+			query.limit(criteria.getMaxCount());
+			query.offset(criteria.getStartIndex());
+		}
+		
+		
+		orderList.setOrders(query.list(qOrder));
+
+		return orderList;
 		
 	}
 }

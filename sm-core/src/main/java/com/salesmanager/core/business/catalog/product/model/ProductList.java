@@ -1,14 +1,18 @@
 package com.salesmanager.core.business.catalog.product.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductList implements Serializable {
+import com.salesmanager.core.business.common.model.EntityList;
+
+public class ProductList extends EntityList {
 	
 
-	private static final long serialVersionUID = -3122326940968441727L;
-	private int totalCount;
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7267292601646149482L;
 	private List<Product> products = new ArrayList<Product>();
 	public List<Product> getProducts() {
 		return products;
@@ -16,11 +20,6 @@ public class ProductList implements Serializable {
 	public void setProducts(List<Product> products) {
 		this.products = products;
 	}
-	public int getTotalCount() {
-		return totalCount;
-	}
-	public void setTotalCount(int totalCount) {
-		this.totalCount = totalCount;
-	}
+
 
 }

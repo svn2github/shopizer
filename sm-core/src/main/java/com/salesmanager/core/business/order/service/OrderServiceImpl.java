@@ -12,22 +12,23 @@ import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceI
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.dao.OrderDao;
 import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.order.model.OrderCriteria;
+import com.salesmanager.core.business.order.model.OrderList;
 import com.salesmanager.core.business.order.model.Order_;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
-import com.salesmanager.core.utils.ProductPriceUtils;
+
 
 @Service("orderService")
 public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order> implements OrderService {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl.class);
 	
-	@Autowired
-	private ProductPriceUtils productPriceUtils;
-	
+	private OrderDao orderDao;
 	
 	@Autowired
 	public OrderServiceImpl(OrderDao orderDao) {
 		super(orderDao);
+		this.orderDao = orderDao;
 	}
 
 	@Override
@@ -69,5 +70,11 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 			super.create(order);
 
 		}
+	}
+
+	@Override
+	public OrderList listByStore(MerchantStore store, OrderCriteria criteria) {
+
+		return orderDao.listByStore(store, criteria);
 	}
 }
