@@ -14,6 +14,8 @@ public interface ControllerConstants
 {
 
     interface Tiles{
+    	
+    	final String adminDashboard="admin-dashboard";
         interface ContentImages{
             final String addContentImages="admin-contentImages-add";
             final String contentImages="admin-content-images";
