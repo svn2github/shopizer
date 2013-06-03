@@ -202,4 +202,12 @@ public class Category extends SalesManagerEntity<Long, Category> implements Audi
 	public void setCategories(List<Category> categories) {
 		this.categories = categories;
 	}
+	
+	public CategoryDescription getDescription() {
+		if(descriptions!=null && descriptions.size()>0) {
+			return descriptions.iterator().next();
+		}
+		
+		return null;
+	}
 }
