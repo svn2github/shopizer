@@ -34,7 +34,7 @@
 			
 			<div class="control-group" style="margin-top:15px;">
 			  <div class="controls">
-					<input class="input-file" id="image" name="image" type="file" multiple="multiple">
+					<input class="input-file" id="file" name="file" type="file" multiple="multiple">
 					<input type="hidden" name="productId" id="productId" value="${product.id}"/>
 					<!-- <input class="input-file" id="image1" name="image[1]" type="file"><br /> 
 					<input 	class="input-file" id="image2" name="image[2]" type="file"><br />

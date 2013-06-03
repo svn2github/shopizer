@@ -131,7 +131,7 @@ public class StaticContentController {
 	       
         }
 	    final List<InputContentFile> contentFilesList=new ArrayList<InputContentFile>();
-        final MerchantStore store = (MerchantStore)request.getAttribute("MERCHANT_STORE");
+        final MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
         if(CollectionUtils.isNotEmpty( contentFiles.getFile() )){
             LOGGER.info("Saving {} content files for merchant {}",contentFiles.getFile().size(),store.getId());
             for(final MultipartFile multipartFile:contentFiles.getFile()){

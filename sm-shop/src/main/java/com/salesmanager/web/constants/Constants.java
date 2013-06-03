@@ -36,7 +36,7 @@ public class Constants {
 	public final static String CONTENT_CACHE_KEY = "CONTENT";
 	public final static String CATEGORIES_CACHE_KEY = "CATEGORIES";
 	
-	public final static String REQUEST_CONTENT_OBJECTS = "REQ_CONTENT";
-	public final static String REQUEST_TOP_CATEGORIES = "REQ_TOP_CATEGORIES";
+	public final static String REQUEST_CONTENT_OBJECTS = "CONTENT";
+	public final static String REQUEST_TOP_CATEGORIES = "TOP_CATEGORIES";
 
 }

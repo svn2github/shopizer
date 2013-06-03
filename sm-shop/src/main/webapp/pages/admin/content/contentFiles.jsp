@@ -36,7 +36,7 @@
 
                   		<div class="pull-right">
 
-                  			<button type="submit" class="btn btn-success"><s:message code="button.label.upload" text="Upload Images"/></button>
+                  			<button type="submit" class="btn btn-success"><s:message code="button.label.upload.files" text="Upload files"/></button>
                   			
 
                   		</div>

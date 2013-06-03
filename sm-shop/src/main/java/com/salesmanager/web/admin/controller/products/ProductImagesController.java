@@ -1,6 +1,9 @@
 package com.salesmanager.web.admin.controller.products;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,11 +11,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +37,8 @@ import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.image.ProductImageService;
+import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.content.ImageContentFile;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
@@ -192,11 +199,12 @@ public class ProductImagesController {
             LOGGER.info("Saving {} content images for merchant {}",productImages.getFile().size(),store.getId());
             for(final MultipartFile multipartFile:productImages.getFile()){
                 if(!multipartFile.isEmpty()){
-                    ByteArrayInputStream inputStream = new ByteArrayInputStream( multipartFile.getBytes() );
-                    ProductImage productImage = new ProductImage();
+                	ProductImage productImage = new ProductImage();
+
+                	productImage.setImage(multipartFile.getInputStream());
                     productImage.setProductImage(multipartFile.getOriginalFilename() );
                     productImage.setProduct(product);
-                    productImage.setImage(inputStream);
+                    
                     contentImagesList.add( productImage);
                 }
             }
@@ -206,6 +214,26 @@ public class ProductImagesController {
             }
             
         }
+		
+/*		ProductImage productImage = new ProductImage();
+		productImage.setProduct(product);
+        
+        
+        InputStream inputStream = productImages.getFile().get(0).getInputStream();
+        ImageContentFile cmsContentImage = new ImageContentFile();
+        cmsContentImage.setFileName( productImages.getFile().get(0).getOriginalFilename() );
+        cmsContentImage.setFile( inputStream );
+        cmsContentImage.setFileContentType(FileContentType.PRODUCT);
+        
+        productImage.setProductImage(productImages.getFile().get(0).getOriginalFilename() );
+        
+        
+		BufferedImage bufferedImage = ImageIO.read(inputStream);
+		cmsContentImage.setBufferedImage(bufferedImage);
+		
+		productImageService.addProductImage(product, productImage, cmsContentImage);*/
+        
+        
         
         //reload
         product = productService.getById(productImages.getProductId());

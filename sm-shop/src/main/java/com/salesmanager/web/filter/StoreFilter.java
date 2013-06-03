@@ -408,6 +408,8 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 								cacheCategories = new ArrayList<Category>();
 
 								objects.put(key, cacheCategories);
+							} else {
+								cacheCategories = objects.get(key.toString());
 							}
 							cacheCategories.add(category);
 						}
@@ -427,7 +429,19 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			}
 			
 			if(objects!=null && objects.size()>0) {
-				request.setAttribute(Constants.REQUEST_TOP_CATEGORIES, objects);
+				//only store objects in request
+				String key = new StringBuilder()
+				.append(Constants.CATEGORIES_CACHE_KEY)
+				.append(store.getId())
+				.append(language.getCode()).toString();
+				
+				List<Category> categories = objects.get(key.toString());
+				
+				if(categories!=null) {
+					request.setAttribute(Constants.REQUEST_TOP_CATEGORIES, objects.get(key.toString()));
+				}
+				
+				
 			}
 		   
 	   }

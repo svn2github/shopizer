@@ -8,11 +8,7 @@
    <uri>/shopizer-functions</uri>
 
 
-<function>
-	        <name>topCategories</name>
-	        <function-class>com.salesmanager.web.tags.DisplayFunctions</function-class>
-	        <function-signature>java.util.List getTopCategories(javax.servlet.http.HttpServletRequest request)</function-signature>
-</function>
+
 
 
 
