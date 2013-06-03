@@ -65,19 +65,14 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		        cmsContentImage.setFile( inputStream );
 		        cmsContentImage.setFileContentType(FileContentType.PRODUCT);
 		        
-		        
-		        
-				BufferedImage bufferedImage = ImageIO.read(inputStream);
-				cmsContentImage.setBufferedImage(bufferedImage);
-	
+
 		        
 	
 				addProductImage(product,productImage,cmsContentImage);			
 			}
 		
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new ServiceException(e);
 		}
 
 	}
@@ -94,8 +89,8 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		//ByteArrayOutputStream baos = null;
 		try {
 			
-			Assert.notNull(inputImage.getFile());
-			Assert.notNull(inputImage.getBufferedImage());
+			Assert.notNull(inputImage.getFile(),"ImageContentFile.file cannot be null");
+			//Assert.notNull(inputImage.getBufferedImage(),"ImageContentFile.bufferedImage cannot be null");
 		
 /*			//upload the image in the CMS
 			InputContentFile contentImage = new InputContentFile();

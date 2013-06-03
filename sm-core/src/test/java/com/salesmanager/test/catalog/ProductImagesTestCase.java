@@ -1,5 +1,6 @@
 package com.salesmanager.test.catalog;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -12,6 +13,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
@@ -110,7 +113,7 @@ public class ProductImagesTestCase extends AbstractSalesManagerCoreTestCase {
 	*/
 	
 	@Test
-	public void testCreateContentImage() throws ServiceException, FileNotFoundException, IOException {
+	public void testCreateProductImage() throws ServiceException, FileNotFoundException, IOException {
 		
 	    Language en = languageService.getByCode("en");
 	    Country country = countryService.getByCode("CA");
@@ -214,7 +217,7 @@ public class ProductImagesTestCase extends AbstractSalesManagerCoreTestCase {
    
         
         
-        final File file1 = new File( "c:/doc/carl/Merchant.jpg" );
+        final File file1 = new File( "/Users/csamson777/Documents/csti/JAP-LETTER-2.jpg" );
 
         if ( !file1.exists() || !file1.canRead() )
         {
@@ -227,6 +230,9 @@ public class ProductImagesTestCase extends AbstractSalesManagerCoreTestCase {
         cmsContentImage.setFileName( file1.getName() );
         cmsContentImage.setFile( inputStream );
         cmsContentImage.setFileContentType(FileContentType.PRODUCT);
+        
+        //BufferedImage bufferedImage = ImageIO.read(inputStream);
+		//cmsContentImage.setBufferedImage(bufferedImage);
 
 	    //final List<ProductImage> contentImagesList=new ArrayList<ProductImage>();
 
@@ -246,7 +252,7 @@ public class ProductImagesTestCase extends AbstractSalesManagerCoreTestCase {
         Assert.assertNotNull(contentFile);
         
         //print image
-   	 	OutputStream outputStream = new FileOutputStream ("c:/TEMP/" + contentFile.getFileName()); 
+   	 	OutputStream outputStream = new FileOutputStream ("/Users/csamson777/Documents/workspace2/csti" + contentFile.getFileName()); 
 
    	 	ByteArrayOutputStream baos =  contentFile.getFile();
    	 	baos.writeTo(outputStream);
@@ -268,6 +274,9 @@ public class ProductImagesTestCase extends AbstractSalesManagerCoreTestCase {
         cmsContentImage2.setFileName( file2.getName() );
         cmsContentImage2.setFile( inputStream2 );
         cmsContentImage2.setFileContentType(FileContentType.PRODUCT);
+        
+        BufferedImage bufferedImage2 = ImageIO.read(inputStream2);
+		cmsContentImage2.setBufferedImage(bufferedImage2);
 
 	    //final List<ProductImage> contentImagesList=new ArrayList<ProductImage>();
 

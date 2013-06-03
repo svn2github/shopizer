@@ -75,7 +75,7 @@
 			  <loader class="org.infinispan.loaders.file.FileCacheStore" fetchPersistentState="false"
 	               ignoreModifications="false" purgeOnStartup="false">
 	               <properties>
-	                 <property name="location" value="C:/infinispan/store"/>
+	                 <property name="location" value="/Users/csamson777/Documents/workspace2/infinispan/store"/>
 	               </properties>
 	          </loader>
 		
@@ -100,7 +100,7 @@
 	          <loader class="org.infinispan.loaders.file.FileCacheStore" fetchPersistentState="false"
 	               ignoreModifications="false" purgeOnStartup="false">
 	            <properties>
-	                 <property name="location" value="C:/infinispan/files"/>
+	                 <property name="location" value="/Users/csamson777/Documents/workspace2/files"/>
 	               </properties>
 	          </loader>
 	     </loaders>

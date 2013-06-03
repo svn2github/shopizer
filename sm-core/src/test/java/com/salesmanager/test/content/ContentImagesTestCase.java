@@ -1,5 +1,6 @@
 package com.salesmanager.test.content;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -10,11 +11,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
 
+import javax.imageio.ImageIO;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.content.ImageContentFile;
 import com.salesmanager.core.business.content.model.content.InputContentFile;
 import com.salesmanager.core.business.content.model.content.OutputContentFile;
 import com.salesmanager.core.business.content.service.ContentService;
@@ -47,19 +51,21 @@ public class ContentImagesTestCase extends AbstractSalesManagerCoreTestCase {
     {
 
         MerchantStore store = merchantService.getByCode( MerchantStore.DEFAULT_STORE );
-        final File file1 = new File( "c:/doc/carl/IA.jpg" );
+        final File file1 = new File( "/Users/csamson777/Pictures/peavey.jpg" );
 
         if ( !file1.exists() || !file1.canRead() )
         {
             throw new ServiceException( "Can't read" + file1.getAbsolutePath() );
         }
 
-        final byte[] is = IOUtils.toByteArray( new FileInputStream( file1 ) );
-        final ByteArrayInputStream inputStream = new ByteArrayInputStream( is );
-        final InputContentFile cmsContentImage = new InputContentFile();
+        byte[] is = IOUtils.toByteArray( new FileInputStream( file1 ) );
+        ByteArrayInputStream inputStream = new ByteArrayInputStream( is );
+        InputContentFile cmsContentImage = new InputContentFile();
+
         cmsContentImage.setFileName( file1.getName() );
-        cmsContentImage.setFile( inputStream );
-        
+        cmsContentImage.setFile(inputStream);
+ 
+		
         //logo as a content
         contentService.addLogo(store.getCode(), cmsContentImage);
         
@@ -77,7 +83,7 @@ public class ContentImagesTestCase extends AbstractSalesManagerCoreTestCase {
 		OutputContentFile image =contentService.getContentFile(store.getCode(), FileContentType.LOGO, logo);
 
         //print image
-   	 	OutputStream outputStream = new FileOutputStream ("c:/TEMP/" + image.getFileName()); 
+   	 	OutputStream outputStream = new FileOutputStream ("/Users/csamson777/Pictures/mexique" + image.getFileName()); 
 
    	 	ByteArrayOutputStream baos =  image.getFile();
    	 	baos.writeTo(outputStream);
