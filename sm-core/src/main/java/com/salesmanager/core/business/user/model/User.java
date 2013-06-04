@@ -1,6 +1,7 @@
 package com.salesmanager.core.business.user.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -18,6 +19,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.validator.constraints.Email;
@@ -126,6 +129,14 @@ public class User extends SalesManagerEntity<Long, User> implements Auditable {
 	
 	@Embedded
 	private AuditSection auditSection = new AuditSection();
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "LAST_ACCESS")
+	private Date lastAccess;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "LOGIN_ACCESS")
+	private Date loginTime;
 
 	@Override
 	public Long getId() {
@@ -266,6 +277,22 @@ public class User extends SalesManagerEntity<Long, User> implements Auditable {
 
 	public boolean isActive() {
 		return active;
+	}
+
+	public void setLastAccess(Date lastAccess) {
+		this.lastAccess = lastAccess;
+	}
+
+	public Date getLastAccess() {
+		return lastAccess;
+	}
+
+	public void setLoginTime(Date loginTime) {
+		this.loginTime = loginTime;
+	}
+
+	public Date getLoginTime() {
+		return loginTime;
 	}
 
 }
