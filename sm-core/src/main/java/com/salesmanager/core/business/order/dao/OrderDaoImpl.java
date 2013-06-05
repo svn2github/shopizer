@@ -68,10 +68,10 @@ public class OrderDaoImpl  extends SalesManagerEntityDaoImpl<Long, Order> implem
 
 		OrderList orderList = new OrderList();
 		StringBuilder countBuilderSelect = new StringBuilder();
-		countBuilderSelect.append("select count(p) from Order as o");
+		countBuilderSelect.append("select count(o) from Order as o");
 		
 		StringBuilder countBuilderWhere = new StringBuilder();
-		countBuilderWhere.append(" where o.merchantStore.id=:mId");
+		countBuilderWhere.append(" where o.merchant.id=:mId");
 
 		if(!StringUtils.isBlank(criteria.getCustomerName())) {
 			countBuilderWhere.append(" and o.customerFirstName like:nm");

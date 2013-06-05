@@ -23,10 +23,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.OrderBy;
-import org.hibernate.validator.constraints.Email;
 
 import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.common.model.Delivery;
+import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.orderaccount.OrderAccount;
@@ -158,6 +158,24 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	private Set<OrderStatusHistory> orderHistory = new HashSet<OrderStatusHistory>();
 	
 	public Order() {
+	}
+	
+	
+	public Order(Customer customer) {
+		this.setBilling(customer.getBilling());
+		this.setDelivery(customer.getDelivery());
+		
+		this.setCustomerCity(customer.getCity());
+		this.setCustomerCountry(customer.getCountry().getName());
+		if(customer.getZone()!=null) {
+			this.setCustomerState(customer.getZone().getName());
+		} else {
+			this.setCustomerState(customer.getState());
+		}
+		this.setCustomerEmailAddress(customer.getEmailAddress());
+		this.setCustomerFirstName(customer.getFirstname());
+		this.setCustomerLastName(customer.getLastname());
+		this.setCustomerPostCode(customer.getPostalCode());
 	}
 	
 	@Column (name ="CUSTOMER_FIRSTNAME", length=64 , nullable=false)
