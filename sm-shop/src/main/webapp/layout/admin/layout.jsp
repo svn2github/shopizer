@@ -243,6 +243,9 @@ response.setDateHeader ("Expires", -1);
 			$("#customer-create-link").click(function() {
   				window.location='<c:url value="/admin/customers/customer.html" />';
 			});
+			$("#order-list-link").click(function() {
+  				window.location='<c:url value="/admin/orders/list.html" />';
+			});
 			$("#storeDetails-link").click(function() {
   				window.location='<c:url value="/admin/store/store.html" />';
 			});
@@ -292,7 +295,6 @@ response.setDateHeader ("Expires", -1);
 			$("#shipping-packages-link").click(function() {
   				window.location='<c:url value="/admin/shipping/shippingPackaging.html" />';
 			});
-			
 			
 			$("#accounts-conf-link").click(function() {
   				window.location='<c:url value="/admin/configuration/accounts.html" />';
