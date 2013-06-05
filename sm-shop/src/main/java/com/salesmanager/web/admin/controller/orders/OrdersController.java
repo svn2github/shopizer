@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.order.model.OrderCriteria;
+import com.salesmanager.core.business.order.model.OrderList;
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.system.model.IntegrationModule;
@@ -62,10 +65,7 @@ public class OrdersController {
 	public String displayOrders(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
-		
-		Language language = (Language)request.getAttribute("LANGUAGE");
-		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		
+
 		//the list of orders is from page method
 		
 		return ControllerConstants.Tiles.Order.orders;
@@ -78,10 +78,7 @@ public class OrdersController {
 	@RequestMapping(value="/admin/orders/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageOrders(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 
-		//TODO 
-		//filter customer name
-		//filter date
-		
+
 		AjaxPageableResponse resp = new AjaxPageableResponse();
 		
 		
@@ -91,14 +88,27 @@ public class OrdersController {
 			
 			int startRow = Integer.parseInt(request.getParameter("_startRow"));
 			int endRow = Integer.parseInt(request.getParameter("_endRow"));
-			String	paymentModule = "";
+			String	paymentModule = request.getParameter("paymentModule");
+			String customerName = request.getParameter("customer");
+			
+			OrderCriteria criteria = new OrderCriteria();
+			criteria.setStartIndex(startRow);
+			criteria.setMaxCount(endRow);
+			if(!StringUtils.isBlank(paymentModule)) {
+				criteria.setPaymentMethod(paymentModule);
+			}
+			
+			if(!StringUtils.isBlank(customerName)) {
+				criteria.setCustomerName(customerName);
+			}
 			
 			Language language = (Language)request.getAttribute("LANGUAGE");
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			List<IntegrationModule> paymentModules = moduleConfigurationService.getIntegrationModules( "PAYMENT" );
 
+
+			//OrderList orderList = orderService.listByStore(store, criteria);
 			
-			//TODO add filters as criteria
 			List<Order> orders = orderService.listByStore(store);
 					
 					
@@ -127,7 +137,6 @@ public class OrdersController {
 
 				}
 
-//				entry.put("paymentModule", messages.getMessage(new StringBuilder().append("module.paymentModule.").append(order.getPaymentModuleCode()).toString(), locale));
 				entry.put("paymentModule", paymentModule );
 				resp.addDataEntry(entry);				
 				
