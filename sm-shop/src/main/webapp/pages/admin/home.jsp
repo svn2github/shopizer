@@ -2,47 +2,32 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 <%@ page session="false" %>
 
 <script type="text/javascript">
-	var url = 'http://www.shopizer.com/scripts/shopizer-messages.json?callback=?';
+	var url = 'http://www.shopizer.com/messages/v-2_0.json?callback=?';
 
-	//http://www.jquery4u.com/json/jsonp-examples/
-
-	//$.ajax({
-	//   type: 'GET',
-	//    url: url,
-	//    async: false,
-	//    jsonpCallback: 'jsonCallback',
-	//    contentType: "application/json",
-	//    dataType: 'jsonp',
-	//    success: function(json) {
-	//       console.dir(json.sites);
-	//    },
-	//    error: function(e) {
-	//       console.log(e.message);
-	//    }
-	//});
-
-///jsonCallback(
-//    {
-//        "sites":
-//        [
-//            {
-//                "siteName": "JQUERY4U",
-//                "domainName": "http://www.jquery4u.com",
-//                "description": "#1 jQuery Blog for your Daily News, Plugins, Tuts/Tips &amp; Code Snippets."
-//            },
-//            {
-//                "siteName": "BLOGOOLA",
-//                "domainName": "http://www.blogoola.com",
-//                "description": "Expose your blog to millions and increase your audience."
-//            }
-
-//        ]
-//    }
-//);
+	$.ajax({
+	   type: 'GET',
+	    url: url,
+	    async: false,
+	    jsonpCallback: 'jsonCallback',
+	    contentType: "application/json",
+	    dataType: 'jsonp',
+	    success: function(json) {
+	    	$('#messages').html(json.message);
+	    	$('#messages').show();
+	       //alert("Success " + json.message);
+	       //console.dir(json.message);
+	    },
+	    error: function(e) {
+	       //alert("Fail " + e.message);
+	       //console.log(e.message);
+	    }
+	});
 
 
 </script>
@@ -53,6 +38,8 @@
 <div class="tabbable">
 
 					<jsp:include page="/common/adminTabs.jsp" />
+					<div id="messages" class="alert alert-info" style="display:none">
+					</div>
 
 					<div class="box">
 						<span class="box-title">

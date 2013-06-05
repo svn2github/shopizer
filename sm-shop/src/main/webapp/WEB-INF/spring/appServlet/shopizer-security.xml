@@ -22,6 +22,9 @@
 		class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
 	</beans:bean>
 	
+	<beans:bean id="authenticationSuccessHandler" class="com.salesmanager.web.admin.security.UserAuthenticationSuccessHandler">
+	</beans:bean>
+	
 	<!-- For intercepting authentication
 	//add to form-login - authentication-success-handler-ref="authenticationSuccessHandler"
 	<beans:bean id="authenticationSuccessHandler" class="com.salesmanager.web.admin.security.UserAuthenticationSuccessHandler">
@@ -36,11 +39,17 @@
 		<intercept-url pattern="/admin/" access="hasRole('AUTH')" />
 		<intercept-url pattern="/admin/*.html" access="hasRole('AUTH')" />
 		<intercept-url pattern="/admin/*/*.html" access="hasRole('AUTH')" />
+		<intercept-url pattern="/admin/*/*/*.html" access="hasRole('AUTH')" />
+
 		
-		<form-login login-processing-url="/admin/j_spring_security_check" login-page="/admin/logon.html"
+		<form-login 
+			login-processing-url="/admin/j_spring_security_check" 
+			login-page="/admin/logon.html"
+			authentication-success-handler-ref="authenticationSuccessHandler"
 			authentication-failure-url="/admin/logon.html?login_error=true"
-			
 			default-target-url="/admin/home.html" />
+			
+			
 		<logout invalidate-session="true" 
 			logout-success-url="/admin/home.html" 
 			logout-url="/admin/j_spring_security_logout" />

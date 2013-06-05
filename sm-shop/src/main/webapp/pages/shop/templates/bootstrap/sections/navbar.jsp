@@ -40,15 +40,28 @@ response.setDateHeader ("Expires", -1);
 
 						<nav id="menu" class="pull-right">
                     					<ul id="mainMenu">
-                    					<c:forEach items="${requestScope.TOP_CATEGORIES}" var="item">
-    										lol ${item} <br />
-										</c:forEach>
+
 										
 										<li class="">  
-                    					                           <a href="index.html" class="current">          
-                    					                                                  <span class="name">Home</span>     
-                    		<span class="desc">Home</span>                                  </a>                         </li><li class="">                             <a class="sf-with-ul" href="category.html?category=short-sleeves">   
-                    		                              <span class="name">Short Sleeves</span>                                        <span class="desc">Cool t shirts</span>                                  </a>                         </li><li class="">                             <a class="sf-with-ul" href="category.html?category=long-sleeves">                                 <span class="name">Long Sleeves</span>                                        <span class="desc">Surf shirts</span>                                  </a>                         </li></ul>
+                    					       <a href="<c:url value="/"/> class="current">          
+                    					            <span class="name">Home</span>     
+                    								<span class="desc">Home</span>                                  
+                    						   </a>                         
+                    					</li>
+                    					<li class="">
+                    							<a class="sf-with-ul" href="category.html?category=short-sleeves">   
+                    		                        <span class="name">Short Sleeves</span>                                        
+                    		                        <span class="desc">Cool t shirts</span>                                  
+                    		             		</a>                        
+                    		            </li>
+                    		            
+                    		            <c:forEach items="${requestScope.TOP_CATEGORIES}" var="item">
+    										<li class="">
+    										${item.description.name}
+    										</li> 
+										</c:forEach>
+                    		            
+                    		            </ul>
 						</nav>
 
 				</div>

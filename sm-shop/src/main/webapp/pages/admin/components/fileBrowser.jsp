@@ -12,7 +12,7 @@
 <script language="javascript">
 	function selectImage(img) {//ckeditor function
 		//TODO URL, MERCHANT STORE
-		var image = 'http://localhost:8080<c:url value="/static/DEFAULT/CONTENT/"/>' + img;
+		var image = '<c:url value="/static/${requestScope.ADMIN_STORE.code}/IMAGE/"/>' + img;
 		window.opener.CKEDITOR.tools.callFunction(2, image);
 		window.close();
 	}

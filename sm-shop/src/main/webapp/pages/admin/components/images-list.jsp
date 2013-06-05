@@ -115,7 +115,7 @@
 
 isc.HLayout.create({
     ID:"pageLayout",
-    width: "680",
+    width: "700",
     height: "600",
     position:"relative",
     members:[
