@@ -11,6 +11,16 @@ public class CategoryController {
 		
 		return " ";
 	}
+	
+	//carl -> a suggestion of the method signature
+	
+/*	@RequestMapping("/shop/category/{friendlyUrl}.html")
+	public String displayCategory(@PathVariable final String friendlyUrl, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		
+		
+		return "";
+	}*/
 
 	
 
