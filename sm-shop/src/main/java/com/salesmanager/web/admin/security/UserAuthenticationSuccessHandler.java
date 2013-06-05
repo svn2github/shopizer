@@ -38,6 +38,8 @@ public class UserAuthenticationSuccessHandler extends
 			  user.setLoginTime(new Date());
 			  
 			  userService.saveOrUpdate(user);
+			  
+			  response.sendRedirect(request.getContextPath() + "/admin/home.html");
 		  } catch (Exception e) {
 			  LOGGER.error("User authenticationSuccess",e);
 		  }

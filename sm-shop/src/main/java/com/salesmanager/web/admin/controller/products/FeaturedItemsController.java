@@ -171,7 +171,7 @@ public class FeaturedItemsController {
 	}
 	
 	@Secured("PRODUCTS")
-	@RequestMapping(value="/admin/catalogue/featured/removeItem.html", method=RequestMethod.POST, produces="application/json")
+	@RequestMapping(value="/admin/catalogue/featured/removeItem.html&removeEntity=FEATURED", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeItem(HttpServletRequest request, HttpServletResponse response) {
 		
 		String productId = request.getParameter("productId");
@@ -222,7 +222,7 @@ public class FeaturedItemsController {
 			productRelationshipService.delete(relationship);
 			
 
-			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_SUCCESS);
+			resp.setStatus(AjaxPageableResponse.RESPONSE_OPERATION_COMPLETED);
 		
 		} catch (Exception e) {
 			LOGGER.error("Error while paging products", e);

@@ -18,6 +18,8 @@ import com.salesmanager.core.business.order.model.OrderCriteria;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.user.model.User;
+import com.salesmanager.core.business.user.service.UserService;
 import com.salesmanager.web.constants.Constants;
 
 @Controller
@@ -25,6 +27,9 @@ public class AdminController {
 	
 	@Autowired
 	CountryService countryService;
+	
+	@Autowired
+	UserService userService;
 	
 	@RequestMapping(value={"/admin/home.html","/admin/","/admin"}, method=RequestMethod.GET)
 	public String displayDashboard(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -44,8 +49,12 @@ public class AdminController {
 		Country storeCountry = store.getCountry();
 		Country country = countries.get(storeCountry.getIsoCode());
 		
+		String sCurrentUser = request.getRemoteUser();
+		User currentUser = userService.getByUserName(sCurrentUser);
+		
 		model.addAttribute("store", store);
 		model.addAttribute("country", country);
+		model.addAttribute("user", currentUser);
 		//get last 10 orders
 		OrderCriteria orderCriteria = new OrderCriteria();
 		orderCriteria.setMaxCount(10);
