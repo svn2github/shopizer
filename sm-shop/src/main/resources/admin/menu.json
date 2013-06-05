@@ -185,7 +185,12 @@
 "icon":"icon-shopping-cart", 
 "url":"/admin/orders/list.html", 
 "role":"ORDER",
-"order":8
+"order":8,
+"menus":[
+	{"menu":{
+		"code":"order-list","url":"/admin/orders/list.html","role":"ORDER","order":0
+	}}
+]
 }},
 {
 "menu":{
