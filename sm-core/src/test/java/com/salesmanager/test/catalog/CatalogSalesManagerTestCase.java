@@ -677,6 +677,8 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		
 		
 	}
+	
+
 
 
 }
