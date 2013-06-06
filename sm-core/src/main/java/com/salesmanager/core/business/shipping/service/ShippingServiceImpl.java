@@ -136,7 +136,6 @@ public class ShippingServiceImpl implements ShippingService {
 		}
 		
 		String value = shippingConfiguration.toJSONString();
-		//TODO encrypt
 		configuration.setValue(value);
 		merchantConfigurationService.saveOrUpdate(configuration);
 		
@@ -164,7 +163,6 @@ public class ShippingServiceImpl implements ShippingService {
 				configuration.setKey(moduleCode);
 				configuration.setMerchantStore(store);
 			}
-			//TODO encrypt
 			configuration.setValue(configurationValue);
 			merchantConfigurationService.saveOrUpdate(configuration);
 		
@@ -302,7 +300,7 @@ public class ShippingServiceImpl implements ShippingService {
 			MerchantConfiguration merchantConfiguration = merchantConfigurationService.getMerchantConfiguration(SHIPPING_MODULES, store);
 			if(merchantConfiguration!=null) {
 				if(!StringUtils.isBlank(merchantConfiguration.getValue())) {
-					
+					//TODO decrypt
 					modules = ConfigurationModulesLoader.loadIntegrationConfigurations(merchantConfiguration.getValue());
 					
 				}
