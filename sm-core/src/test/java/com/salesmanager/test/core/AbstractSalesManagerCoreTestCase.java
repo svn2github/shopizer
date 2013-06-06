@@ -35,6 +35,7 @@ import com.salesmanager.core.business.generic.util.EntityManagerUtils;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.order.service.OrderService;
+import com.salesmanager.core.business.payments.service.PaymentService;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.currency.service.CurrencyService;
 import com.salesmanager.core.business.reference.init.service.InitializationDatabase;
@@ -129,6 +130,8 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	@Autowired
 	protected OrderService orderService;
 	
+	@Autowired
+	protected PaymentService paymentService;
 
 
 	@Before

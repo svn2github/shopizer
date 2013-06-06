@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.common.model.Delivery;
@@ -17,7 +16,6 @@ import com.salesmanager.core.business.payments.model.CreditCard;
 import com.salesmanager.core.business.payments.model.CreditCardPayment;
 import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.payments.model.TransactionType;
-import com.salesmanager.core.business.payments.service.PaymentService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.zone.model.Zone;
@@ -28,8 +26,7 @@ public class PaymentTestCase extends AbstractSalesManagerCoreTestCase {
 	
 	private static final Date date = new Date(System.currentTimeMillis());
 	
-	@Autowired
-	private PaymentService paymentService;
+
 	
 	@Test
 	public void testBeanStreamPayment() throws ServiceException {
@@ -103,7 +100,7 @@ public class PaymentTestCase extends AbstractSalesManagerCoreTestCase {
 		
 		Map<String,String> integrationKeys = new HashMap<String,String>();
 		integrationKeys.put("merchantid", "123456");
-		integrationKeys.put("account", "accnt");
+		integrationKeys.put("username", "accnt");
 		integrationKeys.put("password", "pass123");
 		integrationKeys.put("transaction", "CAPTURE");
 		

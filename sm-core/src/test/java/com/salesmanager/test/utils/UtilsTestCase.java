@@ -2,9 +2,12 @@ package com.salesmanager.test.utils;
 
 
 
-import org.jboss.cache.CacheFactory;
-import org.jboss.cache.DefaultCacheFactory;
-import org.jboss.cache.Fqn;
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,20 +17,16 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.currency.service.CurrencyService;
+import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.utils.CacheUtils;
+import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;
 import com.salesmanager.test.core.SalesManagerCoreTestExecutionListener;
 
-import java.text.NumberFormat;
-import java.util.List;
-import java.util.Locale;
-
-@ContextConfiguration(locations = { "classpath:spring/test-spring-context.xml" })
-@RunWith(SpringJUnit4ClassRunner.class)
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, SalesManagerCoreTestExecutionListener.class })
-public class UtilsTestCase {
+public class UtilsTestCase extends AbstractSalesManagerCoreTestCase {
 	
 	
 	@Autowired
@@ -69,6 +68,36 @@ public class UtilsTestCase {
 		numberFormat.setCurrency(c);
 		
 		System.out.println("Done");
+		
+	}
+	
+	@Test
+	public void testEncryption() throws Exception {
+		
+		MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
+		
+
+		IntegrationConfiguration paymentConfiguration = new IntegrationConfiguration();
+		
+		paymentConfiguration.setActive(true);
+		paymentConfiguration.setEnvironment(IntegrationConfiguration.TEST_ENVIRONMENT);
+		paymentConfiguration.setModuleCode("beanstream");
+		
+		Map<String,String> integrationKeys = new HashMap<String,String>();
+		integrationKeys.put("merchantid", "123456");
+		integrationKeys.put("username", "accnt");
+		integrationKeys.put("password", "pass123");
+		integrationKeys.put("transaction", "CAPTURE");
+		
+		paymentConfiguration.setIntegrationKeys(integrationKeys);
+		
+		System.out.println(paymentConfiguration.toJSONString());
+		
+		paymentService.savePaymentModuleConfiguration(paymentConfiguration, store);
+		
+		paymentConfiguration = paymentService.getPaymentConfiguration("beanstream", store);
+		
+		System.out.println(paymentConfiguration.toJSONString());
 		
 	}
 
