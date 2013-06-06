@@ -140,6 +140,12 @@
 	
 	</bean>
 	
+	<!-- Encryption -->
+	<bean id="encryption"
+		class="com.salesmanager.core.modules.utils.EncryptionImpl">
+		<property name="secretKey" ref="secretKey"/>
+	</bean>
+	
 	<!-- Email -->
 	<bean id="freemarkerMailConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
                  <!-- Uses HTML with templates and freemarker template engine -->

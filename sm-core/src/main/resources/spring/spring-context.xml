@@ -92,6 +92,7 @@
 			<list>
 		    	<value>classpath:database.properties</value>
 				<value>classpath:email.properties</value>
+				<value>classpath:configs.properties</value>
 			</list>
 		</property>
 	</bean>

@@ -19,9 +19,15 @@
 	
 	<!-- JDBC User -->
 	<bean id="userService" class="com.salesmanager.core.business.user.service.UserServiceImpl"/>
-
-
-
 	
 	
+	<bean id="secretKey" class="java.lang.String">
+  		<constructor-arg value="${secretKey}"/>
+	</bean>
+	
+	<!-- Get the secret key from JNDI -->
+	<!--
+	<jee:jndi-lookup id="secretKey"
+		jndi-name="java:comp/env/secretKey" />	
+	-->
 </beans>
