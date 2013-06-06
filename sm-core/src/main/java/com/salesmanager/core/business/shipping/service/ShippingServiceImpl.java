@@ -44,6 +44,7 @@ import com.salesmanager.core.constants.ShippingConstants;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.shipping.model.Packaging;
 import com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule;
+import com.salesmanager.core.modules.utils.Encryption;
 import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.core.utils.reference.ConfigurationModulesLoader;
 
@@ -69,6 +70,9 @@ public class ShippingServiceImpl implements ShippingService {
 	
 	@Autowired
 	private Packaging packaging;
+	
+	@Autowired
+	private Encryption encryption;
 	
 	@Autowired
 	@Resource(name="shippingModules")
@@ -214,7 +218,9 @@ public class ShippingServiceImpl implements ShippingService {
 				MerchantConfiguration merchantConfiguration = merchantConfigurationService.getMerchantConfiguration(SHIPPING_MODULES, store);
 				if(merchantConfiguration!=null) {
 					if(!StringUtils.isBlank(merchantConfiguration.getValue())) {
-						modules = ConfigurationModulesLoader.loadIntegrationConfigurations(merchantConfiguration.getValue());
+						
+						String decrypted = encryption.decrypt(merchantConfiguration.getValue());
+						modules = ConfigurationModulesLoader.loadIntegrationConfigurations(decrypted);
 					}
 				} else {
 					merchantConfiguration = new MerchantConfiguration();
@@ -225,8 +231,8 @@ public class ShippingServiceImpl implements ShippingService {
 				
 				String configs =  ConfigurationModulesLoader.toJSONString(modules);
 				
-				//TODO encrypt
-				merchantConfiguration.setValue(configs);
+				String encrypted = encryption.encrypt(configs);
+				merchantConfiguration.setValue(encrypted);
 				merchantConfigurationService.saveOrUpdate(merchantConfiguration);
 				
 			} catch (Exception e) {
@@ -245,13 +251,14 @@ public class ShippingServiceImpl implements ShippingService {
 			MerchantConfiguration merchantConfiguration = merchantConfigurationService.getMerchantConfiguration(SHIPPING_MODULES, store);
 			if(merchantConfiguration!=null) {
 				if(!StringUtils.isBlank(merchantConfiguration.getValue())) {
-					modules = ConfigurationModulesLoader.loadIntegrationConfigurations(merchantConfiguration.getValue());
+					String decrypted = encryption.decrypt(merchantConfiguration.getValue());
+					modules = ConfigurationModulesLoader.loadIntegrationConfigurations(decrypted);
 				}
 				
 				modules.remove(moduleCode);
 				String configs =  ConfigurationModulesLoader.toJSONString(modules);
-				//TODO encrypt
-				merchantConfiguration.setValue(configs);
+				String encrypted = encryption.encrypt(configs);
+				merchantConfiguration.setValue(encrypted);
 				merchantConfigurationService.saveOrUpdate(merchantConfiguration);
 				
 				
@@ -300,8 +307,8 @@ public class ShippingServiceImpl implements ShippingService {
 			MerchantConfiguration merchantConfiguration = merchantConfigurationService.getMerchantConfiguration(SHIPPING_MODULES, store);
 			if(merchantConfiguration!=null) {
 				if(!StringUtils.isBlank(merchantConfiguration.getValue())) {
-					//TODO decrypt
-					modules = ConfigurationModulesLoader.loadIntegrationConfigurations(merchantConfiguration.getValue());
+					String decrypted = encryption.decrypt(merchantConfiguration.getValue());
+					modules = ConfigurationModulesLoader.loadIntegrationConfigurations(decrypted);
 					
 				}
 			}
