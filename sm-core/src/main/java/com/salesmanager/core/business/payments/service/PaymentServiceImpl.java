@@ -31,6 +31,7 @@ import com.salesmanager.core.business.system.service.MerchantConfigurationServic
 import com.salesmanager.core.business.system.service.ModuleConfigurationService;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.payment.model.PaymentModule;
+import com.salesmanager.core.modules.utils.Encryption;
 import com.salesmanager.core.utils.reference.ConfigurationModulesLoader;
 
 @Service("paymentService")
@@ -47,11 +48,14 @@ public class PaymentServiceImpl implements PaymentService {
 	private ModuleConfigurationService moduleConfigurationService;
 	
 	@Autowired
-	private TransactionService transactionService;;
+	private TransactionService transactionService;
 	
 	@Autowired
 	@Resource(name="paymentModules")
 	private Map<String,PaymentModule> paymentModules;
+	
+	@Autowired
+	private Encryption encryption;
 	
 	@Override
 	public List<IntegrationModule> getPaymentMethods(MerchantStore store) throws ServiceException {
@@ -109,9 +113,11 @@ public class PaymentServiceImpl implements PaymentService {
 			Map<String,IntegrationConfiguration> modules = new HashMap<String,IntegrationConfiguration>();
 			MerchantConfiguration merchantConfiguration = merchantConfigurationService.getMerchantConfiguration(PAYMENT_MODULES, store);
 			if(merchantConfiguration!=null) {
+				
 				if(!StringUtils.isBlank(merchantConfiguration.getValue())) {
 					
-					modules = ConfigurationModulesLoader.loadIntegrationConfigurations(merchantConfiguration.getValue());
+					String decrypted = encryption.decrypt(merchantConfiguration.getValue());
+					modules = ConfigurationModulesLoader.loadIntegrationConfigurations(decrypted);
 					
 					
 				}
@@ -145,7 +151,10 @@ public class PaymentServiceImpl implements PaymentService {
 			MerchantConfiguration merchantConfiguration = merchantConfigurationService.getMerchantConfiguration(PAYMENT_MODULES, store);
 			if(merchantConfiguration!=null) {
 				if(!StringUtils.isBlank(merchantConfiguration.getValue())) {
-					modules = ConfigurationModulesLoader.loadIntegrationConfigurations(merchantConfiguration.getValue());
+					
+					String decrypted = encryption.decrypt(merchantConfiguration.getValue());
+					
+					modules = ConfigurationModulesLoader.loadIntegrationConfigurations(decrypted);
 				}
 			} else {
 				merchantConfiguration = new MerchantConfiguration();
@@ -155,7 +164,10 @@ public class PaymentServiceImpl implements PaymentService {
 			modules.put(configuration.getModuleCode(), configuration);
 			
 			String configs =  ConfigurationModulesLoader.toJSONString(modules);
-			merchantConfiguration.setValue(configs);
+			
+			String encrypted = encryption.encrypt(configs);
+			merchantConfiguration.setValue(encrypted);
+			
 			merchantConfigurationService.saveOrUpdate(merchantConfiguration);
 			
 		} catch (Exception e) {
@@ -172,13 +184,19 @@ public class PaymentServiceImpl implements PaymentService {
 			Map<String,IntegrationConfiguration> modules = new HashMap<String,IntegrationConfiguration>();
 			MerchantConfiguration merchantConfiguration = merchantConfigurationService.getMerchantConfiguration(PAYMENT_MODULES, store);
 			if(merchantConfiguration!=null) {
+
 				if(!StringUtils.isBlank(merchantConfiguration.getValue())) {
-					modules = ConfigurationModulesLoader.loadIntegrationConfigurations(merchantConfiguration.getValue());
+					
+					String decrypted = encryption.decrypt(merchantConfiguration.getValue());
+					modules = ConfigurationModulesLoader.loadIntegrationConfigurations(decrypted);
 				}
 				
 				modules.remove(moduleCode);
 				String configs =  ConfigurationModulesLoader.toJSONString(modules);
-				merchantConfiguration.setValue(configs);
+				
+				String encrypted = encryption.encrypt(configs);
+				merchantConfiguration.setValue(encrypted);
+				
 				merchantConfigurationService.saveOrUpdate(merchantConfiguration);
 				
 				
