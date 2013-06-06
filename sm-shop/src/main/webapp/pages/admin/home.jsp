@@ -86,6 +86,8 @@
 					</div>
 					
 					<br/>
+					<h3></h3><s:message code="label.order.recent" text="Recent orders"/></h3>
+					<br/>
 					
 				 <!-- Listing grid include -->
 				 <c:set value="/admin/orders/paging.html" var="pagingUrl" scope="request"/>
