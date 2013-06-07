@@ -18,6 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
+import javax.validation.Valid;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,7 +50,6 @@ public class ProductOptionValue extends SalesManagerEntity<Long, ProductOptionVa
 	@Transient
 	private MultipartFile image = null;
 	
-
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "productOptionValue")
 	private Set<ProductOptionValueDescription> descriptions = new HashSet<ProductOptionValueDescription>();
 	
