@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 
 
 @Controller
-public class CategoryController {
+public class ShoppingCategoryController {
 	
 	public String getCategory(){
 		
