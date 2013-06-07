@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.content.model.content.FileContentType;
 import com.salesmanager.core.business.content.model.content.OutputContentFile;
@@ -38,29 +39,22 @@ public class FilesController {
 	 * @throws ServiceException
 	 */
 	@RequestMapping("/files/{storeCode}/{fileName}.{extension}")
-	public void  downloadFile(@PathVariable final String storeCode, @PathVariable final String fileName, @PathVariable final String extension, HttpServletRequest request, HttpServletResponse response) throws IOException, ServiceException {
+	public @ResponseBody byte[] downloadFile(@PathVariable final String storeCode, @PathVariable final String fileName, @PathVariable final String extension, HttpServletRequest request, HttpServletResponse response) throws IOException, ServiceException {
 
-		// example -> /static/mystore/CONTENT/myImage.png
+		// example -> /files/<store code>/myfile.css
 		
-		FileContentType imgType = null;
+		FileContentType imgType = FileContentType.STATIC_FILE;
 		
 		// needs to query the new API
-		OutputContentFile image =contentService.getContentFile(storeCode, imgType, new StringBuilder().append(fileName).append(".").append(extension).toString());
+		OutputContentFile file =contentService.getContentFile(storeCode, imgType, new StringBuilder().append(fileName).append(".").append(extension).toString());
 		
-/*		try {
-		      // get your file as InputStream
-		      InputStream is = ...;
-		      // copy it to response's OutputStream
-		      IOUtils.copy(is, response.getOutputStream());
-		      response.setContentType("application/pdf");      
-		      response.setHeader("Content-Disposition", "attachment; filename=somefile.pdf"); 
-		      response.flushBuffer();
-		    } catch (IOException ex) {
-		      log.info("Error writing file to output stream. Filename was '" + fileName + "'");
-		      throw new RuntimeException("IOError writing file to output stream");
-		    }
-
-		}*/
+		
+		if(file!=null) {
+			return file.getFile().toByteArray();
+		} else {
+			//empty image placeholder
+			return null;
+		}
 		
 
 
@@ -76,7 +70,7 @@ public class FilesController {
 	 * @throws IOException
 	 */
 	@RequestMapping("/files/{storeCode}/{orderId}/{productId}/{fileName}.{extension}")
-	public void printImage(@PathVariable final String storeCode, @PathVariable final Long orderId, @PathVariable final Long productId, @PathVariable final String fileName, @PathVariable final String extension, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public void downloadProduct(@PathVariable final String storeCode, @PathVariable final Long orderId, @PathVariable final Long productId, @PathVariable final String fileName, @PathVariable final String extension, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		// product image
 		// example -> /files/mystore/12345/120/product1.zip

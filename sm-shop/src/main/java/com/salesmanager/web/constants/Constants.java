@@ -19,6 +19,7 @@ public class Constants {
 	public final static String CONTENT_IMAGE = "CONTENT";
 	
 	public final static String STATIC_URI = "/static";
+	public final static String FILES_URI = "/files";
 	public final static String PRODUCT_URI= "/product";
 	public final static String PRODUCT_ID_URI= "/productid";
 	

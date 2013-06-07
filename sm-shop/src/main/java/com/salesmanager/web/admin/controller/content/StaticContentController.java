@@ -35,6 +35,7 @@ import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.content.ContentFiles;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.utils.FilePathUtils;
 
 
 @Controller
@@ -75,14 +76,38 @@ public class StaticContentController {
 			
 			List<String> fileNames = contentService.getContentFilesNames(store.getCode(), FileContentType.STATIC_FILE);
 			
+			Map<String,String> configurations = (Map<String, String>)request.getSession().getAttribute(Constants.STORE_CONFIGURATION);
+			String scheme = Constants.HTTP_SCHEME;
+			if(configurations!=null) {
+				scheme = (String)configurations.get("scheme");
+			}
+			
+
+			StringBuilder storePath = new StringBuilder();
+			storePath.append(scheme).append("://")
+			.append(store.getDomainName())
+			.append(request.getContextPath());
+			
+			
+			
+
+			
+			
+			
 			if(fileNames!=null) {
 
 				for(String name : fileNames) {
-
+					
+					String mimeType = URLConnection.getFileNameMap().getContentTypeFor(name);
+					
+					StringBuilder filePath = new StringBuilder();
+					filePath.append(storePath.toString()).append(FilePathUtils.buildStaticFilePath(name));
+					
+					
 					@SuppressWarnings("rawtypes")
 					Map entry = new HashMap();
-					entry.put("name", name);
-					entry.put("mimeType", URLConnection.getFileNameMap().getContentTypeFor(name));
+					entry.put("name", filePath.toString());
+					entry.put("mimeType", mimeType);
 					resp.addDataEntry(entry);
 
 				}

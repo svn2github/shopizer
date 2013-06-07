@@ -67,7 +67,6 @@ public class ContentImageUrlTag extends TagSupport {
 			
 			imagePath.append(scheme).append("://")
 			.append(merchantStore.getDomainName())
-			//.append("/")
 			.append(request.getContextPath());
 			
 			
