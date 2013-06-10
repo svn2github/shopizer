@@ -191,7 +191,7 @@ public class StaticContentController {
 	 */
 	@Secured("CONTENT")
 	@RequestMapping(value="/admin/content/static/removeFile.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String removeImage(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+	public @ResponseBody String removeFile(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String imageName = request.getParameter("name");
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
@@ -205,7 +205,7 @@ public class StaticContentController {
 			
 			contentService.removeFile(store.getCode(), FileContentType.STATIC_FILE, imageName);
 
-		
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 		
 		} catch (Exception e) {
 			LOGGER.error("Error while deleting product", e);

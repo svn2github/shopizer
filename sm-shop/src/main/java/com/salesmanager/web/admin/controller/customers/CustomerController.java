@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -22,8 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -33,12 +34,16 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
+import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
+import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
 public class CustomerController {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerController.class);
 	
 	@Autowired
 	LabelUtils messages;
@@ -308,53 +313,57 @@ public class CustomerController {
 	
 	
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/admin/customers/page.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody
 	String pageCustomers(HttpServletRequest request,HttpServletResponse response) {
 
-		String searchTerm = request.getParameter("name");// will be the name of the customer
 
 		List<Customer> customers = new ArrayList<Customer>();
-		String totalRows = "0";
-		String endRow = "0";
-
-		StringBuilder res = new StringBuilder().append("{ response:{     status:0,     startRow:0,     endRow:0,     totalRows:0 ,     data: [           ");		
-
-		if (!StringUtils.isBlank(searchTerm)) {
-
-			customers = customerService.getByName(searchTerm);
+		
+		
+		AjaxPageableResponse resp = new AjaxPageableResponse();
+		
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		
+		try {
 			
-		} else {
-			customers = customerService.list();
-		}
-
-		if (customers != null && customers.size() > 0) {
-			totalRows = new Integer(customers.size()).toString();
-			endRow = new Integer(customers.size() - 1).toString();
-			res = new StringBuilder().append("{ response:{     status:0,     startRow:0,     endRow:");
-			res.append(endRow);
-			res.append(" , totalRows:");
-			res.append(totalRows);
-			res.append(",     data: [           ");
-			int i = 0;
+			Map<String,Country> countriesMap = countryService.getCountriesMap(language);
 			
-			for (Customer customer : customers) {
+			
+			int startRow = Integer.parseInt(request.getParameter("_startRow"));
+			int endRow = Integer.parseInt(request.getParameter("_endRow"));
+			String	email = request.getParameter("email");
+			String customerName = request.getParameter("name");
+			String	country = request.getParameter("country");
+			
+			//TODO criteria
+			List<Customer> customerList = customerService.listByStore(store);
+			
+			for(Customer customer : customerList) {
+				@SuppressWarnings("rawtypes")
+				Map entry = new HashMap();
+				entry.put("id", customer.getId());
+				entry.put("firstName", customer.getFirstname());
+				entry.put("lastName", customer.getLastname());
+				entry.put("email", customer.getEmailAddress());
+				entry.put("firstName", entry.put("country", countriesMap.get(country).getName()));
+				resp.addDataEntry(entry);
 				
-				res.append("{id:" + customer.getId() + ",name:\'" + customer.getFirstname()
-						+ " " + customer.getLastname() + "\',country:\' "
-						+ customer.getCountry().getIsoCode()
-						+ " \' ,active:\'true\'}");
-				
-				if (i < Integer.parseInt(totalRows)) {
-					res.append(",");
-				}
 			}
-
+			
+		} catch (Exception e) {
+			LOGGER.error("Error while paging orders", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 		}
-
-		res.append("]   } }");
-
-		return res.toString();
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
+		
+	
 	}
 	
 		
