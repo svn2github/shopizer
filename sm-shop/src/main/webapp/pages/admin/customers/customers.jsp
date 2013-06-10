@@ -24,105 +24,28 @@
 
 
 			<div class="sm-ui-component">
+			
+			
+			
+			
+				<h3><s:message code="label.customer.list" text="Customer list" /></h3> 
+				<br/><br/>
+
+				 <!-- Listing grid include -->
+				 <c:set value="/admin/customers/page.html" var="pagingUrl" scope="request"/>
+				 <c:set value="/admin/admin/customers/remove.html" var="removeUrl" scope="request"/>
+				 <c:set value="/admin/customers/customer.html" var="editUrl" scope="request"/>
+				 <c:set var="entityId" value="id" scope="request"/>
+				 <c:set var="componentTitleKey" value="label.customer.list" scope="request"/>
+				 <c:set var="gridHeader" value="/pages/admin/customers/customers-gridHeader.jsp" scope="request"/>
+				 <c:set var="canRemoveEntry" value="false" scope="request"/>
+
+            	 <jsp:include page="/pages/admin/components/list.jsp"></jsp:include> 
+				 <!-- End listing grid include -->
+			
+			
 
 
-				<script>
-
-///isc.showConsole();
-      			     
-      			     
-// User Interface
-// ---------------------------------------------------------------------
-
-								
-
-
-								
-								isc.RestDataSource.create({ 
-									ID:"customers", 
-									dataFormat:"json",
-									operationBindings:[ 
-										{operationType:"fetch", dataProtocol:"postParams",dataURL: "<c:url value="/admin/customers/page.html" />"} 
-									]
-								}); 
-
-							  
-							  
-							  isc.ListGrid.create({
-    								ID: "customersList",
-    								border:1,
-    								dataSource: "customers",
-    								showRecordComponents: true,    
-    								showRecordComponentsByCell: true,
-    								
-    								autoFetchData: true,
-    								showFilterEditor: true,
-    								filterOnKeypress: true,
-									dataFetchMode:"paged",
-
-
-    						      fields:[
-        								{title:"ID", name:"id",canFilter:false},
-        								{title:"Name", name:"name",canFilter:true},
-        								{title:"Country", name:"country",canFilter:true},
-        								{title:"Info", name: "buttonField", align: "center",canFilter:false}
-
-    							],
-    							selectionType: "single",
-    							createRecordComponent : function (record, colNum) {  
-        
-        							var fieldName = this.getFieldName(colNum);
-        							if (fieldName == "buttonField") {  
-
-	        						
-	           						var button = isc.IButton.create({
-	                						height: 18,
-	                						width: 65,
-	               					 		title: "<s:message code="label.entity.details" text="Details"/>",
-	               					 	click : function () {
-                							window.location='<c:url value="/admin/customers/customer.html" />?id=' + record["id"];
-                						}
-	            					});
-	            					return button;  
-            				
-            					}
- 
-    						  }
-
-
-								});
-								
-								
-								
-
-
-// Define application layout
-// ---------------------------------------------------------------------
-
-isc.HLayout.create({
-    ID:"pageLayout",
-    width: "700",
-    height: "600",
-    position:"relative",
-    members:[
-        isc.SectionStack.create({
-            ID:"rightSideLayout",
-            visibilityMode:"multiple",
-            animateSections:true,
-            sections:[
-                   {title:"Customers", autoShow:true, items:[customersList]}
-            ]
-        })
-    ]
-});
-
-isc.Page.setEvent("load", "pageLayout.draw()");
-
-      			     
-
-								
-								
-												</script>
 
 
 
