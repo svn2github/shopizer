@@ -1,16 +1,12 @@
 package com.salesmanager.core.business.catalog.product.service.image;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-
-import org.springframework.util.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.salesmanager.core.business.catalog.product.dao.image.ProductImageDao;
 import com.salesmanager.core.business.catalog.product.model.Product;
@@ -90,45 +86,30 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		try {
 			
 			Assert.notNull(inputImage.getFile(),"ImageContentFile.file cannot be null");
-			//Assert.notNull(inputImage.getBufferedImage(),"ImageContentFile.bufferedImage cannot be null");
-		
-/*			//upload the image in the CMS
-			InputContentFile contentImage = new InputContentFile();
-			//contentImage.setFile(productImage.getImage());
-			contentImage.setFileContentType(FileContentType.PRODUCT);
-			contentImage.setFileName(productImage.getProductImage());
-			FileNameMap fileNameMap = URLConnection.getFileNameMap();
-			String contentType = fileNameMap.getContentTypeFor(productImage.getProductImage());
-			contentImage.setMimeType(contentType);
-			
 
-			String extension = contentType.substring(contentType.indexOf("/")+1,contentType.length());
-			BufferedImage image = ImageIO.read(productImage.getImage());
-			
-			//baos = new ByteArrayOutputStream();
-			//ImageIO.write( image, extension, baos );
-			
-			
-			//contentImage.setBufferedImage(image);
-			
-			ByteArrayInputStream inputStream = productImage.getImage();
-			
-			
-			contentImage.setFile(inputStream);*/
 
 			
 			productFileManager.addProductImage(productImage, inputImage);
 	
 			//insert ProductImage
 			this.saveOrUpdate(productImage);
+			
+
 		
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		} finally {
 			try {
-				//baos.flush();
-				//baos.close();
-			} catch(Exception e) {
+				
+				if(inputImage.getBufferedImage()!=null){
+					inputImage.getBufferedImage().flush();
+				}
+				
+				if(inputImage.getFile()!=null) {
+					inputImage.getFile().close();
+				}
+
+			} catch(Exception ignore) {
 				
 			}
 		}

@@ -187,6 +187,14 @@ public class ContentServiceImpl
 		        LOG.error( "Error while trying to convert input stream to buffered image", e );
 		        throw new ServiceException( e );
 		
+		 } finally {
+			 
+			 try {
+				if(contentImage.getFile()!=null) {
+					contentImage.getFile().close();
+				}
+			} catch (Exception ignore) {}
+			 
 		 }
 
     }
@@ -203,6 +211,13 @@ public class ContentServiceImpl
 		        LOG.error( "Error while trying to convert input stream to buffered image", e );
 		        throw new ServiceException( e );
 		
+		 } finally {
+			 
+			 try {
+				if(contentImage.getFile()!=null) {
+					contentImage.getFile().close();
+				}
+			} catch (Exception ignore) {}
 		 }
 
     }
@@ -241,6 +256,16 @@ public class ContentServiceImpl
         LOG.info( "Adding content images for merchant...." );
         //contentFileManager.addImages( merchantStoreCode, contentImagesList );
         staticContentFileManager.addStaticFiles(merchantStoreCode, contentFilesList);
+        
+        try {
+			for(InputContentFile file : contentFilesList) {
+				if(file.getFile()!=null) {
+					file.getFile().close();
+				}
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		
 	}
 	
