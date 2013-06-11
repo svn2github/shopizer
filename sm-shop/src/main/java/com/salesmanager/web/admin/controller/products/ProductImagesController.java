@@ -60,8 +60,6 @@ public class ProductImagesController {
 	@Autowired
 	private ProductService productService;
 	
-	@Autowired
-	private ProductPriceUtils priceUtil;
 
 	@Autowired
 	private ProductImageService productImageService;
