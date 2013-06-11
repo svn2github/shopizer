@@ -1,6 +1,5 @@
 package com.salesmanager.web.admin.controller.customers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -26,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.model.CustomerCriteria;
+import com.salesmanager.core.business.customer.model.CustomerList;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
@@ -117,7 +118,7 @@ public class CustomerController {
 		Pattern pattern = Pattern.compile(email_regEx);
 		
 		Language language = (Language)request.getAttribute("LANGUAGE");
-		List<Language> languages = languageService.getLanguages();
+		//List<Language> languages = languageService.getLanguages();
 		
 		//get countries
 		List<Country> countries = countryService.getCountries(language);
@@ -319,37 +320,63 @@ public class CustomerController {
 	String pageCustomers(HttpServletRequest request,HttpServletResponse response) {
 
 
-		List<Customer> customers = new ArrayList<Customer>();
-		
-		
 		AjaxPageableResponse resp = new AjaxPageableResponse();
 		
-		Language language = (Language)request.getAttribute("LANGUAGE");
+		//Language language = (Language)request.getAttribute("LANGUAGE");
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		
 		try {
 			
-			Map<String,Country> countriesMap = countryService.getCountriesMap(language);
+
+			
+			//Map<String,Country> countriesMap = countryService.getCountriesMap(language);
 			
 			
 			int startRow = Integer.parseInt(request.getParameter("_startRow"));
 			int endRow = Integer.parseInt(request.getParameter("_endRow"));
 			String	email = request.getParameter("email");
-			String customerName = request.getParameter("name");
+			String name = request.getParameter("name");
+			String firstName = request.getParameter("firstName");
+			String lastName = request.getParameter("lastName");
 			String	country = request.getParameter("country");
 			
-			//TODO criteria
-			List<Customer> customerList = customerService.listByStore(store);
 			
-			for(Customer customer : customerList) {
+			CustomerCriteria criteria = new CustomerCriteria();
+			criteria.setStartIndex(startRow);
+			criteria.setMaxCount(endRow);
+			
+			if(!StringUtils.isBlank(email)) {
+				criteria.setEmail(email);
+			}
+			
+			if(!StringUtils.isBlank(name)) {
+				criteria.setName(name);
+			}
+			
+			if(!StringUtils.isBlank(country)) {
+				criteria.setCountry(country);
+			}
+			
+			if(!StringUtils.isBlank(firstName)) {
+				criteria.setFirstName(firstName);
+			}
+			
+			if(!StringUtils.isBlank(lastName)) {
+				criteria.setLastName(lastName);
+			}
+			
+
+			CustomerList customerList = customerService.listByStore(store,criteria);
+			
+			for(Customer customer : customerList.getCustomers()) {
 				@SuppressWarnings("rawtypes")
 				Map entry = new HashMap();
 				entry.put("id", customer.getId());
 				entry.put("firstName", customer.getFirstname());
 				entry.put("lastName", customer.getLastname());
 				entry.put("email", customer.getEmailAddress());
-				entry.put("firstName", entry.put("country", countriesMap.get(country).getName()));
+				entry.put("country", customer.getCountry().getIsoCode());
 				resp.addDataEntry(entry);
 				
 			}
