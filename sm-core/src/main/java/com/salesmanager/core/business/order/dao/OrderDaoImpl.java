@@ -1,10 +1,6 @@
 package com.salesmanager.core.business.order.dao;
 
-import java.util.Date;
-import java.util.List;
-
 import javax.persistence.Query;
-import javax.persistence.criteria.Expression;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
@@ -12,8 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.mysema.query.BooleanBuilder;
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
-import com.mysema.query.types.Predicate;
-import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.common.model.CriteriaOrderBy;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -61,6 +55,7 @@ public class OrderDaoImpl  extends SalesManagerEntityDaoImpl<Long, Order> implem
 		return query.uniqueResult(qOrder);
 		
 	}
+
 
 	@SuppressWarnings("unused")
 	@Override
@@ -126,14 +121,14 @@ public class OrderDaoImpl  extends SalesManagerEntityDaoImpl<Long, Order> implem
 			.leftJoin(qOrderProductAttribute.productOptionValue).fetch();
 			
 			query.where(qOrder.merchant.id.eq(store.getId()));
-			BooleanBuilder pBuilder = new BooleanBuilder();
+			BooleanBuilder pBuilder = null;
 
 		if(!StringUtils.isBlank(criteria.getCustomerName())) {
 			if(pBuilder==null) {
 				pBuilder = new BooleanBuilder();
 			}
 			pBuilder.and(qOrder.customerFirstName.like(criteria.getCustomerName())
-					.or(qOrder.customerLastName.eq(criteria.getCustomerName())));
+					.or(qOrder.customerLastName.like(criteria.getCustomerName())));
 
 
 		}
@@ -142,7 +137,7 @@ public class OrderDaoImpl  extends SalesManagerEntityDaoImpl<Long, Order> implem
 			if(pBuilder==null) {
 				pBuilder = new BooleanBuilder();
 			}
-			pBuilder.and(qOrder.paymentMethod.eq(criteria.getPaymentMethod()));
+			pBuilder.and(qOrder.paymentMethod.like(criteria.getPaymentMethod()));
 		}
 		
 		if(criteria.getOrderBy().name().equals(CriteriaOrderBy.ASC)) {

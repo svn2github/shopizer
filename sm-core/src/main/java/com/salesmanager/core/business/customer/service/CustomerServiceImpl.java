@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.customer.dao.CustomerDAO;
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.model.CustomerCriteria;
+import com.salesmanager.core.business.customer.model.CustomerList;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -52,6 +54,11 @@ public class CustomerServiceImpl extends SalesManagerEntityServiceImpl<Long, Cus
 	@Override
 	public List<Customer> listByStore(MerchantStore store) {
 		return customerDAO.listByStore(store);
+	}
+	
+	@Override
+	public CustomerList listByStore(MerchantStore store, CustomerCriteria criteria) {
+		return customerDAO.listByStore(store,criteria);
 	}
 
 	@Override	

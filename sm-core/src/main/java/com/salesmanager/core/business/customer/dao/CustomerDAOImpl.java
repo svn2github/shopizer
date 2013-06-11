@@ -2,11 +2,17 @@ package com.salesmanager.core.business.customer.dao;
 
 import java.util.List;
 
+import javax.persistence.Query;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
+import com.mysema.query.BooleanBuilder;
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.model.CustomerCriteria;
+import com.salesmanager.core.business.customer.model.CustomerList;
 import com.salesmanager.core.business.customer.model.QCustomer;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -53,9 +59,150 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.join(qCustomer.merchantStore).fetch()
 			.leftJoin(qCustomer.country,qCountry).fetch()
 			.leftJoin(qCustomer.zone,qZone).fetch()
-			.where(qCustomer.firstname.eq(name));
+			.where(
+					qCustomer.firstname.eq(name).or(qCustomer.lastname.eq(name))
+					
+			);
 		
 		return query.list(qCustomer);
+	}
+	
+	@Override
+	public CustomerList listByStore(MerchantStore store, CustomerCriteria criteria) {
+		
+		
+		
+		CustomerList customerList = new CustomerList();
+		StringBuilder countBuilderSelect = new StringBuilder();
+		countBuilderSelect.append("select count(c) from Customer as c");
+		
+		StringBuilder countBuilderWhere = new StringBuilder();
+		countBuilderWhere.append(" where c.merchantStore.id=:mId");
+
+		if(!StringUtils.isBlank(criteria.getName())) {
+			countBuilderWhere.append(" and c.firstname like:nm");
+			countBuilderWhere.append(" or c.lastname like:nm");
+		}
+		
+		if(!StringUtils.isBlank(criteria.getFirstName())) {
+			countBuilderWhere.append(" and c.firstname like:fn");
+		}
+		
+		if(!StringUtils.isBlank(criteria.getLastName())) {
+			countBuilderWhere.append(" and c.lastname like:ln");
+		}
+		
+		if(!StringUtils.isBlank(criteria.getEmail())) {
+			countBuilderWhere.append(" and c.emailAddress like:email");
+		}
+		
+		if(!StringUtils.isBlank(criteria.getCountry())) {
+			countBuilderWhere.append(" and c.country.isoCode like:country");
+		}
+
+		Query countQ = super.getEntityManager().createQuery(
+				countBuilderSelect.toString() + countBuilderWhere.toString());
+
+		countQ.setParameter("mId", store.getId());
+		
+
+		if(!StringUtils.isBlank(criteria.getName())) {
+			countQ.setParameter("nm", criteria.getName());
+		}
+		
+		if(!StringUtils.isBlank(criteria.getFirstName())) {
+			countQ.setParameter("fn", criteria.getFirstName());
+		}
+		
+		if(!StringUtils.isBlank(criteria.getLastName())) {
+			countQ.setParameter("ln", criteria.getLastName());
+		}
+		
+		if(!StringUtils.isBlank(criteria.getEmail())) {
+			countQ.setParameter("email", criteria.getEmail());
+		}
+		
+		if(!StringUtils.isBlank(criteria.getCountry())) {
+			countQ.setParameter("country", criteria.getCountry());
+		}
+		
+
+
+		Number count = (Number) countQ.getSingleResult ();
+
+		customerList.setTotalCount(count.intValue());
+		
+        if(count.intValue()==0)
+        	return customerList;
+		
+		
+		
+		QCustomer qCustomer = QCustomer.customer;
+		QCountry qCountry = QCountry.country;
+		QZone qZone = QZone.zone;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCustomer)
+			.join(qCustomer.merchantStore).fetch()
+			.leftJoin(qCustomer.country,qCountry).fetch()
+			.leftJoin(qCustomer.zone,qZone).fetch();
+
+
+			
+			query.where(qCustomer.merchantStore.id.eq(store.getId()));
+			BooleanBuilder pBuilder = null;
+
+		if(!StringUtils.isBlank(criteria.getName())) {
+			if(pBuilder==null) {
+				pBuilder = new BooleanBuilder();
+			}
+			pBuilder.and(qCustomer.firstname.like(criteria.getName())
+					.or(qCustomer.lastname.like(criteria.getName())));
+
+		}
+		
+		
+		if(!StringUtils.isBlank(criteria.getFirstName())) {
+			if(pBuilder==null) {
+				pBuilder = new BooleanBuilder();
+			}
+			pBuilder.and(qCustomer.firstname.like(criteria.getFirstName()));
+		}
+		
+		if(!StringUtils.isBlank(criteria.getLastName())) {
+			if(pBuilder==null) {
+				pBuilder = new BooleanBuilder();
+			}
+			pBuilder.and(qCustomer.lastname.like(criteria.getLastName()));
+		}
+		
+		if(!StringUtils.isBlank(criteria.getEmail())) {
+			if(pBuilder==null) {
+				pBuilder = new BooleanBuilder();
+			}
+			pBuilder.and(qCustomer.emailAddress.like(criteria.getEmail()));
+		}
+		
+		if(!StringUtils.isBlank(criteria.getCountry())) {
+			if(pBuilder==null) {
+				pBuilder = new BooleanBuilder();
+			}
+			pBuilder.and(qCustomer.country.isoCode.like(criteria.getCountry()));
+		}
+		
+
+		
+		if(criteria.getMaxCount()>0) {
+			query.limit(criteria.getMaxCount());
+			query.offset(criteria.getStartIndex());
+		}
+		
+		
+		customerList.setCustomers(query.list(qCustomer));
+
+		return customerList;
+		
 	}
 	
 	@Override
