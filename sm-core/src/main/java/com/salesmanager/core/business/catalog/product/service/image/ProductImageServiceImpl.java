@@ -36,8 +36,7 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	@Autowired
 	private ProductFileManager productFileManager;
 	
-	@Autowired
-	private CoreConfiguration configuration;
+
 	
 	
 	public ProductImage getById(Long id) {
@@ -81,8 +80,7 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		
 		
 		productImage.setProduct(product);
-		
-		//ByteArrayOutputStream baos = null;
+
 		try {
 			
 			Assert.notNull(inputImage.getFile(),"ImageContentFile.file cannot be null");
