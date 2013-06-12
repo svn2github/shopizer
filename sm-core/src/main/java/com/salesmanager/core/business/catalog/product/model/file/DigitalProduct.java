@@ -39,6 +39,7 @@ public class DigitalProduct extends SalesManagerEntity<Long, DigitalProduct> {
 	@JoinColumn(name = "PRODUCT_ID", nullable = false)
 	private Product product;
 
+	@Column(name="FILE_NAME")
 	private String productFileName;
 	
 

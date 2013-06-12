@@ -7,6 +7,7 @@ import org.springframework.util.Assert;
 import com.salesmanager.core.business.catalog.product.dao.file.DigitalProductDao;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.file.DigitalProduct;
+import com.salesmanager.core.business.content.model.content.FileContentType;
 import com.salesmanager.core.business.content.model.content.InputContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
@@ -16,6 +17,7 @@ import com.salesmanager.core.modules.cms.content.StaticContentFileManager;
 public class DigitalProductServiceImpl extends SalesManagerEntityServiceImpl<Long, DigitalProduct> 
 	implements DigitalProductService {
 	
+	@SuppressWarnings("unused")
 	private DigitalProductDao digitalProductDao;
 	
     @Autowired
@@ -27,7 +29,7 @@ public class DigitalProductServiceImpl extends SalesManagerEntityServiceImpl<Lon
 		this.digitalProductDao = digitalProductDao;
 	}
 	
-	
+	@Override
 	public void addProductFile(Product product, DigitalProduct digitalProduct, InputContentFile inputFile) throws ServiceException {
 	
 		digitalProduct.setProduct(product);
@@ -35,35 +37,50 @@ public class DigitalProductServiceImpl extends SalesManagerEntityServiceImpl<Lon
 		try {
 			
 			Assert.notNull(inputFile.getFile(),"InputContentFile.file cannot be null");
-
-
+			Assert.notNull(product,"Product cannot be null");
+			Assert.notNull(product.getMerchantStore(),"Product.merchantStore cannot be null");
+			this.saveOrUpdate(digitalProduct);
 			
-			//contentFileManager.
-	
-			//insert ProductImage
-			//this.saveOrUpdate(productImage);
-			
-
+			productDownloadsFileManager.addFile(product.getMerchantStore().getCode(), inputFile);
 		
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		} finally {
 			try {
-				
-/*				if(inputImage.getBufferedImage()!=null){
-					inputImage.getBufferedImage().flush();
-				}
-				
-				if(inputImage.getFile()!=null) {
-					inputImage.getFile().close();
-				}*/
 
-			} catch(Exception ignore) {
-				
-			}
+				if(inputFile.getFile()!=null) {
+					inputFile.getFile().close();
+				}
+
+			} catch(Exception ignore) {}
 		}
 		
 		
+	}
+	
+	@Override
+	public void removeProductFile(DigitalProduct digitalProduct) throws ServiceException {
+		
+		Assert.notNull(digitalProduct,"DigitalProduct cannot be null");
+		Assert.notNull(digitalProduct.getProduct(),"DigitalProduct.product cannot be null");
+		Assert.notNull(digitalProduct.getProduct().getManufacturer(),"DigitalProduct.product.merchantStore cannot be null");
+		
+		super.delete(digitalProduct);
+		productDownloadsFileManager.removeFile(digitalProduct.getProduct().getMerchantStore().getCode(), FileContentType.PRODUCT, digitalProduct.getProductFileName());
+	}
+	
+	
+	@Override
+	public void saveOrUpdate(DigitalProduct digitalProduct) throws ServiceException {
+		
+
+		if(digitalProduct.getId()==null || digitalProduct.getId().longValue()==0) {
+			super.save(digitalProduct);
+		} else {
+			
+			super.create(digitalProduct);
+
+		}
 	}
 	
 
