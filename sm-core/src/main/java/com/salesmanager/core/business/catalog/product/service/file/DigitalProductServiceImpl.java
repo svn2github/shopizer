@@ -11,13 +11,14 @@ import com.salesmanager.core.business.content.model.content.FileContentType;
 import com.salesmanager.core.business.content.model.content.InputContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.modules.cms.content.StaticContentFileManager;
 
 @Service("digitalProductService")
 public class DigitalProductServiceImpl extends SalesManagerEntityServiceImpl<Long, DigitalProduct> 
 	implements DigitalProductService {
 	
-	@SuppressWarnings("unused")
+
 	private DigitalProductDao digitalProductDao;
 	
     @Autowired
@@ -56,6 +57,11 @@ public class DigitalProductServiceImpl extends SalesManagerEntityServiceImpl<Lon
 		}
 		
 		
+	}
+	
+	@Override
+	public DigitalProduct getByProduct(MerchantStore store, Product product) throws ServiceException {
+		return digitalProductDao.getByProduct(store, product);
 	}
 	
 	@Override

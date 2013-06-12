@@ -5,6 +5,7 @@ import com.salesmanager.core.business.catalog.product.model.file.DigitalProduct;
 import com.salesmanager.core.business.content.model.content.InputContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 
 
 public interface DigitalProductService extends SalesManagerEntityService<Long, DigitalProduct> {
@@ -15,6 +16,9 @@ public interface DigitalProductService extends SalesManagerEntityService<Long, D
 			InputContentFile inputFile) throws ServiceException;
 
 	void removeProductFile(DigitalProduct digitalProduct)
+			throws ServiceException;
+
+	DigitalProduct getByProduct(MerchantStore store, Product product)
 			throws ServiceException;
 
 	
