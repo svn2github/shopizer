@@ -41,7 +41,9 @@ public class CmsImageFileManagerInfinispanImpl
 
     private static CmsImageFileManagerInfinispanImpl fileManager = null;
     
-    private final static String PRODUCT_MERCHANT = "product-merchant";
+    private final static String ROOT_NAME = "product-merchant";
+    
+    private String rootName = ROOT_NAME;
 
     private CacheManager cacheManager;
 
@@ -232,7 +234,7 @@ public class CmsImageFileManagerInfinispanImpl
 
 
 			final StringBuilder merchantPath = new StringBuilder();
-	        merchantPath.append( PRODUCT_MERCHANT).append(merchantStoreCode );
+	        merchantPath.append( getRootName()).append(merchantStoreCode );
 	        cacheManager.getTreeCache().getRoot().remove(merchantPath.toString());
 			
 
@@ -492,7 +494,7 @@ public class CmsImageFileManagerInfinispanImpl
     {
         LOGGER.debug( "Fetching node for store {} from Infinispan", node );
         final StringBuilder merchantPath = new StringBuilder();
-        merchantPath.append( PRODUCT_MERCHANT ).append(node);
+        merchantPath.append( getRootName() ).append(node);
 
         Fqn contentFilesFqn = Fqn.fromString(merchantPath.toString()); 
 
@@ -515,6 +517,14 @@ public class CmsImageFileManagerInfinispanImpl
 
 	public void setCacheManager(CacheManager cacheManager) {
 		this.cacheManager = cacheManager;
+	}
+
+	public void setRootName(String rootName) {
+		this.rootName = rootName;
+	}
+
+	public String getRootName() {
+		return rootName;
 	}
 
 }

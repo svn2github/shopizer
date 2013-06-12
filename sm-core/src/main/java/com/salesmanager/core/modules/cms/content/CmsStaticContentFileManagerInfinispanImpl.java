@@ -34,12 +34,15 @@ import com.salesmanager.core.modules.cms.impl.CacheManager;
  * @since 1.2
  *
  */
-public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentPut,StaticContentGet,StaticContentRemove
+public class CmsStaticContentFileManagerInfinispanImpl implements FilePut,FileGet,FileRemove
 {
 
     private static final Logger LOGGER = LoggerFactory.getLogger( CmsStaticContentFileManagerInfinispanImpl.class );
     private static CmsStaticContentFileManagerInfinispanImpl fileManager = null;
-    private static final String STATIC_CONTENT_NODE="static-merchant-";
+    private static final String ROOT_NAME="static-merchant-";
+    
+    private String rootName = ROOT_NAME;
+    
     private CacheManager cacheManager;
     
     public void stopFileManager()
@@ -88,7 +91,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
      * 
      */
     @Override
-    public void addStaticFile( final String merchantStoreCode, final InputContentFile inputStaticContentData )
+    public void addFile( final String merchantStoreCode, final InputContentFile inputStaticContentData )
         throws ServiceException
     {
         if ( cacheManager.getTreeCache() == null )
@@ -131,7 +134,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
      * @see StaticContentCacheAttribute
      */
     @Override
-    public void addStaticFiles( final String merchantStoreCode, final List<InputContentFile> inputStaticContentDataList )
+    public void addFiles( final String merchantStoreCode, final List<InputContentFile> inputStaticContentDataList )
         throws ServiceException
     {
         if ( cacheManager.getTreeCache() == null )
@@ -177,7 +180,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
      * @throws ServiceException
      */
     @Override
-    public OutputContentFile getStaticContentData( final String merchantStoreCode, final FileContentType fileContentType, final String contentFileName )
+    public OutputContentFile getFile( final String merchantStoreCode, final FileContentType fileContentType, final String contentFileName )
         throws ServiceException
     {
        
@@ -226,7 +229,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
     
     
 	@Override
-	public List<OutputContentFile> getStaticContentData(
+	public List<OutputContentFile> getFiles(
 			final String merchantStoreCode, final FileContentType staticContentType) throws ServiceException {
 
 		
@@ -283,7 +286,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
     
 
     @Override
-    public void removeStaticContent( final String merchantStoreCode, final FileContentType staticContentType, final String fileName )
+    public void removeFile( final String merchantStoreCode, final FileContentType staticContentType, final String fileName )
         throws ServiceException
     {
 
@@ -317,7 +320,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
      */
     @SuppressWarnings("unchecked")
 	@Override
-    public void removeStaticContents( final String merchantStoreCode )
+    public void removeFiles( final String merchantStoreCode )
         throws ServiceException
     {
         
@@ -333,7 +336,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
             
         	
 			final StringBuilder merchantPath = new StringBuilder();
-	        merchantPath.append( STATIC_CONTENT_NODE).append(merchantStoreCode );
+	        merchantPath.append( getRootName()).append(merchantStoreCode );
 	        cacheManager.getTreeCache().getRoot().remove(merchantPath.toString());
         	
         	
@@ -353,7 +356,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
     {
         LOGGER.debug( "Fetching node for store {} from Infinispan", node );
         final StringBuilder merchantPath = new StringBuilder();
-        merchantPath.append( STATIC_CONTENT_NODE ).append(node);
+        merchantPath.append( getRootName() ).append(node);
 
         Fqn contentFilesFqn = Fqn.fromString(merchantPath.toString()); 
 
@@ -397,7 +400,7 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
      * @throws ServiceException
      */
 	@Override
-	public List<String> getStaticContentDataName(final String merchantStoreCode, final FileContentType staticContentType)
+	public List<String> getFileNames(final String merchantStoreCode, final FileContentType staticContentType)
 			throws ServiceException {
 		
 		
@@ -428,6 +431,14 @@ public class CmsStaticContentFileManagerInfinispanImpl implements StaticContentP
 	            throw new ServiceException( e );
 	        }
 
+	}
+
+	public void setRootName(String rootName) {
+		this.rootName = rootName;
+	}
+
+	public String getRootName() {
+		return rootName;
 	}
 
 

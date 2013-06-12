@@ -18,47 +18,17 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 public class StaticContentFileManagerImpl extends StaticContentFileManager
 {
 
-    private StaticContentPut uploadStaticContent;
-    private StaticContentGet getStaticContent;
-    private StaticContentRemove removeStaticContent;
-    public StaticContentPut getUploadStaticContent()
-    {
-        return uploadStaticContent;
-    }
-    public void setUploadStaticContent( final StaticContentPut uploadStaticContent )
-    {
-        this.uploadStaticContent = uploadStaticContent;
-    }
-    public StaticContentGet getGetStaticContent()
-    {
-        return getStaticContent;
-    }
-    public void setGetStaticContent( final StaticContentGet getStaticContent )
-    {
-        this.getStaticContent = getStaticContent;
-    }
-    public StaticContentRemove getRemoveStaticContent()
-    {
-        return removeStaticContent;
-    }
-    public void setRemoveStaticContent( final StaticContentRemove removeStaticContent )
-    {
-        this.removeStaticContent = removeStaticContent;
-    }
+    private FilePut uploadFile;
+    private FileGet getFile;
+    private FileRemove removeFile;
+
+
     
     @Override
-    public OutputContentFile getStaticContentData( final String merchantStoreCode, final FileContentType staticContentType, final String contentName )
+    public void addFile( final String merchantStoreCode, final InputContentFile inputStaticContentData )
         throws ServiceException
     {
-      return  getStaticContent.getStaticContentData( merchantStoreCode, staticContentType, contentName );
-      
-    }
-    
-    @Override
-    public void addStaticFile( final String merchantStoreCode, final InputContentFile inputStaticContentData )
-        throws ServiceException
-    {
-        uploadStaticContent.addStaticFile( merchantStoreCode, inputStaticContentData );
+    	uploadFile.addFile( merchantStoreCode, inputStaticContentData );
         
     }
     
@@ -72,38 +42,69 @@ public class StaticContentFileManagerImpl extends StaticContentFileManager
      * @throws ServiceException
      */
     @Override
-    public void addStaticFiles( final String merchantStoreCode, final List<InputContentFile> inputStaticContentDataList )
+    public void addFiles( final String merchantStoreCode, final List<InputContentFile> inputStaticContentDataList )
         throws ServiceException
     {
-       uploadStaticContent.addStaticFiles( merchantStoreCode, inputStaticContentDataList );
+    	uploadFile.addFiles( merchantStoreCode, inputStaticContentDataList );
     }
     @Override
-    public void removeStaticContent( final String merchantStoreCode, final FileContentType staticContentType, final String fileName)
+    public void removeFile( final String merchantStoreCode, final FileContentType staticContentType, final String fileName)
         throws ServiceException
     {
-    	removeStaticContent.removeStaticContent(merchantStoreCode, staticContentType, fileName);
+    	removeFile.removeFile(merchantStoreCode, staticContentType, fileName);
         
     }
-    @Override
-    public void removeStaticContents( final String merchantStoreCode )
-        throws ServiceException
-    {
-    	removeStaticContent.removeStaticContents(merchantStoreCode);
-        
-    }
+
+
 	@Override
-	public List<OutputContentFile> getStaticContentData(
-			final String merchantStoreCode, final FileContentType staticContentType) throws ServiceException {
-		return getStaticContent.getStaticContentData(merchantStoreCode, staticContentType);
-	}
-	@Override
-	public List<String> getStaticContentDataName(final String merchantStoreCode, final FileContentType staticContentType)
+	public OutputContentFile getFile(String merchantStoreCode,
+			FileContentType fileContentType, String contentName)
 			throws ServiceException {
-		return getStaticContent.getStaticContentDataName(merchantStoreCode, staticContentType);
+		return getFile.getFile(merchantStoreCode, fileContentType, contentName);
+	}
+
+	@Override
+	public List<String> getFileNames(String merchantStoreCode,
+			FileContentType fileContentType) throws ServiceException {
+		return getFile.getFileNames(merchantStoreCode, fileContentType);
+	}
+
+	@Override
+	public List<OutputContentFile> getFiles(String merchantStoreCode,
+			FileContentType fileContentType) throws ServiceException {
+		return getFile.getFiles(merchantStoreCode, fileContentType);
+	}
+
+	@Override
+	public void removeFiles(String merchantStoreCode) throws ServiceException {
+		removeFile.removeFiles(merchantStoreCode);
 	}
     
    
-    
+
+	public void setRemoveFile(FileRemove removeFile) {
+		this.removeFile = removeFile;
+	}
+
+	public FileRemove getRemoveFile() {
+		return removeFile;
+	}
+
+	public void setGetFile(FileGet getFile) {
+		this.getFile = getFile;
+	}
+
+	public FileGet getGetFile() {
+		return getFile;
+	}
+
+	public void setUploadFile(FilePut uploadFile) {
+		this.uploadFile = uploadFile;
+	}
+
+	public FilePut getUploadFile() {
+		return uploadFile;
+	}
   
     
 }

@@ -19,7 +19,6 @@ import com.salesmanager.core.business.content.model.content.OutputContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.modules.cms.product.ProductFileManager;
-import com.salesmanager.core.utils.CoreConfiguration;
 
 @Service("productImage")
 public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long, ProductImage> 

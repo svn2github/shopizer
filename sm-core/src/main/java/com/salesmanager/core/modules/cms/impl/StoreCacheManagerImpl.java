@@ -7,16 +7,16 @@ package com.salesmanager.core.modules.cms.impl;
  * @author casams1
  *
  */
-public class ImagesCacheManagerImpl extends CacheManagerImpl {
+public class StoreCacheManagerImpl extends CacheManagerImpl {
 	
 	
-	private static  ImagesCacheManagerImpl cacheManager = null;
+	private static  StoreCacheManagerImpl cacheManager = null;
 	private final static String NAMED_CACHE = "StoreRepository";
 	
 
 	
 
-	private ImagesCacheManagerImpl() {
+	private StoreCacheManagerImpl() {
 		
 		super.init(NAMED_CACHE);
 		
@@ -24,10 +24,10 @@ public class ImagesCacheManagerImpl extends CacheManagerImpl {
 	}
 
 	
-	public static ImagesCacheManagerImpl getInstance() {
+	public static StoreCacheManagerImpl getInstance() {
 		
 		if(cacheManager==null) {
-			cacheManager = new ImagesCacheManagerImpl();
+			cacheManager = new StoreCacheManagerImpl();
 
 		}
 		

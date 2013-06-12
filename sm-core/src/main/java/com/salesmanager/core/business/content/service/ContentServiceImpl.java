@@ -19,7 +19,6 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.modules.cms.content.ContentFileManager;
 import com.salesmanager.core.modules.cms.content.StaticContentFileManager;
 
 @Service( "contentService" )
@@ -32,11 +31,14 @@ public class ContentServiceImpl
 
     private final ContentDao contentDao;
 
-    @Autowired
-    ContentFileManager contentFileManager;
+    //@Autowired
+    //ContentFileManager contentFileManager;
     
     @Autowired
     StaticContentFileManager staticContentFileManager;
+    
+    @Autowired
+    StaticContentFileManager contentFileManager;
 
     @Autowired
     public ContentServiceImpl( final ContentDao contentDao )
@@ -180,7 +182,7 @@ public class ContentServiceImpl
     	try
 	    {
 	        LOG.info( "Adding content image for merchant id {}", merchantStoreCode);
-	        contentFileManager.addImage( merchantStoreCode, contentImage );
+	        contentFileManager.addFile( merchantStoreCode, contentImage );
 	        
 	    } catch ( Exception e )
 		 {
@@ -204,7 +206,7 @@ public class ContentServiceImpl
     	try
 	    {
 	        LOG.info( "Adding content file for merchant id {}", merchantStoreCode);
-	        staticContentFileManager.addStaticFile(merchantStoreCode, contentImage);
+	        staticContentFileManager.addFile(merchantStoreCode, contentImage);
 	        
 	    } catch ( Exception e )
 		 {
@@ -255,7 +257,7 @@ public class ContentServiceImpl
 		
         LOG.info( "Adding content images for merchant...." );
         //contentFileManager.addImages( merchantStoreCode, contentImagesList );
-        staticContentFileManager.addStaticFiles(merchantStoreCode, contentFilesList);
+        staticContentFileManager.addFiles(merchantStoreCode, contentFilesList);
         
         try {
 			for(InputContentFile file : contentFilesList) {
@@ -288,9 +290,9 @@ public class ContentServiceImpl
         //check where to remove the file
         if(fileContentType.name().equals(FileContentType.IMAGE.name())
         		|| fileContentType.name().equals(FileContentType.STATIC_FILE.name())) {
-        	staticContentFileManager.removeStaticContent(merchantStoreCode, fileContentType, fileName);
+        	staticContentFileManager.removeFile(merchantStoreCode, fileContentType, fileName);
         } else {
-        	contentFileManager.removeImage( merchantStoreCode, fileContentType, fileName );
+        	contentFileManager.removeFile( merchantStoreCode, fileContentType, fileName );
         }
 		
 	}
@@ -308,8 +310,8 @@ public class ContentServiceImpl
         
 
         
-        contentFileManager.removeImages( merchantStoreCode );
-        staticContentFileManager.removeStaticContents(merchantStoreCode);
+        contentFileManager.removeFiles( merchantStoreCode );
+        staticContentFileManager.removeFiles(merchantStoreCode);
 		
 	}
 
@@ -333,10 +335,10 @@ public class ContentServiceImpl
         
         if(fileContentType.name().equals(FileContentType.IMAGE.name())
         		|| fileContentType.name().equals(FileContentType.STATIC_FILE.name())) {
-        	return staticContentFileManager.getStaticContentData(merchantStoreCode, fileContentType, fileName);
+        	return staticContentFileManager.getFile(merchantStoreCode, fileContentType, fileName);
         	
         } else {
-        	return contentFileManager.getImage( merchantStoreCode, fileName, fileContentType );
+        	return contentFileManager.getFile( merchantStoreCode, fileContentType, fileName );
         }
         
 
@@ -355,7 +357,7 @@ public class ContentServiceImpl
 	public List<OutputContentFile> getContentFiles(String merchantStoreCode,
 			FileContentType fileContentType) throws ServiceException {
         Assert.notNull( merchantStoreCode, "Merchant store Id can not be null" );
-        return staticContentFileManager.getStaticContentData(merchantStoreCode, fileContentType);
+        return staticContentFileManager.getFiles(merchantStoreCode, fileContentType);
 	}
 
     /**
@@ -372,9 +374,9 @@ public class ContentServiceImpl
         
         if(fileContentType.name().equals(FileContentType.IMAGE.name())
         		|| fileContentType.name().equals(FileContentType.STATIC_FILE.name())) {
-        	return staticContentFileManager.getStaticContentDataName(merchantStoreCode, fileContentType);
+        	return staticContentFileManager.getFileNames(merchantStoreCode, fileContentType);
         } else {
-        	return contentFileManager.getImageNames(merchantStoreCode, fileContentType);
+        	return contentFileManager.getFileNames(merchantStoreCode, fileContentType);
         }
 	}
 

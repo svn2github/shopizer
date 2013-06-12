@@ -10,7 +10,7 @@ import com.salesmanager.core.business.catalog.product.model.file.DigitalProduct;
 import com.salesmanager.core.business.content.model.content.InputContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
-import com.salesmanager.core.modules.cms.content.ContentFileManager;
+import com.salesmanager.core.modules.cms.content.StaticContentFileManager;
 
 @Service("digitalProductService")
 public class DigitalProductServiceImpl extends SalesManagerEntityServiceImpl<Long, DigitalProduct> 
@@ -19,7 +19,7 @@ public class DigitalProductServiceImpl extends SalesManagerEntityServiceImpl<Lon
 	private DigitalProductDao digitalProductDao;
 	
     @Autowired
-    ContentFileManager contentFileManager;
+    StaticContentFileManager productDownloadsFileManager;
 
 	@Autowired
 	public DigitalProductServiceImpl(DigitalProductDao digitalProductDao) {
