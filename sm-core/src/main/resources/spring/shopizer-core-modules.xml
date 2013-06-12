@@ -49,7 +49,10 @@
 	<bean id="moneyorder"
 		class="com.salesmanager.core.modules.integration.payment.impl.MoneyOrderPayment"/>
 
+	<!--     -->
 	<!-- CMS -->
+	<!--     -->
+	
 	<!-- Product images manager-->
 	<bean id="productFileManager"
 		class="com.salesmanager.core.modules.cms.product.ProductFileManagerImpl">
@@ -62,7 +65,7 @@
 		<property name="removeImage">
 				<ref bean="cmsProductImage" />
 		</property>
-				<property name="configuration">
+		<property name="configuration">
 				<ref bean="coreConfiguration" />
 		</property>
 	</bean>
@@ -73,58 +76,92 @@
 				<property name="cacheManager">
 						<ref bean="storeCacheManager" />
 				</property>
+				<property name="rootName" value="product-merchant"/>
 	</bean>
 	
 
 	
 	<!-- Content images manager (logo, other store artifacts)-->
 	<bean id="contentFileManager"
-		class="com.salesmanager.core.modules.cms.content.ContentFileManagerImpl">
-		<property name="uploadImage">
-				<ref bean="cmsContentImage" />
+		class="com.salesmanager.core.modules.cms.content.StaticContentFileManagerImpl">
+		<property name="uploadFile">
+				<ref bean="cmsStoreFile" />
 		</property>
-		<property name="getImage">
-				<ref bean="cmsContentImage" />
+		<property name="getFile">
+				<ref bean="cmsStoreFile" />
 		</property>
-		<property name="removeImage">
-				<ref bean="cmsContentImage" />
+		<property name="removeFile">
+				<ref bean="cmsStoreFile" />
 		</property>
 	</bean>
 	
-	<!-- CMS implementation for content images -->
-	<bean id="cmsContentImage"
-				class="com.salesmanager.core.modules.cms.product.CmsContentFileManagerInfinispanImpl" factory-method="getInstance" >
+
+	<bean id="cmsStoreFile"
+				class="com.salesmanager.core.modules.cms.content.CmsStaticContentFileManagerInfinispanImpl" factory-method="getInstance" >
 				<property name="cacheManager">
 						<ref bean="storeCacheManager" />
 				</property>
+				<property name="rootName" value="store-merchant"/>
 	</bean>
 	
 	
-	<!-- CMS implementation for static content data -->
-	<bean id="cmsStaticContents" class="com.salesmanager.core.modules.cms.content.CmsStaticContentFileManagerInfinispanImpl" factory-method="getInstance">
-		<property name="cacheManager">
-			<ref bean="filesCacheManager" />
-		</property>
-	</bean>
+
 	
 	<!-- Static content files manager (images, pdf...) -->
 	<bean id="staticContentFileManager"	class="com.salesmanager.core.modules.cms.content.StaticContentFileManagerImpl">
-		<property name="uploadStaticContent">
-				<ref bean="cmsStaticContents" />
+		<property name="uploadFile">
+				<ref bean="cmsStaticFile" />
 		</property>
-		<property name="getStaticContent">
-			<ref bean="cmsStaticContents" />
+		<property name="getFile">
+			<ref bean="cmsStaticFile" />
 		</property>
-		<property name="removeStaticContent">
-			<ref bean="cmsStaticContents" />
+		<property name="removeFile">
+			<ref bean="cmsStaticFile" />
 		</property>
 	</bean>
-	
 	<!--  end of CMS implementation for static content data -->
+	
+	
+	<!-- CMS implementation for static content data -->
+	<bean id="cmsStaticFile" class="com.salesmanager.core.modules.cms.content.CmsStaticContentFileManagerInfinispanImpl" factory-method="getInstance">
+		<property name="cacheManager">
+			<ref bean="filesCacheManager" />
+		</property>
+		<property name="rootName" value="store-merchant"/>
+	</bean>
+	
+	
+	
+	
+	<!-- product downloads -->
+	<bean id="productDownloadsFileManager"	class="com.salesmanager.core.modules.cms.content.StaticContentFileManagerImpl">
+		<property name="uploadFile">
+				<ref bean="cmsProductFile" />
+		</property>
+		<property name="getFile">
+			<ref bean="cmsProductFile" />
+		</property>
+		<property name="removeFile">
+			<ref bean="cmsProductFile" />
+		</property>
+	</bean>
+	<!--  end of CMS implementation for static content data -->
+	
+	
+	<!-- CMS implementation for static content data -->
+	<bean id="cmsProductFile" class="com.salesmanager.core.modules.cms.content.CmsStaticContentFileManagerInfinispanImpl" factory-method="getInstance">
+		<property name="cacheManager">
+			<ref bean="storeCacheManager" />
+		</property>
+		<property name="rootName" value="product-file"/>
+	</bean>
+	
+	
+
 	
 	<!-- Store Cache Manager -->
 	<bean id="storeCacheManager"
-				class="com.salesmanager.core.modules.cms.impl.ImagesCacheManagerImpl" factory-method="getInstance" >
+				class="com.salesmanager.core.modules.cms.impl.StoreCacheManagerImpl" factory-method="getInstance" >
 	</bean>
 	
 
@@ -136,8 +173,8 @@
 	 2. Digital data
 	 -->
 	 
-	<bean id="filesCacheManager" class="com.salesmanager.core.modules.cms.impl.StaticContentCacheManagerImpl" factory-method="getInstance" >
-	
+	<bean id="filesCacheManager" 
+		class="com.salesmanager.core.modules.cms.impl.StaticContentCacheManagerImpl" factory-method="getInstance" >
 	</bean>
 	
 	<!-- Encryption -->
