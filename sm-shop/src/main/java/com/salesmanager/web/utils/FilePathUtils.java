@@ -1,5 +1,7 @@
 package com.salesmanager.web.utils;
 
+import com.salesmanager.core.business.catalog.product.model.file.DigitalProduct;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.web.constants.Constants;
 
 public class FilePathUtils {
@@ -13,8 +15,12 @@ public class FilePathUtils {
 	 * @param imageName
 	 * @return
 	 */
-	public static String buildStaticFilePath(String imageName) {
-		return new StringBuilder().append(Constants.FILES_URI).append("/").append(imageName).toString();
+	public static String buildStaticFilePath(MerchantStore store, String imageName) {
+		return new StringBuilder().append(Constants.FILES_URI).append("/").append(store.getCode()).append("/").append(imageName).toString();
+	}
+	
+	public static String buildAdminDownloadProductFilePath(MerchantStore store, DigitalProduct digitalProduct) {
+		return new StringBuilder().append(Constants.FILES_URI).append("/").append(store.getCode()).append("/").append(digitalProduct.getProductFileName()).toString();
 	}
 	
 

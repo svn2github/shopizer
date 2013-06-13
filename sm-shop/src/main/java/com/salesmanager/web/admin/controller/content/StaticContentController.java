@@ -101,7 +101,7 @@ public class StaticContentController {
 					String mimeType = URLConnection.getFileNameMap().getContentTypeFor(name);
 					
 					StringBuilder filePath = new StringBuilder();
-					filePath.append(storePath.toString()).append(FilePathUtils.buildStaticFilePath(name));
+					filePath.append(storePath.toString()).append(FilePathUtils.buildStaticFilePath(store,name));
 					
 					
 					@SuppressWarnings("rawtypes")

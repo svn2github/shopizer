@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.file.DigitalProduct;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.file.DigitalProductService;
 import com.salesmanager.core.business.content.model.content.FileContentType;
@@ -53,21 +54,23 @@ public class DigitalProductController {
 
 		this.setMenu(model, request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		
-		//TODO check if the product is virtual, get the virtual product information //digitalProductService.getByProduct
-		
+
 		Product product = productService.getById(productId);
 		
 		if(product==null || product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 			return "redirect:/admin/products/products.html";
 		}
 		
-		ProductFiles productFiles = new ProductFiles();
-		productFiles.setProduct(product);
-		
-		model.addAttribute("file", null);
-		
-		
+		DigitalProduct digitalProduct = digitalProductService.getByProduct(store, product);
+		if(digitalProduct!=null) {
+			
+			ProductFiles productFiles = new ProductFiles();
+			productFiles.setProduct(product);
+			productFiles.setDigitalProduct(digitalProduct);
+			model.addAttribute("file", null);
+			
+		}
+
 		return ControllerConstants.Tiles.Product.digitalProduct;
 		
 	}

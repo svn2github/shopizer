@@ -12,6 +12,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.file.DigitalProduct;
 
 /**
  * A bean class responsible for getting form data from shop Admin for uploading
@@ -31,7 +32,7 @@ public class ProductFiles implements Serializable
     
     
     private List<MultipartFile> files;
-    private String fileName;
+    private DigitalProduct digitalProduct;
     private Product product;
 
     @NotEmpty(message="{product.files.invalid}")
@@ -46,13 +47,7 @@ public class ProductFiles implements Serializable
         this.files = files;
     }
 
-	public String getFileName() {
-		return fileName;
-	}
 
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
 
 	public Product getProduct() {
 		return product;
@@ -60,6 +55,14 @@ public class ProductFiles implements Serializable
 
 	public void setProduct(Product product) {
 		this.product = product;
+	}
+
+	public void setDigitalProduct(DigitalProduct digitalProduct) {
+		this.digitalProduct = digitalProduct;
+	}
+
+	public DigitalProduct getDigitalProduct() {
+		return digitalProduct;
 	}
 
 
