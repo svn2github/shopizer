@@ -14,7 +14,7 @@
 			$("#store.error").show();
 			$.ajax({
 			  type: 'POST',
-			  url: '<c:url value="/admin/products/product/removeProduct.html"/>?fileId=' + fileId,
+			  url: '<c:url value="/admin/products/product/removeDigitalProduct.html"/>?fileId=' + fileId,
 			  dataType: 'json',
 			  success: function(response){
 		
@@ -63,18 +63,22 @@
 						<s:message code="message.success" text="Request successfull" />
 					</div>
 					<form:hidden path="product.id" />
+					<form:hidden path="digitalProduct.id" />
 				
 					<!-- hidden when creating the product -->
 					<div class="control-group">
-						<label><s:message code="label.storelogo" text="Store logo"/>&nbsp;<c:if test="${file==null}"><span id="productControlRemove"> - <a href="#" onClick="removeFile('${file.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if></label>
+						<label>
+							<s:message code="label.product.digitalproduct" text="Digital product"/>&nbsp;
+								<c:if test="${digitalProduct!=null}"><span id="productControlRemove"> - <a href="#" onClick="removeFile('${digitalProduct.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if>
+						</label>
 						<div class="controls" id="fileControl">
 						
 									   <c:choose>
-				                        		<c:when test="${file==null}">
+				                        		<c:when test="${digitalProduct==null}">
 				                                    <input class="input-file" id="file" name="file[0]" type="file"><br/>
 				                                </c:when>
 				                                <c:otherwise>
-				                                	
+				                                	<a href="<sm:adminProductDownload digitalProduct"${digitalProduct}" />">${digitalProduct.productFileName}</a>
 				                                </c:otherwise>
 			                            </c:choose>
 		

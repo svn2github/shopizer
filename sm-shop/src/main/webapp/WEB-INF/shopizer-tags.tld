@@ -54,6 +54,22 @@
 
 </tag>
 
+<tag>
+ 		 <!-- Builds the admin product download URL -->
+         <name>adminProductDownload</name>
+         <tag-class>com.salesmanager.web.tags.AdminProductDownloadUrlTag</tag-class>
+         <body-content>scriptless</body-content>
+         
+         <attribute>
+                 <name>digitalProduct</name>
+                 <required>true</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>com.salesmanager.core.business.catalog.product.model.file.DifitalProduct</type>
+         </attribute>
+         
+
+</tag>
+
 
 <tag>
  		 <!-- Builds the store logo URL -->
