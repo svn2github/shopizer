@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
@@ -31,6 +33,7 @@ import com.salesmanager.core.business.catalog.product.service.file.DigitalProduc
 import com.salesmanager.core.business.content.model.content.FileContentType;
 import com.salesmanager.core.business.content.model.content.InputContentFile;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.content.ContentFiles;
 import com.salesmanager.web.admin.entity.digital.ProductFiles;
@@ -77,16 +80,25 @@ public class DigitalProductController {
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/product/saveDigitalProduct.html", method=RequestMethod.POST)
-	public String saveFile(@ModelAttribute(value="productFiles") @Valid final ContentFiles contentFiles, final BindingResult bindingResult,final Model model, final HttpServletRequest request) throws Exception{
+	public String saveFile(@RequestParam("id") long productId,@ModelAttribute(value="productFiles") @Valid final ContentFiles contentFiles, final BindingResult bindingResult,final Model model, final HttpServletRequest request) throws Exception{
 	    
 		this.setMenu(model, request);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+
+		Product product = productService.getById(productId);
+		
+		if(product==null || product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			return "redirect:/admin/products/products.html";
+		}
+		
+		
+		
 	    if (bindingResult.hasErrors()) {
 	        LOGGER.info( "Found {} Validation errors", bindingResult.getErrorCount());
 	        return ControllerConstants.Tiles.Product.digitalProduct;
 	       
         }
 	    final List<InputContentFile> contentFilesList=new ArrayList<InputContentFile>();
-        final MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
         if(CollectionUtils.isNotEmpty( contentFiles.getFile() )){
             LOGGER.info("Saving {} product files for merchant {}",contentFiles.getFile().size(),store.getId());
             for(final MultipartFile multipartFile:contentFiles.getFile()){
@@ -94,21 +106,67 @@ public class DigitalProductController {
                     ByteArrayInputStream inputStream = new ByteArrayInputStream( multipartFile.getBytes() );
                     InputContentFile cmsContentImage = new InputContentFile();
                     cmsContentImage.setFileName(multipartFile.getOriginalFilename() );
-                    cmsContentImage.setFileContentType( FileContentType.STATIC_FILE );
+                    cmsContentImage.setFileContentType( FileContentType.PRODUCT );
                     cmsContentImage.setFile( inputStream );
                     contentFilesList.add( cmsContentImage);
                 }
             }
             
             if(CollectionUtils.isNotEmpty( contentFilesList )){
-            	//contentService.addContentFiles( store.getCode(), contentFilesList );
+            	
+            	//create DigitalProduct
+            	DigitalProduct digitalProduct = new DigitalProduct();
+            	digitalProduct.setProductFileName(contentFilesList.get(0).getFileName());
+            	
+            	digitalProductService.addProductFile(product, digitalProduct, contentFilesList.get(0));
+   
             }
             else{
-                // show error message on UI
+            	//TODO message
             }
         }
         
         return ControllerConstants.Tiles.Product.digitalProduct;
+	}
+	
+	@Secured("PRODUCTS")
+	@RequestMapping(value="/admin/products/product/removeDigitalProduct.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String removeFile(@RequestParam("fileId") long fileId, HttpServletRequest request, HttpServletResponse response, Locale locale) {
+
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		AjaxResponse resp = new AjaxResponse();
+
+		
+		try {
+			
+			DigitalProduct digitalProduct = digitalProductService.getById(fileId);
+			
+			//validate store
+			if(digitalProduct==null) {
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			Product product = digitalProduct.getProduct();
+			if(product.getMerchantStore().getId().intValue()!= store.getId().intValue()) {
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			digitalProductService.delete(digitalProduct);
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+		
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while deleting product", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
 	}
 	
 	

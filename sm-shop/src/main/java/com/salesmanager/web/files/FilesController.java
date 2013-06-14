@@ -61,7 +61,7 @@ public class FilesController {
 
 	}
 	
-	//user with role products
+	//admin with role products
 	@Secured("PRODUCTS")
 	@RequestMapping("/files/{storeCode}/{productCode}/{fileName}.{extension}")
 	public void downloadProduct(@PathVariable final String storeCode, @PathVariable final String productCode, @PathVariable final String fileName, @PathVariable final String extension, HttpServletRequest request, HttpServletResponse response) throws IOException {
