@@ -38,9 +38,7 @@ public class OrderProductDownload implements Serializable {
 	@Column(name = "DOWNLOAD_COUNT", nullable = false)
 	private Integer downloadCount;
 	
-	// TODO : Order : Replace by an object
-	@Column(name = "FILE_ID", nullable = false)
-	private long fileId;
+
 	
 	public OrderProductDownload() {
 	}
@@ -85,11 +83,5 @@ public class OrderProductDownload implements Serializable {
 		this.downloadCount = downloadCount;
 	}
 
-	public long getFileId() {
-		return fileId;
-	}
 
-	public void setFileId(long fileId) {
-		this.fileId = fileId;
-	}
 }
