@@ -65,7 +65,7 @@ public class DigitalProductServiceImpl extends SalesManagerEntityServiceImpl<Lon
 	}
 	
 	@Override
-	public void removeProductFile(DigitalProduct digitalProduct) throws ServiceException {
+	public void delete(DigitalProduct digitalProduct) throws ServiceException {
 		
 		Assert.notNull(digitalProduct,"DigitalProduct cannot be null");
 		Assert.notNull(digitalProduct.getProduct(),"DigitalProduct.product cannot be null");
@@ -88,6 +88,8 @@ public class DigitalProductServiceImpl extends SalesManagerEntityServiceImpl<Lon
 
 		}
 	}
+	
+
 	
 
 }

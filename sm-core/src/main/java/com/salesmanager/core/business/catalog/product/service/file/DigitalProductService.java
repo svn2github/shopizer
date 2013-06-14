@@ -15,8 +15,7 @@ public interface DigitalProductService extends SalesManagerEntityService<Long, D
 	void addProductFile(Product product, DigitalProduct digitalProduct,
 			InputContentFile inputFile) throws ServiceException;
 
-	void removeProductFile(DigitalProduct digitalProduct)
-			throws ServiceException;
+
 
 	DigitalProduct getByProduct(MerchantStore store, Product product)
 			throws ServiceException;
