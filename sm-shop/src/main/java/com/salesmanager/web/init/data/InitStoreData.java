@@ -663,7 +663,6 @@ public class InitStoreData implements InitData {
 			//OrderProductDownload - Digital download
 			OrderProductDownload orderProductDownload = new OrderProductDownload();
 			orderProductDownload.setDownloadCount(1);
-			orderProductDownload.setFileId( new Long(1) );
 			orderProductDownload.setMaxdays(31);		
 			orderProductDownload.setOrderProductFilename("Your digital file name");
 			
