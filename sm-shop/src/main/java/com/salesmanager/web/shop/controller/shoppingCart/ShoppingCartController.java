@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.utils.ajax.AjaxResponse;
+import com.salesmanager.web.shop.controller.ControllerConstants;
 
 
 @Controller
