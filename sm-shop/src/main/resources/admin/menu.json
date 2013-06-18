@@ -135,7 +135,18 @@
 "role":"CONTENT",
 "order":4,
 "menus":[
-	{"menu":{"code":"content-pages","url":"","role":"CONTENT","order":0}},
+	{"menu":{
+	    "code":"content-pages","url":"","role":"CONTENT","order":0,,"menus":
+		[
+			{"menu":{
+				"code":"content-pages","url":"/admin/content/pages/listContent.html","role":"CONTENT","order":0
+			}},
+			{"menu":{
+				"code":"content-pages-create","url":"/admin/content/pages/addContent.html","role":"CONTENT","order":1
+			}}
+		]
+	
+	}},
 	{"menu":{"code":"content-boxes","url":"","role":"CONTENT","order":0}},
 	{"menu":{"code":"content-images","url":"","role":"CONTENT","order":0}},
 	{"menu":{"code":"content-files","url":"","role":"CONTENT","order":0}}
