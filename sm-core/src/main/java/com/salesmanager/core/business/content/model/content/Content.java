@@ -9,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -65,9 +67,10 @@ public class Content extends SalesManagerEntity<Long, Content> implements Serial
 	private boolean visible;
 	
 	//Used for grouping
-	//RIGHT_BOX, LEFT_BOX, PAGE
+	//BOX, SECTION, PAGE
 	@Column(name = "CONTENT_TYPE")
-	private String contentType; 
+	@Enumerated(value = EnumType.STRING)
+	private ContentType contentType; 
 	
 	@Override
 	public Long getId() {
@@ -122,12 +125,13 @@ public class Content extends SalesManagerEntity<Long, Content> implements Serial
 		this.descriptions = descriptions;
 	}
 
-	public void setContentType(String contentType) {
+	public void setContentType(ContentType contentType) {
 		this.contentType = contentType;
 	}
 
-	public String getContentType() {
+	public ContentType getContentType() {
 		return contentType;
 	}
+
 
 }
