@@ -56,12 +56,14 @@ public class ContentServiceImpl
         return contentDao.listByType( contentType, store, language );
     }
     
+
+    
     @Override
-    public List<Content> listByType( final ContentType contentType, final MerchantStore store )
+    public List<Content> listByType( final ContentType contentType, final MerchantStore store)
     throws ServiceException
     {
 
-    return contentDao.listByType( contentType, store );
+    	return contentDao.listByType( contentType, store );
     }
 
     @Override
