@@ -32,6 +32,7 @@ public interface ControllerConstants
         
         interface Content{
             final String contentPages="admin-content-pages";
+            final String contentPagesDetails="admin-content-pages-details";
         }
         
         interface Product{
