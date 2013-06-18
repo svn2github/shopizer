@@ -209,6 +209,14 @@
   		<put-attribute name="body" value="/pages/admin/content/contentFiles.jsp" /> 
   	</definition>
   	
+  	<definition name="admin-content-pages" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/content/contentPages.jsp" /> 
+  	</definition>
+  	
+  	<definition name="admin-content-pages-details" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/content/contentPagesDetails.jsp" /> 
+  	</definition>
+  	
   	<definition name="configuration-accounts" template="/layout/admin/layout.jsp"> 
   		<put-attribute name="body" value="/pages/admin/configuration/accounts.jsp" /> 
   	</definition>

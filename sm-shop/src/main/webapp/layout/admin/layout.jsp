@@ -270,8 +270,15 @@ response.setDateHeader ("Expires", -1);
 			});
 			
 			$("#content-pages-link").click(function() {
-  				window.location='<c:url value="/admin/content/contentPages.html" />';
+  				window.location='<c:url value="/admin/content/pages/listContent.html" />';
 			});
+			
+			$("#content-pages-create-link").click(function() {
+  				window.location='<c:url value="/admin/content/pages/addContent.html" />';
+			});
+			
+			
+			
 			$("#content-boxes-link").click(function() {
   				window.location='<c:url value="/admin/content/contentBoxes.html" />';
 			});
