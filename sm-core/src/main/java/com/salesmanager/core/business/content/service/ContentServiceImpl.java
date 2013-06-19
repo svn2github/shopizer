@@ -31,9 +31,6 @@ public class ContentServiceImpl
 
     private final ContentDao contentDao;
 
-    //@Autowired
-    //ContentFileManager contentFileManager;
-    
     @Autowired
     StaticContentFileManager staticContentFileManager;
     
@@ -97,6 +94,11 @@ public class ContentServiceImpl
 
         return contentDao.getByCode( code, store );
 
+    }
+    
+    @Override
+    public Content getById( Long id ) {
+    	return contentDao.getById(id);
     }
 
     @Override
