@@ -29,6 +29,17 @@ public class CategoryDescription extends Description {
 
 	@Column(name="SEF_URL", length=120)
 	private String seUrl;
+	
+	@Column(name = "CATEGORY_HIGHLIGHT")
+	private String categoryHighlight;
+
+	public String getCategoryHighlight() {
+		return categoryHighlight;
+	}
+
+	public void setCategoryHighlight(String categoryHighlight) {
+		this.categoryHighlight = categoryHighlight;
+	}
 
 	@Column(name="META_TITLE", length=120)
 	private String metatagTitle;
