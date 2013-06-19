@@ -111,7 +111,7 @@
       			  
       			  	
 				  <div class="control-group">
-                        <label><s:message code="label.category.categoryvisible" text="Category vsible"/></label>
+                        <label><s:message code="label.entity.visible" text="Visible"/></label>
                         <div class="controls">
                                     <form:checkbox path="visible" />
 
