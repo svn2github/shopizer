@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.content.model.content.Content;
@@ -45,6 +46,39 @@ public class ContentController {
 		setMenu(model,request);
 
 		return ControllerConstants.Tiles.Content.contentPages;
+		
+		
+	}
+	
+	@Secured("CONTENT")
+	@RequestMapping(value="/admin/content/pages/contentDetails.html", method=RequestMethod.GET)
+	public String getContentDetails(@RequestParam("id") Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		setMenu(model,request);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		Content content = contentService.getById(id);
+		
+
+		
+		if(content==null) {
+			LOGGER.error("Content entity null for id " + id);
+			return "/admin/content/pages/listContent.html";
+		}
+		
+		if(content.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			LOGGER.error("Content id " + id + " does not belong to merchant " + store.getId());
+			return "/admin/content/pages/listContent.html";
+		}
+		
+		if(!content.getContentType().name().equals(ContentType.PAGE)) {
+			LOGGER.error("This controller does not handle content type " + content.getContentType().name());
+			return "/admin/content/pages/listContent.html";
+		}
+		
+		model.addAttribute("content",content);
+		
+
+		return ControllerConstants.Tiles.Content.contentPagesDetails;
 		
 		
 	}
@@ -103,8 +137,8 @@ public class ContentController {
 	
 	
 	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/pages/addContent.html", method=RequestMethod.POST)
-	public String addContent(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value="/admin/content/pages/saveContent.html", method=RequestMethod.POST)
+	public String saveContent(@ModelAttribute Content content, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
 		
