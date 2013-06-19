@@ -472,12 +472,12 @@
 	},
 	{
 		"zoneCode": "NO",
-		"zoneName": "Niedersterreich",
+		"zoneName": "Niederösterreich",
 		"countryCode": "AT"
 	},
 	{
 		"zoneCode": "OO",
-		"zoneName": "Obersterreich",
+		"zoneName": "Oberösterreich",
 		"countryCode": "AT"
 	},
 	{
@@ -487,7 +487,7 @@
 	},
 	{
 		"zoneCode": "KN",
-		"zoneName": "KÚ‘?â„¢â€�rtnen",
+		"zoneName": "Käten",
 		"countryCode": "AT"
 	},
 	{
@@ -1430,7 +1430,7 @@
 	},
 	{
 		"zoneCode": "KN",
-		"zoneName": "KÚ‘?â„¢â€�rtnen",
+		"zoneName": "Karten",
 		"countryCode": "AT"
 	},
 	{
