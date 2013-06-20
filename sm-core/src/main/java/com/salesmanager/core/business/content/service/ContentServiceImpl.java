@@ -68,11 +68,8 @@ public class ContentServiceImpl
         throws ServiceException
     {
 
-    	List<String> contentTypes = new ArrayList<String>();
-    	for(ContentType type : contentType) {
-    		contentTypes.add(type.name());
-    	}
-        return contentDao.listByType( contentTypes, store, language );
+
+        return contentDao.listByType( contentType, store, language );
     }
     
     @Override
@@ -80,11 +77,8 @@ public class ContentServiceImpl
     throws ServiceException
     {
 
-		List<String> contentTypes = new ArrayList<String>();
-		for(ContentType type : contentType) {
-			contentTypes.add(type.name());
-		}
-	    return contentDao.listByType( contentTypes, store );
+
+	    return contentDao.listByType( contentType, store );
     }
 
     @Override

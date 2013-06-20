@@ -36,7 +36,7 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 			.leftJoin(qContent.merchantStore).fetch()
 			.where(qContentDescription.language.id.eq(language.getId())
 			.and(qContent.merchantStore.id.eq(store.getId()))
-			.and(qContent.contentType.eq(contentType.name()))
+			.and(qContent.contentType.eq(contentType))
 			);
 		
 		List<Content> contents = query.list(qContent);
@@ -57,7 +57,7 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 			.leftJoin(qContent.descriptions, qContentDescription).fetch()
 			.leftJoin(qContent.merchantStore).fetch()
 			.where(qContent.merchantStore.id.eq(store.getId())
-			.and(qContent.contentType.eq(contentType.name()))
+			.and(qContent.contentType.eq(contentType))
 			);
 		
 		List<Content> contents = query.list(qContent);
@@ -67,7 +67,7 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 	
 	
 	@Override
-	public List<Content> listByType(List<String> contentType, MerchantStore store, Language language) throws ServiceException {
+	public List<Content> listByType(List<ContentType> contentType, MerchantStore store, Language language) throws ServiceException {
 
 		QContent qContent = QContent.content;
 		QContentDescription qContentDescription = QContentDescription.contentDescription;
@@ -89,7 +89,7 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 	}
 	
 	@Override
-	public List<Content> listByType(List<String> contentType, MerchantStore store) throws ServiceException {
+	public List<Content> listByType(List<ContentType> contentType, MerchantStore store) throws ServiceException {
 
 		QContent qContent = QContent.content;
 		QContentDescription qContentDescription = QContentDescription.contentDescription;

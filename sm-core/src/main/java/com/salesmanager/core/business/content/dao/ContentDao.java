@@ -14,7 +14,7 @@ public interface ContentDao extends SalesManagerEntityDao<Long, Content> {
 	List<Content> listByType(ContentType contentType, MerchantStore store,
 			Language language) throws ServiceException;
 
-	List<Content> listByType(List<String> contentType, MerchantStore store,
+	List<Content> listByType(List<ContentType> contentType, MerchantStore store,
 			Language language) throws ServiceException;
 
 	Content getByCode(String code, MerchantStore store)
@@ -23,7 +23,7 @@ public interface ContentDao extends SalesManagerEntityDao<Long, Content> {
 	Content getByCode(String code, MerchantStore store, Language language)
 			throws ServiceException;
 
-	List<Content> listByType(List<String> contentType, MerchantStore store)
+	List<Content> listByType(List<ContentType> contentType, MerchantStore store)
 			throws ServiceException;
 
 	List<Content> listByType(ContentType contentType, MerchantStore store)
