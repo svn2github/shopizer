@@ -43,5 +43,8 @@ public interface ProductDao extends SalesManagerEntityDao<Long, Product> {
 
 	List<Product> getProductsListByCategories(Set<Long> categoryIds,
 			Language language);
+
+	ProductList getProductListByCategories(ProductCriteria criteria,
+			Set<Long> categoryIds, Language language);
 	
 }
