@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.salesmanager.core.business.content.model.content.Content;
 import com.salesmanager.core.business.content.model.content.ContentDescription;
+import com.salesmanager.core.business.content.model.content.ContentType;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
@@ -113,7 +114,7 @@ public class StoreLandingController {
 		
 		if(content==null) {
 			content = new Content();
-			content.setContentType("PAGE");
+			content.setContentType(ContentType.SECTION);
 			content.setCode("LANDING_PAGE");
 			content.setMerchantStore(store);
 		}
