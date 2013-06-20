@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
+import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -83,6 +84,12 @@ public class ShoppingCategoryController {
 	@ResponseBody
 	public com.salesmanager.web.entity.catalog.Product[] getProducts(@PathVariable String store, @PathVariable final String language, @PathVariable final String category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
+		
+		/**
+		 * How to Spring MVC Rest web service - ajax / jquery
+		 * http://codetutr.com/2013/04/09/spring-mvc-easy-rest-based-json-services-with-responsebody/
+		 */
+		
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		Map<String,Language> langs = languageService.getLanguagesMap();
 		
@@ -117,7 +124,41 @@ public class ShoppingCategoryController {
 		
 		List<com.salesmanager.core.business.catalog.product.model.Product> products = productService.getProducts(ids, lang);
 		
+		com.salesmanager.web.entity.catalog.Product[] returnedProducts = new com.salesmanager.web.entity.catalog.Product[products.size()];
+		
+		int i = 0;
+		for(Product product : products) {
+			
+			
+			//create new proxy product
+			
+			//returnedProducts[i] = product;
+			i++;
+			
+		}
+		
+		return returnedProducts;
+	}
+	
+	
+	/**
+	 * Will page products of a given category
+	 * @param store
+	 * @param language
+	 * @param category
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/shop/services/products/page/{start}/{max}/{store}/{language}/{category}.html")
+	@ResponseBody
+	public com.salesmanager.web.entity.catalog.Product[] pageProducts(@PathVariable int start, @PathVariable int max, @PathVariable String store, @PathVariable final String language, @PathVariable final String category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		
 		return null;
 	}
+	
 	
 }
