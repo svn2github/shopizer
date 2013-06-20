@@ -134,7 +134,7 @@ public class ProductController {
 		
 
 		
-		com.salesmanager.web.entity.catalog.Product product = new com.salesmanager.web.entity.catalog.Product();
+		com.salesmanager.web.admin.entity.catalog.Product product = new com.salesmanager.web.admin.entity.catalog.Product();
 		List<ProductDescription> descriptions = new ArrayList<ProductDescription>();
 
 		if(productId!=null && productId!=0) {//edit mode
@@ -255,7 +255,7 @@ public class ProductController {
 
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/save.html", method=RequestMethod.POST)
-	public String saveProduct(@Valid @ModelAttribute("product") com.salesmanager.web.entity.catalog.Product  product, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+	public String saveProduct(@Valid @ModelAttribute("product") com.salesmanager.web.admin.entity.catalog.Product  product, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
 
 		Language language = (Language)request.getAttribute("LANGUAGE");
@@ -559,7 +559,7 @@ public class ProductController {
 		}
 		
 		//Make a copy of the product
-		com.salesmanager.web.entity.catalog.Product product = new com.salesmanager.web.entity.catalog.Product();
+		com.salesmanager.web.admin.entity.catalog.Product product = new com.salesmanager.web.admin.entity.catalog.Product();
 		
 		Set<ProductAvailability> availabilities = new HashSet<ProductAvailability>();
 		//availability - price

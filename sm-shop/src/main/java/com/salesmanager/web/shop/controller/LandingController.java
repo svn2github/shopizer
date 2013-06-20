@@ -1,11 +1,8 @@
 package com.salesmanager.web.shop.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
-import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationship;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationshipType;
 import com.salesmanager.core.business.catalog.product.service.relationship.ProductRelationshipService;
@@ -83,14 +78,14 @@ public class LandingController {
 			
 			Product product = relationship.getRelatedProduct();
 
-			com.salesmanager.web.entity.catalog.Product proxyProduct = new com.salesmanager.web.entity.catalog.Product();
-			proxyProduct.setProduct(product);
-			proxyProduct.setDescription(product.getDescriptions().iterator().next());//get the first description from the set
+			//com.salesmanager.web.entity.catalog.Product proxyProduct = new com.salesmanager.web.entity.catalog.Product();
+			//proxyProduct.setProduct(product);
+			//proxyProduct.setDescription(product.getDescriptions().iterator().next());//get the first description from the set
 			
-			FinalPrice price = productPriceUtils.getFinalPrice(product);
-			proxyProduct.setProductPrice(productPriceUtils.getFormatedAmountWithCurrency(store,price.getFinalPrice(),locale));
+			//FinalPrice price = productPriceUtils.getFinalPrice(product);
+			//proxyProduct.setProductPrice(productPriceUtils.getFormatedAmountWithCurrency(store,price.getFinalPrice(),locale));
 
-			featuredItems.add(proxyProduct);
+			//featuredItems.add(proxyProduct);
 		}
 		
 		//List<Category> categories = categoryService.listByDepth(store, 0);

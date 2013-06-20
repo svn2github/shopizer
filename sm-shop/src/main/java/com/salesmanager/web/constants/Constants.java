@@ -2,7 +2,7 @@ package com.salesmanager.web.constants;
 
 public class Constants {
 	
-
+	public final static String DEFAULT_LANGUAGE = "en";
 	public final static String LANGUAGE = "LANGUAGE";
 	
 	public final static String ADMIN_STORE = "ADMIN_STORE";
