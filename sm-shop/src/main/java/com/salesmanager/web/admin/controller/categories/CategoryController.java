@@ -427,6 +427,12 @@ public class CategoryController {
 		
 		AjaxResponse resp = new AjaxResponse();
 		
+		if(StringUtils.isBlank(code)) {
+			resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
+			return resp.toJSONString();
+		}
+
+		
 		try {
 			
 		Category category = categoryService.getByCode(store, code);
@@ -436,7 +442,7 @@ public class CategoryController {
 			try {
 				Long lid = Long.parseLong(id);
 				
-				if(category.getCode().equals(code) && category.getId()==lid) {
+				if(category.getCode().equals(code) && category.getId().longValue()==lid) {
 					resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
 					return resp.toJSONString();
 				}
@@ -454,18 +460,7 @@ public class CategoryController {
 	
 		
 			
-			if(StringUtils.isBlank(code)) {
-				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
-				return resp.toJSONString();
-			}
 
-			if(category!=null) {
-				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
-				return resp.toJSONString();
-			}
-			
-
-			
 
 			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 

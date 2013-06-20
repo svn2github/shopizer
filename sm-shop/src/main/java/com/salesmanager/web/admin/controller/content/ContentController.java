@@ -1,30 +1,37 @@
 package com.salesmanager.web.admin.controller.content;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.content.model.content.Content;
 import com.salesmanager.core.business.content.model.content.ContentDescription;
 import com.salesmanager.core.business.content.model.content.ContentType;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
@@ -38,6 +45,9 @@ public class ContentController {
 	@Autowired
 	private ContentService contentService;
 	
+	@Autowired
+	LanguageService languageService;
+	
 	
 	@Secured("CONTENT")
 	@RequestMapping(value="/admin/content/pages/listContent.html", method=RequestMethod.GET)
@@ -46,6 +56,37 @@ public class ContentController {
 		setMenu(model,request);
 
 		return ControllerConstants.Tiles.Content.contentPages;
+		
+		
+	}
+	
+	@Secured("CONTENT")
+	@RequestMapping(value="/admin/content/pages/createPage.html", method=RequestMethod.GET)
+	public String createPage(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		setMenu(model,request);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		Content content = new Content();
+		content.setMerchantStore(store);
+		content.setContentType(ContentType.PAGE);
+		
+		
+		List<Language> languages = store.getLanguages();
+		
+		
+		for(Language l : languages) {
+			
+			ContentDescription description = new ContentDescription();
+			description.setLanguage(l);
+			content.getDescriptions().add(description);
+		}
+		
+		
+		
+		model.addAttribute("content",content);
+		
+
+		return ControllerConstants.Tiles.Content.contentPagesDetails;
 		
 		
 	}
@@ -74,6 +115,18 @@ public class ContentController {
 			LOGGER.error("This controller does not handle content type " + content.getContentType().name());
 			return "/admin/content/pages/listContent.html";
 		}
+		
+		List<Language> languages = store.getLanguages();
+		
+		List<ContentDescription> descriptions = new ArrayList<ContentDescription>();
+		for(Language l : languages) {
+			for(ContentDescription description : content.getDescriptions()) {
+				if(description.getLanguage().getCode().equals(l.getCode())) {
+					descriptions.add(description);
+				}
+			}
+		}
+		content.setDescriptions(descriptions);
 		
 		model.addAttribute("content",content);
 		
@@ -138,17 +191,94 @@ public class ContentController {
 	
 	@Secured("CONTENT")
 	@RequestMapping(value="/admin/content/pages/saveContent.html", method=RequestMethod.POST)
-	public String saveContent(@ModelAttribute Content content, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String saveContent(@Valid @ModelAttribute Content content, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
 		
-		//get list of content for contenttype page
+		if (result.hasErrors()) {
+			return ControllerConstants.Tiles.Content.contentPagesDetails;
+		}
 		
-		//put in model
+		Map<String,Language> langs = languageService.getLanguagesMap();
 		
+		List<ContentDescription> descriptions = content.getDescriptions();
+		for(ContentDescription description : descriptions) {
+			Language l = langs.get(description.getLanguage().getCode());
+			description.setLanguage(l);
+			description.setContent(content);
+		}
+		
+		contentService.saveOrUpdate(content);
+		
+		model.addAttribute("content",content);
 		return ControllerConstants.Tiles.Content.contentPages;
 		
 		
+	}
+	
+	/**
+	 * Check if the content code filled in by the
+	 * user is unique
+	 * @param request
+	 * @param response
+	 * @param locale
+	 * @return
+	 */
+	@Secured("CONTENT")
+	@RequestMapping(value="/admin/content/checkContentCode.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String checkContentCode(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		
+		String code = request.getParameter("code");
+		String id = request.getParameter("id");
+		
+		
+
+
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		
+		
+		
+		AjaxResponse resp = new AjaxResponse();
+		
+		   if(StringUtils.isBlank(code)) {
+				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
+				return resp.toJSONString();
+		   }
+		
+		try {
+			
+		Content content = contentService.getByCode(code, store);
+		
+		
+		if(!StringUtils.isBlank(id)) {
+			try {
+				Long lid = Long.parseLong(id);
+				
+				if(content.getCode().equals(code) && content.getId().longValue()==lid) {
+					resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+					return resp.toJSONString();
+				}
+			} catch (Exception e) {
+				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
+				return resp.toJSONString();
+			}
+
+		}
+
+			
+
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+
+		} catch (Exception e) {
+			LOGGER.error("Error while getting category", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
 	}
 	
 	
