@@ -59,6 +59,11 @@ public interface CategoryService extends SalesManagerEntityService<Long, Categor
 	 */
 	List<Category> listByDepth(MerchantStore store, int depth, Language language);
 
+	List<Category> listByLineage(String storeCode, String lineage)
+			throws ServiceException;
+
+	Category getByCode(String storeCode, String code) throws ServiceException;
+
 
 	
 	

@@ -51,6 +51,9 @@ public interface ProductService extends SalesManagerEntityService<Long, Product>
 	List<Product> listByStore(MerchantStore store);
 
 	List<Product> listByTaxClass(TaxClass taxClass);
+
+	List<Product> getProducts(List<Long> categoryIds, Language language)
+			throws ServiceException;
 	
 
 }

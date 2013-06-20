@@ -12,31 +12,22 @@ import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
-import com.salesmanager.core.business.catalog.product.service.image.ProductImageService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.business.reference.language.service.LanguageService;
 
 @Service("categoryService")
 public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Category> implements CategoryService {
 	
 	private CategoryDao categoryDao;
 	
-	  @Autowired
-	  private LanguageService            languageService;
-	  
 
-	  @Autowired
-	  private MerchantStoreService       merchantService;
 	  
 	  @Autowired
 	  private ProductService productService;
 	  
-	  @Autowired
-	  private ProductImageService productImageService;
+
 	
 	@Autowired
 	public CategoryServiceImpl(CategoryDao categoryDao) {
@@ -93,6 +84,17 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		
 	}
 	
+	@Override
+	public List<Category> listByLineage(String storeCode, String lineage) throws ServiceException {
+		try {
+			return categoryDao.listByLineage(storeCode, lineage);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
+		
+	}
+	
 
 	@Override
 	public List<Category> listBySeUrl(MerchantStore store, String seUrl) throws ServiceException{
@@ -109,6 +111,17 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		
 		try {
 			return categoryDao.getByCode(store, code);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
+	}
+	
+	@Override
+	public Category getByCode(String storeCode, String code) throws ServiceException {
+		
+		try {
+			return categoryDao.getByCode(storeCode, code);
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}

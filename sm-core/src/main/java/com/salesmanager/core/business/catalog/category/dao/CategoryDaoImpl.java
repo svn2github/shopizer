@@ -78,6 +78,23 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 	}
 	
 	@Override
+	public Category getByCode(String merchantStoreCode, String code) {
+		QCategory qCategory = QCategory.category;
+		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCategory)
+			.leftJoin(qCategory.descriptions, qDescription).fetch()
+			.leftJoin(qCategory.merchantStore).fetch()
+			.where(qCategory.code.eq(code)
+			.and(qCategory.merchantStore.code.eq(merchantStoreCode)));
+
+		
+		return query.uniqueResult(qCategory);
+	}
+	
+	@Override
 	public Category getById(Long id) {
 		QCategory qCategory = QCategory.category;
 		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
@@ -106,6 +123,23 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 			.leftJoin(qCategory.merchantStore).fetch()
 			.where(qCategory.lineage.like(new StringBuilder().append(lineage).append("%").toString())
 			.and(qCategory.merchantStore.id.eq(store.getId())))
+			.orderBy(qCategory.lineage.asc(), qCategory.lineage.asc(), qCategory.depth.asc(), qDescription.language.id.desc());
+		
+		return query.listDistinct(qCategory);
+	}
+	
+	@Override
+	public List<Category> listByLineage(String merchantStoreCode, String lineage) {
+		QCategory qCategory = QCategory.category;
+		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCategory)
+			.leftJoin(qCategory.descriptions, qDescription).fetch()
+			.leftJoin(qCategory.merchantStore).fetch()
+			.where(qCategory.lineage.like(new StringBuilder().append(lineage).append("%").toString())
+			.and(qCategory.merchantStore.code.eq(merchantStoreCode)))
 			.orderBy(qCategory.lineage.asc(), qCategory.lineage.asc(), qCategory.depth.asc(), qDescription.language.id.desc());
 		
 		return query.listDistinct(qCategory);
@@ -180,6 +214,9 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		
 		return query.list(qCategory);
 	}
+	
+	
+
 
 	@Override
 	public List<Category> listByStore(MerchantStore store) {
