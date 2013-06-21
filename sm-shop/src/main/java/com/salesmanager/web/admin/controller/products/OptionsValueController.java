@@ -195,17 +195,31 @@ public class OptionsValueController {
 		if(descriptions!=null && descriptions.size()>0) {
 			
 				Set<ProductOptionValueDescription> descs = new HashSet<ProductOptionValueDescription>();
-				optionValue.setDescriptions(descs);
-				for(ProductOptionValueDescription description : descriptions) {
-					
-					String code = description.getLanguage().getCode();
-					Language l = langs.get(code);
-					description.setLanguage(l);
-					description.setProductOptionValue(optionValue);
-					descs.add(description);
-					
-					
-				}
+				
+				//if(descs==null || descs.size()==0) {			
+
+				//} else {
+				
+					optionValue.setDescriptions(descs);
+					for(ProductOptionValueDescription description : descriptions) {
+						
+						if(StringUtils.isBlank(description.getName())) {
+							ObjectError error = new ObjectError("name",messages.getMessage("message.name.required", locale));
+							result.addError(error);
+						} else {
+							
+						
+							String code = description.getLanguage().getCode();
+							Language l = langs.get(code);
+							description.setLanguage(l);
+							description.setProductOptionValue(optionValue);
+							descs.add(description);
+						
+						}
+						
+						
+					}
+
 				
 		} else {
 			
