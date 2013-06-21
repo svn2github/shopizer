@@ -78,7 +78,7 @@
 				                                    <input class="input-file" id="file" name="file[0]" type="file"><br/>
 				                                </c:when>
 				                                <c:otherwise>
-				                                	<a href="<sm:adminProductDownload digitalProduct"${digitalProduct}" />">${digitalProduct.productFileName}</a>
+				                                	<a href="<sm:adminProductDownload digitalProduct="${digitalProduct}" />">${digitalProduct.productFileName}</a>
 				                                </c:otherwise>
 			                            </c:choose>
 		
