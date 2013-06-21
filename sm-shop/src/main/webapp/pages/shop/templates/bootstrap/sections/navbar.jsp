@@ -48,16 +48,14 @@ response.setDateHeader ("Expires", -1);
                     								<span class="desc">Home</span>                                  
                     						   </a>                         
                     					</li>
-                    					<li class="">
-                    							<a class="sf-with-ul" href="category.html?category=short-sleeves">   
-                    		                        <span class="name">Short Sleeves</span>                                        
-                    		                        <span class="desc">Cool t shirts</span>                                  
-                    		             		</a>                        
-                    		            </li>
+
                     		            
-                    		            <c:forEach items="${requestScope.TOP_CATEGORIES}" var="item">
+                    		            <c:forEach items="${requestScope.TOP_CATEGORIES}" var="category">
     										<li class="">
-    										${item.description.name}
+    											<a href="<c:url value="/"/> class="current"> 
+    												<span class="name">${category.description.name}</span>
+    												<span class="desc">${category.description.highlight}</span> 
+    											</a>
     										</li> 
 										</c:forEach>
                     		            

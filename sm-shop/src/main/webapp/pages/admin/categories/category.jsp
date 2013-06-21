@@ -134,7 +134,14 @@
                         			<form:input cssClass="input-large highlight" id="name${counter.index}" path="descriptions[${counter.index}].name"/>
                         			<span class="help-inline"><form:errors path="descriptions[${counter.index}].name" cssClass="error" /></span>
                         </div>
-
+                  </div>
+                  
+                  <div class="control-group">
+                        <label><s:message code="label.category.highlight" text="Category highlight"/> (<c:out value="${description.language.code}"/>)</label>
+                        <div class="controls">
+                        			<form:input cssClass="input-large" id="categoryHighlight${counter.index}" path="descriptions[${counter.index}].categoryHighlight"/>
+                        			<span class="help-inline"><form:errors path="descriptions[${counter.index}].categoryHighlight" cssClass="error" /></span>
+                        </div>
                   </div>
                   
                   <div class="control-group">
