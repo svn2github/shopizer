@@ -64,7 +64,7 @@
                  <name>digitalProduct</name>
                  <required>true</required>
                  <rtexprvalue>true</rtexprvalue>
-                 <type>com.salesmanager.core.business.catalog.product.model.file.DifitalProduct</type>
+                 <type>com.salesmanager.core.business.catalog.product.model.file.DigitalProduct</type>
          </attribute>
          
 
