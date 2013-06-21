@@ -136,7 +136,7 @@
 "order":4,
 "menus":[
 	{"menu":{
-	    "code":"content-pages","url":"","role":"CONTENT","order":0,,"menus":
+	    "code":"content-pages","url":"","role":"CONTENT","order":0,"menus":
 		[
 			{"menu":{
 				"code":"content-pages","url":"/admin/content/pages/listContent.html","role":"CONTENT","order":0
