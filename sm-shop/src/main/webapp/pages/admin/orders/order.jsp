@@ -209,7 +209,7 @@
 		
  		  <div class="span8">
 			<div class="form-actions">
-              <button class="btn btn-medium btn-danger" type="button"><s:message code="label.order.refund" text="Apply refund"/></button>
+              <button class="btn btn-medium btn-danger" type="button" data-toggle="modal" data-target="#refundModal"><s:message code="label.order.refund" text="Apply refund"/></button>
       		</div>
       	  </div> 
       
@@ -303,4 +303,74 @@
 
       </div>
 	 </div>
-  </div>      			     
+  </div>
+
+
+
+
+
+<div id="refundModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h3 id="myModalLabel"><s:message code="label.order.refund" text="Apply refund"/></h3>
+  </div>
+    <div class="modal-body">
+           <p>
+           		<s:message code="label.order.total" text="Total" />: <strong><c:out value="${order.total}"/></strong>
+           		<span id="refundMessage" style="display:none;"><s:message code="" text=""/><span id="refundAmount"></span></span>
+           </p>
+           <p>
+           		<form class="form-inline">
+           		    <label><s:message code="label.generic.amount" text="Amount" /></label>&nbsp;<input type="text" class="input-small" placeholder="<s:message code="label.generic.amount" text="Amount" />">
+           		    <input type="hidden" value="<c:out value="${order.id}"/>">
+           		    <button id="refundButton" type="submit" class="btn btn-alert"><s:message code="label.order.refund" text="Apply refund"/></button>
+           		 </form>
+           
+           </p>
+             
+    </div>  
+    <div class="modal-footer">
+           <button class="btn" data-dismiss="modal" aria-hidden="true"><s:message code="button.label.cancel" text="Cancel" /></button>
+           <button class="btn btn-success" id="closeModal" data-dismiss="modal" aria-hidden="true" style="display:none;"><s:message code="button.label.close" text="Close" /></button>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+	
+	function refundOrder(id, amount){
+	
+			var postParameters = 'id='+id+'amount=' + amount;
+		
+			$.ajax({
+			  type: 'POST',
+			  url: '<c:url value="/admin/orders/refundOrder.html"/>?' + postParameters ,
+			  dataType: 'json',
+			  success: function(response){
+		
+					var status = isc.XMLTools.selectObjects(response, "/response/status");
+					if(status==0 || status ==9999) {
+						var amount = isc.XMLTools.selectObjects(response, "/response/amount");
+						//block refund button
+						$('#refundButton').addClass('disabled');
+						//display close
+						$('#closeModal').show();
+						//display confirmation
+						$('#refundAmount').html(amount);
+						$('#refundMessage').show();
+					} else {
+
+						//$(".alert-error").show();
+					}
+		
+			  
+			  },
+			  error: function(xhr, textStatus, errorThrown) {
+			  	alert('error ' + errorThrown);
+			  }
+			  
+			});
+	}
+	
+</script>
+     			     
