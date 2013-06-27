@@ -1,5 +1,6 @@
 package com.salesmanager.web.admin.controller.orders;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,20 +24,32 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.category.model.Category;
+import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.service.CustomerService;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.order.model.OrderCriteria;
 import com.salesmanager.core.business.order.model.OrderTotal;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
 import com.salesmanager.core.business.order.service.OrderService;
+import com.salesmanager.core.business.payments.service.PaymentService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.system.model.IntegrationModule;
+import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
+import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.DateUtil;
 import com.salesmanager.web.utils.LabelUtils;
 
@@ -58,6 +71,13 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 	
 	@Autowired
 	CountryService countryService;
+	
+	@Autowired
+	PaymentService paymentService;
+	
+	@Autowired
+	CustomerService customerService;
+	
 
 	@Secured("ORDER")
 	@RequestMapping(value="/admin/orders/editOrder.html", method=RequestMethod.GET)
@@ -67,6 +87,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 
 	}
 
+	@Secured("ORDER")
 	@SuppressWarnings("unused")
 	private String displayOrder(Long orderId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -260,7 +281,79 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 	
 		
 		return  ControllerConstants.Tiles.Order.ordersEdit;
-	/*	"admin-orders-edit";  */
+	    /*	"admin-orders-edit";  */
+	}
+	
+	@Secured("ORDER")
+	@RequestMapping(value="/admin/orders/refundOrder.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String refundOrder(@PathVariable Long id, @PathVariable String refundAmount, HttpServletRequest request, HttpServletResponse response, Locale locale) {
+
+
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		
+		AjaxResponse resp = new AjaxResponse();
+
+		BigDecimal submitedAmount = null;
+		
+		try {
+			
+		Order order = orderService.getById(id);
+		
+		if(order==null) {
+			
+			//TODO log
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			return resp.toJSONString();
+		}
+		
+		if(order.getMerchant().getId().intValue()!=store.getId().intValue()) {
+			
+			//TODO log
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			return resp.toJSONString();
+		}
+		
+		//parse amount
+		try {
+			submitedAmount = new BigDecimal(refundAmount);
+			if(submitedAmount.doubleValue()==0) {
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				resp.setStatusMessage(messages.getMessage("message.invalid.amount", locale));
+				return resp.toJSONString();
+			}
+		} catch (Exception e) {
+			LOGGER.equals("invalid refundAmount " + refundAmount);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			return resp.toJSONString();
+		}
+		
+		
+			//get the customer
+			Customer customer = customerService.getById(order.getCustomerId());
+		
+			//build the payment
+		
+		    
+		
+			//paymentService.processRefund(order, customer, store, payment, amount);
+
+	
+		
+			
+
+
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+
+		} catch (Exception e) {
+			LOGGER.error("Error while getting category", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
 	}
 	
 	
