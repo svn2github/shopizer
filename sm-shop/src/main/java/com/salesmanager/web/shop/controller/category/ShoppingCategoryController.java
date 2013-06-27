@@ -58,7 +58,7 @@ public class ShoppingCategoryController {
 	/**
 	 * Returns all categories for a given MerchantStore
 	 */
-	@RequestMapping("/shop/services/category/{language}/{store}")
+	@RequestMapping("/shop/services/category/{store}/{language}")
 	@ResponseBody
 	public com.salesmanager.web.entity.catalog.Category[] displayCategory(@PathVariable final String language, @PathVariable final String store, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -82,7 +82,7 @@ public class ShoppingCategoryController {
 	 */
 	@RequestMapping("/shop/services/products/{store}/{language}/{category}.html")
 	@ResponseBody
-	public com.salesmanager.web.entity.catalog.Product[] getProducts(@PathVariable String store, @PathVariable final String language, @PathVariable final String category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public com.salesmanager.web.entity.catalog.Product[] getProducts(@PathVariable final String store, @PathVariable final String language, @PathVariable final String category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		
 		/**
@@ -94,7 +94,7 @@ public class ShoppingCategoryController {
 		Map<String,Language> langs = languageService.getLanguagesMap();
 		
 		if(merchantStore!= null) {
-			store = merchantStore.getCode();
+			//store = merchantStore.getCode();
 		}
 		
 		//get the category by code
