@@ -27,12 +27,38 @@ public class TransactionServiceImpl  extends SalesManagerEntityServiceImpl<Long,
 	@Override
 	public Transaction getCapturableTransaction(Order order)
 			throws ServiceException {
-		// TODO Auto-generated method stub
 		List<Transaction> transactions = transactionDao.listByOrder(order);
 		
 		for(Transaction transaction : transactions) {
 			if(transaction.getTransactionType().name().equals(TransactionType.AUTHORIZE.name())) {
 				return transaction;
+			}
+		}
+		
+		return null;
+	}
+	
+	
+	public Transaction getRefundableTransaction(Order order)
+		throws ServiceException {
+		List<Transaction> transactions = transactionDao.listByOrder(order);
+		Transaction finalTransaction = null;
+		for(Transaction transaction : transactions) {
+			if(transaction.getTransactionType().name().equals(TransactionType.AUTHORIZECAPTURE.name())) {
+				if(finalTransaction.getTransactionType().name().equals(TransactionType.REFUND.name())) {
+					continue;
+				}
+				finalTransaction = transaction;
+			}
+			if(transaction.getTransactionType().name().equals(TransactionType.CAPTURE.name())) {
+				finalTransaction = transaction;
+				if(finalTransaction.getTransactionType().name().equals(TransactionType.REFUND.name())) {
+					continue;
+				}
+				finalTransaction = transaction;
+			}
+			if(transaction.getTransactionType().name().equals(TransactionType.REFUND.name())) {
+				finalTransaction = transaction;
 			}
 		}
 		
