@@ -30,12 +30,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
-import com.salesmanager.core.business.order.model.OrderCriteria;
 import com.salesmanager.core.business.order.model.OrderTotal;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
@@ -44,8 +42,6 @@ import com.salesmanager.core.business.payments.service.PaymentService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.business.system.model.IntegrationModule;
-import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
@@ -298,52 +294,57 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		
 		try {
 			
-		Order order = orderService.getById(id);
-		
-		if(order==null) {
+			Order order = orderService.getById(id);
 			
-			//TODO log
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-			return resp.toJSONString();
-		}
-		
-		if(order.getMerchant().getId().intValue()!=store.getId().intValue()) {
-			
-			//TODO log
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-			return resp.toJSONString();
-		}
-		
-		//parse amount
-		try {
-			submitedAmount = new BigDecimal(refundAmount);
-			if(submitedAmount.doubleValue()==0) {
+			if(order==null) {
+				
+				LOGGER.error("Order {0} does not exists", id);
 				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-				resp.setStatusMessage(messages.getMessage("message.invalid.amount", locale));
 				return resp.toJSONString();
 			}
-		} catch (Exception e) {
-			LOGGER.equals("invalid refundAmount " + refundAmount);
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-			return resp.toJSONString();
-		}
-		
-		
-			//get the customer
-			Customer customer = customerService.getById(order.getCustomerId());
-		
-			//build the payment
-		
-		    
-		
-			//paymentService.processRefund(order, customer, store, payment, amount);
-
-	
-		
 			
+			if(order.getMerchant().getId().intValue()!=store.getId().intValue()) {
+				
+				LOGGER.error("Merchant store does not have order {0}",id);
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+		
+			//parse amount
+			try {
+				submitedAmount = new BigDecimal(refundAmount);
+				if(submitedAmount.doubleValue()==0) {
+					resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+					resp.setStatusMessage(messages.getMessage("message.invalid.amount", locale));
+					return resp.toJSONString();
+				}
+				
+			} catch (Exception e) {
+				LOGGER.equals("invalid refundAmount " + refundAmount);
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+				
+				
+				BigDecimal orderTotal = order.getTotal();
+				if(submitedAmount.doubleValue()>orderTotal.doubleValue()) {
+					resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+					resp.setStatusMessage(messages.getMessage("message.invalid.amount", locale));
+					return resp.toJSONString();
+				}
+				
+				Customer customer = customerService.getById(order.getCustomerId());
+				
+				if(customer==null) {
+					resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+					resp.setStatusMessage(messages.getMessage("message.notexist.customer", locale));
+					return resp.toJSONString();
+				}
+				
+	
+				paymentService.processRefund(order, customer, store, submitedAmount);
 
-
-			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 
 		} catch (Exception e) {
 			LOGGER.error("Error while getting category", e);
