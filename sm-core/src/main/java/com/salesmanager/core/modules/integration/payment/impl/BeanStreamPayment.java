@@ -137,7 +137,7 @@ public class BeanStreamPayment implements PaymentModule {
 
 	@Override
 	public Transaction refund(boolean partial, MerchantStore store, Transaction transaction,
-			BigDecimal amount, Payment payment,
+			BigDecimal amount,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
 
@@ -208,7 +208,7 @@ public class BeanStreamPayment implements PaymentModule {
 
 
 			
-			Transaction response = this.sendTransaction(store, messageString.toString(), "R", TransactionType.REFUND, payment.getPaymentType(),amount, configuration, module);
+			Transaction response = this.sendTransaction(store, messageString.toString(), "R", TransactionType.REFUND, PaymentType.CREDITCARD, amount, configuration, module);
 			
 			return response;
 			

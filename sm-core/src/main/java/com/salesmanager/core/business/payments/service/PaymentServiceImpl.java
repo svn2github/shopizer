@@ -22,6 +22,7 @@ import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.payments.model.CreditCard;
 import com.salesmanager.core.business.payments.model.CreditCardPayment;
 import com.salesmanager.core.business.payments.model.Payment;
+import com.salesmanager.core.business.payments.model.PaypalPayment;
 import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.payments.model.TransactionType;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
@@ -333,6 +334,16 @@ public class PaymentServiceImpl implements PaymentService {
 			validateCreditCard(creditCardPayment.getCreditCardNumber(),creditCardPayment.getCreditCard(),creditCardPayment.getExpirationMonth(),creditCardPayment.getExpirationYear());
 		}
 		
+		if(payment instanceof PaypalPayment) {
+			PaypalPayment paypalPayment = (PaypalPayment)payment;
+/*			IntegrationConfiguration paypalConfiguration = this.getPaymentConfiguration("paypal", store);
+			String account = paypalConfiguration.getIntegrationKeys().get("account");
+			String api = paypalConfiguration.getIntegrationKeys().get("api");
+			String signature = paypalConfiguration.getIntegrationKeys().get("signature");*/
+			paypalPayment.setModuleName("paypal");
+			paypalPayment.setTransactionType(TransactionType.AUTHORIZECAPTURE);
+		}
+		
 		IntegrationModule integrationModule = getPaymentMethod(store,payment.getModuleName());
 		
 		TransactionType transactionType = payment.getTransactionType();
@@ -357,7 +368,7 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Override
 	public Transaction processRefund(Order order, Customer customer,
-			MerchantStore store, Payment payment, BigDecimal amount)
+			MerchantStore store, BigDecimal amount)
 			throws ServiceException {
 		// TODO Auto-generated method stub
 		return null;

@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.payments.model.Transaction;
@@ -100,7 +99,7 @@ public class MoneyOrderPayment implements PaymentModule {
 
 	@Override
 	public Transaction refund(boolean partial, MerchantStore store, Transaction transaction,
-			BigDecimal amount, Payment payment,
+			BigDecimal amount, 
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
 		throw new IntegrationException("Transaction not supported");

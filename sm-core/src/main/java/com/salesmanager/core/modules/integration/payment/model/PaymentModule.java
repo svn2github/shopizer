@@ -40,7 +40,7 @@ public interface PaymentModule {
 			throws IntegrationException;
 	
 	public Transaction refund(
-			boolean partial, MerchantStore store, Transaction transaction, BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module)
+			boolean partial, MerchantStore store, Transaction transaction, BigDecimal amount, IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException;
 
 }

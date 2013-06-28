@@ -1,5 +1,10 @@
 package com.salesmanager.core.business.payments.model;
 
+/**
+ * When the user performs a payment using a credit card
+ * @author Carl Samson
+ *
+ */
 public class CreditCardPayment extends Payment {
 	
 	private String creditCardNumber;
