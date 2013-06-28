@@ -370,7 +370,51 @@ public class PaymentServiceImpl implements PaymentService {
 	public Transaction processRefund(Order order, Customer customer,
 			MerchantStore store, BigDecimal amount)
 			throws ServiceException {
-		// TODO Auto-generated method stub
+		
+		
+		Validate.notNull(customer);
+		Validate.notNull(store);
+		Validate.notNull(amount);
+		Validate.notNull(order);
+		
+		if(amount.doubleValue()>order.getTotal().doubleValue()) {
+			throw new ServiceException("Invalid amount, the refunded amount is greater than the total allowed");
+		}
+
+		
+		String module = order.getPaymentModuleCode();
+		Map<String, IntegrationConfiguration> modules = this.getPaymentModulesConfigured(store);
+		if(modules==null){
+			throw new ServiceException("No payment module configured");
+		}
+		
+		IntegrationConfiguration configuration = modules.get(module);
+		
+		if(configuration==null) {
+			throw new ServiceException("Payment module " + module + " is not configured");
+		}
+		
+		PaymentModule paymentModule = this.paymentModules.get(module);
+		
+		if(paymentModule==null) {
+			throw new ServiceException("Payment module " + paymentModule + " does not exist");
+		}
+		
+		boolean partial = false;
+		if(amount.doubleValue()!=order.getTotal().doubleValue()) {
+			partial = true;
+		}
+		
+		IntegrationModule integrationModule = getPaymentMethod(store,module);
+		
+		//get the associated transaction
+		
+		//Transaction transaction = paymentModule.refund(partial, store, transaction, amount, configuration, integrationModule);
+		
+		//update order total
+		
+		//create an entry in history
+		
 		return null;
 	}
 	
