@@ -54,7 +54,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 
 		
 		StringBuilder qs = new StringBuilder();
-		qs.append("select p from Product as p ");
+		qs.append("select distinct p from Product as p ");
 		qs.append("join fetch p.merchantStore merch ");
 		qs.append("join fetch p.availabilities pa ");
 		qs.append("left join fetch pa.prices pap ");
@@ -120,7 +120,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 
 		
 		StringBuilder qs = new StringBuilder();
-		qs.append("select p from Product as p ");
+		qs.append("select distinct p from Product as p ");
 		qs.append("join fetch p.merchantStore merch ");
 		qs.append("join fetch p.availabilities pa ");
 		qs.append("left join fetch pa.prices pap ");

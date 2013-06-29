@@ -107,7 +107,7 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	private List<Language> languages = new ArrayList<Language>();
 	
 	@Column(name = "USE_CACHE")
-	private Boolean useCache = false;
+	private boolean useCache = false;
 	
 	@Column(name="STORE_TEMPLATE", length=25)
 	private String storeTemplate;
@@ -136,11 +136,11 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	public MerchantStore() {
 	}
 	
-	public Boolean isUseCache() {
+	public boolean isUseCache() {
 		return useCache;
 	}
 
-	public void setUseCache(Boolean useCache) {
+	public void setUseCache(boolean useCache) {
 		this.useCache = useCache;
 	}
 	

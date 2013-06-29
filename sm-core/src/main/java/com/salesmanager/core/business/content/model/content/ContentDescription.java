@@ -39,6 +39,17 @@ public class ContentDescription extends Description implements Serializable {
 	@Column(name="META_KEYWORDS")
 	private String metatagKeywords;
 	
+	@Column(name="META_TITLE")
+	private String metatagTitle;
+	
+	public String getMetatagTitle() {
+		return metatagTitle;
+	}
+
+	public void setMetatagTitle(String metatagTitle) {
+		this.metatagTitle = metatagTitle;
+	}
+
 	@Column(name="META_DESCRIPTION")
 	private String metatagDescription;
 	
