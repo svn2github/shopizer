@@ -274,7 +274,7 @@ response.setDateHeader ("Expires", -1);
 			});
 			
 			$("#content-pages-create-link").click(function() {
-  				window.location='<c:url value="/admin/content/pages/addContent.html" />';
+  				window.location='<c:url value="/admin/content/pages/createPage.html" />';
 			});
 			
 			

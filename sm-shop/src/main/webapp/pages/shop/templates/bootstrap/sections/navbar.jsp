@@ -54,7 +54,7 @@ response.setDateHeader ("Expires", -1);
     										<li class="">
     											<a href="<c:url value="/"/> class="current"> 
     												<span class="name">${category.description.name}</span>
-    												<span class="desc">${category.description.highlight}</span> 
+    												<span class="desc">${category.description.categoryHighlight}</span> 
     											</a>
     										</li> 
 										</c:forEach>

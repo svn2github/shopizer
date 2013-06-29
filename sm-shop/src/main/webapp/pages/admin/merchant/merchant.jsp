@@ -290,6 +290,15 @@ function callBackCheckCode(msg,code) {
 	                  </div>
 	                  
 	                  <div class="control-group">
+	                        <label><s:message code="label.store.useCache" text="Use cache"/></label>
+	                        <div class="controls">
+
+	                        					<form:checkbox path="useCache" /> 
+	                                   			<span class="help-inline"></span>
+	                        </div>
+	                  </div>
+	                  
+	                  <div class="control-group">
 	                        <label><s:message code="label.store.baseurl" text="Store base url"/></label>
 	                        <div class="controls">
 	                                    <span class="add-on">

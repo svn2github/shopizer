@@ -84,6 +84,7 @@ public class ShoppingCategoryController {
 	@ResponseBody
 	public com.salesmanager.web.entity.catalog.Product[] getProducts(@PathVariable final String store, @PathVariable final String language, @PathVariable final String category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
+		//http://localhost:8080/sm-shop/shop/services/products/DEFAULT/en/book.html
 		
 		/**
 		 * How to Spring MVC Rest web service - ajax / jquery
@@ -105,7 +106,9 @@ public class ShoppingCategoryController {
 			
 		}
 		
-		List<Category> categories = categoryService.listByLineage(store, cat.getLineage());
+		String lineage = new StringBuilder().append(cat.getLineage()).append(cat.getId()).toString();
+		
+		List<Category> categories = categoryService.listByLineage(store, lineage);
 		
 		//TODO
 		if(categories==null || categories.size()==0) {
@@ -131,8 +134,10 @@ public class ShoppingCategoryController {
 			
 			
 			//create new proxy product
-			
-			//returnedProducts[i] = product;
+			com.salesmanager.web.entity.catalog.Product p = new com.salesmanager.web.entity.catalog.Product();
+			p.setSku(product.getSku());
+			p.setName(product.getDescriptions().iterator().next().getName());
+			returnedProducts[i] = p;
 			i++;
 			
 		}

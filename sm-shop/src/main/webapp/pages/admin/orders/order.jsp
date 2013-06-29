@@ -209,7 +209,8 @@
 		
  		  <div class="span8">
 			<div class="form-actions">
-              <button class="btn btn-medium btn-danger" type="button" data-toggle="modal" data-target="#refundModal"><s:message code="label.order.refund" text="Apply refund"/></button>
+			  <!--<a class="btn btn-primary btn-large" href="#refundModal" data-toggle="modal">Launch demo modal</a>-->
+              <button id="refundButton" class="btn btn-medium btn-danger" type="button"><s:message code="label.order.refund" text="Apply refund"/></button>
       		</div>
       	  </div> 
       
@@ -308,15 +309,14 @@
 
 
 
-
-<div id="refundModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="refundModal"  class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
           <h3 id="myModalLabel"><s:message code="label.order.refund" text="Apply refund"/></h3>
   </div>
     <div class="modal-body">
            <p>
-           		<s:message code="label.order.total" text="Total" />: <strong><c:out value="${order.total}"/></strong>
+           		<s:message code="label.order.total" text="Total" />: <strong><c:out value="${order.order.total}"/></strong>
            		<span id="refundMessage" style="display:none;"><s:message code="" text=""/><span id="refundAmount"></span></span>
            </p>
            <p>
@@ -337,6 +337,17 @@
 
 
 <script type="text/javascript">
+	$(document).ready(function(){ 
+	
+		$("#refundButton").click(function() {
+			$('#refundModal').modal();
+		}); 
+	}); 
+	
+	function openRefund() {
+		
+		$('#refundModal').modal('show');
+	}
 	
 	function refundOrder(id, amount){
 	
