@@ -54,6 +54,31 @@
 
 </tag>
 
+
+<tag>
+ 		 <!-- Builds the product image URL -->
+         <name>shopProductImage</name>
+         <tag-class>com.salesmanager.web.tags.ShopProductImageUrlTag</tag-class>
+         <body-content>scriptless</body-content>
+
+ 
+         <attribute>
+                 <name>imageName</name>
+                 <required>true</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>java.lang.String</type>
+         </attribute>
+         
+         <attribute>
+                 <name>sku</name>
+                 <required>true</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>java.lang.String</type>
+         </attribute>
+         
+
+</tag>
+
 <tag>
  		 <!-- Builds the admin product download URL -->
          <name>adminProductDownload</name>
