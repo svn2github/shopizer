@@ -69,7 +69,7 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		
 		:get the Product from ShoppingDartItem and all ProductAttribute fromShoppingCartAttributeItem
 		
-		:invoke for each product productPriceUtils.getFinalOrderPrice
+		:invoke for each product productPriceUtils.getFinalProductPrice
 		
 		:get the final price for each Product
 		

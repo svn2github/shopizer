@@ -379,6 +379,26 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 	public boolean isAvailable() {
 		return available;
 	}
+	
+	public ProductDescription getProductDescription() {
+		if(this.getDescriptions()!=null && this.getDescriptions().size()>0) {
+			return this.getDescriptions().iterator().next();
+		}
+		return null;
+	}
+	
+	public ProductImage getProductImage() {
+		ProductImage productImage = null;
+		if(this.getImages()!=null && this.getImages().size()>0) {
+			for(ProductImage image : this.getImages()) {
+				productImage = image;
+				if(productImage.isDefaultImage()) {
+					break;
+				}
+			}
+		}
+		return productImage;
+	}
 
 
 }

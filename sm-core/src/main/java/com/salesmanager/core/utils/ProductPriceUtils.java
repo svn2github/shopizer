@@ -83,7 +83,7 @@ public class ProductPriceUtils {
 	 * @param List<ProductAttribute>
 	 * @return FinalPrice
 	 */
-	public FinalPrice getFinalOrderPrice(Product product, List<ProductAttribute> attributes) {
+	public FinalPrice getFinalProductPrice(Product product, List<ProductAttribute> attributes) {
 
 
 		FinalPrice finalPrice = calculateFinalPrice(product);
