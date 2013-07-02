@@ -21,6 +21,9 @@ public class Product implements Serializable {
 	private String keywords;
 	private String title;
 	
+	private boolean discounted = false;
+	private String originalProductPrice = null;
+	
 	private String image;
 
 
@@ -97,6 +100,19 @@ public class Product implements Serializable {
 	}
 	public String getImage() {
 		return image;
+	}
+
+	public void setOriginalProductPrice(String originalProductPrice) {
+		this.originalProductPrice = originalProductPrice;
+	}
+	public String getOriginalProductPrice() {
+		return originalProductPrice;
+	}
+	public void setDiscounted(boolean discounted) {
+		this.discounted = discounted;
+	}
+	public boolean isDiscounted() {
+		return discounted;
 	}
 
 

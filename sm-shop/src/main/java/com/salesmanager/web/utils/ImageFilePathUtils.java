@@ -29,5 +29,18 @@ public class ImageFilePathUtils {
 		return new StringBuilder().append(store.getCode()).append("/").append(FileContentType.PRODUCT.name()).append("/")
 				.append(product.getSku()).append("/").append(imageName).toString();
 	}
+	
+	/**
+	 * Builds a product image file path that can be used by image servlet
+	 * utility for getting the physical image
+	 * @param store
+	 * @param sku
+	 * @param imageName
+	 * @return
+	 */
+	public static String buildProductImageFilePath(MerchantStore store, String sku, String imageName) {
+		return new StringBuilder().append(store.getCode()).append("/").append(FileContentType.PRODUCT.name()).append("/")
+				.append(sku).append("/").append(imageName).toString();
+	}
 
 }

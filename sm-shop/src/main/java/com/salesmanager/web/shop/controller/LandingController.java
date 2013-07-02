@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
+import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
+import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationship;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationshipType;
 import com.salesmanager.core.business.catalog.product.service.relationship.ProductRelationshipService;
@@ -68,8 +71,7 @@ public class LandingController {
 		if(content!=null) {
 			model.addAttribute("page",content.getDescriptions().get(0));
 		}
-		
-		//root categories
+
 		
 		//featured items
 		List<ProductRelationship> relationships = productRelationshipService.getByType(store, ProductRelationshipType.FEATURED_ITEM, language);
@@ -77,25 +79,32 @@ public class LandingController {
 		for(ProductRelationship relationship : relationships) {
 			
 			Product product = relationship.getRelatedProduct();
-
-			//com.salesmanager.web.entity.catalog.Product proxyProduct = new com.salesmanager.web.entity.catalog.Product();
-			//proxyProduct.setProduct(product);
-			//proxyProduct.setDescription(product.getDescriptions().iterator().next());//get the first description from the set
+			ProductDescription description = product.getProductDescription();
+			com.salesmanager.web.entity.catalog.Product proxyProduct = new com.salesmanager.web.entity.catalog.Product();
 			
-			//FinalPrice price = productPriceUtils.getFinalPrice(product);
-			//proxyProduct.setProductPrice(productPriceUtils.getFormatedAmountWithCurrency(store,price.getFinalPrice(),locale));
+			if(description!=null) {
+				proxyProduct.setFriendlyUrl(description.getSeUrl());
+				proxyProduct.setName(description.getName());
+				proxyProduct.setDescription(description.getDescription());
+			}
+			ProductImage image = product.getProductImage();
+			if(image!=null) {
+				proxyProduct.setImage(image.getProductImage());
+			}
+			
 
-			//featuredItems.add(proxyProduct);
+			FinalPrice price = productPriceUtils.getFinalPrice(product);
+			proxyProduct.setProductPrice(productPriceUtils.getFormatedAmountWithCurrency(store,price.getFinalPrice(),locale));
+
+			featuredItems.add(proxyProduct);
 		}
-		
-		//List<Category> categories = categoryService.listByDepth(store, 0);
+
 		
 		model.addAttribute("featuredItems", featuredItems);
-		//model.addAttribute("categories", categories);
 		
+		/** template **/
 		StringBuilder template = new StringBuilder().append("landing.").append(store.getStoreTemplate());
-		
-		//return "landing.bootstrap";//template.toString()
+
 		return template.toString();
 	}
 
