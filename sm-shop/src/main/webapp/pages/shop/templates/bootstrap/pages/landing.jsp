@@ -58,53 +58,24 @@ response.setDateHeader ("Expires", -1);
 						<li><a href="#tab3">Top sellers</a></li>
 					</ul>							 
 					<div class="tab-content">
+						<!-- one div by section -->
 						<div class="tab-pane active" id="tab1">
 							<div class="row">
 								<div class="span12">
 									<ul class="thumbnails product-list">
-									
 										<!-- Iterate over featuredItems -->
-									
-										<li class="span3">
-											<div class="product-box">                                        
-												<a href="http://#WB0M3G9S1/product_detail.html"><h4>Fusce id molestie massa</h4></a>
-												<a href="http://#WB0M3G9S1/product_detail.html"><img alt="" src="index_files/m2.jpg"></a>
-												<p>Phasellus consequat sem congue diam congue</p>
-												<div class="bottom">
-													<a class="view" href="http://#WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://#WB0M3G9S1/cart.html">add to cart</a>
+										<c:forEach items="${featuredItems}" var="product">
+											<li class="span3">
+												<div class="product-box">                                        
+													<a href="http://#WB0M3G9S1/product_detail.html"><h4><c:out value="product.name"/></h4></a>
+													<a href="http://#WB0M3G9S1/product_detail.html"><img src="<sm:shopProductImage imageName="${product.image}" sku="${product.sku}"/>" width="200"/></a>
+													<p>Phasellus consequat sem congue diam congue</p>
+													<div class="bottom">
+														<a class="view" href="http://#WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://#WB0M3G9S1/cart.html">add to cart</a>
+													</div>
 												</div>
-											</div>
-										</li>       
-										<li class="span3">
-											<div class="product-box">
-												<a href="http://#WB0M3G9S1/product_detail.html"><h4>Praesent tempor sem sodales</h4></a>
-												<a href="http://#WB0M3G9S1/product_detail.html"><img alt="" src="index_files/m3.jpg"></a>
-												<p>Integer in ligula et erat gravida placerat</p>
-												<div class="bottom">
-													<a class="view" href="http://#WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://#WB0M3G9S1/cart.html">add to cart</a>
-												</div>
-											</div>
-										</li>
-										<li class="span3">
-											<div class="product-box">
-												<a href="http://#WB0M3G9S1/product_detail.html"><h4>Luctus quam ultrices rutrum</h4></a>
-												<a href="http://#WB0M3G9S1/product_detail.html"><img alt="" src="index_files/m4.jpg"></a>
-												<p>Suspendisse aliquet orci et nisl iaculis</p>
-												<div class="bottom">
-													<a class="view" href="http://#WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://#WB0M3G9S1/cart.html">add to cart</a>
-												</div>
-											</div>
-										</li>
-										<li class="span3">
-											<div class="product-box">
-												<a href="http://#WB0M3G9S1/product_detail.html"><h4>Praesent tempor sem sodales</h4></a>
-												<a href="http://#WB0M3G9S1/product_detail.html"><img alt="" src="index_files/m5.jpg"></a>
-												<p>Nam imperdiet urna nec lectus mollis</p>
-												<div class="bottom">
-													<a class="view" href="http://#WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://#WB0M3G9S1/cart.html">add to cart</a>
-												</div>
-											</div>
-										</li>                                
+										    </li>
+										</c:forEach>                             
 									</ul>
 								</div>
 							</div>
