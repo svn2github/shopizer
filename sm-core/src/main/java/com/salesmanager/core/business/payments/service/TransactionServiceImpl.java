@@ -1,7 +1,10 @@
 package com.salesmanager.core.business.payments.service;
 
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,14 +26,60 @@ public class TransactionServiceImpl  extends SalesManagerEntityServiceImpl<Long,
 		super(transactionDao);
 		this.transactionDao = transactionDao;
 	}
+	
+	@Override
+	public void create(Transaction transaction) throws ServiceException {
+		
+		//parse JSON string
+		String transactionDetails = transaction.toJSONString();
+		if(!StringUtils.isBlank(transactionDetails)) {
+			transaction.setDetails(transactionDetails);
+		}
+		
+		super.create(transaction);
+		
+		
+	}
+	
+	@Override
+	public List<Transaction> listTransactions(Order order) throws ServiceException {
+		
+		List<Transaction> transactions = transactionDao.listByOrder(order);
+		ObjectMapper mapper = new ObjectMapper();
+		for(Transaction transaction : transactions) {
+			if(transaction.getTransactionType().name().equals(TransactionType.AUTHORIZE.name())) {
+				if(!StringUtils.isBlank(transaction.getDetails())) {
+					try {
+						@SuppressWarnings("unchecked")
+						Map<String,String> objects = mapper.readValue(transaction.getDetails(), Map.class);
+						transaction.setTransactionDetails(objects);
+					} catch (Exception e) {
+						throw new ServiceException(e);
+					}
+				}
+			}
+		}
+		
+		return transactions;
+	}
 
 	@Override
 	public Transaction getCapturableTransaction(Order order)
 			throws ServiceException {
 		List<Transaction> transactions = transactionDao.listByOrder(order);
-		
+		ObjectMapper mapper = new ObjectMapper();
 		for(Transaction transaction : transactions) {
 			if(transaction.getTransactionType().name().equals(TransactionType.AUTHORIZE.name())) {
+				if(!StringUtils.isBlank(transaction.getDetails())) {
+					try {
+						@SuppressWarnings("unchecked")
+						Map<String,String> objects = mapper.readValue(transaction.getDetails(), Map.class);
+						transaction.setTransactionDetails(objects);
+					} catch (Exception e) {
+						throw new ServiceException(e);
+					}
+				}
+				
 				return transaction;
 			}
 		}
@@ -38,31 +87,41 @@ public class TransactionServiceImpl  extends SalesManagerEntityServiceImpl<Long,
 		return null;
 	}
 	
-	
+	@Override
 	public Transaction getRefundableTransaction(Order order)
 		throws ServiceException {
 		List<Transaction> transactions = transactionDao.listByOrder(order);
 		Transaction finalTransaction = null;
 		for(Transaction transaction : transactions) {
 			if(transaction.getTransactionType().name().equals(TransactionType.AUTHORIZECAPTURE.name())) {
-				if(finalTransaction.getTransactionType().name().equals(TransactionType.REFUND.name())) {
-					continue;
-				}
+				//if(finalTransaction.getTransactionType().name().equals(TransactionType.REFUND.name())) {
+				//	continue;
+				//}
 				finalTransaction = transaction;
 			}
 			if(transaction.getTransactionType().name().equals(TransactionType.CAPTURE.name())) {
 				finalTransaction = transaction;
-				if(finalTransaction.getTransactionType().name().equals(TransactionType.REFUND.name())) {
-					continue;
-				}
-				finalTransaction = transaction;
+				//if(finalTransaction.getTransactionType().name().equals(TransactionType.REFUND.name())) {
+				//	continue;
+				//}
 			}
-			if(transaction.getTransactionType().name().equals(TransactionType.REFUND.name())) {
-				finalTransaction = transaction;
+			//if(transaction.getTransactionType().name().equals(TransactionType.REFUND.name())) {
+			//	finalTransaction = transaction;
+			//}
+		}
+		
+		if(finalTransaction!=null && !StringUtils.isBlank(finalTransaction.getDetails())) {
+			try {
+				ObjectMapper mapper = new ObjectMapper();
+				@SuppressWarnings("unchecked")
+				Map<String,String> objects = mapper.readValue(finalTransaction.getDetails(), Map.class);
+				finalTransaction.setTransactionDetails(objects);
+			} catch (Exception e) {
+				throw new ServiceException(e);
 			}
 		}
 		
-		return null;
+		return finalTransaction;
 	}
 
 }

@@ -8,6 +8,7 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.model.OrderCriteria;
 import com.salesmanager.core.business.order.model.OrderList;
+import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
 
 public interface OrderService extends SalesManagerEntityService<Long, Order> {
 	
@@ -19,6 +20,9 @@ public interface OrderService extends SalesManagerEntityService<Long, Order> {
 
 
 	void saveOrUpdate(Order order) throws ServiceException;
+
+	void addOrderStatusHistory(Order order, OrderStatusHistory history)
+			throws ServiceException;
 
 
 	

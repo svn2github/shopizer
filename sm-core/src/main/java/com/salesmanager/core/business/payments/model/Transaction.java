@@ -24,7 +24,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONAware;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.salesmanager.core.business.common.model.audit.AuditListener;
 import com.salesmanager.core.business.common.model.audit.AuditSection;
@@ -32,6 +35,7 @@ import com.salesmanager.core.business.common.model.audit.Auditable;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.constants.SchemaConstant;
+import com.salesmanager.core.utils.reference.IntegrationModulesLoader;
 
 
 @Entity
@@ -39,6 +43,8 @@ import com.salesmanager.core.constants.SchemaConstant;
 @Table(name = "SM_TRANSACTION", schema= SchemaConstant.SALESMANAGER_SCHEMA)
 public class Transaction extends SalesManagerEntity<Long, Transaction> implements Serializable, Auditable, JSONAware {
 	
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(Transaction.class);
 	/**
 	 * 
 	 */
@@ -160,7 +166,17 @@ public class Transaction extends SalesManagerEntity<Long, Transaction> implement
 
 	@Override
 	public String toJSONString() {
-		// TODO Auto-generated method stub
+		
+		if(this.getTransactionDetails()!=null && this.getTransactionDetails().size()>0) {
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				return mapper.writeValueAsString(this.getTransactionDetails());
+			} catch (Exception e) {
+				LOGGER.error("Cannot parse transactions map",e);
+			}
+			
+		}
+		
 		return null;
 	}
 

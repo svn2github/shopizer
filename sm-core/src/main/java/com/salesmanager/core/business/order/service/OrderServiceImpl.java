@@ -42,7 +42,7 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 	}
 	
 
-	
+	@Override
 	public void addOrderStatusHistory(Order order, OrderStatusHistory history) throws ServiceException {
 		order.getOrderHistory().add(history);
 		history.setOrder(order);

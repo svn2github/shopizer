@@ -5,6 +5,7 @@ public enum OrderStatus {
 	ORDERED("ordered"),
 	SHIPPED("shipped"),
 	PREPARED("prepared"),
+	REFUNDED("refunded"),
 	DELIVERED("delivered")
 	;
 	

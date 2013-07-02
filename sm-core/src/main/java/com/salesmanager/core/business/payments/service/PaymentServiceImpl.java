@@ -19,6 +19,9 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
+import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
+import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.payments.model.CreditCard;
 import com.salesmanager.core.business.payments.model.CreditCardPayment;
 import com.salesmanager.core.business.payments.model.Payment;
@@ -50,6 +53,9 @@ public class PaymentServiceImpl implements PaymentService {
 	
 	@Autowired
 	private TransactionService transactionService;
+	
+	@Autowired
+	private OrderService orderService;
 	
 	@Autowired
 	@Resource(name="paymentModules")
@@ -354,7 +360,8 @@ public class PaymentServiceImpl implements PaymentService {
 			throw new ServiceException("No capturable transaction for order id " + order.getId());
 		}
 		Transaction transaction = module.capture(store, customer, amount, payment, trx, configuration, integrationModule);
-
+		transaction.setOrder(order);
+		
 		
 		if(transactionType != TransactionType.INIT) {
 			transactionService.create(transaction);
@@ -377,7 +384,9 @@ public class PaymentServiceImpl implements PaymentService {
 		Validate.notNull(amount);
 		Validate.notNull(order);
 		
-		if(amount.doubleValue()>order.getTotal().doubleValue()) {
+		BigDecimal orderTotal = order.getTotal();
+		
+		if(amount.doubleValue()>orderTotal.doubleValue()) {
 			throw new ServiceException("Invalid amount, the refunded amount is greater than the total allowed");
 		}
 
@@ -408,14 +417,31 @@ public class PaymentServiceImpl implements PaymentService {
 		IntegrationModule integrationModule = getPaymentMethod(store,module);
 		
 		//get the associated transaction
+		Transaction refundable = transactionService.getRefundableTransaction(order);
 		
-		//Transaction transaction = paymentModule.refund(partial, store, transaction, amount, configuration, integrationModule);
+		if(refundable==null) {
+			throw new ServiceException("No refundable transaction for this order");
+		}
+		
+		Transaction transaction = paymentModule.refund(partial, store, refundable, amount, configuration, integrationModule);
+		transaction.setOrder(order);
+		transactionService.create(transaction);
+		
 		
 		//update order total
+		orderTotal = orderTotal.subtract(amount);
+		order.setTotal(orderTotal);
+		
+		orderService.saveOrUpdate(order);
+		
+		OrderStatusHistory orderHistory = new OrderStatusHistory();
+		orderHistory.setOrder(order);
+		orderHistory.setStatus(OrderStatus.REFUNDED);
 		
 		//create an entry in history
+		orderService.addOrderStatusHistory(order, orderHistory);
 		
-		return null;
+		return transaction;
 	}
 	
 	@Override
