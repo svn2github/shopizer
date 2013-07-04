@@ -39,7 +39,9 @@
 		}
 		
 		
-		
+		/**
+		 * Function used for adding a product to the Shopping Cart
+		 */
 		
 		$(".addToCart").click(function(){ 
 			
