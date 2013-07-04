@@ -38,5 +38,58 @@
 			});
 		}
 		
+		
+		
+		
+		$(".addToCart").click(function(){ 
+			
+			//core properties
+			var sku = $(this).attr("productId");
+			var qty = '#qty-productId-'+ sku;
+			var quantity = $(qty).val();
+			if(!quantity || quantity==null || quantity==0) {
+				quantity = 1;
+			}
+
+			var formId = '#input-' + sku +' :input';
+			var $inputs = $(formId); 
+			var values = {}; //TODO ShoppingCartAttribute
+			$inputs.each(function() { //properties
+				if($(this).hasClass('attribute')) {
+				   //TODO remove class
+				   if($(this).hasClass('required') && !$(this).is(':checked')) {
+							//TODO add class
+					   		//$(this).parent().css('border', '1px solid red'); 
+					   
+				    }
+					
+			       if($(this).is(':checkbox')) {
+						if($(this).is(':checked') ) {
+							values[this.name] = $(this).val(); 
+						}
+					} else if ($(this).is(':radio')) {
+						if($(this).is(':checked') ) {
+							values[this.name] = $(this).val(); 
+						}
+					} else {
+						
+					   if($(this).hasClass('required') && !$(this).val()) {
+						    //TODO add class
+						   	//$(this).css('border', '1px solid red'); 
+						   
+						}
+
+					   if($(this).val()) {
+					       values[this.name] = $(this).val(); 
+				       }
+					}
+				}
+			}); 
+
+	    });
+		
+		
+		
+		
 
 	});
