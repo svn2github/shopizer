@@ -18,6 +18,10 @@ public interface ControllerConstants
             final String shoppingCart="maincart";
         }
         
+        interface Category{
+            final String category="category";
+        }
+        
 
         
     }

@@ -39,5 +39,6 @@ public class Constants {
 	
 	public final static String REQUEST_CONTENT_OBJECTS = "CONTENT";
 	public final static String REQUEST_TOP_CATEGORIES = "TOP_CATEGORIES";
+	public final static String REQUEST_PAGE_INFORMATION = "PAGE_INFORMATION";
 
 }

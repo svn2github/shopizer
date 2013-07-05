@@ -27,6 +27,7 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.utils.CatalogUtils;
 
 @Controller
 public class LandingController {
@@ -39,7 +40,7 @@ public class LandingController {
 	private ProductRelationshipService productRelationshipService;
 	
 	@Autowired
-	private ProductPriceUtils productPriceUtils;
+	private CatalogUtils catalogUtils;
 	
 	@Autowired
 	private CategoryService categoryService;
@@ -79,22 +80,8 @@ public class LandingController {
 		for(ProductRelationship relationship : relationships) {
 			
 			Product product = relationship.getRelatedProduct();
-			ProductDescription description = product.getProductDescription();
-			com.salesmanager.web.entity.catalog.Product proxyProduct = new com.salesmanager.web.entity.catalog.Product();
+			com.salesmanager.web.entity.catalog.Product proxyProduct = catalogUtils.buildProxyProduct(product,locale);
 			
-			if(description!=null) {
-				proxyProduct.setFriendlyUrl(description.getSeUrl());
-				proxyProduct.setName(description.getName());
-				proxyProduct.setDescription(description.getDescription());
-			}
-			ProductImage image = product.getProductImage();
-			if(image!=null) {
-				proxyProduct.setImage(image.getProductImage());
-			}
-			
-
-			FinalPrice price = productPriceUtils.getFinalPrice(product);
-			proxyProduct.setProductPrice(productPriceUtils.getFormatedAmountWithCurrency(store,price.getFinalPrice(),locale));
 
 			featuredItems.add(proxyProduct);
 		}

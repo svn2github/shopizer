@@ -25,6 +25,16 @@ public class Category implements Serializable {
 	private String description;
 	private String friendlyUrl;
 	private String keyWords;
+	private String highlights;
+	private String metaDescription;
+
+	private String title;
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
 	public long getId() {
 		return id;
 	}
@@ -72,6 +82,19 @@ public class Category implements Serializable {
 	}
 	public void setKeyWords(String keyWords) {
 		this.keyWords = keyWords;
+	}
+	public void setHighlights(String highlights) {
+		this.highlights = highlights;
+	}
+	public String getHighlights() {
+		return highlights;
+	}
+	
+	public String getMetaDescription() {
+		return metaDescription;
+	}
+	public void setMetaDescription(String metaDescription) {
+		this.metaDescription = metaDescription;
 	}
 	
 

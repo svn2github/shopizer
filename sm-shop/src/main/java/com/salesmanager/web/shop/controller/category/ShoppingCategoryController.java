@@ -3,6 +3,7 @@ package com.salesmanager.web.shop.controller.category;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,10 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.shop.PageInformation;
+import com.salesmanager.web.shop.controller.ControllerConstants;
+import com.salesmanager.web.utils.CatalogUtils;
+import com.salesmanager.web.utils.LocaleUtils;
 
 
 @Controller
@@ -37,6 +42,9 @@ public class ShoppingCategoryController {
 	@Autowired
 	ProductService productService;
 	
+	@Autowired
+	CatalogUtils catalogUtils;
+	
 	
 	/**
 	 * Category page entry point
@@ -48,11 +56,47 @@ public class ShoppingCategoryController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/shop/category/{friendlyUrl}.html")
-	public String displayCategory(@PathVariable final String friendlyUrl, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String displayCategory(@PathVariable final String friendlyUrl, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+		//get category
+		Category category = categoryService.getBySeUrl(store, friendlyUrl);
+		
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		
+		if(category==null) {
+			//TODO not found object
+		}
+		
+		com.salesmanager.web.entity.catalog.Category categoryProxy = catalogUtils.buildCategoryProxy(category, locale);
+		
+
+		//meta information
+		PageInformation pageInformation = new PageInformation();
+		pageInformation.setPageDescription(categoryProxy.getMetaDescription());
+		pageInformation.setPageKeywords(categoryProxy.getKeyWords());
+		pageInformation.setPageTitle(categoryProxy.getTitle());
+		
+		request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
 		
 		
+		//sub categories
+		List<Category> subCategories = categoryService.listByParent(category, language);
+		List<com.salesmanager.web.entity.catalog.Category> subCategoryProxies = new ArrayList<com.salesmanager.web.entity.catalog.Category>();
+		for(Category sub : subCategories) {
+			
+			com.salesmanager.web.entity.catalog.Category cProxy =  catalogUtils.buildCategoryProxy(sub, locale);
+			subCategoryProxies.add(cProxy);
+		}
 		
-		return "";
+		model.addAttribute("category", categoryProxy);
+		model.addAttribute("subCategories", subCategoryProxies);
+		
+		
+		/** template **/
+		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.ShoppingCart.shoppingCart).append(".").append(store.getStoreTemplate());
+
+		return template.toString();
 	}
 
 	/**
@@ -134,9 +178,7 @@ public class ShoppingCategoryController {
 			
 			
 			//create new proxy product
-			com.salesmanager.web.entity.catalog.Product p = new com.salesmanager.web.entity.catalog.Product();
-			p.setSku(product.getSku());
-			p.setName(product.getDescriptions().iterator().next().getName());
+			com.salesmanager.web.entity.catalog.Product p = catalogUtils.buildProxyProduct(product,LocaleUtils.getLocale(lang));
 			returnedProducts[i] = p;
 			i++;
 			
