@@ -60,6 +60,23 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 	}
 	
 	@Override
+	public Category getBySeUrl(MerchantStore store,String seUrl) {
+		QCategory qCategory = QCategory.category;
+		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCategory)
+			.leftJoin(qCategory.descriptions, qDescription).fetch()
+			.leftJoin(qCategory.merchantStore).fetch()
+			.where(qDescription.seUrl.eq(seUrl)
+			.and(qCategory.merchantStore.id.eq(store.getId())));
+
+		
+		return query.uniqueResult(qCategory);
+	}
+	
+	@Override
 	public Category getByCode(MerchantStore store, String code) {
 		QCategory qCategory = QCategory.category;
 		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
@@ -178,6 +195,26 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 			.orderBy(qCategory.lineage.asc(), qCategory.lineage.asc(), qCategory.depth.asc(), qDescription.language.id.desc());
 		
 		return query.listDistinct(qCategory);
+	}
+	
+	@Override
+	public List<Category> listByParent(Category category, Language language) {
+		
+		QCategory qCategory = QCategory.category;
+		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCategory)
+			.leftJoin(qCategory.descriptions, qDescription).fetch()
+			.leftJoin(qCategory.merchantStore).fetch()
+			.leftJoin(qCategory.parent).fetch()
+			.where(qCategory.parent.id.eq(category.getId())
+			.and(qCategory.merchantStore.id.eq(category.getMerchantStore().getId())))
+			.orderBy(qCategory.lineage.asc(), qCategory.lineage.asc(), qCategory.depth.asc(), qDescription.language.id.desc());
+		
+		return query.listDistinct(qCategory);
+		
 	}
 	
 	

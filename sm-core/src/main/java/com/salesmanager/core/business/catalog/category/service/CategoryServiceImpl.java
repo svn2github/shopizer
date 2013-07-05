@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.salesmanager.core.business.catalog.category.dao.CategoryDao;
 import com.salesmanager.core.business.catalog.category.model.Category;
@@ -106,6 +108,13 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		}
 		
 	}
+	
+	@Override
+	public Category getBySeUrl(MerchantStore store,String seUrl) {
+		return categoryDao.getBySeUrl(store, seUrl);
+	}
+	
+	
 	@Override
 	public Category getByCode(MerchantStore store, String code) throws ServiceException {
 		
@@ -160,6 +169,14 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		
 	}
 	
+	@Override
+	public List<Category> listByParent(Category category, Language language) {
+		Assert.notNull(category, "Category cannot be null");
+		Assert.notNull(language, "Language cannot be null");
+		Assert.notNull(category.getMerchantStore(), "category.merchantStore cannot be null");
+		
+		return categoryDao.listByParent(category, language);
+	}
 
 	
 	@Override
