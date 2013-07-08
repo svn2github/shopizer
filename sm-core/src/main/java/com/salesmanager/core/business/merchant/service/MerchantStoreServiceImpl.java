@@ -87,14 +87,14 @@ public class MerchantStoreServiceImpl extends SalesManagerEntityServiceImpl<Inte
 	
 
 	
-	@Override
-	public Collection<Product> getProducts(MerchantStore merchantStore) throws ServiceException {
+	//@Override
+	//public Collection<Product> getProducts(MerchantStore merchantStore) throws ServiceException {
 		
 
-		return merchantStoreDao.getProducts(merchantStore);
+	//	return merchantStoreDao.getProducts(merchantStore);
 		
 		
-	}
+	//}
 
 	@Override
 	public MerchantStore getByCode(String code) throws ServiceException {

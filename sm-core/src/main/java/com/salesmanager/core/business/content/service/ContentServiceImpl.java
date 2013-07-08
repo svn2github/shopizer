@@ -1,6 +1,5 @@
 package com.salesmanager.core.business.content.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -52,6 +51,15 @@ public class ContentServiceImpl
     {
 
         return contentDao.listByType( contentType, store, language );
+    }
+    
+    @Override
+    public void delete(Content content) throws ServiceException {
+    	
+    	Content c = this.getById(content.getId());
+    	super.delete(c);
+    	
+    	
     }
     
 

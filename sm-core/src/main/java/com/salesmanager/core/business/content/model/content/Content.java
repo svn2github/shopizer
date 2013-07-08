@@ -132,6 +132,16 @@ public class Content extends SalesManagerEntity<Long, Content> implements Serial
 	public ContentType getContentType() {
 		return contentType;
 	}
+	
+	public ContentDescription getDescription() {
+		
+		if(this.getDescriptions()!=null && this.getDescriptions().size()>0) {
+			return this.getDescriptions().get(0);
+		}
+		
+		return null;
+		
+	}
 
 
 }

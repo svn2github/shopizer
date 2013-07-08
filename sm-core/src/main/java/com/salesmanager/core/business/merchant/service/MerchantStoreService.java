@@ -10,7 +10,7 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 public interface MerchantStoreService extends SalesManagerEntityService<Integer, MerchantStore>{
 	
 
-	Collection<Product> getProducts(MerchantStore merchantStore) throws ServiceException;
+	//Collection<Product> getProducts(MerchantStore merchantStore) throws ServiceException;
 	
 	//MerchantStore getMerchantStore(Integer merchantStoreId) throws ServiceException;
 

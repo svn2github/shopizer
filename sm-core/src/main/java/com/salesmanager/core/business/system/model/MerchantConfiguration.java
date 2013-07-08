@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,7 +28,7 @@ import com.salesmanager.core.constants.SchemaConstant;
 
 /**
  * Merchant configuration information
- * @author casams1
+ * @author Carl Samson
  *
  */
 @Entity
@@ -58,6 +60,10 @@ public class MerchantConfiguration extends SalesManagerEntity<Long, MerchantConf
 	@Column(name="VALUE")
 	@Type(type = "org.hibernate.type.StringClobType")
 	private String value;
+	
+	@Column(name="TYPE")
+	@Enumerated(value = EnumType.STRING)
+	private MerchantConfigurationType merchantConfigurationType = MerchantConfigurationType.INTEGRATION;
 
 	public void setKey(String key) {
 		this.key = key;
@@ -101,5 +107,13 @@ public class MerchantConfiguration extends SalesManagerEntity<Long, MerchantConf
 
 	public void setMerchantStore(MerchantStore merchantStore) {
 		this.merchantStore = merchantStore;
+	}
+
+	public void setMerchantConfigurationType(MerchantConfigurationType merchantConfigurationType) {
+		this.merchantConfigurationType = merchantConfigurationType;
+	}
+
+	public MerchantConfigurationType getMerchantConfigurationType() {
+		return merchantConfigurationType;
 	}
 }

@@ -10,6 +10,7 @@ import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceI
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.system.dao.MerchantConfigurationDao;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
+import com.salesmanager.core.business.system.model.MerchantConfigurationType;
 
 @Service("merchantConfigurationService")
 public class MerchantConfigurationServiceImpl extends
@@ -27,16 +28,20 @@ public class MerchantConfigurationServiceImpl extends
 	}
 	
 
+	@Override
 	public MerchantConfiguration getMerchantConfiguration(String key, MerchantStore store) throws ServiceException {
-		
 		return merchantConfigurationDao.getMerchantConfiguration(key, store);
-		
 	}
 	
 	
 	@Override
 	public List<MerchantConfiguration> listByStore(MerchantStore store) throws ServiceException {
 		return merchantConfigurationDao.getMerchantConfigurations(store);
+	}
+	
+	@Override
+	public List<MerchantConfiguration> listByType(MerchantConfigurationType type, MerchantStore store) throws ServiceException {
+		return merchantConfigurationDao.listByType(type, store);
 	}
 	
 	@Override
