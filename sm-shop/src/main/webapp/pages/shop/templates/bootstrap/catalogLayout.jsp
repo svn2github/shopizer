@@ -50,8 +50,10 @@ response.setDateHeader ("Expires", -1);
 
 				<tiles:insertAttribute name="navbar"/> 
 
+			
 
 
+			
 			<div class="row-fluid">
 				<div class="span12"><span id="homeText">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</span></div>
 			</div>
@@ -65,7 +67,7 @@ response.setDateHeader ("Expires", -1);
 									<ul class="thumbnails product-list" id="productList"><li class="span3">    <div class="product-box">                                             <a href="product.html?product=short-sleeves-surfer"><h4>Short sleeves black</h4></a>     <a href="product.html?product=short-sleeves-surfer"><img src="img/products/shirt4.jpg" alt=""></a>     <p></p><h3>$29.99</h3><p></p>     <div class="bottom">      <a href="product.html?product=short-sleeves-surfer" class="view">view</a> /       <a productid="40" href="#" class="addcart addToCart">add to cart</a>     </div>    </div>   </li><li class="span3">    <div class="product-box">                                             <a href="product.html?product=short-sleeves-blue"><h4>Short sleeves blue</h4></a>     <a href="product.html?product=short-sleeves-blue"><img src="img/products/shirt2.jpg" alt=""></a>     <p></p><h3>$29.99</h3><p></p>     <div class="bottom">      <a href="product.html?product=short-sleeves-blue" class="view">view</a> /       <a productid="41" href="#" class="addcart addToCart">add to cart</a>     </div>    </div>   </li><li class="span3">    <div class="product-box">                                             <a href="product.html?product=short-sleeves-white"><h4>Short sleeves white</h4></a>     <a href="product.html?product=short-sleeves-white"><img src="img/products/shirt1.jpg" alt=""></a>     <p></p><h3>$29.99</h3><p></p>     <div class="bottom">      <a href="product.html?product=short-sleeves-white" class="view">view</a> /       <a productid="42" href="#" class="addcart addToCart">add to cart</a>     </div>    </div>   </li><li class="span3">    <div class="product-box">                                             <a href="product.html?product=short-sleeves-43"><h4>Short sleeves orange</h4></a>     <a href="product.html?product=short-sleeves-43"><img src="img/products/shirt7.jpg" alt=""></a>     <p></p><h3>$29.99</h3><p></p>     <div class="bottom">      <a href="product.html?product=short-sleeves-43" class="view">view</a> /       <a productid="43" href="#" class="addcart addToCart">add to cart</a>     </div>    </div>   </li></ul>
 				</div>
 			</div>
-
+			
 
 			
 

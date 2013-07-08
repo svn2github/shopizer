@@ -24,6 +24,7 @@ response.setDateHeader ("Expires", -1);
 				<div class="span12">
 				
 				      	<!--  Carousel -->
+				      	<!--
       					<div id="main-slider" class="carousel slide home">
         					<div class="carousel-inner" id="slider">
         					
@@ -35,12 +36,11 @@ response.setDateHeader ("Expires", -1);
             							</div>
           							  </div>
 
-        					</div><!-- .carousel-inner -->
-        					<!--  next and previous controls here
-              					href values must reference the id for this carousel -->
+        					</div>
           					<a class="carousel-control left" href="#slider" data-slide="prev">&lsaquo;</a>
           					<a class="carousel-control right" href="#slider" data-slide="next">&rsaquo;</a>
-      					</div><!-- .carousel -->
+      					</div>
+      					-->
       					<!-- end carousel -->
 				
 				

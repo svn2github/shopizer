@@ -16,7 +16,17 @@ response.setDateHeader ("Expires", -1);
 			<!-- header -->
 			<div id="mainmenu" class="row-fluid">
 				
-					<ul class="nav nav-pills pull-left" id="linkMenuLinks"><li class="active"><a href="index.html">Home</a></li><li><a href="#contactformlink">Contact</a></li></ul>
+					<ul class="nav nav-pills pull-left" id="linkMenuLinks">
+						<li class="active"><a href="index.html">Home</a></li>
+						<c:forEach items="${requestScope.CONTENT_PAGE}" var="content">
+    							<li class="">
+    								<a href="<c:url value="/"/> class="current"> 
+    									<span class="name">${content.name}</span> 
+    								</a>
+    							</li> 
+						</c:forEach>
+						<li><a href="#contactformlink">Contact</a></li>
+					</ul>
 
 
 					<div style="padding-top: 8px;padding-bottom:10px;" class="btn-group pull-right">
@@ -33,9 +43,9 @@ response.setDateHeader ("Expires", -1);
                   					</c:choose>
             					</span>
             				<c:choose>
-            					 <ul class="dropdown-menu minicart">
+            					 
 	           		 			 <c:when test="${requestScope.SHOPPING_CART != null}">
-		            					
+		            					<ul class="dropdown-menu minicart">
 		              						<li>
 		                  						<div class="cartbox" id="cart-box">
 		                  							<div class="box-content clearfix">
@@ -60,12 +70,13 @@ response.setDateHeader ("Expires", -1);
 			                  						</div>
 		                  						</div>
 		              						</li>
-		            					
+		            					</ul>
             					</c:when>
             					<c:otherwise>
+            							<ul class="dropdown-menu minicart">
 	                  						//NO ITEMS [TODO]
+	                  					</ul>
 	                  			</c:otherwise>
-	                  			</ul>
                   			</c:choose>
 					
 					</div>
