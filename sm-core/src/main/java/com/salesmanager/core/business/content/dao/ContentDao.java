@@ -3,6 +3,7 @@ package com.salesmanager.core.business.content.dao;
 import java.util.List;
 
 import com.salesmanager.core.business.content.model.content.Content;
+import com.salesmanager.core.business.content.model.content.ContentDescription;
 import com.salesmanager.core.business.content.model.content.ContentType;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDao;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -28,6 +29,9 @@ public interface ContentDao extends SalesManagerEntityDao<Long, Content> {
 
 	List<Content> listByType(ContentType contentType, MerchantStore store)
 			throws ServiceException;
+
+	List<ContentDescription> listNameByType(List<ContentType> contentType,
+			MerchantStore store, Language language) throws ServiceException;
 
 
 

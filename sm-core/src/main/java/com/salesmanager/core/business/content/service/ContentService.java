@@ -3,6 +3,7 @@ package com.salesmanager.core.business.content.service;
 import java.util.List;
 
 import com.salesmanager.core.business.content.model.content.Content;
+import com.salesmanager.core.business.content.model.content.ContentDescription;
 import com.salesmanager.core.business.content.model.content.ContentType;
 import com.salesmanager.core.business.content.model.content.FileContentType;
 import com.salesmanager.core.business.content.model.content.InputContentFile;
@@ -138,5 +139,8 @@ public interface ContentService
 
 	List<Content> listByType(List<ContentType> contentType, MerchantStore store)
 			throws ServiceException;
+
+	List<ContentDescription> listNameByType(List<ContentType> contentType,
+			MerchantStore store, Language language) throws ServiceException;
 
 }

@@ -11,6 +11,7 @@ import org.springframework.util.Assert;
 
 import com.salesmanager.core.business.content.dao.ContentDao;
 import com.salesmanager.core.business.content.model.content.Content;
+import com.salesmanager.core.business.content.model.content.ContentDescription;
 import com.salesmanager.core.business.content.model.content.ContentType;
 import com.salesmanager.core.business.content.model.content.FileContentType;
 import com.salesmanager.core.business.content.model.content.InputContentFile;
@@ -70,6 +71,15 @@ public class ContentServiceImpl
 
 
         return contentDao.listByType( contentType, store, language );
+    }
+    
+    @Override
+    public List<ContentDescription> listNameByType( final List<ContentType> contentType, final MerchantStore store, final Language language )
+            throws ServiceException
+    {
+
+
+            return contentDao.listNameByType(contentType, store, language);
     }
     
     @Override

@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.content.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.salesmanager.core.business.content.model.content.Content;
+import com.salesmanager.core.business.content.model.content.ContentDescription;
 import com.salesmanager.core.business.content.model.content.ContentType;
 import com.salesmanager.core.business.content.model.content.QContent;
 import com.salesmanager.core.business.content.model.content.QContentDescription;
@@ -86,6 +88,40 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 		List<Content> contents = query.list(qContent);
 		
 		return contents;
+	}
+	
+	@Override
+	public List<ContentDescription> listNameByType(List<ContentType> contentType, MerchantStore store, Language language) throws ServiceException {
+
+		QContent qContent = QContent.content;
+		QContentDescription qContentDescription = QContentDescription.contentDescription;
+		
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qContentDescription)
+			.leftJoin(qContentDescription.content, qContent).fetch()
+			.leftJoin(qContent.merchantStore).fetch()
+			.where(qContentDescription.language.id.eq(language.getId())
+			.and(qContent.merchantStore.id.eq(store.getId()))
+			.and(qContent.contentType.in(contentType))
+			);
+		
+		List<Object[]> contents = query.list(qContentDescription.name,qContentDescription.seUrl);
+		
+		
+		List<ContentDescription> descriptions = new ArrayList<ContentDescription>();
+		for(Object[] o : contents) {
+			String name = (String) o[0];
+			String url = (String) o[1];
+			ContentDescription contentDescription = new ContentDescription();
+			contentDescription.setName(name);
+			contentDescription.setSeUrl(url);
+			descriptions.add(contentDescription);
+			
+		}
+		
+		return descriptions;
 	}
 	
 	@Override
