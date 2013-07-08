@@ -27,9 +27,9 @@ response.setDateHeader ("Expires", -1);
  
      <head>
         	 	<meta charset="utf-8">
-    			<title>//TODO TAGLIB<c:out value="${requestScope.MERCHANT_STORE.storename}"/></title>
+    			<title><c:out value="${requestScope.PAGE_INFORMATION.pageTitle}" /></title>
     			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    			<meta name="description" content="//TODO TAGLIB">
+    			<meta name="description" content="<c:out value="${requestScope.PAGE_INFORMATION.pageDescription}" />">
     			<meta name="author" content="<c:out value="${requestScope.MERCHANT_STORE.storename}"/>">
     			<!-- The one provided with the system -->
     			<script src="<c:url value="/resources/js/bootstrap/jquery.js" />"></script>
@@ -47,8 +47,15 @@ response.setDateHeader ("Expires", -1);
 				<tiles:insertAttribute name="header"/>
 
 
-
-				<tiles:insertAttribute name="navbar"/> 
+				<tiles:insertAttribute name="navbar"/>
+				
+				
+				<tiles:insertAttribute name="body"/>
+				
+				
+				<tiles:insertAttribute name="footer"/>
+				
+				<!-- 
 
 			
 
@@ -67,11 +74,9 @@ response.setDateHeader ("Expires", -1);
 									<ul class="thumbnails product-list" id="productList"><li class="span3">    <div class="product-box">                                             <a href="product.html?product=short-sleeves-surfer"><h4>Short sleeves black</h4></a>     <a href="product.html?product=short-sleeves-surfer"><img src="img/products/shirt4.jpg" alt=""></a>     <p></p><h3>$29.99</h3><p></p>     <div class="bottom">      <a href="product.html?product=short-sleeves-surfer" class="view">view</a> /       <a productid="40" href="#" class="addcart addToCart">add to cart</a>     </div>    </div>   </li><li class="span3">    <div class="product-box">                                             <a href="product.html?product=short-sleeves-blue"><h4>Short sleeves blue</h4></a>     <a href="product.html?product=short-sleeves-blue"><img src="img/products/shirt2.jpg" alt=""></a>     <p></p><h3>$29.99</h3><p></p>     <div class="bottom">      <a href="product.html?product=short-sleeves-blue" class="view">view</a> /       <a productid="41" href="#" class="addcart addToCart">add to cart</a>     </div>    </div>   </li><li class="span3">    <div class="product-box">                                             <a href="product.html?product=short-sleeves-white"><h4>Short sleeves white</h4></a>     <a href="product.html?product=short-sleeves-white"><img src="img/products/shirt1.jpg" alt=""></a>     <p></p><h3>$29.99</h3><p></p>     <div class="bottom">      <a href="product.html?product=short-sleeves-white" class="view">view</a> /       <a productid="42" href="#" class="addcart addToCart">add to cart</a>     </div>    </div>   </li><li class="span3">    <div class="product-box">                                             <a href="product.html?product=short-sleeves-43"><h4>Short sleeves orange</h4></a>     <a href="product.html?product=short-sleeves-43"><img src="img/products/shirt7.jpg" alt=""></a>     <p></p><h3>$29.99</h3><p></p>     <div class="bottom">      <a href="product.html?product=short-sleeves-43" class="view">view</a> /       <a productid="43" href="#" class="addcart addToCart">add to cart</a>     </div>    </div>   </li></ul>
 				</div>
 			</div>
-			
-
-			
-
-
+            -->
+            
+            <!--
             <footer>
                 <div class="row">                   
                     <div class="span6">
@@ -84,10 +89,12 @@ response.setDateHeader ("Expires", -1);
 
                     <img width="26" src="img/misc/facebook.png">&nbsp;<a href="http://www.facebook.com/Cocoacart">Follow us on Facebook</a><br><img width="26" src="img/misc/twitter.png">&nbsp;<a href="http://www.twitter.com/Cocoacart">Follow us on Twitter</a><br></div>				
                 </div>
-		    <div id="footer-bottom"><div class="container">        <div class="row">      <div class="span12 text">Copyright 2013 Surf T Shop &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp; Powered by <a href="www.cocoacart.com">Cocoacart</a></div>        </div>      </div></div>
+		        <div id="footer-bottom"><div class="container">        <div class="row">      <div class="span12 text">Copyright 2013 Surf T Shop &nbsp;&nbsp;&nbsp; - &nbsp;&nbsp;&nbsp; Powered by <a href="www.cocoacart.com">Cocoacart</a></div>        </div>      </div></div>
             </footer>
-        </div>
-	<jsp:include page="/pages/shop/templates/bootstrap/sections/jsLinks.jsp" />
+			-->
+
+</div><!-- container -->
+	   <jsp:include page="/pages/shop/templates/bootstrap/sections/jsLinks.jsp" />
 
  	</body>
  

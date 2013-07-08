@@ -41,9 +41,9 @@ response.setDateHeader ("Expires", -1);
 						<nav id="menu" class="pull-right">
                     					<ul id="mainMenu">
 											<li class="">  
-	                    					       <a href="<c:url value="/"/> class="current">          
-	                    					            <span class="name">Home</span>     
-	                    								<span class="desc">Home</span>                                  
+	                    					       <a href="<c:url value="/shop"/> class="current">          
+	                    					            <span class="name"><s:message code="menu.home" text="Home"/></span>     
+	                    								<span class="desc"><s:message code="menu.home" text="Home"/></span>                                  
 	                    						   </a>                         
 	                    					</li>
 	
@@ -63,7 +63,6 @@ response.setDateHeader ("Expires", -1);
             </div>
             		
 			<div class="row-fluid">
-
 					<div style="padding-top: 4px;margin-right:8px;" class="btn-group pull-right">
 						<form class="form-inline">
  							<input type="text" placeholder="" class="input-medium">

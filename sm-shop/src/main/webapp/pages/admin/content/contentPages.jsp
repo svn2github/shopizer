@@ -25,6 +25,7 @@
 				<c:set value="/admin/content/remove.html" var="removeUrl" scope="request" />
 				<c:set value="/admin/content/pages/listContent.html" var="refreshUrl" scope="request" />
 				<c:set var="componentTitleKey" value="label.content.pages" scope="request" />
+				<c:set var="entityId" value="id" scope="request"/>
 				<c:set var="canRemoveEntry" value="true" scope="request" />
 				<c:set var="gridHeader" value="/pages/admin/content/content-gridHeader.jsp" scope="request"/>
 				<jsp:include page="/pages/admin/components/list.jsp"></jsp:include>

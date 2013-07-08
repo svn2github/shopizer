@@ -26,6 +26,7 @@ response.setDateHeader ("Expires", -1);
                     </div>
 					 <div class="span3">   
 						<h4>Information</h4>
+						<!-- Pages -->
                         <ul>
 							<li><a href="http://#WB0M3G9S1/about.html">About Us</a></li>
 							<li><a href="#">Delivery Information</a></li>
@@ -43,6 +44,7 @@ response.setDateHeader ("Expires", -1);
 						</ul>
                     </div>
                     <div class="span3">
+                    	<!-- Social links -->
                         <h4>Connect with us</h4>
                         <a href="#">Facebook</a>
                         <br>

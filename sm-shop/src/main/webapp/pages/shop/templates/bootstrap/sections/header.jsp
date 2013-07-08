@@ -17,11 +17,11 @@ response.setDateHeader ("Expires", -1);
 			<div id="mainmenu" class="row-fluid">
 				
 					<ul class="nav nav-pills pull-left" id="linkMenuLinks">
-						<li class="active"><a href="index.html">Home</a></li>
+						<li class="active"><a href="<c:url value="/shop"/>"><s:message code="menu.home" text="Home"/></a></li>
 						<c:forEach items="${requestScope.CONTENT_PAGE}" var="content">
     							<li class="">
     								<a href="<c:url value="/"/> class="current"> 
-    									<span class="name">${content.name}</span> 
+    									<span class="name">${content.description.name}</span> 
     								</a>
     							</li> 
 						</c:forEach>
