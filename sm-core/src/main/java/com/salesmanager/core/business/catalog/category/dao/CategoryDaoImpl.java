@@ -32,7 +32,8 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 			.leftJoin(qCategory.merchantStore).fetch()
 			.where(qDescription.name.like("%" + name + "%")
 			.and(qDescription.language.id.eq(language.getId()))
-			.and(qCategory.merchantStore.id.eq(store.getId())));
+			.and(qCategory.merchantStore.id.eq(store.getId())))
+			.orderBy(qCategory.sortOrder.asc());
 		
 
 		
@@ -54,7 +55,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 			.leftJoin(qCategory.merchantStore).fetch()
 			.where(qDescription.seUrl.like(seUrl)
 			.and(qCategory.merchantStore.id.eq(store.getId())))
-			.orderBy(qDescription._super.title.desc(), qDescription._super.name.desc(), qDescription.language.id.desc());
+			.orderBy(qDescription._super.title.desc(), qDescription._super.name.desc(), qDescription.language.id.desc()).orderBy(qCategory.sortOrder.asc());
 		
 		return query.list(qCategory);
 	}
@@ -140,7 +141,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 			.leftJoin(qCategory.merchantStore).fetch()
 			.where(qCategory.lineage.like(new StringBuilder().append(lineage).append("%").toString())
 			.and(qCategory.merchantStore.id.eq(store.getId())))
-			.orderBy(qCategory.lineage.asc(), qCategory.lineage.asc(), qCategory.depth.asc(), qDescription.language.id.desc());
+			.orderBy(qCategory.sortOrder.asc(), qCategory.lineage.asc(), qCategory.lineage.asc(), qCategory.depth.asc(), qDescription.language.id.desc());
 		
 		return query.listDistinct(qCategory);
 	}
@@ -157,7 +158,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 			.leftJoin(qCategory.merchantStore).fetch()
 			.where(qCategory.lineage.like(new StringBuilder().append(lineage).append("%").toString())
 			.and(qCategory.merchantStore.code.eq(merchantStoreCode)))
-			.orderBy(qCategory.lineage.asc(), qCategory.lineage.asc(), qCategory.depth.asc(), qDescription.language.id.desc());
+			.orderBy(qCategory.sortOrder.asc(),qCategory.lineage.asc(), qCategory.lineage.asc(), qCategory.depth.asc(), qDescription.language.id.desc());
 		
 		return query.listDistinct(qCategory);
 	}
@@ -174,7 +175,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 			.leftJoin(qCategory.merchantStore).fetch()
 			.where(qCategory.depth.eq(depth)
 			.and(qCategory.merchantStore.id.eq(store.getId())))
-			.orderBy(qCategory.lineage.asc(), qCategory.lineage.asc(), qCategory.depth.asc(), qDescription.language.id.desc());
+			.orderBy(qCategory.sortOrder.asc(), qCategory.lineage.asc(), qCategory.lineage.asc(), qCategory.depth.asc(), qDescription.language.id.desc());
 		
 		return query.listDistinct(qCategory);
 	}
@@ -192,7 +193,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 			.where(qCategory.depth.eq(depth)
 			.and(qCategory.merchantStore.id.eq(store.getId()))
 			.and(qDescription.language.id.eq(language.getId())))
-			.orderBy(qCategory.lineage.asc(), qCategory.lineage.asc(), qCategory.depth.asc(), qDescription.language.id.desc());
+			.orderBy(qCategory.sortOrder.asc(), qCategory.lineage.asc(), qCategory.lineage.asc(), qCategory.depth.asc(), qDescription.language.id.desc());
 		
 		return query.listDistinct(qCategory);
 	}
@@ -229,23 +230,23 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 			if (category == null) {
 				query.from(qCategory)
 					.where(qCategory.parent.isNull())
-					.orderBy(qCategory.id.desc());
+					.orderBy(qCategory.sortOrder.asc(),qCategory.id.desc());
 			} else {
 				query.from(qCategory)
 					.where(qCategory.parent.eq(category))
-					.orderBy(qCategory.id.desc());
+					.orderBy(qCategory.sortOrder.asc(),qCategory.id.desc());
 			}
 		} else {
 			if (category == null) {
 				query.from(qCategory)
 					.where(qCategory.parent.isNull()
 						.and(qCategory.merchantStore.eq(store)))
-					.orderBy(qCategory.id.desc());
+					.orderBy(qCategory.sortOrder.asc(),qCategory.id.desc());
 			} else {
 				query.from(qCategory)
 					.where(qCategory.parent.eq(category)
 						.and(qCategory.merchantStore.eq(store)))
-					.orderBy(qCategory.id.desc());
+					.orderBy(qCategory.sortOrder.asc(),qCategory.id.desc());
 			}
 		}
 		
@@ -266,7 +267,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 			.leftJoin(qCategory.descriptions, qDescription).fetch()
 			.leftJoin(qCategory.merchantStore).fetch()
 			.where(qCategory.merchantStore.id.eq(store.getId()))
-			.orderBy(qCategory.id.asc());
+			.orderBy(qCategory.sortOrder.asc(),qCategory.id.asc());
 		
 		return query.listDistinct(qCategory);
 	}
@@ -283,7 +284,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 			.leftJoin(qCategory.merchantStore).fetch()
 			.where((qCategory.merchantStore.id.eq(store.getId()))
 			.and(qDescription.language.id.eq(language.getId())))
-			.orderBy(qCategory.id.asc());
+			.orderBy(qCategory.sortOrder.asc(),qCategory.id.asc());
 		
 		return query.listDistinct(qCategory);
 	}
