@@ -311,7 +311,7 @@ public class MerchantStoreController {
 			store.setDefaultLanguage(defaultLanguage);
 		}
 		
-
+		store.setStoreTemplate(sessionStore.getStoreTemplate());
 		store.setCountry(country);
 		store.setZone(zone);
 		store.setCurrency(currency);

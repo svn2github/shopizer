@@ -185,7 +185,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				/******* CMS Objects ********/
 				this.getContentObjects(store, language, request);
 				
-				/******* CMS Pages **********/
+				/******* CMS Page names **********/
 				
 				/******* Top Categories ********/
 				this.getTopCategories(store, language, request);
@@ -252,7 +252,81 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 		   
 	   }
 	   
-	   private void getContentObjects(MerchantStore store, Language language, HttpServletRequest request) throws Exception {
+	   
+		@SuppressWarnings("unchecked")
+		private void getContentPageNames(MerchantStore store, Language language, HttpServletRequest request) throws Exception {
+			   
+			   CacheUtils cache = CacheUtils.getInstance();
+				/**
+				 * CMS links
+				 * Those links are implemented as pages (Content)
+				 * ContentDescription will provide attributes name for the
+				 * label to be displayed and seUrl for the friendly url page
+				 */
+				
+				//build the key
+				/**
+				 * The cache is kept as a Map<String,Object>
+				 * The key is CONTENT_PAGE_<MERCHANT_ID>_<LOCALE>
+				 * The value is a List of Content object
+				 */
+				
+				StringBuilder contentKey = new StringBuilder();
+				contentKey
+				.append(Constants.CONTENT_PAGE_CACHE_KEY)
+				.append(store.getId())
+				.append(language.getCode());
+				
+				StringBuilder contentKeyMissed = new StringBuilder();
+				contentKeyMissed
+				.append(contentKey.toString())
+				.append(Constants.MISSED_CACHE_KEY);
+				
+				Map<String, List<ContentDescription>> contents = null;
+				
+				if(store.isUseCache()) {
+				
+					//get from the cache
+					contents = (Map<String, List<ContentDescription>>) cache.getFromCache(contentKey.toString());
+					
+					Boolean missedContent = null;
+					if(contents==null) {
+						//get from missed cache
+						missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
+					}
+					
+					   if(contents==null && missedContent==null) {
+						
+							contents = this.getContentPagesNames(store, language);
+
+							
+							//put in cache
+							cache.putInCache(contents, contentKey.toString());
+							
+						} else {
+							
+							//put in missed cache
+							cache.putInCache(new Boolean(true), contentKeyMissed.toString());
+							
+						}
+						
+					
+		
+				} else {
+					
+
+					contents = this.getContentPagesNames(store, language);	
+
+				}
+				
+				if(contents!=null && contents.size()>0) {
+					request.setAttribute(Constants.REQUEST_CONTENT_PAGE_OBJECTS, contents);
+				}
+			   
+	    }
+	   
+	@SuppressWarnings("unchecked")
+	private void getContentObjects(MerchantStore store, Language language, HttpServletRequest request) throws Exception {
 		   
 		   CacheUtils cache = CacheUtils.getInstance();
 			/**
@@ -280,72 +354,51 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			.append(contentKey.toString())
 			.append(Constants.MISSED_CACHE_KEY);
 			
-			//get from the cache
-			Map<String, List<Content>> contents = (Map<String, List<Content>>) cache.getFromCache(contentKey.toString());
+			Map<String, List<Content>> contents = null;
 			
-			Boolean missedContent = null;
-			if(contents==null) {
-				//get from missed cache
-
-				
-				missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
-				
-			}
+			if(store.isUseCache()) {
 			
-			if(contents==null && missedContent==null) {
-
-				//Get boxes and sections from the database
-				List<ContentType> contentTypes = new ArrayList<ContentType>();
-				contentTypes.add(ContentType.BOX);
-				contentTypes.add(ContentType.SECTION);
+				//get from the cache
+				contents = (Map<String, List<Content>>) cache.getFromCache(contentKey.toString());
 				
-				List<Content> contentPages = contentService.listByType(contentTypes, store, language);
+				Boolean missedContent = null;
+				if(contents==null) {
+					//get from missed cache
+					missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
+				}
 				
-				if(contentPages!=null && contentPages.size()>0) {
+				if(contents==null && missedContent==null) {
 					
-					//create a Map<String,List<Content>
-					for(Content content : contentPages) {
+					contents = this.getContent(store, language);
 
-						List<ContentDescription> descriptions = content.getDescriptions();
-						for(ContentDescription contentDescription : descriptions) {
-							Language lang = contentDescription.getLanguage();
-							String key = new StringBuilder()
-							.append(Constants.CONTENT_CACHE_KEY)
-							.append(store.getId())
-							.append(lang.getCode()).toString();
-							List<Content> contentList = null;
-							if(contents==null) {
-								contents = new HashMap<String, List<Content>>();
-							}
-							if(!contents.containsKey(key)) {
-								contentList = new ArrayList<Content>();
-
-								contents.put(key, contentList);
-							}
-							contentList.add(content);
-						}
+						
+						//put in cache
+						cache.putInCache(contents, contentKey.toString());
+						
+					} else {
+						
+						//put in missed cache
+						cache.putInCache(new Boolean(true), contentKeyMissed.toString());
 						
 					}
 					
-					//put in cache
-					cache.putInCache(contents, contentKey.toString());
-					
-				} else {
-					
-					//put in missed cache
-					cache.putInCache(new Boolean(true), contentKeyMissed.toString());
-					
-				}
 				
+	
+			} else {
+				
+
+				contents = this.getContent(store, language);	
+
 			}
 			
 			if(contents!=null && contents.size()>0) {
 				request.setAttribute(Constants.REQUEST_CONTENT_OBJECTS, contents);
 			}
 		   
-	   }
+    }
 
-	   private void getTopCategories(MerchantStore store, Language language, HttpServletRequest request) throws Exception {
+	@SuppressWarnings("unchecked")
+	private void getTopCategories(MerchantStore store, Language language, HttpServletRequest request) throws Exception {
 		   
 		   CacheUtils cache = CacheUtils.getInstance();
 			/**
@@ -373,58 +426,39 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			.append(contentKey.toString())
 			.append(Constants.MISSED_CACHE_KEY);
 			
+			Map<String, List<Category>> objects = null;
+			
+			if(store.isUseCache()) {
+			
 			//get from the cache
-			Map<String, List<Category>> objects = (Map<String, List<Category>>) cache.getFromCache(contentKey.toString());
+			objects = (Map<String, List<Category>>) cache.getFromCache(contentKey.toString());
 			
-			Boolean missedContent = null;
-			if(objects==null) {
-				missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
-			}
-			
-			if(objects==null && missedContent==null) {
-
-				//Get top categories from the database
-				
-				List<Category> categories = categoryService.listByDepth(store, 0, language);
-				
-				if(categories!=null && categories.size()>0) {
-					
-					//create a Map<String,List<Content>
-					for(Category category : categories) {
-
-						List<CategoryDescription> descriptions = category.getDescriptions();
-						for(CategoryDescription description : descriptions) {
-							Language lang = description.getLanguage();
-							String key = new StringBuilder()
-							.append(Constants.CATEGORIES_CACHE_KEY)
-							.append(store.getId())
-							.append(lang.getCode()).toString();
-							
-							List<Category> cacheCategories = null;
-							if(objects==null) {
-								objects = new HashMap<String, List<Category>>();
-							}
-							if(!objects.containsKey(key)) {
-								cacheCategories = new ArrayList<Category>();
-
-								objects.put(key, cacheCategories);
-							} else {
-								cacheCategories = objects.get(key.toString());
-							}
-							cacheCategories.add(category);
-						}
-						
-					}
-					
-					//put in cache
-					cache.putInCache(objects, contentKey.toString());
-					
-				} else {
-					
-					//put in missed cache
-					cache.putInCache(new Boolean(true), contentKeyMissed.toString());
-					
+				Boolean missedContent = null;
+				if(objects==null) {
+					missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
 				}
+				
+				if(objects==null && missedContent==null) {
+	
+					//Get top categories from the database
+					
+					objects = this.getCategories(store, language);
+	
+						
+						//put in cache
+						cache.putInCache(objects, contentKey.toString());
+						
+				} else {
+						
+						//put in missed cache
+						cache.putInCache(new Boolean(true), contentKeyMissed.toString());
+						
+				}
+				
+			} else {
+				
+				
+				objects = this.getCategories(store, language);
 				
 			}
 			
@@ -445,6 +479,131 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			}
 		   
 	   }
+	
+	
+	   private Map<String, List<ContentDescription>> getContentPagesNames(MerchantStore store, Language language) throws Exception {
+		   
+		   
+		   Map<String, List<ContentDescription>> contents = new HashMap<String, List<ContentDescription>>();
+		   
+			//Get boxes and sections from the database
+			List<ContentType> contentTypes = new ArrayList<ContentType>();
+			contentTypes.add(ContentType.PAGE);
+
+			
+			List<ContentDescription> contentPages = contentService.listNameByType(contentTypes, store, language);
+			
+			if(contentPages!=null && contentPages.size()>0) {
+				
+				//create a Map<String,List<Content>
+				for(ContentDescription content : contentPages) {
+
+
+						Language lang = language;
+						String key = new StringBuilder()
+						.append(Constants.CONTENT_PAGE_CACHE_KEY)
+						.append(store.getId())
+						.append(lang.getCode()).toString();
+						List<ContentDescription> contentList = null;
+						if(contents==null) {
+							contents = new HashMap<String, List<ContentDescription>>();
+						}
+						if(!contents.containsKey(key)) {
+							contentList = new ArrayList<ContentDescription>();
+
+							contents.put(key, contentList);
+						}
+						contentList.add(content);
+				}
+			}
+			return contents;
+	   }
+	   
+	   private Map<String, List<Content>> getContent(MerchantStore store, Language language) throws Exception {
+		   
+		   
+		   Map<String, List<Content>> contents = new HashMap<String, List<Content>>();
+		   
+			//Get boxes and sections from the database
+			List<ContentType> contentTypes = new ArrayList<ContentType>();
+			contentTypes.add(ContentType.BOX);
+			contentTypes.add(ContentType.SECTION);
+			
+			List<Content> contentPages = contentService.listByType(contentTypes, store, language);
+			
+			if(contentPages!=null && contentPages.size()>0) {
+				
+				//create a Map<String,List<Content>
+				for(Content content : contentPages) {
+
+					List<ContentDescription> descriptions = content.getDescriptions();
+					for(ContentDescription contentDescription : descriptions) {
+						Language lang = contentDescription.getLanguage();
+						String key = new StringBuilder()
+						.append(Constants.CONTENT_CACHE_KEY)
+						.append(store.getId())
+						.append(lang.getCode()).toString();
+						List<Content> contentList = null;
+						if(contents==null) {
+							contents = new HashMap<String, List<Content>>();
+						}
+						if(!contents.containsKey(key)) {
+							contentList = new ArrayList<Content>();
+
+							contents.put(key, contentList);
+						}
+						contentList.add(content);
+					}
+					
+				}
+				
+				
+		   
+			}
+			return contents;
+	   }
+	   
+	   private Map<String, List<Category>> getCategories(MerchantStore store, Language language) throws Exception {
+		   
+		   Map<String, List<Category>> objects = new HashMap<String, List<Category>>();
+		   
+
+			List<Category> categories = categoryService.listByDepth(store, 0, language);
+			
+			if(categories!=null && categories.size()>0) {
+				
+				//create a Map<String,List<Content>
+				for(Category category : categories) {
+
+					List<CategoryDescription> descriptions = category.getDescriptions();
+					for(CategoryDescription description : descriptions) {
+						Language lang = description.getLanguage();
+						String key = new StringBuilder()
+						.append(Constants.CATEGORIES_CACHE_KEY)
+						.append(store.getId())
+						.append(lang.getCode()).toString();
+						
+						List<Category> cacheCategories = null;
+						if(objects==null) {
+							objects = new HashMap<String, List<Category>>();
+						}
+						if(!objects.containsKey(key)) {
+							cacheCategories = new ArrayList<Category>();
+
+							objects.put(key, cacheCategories);
+						} else {
+							cacheCategories = objects.get(key.toString());
+						}
+						cacheCategories.add(category);
+					}
+					
+				}
+				
+				
+	      }
+			return objects;
+	   }
+
 	
 
 }

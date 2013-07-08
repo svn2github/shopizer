@@ -22,7 +22,7 @@
 		$('#checkCodeStatus').show();
 		var code = $("#code").val();
 		var id = $("#id").val();
-		checkCode(code,id,'<c:url value="/admin/content/checkCategoryCode.html" />');
+		checkCode(code,id,'<c:url value="/admin/content/checkContentCode.html" />');
 	}
 	
 	function callBackCheckCode(msg,code) {
@@ -70,7 +70,7 @@
            
 
 			<!--  Add content files -->
-			<
+			
 			<c:url var="saveContentPage" value="/admin/content/pages/saveContent.html" />
 			<form:form method="POST" enctype="multipart/form-data" commandName="content" action="${saveContentPage}">
 			
@@ -198,7 +198,7 @@
 
                   		<div class="pull-right">
 
-                  			<button type="submit" class="btn btn-success"><s:message code="button.label.upload.files" text="Upload files"/></button>
+                  			<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>
                   			
 
                   		</div>

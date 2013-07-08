@@ -6,6 +6,7 @@
 				
 
 <script src="<c:url value="/resources/js/ckeditor/ckeditor.js" />"></script>
+<script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
 
 
 	<script type="text/javascript">
@@ -13,6 +14,7 @@
 
 	
 	$(function(){
+		$('#order').numeric();
 		if($("#code").val()=="") {
 			$('.btn').addClass('disabled');
 		}
@@ -226,6 +228,14 @@
                   <form:hidden path="descriptions[${counter.index}].id" />
                   
                   </c:forEach>
+                  
+                  <div class="control-group">
+                        <label><s:message code="label.entity.order" text="Sort order"/></label>
+                        <div class="controls">
+                                    <form:input id="order" cssClass="" path="sortOrder"/>
+                                    <span class="help-inline"><form:errors path="sortOrder" cssClass="error" /></span>
+                        </div>
+                  </div>  
                   
                   <form:hidden path="id" />
 			
