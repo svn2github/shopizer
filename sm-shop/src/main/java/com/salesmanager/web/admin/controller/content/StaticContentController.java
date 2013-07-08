@@ -88,12 +88,7 @@ public class StaticContentController {
 			.append(store.getDomainName())
 			.append(request.getContextPath());
 			
-			
-			
 
-			
-			
-			
 			if(fileNames!=null) {
 
 				for(String name : fileNames) {

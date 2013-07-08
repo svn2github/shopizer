@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.salesmanager.core.business.content.model.content.Content;
 import com.salesmanager.core.business.content.model.content.ContentDescription;
 import com.salesmanager.core.business.content.model.content.ContentType;
+import com.salesmanager.core.business.content.model.content.FileContentType;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -134,6 +135,52 @@ public class ContentPagesController {
 		
 		
 	}
+	
+	
+	
+	@Secured("CONTENT")
+	@RequestMapping(value="/admin/content/removeContent.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String removeContent(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		String id = request.getParameter("id");
+
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		AjaxResponse resp = new AjaxResponse();
+
+		
+		try {
+			
+			//get the content first
+			Long lid = Long.parseLong(id);
+			
+			Content dbContent = contentService.getById(lid);
+			
+			if(dbContent==null) {
+				LOGGER.error("Invalid content id ", id);
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			if(dbContent!=null && dbContent.getMerchantStore().getId().intValue()!= store.getId().intValue()) {
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			contentService.delete(dbContent);
+
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while deleting product", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
+	}
+	
 	
 	@SuppressWarnings({ "unchecked"})
 	@Secured("CONTENT")

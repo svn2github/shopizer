@@ -31,6 +31,7 @@ import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.web.admin.security.UserServicesImpl;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.utils.AppConfiguration;
 
 
@@ -186,14 +187,56 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				this.getContentObjects(store, language, request);
 				
 				/******* CMS Page names **********/
+				this.getContentPageNames(store, language, request);
 				
 				/******* Top Categories ********/
 				this.getTopCategories(store, language, request);
 				
-				/******* Configuration objects *******/
+				/******* Default metatags *******/
+				
+				/**
+				 * Title
+				 * Description
+				 * Keywords
+				 */
+				
+				PageInformation pageInformation = new PageInformation();
+				pageInformation.setPageTitle(store.getStorename());
+				pageInformation.setPageDescription(store.getStorename());
+				pageInformation.setPageKeywords(store.getStorename());
+				
+				
+				@SuppressWarnings("unchecked")
+				List<Content> contents = (List<Content>)request.getAttribute(Constants.REQUEST_CONTENT_OBJECTS);
+				
+				if(contents!=null) {
+					for(Content content : contents) {
+						if(content.getCode().equals(Constants.CONTENT_LANDING_PAGE)) {
+							pageInformation.setPageTitle(content.getDescriptions().get(0).getMetatagTitle());
+							pageInformation.setPageDescription(content.getDescriptions().get(0).getMetatagDescription());
+							pageInformation.setPageKeywords(content.getDescriptions().get(0).getMetatagKeywords());
+							break;
+						}
+					}
+				}
+				
+				request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
+				
+				
+				/******* Configuration objects  *******/
+				
+				/**
+				 * SHOP configuration type
+				 * Should contain
+				 * - Different configuration flags
+				 * - Google analytics
+				 * - Facebook page
+				 * - Twitter handle
+				 */
+				
 
 				
-				
+				/******* Shopping Cart *********/
 				
 
 				
@@ -319,13 +362,26 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 
 				}
 				
+				
 				if(contents!=null && contents.size()>0) {
-					request.setAttribute(Constants.REQUEST_CONTENT_PAGE_OBJECTS, contents);
+					//only store objects in request
+					String key = new StringBuilder()
+					.append(Constants.CONTENT_PAGE_CACHE_KEY)
+					.append(store.getId())
+					.append(language.getCode()).toString();
+					
+					List<ContentDescription> descriptions = contents.get(key.toString());
+					
+					if(descriptions!=null) {
+						request.setAttribute(Constants.REQUEST_CONTENT_PAGE_OBJECTS, descriptions);
+					}
+					
+					
 				}
-			   
+				   
 	    }
 	   
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked"})
 	private void getContentObjects(MerchantStore store, Language language, HttpServletRequest request) throws Exception {
 		   
 		   CacheUtils cache = CacheUtils.getInstance();
@@ -360,7 +416,6 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			
 				//get from the cache
 				contents = (Map<String, List<Content>>) cache.getFromCache(contentKey.toString());
-				
 				Boolean missedContent = null;
 				if(contents==null) {
 					//get from missed cache
@@ -371,7 +426,6 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 					
 					contents = this.getContent(store, language);
 
-						
 						//put in cache
 						cache.putInCache(contents, contentKey.toString());
 						
@@ -385,15 +439,29 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				
 	
 			} else {
-				
 
 				contents = this.getContent(store, language);	
 
 			}
 			
+			
+			
 			if(contents!=null && contents.size()>0) {
-				request.setAttribute(Constants.REQUEST_CONTENT_OBJECTS, contents);
+				//only store objects in request
+				String key = new StringBuilder()
+				.append(Constants.CONTENT_CACHE_KEY)
+				.append(store.getId())
+				.append(language.getCode()).toString();
+				
+				List<Content> c = contents.get(key.toString());
+				
+				if(c!=null) {
+					request.setAttribute(Constants.REQUEST_CONTENT_OBJECTS, c);
+				}
+				
+				
 			}
+
 		   
     }
 
