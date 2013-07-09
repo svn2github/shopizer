@@ -36,7 +36,7 @@ public class ShopProductImageUrlTag extends TagSupport {
 			HttpServletRequest request = (HttpServletRequest) pageContext
 					.getRequest();
 			
-			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 			
 			HttpSession session = request.getSession();
 

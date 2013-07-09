@@ -103,17 +103,17 @@ public class ContentPagesController {
 		
 		if(content==null) {
 			LOGGER.error("Content entity null for id " + id);
-			return "/admin/content/pages/listContent.html";
+			return "redirect:/admin/content/pages/listContent.html";
 		}
 		
 		if(content.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 			LOGGER.error("Content id " + id + " does not belong to merchant " + store.getId());
-			return "/admin/content/pages/listContent.html";
+			return "redirect:/admin/content/pages/listContent.html";
 		}
 		
-		if(!content.getContentType().name().equals(ContentType.PAGE)) {
+		if(!content.getContentType().name().equals(ContentType.PAGE.name())) {
 			LOGGER.error("This controller does not handle content type " + content.getContentType().name());
-			return "/admin/content/pages/listContent.html";
+			return "redirect:/admin/content/pages/listContent.html";
 		}
 		
 		List<Language> languages = store.getLanguages();
