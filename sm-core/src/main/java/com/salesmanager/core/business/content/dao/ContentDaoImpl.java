@@ -99,21 +99,33 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
-		query.from(qContentDescription)
-			.leftJoin(qContentDescription.content, qContent).fetch()
+		
+		query.from(qContent)
+			.leftJoin(qContent.descriptions, qContentDescription).fetch()
 			.leftJoin(qContent.merchantStore).fetch()
 			.where(qContentDescription.language.id.eq(language.getId())
 			.and(qContent.merchantStore.id.eq(store.getId()))
 			.and(qContent.contentType.in(contentType))
+		);
+		
+		/**
+		query.from(qContentDescription)
+			.join(qContentDescription.content, qContent).fetch()
+			.join(qContent.merchantStore).fetch()
+			.where(qContentDescription.language.id.eq(language.getId())
+			.and(qContent.merchantStore.id.eq(store.getId()))
+			.and(qContentDescription.content.contentType.in(contentType))
 			);
 		
 		List<Object[]> contents = query.list(qContentDescription.name,qContentDescription.seUrl);
+		**/
 		
+		List<Content> contents = query.list(qContent);
 		
 		List<ContentDescription> descriptions = new ArrayList<ContentDescription>();
-		for(Object[] o : contents) {
-			String name = (String) o[0];
-			String url = (String) o[1];
+		for(Content c : contents) {
+			String name = c.getDescription().getName();
+			String url = c.getDescription().getSeUrl();
 			ContentDescription contentDescription = new ContentDescription();
 			contentDescription.setName(name);
 			contentDescription.setSeUrl(url);

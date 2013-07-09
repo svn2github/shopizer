@@ -271,6 +271,7 @@ public class ProductPriceUtils {
 			NumberFormat nf = null;
 
 			Currency currency = store.getCurrency().getCurrency();
+			
 			nf = NumberFormat.getInstance(DEFAULT_LOCALE);
 			nf.setCurrency(currency);
 	
