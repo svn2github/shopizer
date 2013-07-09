@@ -72,6 +72,9 @@ public class Content extends SalesManagerEntity<Long, Content> implements Serial
 	@Enumerated(value = EnumType.STRING)
 	private ContentType contentType; 
 	
+	@Column(name = "SORT_ORDER")
+	private Integer sortOrder = 0;
+	
 	@Override
 	public Long getId() {
 		return this.id;
@@ -141,6 +144,14 @@ public class Content extends SalesManagerEntity<Long, Content> implements Serial
 		
 		return null;
 		
+	}
+
+	public void setSortOrder(Integer sortOrder) {
+		this.sortOrder = sortOrder;
+	}
+
+	public Integer getSortOrder() {
+		return sortOrder;
 	}
 
 

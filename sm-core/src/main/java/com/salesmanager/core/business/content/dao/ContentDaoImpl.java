@@ -39,7 +39,7 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 			.where(qContentDescription.language.id.eq(language.getId())
 			.and(qContent.merchantStore.id.eq(store.getId()))
 			.and(qContent.contentType.eq(contentType))
-			);
+			).orderBy(qContent.sortOrder.asc());
 		
 		List<Content> contents = query.list(qContent);
 		
@@ -60,7 +60,7 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 			.leftJoin(qContent.merchantStore).fetch()
 			.where(qContent.merchantStore.id.eq(store.getId())
 			.and(qContent.contentType.eq(contentType))
-			);
+			).orderBy(qContent.sortOrder.asc());
 		
 		List<Content> contents = query.list(qContent);
 		
@@ -83,7 +83,7 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 			.where(qContentDescription.language.id.eq(language.getId())
 			.and(qContent.merchantStore.id.eq(store.getId()))
 			.and(qContent.contentType.in(contentType))
-			);
+			).orderBy(qContent.sortOrder.asc());
 		
 		List<Content> contents = query.list(qContent);
 		
@@ -106,7 +106,7 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 			.where(qContentDescription.language.id.eq(language.getId())
 			.and(qContent.merchantStore.id.eq(store.getId()))
 			.and(qContent.contentType.in(contentType))
-		);
+		).orderBy(qContent.sortOrder.asc());
 		
 		/**
 		query.from(qContentDescription)
@@ -150,7 +150,7 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 			.leftJoin(qContent.merchantStore).fetch()
 			.where(qContent.merchantStore.id.eq(store.getId())
 			.and(qContent.contentType.in(contentType))
-			);
+			).orderBy(qContent.sortOrder.asc());
 		
 		List<Content> contents = query.list(qContent);
 		
