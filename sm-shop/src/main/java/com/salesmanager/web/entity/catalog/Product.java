@@ -20,6 +20,7 @@ public class Product implements Serializable {
 	private String friendlyUrl;
 	private String keywords;
 	private String title;
+	private String id;
 	
 	private boolean discounted = false;
 	private String originalProductPrice = null;
@@ -113,6 +114,12 @@ public class Product implements Serializable {
 	}
 	public boolean isDiscounted() {
 		return discounted;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getId() {
+		return id;
 	}
 
 
