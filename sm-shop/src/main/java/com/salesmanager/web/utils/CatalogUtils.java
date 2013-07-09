@@ -25,6 +25,7 @@ public class CatalogUtils {
 		ProductDescription description = product.getProductDescription();
 		com.salesmanager.web.entity.catalog.Product proxyProduct = new com.salesmanager.web.entity.catalog.Product();
 		
+		proxyProduct.setId(String.valueOf(product.getId()));
 		if(description!=null) {
 			proxyProduct.setFriendlyUrl(description.getSeUrl());
 			proxyProduct.setName(description.getName());
