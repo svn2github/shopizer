@@ -93,6 +93,7 @@
 				});
 			}
 			
+			alert('product ' + sku + ' added to cart');
 			//TODO build ShoppingCartItem
 			//TODO post shopping cart item
 			//TODO get shopping cart code from cookie (jquery-cookie)

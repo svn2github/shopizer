@@ -33,6 +33,8 @@ response.setDateHeader ("Expires", -1);
     			<meta name="author" content="<c:out value="${requestScope.MERCHANT_STORE.storename}"/>">
     			<!-- The one provided with the system -->
     			<script src="<c:url value="/resources/js/bootstrap/jquery.js" />"></script>
+    			<script src="<c:url value="/resources/js/functions.js" />"></script>
+    			<script src="<c:url value="/resources/js/jquery-cookie.js" />"></script>
 
   
                 <jsp:include page="/pages/shop/templates/bootstrap/sections/shopLinks.jsp" />
