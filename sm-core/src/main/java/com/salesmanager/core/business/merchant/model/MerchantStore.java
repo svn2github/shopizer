@@ -134,7 +134,7 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	private Currency currency;
 	
 	@Column(name = "CURRENCY_FORMAT_NATIONAL")
-	private boolean currencyFormatNational = true;
+	private boolean currencyFormatNational;
 	
 	public MerchantStore() {
 	}
