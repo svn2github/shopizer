@@ -77,7 +77,7 @@ response.setDateHeader ("Expires", -1);
 													<a href="http://#WB0M3G9S1/product_detail.html"><img src="<sm:shopProductImage imageName="${product.image}" sku="${product.sku}"/>" width="200"/></a>
 													<h3><c:out value="${product.productPrice}" /></h3>
 													<div class="bottom">
-														<a class="view" href="http://#WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://#WB0M3G9S1/cart.html">add to cart</a>
+														<a class="view" href="http://#WB0M3G9S1/product_detail.html">view</a> / <a class="addToCart" href="#" productId="${product.id}">add to cart</a>
 													</div>
 												</div>
 										    </li>
