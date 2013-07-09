@@ -37,7 +37,7 @@ public class CatalogUtils {
 		
 
 		FinalPrice price = productPriceUtils.getFinalPrice(product);
-		proxyProduct.setProductPrice(productPriceUtils.getFormatedAmountWithCurrency(product.getMerchantStore(),price.getFinalPrice(),locale));
+		proxyProduct.setProductPrice(productPriceUtils.getStoreFormatedAmountWithCurrency(product.getMerchantStore(),price.getFinalPrice()));
 
 		return proxyProduct;
 		
@@ -47,11 +47,9 @@ public class CatalogUtils {
 	public com.salesmanager.web.entity.catalog.Category buildCategoryProxy(Category category, Locale locale) {
 		
 		com.salesmanager.web.entity.catalog.Category categoryProxy = new com.salesmanager.web.entity.catalog.Category();
-		
 		if(category.getDescriptions()!=null && category.getDescriptions().size()>0) {
 			
 			CategoryDescription description = category.getDescription();
-			
 			if(category.getDescriptions().size()>1) {
 				for(CategoryDescription desc : category.getDescriptions()) {
 					if(desc.getLanguage().getCode().equals(locale.getLanguage())) {
