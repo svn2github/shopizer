@@ -133,6 +133,9 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	@JoinColumn(name = "CURRENCY_ID", nullable=false)
 	private Currency currency;
 	
+	@Column(name = "CURRENCY_FORMAT_NATIONAL")
+	private boolean currencyFormatNational = true;
+	
 	public MerchantStore() {
 	}
 	
@@ -363,6 +366,14 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 
 	public String getDateBusinessSince() {
 		return dateBusinessSince;
+	}
+
+	public void setCurrencyFormatNational(boolean currencyFormatNational) {
+		this.currencyFormatNational = currencyFormatNational;
+	}
+
+	public boolean isCurrencyFormatNational() {
+		return currencyFormatNational;
 	}
 
 

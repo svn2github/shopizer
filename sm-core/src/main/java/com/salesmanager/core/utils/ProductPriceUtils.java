@@ -192,9 +192,15 @@ public class ProductPriceUtils {
 	
 	/**
 	 * This method has to be used to format store front amounts
+	 * It will display national format amount ex:
+	 * $1,345.99
+	 * Rs.1.345.99
+	 * or international format
+	 * USD1,345.79
+	 * INR1,345.79
 	 * @param store
 	 * @param amount
-	 * @return
+	 * @return String
 	 * @throws Exception
 	 */
 	public String getStoreFormatedAmountWithCurrency(MerchantStore store, BigDecimal amount) throws Exception {
@@ -202,20 +208,26 @@ public class ProductPriceUtils {
 			return "";
 		}
 		
-		String currencyCode = store.getCurrency().getName();
-		
 		Currency currency = DEFAULT_CURRENCY;
+		Locale locale = DEFAULT_LOCALE; 
+		
 		try {
-			currency = Currency.getInstance(currencyCode);
+
+			currency = store.getCurrency().getCurrency();
+			locale = new Locale(store.getDefaultLanguage().getCode(),store.getCountry().getIsoCode());
 		} catch (Exception e) {
-			LOGGER.error("Cannot create currency instance for " + store.getCurrency().getName());
+			LOGGER.error("Cannot create currency or locale instance for store " + store.getCode());
 		}
 
 		
+		NumberFormat currencyInstance = null;
 		
 		
-		
-	    final NumberFormat currencyInstance = NumberFormat.getCurrencyInstance();
+		if(store.isCurrencyFormatNational()) {
+			currencyInstance = NumberFormat.getCurrencyInstance(locale);//national
+		} else {
+			currencyInstance = NumberFormat.getCurrencyInstance();//international
+		}
 	    currencyInstance.setCurrency(currency);
 		
 	    
