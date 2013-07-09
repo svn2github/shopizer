@@ -11,6 +11,7 @@ import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.utils.ProductPriceUtils;
 
 @Component
@@ -19,7 +20,7 @@ public class CatalogUtils {
 	@Autowired
 	private ProductPriceUtils productPriceUtils;
 	
-	public com.salesmanager.web.entity.catalog.Product buildProxyProduct(Product product, Locale locale) throws Exception {
+	public com.salesmanager.web.entity.catalog.Product buildProxyProduct(Product product, MerchantStore store, Locale locale) throws Exception {
 		
 		
 		ProductDescription description = product.getProductDescription();
@@ -38,14 +39,14 @@ public class CatalogUtils {
 		
 
 		FinalPrice price = productPriceUtils.getFinalPrice(product);
-		proxyProduct.setProductPrice(productPriceUtils.getStoreFormatedAmountWithCurrency(product.getMerchantStore(),price.getFinalPrice()));
+		proxyProduct.setProductPrice(productPriceUtils.getStoreFormatedAmountWithCurrency(store,price.getFinalPrice()));
 
 		return proxyProduct;
 		
 		
 	}
 	
-	public com.salesmanager.web.entity.catalog.Category buildCategoryProxy(Category category, Locale locale) {
+	public com.salesmanager.web.entity.catalog.Category buildCategoryProxy(Category category, MerchantStore store, Locale locale) {
 		
 		com.salesmanager.web.entity.catalog.Category categoryProxy = new com.salesmanager.web.entity.catalog.Category();
 		if(category.getDescriptions()!=null && category.getDescriptions().size()>0) {

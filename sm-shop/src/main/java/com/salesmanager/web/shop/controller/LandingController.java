@@ -80,7 +80,7 @@ public class LandingController {
 		for(ProductRelationship relationship : relationships) {
 			
 			Product product = relationship.getRelatedProduct();
-			com.salesmanager.web.entity.catalog.Product proxyProduct = catalogUtils.buildProxyProduct(product,locale);
+			com.salesmanager.web.entity.catalog.Product proxyProduct = catalogUtils.buildProxyProduct(product,store,locale);
 			
 
 			featuredItems.add(proxyProduct);
