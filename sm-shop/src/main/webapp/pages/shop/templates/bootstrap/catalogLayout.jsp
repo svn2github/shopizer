@@ -49,7 +49,7 @@ response.setDateHeader ("Expires", -1);
 
 				<tiles:insertAttribute name="navbar"/>
 				
-				
+
 				<tiles:insertAttribute name="body"/>
 				
 				

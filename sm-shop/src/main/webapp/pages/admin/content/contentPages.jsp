@@ -22,8 +22,9 @@
 				<br />
 				<!-- Listing grid include -->
 				<c:set value="/admin/content/page.html?contentType=PAGE" var="pagingUrl" scope="request" />
-				<c:set value="/admin/content/remove.html" var="removeUrl" scope="request" />
+				<c:set value="/admin/content/removeContent.html" var="removeUrl" scope="request" />
 				<c:set value="/admin/content/pages/listContent.html" var="refreshUrl" scope="request" />
+				<c:set value="/admin/content/pages/contentDetails.html" var="editUrl" scope="request"/>
 				<c:set var="componentTitleKey" value="label.content.pages" scope="request" />
 				<c:set var="entityId" value="id" scope="request"/>
 				<c:set var="canRemoveEntry" value="true" scope="request" />
