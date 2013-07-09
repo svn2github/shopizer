@@ -14,6 +14,58 @@ import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 
 
+/**
+ * LATEST NOTES
+ * 
+ * A mini shopping cart is available on the public shopping section from the upper menu
+ * Landing page, Category page (list of products) and Product details page contains a form
+ * that let the user to add an item to the cart
+ * 
+ * Add To Cart
+ * ---------------
+ * The add to cart is 100% driven by javascript / ajax. The code is available in webapp\resources\js\functions.js
+ * 
+ * <!-- Simple add to cart html example ${id} is the product id -->
+ * <form id="input-${id}" class="well form-inline">
+ *  <input type="text" class="input-small" id="quantity-productId-${id}" placeholder="1" value="1">
+ * 	<a href="#" class="addToCart" productId="${id}">Add to cart</a>
+ * </form>
+ * 
+ * This html block is ready to be implemented in webapp\pages\shop\templates\bootstrap\pages\landing.jsp. It requires from the admin to add Featured items
+ * 
+ * The javascript function creates com.salesmanager.web.entity.shoppingcart.ShoppingCartItem and ShoppingCartAttribute (example to come)
+ * The javascript looks in the cookie if a shopping cart code exists ex $.cookie( 'cart' ); // requires jQuery-cookie
+ * The javascript posts the ShoppingCartItem and the shopping cart code if present
+ * 
+ * The ShoppingCartController get the ShoppingCartItem and shopping cart code
+ * The ShoppingCartController check if the shoppingcart code belongs to the current merchant store (instructions to come on how to create and understand a cart code)
+ * The ShoppingCartController if a cart code is present lookup the cart from the database (Shopping cart services have to be created in sm-core) determines if the merchant store are the same
+ * The ShoppingCartController if a cart code is not present creates a new ShoppingCart and save it in the database
+ * The ShoppingCartController calculates the total (a new PricingService has to be created in sm-core)
+ * The ShoppingCartController returns a JSON representation of the ShoppingCart
+ * 
+ * The javascript re-creates the shopping cart div item (div id shoppingcart) (see webapp\pages\shop\templates\bootstrap\sections\header.jsp)
+ * The javascript set the shopping cart code in the cookie
+ * 
+ * Display a page
+ * ----------------
+ * 
+ * When a page is displayed from the shopping section, the shopping cart has to be displayed
+ * 4 paths 1) No shopping cart 2) A shopping cart exist in the session 3) A shopping cart code exists in the cookie  4) A customer is logeed in and a shopping cart exists in the database
+ * 
+ * 1) No shopping cart, nothing to do !
+ * 
+ * 2) StoreFilter will tak care of a ShoppingCart present in the HttpSession
+ * 
+ * 3) Once a page is displayed and no cart returned from the controller, a javascript looks on load in the cookie to see if a shopping cart code is present
+ * 	  If a code is present, by ajax the cart is loaded and displayed
+ * 
+ * 4) No cart in the session but the customer logs in, the system looks in the DB if a shopping cart exists, if so it is putted in the session so the StoreFilter can manage it and putted in the request
+ * 
+ * @author Carl Samson
+ *
+ */
+
 @Controller
 public class ShoppingCartController {
 	
@@ -57,6 +109,11 @@ public class ShoppingCartController {
 	public @ResponseBody
 	String addShoppingCartItem(@ModelAttribute Long id, @ModelAttribute Integer quantity, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
+		
+		/*** UPDATE **/
+		/**
+		 * May have to be modified to accept ShoppingCartItem
+		 */
 
 		//Looks in the HttpSession to see if a customer is logged in
 		//Looks in the HttpSession to see if a shopping cart exists
