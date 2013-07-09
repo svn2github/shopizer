@@ -259,6 +259,15 @@ function callBackCheckCode(msg,code) {
 	                                   			<span class="help-inline"></span>
 	                        </div>
 	                  </div>
+	                  
+	                  <div class="control-group">
+	                        <label><s:message code="label.store.currency.format" text="National currency format"/></label>
+	                        <div class="controls">
+
+	                        					<form:checkbox path="currencyFormatNational" /> 
+	                                   			<span class="help-inline"><s:message code="label.store.currency.format.help" text="National currency format ex $1,345.79 or International currency format ex USD1,345.79"/></span>
+	                        </div>
+	                  </div>
 	  
 	  
 	  	               <div class="control-group">
