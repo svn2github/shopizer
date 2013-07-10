@@ -32,6 +32,7 @@ import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.web.admin.security.UserServicesImpl;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.shop.PageInformation;
+import com.salesmanager.web.entity.shoppingcart.ShoppingCart;
 import com.salesmanager.web.utils.AppConfiguration;
 
 
@@ -238,54 +239,12 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				
 				/******* Shopping Cart *********/
 				
-
-				
-				
-				//Get page titles
-				
-				//TODO and by language
-/*				Content content = contentService.getByCode("LANDING_PAGE", store);
-				StoreLanding landing = new StoreLanding();
-				
-				List<StoreLandingDescription> descriptions = new ArrayList<StoreLandingDescription>();
-				
-				
-				for(Language l : store.getLanguages()) {
-					
-					StoreLandingDescription landingDescription = null;
-					if(content!=null) {
-						for(ContentDescription desc : content.getDescriptions()) {
-							if(desc.getLanguage().getCode().equals(l.getCode())) {
-								landingDescription = new StoreLandingDescription();
-								landingDescription.setDescription(desc.getMetatagDescription());
-								landingDescription.setHomePageContent(desc.getDescription());
-								landingDescription.setKeywords(desc.getMetatagKeywords());
-								landingDescription.setTitle(desc.getName());//name is a not empty
-								landingDescription.setLanguage(desc.getLanguage());
-							}
-						}
-					}
-					
-					if(landingDescription==null) {
-						landingDescription = new StoreLandingDescription();
-						landingDescription.setLanguage(l);
-					}
-					
-
-					
-					descriptions.add(landingDescription);
+				ShoppingCart shoppingCart = (ShoppingCart)request.getSession().getAttribute(Constants.SESSION_SHOPPING_CART);
+				if(shoppingCart!=null) {
+					request.setAttribute(Constants.REQUEST_SHOPPING_CART, shoppingCart);
 				}
 				
-				landing.setDescriptions(descriptions);*/
-				
-				
-				
-				
-				//store meta information
-				
-				//store root categories
-				
-				//shopping cart
+
 			
 			} catch (Exception e) {
 				LOGGER.error("Error in StoreFilter",e);
@@ -603,24 +562,25 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				
 				//create a Map<String,List<Content>
 				for(Content content : contentPages) {
-
-					List<ContentDescription> descriptions = content.getDescriptions();
-					for(ContentDescription contentDescription : descriptions) {
-						Language lang = contentDescription.getLanguage();
-						String key = new StringBuilder()
-						.append(Constants.CONTENT_CACHE_KEY)
-						.append(store.getId())
-						.append(lang.getCode()).toString();
-						List<Content> contentList = null;
-						if(contents==null) {
-							contents = new HashMap<String, List<Content>>();
+					if(content.isVisible()) {
+						List<ContentDescription> descriptions = content.getDescriptions();
+						for(ContentDescription contentDescription : descriptions) {
+							Language lang = contentDescription.getLanguage();
+							String key = new StringBuilder()
+							.append(Constants.CONTENT_CACHE_KEY)
+							.append(store.getId())
+							.append(lang.getCode()).toString();
+							List<Content> contentList = null;
+							if(contents==null) {
+								contents = new HashMap<String, List<Content>>();
+							}
+							if(!contents.containsKey(key)) {
+								contentList = new ArrayList<Content>();
+	
+								contents.put(key, contentList);
+							}
+							contentList.add(content);
 						}
-						if(!contents.containsKey(key)) {
-							contentList = new ArrayList<Content>();
-
-							contents.put(key, contentList);
-						}
-						contentList.add(content);
 					}
 					
 				}
@@ -642,29 +602,29 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				
 				//create a Map<String,List<Content>
 				for(Category category : categories) {
-
-					List<CategoryDescription> descriptions = category.getDescriptions();
-					for(CategoryDescription description : descriptions) {
-						Language lang = description.getLanguage();
-						String key = new StringBuilder()
-						.append(Constants.CATEGORIES_CACHE_KEY)
-						.append(store.getId())
-						.append(lang.getCode()).toString();
-						
-						List<Category> cacheCategories = null;
-						if(objects==null) {
-							objects = new HashMap<String, List<Category>>();
+					if(category.isVisible()) {
+						List<CategoryDescription> descriptions = category.getDescriptions();
+						for(CategoryDescription description : descriptions) {
+							Language lang = description.getLanguage();
+							String key = new StringBuilder()
+							.append(Constants.CATEGORIES_CACHE_KEY)
+							.append(store.getId())
+							.append(lang.getCode()).toString();
+							
+							List<Category> cacheCategories = null;
+							if(objects==null) {
+								objects = new HashMap<String, List<Category>>();
+							}
+							if(!objects.containsKey(key)) {
+								cacheCategories = new ArrayList<Category>();
+	
+								objects.put(key, cacheCategories);
+							} else {
+								cacheCategories = objects.get(key.toString());
+							}
+							cacheCategories.add(category);
 						}
-						if(!objects.containsKey(key)) {
-							cacheCategories = new ArrayList<Category>();
-
-							objects.put(key, cacheCategories);
-						} else {
-							cacheCategories = objects.get(key.toString());
-						}
-						cacheCategories.add(category);
 					}
-					
 				}
 				
 				

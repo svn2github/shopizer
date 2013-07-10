@@ -3,14 +3,12 @@ package com.salesmanager.web.admin.controller.content;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +25,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.salesmanager.core.business.content.model.content.Content;
 import com.salesmanager.core.business.content.model.content.ContentDescription;
 import com.salesmanager.core.business.content.model.content.ContentType;
-import com.salesmanager.core.business.content.model.content.FileContentType;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -38,9 +35,9 @@ import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 
 @Controller
-public class ContentPagesController {
+public class ContentBoxesController {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(StaticContentController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ContentBoxesController.class);
 	
 	@Autowired
 	private ContentService contentService;
@@ -50,19 +47,19 @@ public class ContentPagesController {
 	
 	
 	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/pages/listContent.html", method=RequestMethod.GET)
-	public String listContentPages(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value="/admin/content/boxes/listContent.html", method=RequestMethod.GET)
+	public String listContentBoxes(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
 
-		return ControllerConstants.Tiles.Content.contentPages;
+		return ControllerConstants.Tiles.Content.contentBoxes;
 		
 		
 	}
 	
 	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/pages/createPage.html", method=RequestMethod.GET)
-	public String createPage(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value="/admin/content/boxes/createBox.html", method=RequestMethod.GET)
+	public String createBox(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
@@ -92,7 +89,7 @@ public class ContentPagesController {
 	}
 	
 	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/pages/contentDetails.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/content/boxes/contentDetails.html", method=RequestMethod.GET)
 	public String getContentDetails(@RequestParam("id") Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
@@ -103,17 +100,17 @@ public class ContentPagesController {
 		
 		if(content==null) {
 			LOGGER.error("Content entity null for id " + id);
-			return "redirect:/admin/content/pages/listContent.html";
+			return "/admin/content/boxes/listContent.html";
 		}
 		
 		if(content.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 			LOGGER.error("Content id " + id + " does not belong to merchant " + store.getId());
-			return "redirect:/admin/content/pages/listContent.html";
+			return "/admin/content/boxes/listContent.html";
 		}
 		
-		if(!content.getContentType().name().equals(ContentType.PAGE.name())) {
+		if(!content.getContentType().name().equals(ContentType.PAGE)) {
 			LOGGER.error("This controller does not handle content type " + content.getContentType().name());
-			return "redirect:/admin/content/pages/listContent.html";
+			return "/admin/content/boxes/listContent.html";
 		}
 		
 		List<Language> languages = store.getLanguages();
@@ -136,56 +133,12 @@ public class ContentPagesController {
 		
 	}
 	
-	
-	
-	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/removeContent.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String removeContent(HttpServletRequest request, HttpServletResponse response, Locale locale) {
-		String id = request.getParameter("id");
 
-		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		
-		AjaxResponse resp = new AjaxResponse();
-
-		
-		try {
-			
-			//get the content first
-			Long lid = Long.parseLong(id);
-			
-			Content dbContent = contentService.getById(lid);
-			
-			if(dbContent==null) {
-				LOGGER.error("Invalid content id ", id);
-				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-				return resp.toJSONString();
-			}
-			
-			if(dbContent!=null && dbContent.getMerchantStore().getId().intValue()!= store.getId().intValue()) {
-				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-				return resp.toJSONString();
-			}
-			
-			contentService.delete(dbContent);
-
-			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
-		
-		} catch (Exception e) {
-			LOGGER.error("Error while deleting product", e);
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-			resp.setErrorMessage(e);
-		}
-		
-		String returnString = resp.toJSONString();
-		
-		return returnString;
-	}
-	
 	
 	@SuppressWarnings({ "unchecked"})
 	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/page.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String pageStaticContent(@ModelAttribute String contentType, HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value="/admin/content/boxes/page.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String pageContentBoxes(@ModelAttribute String contentType, HttpServletRequest request, HttpServletResponse response) {
 		AjaxResponse resp = new AjaxResponse();
 
 		try {
@@ -236,7 +189,7 @@ public class ContentPagesController {
 	
 	
 	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/pages/saveContent.html", method=RequestMethod.POST)
+	@RequestMapping(value="/admin/content/boxes/saveContent.html", method=RequestMethod.POST)
 	public String saveContent(@Valid @ModelAttribute Content content, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
@@ -256,9 +209,6 @@ public class ContentPagesController {
 			description.setContent(content);
 		}
 		
-		if(content.getSortOrder()==null) {
-			content.setSortOrder(0);
-		}
 		
 		content.setMerchantStore(store);
 		contentService.saveOrUpdate(content);
@@ -271,71 +221,6 @@ public class ContentPagesController {
 		
 	}
 	
-	/**
-	 * Check if the content code filled in by the
-	 * user is unique
-	 * @param request
-	 * @param response
-	 * @param locale
-	 * @return
-	 */
-	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/checkContentCode.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String checkContentCode(HttpServletRequest request, HttpServletResponse response, Locale locale) {
-		
-		String code = request.getParameter("code");
-		String id = request.getParameter("id");
-		
-		
-
-
-		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		
-		
-		
-		
-		AjaxResponse resp = new AjaxResponse();
-		
-		   if(StringUtils.isBlank(code)) {
-				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
-				return resp.toJSONString();
-		   }
-		
-		try {
-			
-		Content content = contentService.getByCode(code, store);
-		
-		
-		if(!StringUtils.isBlank(id)) {
-			try {
-				Long lid = Long.parseLong(id);
-				
-				if(content.getCode().equals(code) && content.getId().longValue()==lid) {
-					resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
-					return resp.toJSONString();
-				}
-			} catch (Exception e) {
-				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
-				return resp.toJSONString();
-			}
-
-		}
-
-			
-
-			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
-
-		} catch (Exception e) {
-			LOGGER.error("Error while getting category", e);
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-			resp.setErrorMessage(e);
-		}
-		
-		String returnString = resp.toJSONString();
-		
-		return returnString;
-	}
-	
 	
 	
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {
@@ -343,7 +228,7 @@ public class ContentPagesController {
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("content", "content");
-		activeMenus.put("content-pages", "content-pages");
+		activeMenus.put("content-boxes", "content-boxes");
 		
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");

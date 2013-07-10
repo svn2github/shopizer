@@ -8,6 +8,7 @@ public class Constants {
 	public final static String ADMIN_STORE = "ADMIN_STORE";
 	public final static String ADMIN_USER = "ADMIN_USER";
 	public final static String MERCHANT_STORE = "MERCHANT_STORE";
+	public final static String SESSION_SHOPPING_CART = "SESSION_SHOPPING_CART";
 	
 
 	public final static String GROUP_ADMIN = "ADMIN";
@@ -43,5 +44,6 @@ public class Constants {
 	public final static String REQUEST_CONTENT_PAGE_OBJECTS = "CONTENT_PAGE";
 	public final static String REQUEST_TOP_CATEGORIES = "TOP_CATEGORIES";
 	public final static String REQUEST_PAGE_INFORMATION = "PAGE_INFORMATION";
+	public final static String REQUEST_SHOPPING_CART = "SHOPPING_CART";
 
 }
