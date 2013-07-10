@@ -36,7 +36,8 @@ public class CatalogUtils {
 		if(image!=null) {
 			proxyProduct.setImage(image.getProductImage());
 		}
-		
+		proxyProduct.setId(String.valueOf(product.getId()));
+		proxyProduct.setSku(product.getSku());
 
 		FinalPrice price = productPriceUtils.getFinalPrice(product);
 		proxyProduct.setProductPrice(productPriceUtils.getStoreFormatedAmountWithCurrency(store,price.getFinalPrice()));
@@ -76,9 +77,9 @@ public class CatalogUtils {
 		}
 		
 		categoryProxy.setCode(category.getCode());
+		categoryProxy.setId(String.valueOf(category.getId()));
 		
-		
-		return null;
+		return categoryProxy;
 	}
 
 }

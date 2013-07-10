@@ -145,11 +145,13 @@ public class InitStoreData implements InitData {
 		    bookEnglishDescription.setName("Book");
 		    bookEnglishDescription.setCategory(book);
 		    bookEnglishDescription.setLanguage(en);
+		    bookEnglishDescription.setSeUrl("livre");
 
 		    CategoryDescription bookFrenchDescription = new CategoryDescription();
 		    bookFrenchDescription.setName("Livre");
 		    bookFrenchDescription.setCategory(book);
 		    bookFrenchDescription.setLanguage(fr);
+		    bookFrenchDescription.setSeUrl("book");
 
 		    List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
 		    descriptions.add(bookEnglishDescription);
@@ -167,11 +169,13 @@ public class InitStoreData implements InitData {
 		    musicEnglishDescription.setName("Music");
 		    musicEnglishDescription.setCategory(music);
 		    musicEnglishDescription.setLanguage(en);
+		    musicEnglishDescription.setSeUrl("music");
 
 		    CategoryDescription musicFrenchDescription = new CategoryDescription();
 		    musicFrenchDescription.setName("Musique");
 		    musicFrenchDescription.setCategory(music);
 		    musicFrenchDescription.setLanguage(fr);
+		    musicFrenchDescription.setSeUrl("musique");
 
 		    List<CategoryDescription> descriptions2 = new ArrayList<CategoryDescription>();
 		    descriptions2.add(musicEnglishDescription);
@@ -189,11 +193,13 @@ public class InitStoreData implements InitData {
 		    novellEnglishDescription.setName("Novell");
 		    novellEnglishDescription.setCategory(novell);
 		    novellEnglishDescription.setLanguage(en);
+		    novellEnglishDescription.setSeUrl("novell");
 
 		    CategoryDescription novellFrenchDescription = new CategoryDescription();
 		    novellFrenchDescription.setName("Roman");
 		    novellFrenchDescription.setCategory(novell);
 		    novellFrenchDescription.setLanguage(fr);
+		    novellFrenchDescription.setSeUrl("roman");
 
 		    List<CategoryDescription> descriptions3 = new ArrayList<CategoryDescription>();
 		    descriptions3.add(novellEnglishDescription);
@@ -214,11 +220,13 @@ public class InitStoreData implements InitData {
 		    techEnglishDescription.setName("Technology");
 		    techEnglishDescription.setCategory(tech);
 		    techEnglishDescription.setLanguage(en);
+		    techEnglishDescription.setSeUrl("techno");
 
 		    CategoryDescription techFrenchDescription = new CategoryDescription();
 		    techFrenchDescription.setName("Technologie");
 		    techFrenchDescription.setCategory(tech);
 		    techFrenchDescription.setLanguage(fr);
+		    techFrenchDescription.setSeUrl("techno");
 
 		    List<CategoryDescription> descriptions4 = new ArrayList<CategoryDescription>();
 		    descriptions4.add(techFrenchDescription);
@@ -239,11 +247,13 @@ public class InitStoreData implements InitData {
 		    fictionEnglishDescription.setName("Fiction");
 		    fictionEnglishDescription.setCategory(fiction);
 		    fictionEnglishDescription.setLanguage(en);
+		    fictionEnglishDescription.setSeUrl("fiction");
 
 		    CategoryDescription fictionFrenchDescription = new CategoryDescription();
 		    fictionFrenchDescription.setName("Sc Fiction");
 		    fictionFrenchDescription.setCategory(fiction);
 		    fictionFrenchDescription.setLanguage(fr);
+		    fictionFrenchDescription.setSeUrl("fiction");
 
 		    List<CategoryDescription> fictiondescriptions = new ArrayList<CategoryDescription>();
 		    fictiondescriptions.add(fictionEnglishDescription);

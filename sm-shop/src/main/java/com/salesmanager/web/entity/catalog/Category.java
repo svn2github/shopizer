@@ -16,7 +16,7 @@ public class Category implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private long id;
+	private String id;
 	private String code;
 	private int order;
 	private int depth;
@@ -35,12 +35,7 @@ public class Category implements Serializable {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public long getId() {
-		return id;
-	}
-	public void setId(long id) {
-		this.id = id;
-	}
+
 	public String getCode() {
 		return code;
 	}
@@ -95,6 +90,12 @@ public class Category implements Serializable {
 	}
 	public void setMetaDescription(String metaDescription) {
 		this.metaDescription = metaDescription;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 
