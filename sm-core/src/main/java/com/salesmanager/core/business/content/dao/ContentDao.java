@@ -30,6 +30,14 @@ public interface ContentDao extends SalesManagerEntityDao<Long, Content> {
 	List<Content> listByType(ContentType contentType, MerchantStore store)
 			throws ServiceException;
 
+	/**
+	 * List ContentDescription objects. Removes non visible content
+	 * @param contentType
+	 * @param store
+	 * @param language
+	 * @return
+	 * @throws ServiceException
+	 */
 	List<ContentDescription> listNameByType(List<ContentType> contentType,
 			MerchantStore store, Language language) throws ServiceException;
 

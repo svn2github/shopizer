@@ -106,31 +106,21 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 			.where(qContentDescription.language.id.eq(language.getId())
 			.and(qContent.merchantStore.id.eq(store.getId()))
 			.and(qContent.contentType.in(contentType))
+			.and(qContent.visible.eq(true))
 		).orderBy(qContent.sortOrder.asc());
 		
-		/**
-		query.from(qContentDescription)
-			.join(qContentDescription.content, qContent).fetch()
-			.join(qContent.merchantStore).fetch()
-			.where(qContentDescription.language.id.eq(language.getId())
-			.and(qContent.merchantStore.id.eq(store.getId()))
-			.and(qContentDescription.content.contentType.in(contentType))
-			);
-		
-		List<Object[]> contents = query.list(qContentDescription.name,qContentDescription.seUrl);
-		**/
+
 		
 		List<Content> contents = query.list(qContent);
 		
 		List<ContentDescription> descriptions = new ArrayList<ContentDescription>();
 		for(Content c : contents) {
-			String name = c.getDescription().getName();
-			String url = c.getDescription().getSeUrl();
-			ContentDescription contentDescription = new ContentDescription();
-			contentDescription.setName(name);
-			contentDescription.setSeUrl(url);
-			descriptions.add(contentDescription);
-			
+				String name = c.getDescription().getName();
+				String url = c.getDescription().getSeUrl();
+				ContentDescription contentDescription = new ContentDescription();
+				contentDescription.setName(name);
+				contentDescription.setSeUrl(url);
+				descriptions.add(contentDescription);
 		}
 		
 		return descriptions;
