@@ -179,10 +179,7 @@ response.setDateHeader ("Expires", -1);
 	
 		$(document).ready(function(){ 
 			
-			
-			
 
-			
 			$("#catalogue-products-create-link").click(function() {
 				window.location='<c:url value="/admin/products/createProduct.html" />';
 			});
@@ -264,23 +261,20 @@ response.setDateHeader ("Expires", -1);
 			$("#content-link").click(function() {
   				window.location='<c:url value="/admin/content/contentImages.html" />';
 			});
-			
 			$("#content-images-create-link").click(function() {
   				window.location='<c:url value="/admin/content/createContentImages.html" />';
 			});
-			
 			$("#content-pages-link").click(function() {
   				window.location='<c:url value="/admin/content/pages/listContent.html" />';
 			});
-			
 			$("#content-pages-create-link").click(function() {
   				window.location='<c:url value="/admin/content/pages/createPage.html" />';
 			});
-			
-			
-			
 			$("#content-boxes-link").click(function() {
   				window.location='<c:url value="/admin/content/contentBoxes.html" />';
+			});
+			$("#content-boxes-create-link").click(function() {
+  				window.location='<c:url value="/admin/content/boxes/createPage.html" />';
 			});
 			$("#content-files-link").click(function() {
   				window.location='<c:url value="/admin/content/static/contentFiles.html" />';
@@ -288,8 +282,6 @@ response.setDateHeader ("Expires", -1);
 			$("#content-images-link").click(function() {
   				window.location='<c:url value="/admin/content/contentImages.html" />';
 			});
-			
-			
 			$("#shipping-configs-link").click(function() {
   				window.location='<c:url value="/admin/shipping/shippingConfigs.html" />';
 			});
@@ -302,23 +294,18 @@ response.setDateHeader ("Expires", -1);
 			$("#shipping-packages-link").click(function() {
   				window.location='<c:url value="/admin/shipping/shippingPackaging.html" />';
 			});
-			
 			$("#accounts-conf-link").click(function() {
   				window.location='<c:url value="/admin/configuration/accounts.html" />';
 			});
-			
 			$("#email-conf-link").click(function() {
   				window.location='<c:url value="/admin/configuration/email.html" />';
 			});
-			
 			$("#taxclass-link").click(function() {
   				window.location='<c:url value="/admin/tax/taxclass/list.html" />';
 			});
-			
 			$("#taxconfiguration-link").click(function() {
   				window.location='<c:url value="/admin/tax/taxconfiguration/edit.html" />';
 			});
-			
 			$("#taxrates-link").click(function() {
   				window.location='<c:url value="/admin/tax/taxrates/list.html" />';
 			});		

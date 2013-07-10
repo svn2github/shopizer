@@ -23,8 +23,9 @@ response.setDateHeader ("Expires", -1);
     								<a href="<c:url value="/shop/pages/${content.seUrl}.html"/>" class="current"> 
     									<span class="name">${content.name}</span> 
     								</a>
-    							</li> 
+    							</li>
 						</c:forEach>
+						<!-- TODO configuration for displaying or not contact link -->
 						<li><a href="#contactformlink">Contact</a></li>
 					</ul>
 
