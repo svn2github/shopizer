@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -511,7 +512,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	   private Map<String, List<ContentDescription>> getContentPagesNames(MerchantStore store, Language language) throws Exception {
 		   
 		   
-		   Map<String, List<ContentDescription>> contents = new HashMap<String, List<ContentDescription>>();
+		   Map<String, List<ContentDescription>> contents = new ConcurrentHashMap<String, List<ContentDescription>>();
 		   
 			//Get boxes and sections from the database
 			List<ContentType> contentTypes = new ArrayList<ContentType>();
@@ -549,7 +550,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	   private Map<String, List<Content>> getContent(MerchantStore store, Language language) throws Exception {
 		   
 		   
-		   Map<String, List<Content>> contents = new HashMap<String, List<Content>>();
+		   Map<String, List<Content>> contents = new ConcurrentHashMap<String, List<Content>>();
 		   
 			//Get boxes and sections from the database
 			List<ContentType> contentTypes = new ArrayList<ContentType>();
@@ -593,7 +594,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	   
 	   private Map<String, List<Category>> getCategories(MerchantStore store, Language language) throws Exception {
 		   
-		   Map<String, List<Category>> objects = new HashMap<String, List<Category>>();
+		   Map<String, List<Category>> objects = new ConcurrentHashMap<String, List<Category>>();
 		   
 
 			List<Category> categories = categoryService.listByDepth(store, 0, language);
