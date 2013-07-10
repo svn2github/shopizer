@@ -72,7 +72,7 @@
 				</h3>	
            
 
-			<!--  Add content files -->
+			<!--  Add content page / box -->
 			
 			<c:url var="saveContentPage" value="/admin/content/pages/saveContent.html" />
 			<form:form method="POST" enctype="multipart/form-data" commandName="content" action="${saveContentPage}">
@@ -202,7 +202,7 @@
             </c:forEach>
                   
             <form:hidden path="id" />
-            <form:hidden path="contentType" value="PAGE" />
+            
 			
 			
 				<div class="form-actions">
