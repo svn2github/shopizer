@@ -4,10 +4,13 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 
 <script src="<c:url value="/resources/js/ckeditor/ckeditor.js" />"></script>
+<script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
+
 
 	<script type="text/javascript">
 
 	$(function(){
+		$('#order').numeric();
 		if($("#code").val()=="") {
 			$('.btn').addClass('disabled');
 		}
@@ -93,7 +96,15 @@
 	                        		<form:input cssClass="input-large highlight" path="code" onblur="validateCode()"/>
 	                                <span class="help-inline"><div id="checkCodeStatus" style="display:none;"></div><form:errors path="code" cssClass="error" /></span>
 	                  </div>
-            </div>            
+            </div>    
+            
+            <div class="control-group">
+                        <label><s:message code="label.entity.order" text="Sort order"/></label>
+                        <div class="controls">
+                                    <form:input id="order" cssClass="" path="sortOrder"/>
+                                    <span class="help-inline"><form:errors path="sortOrder" cssClass="error" /></span>
+                        </div>
+             </div>         
 
 
                  <c:forEach items="${content.descriptions}" var="description" varStatus="counter">

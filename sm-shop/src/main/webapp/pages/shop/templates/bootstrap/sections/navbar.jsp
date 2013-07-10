@@ -41,7 +41,7 @@ response.setDateHeader ("Expires", -1);
 						<nav id="menu" class="pull-right">
                     					<ul id="mainMenu">
 											<li class="">  
-	                    					       <a href="<c:url value="/shop"/> class="current">          
+	                    					       <a href="<c:url value="/shop"/>" class="current">          
 	                    					            <span class="name"><s:message code="menu.home" text="Home"/></span>     
 	                    								<span class="desc"><s:message code="menu.home" text="Home"/></span>                                  
 	                    						   </a>                         
@@ -50,7 +50,7 @@ response.setDateHeader ("Expires", -1);
 	                    		            
 	                    		            <c:forEach items="${requestScope.TOP_CATEGORIES}" var="category">
 	    										<li class="">
-	    											<a href="<c:url value="/shop/category/${category.description.seUrl}"/> class="current"> 
+	    											<a href="<c:url value="/shop/category/${category.description.seUrl}.html"/>" class="current"> 
 	    												<span class="name">${category.description.name}</span>
 	    												<span class="desc">${category.description.categoryHighlight}</span> 
 	    											</a>
