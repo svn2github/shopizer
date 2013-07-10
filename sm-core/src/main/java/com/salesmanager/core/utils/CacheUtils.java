@@ -15,8 +15,6 @@ public class CacheUtils {
 	
 	private static CacheUtils cacheUtils = null;
 
-	//private org.jboss.cache.Node refCache;
-	
 	private String repositoryFileName = "cms/infinispan_configuration.xml";
 	
 	private Cache<Object, Object> localCache = null;
@@ -27,13 +25,7 @@ public class CacheUtils {
 	private CacheUtils() {
 		
 		try {
-			
-			   
-/*			   CacheFactory factory = new DefaultCacheFactory();
-			   org.jboss.cache.Cache cache = factory.createCache();
-			   org.jboss.cache.Node rootNode = cache.getRoot();
-			   Fqn refFqn = Fqn.fromString("/ref/");
-			   refCache = rootNode.addChild(refFqn);*/
+
 			   
 			   localCache =  new DefaultCacheManager(repositoryFileName).getCache("Cache"); 
 
@@ -60,22 +52,24 @@ public class CacheUtils {
 	
 
 	public void putInCache(Object object, String keyName) throws Exception {
-		
-		//refCache.put(keyName, object);
+
 		localCache.put(keyName, object);
 		
 	}
 	
 
 	public Object getFromCache(String keyName) throws Exception {
-		
-		 //return refCache.get(keyName);
+
 		 return localCache.get(keyName);
 		
 	}
 	
 	public void shutDownCache() throws Exception {
 		
+	}
+	
+	public void removeFromCache(String keyName) throws Exception {
+		localCache.remove(keyName);
 	}
 
 }
