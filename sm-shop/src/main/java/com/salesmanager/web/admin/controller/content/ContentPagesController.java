@@ -194,8 +194,15 @@ public class ContentPagesController {
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
 			Language language = (Language)request.getAttribute("LANGUAGE");
+			
+			
 
-			List<Content> contentList = contentService.listByType(ContentType.PAGE, store);
+			
+			ContentType cType = ContentType.PAGE;
+			if(ContentType.BOX.equals(contentType)) {
+				cType = ContentType.BOX;
+			} 
+			List<Content> contentList = contentService.listByType(cType, store);
 			
 			if(contentList!=null) {
 
@@ -260,6 +267,7 @@ public class ContentPagesController {
 			content.setSortOrder(0);
 		}
 		
+		content.setContentType(ContentType.PAGE);
 		content.setMerchantStore(store);
 		contentService.saveOrUpdate(content);
 		

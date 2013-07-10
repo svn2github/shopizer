@@ -52,7 +52,8 @@ public class ContentBoxesController {
 		
 		setMenu(model,request);
 
-		return ControllerConstants.Tiles.Content.contentBoxes;
+		model.addAttribute("menu.boxes", true);
+		return ControllerConstants.Tiles.Content.contentPages;
 		
 		
 	}
@@ -60,7 +61,7 @@ public class ContentBoxesController {
 	@Secured("CONTENT")
 	@RequestMapping(value="/admin/content/boxes/createBox.html", method=RequestMethod.GET)
 	public String createBox(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
+		model.addAttribute("menu.boxes", true);
 		setMenu(model,request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		Content content = new Content();
@@ -91,7 +92,7 @@ public class ContentBoxesController {
 	@Secured("CONTENT")
 	@RequestMapping(value="/admin/content/boxes/contentDetails.html", method=RequestMethod.GET)
 	public String getContentDetails(@RequestParam("id") Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
+		model.addAttribute("menu.boxes", true);
 		setMenu(model,request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		Content content = contentService.getById(id);
@@ -134,64 +135,13 @@ public class ContentBoxesController {
 	}
 	
 
-	
-	@SuppressWarnings({ "unchecked"})
-	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/boxes/page.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String pageContentBoxes(@ModelAttribute String contentType, HttpServletRequest request, HttpServletResponse response) {
-		AjaxResponse resp = new AjaxResponse();
 
-		try {
-			
-
-			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-
-			Language language = (Language)request.getAttribute("LANGUAGE");
-
-			List<Content> contentList = contentService.listByType(ContentType.PAGE, store);
-			
-			if(contentList!=null) {
-
-				for(Content content : contentList) {
-					
-					List<ContentDescription> descriptions = content.getDescriptions();
-					ContentDescription description = descriptions.get(0);
-					for(ContentDescription desc : descriptions) {
-						if(desc.getLanguage().getCode().equals(language.getCode())) {
-							description = desc;
-							break;
-						}
-					}
-					
-
-					@SuppressWarnings("rawtypes")
-					Map entry = new HashMap();
-					entry.put("id", content.getId());
-					entry.put("code", content.getCode());
-					entry.put("name", description.getName());
-					resp.addDataEntry(entry);
-
-				}
-			
-			}
-			
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
-
-		} catch (Exception e) {
-			LOGGER.error("Error while paging content", e);
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-		}
-		
-		String returnString = resp.toJSONString();
-		
-		return returnString;
-	}
 	
 	
 	@Secured("CONTENT")
 	@RequestMapping(value="/admin/content/boxes/saveContent.html", method=RequestMethod.POST)
 	public String saveContent(@Valid @ModelAttribute Content content, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
+		model.addAttribute("menu.boxes", true);
 		setMenu(model,request);
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
@@ -209,7 +159,7 @@ public class ContentBoxesController {
 			description.setContent(content);
 		}
 		
-		
+		content.setContentType(ContentType.BOX);
 		content.setMerchantStore(store);
 		contentService.saveOrUpdate(content);
 		
