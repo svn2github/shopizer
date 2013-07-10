@@ -94,7 +94,7 @@ public class ShoppingCategoryController {
 		
 		
 		/** template **/
-		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.ShoppingCart.shoppingCart).append(".").append(store.getStoreTemplate());
+		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Category.category).append(".").append(store.getStoreTemplate());
 
 		return template.toString();
 	}
