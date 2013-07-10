@@ -58,6 +58,9 @@ public class ShoppingCategoryController {
 	@RequestMapping("/shop/category/{friendlyUrl}.html")
 	public String displayCategory(@PathVariable final String friendlyUrl, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
+		
+		//TODO Cache
+		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		//get category
 		Category category = categoryService.getBySeUrl(store, friendlyUrl);
@@ -88,6 +91,9 @@ public class ShoppingCategoryController {
 			com.salesmanager.web.entity.catalog.Category cProxy =  catalogUtils.buildCategoryProxy(sub, store, locale);
 			subCategoryProxies.add(cProxy);
 		}
+		
+		//TODO get products by category
+		//TODO number of items by category
 		
 		model.addAttribute("category", categoryProxy);
 		model.addAttribute("subCategories", subCategoryProxies);
