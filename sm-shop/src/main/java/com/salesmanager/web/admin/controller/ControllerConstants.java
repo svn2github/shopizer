@@ -77,6 +77,7 @@ public interface ControllerConstants
         interface Configuration{
             final String accounts="config-accounts";
             final String email="config-email";
+            final String cache="admin-cache";
         }
         
         interface Tax{

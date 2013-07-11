@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.content.model.content.Content;
 import com.salesmanager.core.business.content.model.content.ContentDescription;
@@ -29,7 +29,6 @@ import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
-import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
@@ -44,6 +43,19 @@ public class ContentBoxesController {
 	
 	@Autowired
 	LanguageService languageService;
+	
+	@ModelAttribute("boxPositions") 
+    public Set<Map.Entry<String, String>> boxPositions() { 
+        final Map<String, String> map = new HashMap<String, String>(); 
+
+        map.put("LEFT", "LEFT");
+        map.put("RIGHT", "RIGHT");
+
+
+        return (map.entrySet()); 
+    } 
+
+
 	
 	
 	@Secured("CONTENT")
@@ -79,8 +91,12 @@ public class ContentBoxesController {
 			content.getDescriptions().add(description);
 		}
 		
+		//add positions
+		List<String> positions = new ArrayList<String>();
+		positions.add("LEFT");
+		positions.add("RIGHT");
 		
-		
+		model.addAttribute("positions",positions);
 		model.addAttribute("content",content);
 		
 
@@ -98,6 +114,11 @@ public class ContentBoxesController {
 		Content content = contentService.getById(id);
 		
 
+		List<String> positions = new ArrayList<String>();
+		positions.add("LEFT");
+		positions.add("RIGHT");
+		
+		model.addAttribute("positions",positions);
 		
 		if(content==null) {
 			LOGGER.error("Content entity null for id " + id);
@@ -145,6 +166,12 @@ public class ContentBoxesController {
 		setMenu(model,request);
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		List<String> positions = new ArrayList<String>();
+		positions.add("LEFT");
+		positions.add("RIGHT");
+		
+		model.addAttribute("positions",positions);
 		
 		if (result.hasErrors()) {
 			return ControllerConstants.Tiles.Content.contentPagesDetails;
