@@ -260,7 +260,11 @@
 
    	<definition name="tax-rate" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/tax/taxRateDetails.jsp" /> 
-  	</definition>   	
+  	</definition> 
+  	
+  	<definition name="admin-cache" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/configuration/cacheManagement.jsp" /> 
+  	</definition>    	
   	
   	
 </tiles-definitions>

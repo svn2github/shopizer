@@ -62,10 +62,10 @@
            		<h3>
 					<c:choose>
 						<c:when test="${content.id!=null && content.id>0}">
-								<s:message code="label.content.pages.manage.content" text="Manage content pages" /> <c:out value="${content.code}"/>
+								<s:message code="label.content.manage.content" text="Manage content" /> <c:out value="${content.code}"/>
 						</c:when>
 						<c:otherwise>
-								<s:message code="label.content.pages.manage.content" text="Manage content pages" />
+								<s:message code="label.content.manage.content" text="Manage content" />
 						</c:otherwise>
 					</c:choose>
 					
@@ -74,8 +74,17 @@
 
 			<!--  Add content page / box -->
 			
-			<c:url var="saveContentPage" value="/admin/content/pages/saveContent.html" />
-			<form:form method="POST" enctype="multipart/form-data" commandName="content" action="${saveContentPage}">
+			<c:choose>
+				<c:when test="${menu.boxes!=null}">
+						<c:url var="saveContent" value="/admin/content/boxes/saveContent.html" />
+				</c:when>
+				<c:otherwise>
+						<c:url var="saveContent" value="/admin/content/pages/saveContent.html" />
+				</c:otherwise>
+			</c:choose>
+			
+			
+			<form:form method="POST" enctype="multipart/form-data" commandName="content" action="${saveContent}">
 			
 			<form:errors path="*" cssClass="alert alert-error" element="div" />
 			<div id="store.success" class="alert alert-success"	style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>">
@@ -104,7 +113,22 @@
                                     <form:input id="order" cssClass="" path="sortOrder"/>
                                     <span class="help-inline"><form:errors path="sortOrder" cssClass="error" /></span>
                         </div>
-             </div>         
+             </div>   
+             
+             
+             <c:if test="${positions!=null}">
+             <div class="control-group">
+	                     <label><s:message code="label.storecountry" text="Store Country"/></label>
+	                     <div class="controls">
+	                        					
+	                        		  <form:select cssClass="country-list" path="position">
+					  								<form:options items="${boxPositions}" itemValue="value" itemLabel="key" />
+				       				  </form:select>
+	                                  <span class="help-inline"><form:errors path="position" cssClass="error" /></span>
+	                     </div>
+	         </div>
+             </c:if>
+                   
 
 
                  <c:forEach items="${content.descriptions}" var="description" varStatus="counter">
