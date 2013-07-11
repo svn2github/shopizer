@@ -1,0 +1,10 @@
+{"profile": {
+						"properties" :  {
+							"sex" : {"type":"string","index":"not_analyzed"},
+							"lookingfor" : {"type":"string","index":"not_analyzed"},
+							"age" : {"type":"integer","index":"not_analyzed"},
+							"description" : {"type":"string","index":"analyzed","index_analyzer":"english"}, 
+							"tags" : {"type":"string","index":"not_analyzed"} 
+						 } 
+			}
+}
