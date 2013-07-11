@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="search" default="build" basedir=".">
+	<description>
+		Build script for the core libraries of the search libraries
+   </description>
+
+
+
+
+	<property name="libname" value="es-search" />
+	<property name="working.dir" value="target" />
+	<property name="jar.file" value="${working.dir}/${libname}.jar" />
+
+
+
+	<target name="jar">
+		<jar destfile="${jar.file}" 
+			includes="com/personalization/**"
+			basedir="${working.dir}/classes">
+
+		</jar>
+	</target>
+
+
+	<target name="build" depends="jar">
+
+	</target>
+	
+
+
+</project>
