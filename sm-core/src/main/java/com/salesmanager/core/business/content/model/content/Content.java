@@ -66,9 +66,13 @@ public class Content extends SalesManagerEntity<Long, Content> implements Serial
 	@Column(name = "VISIBLE")
 	private boolean visible;
 	
+	@Column(name = "CONTENT_POSITION", length=10, nullable=true)
+	@Enumerated(value = EnumType.STRING)
+	private ContentPosition contentPosition;
+	
 	//Used for grouping
 	//BOX, SECTION, PAGE
-	@Column(name = "CONTENT_TYPE")
+	@Column(name = "CONTENT_TYPE", length=10, nullable=true)
 	@Enumerated(value = EnumType.STRING)
 	private ContentType contentType; 
 	
@@ -152,6 +156,14 @@ public class Content extends SalesManagerEntity<Long, Content> implements Serial
 
 	public Integer getSortOrder() {
 		return sortOrder;
+	}
+
+	public void setContentPosition(ContentPosition contentPosition) {
+		this.contentPosition = contentPosition;
+	}
+
+	public ContentPosition getContentPosition() {
+		return contentPosition;
 	}
 
 
