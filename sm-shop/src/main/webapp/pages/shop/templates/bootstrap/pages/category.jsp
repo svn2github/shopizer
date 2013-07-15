@@ -1,9 +1,43 @@
+<%
+response.setCharacterEncoding("UTF-8");
+response.setHeader("Cache-Control","no-cache");
+response.setHeader("Pragma","no-cache");
+response.setDateHeader ("Expires", -1);
+%>
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %> 
+ 
+<%@page contentType="text/html"%>
+<%@page pageEncoding="UTF-8"%>
+ 
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  
+ <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
+ <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+ 
+ <script src="<c:url value="/resources/js/infiniScroll.js" />"></script>
+ 
+ <script>
+ $('#productList').infiniScroll({ // calls the init method overrides defaults
+	    'interval' : 200
+	    ,'root_url' : '/my_posts'
+	    ,'loading_elem': 'loading'
+	    ,'data_elem': 'leaderboard'
+	    ,'num' : 12
+  });
+</script>
+ 
+
 
 	<div class="row-fluid">
       	
       	<!-- left column -->
         <div class="span3">
-        	//TEMPORARY category place holder
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
               <li class="nav-header">Sidebar</li>

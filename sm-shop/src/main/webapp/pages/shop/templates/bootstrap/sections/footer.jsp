@@ -28,10 +28,9 @@ response.setDateHeader ("Expires", -1);
 						<h4>Information</h4>
 						<!-- Pages -->
                         <ul>
-							<li><a href="http://#WB0M3G9S1/about.html">About Us</a></li>
-							<li><a href="#">Delivery Information</a></li>
-							<li><a href="#">Privacy Policy</a></li>
-							<li><a href="#">Terms &amp; Conditions</a></li>
+                        	<c:forEach items="${requestScope.CONTENT_PAGE}" var="content">
+							   <li><a href="<c:url value="/shop/pages/${content.seUrl}.html"/>" class="current">${content.name}</a></li>
+							</c:forEach>
 						</ul>
                     </div>
                     <div class="span3">
