@@ -15,18 +15,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
-import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
-import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationship;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationshipType;
 import com.salesmanager.core.business.catalog.product.service.relationship.ProductRelationshipService;
 import com.salesmanager.core.business.content.model.content.Content;
+import com.salesmanager.core.business.content.model.content.ContentDescription;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.utils.CatalogUtils;
 
 @Controller
@@ -54,23 +52,27 @@ public class LandingController {
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-		
-		//store.getStorename();
-		//store.getLanguages();
-		//store.getDefaultLanguage();
+
 		
 		Content content = contentService.getByCode("LANDING_PAGE", store, language);
 
-		//content.getDescriptions().get(0).getName();//title
-		//content.getDescriptions().get(0).getMetatagDescription();
-		//content.getDescriptions().get(0).getMetatagKeywords();
-		//content.getDescriptions().get(0).getContent();
-		
-		//model.addAttribute("activeMenus",activeMenus);
-		
+
 
 		if(content!=null) {
-			model.addAttribute("page",content.getDescriptions().get(0));
+			
+			ContentDescription description = content.getDescription();
+			
+			
+			model.addAttribute("page",description);
+			
+			
+			PageInformation pageInformation = new PageInformation();
+			pageInformation.setPageTitle(description.getMetatagTitle());
+			pageInformation.setPageDescription(description.getMetatagDescription());
+			pageInformation.setPageKeywords(description.getMetatagKeywords());
+			
+			request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
+			
 		}
 
 		

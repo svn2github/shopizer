@@ -140,6 +140,7 @@ public class InitStoreData implements InitData {
 		 Category book = new Category();
 		    book.setMerchantStore(store);
 		    book.setCode("book");
+		    book.setVisible(true);
 
 		    CategoryDescription bookEnglishDescription = new CategoryDescription();
 		    bookEnglishDescription.setName("Book");
@@ -164,6 +165,7 @@ public class InitStoreData implements InitData {
 		    Category music = new Category();
 		    music.setMerchantStore(store);
 		    music.setCode("music");
+		    music.setVisible(true);
 
 		    CategoryDescription musicEnglishDescription = new CategoryDescription();
 		    musicEnglishDescription.setName("Music");
@@ -188,6 +190,7 @@ public class InitStoreData implements InitData {
 		    Category novell = new Category();
 		    novell.setMerchantStore(store);
 		    novell.setCode("novell");
+		    novell.setVisible(true);
 
 		    CategoryDescription novellEnglishDescription = new CategoryDescription();
 		    novellEnglishDescription.setName("Novell");
@@ -242,6 +245,7 @@ public class InitStoreData implements InitData {
 		    Category fiction = new Category();
 		    fiction.setMerchantStore(store);
 		    fiction.setCode("fiction");
+		    fiction.setVisible(true);
 
 		    CategoryDescription fictionEnglishDescription = new CategoryDescription();
 		    fictionEnglishDescription.setName("Fiction");
