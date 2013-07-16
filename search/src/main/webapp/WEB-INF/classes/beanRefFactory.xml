@@ -8,7 +8,7 @@
          class="org.springframework.context.support.ClassPathXmlApplicationContext">
      <constructor-arg>
        <list>
-         <value>classpath:personalization-search.xml</value>
+         <value>classpath:personalization-search-ecomm.xml</value>
        </list>
      </constructor-arg>
    </bean>

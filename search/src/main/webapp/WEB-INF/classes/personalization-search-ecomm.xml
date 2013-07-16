@@ -15,7 +15,7 @@
 	<bean id="serverConfiguration" class="com.personalization.utils.ServerConfiguration">
 		<property name="clusterName" value="seniorcarlos"/>
 		<!-- local (embedded version, will create new indexes in the working directory) or remote (requires existing server) -->
-		<property name="mode" value="remote"/>
+		<property name="mode" value="local"/>
 		<!-- those properties are used when configured for remote -->
 		<property name="clusterHost" value="127.0.0.1"/>
 		<property name="clusterPort" value="9300"/>
