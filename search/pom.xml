@@ -157,10 +157,16 @@
 		
 		
 		<!-- Elastic search -->
-		<dependency>
+		<!--<dependency>
   			<groupId>org.elasticsearch</groupId>
   			<artifactId>elasticsearch-transport-memcached</artifactId>
   			<version>0.17.0</version>
+		</dependency>-->
+		
+		<dependency>
+			<groupId>org.elasticsearch</groupId>
+			<artifactId>elasticsearch</artifactId>
+			<version>0.90.2</version>
 		</dependency>
 		
 		
