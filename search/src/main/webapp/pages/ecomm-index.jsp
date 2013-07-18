@@ -222,7 +222,7 @@
 
 					$.ajax({
 
-						  url: "/mvc-showcase/index/product_en/product/",
+						  url: "<%=request.getContextPath()%>/index/product_en/product/",
 						  cache: false,
 						  type:"POST",
 						  dataType:"json",

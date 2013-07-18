@@ -26,7 +26,7 @@ $(document).ready(function() {
 
 		
 	$('#search').searchAutocomplete({
-			url: '/mvc-showcase/search/autocomplete/keyword_en'
+			url: '<%=request.getContextPath()%>/search/autocomplete/keyword_en'
 		  //filter: function() { 
 			//return '\"filter\" : {\"numeric_range\" : {\"age\" : {\"from\" : \"22\",\"to\" : \"45\",\"include_lower\" : true,\"include_upper\" : true}}}';
 		  //}
@@ -38,7 +38,7 @@ $(document).ready(function() {
 
 			$.search.searchTerm({
 				  	field: $('#search'),
-				  	url: '/mvc-showcase/search/product_en',
+				  	url: '<%=request.getContextPath()%>/search/product_en',
 				  	highlights: '\"highlight\":{\"fields\":{\"description\":{\"pre_tags\" : [\"<strong>\"], \"post_tags\" : [\"</strong>\"]},\"name\":{\"pre_tags\" : [\"<strong>\"], \"post_tags\" : [\"</strong>\"]}}}',
 				  	facets: function() { 
 						return '\"facets\" : { \"category\" : { \"terms\" : {\"field\" : \"category\"}}}';
