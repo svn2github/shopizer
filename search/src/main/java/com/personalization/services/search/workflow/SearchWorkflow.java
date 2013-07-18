@@ -3,16 +3,18 @@ package com.personalization.services.search.workflow;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import com.personalization.services.search.SearchRequest;
 import com.personalization.services.search.SearchResponse;
 import com.personalization.services.search.impl.SearchServiceImpl;
 import com.personalization.services.search.worker.KeywordSearchWorker;
 import com.personalization.services.search.worker.SearchWorker;
 
-
+@Component
 public class SearchWorkflow extends Workflow{
 	
-	private List searchWorkflow;
+	private List searchFlow;
 	private List searchKeywordWorkflow;
 
 
@@ -27,13 +29,7 @@ public class SearchWorkflow extends Workflow{
 		this.searchKeywordWorkflow = searchKeywordWorkflow;
 	}
 
-	public List getSearchWorkflow() {
-		return searchWorkflow;
-	}
 
-	public void setSearchWorkflow(List searchWorkflow) {
-		this.searchWorkflow = searchWorkflow;
-	}
 
 	public SearchResponse searchAutocomplete(String collection,String json,int size) throws Exception {
 	
@@ -65,8 +61,8 @@ public class SearchWorkflow extends Workflow{
 		SearchResponse response = null;
 
 		
-		if(searchWorkflow!=null) {
-			for(Object o : searchWorkflow) {
+		if(searchFlow!=null) {
+			for(Object o : searchFlow) {
 				
 				//String className = (String)o;
 				//SearchWorker search = (SearchWorker)Class.forName(className).newInstance();
@@ -78,6 +74,14 @@ public class SearchWorkflow extends Workflow{
 		
 		return response;
 		
+	}
+
+	public List getSearchFlow() {
+		return searchFlow;
+	}
+
+	public void setSearchFlow(List searchFlow) {
+		this.searchFlow = searchFlow;
 	}
 
 }

@@ -3,7 +3,8 @@ package com.personalization.services.search;
 import java.util.List;
 import java.util.Map;
 
-import org.elasticsearch.action.get.GetField;
+import org.elasticsearch.index.get.GetField;
+
 
 public class GetResponse {
 	
@@ -17,7 +18,7 @@ public class GetResponse {
 	
 	
 	public String getResponseAsString() {
-		return response.sourceAsString();
+		return response.toString();//TODO
 	}
 	
 	public Map<String,Object> getFields()

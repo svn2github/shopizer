@@ -12,7 +12,7 @@ public class BeanUtil {
 
 	private static BeanUtil instance = null;
 
-	public static Object getBean(String name) throws RuntimeException {
+/*	public static Object getBean(String name) throws RuntimeException {
 
 		if (instance == null) {
 			instance = new BeanUtil();
@@ -25,7 +25,7 @@ public class BeanUtil {
 			throw new RuntimeException(e);
 		}
 
-	}
+	}*/
 
 	private ApplicationContext getApplicationContext() {
 		if (bf == null) {

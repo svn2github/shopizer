@@ -1,27 +1,22 @@
 package com.personalization.index;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.personalization.services.search.IndexKeywordRequest;
-import com.personalization.services.search.SearchResponse;
 import com.personalization.services.search.SearchService;
-import com.personalization.services.search.impl.SearchServiceImpl;
 
 @Controller
 public class IndexControler {
+	
+	
+	
+	@Autowired
+	private SearchService searchService;
 	
 	/**
 	 * Rest method for indexing a document
@@ -36,9 +31,11 @@ public class IndexControler {
 			IndexResponse resp = new IndexResponse();
 			try {
 				
+
+				
 				resp.setJsonString(json);
-				SearchService service = new SearchService();
-				service.index(json, collection, object);
+
+				searchService.index(json, collection, object);
 				resp.setResult(1);
 				
 			} catch (Exception e) {
@@ -58,8 +55,7 @@ public class IndexControler {
 			IndexResponse resp = new IndexResponse();
 			try {
 				
-				SearchService service = new SearchService();
-				service.deleteObject(collection, object, id);
+				searchService.deleteObject(collection, object, id);
 				resp.setResult(1);
 				
 			} catch (Exception e) {

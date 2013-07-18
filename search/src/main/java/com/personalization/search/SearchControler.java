@@ -4,7 +4,9 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 import org.elasticsearch.search.SearchHit;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +23,9 @@ import com.personalization.services.search.impl.SearchServiceImpl;
 @Controller
 //@RequestMapping("search/*")
 public class SearchControler {
+	
+	@Autowired
+	private SearchService searchService;
 	
 /*	@RequestMapping(value="/autocomplete", method=RequestMethod.GET)
 	//public String searchInline(@PathVariable String search) {
@@ -56,8 +61,7 @@ public class SearchControler {
 		try {
 			
 			
-			SearchService service = new SearchService();
-			resp = service.searchAutoComplete(collection,json,10);
+			resp = searchService.searchAutoComplete(collection,json,10);
 
 		    
 			
@@ -77,7 +81,6 @@ public class SearchControler {
 
 	
 
-			SearchService service = new SearchService();
 			
 			SearchRequest request = new SearchRequest();
 			request.setCollection(collection);
@@ -87,9 +90,10 @@ public class SearchControler {
 			//request.setTerms("");
 			
 			try {
-				SearchResponse resp = service.search(request);
+				SearchResponse resp = searchService.search(request);
 				
 				ObjectMapper mapper = new ObjectMapper();
+				mapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS,false);
 				String indexData = mapper.writeValueAsString(resp);
 				System.out.println(indexData);
 				

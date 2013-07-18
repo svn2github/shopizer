@@ -16,14 +16,14 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.action.ListenableActionFuture;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.action.bulk.BulkRequestBuilder;
-import org.elasticsearch.client.action.search.SearchRequestBuilder;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
@@ -326,7 +326,7 @@ public class SearchServiceImpl {
 			
 
 			
-			SearchRequestBuilder builder = searchClient.getClient().prepareSearch(request.getCollection())
+			org.elasticsearch.action.search.SearchRequestBuilder builder = searchClient.getClient().prepareSearch(request.getCollection())
 	        //.setQuery("{ \"term\" : { \"keyword\" : \"dynamic\" }}")
 			//.setQuery(request.getJson())
 			//.addHighlightedField("description")
@@ -420,7 +420,7 @@ public class SearchServiceImpl {
 	        	         for(Object o : ff) {
 	        	        	 com.personalization.services.search.Entry entry = new com.personalization.services.search.Entry();
 	        	        	 Entry e = (Entry)o;
-	        	        	 entry.setName(e.getTerm());
+	        	        	 entry.setName(e.getTerm().string());//TODO
 	        	        	 entry.setCount(e.getCount());
 	        	        	 entries.add(entry);
 	        	         }
@@ -435,7 +435,7 @@ public class SearchServiceImpl {
 	        	         for(Object o : ff) {
 	        	        	 com.personalization.services.search.Entry entry = new com.personalization.services.search.Entry();
 	        	        	 Entry e = (Entry)o;
-	        	        	 entry.setName(e.getTerm());
+	        	        	 entry.setName(e.getTerm().string());//TODO
 	        	        	 entry.setCount(e.getCount());
 	        	        	 entries.add(entry);
 	        	         }
@@ -450,7 +450,7 @@ public class SearchServiceImpl {
 	        	         for(Object o : ff) {
 	        	        	 com.personalization.services.search.Entry entry = new com.personalization.services.search.Entry();
 	        	        	 Entry e = (Entry)o;
-	        	        	 entry.setName(e.getTerm());
+	        	        	 entry.setName(e.getTerm().string());//TODO
 	        	        	 entry.setCount(e.getCount());
 	        	        	 entries.add(entry);
 	        	         }
@@ -465,7 +465,7 @@ public class SearchServiceImpl {
 	        	         for(Object o : ff) {
 	        	        	 com.personalization.services.search.Entry entry = new com.personalization.services.search.Entry();
 	        	        	 Entry e = (Entry)o;
-	        	        	 entry.setName(e.getTerm());
+	        	        	 entry.setName(e.getTerm().string());//TODO
 	        	        	 entry.setCount(e.getCount());
 	        	        	 entries.add(entry);
 	        	         }
@@ -480,7 +480,7 @@ public class SearchServiceImpl {
 	        	         for(Object o : ff) {
 	        	        	 com.personalization.services.search.Entry entry = new com.personalization.services.search.Entry();
 	        	        	 Entry e = (Entry)o;
-	        	        	 entry.setName(e.getTerm());
+	        	        	 entry.setName(e.getTerm().string());//TODO
 	        	        	 entry.setCount(e.getCount());
 	        	        	 entries.add(entry);
 	        	         }

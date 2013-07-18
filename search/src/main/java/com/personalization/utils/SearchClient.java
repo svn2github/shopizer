@@ -2,14 +2,21 @@ package com.personalization.utils;
 
 
 
+//import org.elasticsearch.client.Client;
+//import org.elasticsearch.client.transport.TransportClient;
+//import org.elasticsearch.common.settings.ImmutableSettings;
+//import org.elasticsearch.common.settings.Settings;
+//import org.elasticsearch.common.transport.InetSocketTransportAddress;
+//import org.elasticsearch.node.Node;
+
+import static org.elasticsearch.node.NodeBuilder.*;
+
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.node.Node;
-
-import static org.elasticsearch.node.NodeBuilder.*;
 
 
 
@@ -88,6 +95,10 @@ public class SearchClient {
 						Settings s = ImmutableSettings.settingsBuilder().put("cluster.name", serverConfiguration.getClusterName()).build();
 						client = new TransportClient(s).addTransportAddress(new InetSocketTransportAddress(serverConfiguration.getClusterHost(), serverConfiguration.getClusterPort()));
 					} else {
+						
+						 //Node node = nodeBuilder().node();
+						 //client = node.client();
+
 						Node node = nodeBuilder().clusterName(serverConfiguration.getClusterName()).local(true).node(); 
 						//Node node = nodeBuilder().local(false).node();
 						//Node node = nodeBuilder().clusterName(serverConfiguration.getClusterName()).client(true).node();

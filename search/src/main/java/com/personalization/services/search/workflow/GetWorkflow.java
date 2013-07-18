@@ -1,8 +1,11 @@
 package com.personalization.services.search.workflow;
 
+import org.springframework.stereotype.Component;
+
 import com.personalization.services.search.impl.SearchServiceImpl;
 import com.personalization.utils.SearchClient;
 
+@Component
 public class GetWorkflow extends Workflow {
 	
 	

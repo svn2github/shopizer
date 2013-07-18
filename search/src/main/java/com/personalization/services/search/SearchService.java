@@ -1,6 +1,9 @@
 package com.personalization.services.search;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.personalization.services.search.workflow.DeleteObjectWorkflow;
 import com.personalization.services.search.workflow.GetWorkflow;
@@ -13,6 +16,7 @@ import com.personalization.utils.BeanUtil;
  * @author Carl Samson
  *
  */
+@Service
 public class SearchService {
 	
 	//workflow to be executed when indexing
@@ -21,6 +25,22 @@ public class SearchService {
 	//private static List searchWorkflow = new ArrayList();
 	
 	private static Logger log = Logger.getLogger(SearchService.class);
+	
+	@Autowired
+	private DeleteObjectWorkflow deleteWorkflow;
+	
+	@Autowired
+	private IndexWorkflow indexWorkflow;
+	
+	@Autowired
+	private GetWorkflow getWorkflow;
+	
+	@Autowired
+	private SearchWorkflow searchWorkflow;
+	
+	//@Autowired
+	//private SearchWorkflow searchAutocompleteWorkflow;
+
 	
 /*	//loads configuration
 	static {
@@ -67,13 +87,9 @@ public class SearchService {
 		
 		String name = new StringBuilder().append("delete-").append(object).append("-workflow").toString();
 		
-		DeleteObjectWorkflow workflow = (DeleteObjectWorkflow)BeanUtil.getBean(name);
+
 		
-		if(workflow==null) {
-			throw new Exception("No bean defined with name " + name);
-		}
-		
-		workflow.deleteObject(collection, object, id);
+		deleteWorkflow.deleteObject(collection, object, id);
 		
 		
 	}
@@ -82,13 +98,13 @@ public class SearchService {
 	public com.personalization.services.search.GetResponse getObject(String collection, String object, String id) throws Exception {
 		
 
-		GetWorkflow workflow = (GetWorkflow)BeanUtil.getBean("get-worflow");
+		//GetWorkflow workflow = (GetWorkflow)BeanUtil.getBean("get-worflow");
 		
-		if(workflow==null) {
-			throw new Exception("No bean defined with name get-workflow");
-		}
+		//if(workflow==null) {
+		//	throw new Exception("No bean defined with name get-workflow");
+		//}
 		
-		return workflow.getObject(collection,object,id);
+		return getWorkflow.getObject(collection,object,id);
 
 	}
 	
@@ -104,13 +120,13 @@ public class SearchService {
 		String name = new StringBuilder().append("index-").append(object).append("-workflow").toString();
 		
 		
-		IndexWorkflow workflow = (IndexWorkflow)BeanUtil.getBean(name);
+		//IndexWorkflow workflow = (IndexWorkflow)BeanUtil.getBean(name);
 		
-		if(workflow==null) {
-			throw new Exception("No bean defined with name " + name);
-		}
+		//if(workflow==null) {
+		//	throw new Exception("No bean defined with name " + na6me);
+		//}
 		
-		workflow.index(json, collection, object);
+		indexWorkflow.index(json, collection, object);
 		
 		
 /*		//validate valid json object
@@ -178,8 +194,8 @@ public class SearchService {
 	public SearchResponse searchAutoComplete(String collection,String json,int size) throws Exception {
 
 		
-		SearchWorkflow workflow = (SearchWorkflow)BeanUtil.getBean("search-autocomplete-workflow");
-		return workflow.searchAutocomplete(collection,json,size);
+		//SearchWorkflow workflow = (SearchWorkflow)BeanUtil.getBean("search-autocomplete-workflow");
+		return searchWorkflow.searchAutocomplete(collection,json,size);
 		
 		/**
 		SearchServiceImpl service = new SearchServiceImpl();
@@ -222,7 +238,7 @@ public class SearchService {
 		
 		return response;*/
 				
-		SearchWorkflow workflow = (SearchWorkflow)BeanUtil.getBean("search-workflow");
-		return workflow.search(request);
+		//SearchWorkflow workflow = (SearchWorkflow)BeanUtil.getBean("search-workflow");
+		return searchWorkflow.search(request);
 	}
 }

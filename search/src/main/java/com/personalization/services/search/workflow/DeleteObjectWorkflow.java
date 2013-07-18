@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.stereotype.Component;
 
 import com.personalization.services.search.SearchService;
 import com.personalization.services.search.worker.DeleteObjectWorker;
@@ -14,6 +15,7 @@ import com.personalization.services.search.worker.ExecutionContext;
 import com.personalization.services.search.worker.IndexWorker;
 import com.personalization.services.search.worker.SearchWorker;
 
+@Component
 public class DeleteObjectWorkflow extends Workflow{
 	
 	private static Logger log = Logger.getLogger(DeleteObjectWorkflow.class);
