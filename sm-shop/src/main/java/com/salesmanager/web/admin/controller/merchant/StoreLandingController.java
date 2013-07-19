@@ -114,6 +114,7 @@ public class StoreLandingController {
 		
 		if(content==null) {
 			content = new Content();
+			content.setVisible(true);
 			content.setContentType(ContentType.SECTION);
 			content.setCode("LANDING_PAGE");
 			content.setMerchantStore(store);
