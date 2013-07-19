@@ -20,9 +20,11 @@ import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
+import com.salesmanager.core.business.content.model.content.ContentDescription;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
+import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.shop.controller.ControllerConstants;
@@ -55,11 +57,12 @@ public class ShoppingCategoryController {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	@RequestMapping("/shop/category/{friendlyUrl}.html")
 	public String displayCategory(@PathVariable final String friendlyUrl, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		
-		//TODO Cache
+		
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		//get category
@@ -82,21 +85,47 @@ public class ShoppingCategoryController {
 		
 		request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
 		
+		//TODO Cache
+		StringBuilder subCategoriesCacheKey = new StringBuilder();
+		subCategoriesCacheKey
+		.append(Constants.SUBCATEGORIES_CACHE_KEY)
+		.append(store.getId())
+		.append(language.getCode());
 		
-		//sub categories
-		List<Category> subCategories = categoryService.listByParent(category, language);
-		List<com.salesmanager.web.entity.catalog.Category> subCategoryProxies = new ArrayList<com.salesmanager.web.entity.catalog.Category>();
-		for(Category sub : subCategories) {
+		StringBuilder subCategoriesMissed = new StringBuilder();
+		subCategoriesMissed
+		.append(subCategoriesCacheKey.toString())
+		.append(Constants.MISSED_CACHE_KEY);
+		
+		List<com.salesmanager.web.entity.catalog.Category> subCategories = null;
+		
+		if(store.isUseCache()) {
 			
-			com.salesmanager.web.entity.catalog.Category cProxy =  catalogUtils.buildCategoryProxy(sub, store, locale);
-			subCategoryProxies.add(cProxy);
+		    CacheUtils cache = CacheUtils.getInstance();
+			
+			//get from the cache
+			subCategories = (List<com.salesmanager.web.entity.catalog.Category>) cache.getFromCache(subCategoriesCacheKey.toString());
+			
+			Boolean missedContent = null;
+			if(subCategories==null) {
+				//get from missed cache
+				missedContent = (Boolean)cache.getFromCache(subCategoriesMissed.toString());
+			}
+			
+			if(subCategories==null && missedContent==null) {
+				subCategories = getSubCategories(store,category,language,locale);
+			}
+		
+		} else {
+			subCategories = getSubCategories(store,category,language,locale);
 		}
+
 		
 		//TODO get products by category
 		//TODO number of items by category
 		
 		model.addAttribute("category", categoryProxy);
-		model.addAttribute("subCategories", subCategoryProxies);
+		model.addAttribute("subCategories", subCategories);
 		
 		
 		/** template **/
@@ -153,7 +182,7 @@ public class ShoppingCategoryController {
 		
 		//TODO
 		if(cat==null) {
-			
+			//log & return null
 		}
 		
 		String lineage = new StringBuilder().append(cat.getLineage()).append(cat.getId()).toString();
@@ -211,6 +240,22 @@ public class ShoppingCategoryController {
 		
 		
 		return null;
+	}
+	
+	private List<com.salesmanager.web.entity.catalog.Category> getSubCategories(MerchantStore store, Category category, Language language, Locale locale) {
+		
+		
+		//sub categories
+		List<Category> subCategories = categoryService.listByParent(category, language);
+		List<com.salesmanager.web.entity.catalog.Category> subCategoryProxies = new ArrayList<com.salesmanager.web.entity.catalog.Category>();
+		for(Category sub : subCategories) {
+			
+			com.salesmanager.web.entity.catalog.Category cProxy =  catalogUtils.buildCategoryProxy(sub, store, locale);
+			subCategoryProxies.add(cProxy);
+		}
+		
+		return subCategoryProxies;
+		
 	}
 	
 	
