@@ -39,6 +39,7 @@ public class Constants {
 	public final static String CONTENT_CACHE_KEY = "CONTENT";
 	public final static String CONTENT_PAGE_CACHE_KEY = "CONTENT";
 	public final static String CATEGORIES_CACHE_KEY = "CATEGORIES";
+	public final static String SUBCATEGORIES_CACHE_KEY = "SUBCATEGORIES";
 	
 	public final static String REQUEST_CONTENT_OBJECTS = "CONTENT";
 	public final static String REQUEST_CONTENT_PAGE_OBJECTS = "CONTENT_PAGE";
