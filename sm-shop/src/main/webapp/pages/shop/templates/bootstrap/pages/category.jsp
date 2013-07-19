@@ -23,25 +23,77 @@ response.setDateHeader ("Expires", -1);
  <script src="<c:url value="/resources/js/infiniScroll.js" />"></script>
  
  <script>
- $('#productList').infiniScroll({ // calls the init method overrides defaults
-	    'interval' : 200
-	    ,'root_url' : '/my_posts'
-	    ,'loading_elem': 'loading'
-	    ,'data_elem': 'leaderboard'
-	    ,'num' : 12
-  });
+ 
+ 
+ 
+ 
+ $(function(){
+	 
+	 
+	 
+	 
+	 
+	 $('#productList').infiniScroll({ // calls the init method overrides defaults
+		    'interval' : 200
+		    ,'root_url' : '/shop'
+		    ,'loading_elem': 'loading'
+		    ,'data_elem': 'leaderboard'
+		    ,'num' : 12
+	  });
+ });
+ 
+ 
+ 
+	function loadProducts(quantity, page, url) {
+		
+
+		
+		$.ajax({
+				type: 'POST',
+				dataType: "json",
+				url: url,
+				data: "code="+ code + "&id=" + id,
+				success: function(response) {
+					
+					alert(response);
+					
+					
+					//var msg = isc.XMLTools.selectObjects(response, "/response/statusMessage");
+					//var status = isc.XMLTools.selectObjects(response, "/response/status");
+					
+					//callBackCheckCode(msg,status);
+
+					
+				},
+				error: function(jqXHR,textStatus,errorThrown) { 
+					alert(jqXHR + "-" + textStatus + "-" + errorThrown);
+				}
+				
+		});
+		
+		
+		
+	}
+ 
+ 
+ 
+ 
 </script>
  
 
 
 	<div class="row-fluid">
+	
+	
+	   <div class="span12">
       	
       	<!-- left column -->
+      	
         <div class="span3">
-          <div class="well sidebar-nav">
+          <div class="sidebar-nav">
             <ul class="nav nav-list">
               <li class="nav-header">Sidebar</li>
-              <li class="active"><a href="#">Link</a></li>
+              <li><a href="#">Link</a></li>
               <li><a href="#">Link</a></li>
               <li><a href="#">Link</a></li>
               <li><a href="#">Link</a></li>
@@ -57,58 +109,77 @@ response.setDateHeader ("Expires", -1);
               <li><a href="#">Link</a></li>
               <li><a href="#">Link</a></li>
             </ul>
-          </div><!--/.well -->
+          </div>
         </div><!--/span-->
         
         <!-- right column -->
         <div class="span9">
-         <!--
-          <div class="hero-unit">
-            <h1>Hello, world!</h1>
-            <p>This is a template for a simple marketing or informational website. It includes a large callout called the hero unit and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-            <p><a class="btn btn-primary btn-large">Learn more &raquo;</a></p>
-          </div>
-          -->
+
           
-          <ul id="productList" class="thumbnails product-list">
-          		<!-- TODO ajax lookup -->
-	          	<li class="span3">
-					<div class="product-box">                                        
-						<a href="product.html?product=${seoName}"><h4>${name}</h4></a>
-						<a href="product.html?product=${seoName}"><img alt="" src="img/products/${image}"></a>
-						<p><h3>${formatedPrice}</h3></p>
-						<div class="bottom">
-							<a class="view" href="product.html?product=${seoName}">view</a> / 
-							<a class="addcart addToCart" href="#" productId="${id}">add to cart</a>
-						</div>
-					</div>
-				</li> 
-
-	          	<li class="span3">
-					<div class="product-box">                                        
-						<a href="product.html?product=${seoName}"><h4>${name}</h4></a>
-						<a href="product.html?product=${seoName}"><img alt="" src="img/products/${image}"></a>
-						<p><h3>${formatedPrice}</h3></p>
-						<div class="bottom">
-							<a class="view" href="product.html?product=${seoName}">view</a> / 
-							<a class="addcart addToCart" href="#" productId="${id}">add to cart</a>
-						</div>
-					</div>
-				</li> 
-
-	          	<li class="span3">
-					<div class="product-box">                                        
-						<a href="product.html?product=${seoName}"><h4>${name}</h4></a>
-						<a href="product.html?product=${seoName}"><img alt="" src="img/products/${image}"></a>
-						<p><h3>${formatedPrice}</h3></p>
-						<div class="bottom">
-							<a class="view" href="product.html?product=${seoName}">view</a> / 
-							<a class="addcart addToCart" href="#" productId="${id}">add to cart</a>
-						</div>
-					</div>
-				</li> 
-          </ul>
+<ul class="thumbnails product-list">
+										<!-- Iterate over featuredItems -->
+										
+											<li class="span3">
+												<div class="product-box">                                        
+													<a href="http://#WB0M3G9S1/product_detail.html"><h4>Spring in Action</h4></a>
+													<a href="http://#WB0M3G9S1/product_detail.html"><img width="200" src="http://localhost:8080//sm-shop/static/DEFAULT/PRODUCT/TB12345/"></a>
+													<h3>$29.99</h3>
+													<div class="bottom">
+														<a href="http://#WB0M3G9S1/product_detail.html" class="view">view</a> / <a productid="1" href="#" class="addToCart">add to cart</a>
+													</div>
+												</div>
+										    </li>
+										
+											<li class="span3">
+												<div class="product-box">                                        
+													<a href="http://#WB0M3G9S1/product_detail.html"><h4>A nice book for you</h4></a>
+													<a href="http://#WB0M3G9S1/product_detail.html"><img width="200" src="http://localhost:8080//sm-shop/static/DEFAULT/PRODUCT/NB1111/"></a>
+													<h3>$19.99</h3>
+													<div class="bottom">
+														<a href="http://#WB0M3G9S1/product_detail.html" class="view">view</a> / <a productid="3" href="#" class="addToCart">add to cart</a>
+													</div>
+												</div>
+										    </li>
+										
+											<li class="span3">
+												<div class="product-box">                                        
+													<a href="http://#WB0M3G9S1/product_detail.html"><h4>Battle of the worlds 2</h4></a>
+													<a href="http://#WB0M3G9S1/product_detail.html"><img width="200" src="http://localhost:8080//sm-shop/static/DEFAULT/PRODUCT/SF333346/"></a>
+													<h3>$18.99</h3>
+													<div class="bottom">
+														<a href="http://#WB0M3G9S1/product_detail.html" class="view">view</a> / <a productid="5" href="#" class="addToCart">add to cart</a>
+													</div>
+												</div>
+										    </li>
+										
+											<li class="span3">
+												<div class="product-box">                                        
+													<a href="http://#WB0M3G9S1/product_detail.html"><h4>Life book</h4></a>
+													<a href="http://#WB0M3G9S1/product_detail.html"><img width="200" src="http://localhost:8080//sm-shop/static/DEFAULT/PRODUCT/LL333444/"></a>
+													<h3>$18.99</h3>
+													<div class="bottom">
+														<a href="http://#WB0M3G9S1/product_detail.html" class="view">view</a> / <a productid="6" href="#" class="addToCart">add to cart</a>
+													</div>
+												</div>
+										    </li>
+										    
+										    
+										    											<li class="span3">
+												<div class="product-box">                                        
+													<a href="http://#WB0M3G9S1/product_detail.html"><h4>Life book</h4></a>
+													<a href="http://#WB0M3G9S1/product_detail.html"><img width="200" src="http://localhost:8080//sm-shop/static/DEFAULT/PRODUCT/LL333444/"></a>
+													<h3>$18.99</h3>
+													<div class="bottom">
+														<a href="http://#WB0M3G9S1/product_detail.html" class="view">view</a> / <a productid="6" href="#" class="addToCart">add to cart</a>
+													</div>
+												</div>
+										    </li>
+										                             
+									</ul>
           
           
         </div><!--/span-->
+        
+        </div><!-- 12 -->
+        
       </div><!-- row fluid -->
