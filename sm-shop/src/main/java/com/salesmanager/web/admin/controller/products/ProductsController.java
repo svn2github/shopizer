@@ -126,13 +126,17 @@ public class ProductsController {
 					}
 					
 					//get all sub categories
-					List<Category> categories = categoryService.listByLineage(store, category.getLineage());
+					StringBuilder lineage = new StringBuilder();
+					lineage.append(category.getLineage()).append(category.getId()).append("/");
+					
+					List<Category> categories = categoryService.listByLineage(store, lineage.toString());
 					
 					Set<Long> categoryIds = new HashSet<Long>();
 					
 					for(Category cat : categories) {
 						categoryIds.add(cat.getId());
 					}
+					categoryIds.add(category.getId());
 					criteria.setCategoryIds(categoryIds);
 				
 				}
