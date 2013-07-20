@@ -42,17 +42,16 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		
 		super.create(category);
 		
-		Long id = category.getId();
-		StringBuilder parenLineage = new StringBuilder();
+		StringBuilder lineage = new StringBuilder();
 		Category parent = category.getParent();
 		if(parent!=null && parent.getId()!=null && parent.getId()!=0) {
-			parenLineage.append(parent.getLineage());
+			lineage.append(parent.getLineage()).append("/").append(parent.getId());
 			category.setDepth(parent.getDepth()+1);
 		} else {
-			parenLineage.append("/");
+			lineage.append("/");
 			category.setDepth(0);
 		}
-		category.setLineage(parenLineage.append(id).append("/").toString());
+		category.setLineage(lineage.toString());
 		super.update(category);
 		
 		
@@ -300,11 +299,12 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 				//assign to root
 				child.setParent(null);
 				child.setDepth(0);
-				child.setLineage(new StringBuilder().append("/").append(child.getId()).append("/").toString());
+				//child.setLineage(new StringBuilder().append("/").append(child.getId()).append("/").toString());
+				child.setLineage("/");
 				
 			} else {
 				
-				Category p = this.getById(parent.getId());
+				Category p = this.getById(parent.getId());//parent
 				
 				
 
@@ -314,15 +314,16 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 				
 				child.setParent(p);
 				child.setDepth(depth+1);
-				child.setLineage(new StringBuilder().append(lineage).append(child.getId()).append("/").toString());
+				child.setLineage(new StringBuilder().append(lineage).append(p.getId()).append("/").toString());
 				
 				
 			}
 			
 
 			update(child);
-			
-			List<Category> subCategories = listByLineage(child.getMerchantStore(), child.getLineage());
+			StringBuilder childLineage = new StringBuilder();
+			childLineage.append(child.getLineage()).append(child.getId()).append("/");
+			List<Category> subCategories = listByLineage(child.getMerchantStore(),childLineage.toString());
 			
 			
 			//ajust all sub categories lineages
