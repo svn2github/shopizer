@@ -59,7 +59,7 @@
 				<!-- Listing grid include -->
 				<c:set value="/admin/product-categories/paging.html?productId=${product.id}" var="pagingUrl" scope="request" />
 				<c:set value="/admin/product-categories/remove.html?productId=${product.id}" var="removeUrl" scope="request" />
-				<c:set value="/admin/products/displayProductToCategories.html?productId=${product.id}" var="refreshUrl" scope="request" />
+				<c:set value="/admin/products/displayProductToCategories.html?id=${product.id}" var="refreshUrl" scope="request" />
 				<c:set var="entityId" value="categoryId" scope="request"/>
 				<c:set var="componentTitleKey" value="label.categories.title" scope="request" />
 				<c:set var="canRemoveEntry" value="true" scope="request" />

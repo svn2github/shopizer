@@ -30,7 +30,7 @@ response.setDateHeader ("Expires", -1);
  $(function(){
 	 
 	 
-	 
+	 loadProducts(0,12);
 	 
 	 
 	 $('#productList').infiniScroll({ // calls the init method overrides defaults
@@ -44,23 +44,35 @@ response.setDateHeader ("Expires", -1);
  
  
  
-	function loadProducts(quantity, page, url) {
+	function loadProducts(start, qty) {
 		
-
+		var url = '<%=request.getContextPath()%>/shop/services/products/page/' + start + '/' + qty + '/<c:out value="${requestScope.MERCHANT_STORE.code}"/>/<c:out value="${requestScope.LANGUAGE.code}"/>/<c:out value="${category.friendlyUrl}"/>.html';
 		
 		$.ajax({
 				type: 'POST',
 				dataType: "json",
 				url: url,
-				data: "code="+ code + "&id=" + id,
-				success: function(response) {
+				//data: "code="+ code + "&id=" + id,
+				success: function(products) {
 					
-					alert(response);
+					
+					
+					for (var i = 0; i < products.length; i++) {
+					    //alert(products[i].name);
+					    //Do something
+					    var productHtml = '<li class="span3">';
+					    	productHtml = productHtml + '<div class="product-box"><a href="http://#WB0M3G9S1/product_detail.html">';
+					    	productHtml = productHtml + '<h4>' + product.name +'</h4></a>';
+					    	productHtml = productHtml + '<a href="http://#WB0M3G9S1/product_detail.html"><img width="200" src="http://localhost:8080//sm-shop/static/DEFAULT/PRODUCT/TB12345/"></a>';
+					    	productHtml = productHtml + '<h3>' + product.productPrice +'</h3>';
+					    	productHtml = productHtml + '<div class="bottom"><a href="http://#WB0M3G9S1/product_detail.html" class="view">view</a> / <a productid="1" href="#" class="addToCart">add to cart</a></div></div></li>';
+					}
+					
+					//alert(response);
 					
 					
 					//var msg = isc.XMLTools.selectObjects(response, "/response/statusMessage");
 					//var status = isc.XMLTools.selectObjects(response, "/response/status");
-					
 					//callBackCheckCode(msg,status);
 
 					
@@ -79,6 +91,17 @@ response.setDateHeader ("Expires", -1);
  
  
 </script>
+
+    <div class="row-fluid">
+						   <ul class="breadcrumb">
+								<li>
+									<a href="#"><i class="icon-home"></i></a> <span class="divider">/</span>
+								</li>
+								<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">Product</a> <span class="divider">/</span></li>
+								<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">Women</a> <span class="divider">/</span></li>
+								<li class="active">Detail</li>
+							</ul>
+	</div>
  
 
 
@@ -88,11 +111,11 @@ response.setDateHeader ("Expires", -1);
 	   <div class="span12">
       	
       	<!-- left column -->
-      	
+      	<c:out value="${requestScope['javax.servlet.forward.query_string']}" />
         <div class="span3">
           <div class="sidebar-nav">
             <ul class="nav nav-list">
-            
+              <li class="nav-header"><c:out value="${category.name}" /></li>
               <c:forEach items="${subCategories}" var="category">
               	<li><a href="<c:url value="/shop/category/${category.friendlyUrl}.html"/>"><c:out value="${category.name}" /></a></li>
               </c:forEach>
@@ -109,7 +132,7 @@ response.setDateHeader ("Expires", -1);
         <div class="span9">
 
           
-<ul class="thumbnails product-list">
+        <ul class="thumbnails product-list">
 										<!-- Iterate over featuredItems -->
 										
 											<li class="span3">
