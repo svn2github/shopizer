@@ -92,22 +92,15 @@ response.setDateHeader ("Expires", -1);
         <div class="span3">
           <div class="sidebar-nav">
             <ul class="nav nav-list">
-              <li class="nav-header">Sidebar</li>
+            
+              <c:forEach items="${subCategories}" var="category">
+              	<li><a href="<c:url value="/shop/category/${category.friendlyUrl}.html"/>"><c:out value="${category.name}" /></a></li>
+              </c:forEach>
+
+              <!--<li class="nav-header">Sidebar</li>
               <li><a href="#">Link</a></li>
               <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li class="nav-header">Sidebar</li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li class="nav-header">Sidebar</li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
+              <li><a href="#">Link</a></li>-->
             </ul>
           </div>
         </div><!--/span-->

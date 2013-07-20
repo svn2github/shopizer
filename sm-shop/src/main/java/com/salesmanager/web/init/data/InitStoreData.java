@@ -232,7 +232,7 @@ public class InitStoreData implements InitData {
 		    techFrenchDescription.setSeUrl("techno");
 
 		    List<CategoryDescription> descriptions4 = new ArrayList<CategoryDescription>();
-		    descriptions4.add(techFrenchDescription);
+		    descriptions4.add(techEnglishDescription);
 		    descriptions4.add(techFrenchDescription);
 
 		    tech.setDescriptions(descriptions4);
