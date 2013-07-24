@@ -156,6 +156,9 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		order.setDisplayInvoicePayments(true);
 		order.setIpAddress("ipAddress" );
 		order.setMerchant(store);
+		order.setCustomerEmailAddress(customer.getEmailAddress());
+		order.setCustomerFirstName(customer.getFirstname());
+		order.setCustomerLastName(customer.getLastname());
 		order.setOrderDateFinished(new Date());//committed date
 		
 		orderStatusHistory.setComments("We received your order");
