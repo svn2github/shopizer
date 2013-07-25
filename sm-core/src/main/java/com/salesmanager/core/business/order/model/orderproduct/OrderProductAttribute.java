@@ -13,8 +13,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.constants.SchemaConstant;
 
 @Entity
@@ -28,8 +26,8 @@ public class OrderProductAttribute implements Serializable {
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
 
-	@Column ( name= "OPTION_VALUES_PRICE" , nullable=false , precision=15 , scale=4 )
-	private BigDecimal optionValuePrice;
+	@Column ( name= "PRODUCT_ATTRIBUTE_PRICE" , nullable=false , precision=15 , scale=4 )
+	private BigDecimal productAttributePrice;
 
 	@Column ( name= "PRODUCT_ATTRIBUTE_IS_FREE" , nullable=false )
 	private boolean productAttributeIsFree;
@@ -41,13 +39,18 @@ public class OrderProductAttribute implements Serializable {
 	@JoinColumn(name = "ORDER_PRODUCT_ID", nullable = false)
 	private OrderProduct orderProduct;
 	
-	@ManyToOne
-	@JoinColumn(name = "PRODUCT_OPTION_ID", nullable = false)
-	private ProductOption productOption;
+	@Column(name = "PRODUCT_OPTION_ID", nullable = false)
+	private Long productOptionId;
 
-	@ManyToOne
-	@JoinColumn(name = "PRODUCT_OPTION_VALUE_ID", nullable = false)
-	private ProductOptionValue productOptionValue;
+
+	@Column(name = "PRODUCT_OPTION_VALUE_ID", nullable = false)
+	private Long productOptionValueId;
+	
+	@Column ( name= "PRODUCT_ATTRIBUTE_NAME")
+	private String productAttributeName;
+	
+	@Column ( name= "PRODUCT_ATTRIBUTE_VAL_NAME")
+	private String productAttributeValueName;
 
 	public OrderProductAttribute() {
 	}
@@ -60,13 +63,6 @@ public class OrderProductAttribute implements Serializable {
 		this.id = id;
 	}
 
-	public BigDecimal getOptionValuePrice() {
-		return optionValuePrice;
-	}
-
-	public void setOptionValuePrice(BigDecimal optionValuePrice) {
-		this.optionValuePrice = optionValuePrice;
-	}
 
 	public boolean isProductAttributeIsFree() {
 		return productAttributeIsFree;
@@ -93,19 +89,44 @@ public class OrderProductAttribute implements Serializable {
 		this.orderProduct = orderProduct;
 	}
 
-	public ProductOption getProductOption() {
-		return productOption;
+	public String getProductAttributeName() {
+		return productAttributeName;
 	}
 
-	public void setProductOption(ProductOption productOption) {
-		this.productOption = productOption;
+	public void setProductAttributeName(String productAttributeName) {
+		this.productAttributeName = productAttributeName;
 	}
 
-	public ProductOptionValue getProductOptionValue() {
-		return productOptionValue;
+	public String getProductAttributeValueName() {
+		return productAttributeValueName;
 	}
 
-	public void setProductOptionValue(ProductOptionValue productOptionValue) {
-		this.productOptionValue = productOptionValue;
+	public void setProductAttributeValueName(String productAttributeValueName) {
+		this.productAttributeValueName = productAttributeValueName;
 	}
+
+	public BigDecimal getProductAttributePrice() {
+		return productAttributePrice;
+	}
+
+	public void setProductAttributePrice(BigDecimal productAttributePrice) {
+		this.productAttributePrice = productAttributePrice;
+	}
+
+	public Long getProductOptionId() {
+		return productOptionId;
+	}
+
+	public void setProductOptionId(Long productOptionId) {
+		this.productOptionId = productOptionId;
+	}
+
+	public Long getProductOptionValueId() {
+		return productOptionValueId;
+	}
+
+	public void setProductOptionValueId(Long productOptionValueId) {
+		this.productOptionValueId = productOptionValueId;
+	}
+
 }

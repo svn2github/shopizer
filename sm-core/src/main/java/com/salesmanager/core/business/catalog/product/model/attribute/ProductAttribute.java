@@ -40,7 +40,8 @@ public class ProductAttribute extends SalesManagerEntity<Long, ProductAttribute>
 
 	
 	@Column(name="PRODUCT_ATRIBUTE_PRICE")
-	private BigDecimal optionValuePrice;
+	private BigDecimal productAttributePrice;
+
 
 	@Column(name="PRODUCT_ATTRIBUTE_SORT_ORD")
 	private Integer productOptionSortOrder;
@@ -124,13 +125,7 @@ public class ProductAttribute extends SalesManagerEntity<Long, ProductAttribute>
 		this.id = id;
 	}
 
-	public BigDecimal getOptionValuePrice() {
-		return optionValuePrice;
-	}
 
-	public void setOptionValuePrice(BigDecimal optionValuePrice) {
-		this.optionValuePrice = optionValuePrice;
-	}
 
 	public Integer getProductOptionSortOrder() {
 		return productOptionSortOrder;
@@ -227,6 +222,14 @@ public class ProductAttribute extends SalesManagerEntity<Long, ProductAttribute>
 
 	public void setAttributeAdditionalWeight(String attributeAdditionalWeight) {
 		this.attributeAdditionalWeight = attributeAdditionalWeight;
+	}
+	
+	public BigDecimal getProductAttributePrice() {
+		return productAttributePrice;
+	}
+
+	public void setProductAttributePrice(BigDecimal productAttributePrice) {
+		this.productAttributePrice = productAttributePrice;
 	}
 
 

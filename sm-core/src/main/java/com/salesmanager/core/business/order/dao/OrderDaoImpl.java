@@ -47,8 +47,6 @@ public class OrderDaoImpl  extends SalesManagerEntityDaoImpl<Long, Order> implem
 			.leftJoin(qOrderProduct.downloads).fetch()
 			.leftJoin(qOrderProduct.orderAttributes,qOrderProductAttribute).fetch()
 			.leftJoin(qOrderProduct.prices).fetch()
-			.leftJoin(qOrderProductAttribute.productOption).fetch()
-			.leftJoin(qOrderProductAttribute.productOptionValue).fetch()
 			.where(qOrder.id.eq(id));
 
 		
@@ -57,7 +55,7 @@ public class OrderDaoImpl  extends SalesManagerEntityDaoImpl<Long, Order> implem
 	}
 
 
-	@SuppressWarnings("unused")
+
 	@Override
 	public OrderList listByStore(MerchantStore store, OrderCriteria criteria) {
 
@@ -116,9 +114,7 @@ public class OrderDaoImpl  extends SalesManagerEntityDaoImpl<Long, Order> implem
 			.leftJoin(qOrder.orderHistory, qOrderStatusHistory).fetch()
 			.leftJoin(qOrderProduct.downloads).fetch()
 			.leftJoin(qOrderProduct.orderAttributes,qOrderProductAttribute).fetch()
-			.leftJoin(qOrderProduct.prices).fetch()
-			.leftJoin(qOrderProductAttribute.productOption).fetch()
-			.leftJoin(qOrderProductAttribute.productOptionValue).fetch();
+			.leftJoin(qOrderProduct.prices).fetch();
 			
 			query.where(qOrder.merchant.id.eq(store.getId()));
 			BooleanBuilder pBuilder = null;

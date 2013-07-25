@@ -23,6 +23,7 @@ import com.salesmanager.core.business.catalog.product.model.availability.Product
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
 import com.salesmanager.core.constants.Constants;
 
 
@@ -92,7 +93,7 @@ public class ProductPriceUtils {
 		BigDecimal attributePrice = new BigDecimal(0);
 		if(attributes!=null && attributes.size()>0) {
 			for(ProductAttribute attribute : attributes) {
-				attributePrice = attributePrice.add(attribute.getOptionValuePrice());
+				attributePrice = attributePrice.add(attribute.getProductAttributePrice());
 			}
 		}
 		
@@ -373,6 +374,13 @@ public class ProductPriceUtils {
 			}
 		}
 
+	}
+	
+	public BigDecimal getOrderProductTotalPrice(MerchantStore store, OrderProduct orderProduct) {
+		
+		BigDecimal finalPrice = orderProduct.getFinalPrice();
+		finalPrice = finalPrice.multiply(new BigDecimal(orderProduct.getProductQuantity()));
+		return finalPrice;
 	}
 	
 	/**
