@@ -3,14 +3,15 @@ package com.salesmanager.test.order;
 import java.awt.Graphics2D;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jopendocument.dom.OOUtils;
@@ -19,8 +20,8 @@ import org.jopendocument.dom.spreadsheet.SpreadSheet;
 import org.jopendocument.model.OpenDocument;
 import org.jopendocument.renderer.ODTRenderer;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.PageSize;
@@ -30,22 +31,25 @@ import com.lowagie.text.pdf.PdfDocument;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionDescription;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValueDescription;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDescription;
 import com.salesmanager.core.business.catalog.product.model.type.ProductType;
 import com.salesmanager.core.business.common.model.Billing;
-import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.common.model.Delivery;
+import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
-import com.salesmanager.core.business.order.model.OrderCriteria;
-import com.salesmanager.core.business.order.model.OrderList;
 import com.salesmanager.core.business.order.model.OrderTotal;
-import com.salesmanager.core.business.order.model.orderaccount.OrderAccount;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
+import com.salesmanager.core.business.order.model.orderproduct.OrderProductAttribute;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProductDownload;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProductPrice;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
@@ -55,10 +59,14 @@ import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.constants.Constants;
+import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;
 
 
 public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
+	
+	@Autowired
+	private ProductPriceUtils priceUtil;
 
 
 	@Test
@@ -79,7 +87,43 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 	     */
 	    
 	    //1.1 create a product
+	    
+	    //create an option
+	    ProductOption color = new ProductOption();
+	    color.setMerchantStore(store);
+	    color.setProductOptionType("SELECT");
+	    
+	    ProductOptionDescription colorDescription = new ProductOptionDescription();
+	    colorDescription.setDescription("Color");
+	    colorDescription.setName("Color");
+	    colorDescription.setLanguage(en);
+	    colorDescription.setProductOption(color);
+	    
+	    Set<ProductOptionDescription> colorDescriptions = new HashSet<ProductOptionDescription>();
+	    colorDescriptions.add(colorDescription);
+	    
+	    color.setDescriptions(colorDescriptions);
+	    
+	    productOptionService.create(color);
+	    
+	    //create an option value
+	    ProductOptionValue red = new ProductOptionValue();
+	    red.setMerchantStore(store);
+	    
+	    ProductOptionValueDescription redDescription = new ProductOptionValueDescription();
+	    redDescription.setDescription("Red");
+	    redDescription.setLanguage(en);
+	    redDescription.setName("Red");
+	    redDescription.setProductOptionValue(red);
+	    
+	    Set<ProductOptionValueDescription> redDescriptions = new HashSet<ProductOptionValueDescription>();
+	    redDescriptions.add(redDescription);
+	    
+	    red.setDescriptions(redDescriptions);
+	    
+	    productOptionValueService.create(red);
 
+	    //create a product
 	    Product product = new Product();
 	    product.setProductHeight(new BigDecimal(4));
 	    product.setProductLength(new BigDecimal(3));
@@ -105,6 +149,7 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 	    availability.setRegion("*");
 	    availability.setProduct(product);// associate with product
 
+	    //price
 	    ProductPrice dprice = new ProductPrice();
 	    dprice.setDefaultPrice(true);
 	    dprice.setProductPriceAmount(new BigDecimal(29.99));
@@ -117,8 +162,22 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 
 	    dprice.getDescriptions().add(dpd);
 	    
+	    
+	    //create an attribute
+	    ProductAttribute colorAttribute = new ProductAttribute();
+	    colorAttribute.setProduct(product);
+	    colorAttribute.setProductAttributePrice(new BigDecimal(5));
+	    colorAttribute.setProductOption(color);
+	    colorAttribute.setProductOptionValue(red);
+	    
+	    Set<ProductAttribute> productAttributes = new HashSet<ProductAttribute>();
+	    productAttributes.add(colorAttribute);
+	    
+	    product.setAttributes(productAttributes);
+	    
 	    productService.saveOrUpdate(product);
 	    
+
 	    //1.2 create a Customer
 		Country country = countryService.getByCode("CA");
 		Zone zone = zoneService.getByCode("QC");
@@ -225,13 +284,53 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 		oproduct.setOnetimeCharge( new BigDecimal(19.99) );
 		oproduct.setOrder(order);		
 		oproduct.setProductName( "Product name" );
-		oproduct.setProductQuantity(1);
+		oproduct.setProductQuantity(2);
 		oproduct.setSku("TB12345" );		
 		oproduct.getPrices().add(oproductprice ) ;
+		
+		
+		//an attribute to the OrderProduct
+		OrderProductAttribute orderAttribute = new OrderProductAttribute();
+		orderAttribute.setOrderProduct(oproduct);
+		orderAttribute.setProductAttributeName(colorDescription.getName());
+		orderAttribute.setProductAttributeValueName(redDescription.getName());
+		orderAttribute.setProductOptionId(color.getId());
+		orderAttribute.setProductOptionValueId(red.getId());
+		orderAttribute.setProductAttributePrice(colorAttribute.getProductAttributePrice());
+		
+		Set<OrderProductAttribute> orderAttributes = new HashSet<OrderProductAttribute>();
+		orderAttributes.add(orderAttribute);
+		
+		oproduct.setOrderAttributes(orderAttributes);
 		
 		oproductprice.setOrderProduct(oproduct);		
 		orderProductDownload.setOrderProduct(oproduct);
 		order.getOrderProducts().add(oproduct);
+		
+		
+		//product #2
+		OrderProductPrice oproductprice2 = new OrderProductPrice();
+		oproductprice2.setDefaultPrice(true);	
+		oproductprice2.setProductPriceAmount(new BigDecimal(9.99) );
+		oproductprice2.setProductPriceCode("baseprice" );
+		oproductprice2.setProductPriceName("Base Price" );
+
+		//OrderProduct
+		OrderProduct oproduct2 = new OrderProduct();
+		oproduct2.setFinalPrice(new BigDecimal(9.99) );
+		oproduct2.setOnetimeCharge( new BigDecimal(9.99) );
+		oproduct2.setOrder(order);		
+		oproduct2.setProductName( "Additional item name" );
+		oproduct2.setProductQuantity(1);
+		oproduct2.setSku("TB12346" );		
+		oproduct2.getPrices().add(oproductprice2 ) ;
+		
+		oproductprice2.setOrderProduct(oproduct2);		
+		order.getOrderProducts().add(oproduct2);
+		
+		
+		
+		
 
 		//requires 
 		//OrderProduct
@@ -274,6 +373,11 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 		orderService.create(order);
 		Assert.assertTrue(orderService.count() == 1);
 		
+		Locale locale = Locale.ENGLISH;
+		
+		
+		order = orderService.getById(order.getId());
+		
 		/**
 		 * 2 Create an invoice
 		 */
@@ -289,6 +393,7 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 			sheet.setValueAt(store.getStorename(), 0, 0);
 			
 			store.setStoreaddress("2001 zoo avenue");
+			store.setCurrencyFormatNational(true);//use $ instead of USD
 			
 			
 			//Address
@@ -466,17 +571,77 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 				sheet.setValueAt("", 0, i);
 			}
 			
+			//products
+			Set<OrderProduct> orderProducts = order.getOrderProducts();
+			int productCell = 16;
+			for(OrderProduct orderProduct : orderProducts) {
+				
+				//product name
+				String pName = orderProduct.getProductName();
+				Set<OrderProductAttribute> oAttributes = orderProduct.getOrderAttributes();
+				StringBuilder attributeName = null;
+				for(OrderProductAttribute oProductAttribute : oAttributes) {
+					if(attributeName == null) {
+						attributeName = new StringBuilder();
+						attributeName.append("[");
+					} else {
+						attributeName.append(", ");
+					}
+					attributeName.append(oProductAttribute.getProductAttributeName())
+					.append(": ")
+					.append(oProductAttribute.getProductAttributeValueName());
+					
+				}
+				
+				
+				StringBuilder productName = new StringBuilder();
+				productName.append(pName);
+				
+				if(attributeName!=null) {
+					attributeName.append("]");
+					productName.append(" ").append(attributeName.toString());
+				}
+				
+				
+				
+				
+				sheet.setValueAt(productName.toString(), 0, productCell);
+				
+				int quantity = orderProduct.getProductQuantity();
+				sheet.setValueAt(quantity, 1, productCell);
+				String amount = priceUtil.getStoreFormatedAmountWithCurrency(store, orderProduct.getFinalPrice());
+				sheet.setValueAt(amount, 2, productCell);
+				String t = priceUtil.getStoreFormatedAmountWithCurrency(store, priceUtil.getOrderProductTotalPrice(store, orderProduct));
+				sheet.setValueAt(t, 3, productCell);
+
+				productCell++;
+				
+			}
+			
+			//print totals
+			productCell++;
+			Set<OrderTotal> totals = order.getOrderTotal();
+			for(OrderTotal orderTotal : totals) {
+				
+				String totalName = orderTotal.getText();
+				String totalValue = priceUtil.getStoreFormatedAmountWithCurrency(store,orderTotal.getValue());
+				sheet.setValueAt(totalName, 2, productCell);
+				sheet.setValueAt(totalValue, 3, productCell);
+				productCell++;
+			}
 			
 			//sheet.getCellAt(0, 0).setImage(arg0)
 			//sheet.getCellAt(0, 0).setStyleName(arg0)
 			//sheet.getCellAt(0, 0).getStyle().
 			
-			File outputFile = new File("test.ods");
+			
+			
+			File outputFile = new File(order.getId() + "_invoice.ods");
 			OOUtils.open(sheet.getSpreadSheet().saveAs(outputFile));
 			
 			
 			final OpenDocument doc = new OpenDocument();
-			doc.loadFrom("test.ods");
+			doc.loadFrom(order.getId() + "_invoice.ods");
 
 			 // Open the PDF document
 			 Document document = new Document(PageSize.A4);
@@ -523,6 +688,8 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 			 cb.addTemplate(tp, offsetX, offsetY);
 			 // Close the PDF document
 			 document.close();
+			 
+			 outputFile.delete();//remove temp file
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

@@ -651,7 +651,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 	    attribute.setProduct(product);
 	    attribute.setProductOption(option);
 	    attribute.setAttributeDefault(true);
-	    attribute.setOptionValuePrice(new BigDecimal(0));//no price variation
+	    attribute.setProductAttributePrice(new BigDecimal(0));//no price variation
 	    attribute.setProductAttributeWeight(new BigDecimal(1));//weight variation
 	    attribute.setProductOption(option);
 	    attribute.setProductOptionValue(hard);
@@ -661,7 +661,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 	    attribute = new ProductAttribute();
 	    attribute.setProduct(product);
 	    attribute.setProductOption(option);
-	    attribute.setOptionValuePrice(new BigDecimal(0));//no price variation
+	    attribute.setProductAttributePrice(new BigDecimal(0));//no price variation
 	    attribute.setProductAttributeWeight(new BigDecimal(0));//no weight variation
 	    attribute.setProductOption(option);
 	    attribute.setProductOptionValue(soft);

@@ -147,7 +147,7 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 	    ProductAttribute attribute = new ProductAttribute();
 	    attribute.setProduct(product2);
 	    attribute.setAttributeDefault(true);
-	    attribute.setOptionValuePrice(new BigDecimal(0));//no price variation
+	    attribute.setProductAttributePrice(new BigDecimal(0));//no price variation
 	    attribute.setProductAttributeWeight(new BigDecimal(1));//weight variation
 
 	    
