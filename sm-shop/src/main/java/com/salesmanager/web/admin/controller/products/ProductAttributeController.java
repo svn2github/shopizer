@@ -156,7 +156,7 @@ public class ProductAttributeController {
 				entry.put("attribute", optionDescription.getName());
 				entry.put("value", optionValueDescription.getName());
 				entry.put("order", attr.getProductOptionSortOrder());
-				entry.put("price", priceUtil.getAdminFormatedAmountWithCurrency(store,attr.getOptionValuePrice()));
+				entry.put("price", priceUtil.getAdminFormatedAmountWithCurrency(store,attr.getProductAttributePrice()));
 
 				resp.addDataEntry(entry);
 				
@@ -220,7 +220,7 @@ public class ProductAttributeController {
 		if(id!=null && id.intValue()!=0) {//edit mode
 			
 			attribute = productAttributeService.getById(id);
-			attribute.setAttributePrice(priceUtil.getAdminFormatedAmount(store, attribute.getOptionValuePrice()));
+			attribute.setAttributePrice(priceUtil.getAdminFormatedAmount(store, attribute.getProductAttributePrice()));
 			attribute.setAttributeAdditionalWeight(String.valueOf(attribute.getProductAttributeWeight().intValue()));
 			attribute.setAttributeSortOrder(String.valueOf(attribute.getProductOptionSortOrder()));
 			
@@ -296,7 +296,7 @@ public class ProductAttributeController {
 		BigDecimal submitedPrice = null;
 		try {
 			submitedPrice = priceUtil.getAmount(attribute.getAttributePrice());
-			attribute.setOptionValuePrice(submitedPrice);
+			attribute.setProductAttributePrice(submitedPrice);
 		} catch (Exception e) {
 			ObjectError error = new ObjectError("attributePrice",messages.getMessage("NotEmpty.product.productPrice", locale));
 			result.addError(error);

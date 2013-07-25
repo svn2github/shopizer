@@ -633,7 +633,7 @@ public class ProductController {
 			attribute.setAttributeDiscounted(pAttribute.getAttributeDiscounted());
 			attribute.setAttributeDisplayOnly(pAttribute.getAttributeDisplayOnly());
 			attribute.setAttributeRequired(pAttribute.getAttributeRequired());
-			attribute.setOptionValuePrice(pAttribute.getOptionValuePrice());
+			attribute.setProductAttributePrice(pAttribute.getProductAttributePrice());
 			attribute.setProductAttributeIsFree(pAttribute.getProductAttributeIsFree());
 			attribute.setProductAttributeWeight(pAttribute.getProductAttributeWeight());
 			attribute.setProductOption(pAttribute.getProductOption());
