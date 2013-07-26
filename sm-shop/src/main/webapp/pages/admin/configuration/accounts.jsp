@@ -13,37 +13,29 @@
 
 
 <div class="tabbable">
-
-  					
- 					<jsp:include page="/common/adminTabs.jsp" />
-  					
-  					 <div class="tab-content">
-  					
-  					
-  					<div class="tab-pane active" id="accounts-conf">
-
-
-								<div class="sm-ui-component">
-								<h3>//TODO title <s:message code="label.shipping.options" text="Shipping options" /></h3>	
-								<br/>
-								
-							<div class="box">
-							<span class="box-title"><p>Google analytics</p></span>
-							<c:url var="saveAccountsConfiguration" value="/admin/CHANGE-URL.html"/>
-							<form:form method="POST" commandName="configuration" action="${saveAccountsConfiguration}">
-
-      							
-      								<form:errors path="*" cssClass="alert alert-error" element="div" />
-									<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
-
-                  					
+	<jsp:include page="/common/adminTabs.jsp" />
+		<div class="tab-content">
+  			<div class="tab-pane active" id="accounts-conf">
+				<div class="sm-ui-component">
+					<h3><s:message code="label.configuration.options" text="Configuration options" /></h3>	
+					<br/>
+					<div class="box">
+						<span class="box-title"><p><s:message code="label.configuration.configurations" text="Configurations" /></p></span>
+						<c:url var="saveAccountsConfiguration" value="/admin/configuration/saveConfiguration.html"/>
+							<form:form method="POST" modelAttribute="configuration" action="${saveAccountsConfiguration}">
+								<form:errors path="*"  cssClass="alert alert-error" element="div" />
+									<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>
+									<c:forEach var="merchantConfig" items="${configuration.merchantConfigs}" varStatus="counter"> 
                   					<div class="control-group">
-                        				<label>//GA tracking<s:message code="label.shipping.handlingfees" text="Handling fees"/></label>
                         				<div class="controls">
-											<form:input cssClass="input-large" path="handlingFeesText" />
+                        				    <label><s:message code="label.configuration.${merchantConfig.key}" text="Configuration options" /> &nbsp;:&nbsp;</label>
+											<form:input  path="merchantConfigs[${counter.index}].value" />
+										    <form:hidden  path="merchantConfigs[${counter.index}].key" />
+										    <form:hidden  path="merchantConfigs[${counter.index}].id" />
                         				</div>
-	                                	<span class="help-inline"><form:errors path="handlingFeesText" cssClass="error" /></span>
+	                                	<span class="help-inline"></span>
 	                        		</div>
+	                        		</c:forEach>
 
 	                        		<div class="form-actions">
                   						<div class="pull-right">
@@ -53,25 +45,7 @@
 					                  
 
             	 			</form:form>
-							
-							
-
-
-      					</div>
-      					
-
-      			     
-      			     
-
-
-      			     
-      			     
-    
-
-
-   					</div>
-
-
-  					</div>
-
-				</div>
+			</div>
+   		</div>
+   	</div>
+</div>
