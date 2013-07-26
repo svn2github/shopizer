@@ -219,7 +219,7 @@
   	
 
   	
-  	<definition name="configuration-accounts" template="/layout/admin/layout.jsp"> 
+  	<definition name="config-accounts" template="/layout/admin/layout.jsp"> 
   		<put-attribute name="body" value="/pages/admin/configuration/accounts.jsp" /> 
   	</definition>
   	
