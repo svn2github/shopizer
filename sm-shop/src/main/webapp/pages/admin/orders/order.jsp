@@ -172,6 +172,12 @@
 			    <h6><s:message code="label.customer.billinginformation" text="Billing information"/></h6>
 			    <address>
 
+			             <label><s:message code="label.customer.billing.company" text="Company"/></label>
+					     <div class="controls">
+				 				<form:input id="billingCompany" cssClass="input-large" path="order.billing.company"/>
+				 				<span class="help-inline"><form:errors path="order.billing.name" cssClass="error" /></span>
+			             </div>
+
 			    		 <label><s:message code="label.customer.billing.name" text="Billing name"/></label>
 					     <div class="controls">
 				 				<form:input id="billingName" cssClass="input-large highlight" path="order.billing.name"/>
@@ -232,8 +238,7 @@
 			            	<c:set var="total" value="${orderProducts.finalPrice * orderProducts.productQuantity }" />
 			            	
 							<tr> 
-								<td width="10%">image</td>
-								<td> <c:out value="${orderProducts.productName}" /></td> 
+								<td colspan="2"> <c:out value="${orderProducts.productName}" /></td> 
 								<td ><c:out value="${orderProducts.productQuantity}" /></td> 
 								<%-- <td><strong>$<fmt:formatNumber type="number" 
 			            						value="${orderProducts.finalPrice}" />
@@ -293,7 +298,8 @@
             <br/>              
               
              <ul class="nav nav-pills">
-							<li><a href="#"><s:message code="label.order.sendinvoice" text="Send email invoice"/></a></li>
+             				<li><a href="<c:url value="/admin/orders/printInvoice.html?id=${order.id}" />"><s:message code="label.order.printinvoice" text="Print invoice"/></a></li>
+							<li class="disabled"><a href="#"><s:message code="label.order.sendinvoice" text="Send email invoice"/></a></li>
 							<li class="disabled"><a href="#"><s:message code="label.order.packing" text="Print packing slip"/></a></li>
 		    </ul> 
     

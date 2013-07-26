@@ -29,8 +29,8 @@ response.setDateHeader ("Expires", -1);
 						<li><a href="#contactformlink">Contact</a></li>
 					</ul>
 
-
-					<div style="padding-top: 8px;padding-bottom:10px;" class="btn-group pull-right">
+ 					<div style="padding-top: 8px;padding-bottom:10px;" class="btn-group pull-right">
+            					&nbsp;&nbsp;&nbsp;
             					<i class="icon-shopping-cart icon-black"></i>
             					<a style="box-shadow:none;color:FF8C00;" href="#" data-toggle="dropdown" class="open noboxshadow dropdown-toggle" id="open-cart">My Cart</a>
            		 			    <span id="cartinfo">
@@ -81,6 +81,30 @@ response.setDateHeader ("Expires", -1);
                   			</c:choose>
 					
 					</div>
+					
+
+					<ul class="nav pull-right" style="padding-top: 8px;z-index:500000;">
+					  <li id="fat-menu" class="dropdown">
+					    <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">Signin<b class="caret"></b></a>
+					
+					
+							<div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
+					
+								<form action="[YOUR ACTION]" method="post" accept-charset="UTF-8">
+									<input id="user_username" style="margin-bottom: 15px;" type="text" name="user[username]" size="30" />
+									<input id="user_password" style="margin-bottom: 15px;" type="password" name="user[password]" size="30" />
+									<input id="user_remember_me" style="float: left; margin-right: 10px;" type="checkbox" name="user[remember_me]" value="1" />
+									<label class="string optional" for="user_remember_me"> Remember me</label>						 
+									<button type="submit" style="width:100%" class="btn">Sign In</button>
+									
+								</form>
+								<a href="#myModal" role="button" class="" data-toggle="modal">Register</a>
+							</div>
+					  </li>
+					</ul>
+
+
+
 
 
 			</div>

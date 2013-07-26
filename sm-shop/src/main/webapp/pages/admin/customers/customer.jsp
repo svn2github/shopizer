@@ -332,6 +332,15 @@ function getBillingZones(countryCode){
 	                        </div>
 	                  </div>
 	                  
+	                  <div class="control-group">
+	                        <label><s:message code="label.defaultlanguage" text="Default language"/></label>
+	                        <div class="controls">
+
+	                        					<form:select items="${languages}" itemValue="id" itemLabel="code" path="defaultLanguage.id"/> 
+	                                   			<span class="help-inline"></span>
+	                        </div>
+	                  </div>
+	                  
 	                  <div class="control-group"> 
 	                        <label><s:message code="label.customer.zone" text="State / Province"/></label>
 	                        <div class="controls">		       							
@@ -404,7 +413,7 @@ function getBillingZones(countryCode){
 				<address>
 						<div class="controls">
 		              		<label><s:message code="label.customer.billing.company" text="Company"/></label>
-		              		<form:input  cssClass="input-large highlight"  maxlength="100" path="billing.company"/>	
+		              		<form:input  cssClass="input-large"  maxlength="100" path="billing.company"/>	
 			            </div>
 			            <div class="controls">
 		              		<label><s:message code="label.customer.billing.name" text="Name"/></label>

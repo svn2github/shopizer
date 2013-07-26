@@ -7,8 +7,8 @@
 
     <!-- Le styles -->
     
-    <link href="<c:url value="/resources/templates/bootstrap/css/bootstrap.css" />" rel="stylesheet">
-    <link href="<c:url value="/resources/templates/bootstrap/css/bootstrap-responsive.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/templates/bootstrap/css/bootstrap.min.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/templates/bootstrap/css/bootstrap-responsive.min.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/templates/bootstrap/css/theme.css" />" rel="stylesheet">
  
  

@@ -290,6 +290,7 @@ footer div.company {
 }
 .product-list li .product-box img{
 	display:block;
+	max-height:200px;
 	margin:0 auto 5px;
 }
 .product-list li .product-box:hover{
