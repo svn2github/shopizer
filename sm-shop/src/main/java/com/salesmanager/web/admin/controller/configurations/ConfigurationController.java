@@ -1,6 +1,9 @@
 package com.salesmanager.web.admin.controller.configurations;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,19 +15,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.system.model.MerchantConfiguration;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
+import com.salesmanager.web.constants.Constants;
 
 
 @Controller
 public class ConfigurationController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationController.class);
-
 	
 	@Autowired
 	private MerchantConfigurationService merchantConfigurationService;
@@ -33,16 +40,49 @@ public class ConfigurationController {
 
 	@Secured("AUTH")
 	@RequestMapping(value="/admin/configuration/accounts.html", method=RequestMethod.GET)
-	public String displayAccounts(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String displayAccountsConfguration(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		this.setMenu(model, request);
+		List<MerchantConfiguration> configs = new ArrayList<MerchantConfiguration>();
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		MerchantConfiguration merchantFBConfiguration = merchantConfigurationService.getMerchantConfiguration(Constants.KEY_FACEBOOK_PAGE_URL,store);
+		if(null == merchantFBConfiguration)
+		{
+			merchantFBConfiguration = new MerchantConfiguration();
+			merchantFBConfiguration.setKey(Constants.KEY_FACEBOOK_PAGE_URL);
+		}
+		configs.add(merchantFBConfiguration);
 		
-		//Get from MerchantConfiguration KEY - VALUE
+		MerchantConfiguration merchantGoogleAnalyticsConfiguration = merchantConfigurationService.getMerchantConfiguration(Constants.KEY_GOOGLE_ANALYTICS_URL,store);
+		if(null == merchantGoogleAnalyticsConfiguration)
+		{
+			merchantGoogleAnalyticsConfiguration = new MerchantConfiguration();
+			merchantGoogleAnalyticsConfiguration.setKey(Constants.KEY_GOOGLE_ANALYTICS_URL);
+		}
+		configs.add(merchantGoogleAnalyticsConfiguration);
+		ConfigListWrapper configWrapper = new ConfigListWrapper();
+		configWrapper.setMerchantConfigs(configs);
+		model.addAttribute("configuration",configWrapper);
 		
-		return ControllerConstants.Tiles.Configuration.accounts;
-		
+		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Configuration.accounts;
 	}
 	
+	@RequestMapping(value="/admin/configuration/saveConfiguration.html", method=RequestMethod.POST)
+	public String saveTaxConfiguration(@ModelAttribute("configuration") ConfigListWrapper configWrapper, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception
+	{
+		setMenu(model, request);
+		List<MerchantConfiguration> configs = configWrapper.getMerchantConfigs();
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		for(MerchantConfiguration mConfigs : configs)
+		{
+			mConfigs.setMerchantStore(store);
+			merchantConfigurationService.saveOrUpdate(mConfigs);
+		}	
+		model.addAttribute("success","success");
+		model.addAttribute("configuration",configWrapper);
+		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Configuration.accounts;
+		
+	}
 	
 	@Secured("AUTH")
 	@RequestMapping(value="/admin/configuration/emailConfig.html", method=RequestMethod.GET)
@@ -87,12 +127,10 @@ public class ConfigurationController {
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
 		
-		Menu currentMenu = (Menu)menus.get("shipping");
+		Menu currentMenu = (Menu)menus.get("configuration");
 		model.addAttribute("currentMenu",currentMenu);
 		model.addAttribute("activeMenus",activeMenus);
 		//
 		
 	}
-	
-
 }
