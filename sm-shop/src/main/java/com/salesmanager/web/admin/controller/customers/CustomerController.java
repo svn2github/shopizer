@@ -80,9 +80,12 @@ public class CustomerController {
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
 		
+		List<Language> languages = languageService.getLanguages();
+		
 		Menu currentMenu = (Menu)menus.get("customer");
 		model.addAttribute("currentMenu",currentMenu);
 		model.addAttribute("activeMenus",activeMenus);
+		model.addAttribute("languages",languages);
 		
 		Customer customer = null;
 		
@@ -118,7 +121,9 @@ public class CustomerController {
 		Pattern pattern = Pattern.compile(email_regEx);
 		
 		Language language = (Language)request.getAttribute("LANGUAGE");
-		//List<Language> languages = languageService.getLanguages();
+		List<Language> languages = languageService.getLanguages();
+		
+		model.addAttribute("languages",languages);
 		
 		//get countries
 		List<Country> countries = countryService.getCountries(language);
@@ -165,10 +170,7 @@ public class CustomerController {
 			result.addError(error);
 		}
 		
-		if( StringUtils.isBlank(customer.getBilling().getCompany() ) ){
-			 ObjectError error = new ObjectError("billingName", messages.getMessage("NotEmpty.customer.billingCompany", locale));
-			 result.addError(error);
-		}
+
 		 
 		if( StringUtils.isBlank(customer.getBilling().getName() ) ){
 			 ObjectError error = new ObjectError("billingName", messages.getMessage("NotEmpty.customer.billingName", locale));
@@ -305,7 +307,7 @@ public class CustomerController {
 		model.addAttribute("currentMenu",currentMenu);
 		model.addAttribute("activeMenus",activeMenus);
 		//
-		
+	
 		return "admin-customers";
 		
 		

@@ -598,6 +598,7 @@ public class InitStoreData implements InitData {
 			customer.setTelephone("444-555-6666");
 			customer.setCountry(canada);
 			customer.setZone(zone);
+			customer.setDefaultLanguage(en);
 			customer.setNick("shopizer");
 			
 			String password = passwordEncoder.encodePassword("password", null);

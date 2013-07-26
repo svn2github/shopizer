@@ -1,5 +1,6 @@
 package com.salesmanager.web.admin.controller.orders;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,6 +132,15 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		String email_regEx = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}\\b";
 		Pattern pattern = Pattern.compile(email_regEx);
 		
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		List<Country> countries = countryService.getCountries(language);
+		model.addAttribute("countries", countries);
+		
+		//set the id if fails
+		entityOrder.setId(entityOrder.getOrder().getId());
+		
+		model.addAttribute("order", entityOrder);
+		
 		Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
 		Set<OrderTotal> orderTotal = new HashSet<OrderTotal>();
 		Set<OrderStatusHistory> orderHistory = new HashSet<OrderStatusHistory>();
@@ -230,8 +241,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 
 		com.salesmanager.core.business.order.model.Order newOrder = orderService.getById(entityOrder.getOrder().getId() );
 	
-		Language language = (Language)request.getAttribute("LANGUAGE");
-		List<Country> countries = countryService.getCountries(language);
+
 		
 		Country deliveryCountry = countryService.getByCode( entityOrder.getOrder().getDelivery().getCountry().getIsoCode()); 
 		Country billingCountry  = countryService.getByCode( entityOrder.getOrder().getBilling().getCountry().getIsoCode()) ;
@@ -271,10 +281,10 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		orderService.saveOrUpdate(newOrder);
 		entityOrder.setOrder(newOrder);
 		
-		model.addAttribute("countries", countries);
-		model.addAttribute("order", entityOrder);
+		
+		
 		model.addAttribute("success","success");
-	
+
 		
 		return  ControllerConstants.Tiles.Order.ordersEdit;
 	    /*	"admin-orders-edit";  */
@@ -355,6 +365,61 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		String returnString = resp.toJSONString();
 		
 		return returnString;
+	}
+	
+	@Secured("ORDER")
+	@RequestMapping(value="/admin/orders/printInvoice.html", method=RequestMethod.GET, produces="application/json")
+	public void printInvoice(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		
+		String sId = request.getParameter("id");
+		
+		try {
+			
+		Long id = Long.parseLong(sId);
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		Order order = orderService.getById(id);
+		
+		if(order.getMerchant().getId().intValue()!=store.getId().intValue()) {
+			//return null;
+		}
+		
+		Long customerId = order.getCustomerId();
+		
+		if(customerId==null) {
+			LOGGER.error("Customer id is null in order object");
+			//return null;
+		}
+		
+		Customer customer = customerService.getById(customerId);
+		
+		Language lang = store.getDefaultLanguage();
+		if(customer!=null) {
+			lang = customer.getDefaultLanguage();
+		}
+		
+		StringBuilder attachment = new StringBuilder();
+		attachment.append("attachment; filename=");
+		attachment.append(order.getBilling().getName());
+		attachment.append(".pdf");
+		
+		
+		response.setContentType("application/pdf");      
+		response.setHeader("Content-Disposition", attachment.toString().replace(" ", "-")); 
+		
+		
+		ByteArrayOutputStream stream  = orderService.generateInvoice(store, order, lang);
+		
+		response.getOutputStream().write(stream.toByteArray());
+		
+		response.flushBuffer();
+			
+			
+		} catch(Exception e) {
+			LOGGER.error("Error while printing a report",e);
+		}
+			
+		
 	}
 	
 	
