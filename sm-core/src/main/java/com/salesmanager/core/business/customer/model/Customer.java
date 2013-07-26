@@ -30,6 +30,7 @@ import com.salesmanager.core.business.catalog.product.model.review.ProductReview
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
+import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.constants.SchemaConstant;
@@ -104,6 +105,13 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 	@JoinColumn(name="ZONE_ID", nullable=true)
 	private Zone zone;
 	
+	
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Language.class)
+	@JoinColumn(name = "LANGUAGE_ID", nullable=false)
+	private Language defaultLanguage;
+	
+
+
 	@OneToMany(mappedBy = "customer", targetEntity = ProductReview.class)
 	private List<ProductReview> reviews = new ArrayList<ProductReview>();
 	
@@ -360,6 +368,14 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 
 	public void setShowDeliveryStateList(String showDeliveryStateList) {
 		this.showDeliveryStateList = showDeliveryStateList;
+	}
+	
+	public Language getDefaultLanguage() {
+		return defaultLanguage;
+	}
+
+	public void setDefaultLanguage(Language defaultLanguage) {
+		this.defaultLanguage = defaultLanguage;
 	}
 	
 }

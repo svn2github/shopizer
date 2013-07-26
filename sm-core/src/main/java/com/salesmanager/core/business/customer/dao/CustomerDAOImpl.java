@@ -40,6 +40,7 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.join(qCustomer.merchantStore).fetch()
 			.leftJoin(qCustomer.country,qCountry).fetch()
 			.leftJoin(qCustomer.zone,qZone).fetch()
+			.leftJoin(qCustomer.defaultLanguage).fetch()
 			.where(qCustomer.id.eq(id));
 		
 		return query.uniqueResult(qCustomer);
@@ -59,6 +60,7 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.join(qCustomer.merchantStore).fetch()
 			.leftJoin(qCustomer.country,qCountry).fetch()
 			.leftJoin(qCustomer.zone,qZone).fetch()
+			.leftJoin(qCustomer.defaultLanguage).fetch()
 			.where(
 					qCustomer.firstname.eq(name).or(qCustomer.lastname.eq(name))
 					
@@ -146,6 +148,7 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		query.from(qCustomer)
 			.join(qCustomer.merchantStore).fetch()
 			.leftJoin(qCustomer.country,qCountry).fetch()
+			.leftJoin(qCustomer.defaultLanguage).fetch()
 			.leftJoin(qCustomer.zone,qZone).fetch();
 
 
@@ -205,6 +208,7 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		
 	}
 	
+	@SuppressWarnings("static-access")
 	@Override
 	public Customer getByNick(String nick){
 		QCustomer qCustomer = QCustomer.customer;
@@ -218,6 +222,7 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.join(qCustomer.merchantStore).fetch()
 			.leftJoin(qCustomer.country,qCountry).fetch()
 			.leftJoin(qCustomer.zone,qZone).fetch()
+			.leftJoin(qCustomer.defaultLanguage).fetch()
 			.leftJoin(qGroup.group,qGroup).fetch()
 			.where(qCustomer.nick.eq(nick));
 		
@@ -236,6 +241,7 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.join(qCustomer.merchantStore).fetch()
 			.leftJoin(qCustomer.country,qCountry).fetch()
 			.leftJoin(qCustomer.zone,qZone).fetch()
+			.leftJoin(qCustomer.defaultLanguage).fetch()
 			.where(qCustomer.merchantStore.id.eq(store.getId()));
 		
 		return query.list(qCustomer);
