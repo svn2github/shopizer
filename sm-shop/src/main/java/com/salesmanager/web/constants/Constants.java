@@ -46,5 +46,8 @@ public class Constants {
 	public final static String REQUEST_TOP_CATEGORIES = "TOP_CATEGORIES";
 	public final static String REQUEST_PAGE_INFORMATION = "PAGE_INFORMATION";
 	public final static String REQUEST_SHOPPING_CART = "SHOPPING_CART";
+	
+	public final static String KEY_FACEBOOK_PAGE_URL = "facebook_page_url";
+	public final static String KEY_GOOGLE_ANALYTICS_URL = "google_analytics_url";
 
 }
