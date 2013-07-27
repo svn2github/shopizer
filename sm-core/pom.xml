@@ -40,6 +40,12 @@
 	</properties>
 
 	<dependencies>
+	
+		<!--<dependency>
+    		<groupId>com.shopizer</groupId>
+    		<artifactId>com.shopizer.authorizenet</artifactId>
+    		<version>0.0.1-SNAPSHOT</version>
+		</dependency>-->
 
 		<!-- Loggers -->
 		<dependency>
@@ -336,15 +342,19 @@
 			<version>1.4.5</version>
 		</dependency>
 		
-		<!-- Local dependency -->
-<!-- 		<dependency>
-      		<groupId>authorizenet</groupId>
-      		<artifactId>tools</artifactId>
-      		<version>1.4.2</version>
-      		<scope>system</scope>
-      		<systemPath>${basedir}/lib/anet-java-sdk-1.4.6.jar</systemPath>
-    	</dependency> -->
 
+		<dependency>
+			<groupId>org.jopendocument</groupId>
+			<artifactId>jOpenDocument</artifactId>
+			<version>1.3b1</version>
+		</dependency>
+		
+	    <dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext</artifactId>
+			<version>4.2.1</version>
+		</dependency>
+		
 
 		<!-- Test dependencies -->
 		<dependency>
