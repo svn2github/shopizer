@@ -6,10 +6,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.category.model.Category;
+import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.country.service.CountryService;
@@ -40,11 +44,22 @@ import com.salesmanager.core.business.user.service.UserService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.secutity.Password;
+import com.salesmanager.web.admin.entity.userpassword.UserReset;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.admin.security.SecurityQuestion;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
 import com.salesmanager.web.utils.UserUtils;
+
+
+
+import java.io.*;
+import java.util.*;
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.activation.*;
+import javax.servlet.http.*;
+import javax.servlet.*;
 
 @Controller
 public class UserController {
@@ -653,5 +668,99 @@ public class UserController {
 		//
 		
 	}
+	
+	//password reset functionality  ---  Sajid Shajahan  
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value="/admin/users/resetPassword.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String resetPassword(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		
+		AjaxResponse resp = new AjaxResponse();
+		String userName = request.getParameter("username");
+		
+		HttpSession session = request.getSession();
+		session.setAttribute("username_reset", userName);
+		
+		try {
+				if(!userName.equals("")){
+						Map entry = new HashMap();
+						entry.put("1", messages.getMessage("security.question.1", locale));
+						entry.put("2", messages.getMessage("security.question.2", locale));
+						entry.put("3", messages.getMessage("security.question.3", locale));
+						entry.put("4", messages.getMessage("security.question.4", locale));
+						entry.put("5", messages.getMessage("security.question.5", locale));
+						entry.put("6", messages.getMessage("security.question.6", locale));
+						entry.put("7", messages.getMessage("security.question.7", locale));
+						entry.put("8", messages.getMessage("security.question.8", locale));
+						entry.put("9", messages.getMessage("security.question.9", locale));
+						resp.addDataEntry(entry);
+						resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+				
+				}else
+				{
+						resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+						resp.setStatusMessage(messages.getMessage("User.resetPassword.Error", locale));
+				
+				}
+			} catch (Exception e) {
+						e.printStackTrace();
+						resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+						resp.setStatusMessage(messages.getMessage("User.resetPassword.Error", locale));
+			}
+	
+		
+		
+		
+		String returnString = resp.toJSONString();
+		return returnString;
+	}
+	//password reset functionality  ---  Sajid Shajahan
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value="/admin/users/resetPasswordSecurityQtn.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String resetPasswordSecurityQtn(@ModelAttribute(value="userReset") UserReset userReset,HttpServletRequest request, HttpServletResponse response, Locale locale) {
+		
+		AjaxResponse resp = new AjaxResponse();
+		String question1 = request.getParameter("question1");
+		String question2 = request.getParameter("question2");
+		String question3 = request.getParameter("question3");
 
-}
+		String answer1 = request.getParameter("answer1");
+		String answer2 = request.getParameter("answer2");
+		String answer3 = request.getParameter("answer3");
+		
+		try {
+			
+			HttpSession session = request.getSession();
+			User dbUser = userService.getByUserName((String) session.getAttribute("username_reset"));
+			if(dbUser!= null){
+				if(dbUser.getQuestion1().equals(question1.trim()) && dbUser.getQuestion2().equals(question2.trim()) && dbUser.getQuestion3().equals(question3.trim())  && dbUser.getAnswer1().equals(answer1.trim()) && dbUser.getAnswer2().equals(answer2.trim()) && dbUser.getAnswer3().equals(answer3.trim()))
+				{
+					String tempPass = userReset.generateRandomString();
+					String pass = passwordEncoder.encodePassword(tempPass, null);
+					dbUser.setAdminPassword(pass);
+					userService.update(dbUser);
+					//here code to send email
+					resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+					resp.setStatusMessage(messages.getMessage("User.resetPassword.resetSuccess", locale));
+				}
+				else{
+					  resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+					  resp.setStatusMessage(messages.getMessage("User.resetPassword.wrongSecurityQtn", locale));
+					  
+				  }
+			  }else{
+				  resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				  resp.setStatusMessage(messages.getMessage("User.resetPassword.userNotFound", locale));
+				  
+			  }
+			
+		} catch (ServiceException e) {
+			e.printStackTrace();
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setStatusMessage(messages.getMessage("User.resetPassword.Error", locale));
+		}
+		
+		String returnString = resp.toJSONString();
+		return returnString;
+	}
+	
+	}
