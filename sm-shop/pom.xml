@@ -246,10 +246,22 @@
 			<version>2.1.2</version>
 		</dependency>
 		
-				<dependency>
+		<dependency>
   			<groupId>org.jboss.cache</groupId>
   			<artifactId>jbosscache-core</artifactId>
   			<version>3.2.5.GA</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.jopendocument</groupId>
+			<artifactId>jOpenDocument</artifactId>
+			<version>1.3b1</version>
+		</dependency>
+		
+	    <dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext</artifactId>
+			<version>4.2.1</version>
 		</dependency>
 		
 
