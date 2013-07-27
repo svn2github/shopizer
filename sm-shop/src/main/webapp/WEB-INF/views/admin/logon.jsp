@@ -109,12 +109,166 @@
 
 
 
-
-
+    <script SRC="<c:url value="/resources/smart-client/system/modules/ISC_Core.js" />"></script>
+    <script SRC="<c:url value="/resources/smart-client/system/modules/ISC_Foundation.js" />"></script>
+    <script SRC="<c:url value="/resources/smart-client/system/modules/ISC_Containers.js" />"></script>
+    <script SRC="<c:url value="/resources/smart-client/system/modules/ISC_Grids.js" />"></script>
+    <script SRC="<c:url value="/resources/smart-client/system/modules/ISC_DataBinding.js" />"></script>
 
 
 
 				<script language="javascript">
+				
+				function doAjaxPost() {
+					 // get the form values 
+				$('#securityQtn1Select').empty();
+				$('#securityQtn2Select').empty();
+				$('#securityQtn3Select').empty();
+				$('#answer1').val('');
+				$('#answer2').val('');
+				$('#answer3').val('');
+				var userName = $('#username').val();
+		        if(!userName){
+				    alert("please enter username");
+			    }else{
+					$.ajax({
+							type: 'POST',
+							dataType: "json",
+							url: "<c:url value="/admin/users/resetPassword.html" />",
+							data: "username="+ userName ,
+							success: function(response) { 
+								 console.log("responcesajid "+response);
+								 console.log(response);
+								 var msg = isc.XMLTools.selectObjects(response, "/response/statusMessage");
+								 var status = isc.XMLTools.selectObjects(response, "/response/status");
+								 if(status==0 || status ==9999) {
+									 $("#getPassword").modal('hide'),
+									 $('#getSecurityQtn').modal({
+    								 backdrop: true
+    						   		 })
+    						
+    								 var data = isc.XMLTools.selectObjects(response, "/response/data");
+    						  	     if(data && data.length>0) {
+    								 	console.log(data[0]);
+    								 	$.each(data[0], function(key, value) {   
+    							    	 	$('#securityQtn1Select')
+    							        	 	.append($("<option></option>")
+    							        	 	.attr("value",key)
+    							         	 	.text(value)); 
+    							     		 $('#securityQtn2Select')
+							         	 		 .append($("<option></option>")
+							         	     	 .attr("value",key)
+							        	   	     .text(value)); 
+    							     		  $('#securityQtn3Select')
+							        	 	     .append($("<option></option>")
+							        			 .attr("value",key)
+							        			 .text(value)); 
+    								 	   	   });
+    								 } else {
+
+			    					 }
+								} else {
+									if(msg!=null && msg !='') {
+										alert("! " + msg);
+									}
+								}
+								
+							}
+							/* ,
+							 error: function(e){  
+							      alert('Error: ' + e);  
+							      console.log(e);
+							    } */
+							}); 
+				}
+ 		        				}
+				
+				
+				function doSecurityQtnSubmit() {
+					var question1 = $('#securityQtn1Select').val();
+					var question2 = $('#securityQtn2Select').val();
+					var question3 = $('#securityQtn3Select').val();
+					
+					//console.log("question1"+question1);
+					//console.log("question2"+question2);
+					//console.log("question3"+question3);
+					
+					var answer1 = $('#answer1').val();
+					var answer2 = $('#answer2').val();
+					var answer3 = $('#answer3').val();
+					
+				   		 
+					 if(!answer1){
+						    alert("please enter answer one");
+					 }else if(!answer2){
+						 	alert("please enter answer two");
+					 }else if(!answer3){
+						   alert("please enter answer three");
+					 }else{
+						 
+					
+							$.ajax({
+									type: 'POST',
+									dataType: "json",
+									url: "<c:url value="/admin/users/resetPasswordSecurityQtn.html" />",
+									data: "question1="+ question1+"&question2="+ question2+"&question3="+ question3+"&answer1="+ answer1+"&answer2="+ answer2+"&answer3="+ answer3,
+									success: function(response) { 
+										 //console.log("responcesajid "+response);
+										 //console.log(response);
+										 var msg = isc.XMLTools.selectObjects(response, "/response/statusMessage");
+										 var status = isc.XMLTools.selectObjects(response, "/response/status");
+										 if(status==0 || status ==9999) {
+											 $("#getSecurityQtn").modal('hide')
+											  $('#finalWindow').modal({
+		    								 backdrop: true
+		    						   		 }) 
+					 						 $("#finaltext").val (msg);
+											 var div = document.getElementById('finaltext1');
+											 div.innerHTML =  msg;		    						
+		    								 /* var data = isc.XMLTools.selectObjects(response, "/response/data");
+		    						  	     if(data && data.length>0) {
+		    								 	console.log(data[0]);
+		    								 	$.each(data[0], function(key, value) {   
+		    							    	 	$('#securityQtn1Select')
+		    							        	 	.append($("<option></option>")
+		    							        	 	.attr("value",key)
+		    							         	 	.text(value)); 
+		    							     		 $('#securityQtn2Select')
+									         	 		 .append($("<option></option>")
+									         	     	 .attr("value",key)
+									        	   	     .text(value)); 
+		    							     		  $('#securityQtn3Select')
+									        	 	     .append($("<option></option>")
+									        			 .attr("value",key)
+									        			 .text(value)); 
+		    								 	   	   });
+		    								 } else {
+		
+					    					 }
+		 */								} else {
+											if(msg!=null && msg !='') {
+												//alert("! " + msg);
+												 $("#getSecurityQtn").modal('hide')
+												  $('#finalWindow').modal({
+			    								 backdrop: true
+			    						   		 }) 
+						 						 $("#finaltext").val (msg);
+												var div = document.getElementById('finaltext1');
+												div.innerHTML =  msg;
+
+												 
+											}
+										}
+										
+									}/* ,
+									error: function(e){  
+									      alert('Error: ' + e);  
+									      console.log(e);
+									    } */
+									});
+					 }
+				}
+
 	$(document)
 			.ready(
 					function() {
@@ -127,6 +281,7 @@
 						
 						$('#changePassword').click(function() {
 							//$('#getPassword').show();
+							$('#username').val('');
 							$('#getPassword').modal({
     							backdrop: true
     						})
@@ -300,6 +455,8 @@
 		</div>
 		</form>
 		-->
+		
+		<!-- code for reset password-username prompt   sajid shajahan -->
 				<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal hide fade" id="getPassword" style="display: none;">
 				<!--<div class="modal" id="getPassword" tabindex="-1" role="dialog" class="modal hide fade" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">-->
 					<div class="modal-header">
@@ -323,18 +480,21 @@
 									<div class="controls">
 										<input type="text" id="username" name="username"
 											placeholder="<s:message code="label.username" text="Username"/>">
+											
+
 											<span id="username_help" class="help-inline"></span>
 									</div>
 								</div>
-								<div class="control-group">
+								
 
 							</form>
 						</p>
 					</div>
 					<div class="modal-footer">
 									<div class="controls">
-										<a href="#" class="btn" id="passwordResetSubmitButton"> 
-										<s:message code="button.label.submit2" text="Submit" /> </a>
+										<!-- <a href="#" class="btn" id="passwordResetSubmitButton"> 
+										<s:message code="button.label.submit2" text="Submit" /> </a> -->
+										<input type="button" value="Submit" onclick="doAjaxPost()" class="btn" >
 									</div>
 								</div>
 					</div>
@@ -342,6 +502,132 @@
 				</div>
 				
 				
+
+
+<!-- code for reset password-security question prompt   sajid shajahan -->
+				<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal hide fade" id="getSecurityQtn" style="display: none;">
+				<!--<div class="modal" id="getPassword" tabindex="-1" role="dialog" class="modal hide fade" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">-->
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">
+							×
+						</button>
+						<h3 id="myModalLabel" style="color:#333333;">
+							<s:message code="label.logonform.securityquestion" text="Password reset"/>
+						</h3>
+					</div>
+					<form method="post" id="resetPasswordForm" class="form-horizontal"
+								action="#">
+					<div class="modal-body">
+						<p>
+								
+								<div class="control-group">
+								
+									<label class="control-label" for="inputUser" style="color:#333333;">
+										<s:message code="security.question1" text="" />
+									</label>
+									<div class="controls">
+										<select id="securityQtn1Select">
+  											
+										</select>
+										
+										<input type="text" id="answer1" name="answer1"
+											placeholder="<s:message code="security.answer.question1.message" text="answer1"/>">
+											
+
+									</div>
+									
+									
+								</div>
+								
+								<div class="control-group">
+									<label class="control-label" for="inputUser" style="color:#333333;">
+										<s:message code="security.question2" text="" />
+									</label>
+									<div class="controls">
+										<select id="securityQtn2Select">
+  											
+										</select>
+										<input type="text" id="answer2" name="answer2"
+											placeholder="<s:message code="security.answer.question2.message" text="answer2"/>">
+											
+
+									</div>
+								</div>
+									
+									<div class="control-group">
+									<label class="control-label" for="inputUser" style="color:#333333;">
+										<s:message code="security.question3" text="" />
+									</label>
+									<div class="controls">
+										<select  id="securityQtn3Select">
+  											
+										</select>
+										<input type="text" id="answer3" name="answer3"
+											placeholder="<s:message code="security.answer.question3.message" text="answer3"/>">
+										
+											
+
+									</div>
+								</div>
+																							
+							</form>
+						</p>
+					</div>
+					<div class="modal-footer">
+									<div class="controls">
+										<!-- <a href="#" class="btn" id="passwordResetSubmitButton"> 
+										<s:message code="button.label.submit2" text="Submit" /> </a> -->
+										<input type="button" value="Submit" onclick="doSecurityQtnSubmit()" class="btn" >
+									</div>
+								</div>
+					</div>
+					</form>
+				</div>
+
+
+
+<!-- code for reset password-final window   sajid shajahan -->
+				<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal hide fade" id="finalWindow" style="display: none;">
+				<!--<div class="modal" id="getPassword" tabindex="-1" role="dialog" class="modal hide fade" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">-->
+					<div class="modal-header">
+						  <button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">
+							×
+						</button>
+						<h3 id="myModalLabel" style="color:#333333;">
+						<s:message code="" text="Shopizer"/>
+						</h3>
+					</div>
+					<form method="post" id="resetPasswordForm" class="form-horizontal"
+								action="#">
+					<div class="modal-body">
+						<p>
+								<h3><center><div id="finaltext1"></div></center></h3>
+								<!-- <div class="control-group">
+								
+									<label class="control-label" for="inputUser" style="color:#333333;">
+									<h3><div id="finaltext1"></div></h3>
+									</label>
+									<div class="controls">
+
+									</div>
+									
+									
+								</div>
+								 -->
+																							
+							</form>
+						</p>
+					</div>
+					<div class="modal-footer">
+									<div class="controls">
+										<button data-dismiss="modal" class="btn">Close</button>
+									</div>
+								</div>
+					</div>
+					</form>
+				</div>
 				
 			
 	<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal hide fade" id="myModal" style="display: none;">
@@ -420,6 +706,9 @@
 
 
 				<script type="text/javascript">
+				
+				
+							
 	function validateForm() {
 
 		//var username = new LiveValidation( 'username', {validMessage: " ",onlyOnSubmit: true}); 
