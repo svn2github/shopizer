@@ -13,6 +13,62 @@ response.setDateHeader ("Expires", -1);
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 
+<script>
+    $(function() {
+        //$( "#dialog" ).dialog({
+        //    autoOpen: false,
+        //    width: 380
+        //});
+ 
+        //$( "#show" ).click(function() {
+        //    $( "#dialog" ).dialog( "open" );
+        //    return false;
+        //});
+ 
+        $("#login").submit(function() {
+ 
+            var data = $(this).serializeObject();
+            $.ajax({
+                'type': 'POST',
+                'url': "<c:url value="/customer/logon.html"/>",
+                'contentType': 'application/json',
+                'data': JSON.stringify(data),
+                'dataType': 'json',
+                'success': function(result) {
+                	alert(result);
+                   // if (result.loggedIn) {
+                   //     $( "#dialog" ).dialog( "close" );
+                   //     location.href="postLogin";
+                   // } else {
+                   //     $(".error").remove();
+                   //     $("#login").prepend("<div class='error'>Login Failed.
+                   //                            Username or Password is incorrect.</div>");
+                   // }
+                }
+            });
+ 
+            return false;
+        });
+    });
+ 
+    $.fn.serializeObject = function() {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+            if (o[this.name]) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+</script>
+
+
 			<!-- header -->
 			<div id="mainmenu" class="row-fluid">
 				
@@ -90,10 +146,11 @@ response.setDateHeader ("Expires", -1);
 					
 							<div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
 					
-								<form action="[YOUR ACTION]" method="post" accept-charset="UTF-8">
-									<input id="user_username" style="margin-bottom: 15px;" type="text" name="user[username]" size="30" />
-									<input id="user_password" style="margin-bottom: 15px;" type="password" name="user[password]" size="30" />
-									<input id="user_remember_me" style="float: left; margin-right: 10px;" type="checkbox" name="user[remember_me]" value="1" />
+								<form id="login" method="post" accept-charset="UTF-8">
+									<input id="userName" style="margin-bottom: 15px;" type="text" name="userName" size="30" />
+									<input id="password" style="margin-bottom: 15px;" type="password" name="password" size="30" />
+									<!--input id="user_remember_me" style="float: left; margin-right: 10px;" type="checkbox" name="user[remember_me]" value="1" /-->
+									<input id="storeCode" name="storeCode" type="hidden" value="<c:out value="${requestScope.MERCHANT_STORE.code}"/>"/>
 									<label class="string optional" for="user_remember_me"> Remember me</label>						 
 									<button type="submit" style="width:100%" class="btn">Sign In</button>
 									
