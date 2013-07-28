@@ -13,7 +13,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -115,87 +114,6 @@ public class UserServicesImpl implements WebUserServices{
 		
 		  MerchantStore store = merchantStoreService.getMerchantStore(MerchantStore.DEFAULT_STORE);
 
-/*		  Group gsuperadmin = new Group("SUPERADMIN");
-		  Group gadmin = new Group("ADMIN");
-		  Group gcatalogue = new Group("ADMIN_CATALOGUE");
-		  Group gstore = new Group("ADMIN_STORE");
-		  Group gorder = new Group("ADMIN_ORDER");
-		  Group gcontent = new Group("ADMIN_CONTENT");
-
-		  groupService.create(gsuperadmin);
-		  groupService.create(gadmin);
-		  groupService.create(gcatalogue);
-		  groupService.create(gstore);
-		  groupService.create(gorder);
-		  groupService.create(gcontent);
-		  
-		  Permission storeadmin = new Permission("STORE_ADMIN");//Administrator of the store
-		  storeadmin.getGroups().add(gsuperadmin);
-		  storeadmin.getGroups().add(gadmin);
-		  permissionService.create(storeadmin);
-		  
-		  Permission superadmin = new Permission("SUPERADMIN");
-		  superadmin.getGroups().add(gsuperadmin);
-		  permissionService.create(superadmin);
-		  
-		  Permission auth = new Permission("AUTH");//Authenticated
-		  auth.getGroups().add(gsuperadmin);
-		  auth.getGroups().add(gadmin);
-		  auth.getGroups().add(gcatalogue);
-		  auth.getGroups().add(gstore);
-		  auth.getGroups().add(gorder);
-		  permissionService.create(auth);
-
-		  
-		  Permission products = new Permission("PRODUCTS");
-		  products.getGroups().add(gsuperadmin);
-		  products.getGroups().add(gadmin);
-		  products.getGroups().add(gcatalogue);
-		  permissionService.create(products);
-
-		  
-		  Permission order = new Permission("ORDER");
-		  order.getGroups().add(gsuperadmin);
-		  order.getGroups().add(gorder);
-		  order.getGroups().add(gadmin);
-		  permissionService.create(order);
-		  
-		  Permission content = new Permission("CONTENT");
-		  content.getGroups().add(gsuperadmin);
-		  content.getGroups().add(gadmin);
-		  content.getGroups().add(gcontent);
-		  permissionService.create(content);
-		  
-		  
-		  
-		  Permission pstore = new Permission("STORE");
-		  pstore.getGroups().add(gsuperadmin);
-		  pstore.getGroups().add(gstore);
-		  pstore.getGroups().add(gadmin);
-		  permissionService.create(pstore);
-		  
-		  Permission tax = new Permission("TAX");
-		  tax.getGroups().add(gsuperadmin);
-		  tax.getGroups().add(gstore);
-		  tax.getGroups().add(gadmin);
-		  permissionService.create(tax);
-		  
-		  
-		  Permission payment = new Permission("PAYMENT");
-		  payment.getGroups().add(gsuperadmin);
-		  payment.getGroups().add(gstore);
-		  payment.getGroups().add(gadmin);
-		  permissionService.create(payment);
-		  
-		  
-		  Permission shipping = new Permission("SHIPPING");
-		  shipping.getGroups().add(gsuperadmin);
-		  shipping.getGroups().add(gadmin);
-		  shipping.getGroups().add(gstore);
-		  
-		  permissionService.create(shipping);*/
-
-
 		  String password = passwordEncoder.encodePassword("password", null);
 		  
 		  List<Group> groups = groupService.listGroup(GroupType.ADMIN);
@@ -211,9 +129,7 @@ public class UserServicesImpl implements WebUserServices{
 			  }
 		  }
 
-		  user.setMerchantStore(store);
-
-		  
+		  user.setMerchantStore(store);		  
 		  userService.create(user);
 		
 		

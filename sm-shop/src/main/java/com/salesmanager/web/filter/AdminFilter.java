@@ -109,9 +109,15 @@ public class AdminFilter extends HandlerInterceptorAdapter {
 			//object as represented below
 			if(user!=null) {
 				language = user.getDefaultLanguage();
+				if(language==null) {
+					language = store.getDefaultLanguage();
+				}
 			} else {
-				language = languageService.getByCode("en");
+				language = store.getDefaultLanguage();
 			}
+			
+			
+			
 			request.getSession().setAttribute("LANGUAGE", language);
 			
 

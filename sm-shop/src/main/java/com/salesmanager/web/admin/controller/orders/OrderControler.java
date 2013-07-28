@@ -398,6 +398,8 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 			lang = customer.getDefaultLanguage();
 		}
 		
+
+		ByteArrayOutputStream stream  = orderService.generateInvoice(store, order, lang);
 		StringBuilder attachment = new StringBuilder();
 		attachment.append("attachment; filename=");
 		attachment.append(order.getBilling().getName());
@@ -405,10 +407,9 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		
 		
 		response.setContentType("application/pdf");      
-		response.setHeader("Content-Disposition", attachment.toString().replace(" ", "-")); 
+		response.setHeader("Content-Disposition", attachment.toString().replaceAll(" ", "-")); 
 		
 		
-		ByteArrayOutputStream stream  = orderService.generateInvoice(store, order, lang);
 		
 		response.getOutputStream().write(stream.toByteArray());
 		

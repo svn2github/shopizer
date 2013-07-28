@@ -76,7 +76,7 @@ public class CustomerServicesImpl implements UserDetailsService{
 	    	}
 			
 	
-			GrantedAuthority role = new GrantedAuthorityImpl("ADMIN");
+			GrantedAuthority role = new GrantedAuthorityImpl("AUTH_CUSTOMER");
 			authorities.add(role);
 			
 
