@@ -223,7 +223,7 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.leftJoin(qCustomer.country,qCountry).fetch()
 			.leftJoin(qCustomer.zone,qZone).fetch()
 			.leftJoin(qCustomer.defaultLanguage).fetch()
-			.leftJoin(qGroup.group,qGroup).fetch()
+			.leftJoin(qCustomer.groups).fetch()
 			.where(qCustomer.nick.eq(nick));
 		
 		return query.uniqueResult(qCustomer);
