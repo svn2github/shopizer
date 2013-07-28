@@ -11,7 +11,7 @@ public class UserReset
 
   public String generateRandomString()
   {
-    StringBuffer randStr = new StringBuffer();
+    StringBuilder randStr = new StringBuilder();
     for (int i = 0; i < 10; i++) {
       int number = getRandomNumber();
       char ch = CHAR_LIST.charAt(number);
