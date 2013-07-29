@@ -1,8 +1,5 @@
 package com.salesmanager.core.business.merchant.service;
 
-import java.util.Collection;
-
-import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;

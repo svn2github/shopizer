@@ -56,6 +56,7 @@ public class MerchantConfiguration extends SalesManagerEntity<Long, MerchantConf
 	
 	@Column(name="KEY")
 	private String key;
+
 	
 	@Column(name="VALUE")
 	@Type(type = "org.hibernate.type.StringClobType")
@@ -116,4 +117,6 @@ public class MerchantConfiguration extends SalesManagerEntity<Long, MerchantConf
 	public MerchantConfigurationType getMerchantConfigurationType() {
 		return merchantConfigurationType;
 	}
+
+
 }
