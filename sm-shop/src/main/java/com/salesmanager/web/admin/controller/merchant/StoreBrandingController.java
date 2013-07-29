@@ -62,8 +62,7 @@ public class StoreBrandingController {
 	@Autowired
 	private ContentService contentService;
 	
-	//@Autowired 
-	//@Qualifier("templates") 
+
 	@Resource(name="templates")
 	List<String> templates;
 	

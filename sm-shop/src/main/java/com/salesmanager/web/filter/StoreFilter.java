@@ -27,6 +27,9 @@ import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.init.service.InitializationDatabase;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
+import com.salesmanager.core.business.system.model.MerchantConfiguration;
+import com.salesmanager.core.business.system.model.MerchantConfigurationType;
+import com.salesmanager.core.business.system.service.MerchantConfigurationService;
 import com.salesmanager.core.business.system.service.SystemConfigurationService;
 import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.core.utils.CoreConfiguration;
@@ -66,6 +69,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	
 	@Autowired
 	private MerchantStoreService merchantService;
+	
+	@Autowired
+	private MerchantConfigurationService merchantConfigurationService;
 	
 	@Autowired
 	private LanguageService languageService;
@@ -237,6 +243,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				 */
 				
 				//TODO
+				List<MerchantConfiguration> configurations = merchantConfigurationService.listByType(MerchantConfigurationType.CONFIG, store);
 				
 				/******* Shopping Cart *********/
 				

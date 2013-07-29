@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
+import com.salesmanager.core.business.system.model.MerchantConfigurationType;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
@@ -50,6 +52,7 @@ public class ConfigurationController {
 		{
 			merchantFBConfiguration = new MerchantConfiguration();
 			merchantFBConfiguration.setKey(Constants.KEY_FACEBOOK_PAGE_URL);
+			merchantFBConfiguration.setMerchantConfigurationType(MerchantConfigurationType.CONFIG);
 		}
 		configs.add(merchantFBConfiguration);
 		
@@ -58,8 +61,19 @@ public class ConfigurationController {
 		{
 			merchantGoogleAnalyticsConfiguration = new MerchantConfiguration();
 			merchantGoogleAnalyticsConfiguration.setKey(Constants.KEY_GOOGLE_ANALYTICS_URL);
+			merchantFBConfiguration.setMerchantConfigurationType(MerchantConfigurationType.CONFIG);
 		}
 		configs.add(merchantGoogleAnalyticsConfiguration);
+		
+		MerchantConfiguration twitterConfiguration = merchantConfigurationService.getMerchantConfiguration(Constants.KEY_TWITTER_HANDLE,store);
+		if(null == twitterConfiguration)
+		{
+			twitterConfiguration = new MerchantConfiguration();
+			twitterConfiguration.setKey(Constants.KEY_TWITTER_HANDLE);
+			merchantFBConfiguration.setMerchantConfigurationType(MerchantConfigurationType.CONFIG);
+		}
+		configs.add(twitterConfiguration);
+		
 		ConfigListWrapper configWrapper = new ConfigListWrapper();
 		configWrapper.setMerchantConfigs(configs);
 		model.addAttribute("configuration",configWrapper);
@@ -67,8 +81,9 @@ public class ConfigurationController {
 		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Configuration.accounts;
 	}
 	
+	@Secured("AUTH")
 	@RequestMapping(value="/admin/configuration/saveConfiguration.html", method=RequestMethod.POST)
-	public String saveTaxConfiguration(@ModelAttribute("configuration") ConfigListWrapper configWrapper, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception
+	public String saveConfigurations(@ModelAttribute("configuration") ConfigListWrapper configWrapper, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception
 	{
 		setMenu(model, request);
 		List<MerchantConfiguration> configs = configWrapper.getMerchantConfigs();
@@ -76,7 +91,15 @@ public class ConfigurationController {
 		for(MerchantConfiguration mConfigs : configs)
 		{
 			mConfigs.setMerchantStore(store);
-			merchantConfigurationService.saveOrUpdate(mConfigs);
+			if(!StringUtils.isBlank(mConfigs.getValue())) {
+				mConfigs.setMerchantConfigurationType(MerchantConfigurationType.CONFIG);
+				merchantConfigurationService.saveOrUpdate(mConfigs);
+			} else {//remove if submited blank and exists
+				MerchantConfiguration config = merchantConfigurationService.getMerchantConfiguration(mConfigs.getKey(), store);
+				if(config!=null) {
+					merchantConfigurationService.delete(config);
+				}
+			}
 		}	
 		model.addAttribute("success","success");
 		model.addAttribute("configuration",configWrapper);
