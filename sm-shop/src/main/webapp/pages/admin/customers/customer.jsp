@@ -270,7 +270,7 @@ function getBillingZones(countryCode){
 					<form:hidden path="showDeliveryStateList" />  	
 						
 				<div class="span4">  
-					<h6>Customer address</h6>
+					<h6><s:message code="label.customer.address2" text="Customer Address"/></h6>
 					
 	      			<div class="control-group">
 	                        <label><s:message code="label.customer.firstname" text="First Name"/></label>
@@ -362,7 +362,7 @@ function getBillingZones(countryCode){
 	
 			     <div class="offset5">	
 	 					
-				<h6>Shipping address</h6>
+				<h6><s:message code="label.customer.shippinginformation" text="Shipping information"/></h6>
 				<address>
 			            <div class="controls">
 		              		<label><s:message code="label.customer.shipping.company" text="Company"/></label>
@@ -409,7 +409,7 @@ function getBillingZones(countryCode){
 			 
 				<br/>
 
-			    <h6>Billing address</h6>
+			    <h6><s:message code="label.customer.billinginformation" text="Billing information"/></h6>
 				<address>
 						<div class="controls">
 		              		<label><s:message code="label.customer.billing.company" text="Company"/></label>
