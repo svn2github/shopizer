@@ -35,7 +35,7 @@ public class SecurityController {
 	
 	
 	@RequestMapping(value="/admin/user/groups.html", method=RequestMethod.GET)
-	public String displayGroupss(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String displayGroups(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
 		List<Group> groups = groupService.listGroup(GroupType.ADMIN);
