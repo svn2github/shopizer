@@ -68,6 +68,8 @@ public interface CategoryService extends SalesManagerEntityService<Long, Categor
 
 	List<Category> listByParent(Category category, Language language);
 
+	Category getByLanguage(long categoryId, Language language);
+
 
 	
 	

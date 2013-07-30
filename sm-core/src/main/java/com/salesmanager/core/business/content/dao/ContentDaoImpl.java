@@ -169,6 +169,26 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 	}
 	
 	@Override
+	public Content getByLanguage(Long id, Language language) throws ServiceException {
+
+		QContent qContent = QContent.content;
+		QContentDescription qContentDescription = QContentDescription.contentDescription;
+		
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qContent)
+			.leftJoin(qContent.descriptions, qContentDescription).fetch()
+			.leftJoin(qContent.merchantStore).fetch()
+			.where(qContent.id.eq(id)
+			.and(qContentDescription.language.code.eq(language.getCode())));
+		
+		Content content = query.singleResult(qContent);
+		
+		return content;
+	}
+	
+	@Override
 	public Content getById(Long id) {
 
 		QContent qContent = QContent.content;

@@ -37,4 +37,6 @@ public interface CategoryDao extends SalesManagerEntityDao<Long, Category> {
 
 	List<Category> listByParent(Category category, Language language);
 
+	Category getByLanguage(long categoryId, Language language);
+
 }

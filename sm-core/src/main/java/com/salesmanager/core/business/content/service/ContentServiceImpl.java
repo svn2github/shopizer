@@ -62,6 +62,11 @@ public class ContentServiceImpl
     	
     }
     
+    @Override
+    public Content getByLanguage(Long id, Language language) throws ServiceException {
+    	return contentDao.getByLanguage(id, language);
+    }
+    
 
     
     @Override

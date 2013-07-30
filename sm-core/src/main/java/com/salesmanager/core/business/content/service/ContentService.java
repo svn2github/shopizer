@@ -143,4 +143,6 @@ public interface ContentService
 	List<ContentDescription> listNameByType(List<ContentType> contentType,
 			MerchantStore store, Language language) throws ServiceException;
 
+	Content getByLanguage(Long id, Language language) throws ServiceException;
+
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -55,6 +54,11 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 		super.update(category);
 		
 		
+	}
+	
+	@Override
+	public Category getByLanguage(long categoryId, Language language) {
+		return categoryDao.getByLanguage(categoryId, language);
 	}
 	
 	@Override
