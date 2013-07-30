@@ -677,21 +677,31 @@ public class UserController {
 		AjaxResponse resp = new AjaxResponse();
 		String userName = request.getParameter("username");
 		
+		
+		
+		/**
+		 * Get User with userService.getByUserName
+		 * Get 3 security questions from User.getQuestion1, user.getQuestion2, user.getQuestion3
+		 */
+		
 		HttpSession session = request.getSession();
 		session.setAttribute("username_reset", userName);
 		
 		try {
 				if(!userName.equals("")){
+					
+						User dbUser = userService.getByUserName(userName);
+						
+						if(dbUser==null) {
+							resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+							resp.setStatusMessage(messages.getMessage("User.resetPassword.Error", locale));
+							return resp.toString();
+						}
+					
 						Map entry = new HashMap();
-						entry.put("1", messages.getMessage("security.question.1", locale));
-						entry.put("2", messages.getMessage("security.question.2", locale));
-						entry.put("3", messages.getMessage("security.question.3", locale));
-						entry.put("4", messages.getMessage("security.question.4", locale));
-						entry.put("5", messages.getMessage("security.question.5", locale));
-						entry.put("6", messages.getMessage("security.question.6", locale));
-						entry.put("7", messages.getMessage("security.question.7", locale));
-						entry.put("8", messages.getMessage("security.question.8", locale));
-						entry.put("9", messages.getMessage("security.question.9", locale));
+						entry.put("1", dbUser.getQuestion1());
+						entry.put("2", dbUser.getQuestion1());
+						entry.put("3", dbUser.getQuestion1());
 						resp.addDataEntry(entry);
 						resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 				
@@ -714,7 +724,6 @@ public class UserController {
 		return returnString;
 	}
 	//password reset functionality  ---  Sajid Shajahan
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/admin/users/resetPasswordSecurityQtn.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String resetPasswordSecurityQtn(@ModelAttribute(value="userReset") UserReset userReset,HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		
