@@ -18,6 +18,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
+import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.content.model.content.Content;
 import com.salesmanager.core.business.content.model.content.ContentDescription;
 import com.salesmanager.core.business.content.model.content.ContentType;
@@ -35,9 +37,13 @@ import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.web.admin.security.UserServicesImpl;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.shop.Breadcrumb;
+import com.salesmanager.web.entity.shop.BreadcrumbItem;
+import com.salesmanager.web.entity.shop.BreadcrumbItemType;
 import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCart;
 import com.salesmanager.web.utils.AppConfiguration;
+import com.salesmanager.web.utils.LabelUtils;
 
 
 
@@ -52,6 +58,8 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(StoreFilter.class);
 	
+
+	
 	@Autowired
 	private AppConfiguration appConfiguration;
 	
@@ -63,6 +71,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	
 	@Autowired
 	private CategoryService categoryService;
+	
+	@Autowired
+	private ProductService productService;
 	
 	@Autowired
 	private InitializationDatabase initializationDatabase;
@@ -85,6 +96,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	@Autowired
 	private UserServicesImpl userDetailsService;
 	
+	@Autowired
+	private LabelUtils messages;
+	
 
 
     /**
@@ -103,7 +117,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			
 			//Language
 			//TODO Locale to language
-			Language language = (Language) request.getSession().getAttribute("LANGUAGE");
+			Language language = (Language) request.getSession().getAttribute(Constants.LANGUAGE);
 			
 			if(language==null) {
 				
@@ -111,8 +125,8 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				//if so then based on the Locale language locale.getLanguage() get the appropriate Language
 				//object as represented below
 				
-				language = languageService.getByCode("en");
-				request.getSession().setAttribute("LANGUAGE", language);
+				language = languageService.getByCode(Constants.DEFAULT_LANGUAGE);
+				request.getSession().setAttribute(Constants.LANGUAGE, language);
 				
 				//TODO store default language
 			}
@@ -128,6 +142,8 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			
 			request.setAttribute(Constants.LANGUAGE, language);
 			Locale locale = request.getLocale();
+			
+
 			
 			try {
 				
@@ -154,6 +170,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				}
 				
 				request.setAttribute(Constants.MERCHANT_STORE, store);
+				
+				/** Breadcrumbs **/
+				setBreadcrumb(request,locale);
 
 				
 				/**
@@ -242,8 +261,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				 * - Twitter handle
 				 */
 				
-				//TODO
-				List<MerchantConfiguration> configurations = merchantConfigurationService.listByType(MerchantConfigurationType.CONFIG, store);
+				this.getMerchantConfigurations(store,request);
 				
 				/******* Shopping Cart *********/
 				
@@ -259,6 +277,68 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			}
 
 			return true;
+		   
+	   }
+	   
+	   private void getMerchantConfigurations(MerchantStore store, HttpServletRequest request) throws Exception {
+		   
+		   CacheUtils cache = CacheUtils.getInstance();
+
+			
+			StringBuilder configKey = new StringBuilder();
+			configKey
+			.append(Constants.CONFIG_CACHE_KEY)
+			.append(store.getId());
+			
+			StringBuilder configKeyMissed = new StringBuilder();
+			configKeyMissed
+			.append(configKey.toString());
+			
+			Map<String, String> configs = null;
+			
+			if(store.isUseCache()) {
+			
+				//get from the cache
+				configs = (Map<String, String>) cache.getFromCache(configKey.toString());
+				
+				Boolean missedContent = null;
+				if(configs==null) {
+					//get from missed cache
+					missedContent = (Boolean)cache.getFromCache(configKeyMissed.toString());
+				}
+				
+				   if(configs==null && missedContent==null) {
+					
+					   configs = this.getConfigurations(store);
+
+						
+						//put in cache
+						cache.putInCache(configs, configKey.toString());
+						
+					} else {
+						
+						//put in missed cache
+						cache.putInCache(new Boolean(true), configKeyMissed.toString());
+						
+					}
+					
+				
+	
+			} else {
+				
+
+				 configs = this.getConfigurations(store);
+
+
+			}
+			
+			
+			if(configs!=null && configs.size()>0) {
+
+				request.setAttribute(Constants.REQUEST_CONFIGS, configs);
+
+			}
+		   
 		   
 	   }
 	   
@@ -638,6 +718,120 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				
 	      }
 			return objects;
+	   }
+	   
+	   private Map<String,String> getConfigurations(MerchantStore store) {
+		   
+		   try {
+			   
+			   List<MerchantConfiguration> configurations = merchantConfigurationService.listByType(MerchantConfigurationType.CONFIG, store);
+			   Map<String,String> configs = null;
+			   for(MerchantConfiguration configuration : configurations) {
+				   
+				   if(configs==null) {
+					   configs = new HashMap<String,String>();
+				   }
+				   configs.put(configuration.getKey(), configuration.getValue());
+ 
+			   }
+			   
+			   return configs;
+			
+		   } catch (Exception e) {
+			   LOGGER.error("Exception while getting configurations",e);
+		   }
+		   
+		   return null;
+		   
+	   }
+	   
+	   private void setBreadcrumb(HttpServletRequest request, Locale locale) {
+		   
+		   
+		   
+		   try {
+			
+				//breadcrumb
+				Breadcrumb breadCrumb = (Breadcrumb) request.getSession().getAttribute(Constants.BREADCRUMB);
+				Language language = (Language)request.getAttribute(Constants.LANGUAGE);
+				if(breadCrumb==null) {
+					breadCrumb = new Breadcrumb();
+					breadCrumb.setLanguage(language);
+					BreadcrumbItem item = this.getDefaultBreadcrumbItem(language, locale);
+					breadCrumb.getBreadCrumbs().add(item);
+				} else {
+					
+					//check language
+					if(language.getCode().equals(breadCrumb.getLanguage().getCode())) {
+						
+						//rebuild using the appropriate language
+						//breadCrumb = getDefaultBreadcrumb(language,locale);
+						//breadCrumb = new Breadcrumb();
+						List<BreadcrumbItem> items = new ArrayList<BreadcrumbItem>();
+						for(BreadcrumbItem item : breadCrumb.getBreadCrumbs()) {
+							
+							if(item.getItemType().name().equals(BreadcrumbItemType.HOME)) {
+								BreadcrumbItem homeItem = this.getDefaultBreadcrumbItem(language, locale);
+							}else if(item.getItemType().name().equals(BreadcrumbItemType.PRODUCT)) {
+								Product product = productService.getProductForLocale(item.getId(), language, locale);
+								if(product!=null) {
+									BreadcrumbItem productItem = new  BreadcrumbItem();
+									productItem.setId(product.getId());
+									productItem.setItemType(BreadcrumbItemType.PRODUCT);
+									productItem.setLabel(product.getProductDescription().getName());
+									productItem.setUrl(product.getProductDescription().getSeUrl());
+									items.add(productItem);
+								}
+							}else if(item.getItemType().name().equals(BreadcrumbItemType.CATEGORY)) {
+								Category category = categoryService.getByLanguage(item.getId(), language);
+								if(category!=null) {
+									BreadcrumbItem categoryItem = new  BreadcrumbItem();
+									categoryItem.setId(category.getId());
+									categoryItem.setItemType(BreadcrumbItemType.CATEGORY);
+									categoryItem.setLabel(category.getDescription().getName());
+									categoryItem.setUrl(category.getDescription().getSeUrl());
+									items.add(categoryItem);
+								}
+							}else if(item.getItemType().name().equals(BreadcrumbItemType.PAGE)) {
+								Content content = contentService.getByLanguage(item.getId(), language);
+								if(content!=null) {
+									BreadcrumbItem contentItem = new  BreadcrumbItem();
+									contentItem.setId(content.getId());
+									contentItem.setItemType(BreadcrumbItemType.PAGE);
+									contentItem.setLabel(content.getDescription().getName());
+									contentItem.setUrl(content.getDescription().getSeUrl());
+									items.add(contentItem);
+								}
+							}
+							
+						}
+						
+						breadCrumb = new Breadcrumb();
+						breadCrumb.setLanguage(language);
+						breadCrumb.setBreadCrumbs(items);
+						
+					}
+					
+				}
+			
+			request.getSession().setAttribute(Constants.BREADCRUMB, breadCrumb);
+			request.setAttribute(Constants.BREADCRUMB, breadCrumb);
+			
+			} catch (Exception e) {
+				LOGGER.error("Error while building breadcrumbs",e);
+			}
+		   
+	   }
+	   
+	   private BreadcrumbItem getDefaultBreadcrumbItem(Language language, Locale locale) {
+
+			//set home page item
+			BreadcrumbItem item = new BreadcrumbItem();
+			item.setItemType(BreadcrumbItemType.HOME);
+			item.setLabel(messages.getMessage(Constants.HOME_MENU_KEY, locale));
+			item.setUrl(Constants.HOME_URL);
+			return item;
+		   
 	   }
 
 	
