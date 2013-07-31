@@ -27,6 +27,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,6 +47,7 @@ import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
+import com.salesmanager.web.admin.entity.orders.Refund;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.DateUtil;
@@ -292,7 +294,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 	
 	@Secured("ORDER")
 	@RequestMapping(value="/admin/orders/refundOrder.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String refundOrder(@PathVariable Long id, @PathVariable String refundAmount, HttpServletRequest request, HttpServletResponse response, Locale locale) {
+	public @ResponseBody String refundOrder(@RequestBody Refund refund, HttpServletRequest request, HttpServletResponse response, Locale locale) {
 
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
@@ -304,25 +306,25 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		
 		try {
 			
-			Order order = orderService.getById(id);
+			Order order = orderService.getById(refund.getOrderId());
 			
 			if(order==null) {
 				
-				LOGGER.error("Order {0} does not exists", id);
+				LOGGER.error("Order {0} does not exists", refund.getOrderId());
 				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 				return resp.toJSONString();
 			}
 			
 			if(order.getMerchant().getId().intValue()!=store.getId().intValue()) {
 				
-				LOGGER.error("Merchant store does not have order {0}",id);
+				LOGGER.error("Merchant store does not have order {0}",refund.getOrderId());
 				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 				return resp.toJSONString();
 			}
 		
 			//parse amount
 			try {
-				submitedAmount = new BigDecimal(refundAmount);
+				submitedAmount = new BigDecimal(refund.getAmount());
 				if(submitedAmount.doubleValue()==0) {
 					resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 					resp.setStatusMessage(messages.getMessage("message.invalid.amount", locale));
@@ -330,7 +332,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 				}
 				
 			} catch (Exception e) {
-				LOGGER.equals("invalid refundAmount " + refundAmount);
+				LOGGER.equals("invalid refundAmount " + refund.getAmount());
 				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 				return resp.toJSONString();
 			}
@@ -407,7 +409,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		
 		
 		response.setContentType("application/pdf");      
-		response.setHeader("Content-Disposition", attachment.toString().replaceAll(" ", "-")); 
+		response.setHeader("Content-Disposition", attachment.toString().replaceAll("\\s", "-")); 
 		
 		
 		
