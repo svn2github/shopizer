@@ -15,18 +15,9 @@ response.setDateHeader ("Expires", -1);
 
 <script>
     $(function() {
-        //$( "#dialog" ).dialog({
-        //    autoOpen: false,
-        //    width: 380
-        //});
- 
-        //$( "#show" ).click(function() {
-        //    $( "#dialog" ).dialog( "open" );
-        //    return false;
-        //});
- 
+
         $("#login").submit(function() {
- 
+ 			$("#store.error").hide();
             var data = $(this).serializeObject();
             $.ajax({
                 'type': 'POST',
@@ -35,22 +26,19 @@ response.setDateHeader ("Expires", -1);
                 'data': JSON.stringify(data),
                 'dataType': 'json',
                 'success': function(result) {
-                	alert(result);
-                   // if (result.loggedIn) {
-                   //     $( "#dialog" ).dialog( "close" );
-                   //     location.href="postLogin";
-                   // } else {
-                   //     $(".error").remove();
-                   //     $("#login").prepend("<div class='error'>Login Failed.
-                   //                            Username or Password is incorrect.</div>");
-                   // }
+                   if (result.status==0) {
+                        location.href="<c:url value="/customer/dashboard.html" />";
+                   } else {
+                        $("#store.error").html("<s:message code="message.username.password" text="Login Failed. Username or Password is incorrect."/>");
+                        $("#store.error").show();
+                   }
                 }
             });
  
             return false;
         });
     });
- 
+ 	//TODO ??
     $.fn.serializeObject = function() {
         var o = {};
         var a = this.serializeArray();
@@ -141,21 +129,31 @@ response.setDateHeader ("Expires", -1);
 
 					<ul class="nav pull-right" style="padding-top: 8px;z-index:500000;">
 					  <li id="fat-menu" class="dropdown">
-					    <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">Signin<b class="caret"></b></a>
+					    <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown"><s:message code="button.label.signin" text="Signin" /><b class="caret"></b></a>
 					
 					
 							<div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
-					
+								<div id="store.error" class="alert alert-error" style="display:none;"></div>
 								<form id="login" method="post" accept-charset="UTF-8">
-									<input id="userName" style="margin-bottom: 15px;" type="text" name="userName" size="30" />
-									<input id="password" style="margin-bottom: 15px;" type="password" name="password" size="30" />
-									<!--input id="user_remember_me" style="float: left; margin-right: 10px;" type="checkbox" name="user[remember_me]" value="1" /-->
+									<div class="control-group">
+	                        				<label><s:message code="label.username" text="Username" /></label>
+					                        <div class="controls">
+												<input id="userName" style="margin-bottom: 15px;" type="text" name="userName" size="30" />
+											</div>
+									</div>
+									<div class="control-group">
+	                        				<label><s:message code="label.password" text="Password" /></label>
+					                        <div class="controls">
+												<input id="password" style="margin-bottom: 15px;" type="password" name="password" size="30" />
+											</div>
+									</div>
 									<input id="storeCode" name="storeCode" type="hidden" value="<c:out value="${requestScope.MERCHANT_STORE.code}"/>"/>
-									<label class="string optional" for="user_remember_me"> Remember me</label>						 
-									<button type="submit" style="width:100%" class="btn">Sign In</button>
+									<!--input id="user_remember_me" style="float: left; margin-right: 10px;" type="checkbox" name="user[remember_me]" value="1" /-->
+									<!--<label class="string optional" for="user_remember_me"> Remember me</label>-->						 
+									<button type="submit" style="width:100%" class="btn"><s:message code="button.label.login" text="Login" /></button>
 									
 								</form>
-								<a href="#myModal" role="button" class="" data-toggle="modal">Register</a>
+								<a href="#myModal" role="button" class="" data-toggle="modal"><s:message code="button.label.register" text="Register"/></a>
 							</div>
 					  </li>
 					</ul>
