@@ -13,11 +13,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.entity.customer.Customer;
 
 /**
- * Overrides Spring Security authentication
+ * Custom Spring Security authentication
  * @author Carl Samson
  *
  */
@@ -28,21 +30,23 @@ public class CustomerLoginController {
     private AuthenticationManager customerAuthenticationManager;
 	
 	@RequestMapping(value="/customer/logon.html", method=RequestMethod.POST)
-	public String displayLogin(@RequestBody Customer customer, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public @ResponseBody String displayLogin(@RequestBody Customer customer, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		//TODO encrypt password
+		AjaxResponse resp = new AjaxResponse();
 		
         Authentication authenticationToken =
                 new UsernamePasswordAuthenticationToken(customer.getUserName(), customer.getPassword());
         try {
             Authentication authentication = customerAuthenticationManager.authenticate(authenticationToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            //return new LoginDetail().success().principal(authentication.getName());
+            resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
         } catch (AuthenticationException ex) {
-            //return new LoginDetail().failed();
+            //TODO is it an application problem or username and password
+        	resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
         }
 		
-		return "success";
+        
+        return resp.toJSONString();
 		
 		
 	}
