@@ -13,7 +13,51 @@
 <script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
 <script src="<c:url value="/resources/js/functions.js" />"></script>
 
+<script>
+    $(function() {
 
+        $("#refund").submit(function() {
+ 
+            var data = $(this).serializeObject();
+            $.ajax({
+                'type': 'POST',
+                'url': "<c:url value="/admin/orders/refundOrder.html"/>",
+                'contentType': 'application/json',
+                'data': JSON.stringify(data),
+                'dataType': 'json',
+                'success': function(result) {
+                	alert(result);
+                   // if (result.loggedIn) {
+                   //     $( "#dialog" ).dialog( "close" );
+                   //     location.href="postLogin";
+                   // } else {
+                   //     $(".error").remove();
+                   //     $("#login").prepend("<div class='error'>Login Failed.
+                   //                            Username or Password is incorrect.</div>");
+                   // }
+                }
+            });
+ 
+            return false;
+        });
+    });
+ 
+    $.fn.serializeObject = function() {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function() {
+            if (o[this.name]) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+</script>
 
 <div class="tabbable">
 
@@ -213,12 +257,7 @@
 			    </address>			 
 		  </div>
 		
- 		  <div class="span8">
-			<div class="form-actions">
-			  <!--<a class="btn btn-primary btn-large" href="#refundModal" data-toggle="modal">Launch demo modal</a>-->
-              <button id="refundButton" class="btn btn-medium btn-danger" type="button"><s:message code="label.order.refund" text="Apply refund"/></button>
-      		</div>
-      	  </div> 
+ 
       
       	  <br/>
       
@@ -293,6 +332,7 @@
               
 	              <div class="form-actions">
 	              		<button  type="submit" class="btn btn-medium btn-primary" ><s:message code="button.label.save" text="Save"/></button>
+	              		<button id="refundButton" class="btn btn-medium btn-danger" type="button"><s:message code="label.order.refund" text="Apply refund"/></button>
 	      		  </div>
       		</div> 
             <br/>              
@@ -326,10 +366,10 @@
            		<span id="refundMessage" style="display:none;"><s:message code="" text=""/><span id="refundAmount"></span></span>
            </p>
            <p>
-           		<form class="form-inline">
-           		    <label><s:message code="label.generic.amount" text="Amount" /></label>&nbsp;<input type="text" class="input-small" placeholder="<s:message code="label.generic.amount" text="Amount" />">
-           		    <input type="hidden" value="<c:out value="${order.id}"/>">
-           		    <button id="refundButton" type="submit" class="btn btn-alert"><s:message code="label.order.refund" text="Apply refund"/></button>
+           		<form id="refund" class="form-inline">
+           		    <label><s:message code="label.generic.amount" text="Amount" /></label>&nbsp;<input type="text" id="amount" name="amount" class="input-small" placeholder="<s:message code="label.generic.amount" text="Amount" />">
+           		    <input name="orderId" id="orderId" type="hidden" value="<c:out value="${order.id}"/>">
+           		    <button id="refundButton" type="submit" class="btn btn-danger"><s:message code="label.order.refund" text="Apply refund"/></button>
            		 </form>
            
            </p>
@@ -352,7 +392,7 @@
 	
 	function openRefund() {
 		
-		$('#refundModal').modal('show');
+		//$('#refundModal').modal('show');
 	}
 	
 	function refundOrder(id, amount){
