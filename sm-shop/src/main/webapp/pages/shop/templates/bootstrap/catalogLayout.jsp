@@ -31,12 +31,8 @@ response.setDateHeader ("Expires", -1);
     			<meta name="viewport" content="width=device-width, initial-scale=1.0">
     			<meta name="description" content="<c:out value="${requestScope.PAGE_INFORMATION.pageDescription}" />">
     			<meta name="author" content="<c:out value="${requestScope.MERCHANT_STORE.storename}"/>">
-    			<!-- The one provided with the system -->
-    			<script src="<c:url value="/resources/js/bootstrap/jquery.js" />"></script>
-    			<script src="<c:url value="/resources/js/functions.js" />"></script>
-    			<script src="<c:url value="/resources/js/jquery-cookie.js" />"></script>
 
-  
+
                 <jsp:include page="/pages/shop/templates/bootstrap/sections/shopLinks.jsp" />
  	</head>
  

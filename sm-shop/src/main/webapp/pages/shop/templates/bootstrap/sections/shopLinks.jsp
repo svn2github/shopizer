@@ -5,7 +5,10 @@
 
 <%@ page session="false" %>
 
-    <!-- Le styles -->
+    <!-- The one provided with the system -->
+    <script src="<c:url value="/resources/js/bootstrap/jquery.js" />"></script>
+    <script src="<c:url value="/resources/js/functions.js" />"></script>
+    <script src="<c:url value="/resources/js/jquery-cookie.js" />"></script>
     
     <link href="<c:url value="/resources/templates/bootstrap/css/bootstrap.min.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/templates/bootstrap/css/bootstrap-responsive.min.css" />" rel="stylesheet">
