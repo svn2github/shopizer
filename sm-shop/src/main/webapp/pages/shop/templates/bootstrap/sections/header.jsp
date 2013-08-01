@@ -15,9 +15,14 @@ response.setDateHeader ("Expires", -1);
 
 <script>
     $(function() {
+    	
+    	$("#signinDrop").click(function(e){
+    		$("#loginError").hide();
+    		e.preventDefault();
+    	});
 
         $("#login").submit(function() {
- 			$("#store.error").hide();
+ 			$("#loginError").hide();
             var data = $(this).serializeObject();
             $.ajax({
                 'type': 'POST',
@@ -26,11 +31,12 @@ response.setDateHeader ("Expires", -1);
                 'data': JSON.stringify(data),
                 'dataType': 'json',
                 'success': function(result) {
-                   if (result.status==0) {
+                   var response = result.response;
+                   if (response.status==0) {
                         location.href="<c:url value="/customer/dashboard.html" />";
                    } else {
-                        $("#store.error").html("<s:message code="message.username.password" text="Login Failed. Username or Password is incorrect."/>");
-                        $("#store.error").show();
+                        $("#loginError").html("<s:message code="message.username.password" text="Login Failed. Username or Password is incorrect."/>");
+                        $("#loginError").show();
                    }
                 }
             });
@@ -129,11 +135,11 @@ response.setDateHeader ("Expires", -1);
 
 					<ul class="nav pull-right" style="padding-top: 8px;z-index:500000;">
 					  <li id="fat-menu" class="dropdown">
-					    <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown"><s:message code="button.label.signin" text="Signin" /><b class="caret"></b></a>
+					    <a href="#" id="signinDrop" role="button" class="dropdown-toggle" data-toggle="dropdown"><s:message code="button.label.signin" text="Signin" /><b class="caret"></b></a>
 					
 					
 							<div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
-								<div id="store.error" class="alert alert-error" style="display:none;"></div>
+								<div id="loginError" class="alert alert-error" style="display:none;"></div>
 								<form id="login" method="post" accept-charset="UTF-8">
 									<div class="control-group">
 	                        				<label><s:message code="label.username" text="Username" /></label>
