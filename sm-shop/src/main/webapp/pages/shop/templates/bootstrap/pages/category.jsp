@@ -33,7 +33,7 @@ response.setDateHeader ("Expires", -1);
 	 loadProducts(0,12);
 	 
 	 
-	 $('#productList').infiniScroll({ // calls the init method overrides defaults
+	 $('#categoryPane').infiniScroll({ // calls the init method overrides defaults
 		    'interval' : 200
 		    ,'root_url' : '/shop'
 		    ,'loading_elem': 'loading'
@@ -52,33 +52,27 @@ response.setDateHeader ("Expires", -1);
 				type: 'POST',
 				dataType: "json",
 				url: url,
-				//data: "code="+ code + "&id=" + id,
 				success: function(products) {
 					
 					
-					
+					//var displayProducts = new Array();
 					for (var i = 0; i < products.length; i++) {
 					    //alert(products[i].name);
 					    //Do something
 					    var productHtml = '<li class="span3">';
-					    	productHtml = productHtml + '<div class="product-box"><a href="http://#WB0M3G9S1/product_detail.html">';
-					    	productHtml = productHtml + '<h4>' + product.name +'</h4></a>';
-					    	productHtml = productHtml + '<a href="http://#WB0M3G9S1/product_detail.html"><img width="200" src="http://localhost:8080//sm-shop/static/DEFAULT/PRODUCT/TB12345/"></a>';
-					    	productHtml = productHtml + '<h3>' + product.productPrice +'</h3>';
-					    	productHtml = productHtml + '<div class="bottom"><a href="http://#WB0M3G9S1/product_detail.html" class="view">view</a> / <a productid="1" href="#" class="addToCart">add to cart</a></div></div></li>';
+					    	productHtml = productHtml + '<div class="product-box"><a href="<c:url value="/shop/product/" />' + products[i].friendlyUrl + '.html">';
+					    	productHtml = productHtml + '<h4>' + products[i].name +'</h4></a>';
+					    	productHtml = productHtml + '<a href="<c:url value="/shop/product/" />' + products[i].friendlyUrl + '.html"><img src="<c:url value="/">' + products[i].imageUrl +'"></a>';
+					    	productHtml = productHtml + '<h3>' + products[i].productPrice +'</h3>';
+					    	productHtml = productHtml + '<div class="bottom"><a href="<c:url value="/shop/product/" />' + products[i].friendlyUrl + '.html" class="view"><s:message code="button.label.view" text="View" /></a> / <a productid="' + products[i].id + '" href="#" class="addToCart"><s:message code="button.label.addToCart" text="Add to cart" /></a></div></div></li>';
+					    	//displayProducts[i] = productHtml;
+					    	$('#categoryPane').append(productHtml);
 					}
-					
-					//alert(response);
-					
-					
-					//var msg = isc.XMLTools.selectObjects(response, "/response/statusMessage");
-					//var status = isc.XMLTools.selectObjects(response, "/response/status");
-					//callBackCheckCode(msg,status);
 
 					
 				},
 				error: function(jqXHR,textStatus,errorThrown) { 
-					alert(jqXHR + "-" + textStatus + "-" + errorThrown);
+					alert('Error ' + jqXHR + "-" + textStatus + "-" + errorThrown);
 				}
 				
 		});
@@ -111,7 +105,7 @@ response.setDateHeader ("Expires", -1);
 	   <div class="span12">
       	
       	<!-- left column -->
-      	<c:out value="${requestScope['javax.servlet.forward.query_string']}" />
+      	TEST current url : <c:out value="${requestScope['javax.servlet.forward.query_string']}" />
         <div class="span3">
           <div class="sidebar-nav">
             <ul class="nav nav-list">
@@ -119,11 +113,6 @@ response.setDateHeader ("Expires", -1);
               <c:forEach items="${subCategories}" var="category">
               	<li><a href="<c:url value="/shop/category/${category.friendlyUrl}.html"/>"><c:out value="${category.name}" /></a></li>
               </c:forEach>
-
-              <!--<li class="nav-header">Sidebar</li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>-->
             </ul>
           </div>
         </div><!--/span-->
@@ -132,66 +121,9 @@ response.setDateHeader ("Expires", -1);
         <div class="span9">
 
           
-        <ul class="thumbnails product-list">
-										<!-- Iterate over featuredItems -->
-										
-											<li class="span3">
-												<div class="product-box">                                        
-													<a href="http://#WB0M3G9S1/product_detail.html"><h4>Spring in Action</h4></a>
-													<a href="http://#WB0M3G9S1/product_detail.html"><img width="200" src="http://localhost:8080//sm-shop/static/DEFAULT/PRODUCT/TB12345/"></a>
-													<h3>$29.99</h3>
-													<div class="bottom">
-														<a href="http://#WB0M3G9S1/product_detail.html" class="view">view</a> / <a productid="1" href="#" class="addToCart">add to cart</a>
-													</div>
-												</div>
-										    </li>
-										
-											<li class="span3">
-												<div class="product-box">                                        
-													<a href="http://#WB0M3G9S1/product_detail.html"><h4>A nice book for you</h4></a>
-													<a href="http://#WB0M3G9S1/product_detail.html"><img width="200" src="http://localhost:8080//sm-shop/static/DEFAULT/PRODUCT/NB1111/"></a>
-													<h3>$19.99</h3>
-													<div class="bottom">
-														<a href="http://#WB0M3G9S1/product_detail.html" class="view">view</a> / <a productid="3" href="#" class="addToCart">add to cart</a>
-													</div>
-												</div>
-										    </li>
-										
-											<li class="span3">
-												<div class="product-box">                                        
-													<a href="http://#WB0M3G9S1/product_detail.html"><h4>Battle of the worlds 2</h4></a>
-													<a href="http://#WB0M3G9S1/product_detail.html"><img width="200" src="http://localhost:8080//sm-shop/static/DEFAULT/PRODUCT/SF333346/"></a>
-													<h3>$18.99</h3>
-													<div class="bottom">
-														<a href="http://#WB0M3G9S1/product_detail.html" class="view">view</a> / <a productid="5" href="#" class="addToCart">add to cart</a>
-													</div>
-												</div>
-										    </li>
-										
-											<li class="span3">
-												<div class="product-box">                                        
-													<a href="http://#WB0M3G9S1/product_detail.html"><h4>Life book</h4></a>
-													<a href="http://#WB0M3G9S1/product_detail.html"><img width="200" src="http://localhost:8080//sm-shop/static/DEFAULT/PRODUCT/LL333444/"></a>
-													<h3>$18.99</h3>
-													<div class="bottom">
-														<a href="http://#WB0M3G9S1/product_detail.html" class="view">view</a> / <a productid="6" href="#" class="addToCart">add to cart</a>
-													</div>
-												</div>
-										    </li>
-										    
-										    
-										    											<li class="span3">
-												<div class="product-box">                                        
-													<a href="http://#WB0M3G9S1/product_detail.html"><h4>Life book</h4></a>
-													<a href="http://#WB0M3G9S1/product_detail.html"><img width="200" src="http://localhost:8080//sm-shop/static/DEFAULT/PRODUCT/LL333444/"></a>
-													<h3>$18.99</h3>
-													<div class="bottom">
-														<a href="http://#WB0M3G9S1/product_detail.html" class="view">view</a> / <a productid="6" href="#" class="addToCart">add to cart</a>
-													</div>
-												</div>
-										    </li>
-										                             
-									</ul>
+        	<ul id="categoryPane" class="thumbnails product-list">
+
+			</ul>
           
           
         </div><!--/span-->
