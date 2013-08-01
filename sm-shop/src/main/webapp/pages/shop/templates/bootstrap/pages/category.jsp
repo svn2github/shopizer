@@ -86,16 +86,7 @@ response.setDateHeader ("Expires", -1);
  
 </script>
 
-    <div class="row-fluid">
-						   <ul class="breadcrumb">
-								<li>
-									<a href="#"><i class="icon-home"></i></a> <span class="divider">/</span>
-								</li>
-								<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">Product</a> <span class="divider">/</span></li>
-								<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">Women</a> <span class="divider">/</span></li>
-								<li class="active">Detail</li>
-							</ul>
-	</div>
+    <jsp:include page="/pages/shop/templates/bootstrap/sections/breadcrumb.jsp" />
  
 
 

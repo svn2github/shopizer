@@ -1,24 +1,30 @@
+<%
+response.setCharacterEncoding("UTF-8");
+response.setHeader("Cache-Control","no-cache");
+response.setHeader("Pragma","no-cache");
+response.setDateHeader ("Expires", -1);
+%>
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %> 
+
 <div class="row-fluid">
 
 	<div class="span12">
 
-<ul class="breadcrumb">
-
-  <li>
-	<!-- Always home -->
-    <a href="#">Home</a> <span class="divider">/</span>
-
-  </li>
-
-  
-  <li>
-    <a href="#">Library</a> <span class="divider">/</span>
-
-  </li>
-
-  <li class="active">Data</li>
-
-</ul>
+		<ul class="breadcrumb">
+		
+		
+		  <c:forEach items="${requestScope.BREADCRUMB.breadcrumbs}" var="breadcrumb" varStatus="count">
+		  <li <c:if test="${fn:length(requestScope.BREADCRUMB.breadcrumbs) gt (count+1)}"/>class="active"</if>>
+		    <a href="${breadcrumb.url}">${breadcrumb.label}</a> <span class="divider">/</span>
+		  </li>
+		  </c:forEach>
+		
+		</ul>
 
 	</div>
 
