@@ -26,6 +26,8 @@ public class Product implements Serializable {
 	private String originalProductPrice = null;
 	
 	private String image;
+	
+	private String imageUrl;
 
 
 	
@@ -120,6 +122,12 @@ public class Product implements Serializable {
 	}
 	public String getId() {
 		return id;
+	}
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+	public String getImageUrl() {
+		return imageUrl;
 	}
 
 

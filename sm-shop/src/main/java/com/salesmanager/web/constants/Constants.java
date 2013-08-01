@@ -9,6 +9,8 @@ public class Constants {
 	public final static String HOME_MENU_KEY = "menu.home";
 	public final static String HOME_URL = "/shop";
 	
+	public final static String DEFAULT_DOMAIN_NAME = "localhost:8080";
+	
 	public final static String ADMIN_STORE = "ADMIN_STORE";
 	public final static String ADMIN_USER = "ADMIN_USER";
 	public final static String MERCHANT_STORE = "MERCHANT_STORE";

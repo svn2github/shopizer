@@ -35,7 +35,12 @@ public class CatalogUtils {
 		ProductImage image = product.getProductImage();
 		if(image!=null) {
 			proxyProduct.setImage(image.getProductImage());
+			String imagePath = ImageFilePathUtils.buildProductImageFilePath(store, product.getSku(), image.getProductImage());
+			proxyProduct.setImageUrl(imagePath);
 		}
+		
+		
+		
 		proxyProduct.setId(String.valueOf(product.getId()));
 		proxyProduct.setSku(product.getSku());
 
