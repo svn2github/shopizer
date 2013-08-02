@@ -61,6 +61,10 @@
   		<put-attribute name="body" value="/pages/admin/products/featured.jsp" /> 
   	</definition>
   	
+  	 <definition name="admin-products-groups" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/products/groups/list.jsp" /> 
+  	</definition>
+  	
   	<definition name="admin-products-edit" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/products/product.jsp" /> 
   	</definition>
