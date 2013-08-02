@@ -73,7 +73,7 @@ public class ProductImageUrlTag extends TagSupport {
 			imagePath
 			
 			//.append(scheme).append("://").append(merchantStore.getDomainName())
-				.append(Constants.STATIC_URI)
+				//.append(Constants.STATIC_URI)
 				.append("/").append(ImageFilePathUtils.buildProductImageFilePath(merchantStore, product, this.getImageName())).toString();
 
 			
