@@ -14,8 +14,8 @@
     <link href="<c:url value="/resources/templates/bootstrap/css/bootstrap-responsive.min.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/templates/bootstrap/css/theme.css" />" rel="stylesheet">
  
- 
-
+    <script src="<c:url value="/resources/js/jquery.showLoading.min.js" />"></script>
+	<link href="<c:url value="/resources/showLoading.css" />" rel="stylesheet">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>

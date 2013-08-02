@@ -22,6 +22,7 @@ response.setDateHeader ("Expires", -1);
     	});
 
         $("#login").submit(function() {
+        	$('#signinPane').showLoading();
  			$("#loginError").hide();
             var data = $(this).serializeObject();
             $.ajax({
@@ -31,13 +32,15 @@ response.setDateHeader ("Expires", -1);
                 'data': JSON.stringify(data),
                 'dataType': 'json',
                 'success': function(result) {
-                   var response = result.response;
-                   if (response.status==0) {
-                        location.href="<c:url value="/customer/dashboard.html" />";
-                   } else {
-                        $("#loginError").html("<s:message code="message.username.password" text="Login Failed. Username or Password is incorrect."/>");
-                        $("#loginError").show();
-                   }
+                   //$('#signinPane').hideLoading();
+                   //var response = result.response;
+                   //if (response.status==0) {
+                   //     location.href="<c:url value="/customer/dashboard.html" />";
+                   //} else {
+                	   
+                   //     $("#loginError").html("<s:message code="message.username.password" text="Login Failed. Username or Password is incorrect."/>");
+                   //     $("#loginError").show();
+                   //}
                 }
             });
  
@@ -138,7 +141,7 @@ response.setDateHeader ("Expires", -1);
 					    <a href="#" id="signinDrop" role="button" class="dropdown-toggle" data-toggle="dropdown"><s:message code="button.label.signin" text="Signin" /><b class="caret"></b></a>
 					
 					
-							<div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
+							<div id="signinPane" class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
 								<div id="loginError" class="alert alert-error" style="display:none;"></div>
 								<form id="login" method="post" accept-charset="UTF-8">
 									<div class="control-group">
