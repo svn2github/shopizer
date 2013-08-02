@@ -241,7 +241,7 @@ public class FeaturedItemsController {
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("catalogue", "catalogue");
-		activeMenus.put("catalogue-featured", "catalogue-featured");
+		activeMenus.put("catalogue-products-group", "catalogue-products-group");
 		
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
