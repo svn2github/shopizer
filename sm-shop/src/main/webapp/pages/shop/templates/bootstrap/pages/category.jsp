@@ -62,7 +62,7 @@ response.setDateHeader ("Expires", -1);
 					    var productHtml = '<li class="span3">';
 					    	productHtml = productHtml + '<div class="product-box"><a href="<c:url value="/shop/product/" />' + products[i].friendlyUrl + '.html">';
 					    	productHtml = productHtml + '<h4>' + products[i].name +'</h4></a>';
-					    	productHtml = productHtml + '<a href="<c:url value="/shop/product/" />' + products[i].friendlyUrl + '.html"><img src="<c:url value="/">' + products[i].imageUrl +'"></a>';
+					    	productHtml = productHtml + '<a href="<c:url value="/shop/product/" />' + products[i].friendlyUrl + '.html"><img src="<c:url value="/"/>' + products[i].imageUrl +'"></a>';
 					    	productHtml = productHtml + '<h3>' + products[i].productPrice +'</h3>';
 					    	productHtml = productHtml + '<div class="bottom"><a href="<c:url value="/shop/product/" />' + products[i].friendlyUrl + '.html" class="view"><s:message code="button.label.view" text="View" /></a> / <a productid="' + products[i].id + '" href="#" class="addToCart"><s:message code="button.label.addToCart" text="Add to cart" /></a></div></div></li>';
 					    	//displayProducts[i] = productHtml;
@@ -96,7 +96,7 @@ response.setDateHeader ("Expires", -1);
 	   <div class="span12">
       	
       	<!-- left column -->
-      	TEST current url : <c:out value="${requestScope['javax.servlet.forward.query_string']}" />
+      	<!--TEST current url : <c:out value="${requestScope['javax.servlet.forward.query_string']}" />-->
         <div class="span3">
           <div class="sidebar-nav">
             <ul class="nav nav-list">
