@@ -119,7 +119,15 @@
 		]
 	}},
 	{"menu":{
-		"code":"catalogue-featured","url":"/admin/catalogue/featured/list.html","role":"PRODUCTS","order":0
+		"code":"catalogue-products-group","url":"/admin/catalogue/groups/list.html","role":"PRODUCTS","order":0,"menus":
+		[
+			{"menu":{
+				"code":"catalogue-featured","url":"/admin/catalogue/featured/list.html","role":"PRODUCTS","order":0
+			}},
+			{"menu":{
+				"code":"catalogue-products-custom-group","url":"/admin/catalogue/groups/list.html","role":"PRODUCTS","order":1
+			}}
+		]
 	}}
 ]
 }},
@@ -239,7 +247,7 @@
 "icon":"icon-th", 
 "url":"/admin/cache/cacheManagement.html", 
 "role":"CATALOG",
-"order":6
+"order":10
 }},
 {
 "menu":{
