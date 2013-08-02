@@ -90,6 +90,32 @@ public class ProductRelationshipDaoImpl extends SalesManagerEntityDaoImpl<Long, 
 
 	}
 	
+	@Override
+	public List<ProductRelationship> getGroups(MerchantStore store) {
+
+		StringBuilder qs = new StringBuilder();
+		qs.append("select pr from ProductRelationship as pr ");
+		qs.append("where pr.store.id=:store");
+		qs.append("and pr.product=null");
+
+
+
+    	String hql = qs.toString();
+		Query q = super.getEntityManager().createQuery(hql);
+
+    	q.setParameter("store", store.getId());
+
+
+    	
+    	@SuppressWarnings("unchecked")
+		List<ProductRelationship> relations =  q.getResultList();
+
+    	
+    	return relations;
+		
+
+	}
+	
 	
 	@Override
 	public List<ProductRelationship> getByType(MerchantStore store, String type) {

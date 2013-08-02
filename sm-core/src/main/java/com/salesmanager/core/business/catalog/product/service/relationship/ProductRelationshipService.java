@@ -57,4 +57,11 @@ public interface ProductRelationshipService extends
 			ProductRelationshipType type, Language language)
 			throws ServiceException;
 
+	/**
+	 * Get a list of relationship acting as groups of products
+	 * @param store
+	 * @return
+	 */
+	List<ProductRelationship> getGroups(MerchantStore store);
+
 }

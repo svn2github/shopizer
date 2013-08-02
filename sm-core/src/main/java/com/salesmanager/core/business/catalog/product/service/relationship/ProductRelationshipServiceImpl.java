@@ -42,6 +42,11 @@ public class ProductRelationshipServiceImpl extends
 		
 	}
 	
+	@Override
+	public List<ProductRelationship> getGroups(MerchantStore store) {
+		return productRelationshipDao.getGroups(store);
+	}
+	
 	public void delete(ProductRelationship relationship) throws ServiceException {
 		
 		//throws detached exception so need to query first

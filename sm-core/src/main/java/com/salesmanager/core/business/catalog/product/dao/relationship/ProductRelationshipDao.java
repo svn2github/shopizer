@@ -22,6 +22,8 @@ public interface ProductRelationshipDao extends SalesManagerEntityDao<Long, Prod
 	List<ProductRelationship> getByType(MerchantStore store, String type,
 			Language language);
 
+	List<ProductRelationship> getGroups(MerchantStore store);
+
 
 
 }
