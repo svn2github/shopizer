@@ -64,4 +64,23 @@ public interface ProductRelationshipService extends
 	 */
 	List<ProductRelationship> getGroups(MerchantStore store);
 
+	/**
+	 * Creates a product group
+	 * @param groupName
+	 * @throws ServiceException
+	 */
+	void addGroup(MerchantStore store, String groupName) throws ServiceException;
+
+	List<ProductRelationship> getByGroup(MerchantStore store, String groupName)
+			throws ServiceException;
+
+	void deleteGroup(MerchantStore store, String groupName)
+			throws ServiceException;
+
+	void deactivateGroup(MerchantStore store, String groupName)
+			throws ServiceException;
+
+	void activateGroup(MerchantStore store, String groupName)
+			throws ServiceException;
+
 }
