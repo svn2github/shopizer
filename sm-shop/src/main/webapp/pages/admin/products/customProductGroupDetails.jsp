@@ -30,23 +30,22 @@
 								<div class="sm-ui-component">
 								
 				<h3>
-						<s:message code="menu.catalogue-featured" text="Featured items" />
+						<s:out value="${group}"/>
 				</h3>	
 				<br/>
 				<div class="alert alert-info">
-					<s:message code="label.product.featured.meassage" text="Drag and drop product from product list to featured items box"/>
+					<s:message code="label.product.group.meassage" text="Drag and drop product from product list to the product group box"/>
 				</div>			
 		
       			<!-- Listing grid include -->
 				 <c:set value="/admin/products/paging.html" var="pagingUrl" scope="request"/>
-				 <c:set value="/admin/catalogue/featured/paging.html" var="containerFetchUrl" scope="request"/>
-				 <c:set value="/admin/catalogue/featured/removeItem.html" var="containerRemoveUrl" scope="request"/>
-				 <c:set value="FEATURED" var="removeEntity" scope="request"/>
-				 <c:set value="/admin/catalogue/featured/addItem.html" var="containerAddUrl" scope="request"/>
-				 <c:set value="/admin/catalogue/featured/update.html" var="containerUpdateUrl" scope="request"/>
+				 <c:set value="/admin/products/group/details/paging.html" var="containerFetchUrl" scope="request"/>
+				 <c:set value="/admin/products/group/details/removeItem.html?code=${group}" var="containerRemoveUrl" scope="request"/>
+				 <c:set value="/admin/products/group/details/addItem.html?code=${group}" var="containerAddUrl" scope="request"/>
+				 <c:set value="/admin/products/group/details/update.html" var="containerUpdateUrl" scope="request"/>
 				 <c:set value="/admin/products/editProduct.html" var="editUrl" scope="request"/>
-				 <c:set value="/admin/catalogue/featured/list.html" var="reloadUrl" scope="request"/>
-				 <c:set var="componentTitleKey" value="menu.catalogue-featured" scope="request"/>
+				 <c:set value="/admin/products/group/edit.html?code=${group}" var="reloadUrl" scope="request"/>
+				 <c:set var="componentTitleKey" value="label.product.customGroup.title" scope="request"/>
 				 <c:set var="gridHeader" value="/pages/admin/products/featured-gridHeader.jsp" scope="request"/>
 				 <c:set var="gridHeaderContainer" value="/pages/admin/products/product-gridHeader.jsp" scope="request"/>
 				 <c:set var="canRemoveEntry" value="true" scope="request"/>

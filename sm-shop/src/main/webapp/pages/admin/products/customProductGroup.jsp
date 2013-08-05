@@ -67,7 +67,8 @@
 				 
 				 <c:set value="/admin/products/groups/paging.html" var="pagingUrl" scope="request"/>
 				 <c:set value="/admin/products/groups/remove.html" var="removeUrl" scope="request"/>
-				 <c:set value="/admin/products/price/edit.html" var="editUrl" scope="request"/>
+				 <c:set value="/admin/products/groups/update.html" var="updateUrl" scope="request"/>
+				 <c:set value="/admin/products/groups/edit.html" var="editUrl" scope="request"/>
 				 <c:set value="/admin/products/groups/list.html" var="afterRemoveUrl" scope="request"/>
 				 <c:set var="entityId" value="id" scope="request"/>
 				 <c:set var="componentTitleKey" value="menu.catalogue-products-custom-group" scope="request"/>
