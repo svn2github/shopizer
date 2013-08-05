@@ -246,7 +246,7 @@
 "code":"cache",
 "icon":"icon-th", 
 "url":"/admin/cache/cacheManagement.html", 
-"role":"CATALOG",
+"role":"AUTH",
 "order":10
 }},
 {
