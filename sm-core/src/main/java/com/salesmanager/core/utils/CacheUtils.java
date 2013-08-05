@@ -1,5 +1,7 @@
 package com.salesmanager.core.utils;
 
+import java.util.Set;
+
 import org.infinispan.Cache;
 import org.infinispan.manager.DefaultCacheManager;
 import org.slf4j.Logger;
@@ -62,6 +64,10 @@ public class CacheUtils {
 
 		 return localCache.get(keyName);
 		
+	}
+	
+	public Set<Object> getCacheKeys() throws Exception {
+		return localCache.keySet();
 	}
 	
 	public void shutDownCache() throws Exception {
