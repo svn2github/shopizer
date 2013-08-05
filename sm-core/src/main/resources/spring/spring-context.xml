@@ -60,6 +60,25 @@
 		<!-- <property name="database" value="MYSQL" /> -->
 	</bean>
 
+	
+	
+	<!-- MBeans statistics [disable in production] only one definition per web app-->
+<!-- 	<bean id="jmxExporter" class="org.springframework.jmx.export.MBeanExporter">
+	    <property name="beans">
+	        <map>
+	            <entry key="Hibernate:application=Statistics" value-ref="hibernateStatisticsBean"/>
+	        </map>
+	    </property>
+	</bean>
+
+	<bean id="hibernateStatisticsBean" class="org.hibernate.jmx.StatisticsService">
+	    <property name="statisticsEnabled" value="true"/>
+	    <property name="sessionFactory">
+	        <util:property-path path="entityManagerFactory.sessionFactory" />
+	    </property>
+	</bean> -->
+	
+
 	<!-- Définition de la gestion des transactions -->
 	<tx:annotation-driven />
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
