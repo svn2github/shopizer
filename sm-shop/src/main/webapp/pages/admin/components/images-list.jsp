@@ -43,7 +43,7 @@
 								    recordClick:"selectImage(record.name)",
 								    fields: [
 										{name:"id", cellStyle: "name"},
-								        {name:"picture", type:"image", imageWidth:150, imageURLPrefix:"<c:url value='/'/>"},
+								        {name:"picture", type:"image", imageWidth:150},
 								        {name:"name", cellStyle: "name"}
 								    ],
 
