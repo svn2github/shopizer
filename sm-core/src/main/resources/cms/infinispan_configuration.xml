@@ -16,6 +16,8 @@
 
 	<namedCache name="StoreRepository">
 		<invocationBatching enabled="true"/>
+		<!-- disable jmx in prod -->
+		<jmxStatistics enabled="true"/>
 		<loaders passivation="false" shared="false" preload="false">
 			<!-- <loader class="org.infinispan.loaders.bdbje.BdbjeCacheStore" fetchPersistentState="false" 
 				purgeOnStartup="false"> <properties> <property name="location" value="/tmp/bdb" 
@@ -91,11 +93,15 @@
 	</namedCache>
 	
 	<namedCache name="Cache">
+	    <!-- disable jmx in prod -->
+	    <jmxStatistics enabled="true"/>
 		<eviction strategy="LRU" maxEntries="2000" />
 	</namedCache>
 
 	<namedCache name="FilesRepository">
 		 <invocationBatching enabled="true"/>
+		 <!-- disable jmx in prod -->
+		 <jmxStatistics enabled="true"/>
 	     <loaders passivation="false" shared="false" preload="false">
 	          <loader class="org.infinispan.loaders.file.FileCacheStore" fetchPersistentState="false"
 	               ignoreModifications="false" purgeOnStartup="false">
