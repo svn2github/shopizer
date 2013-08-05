@@ -287,8 +287,10 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			
 			StringBuilder configKey = new StringBuilder();
 			configKey
-			.append(Constants.CONFIG_CACHE_KEY)
-			.append(store.getId());
+			.append(store.getId())
+			.append("_")
+			.append(Constants.CONFIG_CACHE_KEY);
+			
 			
 			StringBuilder configKeyMissed = new StringBuilder();
 			configKeyMissed
@@ -357,14 +359,16 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				//build the key
 				/**
 				 * The cache is kept as a Map<String,Object>
-				 * The key is CONTENT_PAGE_<MERCHANT_ID>_<LOCALE>
+				 * The key is <MERCHANT_ID>_CONTENTPAGELOCALE
 				 * The value is a List of Content object
 				 */
 				
 				StringBuilder contentKey = new StringBuilder();
 				contentKey
-				.append(Constants.CONTENT_PAGE_CACHE_KEY)
 				.append(store.getId())
+				.append("_")
+				.append(Constants.CONTENT_PAGE_CACHE_KEY)
+				.append("-")
 				.append(language.getCode());
 				
 				StringBuilder contentKeyMissed = new StringBuilder();
@@ -413,8 +417,10 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				if(contents!=null && contents.size()>0) {
 					//only store objects in request
 					String key = new StringBuilder()
-					.append(Constants.CONTENT_PAGE_CACHE_KEY)
 					.append(store.getId())
+					.append("_")
+					.append(Constants.CONTENT_PAGE_CACHE_KEY)
+					.append("-")
 					.append(language.getCode()).toString();
 					
 					List<ContentDescription> descriptions = contents.get(key.toString());
@@ -448,8 +454,10 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			
 			StringBuilder contentKey = new StringBuilder();
 			contentKey
-			.append(Constants.CONTENT_CACHE_KEY)
 			.append(store.getId())
+			.append("_")
+			.append(Constants.CONTENT_CACHE_KEY)
+			.append("-")
 			.append(language.getCode());
 			
 			StringBuilder contentKeyMissed = new StringBuilder();
@@ -496,8 +504,10 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			if(contents!=null && contents.size()>0) {
 				//only store objects in request
 				String key = new StringBuilder()
-				.append(Constants.CONTENT_CACHE_KEY)
 				.append(store.getId())
+				.append("_")
+				.append(Constants.CONTENT_CACHE_KEY)
+				.append("-")
 				.append(language.getCode()).toString();
 				
 				List<Content> c = contents.get(key.toString());
@@ -526,14 +536,16 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			//build the key
 			/**
 			 * The categories is kept as a Map<String,Object>
-			 * The key is CATEGORY_<MERCHANT_ID>_<LOCALE>
+			 * The key is <MERCHANT_ID>_CATEGORYLOCALE
 			 * The value is a List of Category object
 			 */
 			
 			StringBuilder contentKey = new StringBuilder();
 			contentKey
-			.append(Constants.CATEGORIES_CACHE_KEY)
 			.append(store.getId())
+			.append("_")
+			.append(Constants.CATEGORIES_CACHE_KEY)
+			.append("-")
 			.append(language.getCode());
 			
 			StringBuilder contentKeyMissed = new StringBuilder();
@@ -580,8 +592,10 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			if(objects!=null && objects.size()>0) {
 				//only store objects in request
 				String key = new StringBuilder()
-				.append(Constants.CATEGORIES_CACHE_KEY)
 				.append(store.getId())
+				.append("_")
+				.append(Constants.CATEGORIES_CACHE_KEY)
+				.append("-")
 				.append(language.getCode()).toString();
 				
 				List<Category> categories = objects.get(key.toString());
@@ -616,8 +630,10 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 
 						Language lang = language;
 						String key = new StringBuilder()
-						.append(Constants.CONTENT_PAGE_CACHE_KEY)
 						.append(store.getId())
+						.append("_")
+						.append(Constants.CONTENT_PAGE_CACHE_KEY)
+						.append("-")
 						.append(lang.getCode()).toString();
 						List<ContentDescription> contentList = null;
 						if(contents==null) {
@@ -655,8 +671,10 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 						for(ContentDescription contentDescription : descriptions) {
 							Language lang = contentDescription.getLanguage();
 							String key = new StringBuilder()
-							.append(Constants.CONTENT_CACHE_KEY)
 							.append(store.getId())
+							.append("_")
+							.append(Constants.CONTENT_CACHE_KEY)
+							.append("-")
 							.append(lang.getCode()).toString();
 							List<Content> contentList = null;
 							if(contents==null) {
@@ -695,8 +713,10 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 						for(CategoryDescription description : descriptions) {
 							Language lang = description.getLanguage();
 							String key = new StringBuilder()
-							.append(Constants.CATEGORIES_CACHE_KEY)
 							.append(store.getId())
+							.append("_")
+							.append(Constants.CATEGORIES_CACHE_KEY)
+							.append("-")
 							.append(lang.getCode()).toString();
 							
 							List<Category> cacheCategories = null;

@@ -87,8 +87,10 @@ public class ShoppingCategoryController {
 		//TODO Cache
 		StringBuilder subCategoriesCacheKey = new StringBuilder();
 		subCategoriesCacheKey
-		.append(Constants.SUBCATEGORIES_CACHE_KEY)
 		.append(store.getId())
+		.append("_")
+		.append(Constants.SUBCATEGORIES_CACHE_KEY)
+		.append("-")
 		.append(language.getCode());
 		
 		StringBuilder subCategoriesMissed = new StringBuilder();

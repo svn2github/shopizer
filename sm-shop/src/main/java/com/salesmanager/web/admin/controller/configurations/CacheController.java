@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
+import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
 
@@ -36,6 +37,11 @@ public class CacheController {
 	public String displayAccounts(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		this.setMenu(model, request);
+		
+		//get caches
+		CacheUtils cacheUtils = CacheUtils.getInstance();
+		
+
 
 		return ControllerConstants.Tiles.Configuration.cache;
 		
