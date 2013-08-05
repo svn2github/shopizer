@@ -44,6 +44,7 @@ public interface ControllerConstants
             final String digitalProduct="admin-products-digital";
             final String productImages="admin-products-images";
             final String customGroups="admin-products-groups";
+            final String customGroupsDetails="admin-products-groups-details";
         }
         
         interface User{

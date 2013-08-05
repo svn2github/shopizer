@@ -37,8 +37,7 @@ public class InitializationLoader {
 	private InitializationDatabase initializationDatabase;
 	
 	@Autowired
-	//private com.salesmanager.web.init.data.InitData initStoreData;//TODO specify implementation in spring file
-	private com.salesmanager.web.init.data.InitStoreData initStoreData;
+	private com.salesmanager.web.init.data.InitData initData;
 	
 	@Autowired
 	private SystemConfigurationService systemConfigurationService;
@@ -53,7 +52,6 @@ public class InitializationLoader {
 	protected GroupService   groupService;
 	
 	@PostConstruct
-	//@Transactional
 	public void init() {
 		
 		try {
@@ -61,11 +59,11 @@ public class InitializationLoader {
 			if (initializationDatabase.isEmpty()) {
 				LOGGER.info(String.format("%s : Shopizer database is empty, populate it....", "sm-shop"));
 		
-				initializationDatabase.populate("sm-shop");
+				 initializationDatabase.populate("sm-shop");
 				
 				
 				
-				//security groups and permissions
+				 //security groups and permissions
 
 				  Group gsuperadmin = new Group("SUPERADMIN");
 				  gsuperadmin.setGroupType(GroupType.ADMIN);
@@ -212,7 +210,7 @@ public class InitializationLoader {
 					}		
 			}
 			
-			initStoreData.initInitialData();
+			initData.initInitialData();
 			
 			configuration = new SystemConfiguration();
 			configuration.getAuditSection().setModifiedBy(SystemConstants.SYSTEM_USER);

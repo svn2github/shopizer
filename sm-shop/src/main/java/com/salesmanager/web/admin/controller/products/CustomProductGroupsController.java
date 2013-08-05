@@ -7,12 +7,16 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationship;
+import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationshipType;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.relationship.ProductRelationshipService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -55,6 +60,10 @@ public class CustomProductGroupsController {
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
+		ProductRelationship group = new ProductRelationship();
+		
+		
+		model.addAttribute("group", group);
 
 		return ControllerConstants.Tiles.Product.customGroups;
 		
@@ -77,12 +86,16 @@ public class CustomProductGroupsController {
 			List<ProductRelationship> relationships = productRelationshipService.getGroups(store);
 			
 			for(ProductRelationship relationship : relationships) {
+				
+				if(!"FEATURED_ITEM".equals(relationship.getCode())) {//do not add featured items
 
-				Map entry = new HashMap();
-				entry.put("id", relationship.getId());
-				entry.put("code", relationship.getCode());
-
-				resp.addDataEntry(entry);
+					Map entry = new HashMap();
+					entry.put("id", relationship.getId());
+					entry.put("code", relationship.getCode());
+	
+					resp.addDataEntry(entry);
+				
+				}
 				
 			}
 			
@@ -101,10 +114,46 @@ public class CustomProductGroupsController {
 
 	}
 	
-	public String saveCustomProductGroup(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@Secured("PRODUCTS")
+	@RequestMapping(value="/admin/products/groups/save.html", method=RequestMethod.POST)
+	public String saveCustomProductGroup(@ModelAttribute("group") ProductRelationship group, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		
-		return null;
+		//check if group already exist
+		
+		
+		if(StringUtils.isBlank(group.getCode())) {
+			FieldError fieldError = new FieldError("group","code",group.getCode(),false,null,null,"message.group.required");
+			result.addError(fieldError);
+			return ControllerConstants.Tiles.Product.customGroups;
+		}
+		
+		String[] messages = {"message.group.alerady.exists"};
+		
+		List<ProductRelationship> groups = productRelationshipService.getGroups(store);
+		for(ProductRelationship grp : groups) {
+			if(grp.getCode().equals(group.getCode())) {
+				String[] args = {group.getCode()};
+				FieldError fieldError = new FieldError("group","code",group.getCode(),false,messages,args,null);
+				result.addError(fieldError);
+			}
+		}
+		
+		if(result.hasErrors()) {
+			return ControllerConstants.Tiles.Product.customGroups;
+		}
+
+		group.setActive(true);
+		group.setStore(store);
+
+		
+		productRelationshipService.saveOrUpdate(group);
+		
+		model.addAttribute("success","success");
+		
+		return ControllerConstants.Tiles.Product.customGroups;
 		
 	}
 	

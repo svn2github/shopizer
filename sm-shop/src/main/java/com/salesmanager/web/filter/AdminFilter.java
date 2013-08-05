@@ -169,6 +169,12 @@ public class AdminFilter extends HandlerInterceptorAdapter {
 		List<Menu> list = new ArrayList<Menu>(menus.values());
 
 		request.setAttribute("MENULIST", list);
+		
+		for(Menu menu : list) {
+			System.out.println(menu.getCode());
+		}
+		
+		
 		request.setAttribute("MENUMAP", menus);
 		
 		

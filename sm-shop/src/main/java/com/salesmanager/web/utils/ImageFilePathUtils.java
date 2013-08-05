@@ -15,7 +15,7 @@ public class ImageFilePathUtils {
 	 * @return
 	 */
 	public static String buildStaticImageFilePath(MerchantStore store, String imageName) {
-		return new StringBuilder().append(store.getCode()).append("/").append(FileContentType.IMAGE.name()).append("/").append(imageName).toString();
+		return new StringBuilder().append(Constants.STATIC_URI).append("/").append(store.getCode()).append("/").append(FileContentType.IMAGE.name()).append("/").append(imageName).toString();
 	}
 	
 	/**
