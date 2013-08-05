@@ -108,7 +108,7 @@ public class ContentImageController {
 
 					@SuppressWarnings("rawtypes")
 					Map entry = new HashMap();
-					entry.put("picture", ImageFilePathUtils.buildStaticImageFilePath(store, name));
+					entry.put("picture", new StringBuilder().append(request.getContextPath()).append(ImageFilePathUtils.buildStaticImageFilePath(store, name)).toString());
 					entry.put("name", name);
 					entry.put("id", name);
 					resp.addDataEntry(entry);
