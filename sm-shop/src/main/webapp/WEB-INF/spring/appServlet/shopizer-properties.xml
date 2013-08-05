@@ -35,6 +35,9 @@
 	<util:list id="templates" value-type="java.lang.String">
 		<value>bootstrap</value>
     </util:list>
+    
+    <bean id="initData" class="com.salesmanager.web.init.data.InitStoreData"/>
+
 	
  
  

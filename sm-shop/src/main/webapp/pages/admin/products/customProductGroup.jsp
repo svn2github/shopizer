@@ -42,8 +42,8 @@
 					<div class="control-group">
 	                        <label class="required"><s:message code="label.product.customgroup.code" text="Custom product group code"/></label>
 	                        <div class="controls">
-	                                    <form:input id="customProductCode" cssClass="highlight" path="customProductCode"/>
-	                                    <span id="help-price" class="help-inline"><form:errors path="customProductCode" cssClass="error" /></span>
+	                                    <form:input id="code" cssClass="highlight" path="code"/>
+	                                    <span id="help-price" class="help-inline"><form:errors path="code" cssClass="error" /></span>
 	                        </div>
 	                 </div>
 					

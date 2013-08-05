@@ -63,7 +63,7 @@ response.setDateHeader ("Expires", -1);
 			<div class="row-fluid">
 				<div class="span12">
 					<ul class="nav nav-tabs home" id="product-tab">
-						<li class="active"><a href="#tab1">Featured items</a></li>
+						<li class="active"><a href="#tab1"><s:message code="menu.catalogue-featured" text="Featured items" /></a></li>
 						<li><a href="#tab2">Specials</a></li>
 						<li><a href="#tab3">Top sellers</a></li>
 					</ul>							 
