@@ -37,7 +37,7 @@ public class ProductRelationship extends SalesManagerEntity<Long, ProductRelatio
 	private Product product = null;
 	
 	@ManyToOne(targetEntity = Product.class)
-	@JoinColumn(name="RELATED_PRODUCT_ID",updatable=false,nullable=false) 
+	@JoinColumn(name="RELATED_PRODUCT_ID",updatable=false,nullable=true) 
 	private Product relatedProduct = null;
 	
 	@Column(name="CODE")

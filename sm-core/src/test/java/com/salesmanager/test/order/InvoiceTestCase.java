@@ -201,6 +201,8 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 		customer.setTelephone("444-555-6666");
 		customer.setCountry(country);
 		customer.setZone(zone);
+		customer.setDefaultLanguage(en);
+		
 		
 	    Delivery delivery = new Delivery();
 	    delivery.setAddress("358 Du Languadoc");

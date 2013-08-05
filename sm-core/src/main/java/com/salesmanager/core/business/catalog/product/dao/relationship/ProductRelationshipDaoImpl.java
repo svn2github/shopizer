@@ -1,6 +1,9 @@
 package com.salesmanager.core.business.catalog.product.dao.relationship;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Query;
 
@@ -94,8 +97,9 @@ public class ProductRelationshipDaoImpl extends SalesManagerEntityDaoImpl<Long, 
 	public List<ProductRelationship> getGroups(MerchantStore store) {
 
 		StringBuilder qs = new StringBuilder();
-		qs.append("select pr from ProductRelationship as pr ");
-		qs.append("where pr.store.id=:store");
+		qs.append("select distinct pr from ProductRelationship as pr ");
+		qs.append("where pr.store.id=:store ");
+		
 		qs.append("and pr.product=null");
 
 
@@ -109,9 +113,18 @@ public class ProductRelationshipDaoImpl extends SalesManagerEntityDaoImpl<Long, 
     	
     	@SuppressWarnings("unchecked")
 		List<ProductRelationship> relations =  q.getResultList();
+    	
+    	Map<String,ProductRelationship> relationMap = new HashMap<String,ProductRelationship>();
+    	for(ProductRelationship relationship : relations) {
+    		if(!relationMap.containsKey(relationship.getCode())) {
+    			relationMap.put(relationship.getCode(), relationship);
+    		}
+    	}
+    	
+    	List<ProductRelationship> returnList = new ArrayList<ProductRelationship>(relationMap.values());
 
     	
-    	return relations;
+    	return returnList;
 		
 
 	}
