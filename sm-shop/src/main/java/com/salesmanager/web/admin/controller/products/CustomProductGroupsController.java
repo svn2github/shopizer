@@ -3,6 +3,7 @@ package com.salesmanager.web.admin.controller.products;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +41,7 @@ import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.utils.LabelUtils;
 
 
 @Controller
@@ -55,6 +57,9 @@ public class CustomProductGroupsController {
 	
 	@Autowired
 	ProductRelationshipService productRelationshipService;
+	
+	@Autowired
+	LabelUtils messages;
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/groups/list.html", method=RequestMethod.GET)
@@ -96,8 +101,8 @@ public class CustomProductGroupsController {
 				if(!"FEATURED_ITEM".equals(relationship.getCode())) {//do not add featured items
 
 					Map entry = new HashMap();
-					entry.put("id", relationship.getId());
 					entry.put("code", relationship.getCode());
+					entry.put("active", relationship.isActive());
 	
 					resp.addDataEntry(entry);
 				
@@ -122,7 +127,7 @@ public class CustomProductGroupsController {
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/groups/save.html", method=RequestMethod.POST)
-	public String saveCustomProductGroup(@ModelAttribute("group") ProductRelationship group, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String saveCustomProductGroup(@ModelAttribute("group") ProductRelationship group, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
@@ -131,16 +136,19 @@ public class CustomProductGroupsController {
 		
 		
 		if(StringUtils.isBlank(group.getCode())) {
-			FieldError fieldError = new FieldError("group","code",group.getCode(),false,null,null,"message.group.required");
+			FieldError fieldError = new FieldError("group","code",group.getCode(),false,null,null,messages.getMessage("message.group.required",locale));
 			result.addError(fieldError);
 			return ControllerConstants.Tiles.Product.customGroups;
 		}
+		
+		//String msg = messages.getMessage("message.group.alerady.exists",locale);
+		//String[] messages = {msg};
 		
 		String[] messages = {"message.group.alerady.exists"};
 		
 		List<ProductRelationship> groups = productRelationshipService.getGroups(store);
 		for(ProductRelationship grp : groups) {
-			if(grp.getCode().equals(group.getCode())) {
+			if(grp.getCode().equalsIgnoreCase(group.getCode())) {
 				String[] args = {group.getCode()};
 				FieldError fieldError = new FieldError("group","code",group.getCode(),false,messages,args,null);
 				result.addError(fieldError);
@@ -207,15 +215,17 @@ public class CustomProductGroupsController {
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
 			//get groups
-			List<ProductRelationship> groups = productRelationshipService.getByGroup(store, groupCode);
+			List<ProductRelationship> groups = productRelationshipService.getGroups(store);
 			
 			for(ProductRelationship relation : groups) {
-				if("true".equals(active)) {
-					relation.setActive(true);
-				} else {
-					relation.setActive(false);
+				if(relation.getCode().equals(groupCode)) {
+					if("true".equals(active)) {
+						relation.setActive(true);
+					} else {
+						relation.setActive(false);
+					}
+					productRelationshipService.saveOrUpdate(relation);
 				}
-				productRelationshipService.saveOrUpdate(relation);
 			}
 			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 
