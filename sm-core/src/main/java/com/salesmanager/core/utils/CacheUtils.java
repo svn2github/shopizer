@@ -1,11 +1,15 @@
 package com.salesmanager.core.utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.infinispan.Cache;
 import org.infinispan.manager.DefaultCacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 
 
 public class CacheUtils {
@@ -17,7 +21,9 @@ public class CacheUtils {
 	
 	private static CacheUtils cacheUtils = null;
 
-	private String repositoryFileName = "cms/infinispan_configuration.xml";
+	private final static String repositoryFileName = "cms/infinispan_configuration.xml";
+	
+	private final static String KEY_DELIMITER = "_";
 	
 	private Cache<Object, Object> localCache = null;
 	
@@ -66,8 +72,25 @@ public class CacheUtils {
 		
 	}
 	
-	public Set<Object> getCacheKeys() throws Exception {
-		return localCache.keySet();
+	public List<String> getCacheKeys(MerchantStore store) throws Exception {
+		Set<Object> keys = localCache.keySet();
+		List<String> returnKeys = new ArrayList<String>();
+		for(Object key : keys) {
+			try {
+				String sKey = (String)key;
+				
+				// a key should be <storeId>_<rest of the key>
+				int delimiterPosition = sKey.indexOf(KEY_DELIMITER);
+				String keyRemaining = sKey.substring(delimiterPosition+1);
+				returnKeys.add(keyRemaining);
+
+			} catch (Exception e) {
+				LOGGER.equals("key " + key + " cannot be converted to a String or parsed");
+			}
+
+		}
+		
+		return returnKeys;
 	}
 	
 	public void shutDownCache() throws Exception {
