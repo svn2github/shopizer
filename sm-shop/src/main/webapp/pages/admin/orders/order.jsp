@@ -13,11 +13,32 @@
 <script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
 <script src="<c:url value="/resources/js/functions.js" />"></script>
 
+<script src="<c:url value="/resources/js/jquery.showLoading.min.js" />"></script>
+<link href="<c:url value="/resources/showLoading.css" />" rel="stylesheet">	
+
 <script>
+
+
+	$(document).ready(function(){ 
+	
+		$("#refundButton").click(function() {
+			$('#refundModal').modal();
+		}); 
+		
+		$(".close-modal").click(function() {
+			 location.href="<c:url value="/admin/orders/editOrder.html" />?id=<c:out value="${order.order.id}"/>"";
+		}); 
+		
+		
+	}); 
+
+
     $(function() {
 
         $("#refund").submit(function() {
- 
+ 			$('#refundModal').showLoading();
+ 			$(".alert-success").hide();
+ 			$(".alert-error").hide();
             var data = $(this).serializeObject();
             $.ajax({
                 'type': 'POST',
@@ -26,15 +47,15 @@
                 'data': JSON.stringify(data),
                 'dataType': 'json',
                 'success': function(result) {
-                	alert(result);
-                   // if (result.loggedIn) {
-                   //     $( "#dialog" ).dialog( "close" );
-                   //     location.href="postLogin";
-                   // } else {
-                   //     $(".error").remove();
-                   //     $("#login").prepend("<div class='error'>Login Failed.
-                   //                            Username or Password is incorrect.</div>");
-                   // }
+                   $('#refund').hideLoading();
+                   var response = result.response;
+                   if (response.status==0) {
+                        $(".alert-success").show();
+                        $(".cancel-modal").hide();
+                        $(".close-modal").show();
+                   } else { 
+                        $(".alert-error").html(response.statusMessage);
+                   }
                 }
             });
  
@@ -357,10 +378,14 @@
 
 <div id="refundModal"  class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+          <button type="button" class="close close-modal" data-dismiss="modal" aria-hidden="true">X</button>
           <h3 id="myModalLabel"><s:message code="label.order.refund" text="Apply refund"/></h3>
   </div>
     <div class="modal-body">
+    
+    	  <div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>   
+	      <div id="store.error" class="alert alert-error" style="display:none;"><s:message code="message.error" text="An error occured"/></div>
+
            <p>
            		<s:message code="label.order.total" text="Total" />: <strong><c:out value="${order.order.total}"/></strong>
            		<span id="refundMessage" style="display:none;"><s:message code="" text=""/><span id="refundAmount"></span></span>
@@ -376,58 +401,10 @@
              
     </div>  
     <div class="modal-footer">
-           <button class="btn" data-dismiss="modal" aria-hidden="true"><s:message code="button.label.cancel" text="Cancel" /></button>
-           <button class="btn btn-success" id="closeModal" data-dismiss="modal" aria-hidden="true" style="display:none;"><s:message code="button.label.close" text="Close" /></button>
+           <button class="btn cancel-modal" data-dismiss="modal" aria-hidden="true"><s:message code="button.label.cancel" text="Cancel" /></button>
+           <button class="btn btn-success close-modal" id="closeModal" data-dismiss="modal" aria-hidden="true" style="display:none;"><s:message code="button.label.close" text="Close" /></button>
     </div>
 </div>
 
 
-<script type="text/javascript">
-	$(document).ready(function(){ 
-	
-		$("#refundButton").click(function() {
-			$('#refundModal').modal();
-		}); 
-	}); 
-	
-	function openRefund() {
-		
-		//$('#refundModal').modal('show');
-	}
-	
-	function refundOrder(id, amount){
-	
-			var postParameters = 'id='+id+'amount=' + amount;
-		
-			$.ajax({
-			  type: 'POST',
-			  url: '<c:url value="/admin/orders/refundOrder.html"/>?' + postParameters ,
-			  dataType: 'json',
-			  success: function(response){
-		
-					var status = isc.XMLTools.selectObjects(response, "/response/status");
-					if(status==0 || status ==9999) {
-						var amount = isc.XMLTools.selectObjects(response, "/response/amount");
-						//block refund button
-						$('#refundButton').addClass('disabled');
-						//display close
-						$('#closeModal').show();
-						//display confirmation
-						$('#refundAmount').html(amount);
-						$('#refundMessage').show();
-					} else {
-
-						//$(".alert-error").show();
-					}
-		
-			  
-			  },
-			  error: function(xhr, textStatus, errorThrown) {
-			  	alert('error ' + errorThrown);
-			  }
-			  
-			});
-	}
-	
-</script>
      			     

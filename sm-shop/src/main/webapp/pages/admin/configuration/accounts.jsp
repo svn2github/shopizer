@@ -19,8 +19,6 @@
 				<div class="sm-ui-component">
 					<h3><s:message code="label.configuration.options" text="Configuration options" /></h3>	
 					<br/>
-					<!--<div class="box">-->
-						<!--<span class="box-title"><p><s:message code="label.configuration.configurations" text="Configurations" /></p></span>-->
 						<c:url var="saveAccountsConfiguration" value="/admin/configuration/saveConfiguration.html"/>
 							<form:form method="POST" modelAttribute="configuration" action="${saveAccountsConfiguration}">
 								<form:errors path="*"  cssClass="alert alert-error" element="div" />
@@ -49,7 +47,6 @@
 					                  
 
             	 			</form:form>
-			<!--</div>-->
    		</div>
    	</div>
 </div>
