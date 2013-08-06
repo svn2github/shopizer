@@ -94,6 +94,46 @@ public class ProductRelationshipDaoImpl extends SalesManagerEntityDaoImpl<Long, 
 	}
 	
 	@Override
+	public List<ProductRelationship> getByGroup(MerchantStore store, String group) {
+		//QDSL cannot interpret the following query, that is why it is in native format
+		
+		StringBuilder qs = new StringBuilder();
+		qs.append("select pr from ProductRelationship as pr ");
+		qs.append("left join fetch pr.product p ");
+		qs.append("left join fetch pr.relatedProduct rp ");
+		
+		
+		qs.append("left join fetch rp.descriptions rpd ");
+		qs.append("left join fetch rp.images pd ");
+		qs.append("left join fetch rp.merchantStore rpm ");
+		qs.append("left join fetch rpm.currency rpmc ");
+		qs.append("left join fetch rp.availabilities pa ");
+		qs.append("left join fetch pa.prices pap ");
+		qs.append("left join fetch pap.descriptions papd ");
+
+		qs.append("where pr.code=:code ");
+		qs.append("and rpd.language.id=:langId");
+
+
+
+    	String hql = qs.toString();
+		Query q = super.getEntityManager().createQuery(hql);
+
+    	q.setParameter("code", group);
+
+
+
+    	
+    	@SuppressWarnings("unchecked")
+		List<ProductRelationship> relations =  q.getResultList();
+
+    	
+    	return relations;
+		
+
+	}
+	
+	@Override
 	public List<ProductRelationship> getGroups(MerchantStore store) {
 
 		StringBuilder qs = new StringBuilder();

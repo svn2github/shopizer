@@ -59,7 +59,7 @@ public class ProductRelationshipServiceImpl extends
 	
 	@Override
 	public void deleteGroup(MerchantStore store, String groupName) throws ServiceException {
-		List<ProductRelationship> entities = this.getByGroup(store, groupName);
+		List<ProductRelationship> entities = productRelationshipDao.getByGroup(store, groupName);
 		for(ProductRelationship relation : entities) {
 			this.delete(relation);
 		}
@@ -67,7 +67,7 @@ public class ProductRelationshipServiceImpl extends
 	
 	@Override
 	public void deactivateGroup(MerchantStore store, String groupName) throws ServiceException {
-		List<ProductRelationship> entities = this.getByGroup(store, groupName);
+		List<ProductRelationship> entities = productRelationshipDao.getByGroup(store, groupName);
 		for(ProductRelationship relation : entities) {
 			relation.setActive(false);
 			this.saveOrUpdate(relation);

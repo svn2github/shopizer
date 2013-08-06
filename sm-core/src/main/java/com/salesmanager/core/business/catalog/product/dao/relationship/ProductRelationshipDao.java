@@ -24,6 +24,8 @@ public interface ProductRelationshipDao extends SalesManagerEntityDao<Long, Prod
 
 	List<ProductRelationship> getGroups(MerchantStore store);
 
+	List<ProductRelationship> getByGroup(MerchantStore store, String group);
+
 
 
 }
