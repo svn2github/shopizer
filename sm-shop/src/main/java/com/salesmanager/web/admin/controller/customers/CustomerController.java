@@ -121,6 +121,7 @@ public class CustomerController {
 		Pattern pattern = Pattern.compile(email_regEx);
 		
 		Language language = (Language)request.getAttribute("LANGUAGE");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		List<Language> languages = languageService.getLanguages();
 		
 		model.addAttribute("languages",languages);
@@ -212,6 +213,16 @@ public class CustomerController {
 
 		if( customer.getId()!=null && customer.getId().longValue()>0 ) {
 			newCustomer = customerService.getById( customer.getId() );
+			
+			if(newCustomer==null) {
+				return "redirect:/admin/customers/list.html";
+			}
+			
+			if(newCustomer.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+				return "redirect:/admin/customers/list.html";
+			}
+			
+			
 			
 		}else{
 			//  new customer set marchant_Id

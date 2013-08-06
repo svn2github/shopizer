@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +25,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -99,12 +97,27 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		List<Country> countries = countryService.getCountries(language);
 		if(orderId!=null && orderId!=0) {		//edit mode		
 			
+			
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+			
+			
+			
 			Set<OrderProduct> orderProducts = null;
 			Set<OrderTotal> orderTotal = null;
 			Set<OrderStatusHistory> orderHistory = null;
 		
 			Order dbOrder = orderService.getById(orderId);
-//			System.out.println( "\n\n***********order null = " + (dbOrder ==null ) + " ,  orderid = " + orderId );
+
+			if(dbOrder==null) {
+				return "redirect:/admin/orders/list.html";
+			}
+			
+			
+			if(dbOrder.getMerchant().getId().intValue()!=store.getId().intValue()) {
+				return "redirect:/admin/orders/list.html";
+			}
+			
+			
 			order.setId( orderId );
 		
 			if( dbOrder.getDatePurchased() !=null ){
