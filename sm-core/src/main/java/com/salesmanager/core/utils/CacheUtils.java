@@ -81,8 +81,13 @@ public class CacheUtils {
 				
 				// a key should be <storeId>_<rest of the key>
 				int delimiterPosition = sKey.indexOf(KEY_DELIMITER);
-				String keyRemaining = sKey.substring(delimiterPosition+1);
-				returnKeys.add(keyRemaining);
+				
+				if(delimiterPosition>0 && Character.isDigit(sKey.charAt(0))) {
+				
+					String keyRemaining = sKey.substring(delimiterPosition+1);
+					returnKeys.add(keyRemaining);
+				
+				}
 
 			} catch (Exception e) {
 				LOGGER.equals("key " + key + " cannot be converted to a String or parsed");
