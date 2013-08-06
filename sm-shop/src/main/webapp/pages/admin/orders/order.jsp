@@ -14,7 +14,7 @@
 <script src="<c:url value="/resources/js/functions.js" />"></script>
 
 <script src="<c:url value="/resources/js/jquery.showLoading.min.js" />"></script>
-<link href="<c:url value="/resources/showLoading.css" />" rel="stylesheet">	
+<link href="<c:url value="/resources/css/showLoading.css" />" rel="stylesheet">	
 
 <script>
 
@@ -23,10 +23,12 @@
 	
 		$("#refundButton").click(function() {
 			$('#refundModal').modal();
+ 			$(".alert-success").hide();
+ 			$(".alert-error").hide();
 		}); 
 		
 		$(".close-modal").click(function() {
-			 location.href="<c:url value="/admin/orders/editOrder.html" />?id=<c:out value="${order.order.id}"/>"";
+			 location.href="<c:url value="/admin/orders/editOrder.html" />?id=<c:out value="${order.order.id}"/>";
 		}); 
 		
 		
@@ -47,7 +49,7 @@
                 'data': JSON.stringify(data),
                 'dataType': 'json',
                 'success': function(result) {
-                   $('#refund').hideLoading();
+                   $('#refundModal').hideLoading();
                    var response = result.response;
                    if (response.status==0) {
                         $(".alert-success").show();
@@ -55,6 +57,7 @@
                         $(".close-modal").show();
                    } else { 
                         $(".alert-error").html(response.statusMessage);
+                        $(".alert-error").show();
                    }
                 }
             });

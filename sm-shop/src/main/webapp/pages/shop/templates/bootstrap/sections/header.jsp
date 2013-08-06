@@ -32,15 +32,15 @@ response.setDateHeader ("Expires", -1);
                 'data': JSON.stringify(data),
                 'dataType': 'json',
                 'success': function(result) {
-                   //$('#signinPane').hideLoading();
-                   //var response = result.response;
-                   //if (response.status==0) {
-                   //     location.href="<c:url value="/customer/dashboard.html" />";
-                   //} else {
+                   $('#signinPane').hideLoading();
+                   var response = result.response;
+                   if (response.status==0) {
+                        location.href="<c:url value="/customer/dashboard.html" />";
+                   } else {
                 	   
-                   //     $("#loginError").html("<s:message code="message.username.password" text="Login Failed. Username or Password is incorrect."/>");
-                   //     $("#loginError").show();
-                   //}
+                        $("#loginError").html("<s:message code="message.username.password" text="Login Failed. Username or Password is incorrect."/>");
+                        $("#loginError").show();
+                   }
                 }
             });
  

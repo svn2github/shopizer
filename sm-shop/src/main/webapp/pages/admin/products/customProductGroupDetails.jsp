@@ -30,7 +30,7 @@
 								<div class="sm-ui-component">
 								
 				<h3>
-						<s:out value="${group}"/>
+						<c:out value="${group}"/>
 				</h3>	
 				<br/>
 				<div class="alert alert-info">
