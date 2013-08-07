@@ -83,4 +83,7 @@ public interface ProductRelationshipService extends
 	void activateGroup(MerchantStore store, String groupName)
 			throws ServiceException;
 
+	List<ProductRelationship> getByGroup(MerchantStore store, String groupName,
+			Language language) throws ServiceException;
+
 }

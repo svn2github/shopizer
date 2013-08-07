@@ -127,6 +127,13 @@ public class ProductRelationshipServiceImpl extends
 	}
 	
 	@Override
+	public List<ProductRelationship> getByGroup(MerchantStore store, String groupName, Language language) throws ServiceException {
+
+		return productRelationshipDao.getByType(store, groupName, language);
+
+	}
+	
+	@Override
 	public List<ProductRelationship> getByType(MerchantStore store, Product product, ProductRelationshipType type) throws ServiceException {
 		
 
