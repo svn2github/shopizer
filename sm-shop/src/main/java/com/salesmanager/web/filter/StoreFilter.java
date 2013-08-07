@@ -481,15 +481,13 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 					
 					contents = this.getContent(store, language);
 
-						//put in cache
-						cache.putInCache(contents, contentKey.toString());
+					//put in cache
+					cache.putInCache(contents, contentKey.toString());
 						
 					} else {
-						
 						//put in missed cache
 						cache.putInCache(new Boolean(true), contentKeyMissed.toString());
-						
-					}
+				}
 					
 				
 	
@@ -557,8 +555,8 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			
 			if(store.isUseCache()) {
 			
-			//get from the cache
-			objects = (Map<String, List<Category>>) cache.getFromCache(contentKey.toString());
+				//get from the cache
+				objects = (Map<String, List<Category>>) cache.getFromCache(contentKey.toString());
 			
 				Boolean missedContent = null;
 				if(objects==null) {

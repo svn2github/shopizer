@@ -2,6 +2,12 @@ package com.salesmanager.web.entity.catalog;
 
 import java.io.Serializable;
 
+/**
+ * A Product is used in the web application shopping section
+ * This object is a simplification of com.salesmanager.core.business.catalog.product.model.Product
+ * @author casams1
+ *
+ */
 public class Product implements Serializable {
 	
 
@@ -9,6 +15,9 @@ public class Product implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	/**
+	 * this is the final price
+	 */
 	private String productPrice = "0";
 	private String dateAvailable;
 	private String sku;
@@ -23,6 +32,9 @@ public class Product implements Serializable {
 	private String id;
 	
 	private boolean discounted = false;
+	/**
+	 * when discounted this is the original price
+	 */
 	private String originalProductPrice = null;
 	
 	private String image;
