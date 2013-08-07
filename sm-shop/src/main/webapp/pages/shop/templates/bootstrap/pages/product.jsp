@@ -1,111 +1,10 @@
-<!DOCTYPE html>
-<html lang="en"><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-    <title>BITSY SHOP</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">    
-    <link href="product_detail_files/bootstrap.css" rel="stylesheet">      
-    <link href="product_detail_files/jquery.css" rel="stylesheet">      
-    <link href="product_detail_files/main.css" rel="stylesheet">
-	<link href="product_detail_files/css.css" rel="stylesheet" type="text/css">
-  
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-       
-    </head>
-    <body data-twttr-rendered="true">		
-        <div class="container">
-			<div class="row" id="top-bar">
-				<div class="span9">
-					<ul id="links" class="nav nav-pills pull-left">
-						<li class="active"><a href="http://wbpreview.com/previews/WB0M3G9S1/index.html" title="Bitsy Shop">Home</a></li>
-						<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html" title="All specials">Specials</a></li>
-						<li><a href="http://wbpreview.com/previews/WB0M3G9S1/contact.html" title="Contact">Contact</a></li>						
-					</ul>
-				</div>
-				<div class="span3">
-					<ul id="languages" class="nav nav-pills pull-right">
-						<li class="active"><a href="#" title="English">en</a></li>
-						<li><a href="#" title="Français (French)">fr</a></li>
-					</ul>
-					<ul id="curency" class="nav nav-pills pull-right">
-						<li class="active"><a href="#" title="Dollar">$</a></li>
-						<li><a href="#" title="Euro">€</a></li>
-						<li><a href="#" title="Pound">£</a></li>
-					</ul>						
-				</div>
-			</div>
-            <!-- Start Header-->
-            <div class="row show-grid">
-                <div class="span3 logo">
-                    <a href="http://wbpreview.com/previews/WB0M3G9S1/index.html">
-                        <img alt="" src="product_detail_files/logo.png">
-                    </a>                    
-                </div>
-                <div class="span5 offset4">
-					<div class="row">
-						<div class="span3"><div class="account"><a href="#myModal" role="button" data-toggle="modal">YOUR ACCOUNT</a><br>Welcome Cuongv</div></div>
-						<div class="span2"><div class="cart"><a href="http://wbpreview.com/previews/WB0M3G9S1/cart.html">SHOPPING CART</a><br>2 items</div></div>
-					</div>
-                </div>
-            </div>
-            <!-- End Header-->
-            <!-- Start Navigation -->
-            <div class="row">
-                <div class="span12">
-                    <div class="navbar" id="main-menu">
-                        <div class="navbar-inner">
-                            <div class="container">
-                                <div class="nav-collapse">
-                                    <ul class="nav pull-right" id="nav">                                        
-                                        <li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">Men</a></li>
-                                        <li class="dropdown">
-                                            <a href="http://wbpreview.com/previews/WB0M3G9S1/products.html" class="dropdown-toggle" data-toggle="dropdown">Women <b class="caret"></b></a>
-                                            <ul class="dropdown-menu">
-                                                <li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">Nullam semper elementum</a></li>
-                                                <li class="divider"></li>
-                                                <li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">Phasellus ultricies</a></li>
-												<li class="divider"></li>
-												<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">Donec laoreet dui</a></li>
-                                            </ul>
-                                        </li>                                        
-                                        <li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">Shoes</a></li>
-                                        <li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">Hangbag</a></li>
-                                        <li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">Hot Trend</a></li>
-                                        <li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">Best Seller</a></li>
-                                        <li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">Top Seller</a></li>
-                                        <li class="search_form">
-											<form method="POST" class="navbar-search pull-left">
-												<input class="input-medium search-query" placeholder="search..." type="text">
-											</form>
-										</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>                   
-                </div>
-            </div>
-            <!-- End Navigation -->
-            <div class="row">
-                <div class="span12">
-                    <div class="row">
-						<div class="span12">
-							<ul class="breadcrumb">
-								<li>
-									<a href="#"><i class="icon-home"></i></a> <span class="divider">/</span>
-								</li>
-								<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">Product</a> <span class="divider">/</span></li>
-								<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">Women</a> <span class="divider">/</span></li>
-								<li class="active">Detail</li>
-							</ul>
-						</div>
-					</div>
-                </div>
-            </div>
-            <div class="row">
+
+
+			<jsp:include page="/pages/shop/templates/bootstrap/sections/breadcrumb.jsp" />
+            
+            
+            <div class="row-fluid">
+
                 <div class="span3">
 					<ul class="nav nav-list">
 						<li class="nav-header">+ SUB CATEGORIES</li>
@@ -124,6 +23,8 @@
 						<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">- Yamaha</a></li>
 					</ul>
                 </div>
+                
+                
                 <div class="span9">
                     <div class="row">
                         <div class="span9">
@@ -292,71 +193,10 @@ incidunt ut labore et dolore magnam aliquam quaerat voluptatem</div>
                     </div>
                 </div>
             </div>
-            <footer>
-                <hr>
-                <div class="row">                   
-                    <div class="span3">
-						<div class="company_info">
-							<h4 class="logo-title"><span>BITSY</span>SHOP</h4>
-							<p>
-								74/6 Nguyen Van Thoai<br>
-								Da Nang, Viet Nam<br>
-								Tel: +84 905276796
-							</p>
-						</div>
-                    </div>
-					 <div class="span3">   
-						<h4>Information</h4>
-                        <ul>
-							<li><a href="http://wbpreview.com/previews/WB0M3G9S1/about.html">About Us</a></li>
-							<li><a href="#">Delivery Information</a></li>
-							<li><a href="#">Privacy Policy</a></li>
-							<li><a href="#">Terms &amp; Conditions</a></li>
-						</ul>
-                    </div>
-                    <div class="span3">
-                        <h4>My Account</h4>
-                        <ul>
-							<li><a href="#">My Account</a></li>
-							<li><a href="#">Order History</a></li>
-							<li><a href="#">Wish List</a></li>
-							<li><a href="#">Newsletter</a></li>
-						</ul>
-                    </div>
-                    <div class="span3">
-                        <h4 class="logo-title">Connect with us</h4>
-                        <a href="#">Facebook</a>
-                        <br>
-                        <a href="#">Twitter</a>
-                    </div>				
-                </div>
-            </footer>
-        </div>		
-		<div class="modal" id="myModal" style="display:none;">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-				<h2 class="title" id="myModalLabel">Existing Users Login</h2>
-			</div>
-			<div class="modal-body">
-				<form action="#" method="POST" class="form">
-					<fieldset>
-						<label>Username</label>
-						<div class="div_text">
-							<div class="input-prepend"><span class="add-on"><i class="icon-user"></i></span><input name="username" class="span6" type="text"></div>
-						</div>			
-						<label>Password</label>
-						<div class="div_text">
-							<div class="input-prepend"><span class="add-on"><i class="icon-lock"></i></span><input name="password" class="span6" type="password"></div>
-						</div>
-						<div class="button_div"><input name="rememberme" id="rememberme" value="forever" type="checkbox">&nbsp;Remember me</div>												
-						<div class="pull-right"><br><strong>Forgot password?</strong>&nbsp;<a href="#">Click here to reset</a> - <strong>New User?</strong>&nbsp;<a href="#">Click here to register</a></div>							
-					</fieldset>
-				</form>
-			</div>
-			<div class="modal-footer">				
-				<button class="btn">Login</button>
-			</div>
-		</div>    
+            
+
+        		
+    
         <script src="product_detail_files/jquery-1.js"></script>		
 		<script src="product_detail_files/bootstrap.js"></script>
 		<script src="product_detail_files/jquery.js"></script>
@@ -380,4 +220,3 @@ incidunt ut labore et dolore magnam aliquam quaerat voluptatem</div>
 			});
 		</script>
     
-</body></html>
