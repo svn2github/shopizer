@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationship;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationshipType;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
@@ -255,6 +257,63 @@ public class CustomProductGroupsController {
 		model.addAttribute("categories", categories);
 		return ControllerConstants.Tiles.Product.customGroupsDetails;
 		
+	}
+	
+	
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Secured("PRODUCTS")
+	@RequestMapping(value="/admin/products/group/details/paging.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String pageProducts(HttpServletRequest request, HttpServletResponse response) {
+		
+		String code = request.getParameter("code");
+		AjaxResponse resp = new AjaxResponse();
+		
+		try {
+			
+
+			
+			Language language = (Language)request.getAttribute("LANGUAGE");
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+			
+
+			List<ProductRelationship> relationships = productRelationshipService.getByGroup(store, code, language);
+			
+			for(ProductRelationship relationship : relationships) {
+				
+				Product product = relationship.getRelatedProduct();
+				Map entry = new HashMap();
+				entry.put("relationshipId", relationship.getId());
+				entry.put("productId", product.getId());
+				
+				ProductDescription description = product.getDescriptions().iterator().next();
+				Set<ProductDescription> descriptions = product.getDescriptions();
+				for(ProductDescription desc : descriptions) {
+					if(desc.getLanguage().getId().intValue()==language.getId().intValue()) {
+						description = desc;
+					}
+				}
+				
+				entry.put("name", description.getName());
+				entry.put("sku", product.getSku());
+				entry.put("available", product.isAvailable());
+				resp.addDataEntry(entry);
+				
+			}
+			
+
+			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_SUCCESS);
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while paging products", e);
+			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		return returnString;
+
+
 	}
 	
 	
