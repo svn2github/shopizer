@@ -59,3 +59,5 @@ public interface ProductService extends SalesManagerEntityService<Long, Product>
 	ProductList getProductList(ProductCriteria criteria,
 			List<Long> categoryIds, Language language) throws ServiceException;
 	
+}
+	
