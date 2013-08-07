@@ -15,6 +15,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 
 
+
 public interface ProductService extends SalesManagerEntityService<Long, Product> {
 
 	void addProductDescription(Product product, ProductDescription description) throws ServiceException;
@@ -58,5 +59,3 @@ public interface ProductService extends SalesManagerEntityService<Long, Product>
 	ProductList getProductList(ProductCriteria criteria,
 			List<Long> categoryIds, Language language) throws ServiceException;
 	
-
-}

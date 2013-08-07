@@ -67,9 +67,7 @@ public class ProductPriceUtils {
 				if(price.isDefaultPrice()) {
 					defaultPrice = price.getProductPriceAmount();
 				}
-				
 			}
-			
 		}
 		
 		return defaultPrice;
