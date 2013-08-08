@@ -58,6 +58,8 @@ public interface ProductService extends SalesManagerEntityService<Long, Product>
 
 	ProductList getProductList(ProductCriteria criteria,
 			List<Long> categoryIds, Language language) throws ServiceException;
+
+	Product getBySeUrl(MerchantStore store, String seUrl, Locale locale);
 	
 }
 	

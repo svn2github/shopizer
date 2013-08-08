@@ -27,6 +27,58 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		super();
 	}
 	
+	@Override
+	public Product getBySeUrl(MerchantStore store,String seUrl, Locale locale) {
+		
+		
+		List regionList = new ArrayList();
+		regionList.add("*");
+		regionList.add(locale.getCountry());
+		
+
+		StringBuilder qs = new StringBuilder();
+		qs.append("select distinct p from Product as p ");
+		qs.append("join fetch p.availabilities pa ");
+		qs.append("join fetch p.descriptions pd ");
+		qs.append("join fetch p.merchantStore pm ");
+		qs.append("left join fetch pa.prices pap ");
+		qs.append("left join fetch pap.descriptions papd ");
+		
+		
+		//images
+		qs.append("left join fetch p.images images ");
+		//options
+		qs.append("left join fetch p.attributes pattr ");
+		qs.append("left join fetch pattr.productOption po ");
+		qs.append("left join fetch po.descriptions pod ");
+		qs.append("left join fetch pattr.productOptionValue pov ");
+		qs.append("left join fetch pov.descriptions povd ");
+		qs.append("left join fetch p.relationships pr ");
+		//other lefts
+		qs.append("left join fetch p.manufacturer manuf ");
+		qs.append("left join fetch p.type type ");
+		qs.append("left join fetch p.taxClass tx ");
+		
+		qs.append("where p.id=:pid and pa.region in (:lid) ");
+		qs.append("and pd.seUrl=:seUrl ");
+		qs.append("and p.available=true and p.dateAvailable<=:dt ");
+
+
+    	String hql = qs.toString();
+		Query q = super.getEntityManager().createQuery(hql);
+
+
+    	q.setParameter("lid", regionList);
+    	q.setParameter("dt", new Date());
+    	q.setParameter("seUrl", seUrl);
+
+    	Product p = (Product)q.getSingleResult();
+
+
+		return p;
+		
+	}
+	
 	@SuppressWarnings("rawtypes")
 	@Override
 	public List<Product> getProductsForLocale(MerchantStore store, Set categoryIds, Language language, Locale locale) {
@@ -689,7 +741,6 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 				//images
 				qs.append("left join fetch p.images images ");
 				//options
-				qs.append("left join fetch p.images images ");
 				qs.append("left join fetch p.attributes pattr ");
 				qs.append("left join fetch pattr.productOption po ");
 				qs.append("left join fetch po.descriptions pod ");

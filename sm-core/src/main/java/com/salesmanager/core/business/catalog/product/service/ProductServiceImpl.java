@@ -124,6 +124,11 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		}
 		return null;
 	}
+	
+	@Override
+	public Product getBySeUrl(MerchantStore store, String seUrl, Locale locale) {
+		return productDao.getBySeUrl(store, seUrl, locale);
+	}
 
 	@Override
 	public Product getProductForLocale(long productId, Language language, Locale locale)

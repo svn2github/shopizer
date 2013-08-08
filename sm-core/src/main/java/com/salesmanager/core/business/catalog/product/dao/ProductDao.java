@@ -46,5 +46,7 @@ public interface ProductDao extends SalesManagerEntityDao<Long, Product> {
 
 	ProductList getProductListByCategories(ProductCriteria criteria,
 			Set<Long> categoryIds, Language language);
+
+	Product getBySeUrl(MerchantStore store, String seUrl, Locale locale);
 	
 }
