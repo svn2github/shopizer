@@ -77,7 +77,7 @@ public class ODSInvoiceModule implements InvoiceModule {
 			Map<String,Country> countries = countryService.getCountriesMap(language);
 			
 			//get default template
-			String template = new StringBuilder().append(INVOICE_TEMPLATE).append("_").append(language.getCode()).append(INVOICE_TEMPLATE_EXTENSION).toString();
+			String template = new StringBuilder().append(INVOICE_TEMPLATE).append("_").append(language.getCode().toLowerCase()).append(INVOICE_TEMPLATE_EXTENSION).toString();
 			
 			//try by language
 			InputStream is = null;
