@@ -185,7 +185,7 @@ public class ShoppingCategoryController {
 			}
 			
 			//get the category by code
-			Category cat = categoryService.getByCode(store, category);
+			Category cat = categoryService.getBySeUrl(merchantStore, category);
 			
 			//TODO
 			if(cat==null) {
@@ -272,12 +272,13 @@ public class ShoppingCategoryController {
 			}
 			
 			//get the category by code
-			Category cat = categoryService.getByCode(store, category);
+			Category cat = categoryService.getBySeUrl(merchantStore, category);
 			
 			//TODO
 			if(cat==null) {
 				//log & return null
 				response.sendError(503, "Category is null");//TODO localized message
+				return null;
 			}
 			
 			String lineage = new StringBuilder().append(cat.getLineage()).append(cat.getId()).append("/").toString();
