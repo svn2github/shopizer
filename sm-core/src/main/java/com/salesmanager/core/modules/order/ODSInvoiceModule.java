@@ -3,11 +3,9 @@ package com.salesmanager.core.modules.order;
 import java.awt.Graphics2D;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +18,8 @@ import org.jopendocument.dom.spreadsheet.Sheet;
 import org.jopendocument.dom.spreadsheet.SpreadSheet;
 import org.jopendocument.model.OpenDocument;
 import org.jopendocument.renderer.ODTRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.lowagie.text.Document;
@@ -29,12 +29,10 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfDocument;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
-import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.model.OrderTotal;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
-import com.salesmanager.core.business.order.model.orderproduct.OrderProductAttribute;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -46,7 +44,8 @@ import com.salesmanager.core.utils.ProductUtils;
 
 public class ODSInvoiceModule implements InvoiceModule {
 	
-	private final static String INVOICE_TEMPLATE = "templates/invoice/Invoice.ods";
+	private final static String INVOICE_TEMPLATE = "templates/invoice/Invoice";
+	private final static String INVOICE_TEMPLATE_EXTENSION = ".ods";
 	private final static String TEMP_INVOICE_SUFFIX_NAME = "_invoice.ods";
 	private final static int ADDRESS_ROW_START = 2;
 	private final static int ADDRESS_ROW_END = 5;
@@ -55,6 +54,8 @@ public class ODSInvoiceModule implements InvoiceModule {
 	private final static int BILLTO_ROW_END = 13;
 	
 	private final static int PRODUCT_ROW_START = 16;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger( ODSInvoiceModule.class );
 	
 	@Autowired
 	private ZoneService zoneService;
@@ -76,7 +77,17 @@ public class ODSInvoiceModule implements InvoiceModule {
 			Map<String,Country> countries = countryService.getCountriesMap(language);
 			
 			//get default template
-			InputStream is = getClass().getClassLoader().getResourceAsStream(INVOICE_TEMPLATE);
+			String template = new StringBuilder().append(INVOICE_TEMPLATE).append("_").append(language.getCode()).append(INVOICE_TEMPLATE_EXTENSION).toString();
+			
+			//try by language
+			InputStream is = null;
+			try {
+				is = getClass().getClassLoader().getResourceAsStream(template);
+			} catch (Exception e) {
+				LOGGER.warn("Cannot open template " + template);
+				is = getClass().getClassLoader().getResourceAsStream(new StringBuilder().append(INVOICE_TEMPLATE).append(INVOICE_TEMPLATE_EXTENSION).toString());
+			}
+			
 			File file = new File(order.getId() + "_working");
 			OutputStream os = new FileOutputStream(file);
 			IOUtils.copy(is, os);
@@ -363,7 +374,7 @@ public class ODSInvoiceModule implements InvoiceModule {
 			 document.close();
 			 outputFile.delete();//remove temp file
 			 file.delete();//remove spreadsheet file
-
+			 is.close();
 			 return outputStream;
 		
 		
