@@ -73,7 +73,7 @@ public class ShoppingCategoryController {
 			//TODO not found object
 		}
 		
-		com.salesmanager.web.entity.catalog.Category categoryProxy = catalogUtils.buildCategoryProxy(category, store, locale);
+		com.salesmanager.web.entity.catalog.Category categoryProxy = catalogUtils.buildProxyCategory(category, store, locale);
 		
 
 		//meta information
@@ -81,6 +81,7 @@ public class ShoppingCategoryController {
 		pageInformation.setPageDescription(categoryProxy.getMetaDescription());
 		pageInformation.setPageKeywords(categoryProxy.getKeyWords());
 		pageInformation.setPageTitle(categoryProxy.getTitle());
+		pageInformation.setPageUrl(categoryProxy.getFriendlyUrl());
 		
 		request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
 		
@@ -335,7 +336,7 @@ public class ShoppingCategoryController {
 		List<com.salesmanager.web.entity.catalog.Category> subCategoryProxies = new ArrayList<com.salesmanager.web.entity.catalog.Category>();
 		for(Category sub : subCategories) {
 			
-			com.salesmanager.web.entity.catalog.Category cProxy =  catalogUtils.buildCategoryProxy(sub, store, locale);
+			com.salesmanager.web.entity.catalog.Category cProxy =  catalogUtils.buildProxyCategory(sub, store, locale);
 			subCategoryProxies.add(cProxy);
 		}
 		

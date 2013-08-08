@@ -58,7 +58,7 @@ public class CatalogUtils {
 		
 	}
 	
-	public com.salesmanager.web.entity.catalog.Category buildCategoryProxy(Category category, MerchantStore store, Locale locale) {
+	public com.salesmanager.web.entity.catalog.Category buildProxyCategory(Category category, MerchantStore store, Locale locale) {
 		
 		com.salesmanager.web.entity.catalog.Category categoryProxy = new com.salesmanager.web.entity.catalog.Category();
 		if(category.getDescriptions()!=null && category.getDescriptions().size()>0) {

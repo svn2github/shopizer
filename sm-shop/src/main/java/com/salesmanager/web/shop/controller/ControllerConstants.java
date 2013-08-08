@@ -22,6 +22,10 @@ public interface ControllerConstants
             final String category="category";
         }
         
+        interface Product{
+            final String product="product";
+        }
+        
         interface Customer{
             final String customer="customer";
         }

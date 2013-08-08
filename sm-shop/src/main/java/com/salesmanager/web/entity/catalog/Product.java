@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author casams1
  *
  */
-public class Product implements Serializable {
+public class Product extends CatalogEntity implements Serializable {
 	
 
 	/**
@@ -24,11 +24,6 @@ public class Product implements Serializable {
 	private boolean productVirtual;
 	private String type;
 	private String manufacturer;
-	private String name;
-	private String description;
-	private String friendlyUrl;
-	private String keywords;
-	private String title;
 	private String id;
 	
 	private boolean discounted = false;
@@ -38,7 +33,6 @@ public class Product implements Serializable {
 	private String originalProductPrice = null;
 	
 	private String image;
-	
 	private String imageUrl;
 
 
@@ -80,36 +74,7 @@ public class Product implements Serializable {
 	public void setManufacturer(String manufacturer) {
 		this.manufacturer = manufacturer;
 	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public String getFriendlyUrl() {
-		return friendlyUrl;
-	}
-	public void setFriendlyUrl(String friendlyUrl) {
-		this.friendlyUrl = friendlyUrl;
-	}
-	public String getKeywords() {
-		return keywords;
-	}
-	public void setKeywords(String keywords) {
-		this.keywords = keywords;
-	}
-	public String getTitle() {
-		return title;
-	}
-	public void setTitle(String title) {
-		this.title = title;
-	}
+
 	public void setImage(String image) {
 		this.image = image;
 	}
