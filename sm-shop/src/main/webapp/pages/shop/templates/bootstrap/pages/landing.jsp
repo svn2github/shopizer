@@ -74,7 +74,8 @@ response.setDateHeader ("Expires", -1);
 								<!--<div class="span12">-->
 									<ul class="thumbnails product-list">
 										<!-- Iterate over featuredItems -->
-										<c:forEach items="${featuredItems}" var="product">
+										<sm:shopProductGroup groupName="LIQUIDATION"/>
+										<c:forEach items="${requestScope.LIQUIDATION}" var="product">
 											<li class="span3">
 												<div class="product-box">                                        
 													<a href="http://#WB0M3G9S1/product_detail.html"><h4><c:out value="${product.name}"/></h4></a>
