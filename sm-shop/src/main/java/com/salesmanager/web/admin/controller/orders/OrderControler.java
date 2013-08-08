@@ -420,9 +420,12 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		attachment.append(order.getBilling().getName());
 		attachment.append(".pdf");
 		
+		String fileName = attachment.toString();
+		fileName = fileName.replaceAll("\\s+", "-");
+		
 		
 		response.setContentType("application/pdf");      
-		response.setHeader("Content-Disposition", attachment.toString().replaceAll("\\s", "-")); 
+		response.setHeader("Content-Disposition", fileName); 
 		
 		
 		
