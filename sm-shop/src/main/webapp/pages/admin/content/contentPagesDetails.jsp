@@ -76,10 +76,10 @@
 			
 			<c:choose>
 				<c:when test="${menu.boxes!=null}">
-						<c:url var="saveContent" value="/admin/content/boxes/saveContent.html" />
+						<c:url var="saveContent" value="/admin/content/boxes/save.html" />
 				</c:when>
 				<c:otherwise>
-						<c:url var="saveContent" value="/admin/content/pages/saveContent.html" />
+						<c:url var="saveContent" value="/admin/content/pages/save.html" />
 				</c:otherwise>
 			</c:choose>
 			

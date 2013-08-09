@@ -268,16 +268,16 @@ response.setDateHeader ("Expires", -1);
   				window.location='<c:url value="/admin/content/createContentImages.html" />';
 			});
 			$("#content-pages-link").click(function() {
-  				window.location='<c:url value="/admin/content/pages/listContent.html" />';
+  				window.location='<c:url value="/admin/content/pages/list.html" />';
 			});
 			$("#content-pages-create-link").click(function() {
-  				window.location='<c:url value="/admin/content/pages/createPage.html" />';
+  				window.location='<c:url value="/admin/content/pages/create.html" />';
 			});
 			$("#content-boxes-link").click(function() {
-  				window.location='<c:url value="/admin/content/contentBoxes.html" />';
+  				window.location='<c:url value="/admin/content/boxes/list.html" />';
 			});
 			$("#content-boxes-create-link").click(function() {
-  				window.location='<c:url value="/admin/content/boxes/createPage.html" />';
+  				window.location='<c:url value="/admin/content/boxes/create.html" />';
 			});
 			$("#content-files-link").click(function() {
   				window.location='<c:url value="/admin/content/static/contentFiles.html" />';

@@ -33,16 +33,16 @@
            			<c:when test="${menu.boxes!=null}">
            			
            			    <c:set value="/admin/content/page.html?contentType=BOXES" var="pagingUrl" scope="request" />
-						<c:set value="/admin/content/removeContent.html" var="removeUrl" scope="request" />
-						<c:set value="/admin/content/boxes/listContent.html" var="refreshUrl" scope="request" />
-						<c:set value="/admin/content/boxes/contentDetails.html" var="editUrl" scope="request"/>
+						<c:set value="/admin/content/remove.html" var="removeUrl" scope="request" />
+						<c:set value="/admin/content/boxes/list.html" var="refreshUrl" scope="request" />
+						<c:set value="/admin/content/boxes/details.html" var="editUrl" scope="request"/>
 						<c:set var="componentTitleKey" value="label.content.boxes" scope="request" />
            			</c:when>
            			 <c:otherwise>
            			    <c:set value="/admin/content/page.html?contentType=PAGE" var="pagingUrl" scope="request" />
-						<c:set value="/admin/content/removeContent.html" var="removeUrl" scope="request" />
-						<c:set value="/admin/content/pages/listContent.html" var="refreshUrl" scope="request" />
-						<c:set value="/admin/content/pages/contentDetails.html" var="editUrl" scope="request"/>
+						<c:set value="/admin/content/remove.html" var="removeUrl" scope="request" />
+						<c:set value="/admin/content/pages/list.html" var="refreshUrl" scope="request" />
+						<c:set value="/admin/content/pages/details.html" var="editUrl" scope="request"/>
 						<c:set var="componentTitleKey" value="label.content.pages" scope="request" />
            			</c:otherwise>
 
