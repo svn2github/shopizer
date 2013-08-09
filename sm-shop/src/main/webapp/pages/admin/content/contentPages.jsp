@@ -12,7 +12,7 @@
            		
            		<h3>
            		<c:choose>
-           			<c:when test="${menu.boxes!=null}">
+           			<c:when test="${boxes==true}">
            				<s:message code="label.content.boxes" text="Content boxes" />
            			</c:when>
            			<c:otherwise>
@@ -30,7 +30,7 @@
 				<br />
 				
 			  <c:choose>
-           			<c:when test="${menu.boxes!=null}">
+           			<c:when test="${boxes==true}">
            			
            			    <c:set value="/admin/content/page.html?contentType=BOXES" var="pagingUrl" scope="request" />
 						<c:set value="/admin/content/remove.html" var="removeUrl" scope="request" />
