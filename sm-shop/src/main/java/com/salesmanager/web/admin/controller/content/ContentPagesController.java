@@ -185,7 +185,7 @@ public class ContentPagesController {
 	@SuppressWarnings({ "unchecked"})
 	@Secured("CONTENT")
 	@RequestMapping(value="/admin/content/page.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String pageStaticContent(@ModelAttribute String contentType, HttpServletRequest request, HttpServletResponse response) {
+	public @ResponseBody String pageStaticContent(@RequestParam("contentType") String contentType, HttpServletRequest request, HttpServletResponse response) {
 		AjaxResponse resp = new AjaxResponse();
 
 		try {
@@ -199,7 +199,7 @@ public class ContentPagesController {
 
 			
 			ContentType cType = ContentType.PAGE;
-			if(ContentType.BOX.equals(contentType)) {
+			if(ContentType.BOX.name().equals(contentType)) {
 				cType = ContentType.BOX;
 			} 
 			List<Content> contentList = contentService.listByType(cType, store);

@@ -64,7 +64,7 @@ public class ContentBoxesController {
 		
 		setMenu(model,request);
 
-		model.addAttribute("menu.boxes", true);
+		model.addAttribute("boxes", true);
 		return ControllerConstants.Tiles.Content.contentPages;
 		
 		
