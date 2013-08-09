@@ -139,7 +139,7 @@
 "menu":{
 "code":"content",
 "icon":"icon-pencil", 
-"url":"/admin/content/pages/listContent.html", 
+"url":"/admin/content/pages/list.html", 
 "role":"CONTENT",
 "order":4,
 "menus":[
@@ -147,10 +147,10 @@
 	    "code":"content-pages","url":"","role":"CONTENT","order":0,"menus":
 		[
 			{"menu":{
-				"code":"content-pages","url":"/admin/content/pages/listContent.html","role":"CONTENT","order":0
+				"code":"content-pages","url":"/admin/content/pages/list.html","role":"CONTENT","order":0
 			}},
 			{"menu":{
-				"code":"content-pages-create","url":"/admin/content/pages/addContent.html","role":"CONTENT","order":1
+				"code":"content-pages-create","url":"/admin/content/pages/create.html","role":"CONTENT","order":1
 			}}
 		]
 	
@@ -159,10 +159,10 @@
 	    "code":"content-boxes","url":"","role":"CONTENT","order":1,"menus":
 		[
 			{"menu":{
-				"code":"content-boxes","url":"/admin/content/boxes/listContent.html","role":"CONTENT","order":0
+				"code":"content-boxes","url":"/admin/content/boxes/list.html","role":"CONTENT","order":0
 			}},
 			{"menu":{
-				"code":"content-boxes-create","url":"/admin/content/boxes/addContent.html","role":"CONTENT","order":1
+				"code":"content-boxes-create","url":"/admin/content/boxes/create.html","role":"CONTENT","order":1
 			}}
 		]
 	
