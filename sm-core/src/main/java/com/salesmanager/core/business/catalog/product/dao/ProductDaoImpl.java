@@ -59,7 +59,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		qs.append("left join fetch p.type type ");
 		qs.append("left join fetch p.taxClass tx ");
 		
-		qs.append("where p.id=:pid and pa.region in (:lid) ");
+		qs.append("where pa.region in (:lid) ");
 		qs.append("and pd.seUrl=:seUrl ");
 		qs.append("and p.available=true and p.dateAvailable<=:dt ");
 
