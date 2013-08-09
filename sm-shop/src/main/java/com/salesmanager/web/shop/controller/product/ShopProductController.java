@@ -1,5 +1,6 @@
 package com.salesmanager.web.shop.controller.product;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -12,12 +13,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationship;
+import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationshipType;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
+import com.salesmanager.core.business.catalog.product.service.relationship.ProductRelationshipService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.shop.controller.ControllerConstants;
@@ -27,19 +29,20 @@ import com.salesmanager.web.utils.CatalogUtils;
 public class ShopProductController {
 	
 	@Autowired
-	ProductService productService;
+	private ProductService productService;
 	
 	@Autowired
-	CatalogUtils catalogUtils;
+	private CatalogUtils catalogUtils;
+	
+	@Autowired
+	private ProductRelationshipService productRelationshipService;
 	
 	
 
 	@RequestMapping("/shop/product/{friendlyUrl}.html")
-	public String displayCategory(@PathVariable final String friendlyUrl, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	public String displayProduct(@PathVariable final String friendlyUrl, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
-		
-		
-		
+
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 
 		Language language = (Language)request.getAttribute("LANGUAGE");
@@ -64,8 +67,19 @@ public class ShopProductController {
 		request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
 		
 		//related items
+		List<ProductRelationship> relatedItems = productRelationshipService.getByType(store, product, ProductRelationshipType.RELATED_ITEM);
+		if(relatedItems!=null) {
+			List<com.salesmanager.web.entity.catalog.Product> items = new ArrayList<com.salesmanager.web.entity.catalog.Product>();
+			for(ProductRelationship relationship : relatedItems) {
+				Product relatedProduct = relationship.getRelatedProduct();
+				com.salesmanager.web.entity.catalog.Product proxyProduct = catalogUtils.buildProxyProduct(relatedProduct, store, locale);
+				items.add(proxyProduct);
+			}
+			model.addAttribute("relatedProducts",items);		
+		}
 		
-		//reviews
+		
+		//TODO reviews
 		
 		
 			

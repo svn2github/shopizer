@@ -59,7 +59,7 @@ public class ContentBoxesController {
 	
 	
 	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/boxes/listContent.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/content/boxes/list.html", method=RequestMethod.GET)
 	public String listContentBoxes(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
@@ -71,7 +71,7 @@ public class ContentBoxesController {
 	}
 	
 	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/boxes/createBox.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/content/boxes/create.html", method=RequestMethod.GET)
 	public String createBox(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		model.addAttribute("menu.boxes", true);
 		setMenu(model,request);
@@ -106,7 +106,7 @@ public class ContentBoxesController {
 	}
 	
 	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/boxes/contentDetails.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/content/boxes/details.html", method=RequestMethod.GET)
 	public String getContentDetails(@RequestParam("id") Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		model.addAttribute("menu.boxes", true);
 		setMenu(model,request);
@@ -160,7 +160,7 @@ public class ContentBoxesController {
 	
 	
 	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/boxes/saveContent.html", method=RequestMethod.POST)
+	@RequestMapping(value="/admin/content/boxes/save.html", method=RequestMethod.POST)
 	public String saveContent(@Valid @ModelAttribute Content content, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		model.addAttribute("menu.boxes", true);
 		setMenu(model,request);

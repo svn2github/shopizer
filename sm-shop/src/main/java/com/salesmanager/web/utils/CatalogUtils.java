@@ -1,6 +1,7 @@
 package com.salesmanager.web.utils;
 
 import java.util.Locale;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.utils.ProductPriceUtils;
+import com.salesmanager.web.entity.catalog.Image;
 
 @Component
 public class CatalogUtils {
@@ -37,9 +39,25 @@ public class CatalogUtils {
 			proxyProduct.setImage(image.getProductImage());
 			String imagePath = ImageFilePathUtils.buildProductImageFilePath(store, product.getSku(), image.getProductImage());
 			proxyProduct.setImageUrl(imagePath);
+			
+			//other images
+			Set<ProductImage> images = product.getImages();
+			if(images!=null) {
+				
+				Image[] imageArray = new Image[images.size()];
+				int imageCount = 0;
+				for(ProductImage img : images) {
+					
+					Image prdImage = new Image();
+					prdImage.setImageName(img.getProductImage());
+					String imgPath = ImageFilePathUtils.buildProductImageFilePath(store, product.getSku(), img.getProductImage());
+					prdImage.setImageUrl(imgPath);
+					
+					imageArray[imageCount] = prdImage;
+					imageCount ++;
+				}
+			}
 		}
-		
-		
 		
 		proxyProduct.setId(String.valueOf(product.getId()));
 		proxyProduct.setSku(product.getSku());

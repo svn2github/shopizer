@@ -50,7 +50,7 @@ public class ContentPagesController {
 	
 	
 	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/pages/listContent.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/content/pages/list.html", method=RequestMethod.GET)
 	public String listContentPages(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
@@ -61,7 +61,7 @@ public class ContentPagesController {
 	}
 	
 	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/pages/createPage.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/content/pages/create.html", method=RequestMethod.GET)
 	public String createPage(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
@@ -92,7 +92,7 @@ public class ContentPagesController {
 	}
 	
 	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/pages/contentDetails.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/content/pages/details.html", method=RequestMethod.GET)
 	public String getContentDetails(@RequestParam("id") Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
@@ -139,7 +139,7 @@ public class ContentPagesController {
 	
 	
 	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/removeContent.html", method=RequestMethod.POST, produces="application/json")
+	@RequestMapping(value="/admin/content/remove.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeContent(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String id = request.getParameter("id");
 
@@ -243,7 +243,7 @@ public class ContentPagesController {
 	
 	
 	@Secured("CONTENT")
-	@RequestMapping(value="/admin/content/pages/saveContent.html", method=RequestMethod.POST)
+	@RequestMapping(value="/admin/content/pages/save.html", method=RequestMethod.POST)
 	public String saveContent(@Valid @ModelAttribute Content content, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
