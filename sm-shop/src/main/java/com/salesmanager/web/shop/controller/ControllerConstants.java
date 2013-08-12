@@ -30,6 +30,10 @@ public interface ControllerConstants
             final String customer="customer";
         }
         
+        interface Content{
+            final String content="content";
+        }
+        
 
         
     }
