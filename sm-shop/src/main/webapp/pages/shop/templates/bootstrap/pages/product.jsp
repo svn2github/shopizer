@@ -5,29 +5,12 @@
             
             <div class="row-fluid">
 
-                <div class="span3">
-					<ul class="nav nav-list">
-						<li class="nav-header">+ SUB CATEGORIES</li>
-						<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">- Nullam semper elementum</a></li>
-						<li class="active"><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">- Phasellus ultricies</a></li>
-						<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">- Donec laoreet dui</a></li>
-						<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">- Nullam semper elementum</a></li>
-						<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">- Phasellus ultricies</a></li>
-						<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">- Donec laoreet dui</a></li>
-					</ul>
-					<ul class="nav nav-list below">
-						<li class="nav-header">+ MANUFACTURES</li>
-						<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">- Adidas</a></li>
-						<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">- Nike</a></li>
-						<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">- Dunlop</a></li>
-						<li><a href="http://wbpreview.com/previews/WB0M3G9S1/products.html">- Yamaha</a></li>
-					</ul>
-                </div>
+
                 
                 
-                <div class="span9">
-                    <div class="row">
-                        <div class="span9">
+                <div class="span12">
+                    <div class="row-fluid">
+                        <div class="span12">
                             <h2 class="title">+ Women</h2>
 							<hr>
                         </div>
