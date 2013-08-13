@@ -131,7 +131,7 @@ $(document).ready(function() {
 									<input type="hidden" name="customRegionName" value="${customRegion.customRegionName}" />
 			                        <div class="form-actions">
 			                            <div class="pull-right">
-			                                    <button type="submit" class="btn"><s:message code="label.generic.remove" text="Remove"/></button>
+			                                    <button type="submit" class="btn-danger"><i class="icon-trash icon-large"></i><s:message code="label.generic.remove" text="Remove"/></button>
 			                            </div>
 			                   		</div>
 		
