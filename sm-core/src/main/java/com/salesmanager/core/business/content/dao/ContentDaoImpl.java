@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
+import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.content.model.content.Content;
 import com.salesmanager.core.business.content.model.content.ContentDescription;
 import com.salesmanager.core.business.content.model.content.ContentType;
@@ -228,6 +229,38 @@ public class ContentDaoImpl extends SalesManagerEntityDaoImpl<Long, Content> imp
 		Content content = query.singleResult(qContent);
 		
 		return content;
+	}
+	
+	@Override
+	public ContentDescription getBySeUrl(MerchantStore store,String seUrl) {
+		
+		QContent qContent = QContent.content;
+		QContentDescription qContentDescription = QContentDescription.contentDescription;
+		
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		
+		query.from(qContent)
+			.leftJoin(qContent.descriptions, qContentDescription).fetch()
+			.leftJoin(qContent.merchantStore).fetch()
+			.where(qContentDescription.seUrl.eq(seUrl)
+			.and(qContent.merchantStore.id.eq(store.getId()))
+			.and(qContent.visible.eq(true))
+		);
+		
+
+		
+		Content content = query.uniqueResult(qContent);
+		
+
+		if(content!=null) {
+				return content.getDescription();
+		}
+		
+		return null;
+		
+		
 	}
 	
 

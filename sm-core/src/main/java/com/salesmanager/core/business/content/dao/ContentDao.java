@@ -43,6 +43,8 @@ public interface ContentDao extends SalesManagerEntityDao<Long, Content> {
 
 	Content getByLanguage(Long id, Language language) throws ServiceException;
 
+	ContentDescription getBySeUrl(MerchantStore store, String seUrl);
+
 
 
 }

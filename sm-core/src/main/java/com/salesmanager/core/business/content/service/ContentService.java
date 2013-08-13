@@ -145,4 +145,6 @@ public interface ContentService
 
 	Content getByLanguage(Long id, Language language) throws ServiceException;
 
+	ContentDescription getBySeUrl(MerchantStore store, String seUrl);
+
 }

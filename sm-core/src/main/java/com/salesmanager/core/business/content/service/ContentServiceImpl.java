@@ -400,6 +400,11 @@ public class ContentServiceImpl
         	return contentFileManager.getFileNames(merchantStoreCode, fileContentType);
         }
 	}
+	
+	@Override
+	public ContentDescription getBySeUrl(MerchantStore store,String seUrl) {
+		return contentDao.getBySeUrl(store, seUrl);
+	}
 
     
 
