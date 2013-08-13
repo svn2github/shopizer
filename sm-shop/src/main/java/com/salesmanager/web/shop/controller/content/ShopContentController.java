@@ -27,7 +27,7 @@ public class ShopContentController {
 	private ContentService contentService;
 
 	
-	@RequestMapping("/shop/content/{friendlyUrl}.html")
+	@RequestMapping("/shop/pages/{friendlyUrl}.html")
 	public String displayContent(@PathVariable final String friendlyUrl, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);

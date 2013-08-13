@@ -80,7 +80,7 @@ public class ShopProductController {
 		
 		//related items
 		List<ProductRelationship> relatedItems = productRelationshipService.getByType(store, product, ProductRelationshipType.RELATED_ITEM);
-		if(relatedItems!=null) {
+		if(relatedItems!=null && relatedItems.size()>0) {
 			List<com.salesmanager.web.entity.catalog.Product> items = new ArrayList<com.salesmanager.web.entity.catalog.Product>();
 			for(ProductRelationship relationship : relatedItems) {
 				Product relatedProduct = relationship.getRelatedProduct();
