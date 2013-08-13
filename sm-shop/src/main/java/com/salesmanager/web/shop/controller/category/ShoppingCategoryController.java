@@ -35,16 +35,16 @@ import com.salesmanager.web.utils.LocaleUtils;
 public class ShoppingCategoryController {
 	
 	@Autowired
-	LanguageService languageService;
+	private LanguageService languageService;
 	
 	@Autowired
-	CategoryService categoryService;
+	private CategoryService categoryService;
 	
 	@Autowired
-	ProductService productService;
+	private ProductService productService;
 	
 	@Autowired
-	CatalogUtils catalogUtils;
+	private CatalogUtils catalogUtils;
 	
 	
 	/**
