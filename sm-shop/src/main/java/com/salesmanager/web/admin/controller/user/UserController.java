@@ -87,6 +87,10 @@ public class UserController {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
+	public final static String QUESTION_1 = "1";
+	public final static String QUESTION_2 = "2";
+	public final static String QUESTION_3 = "3";
+	
 	@Secured("STORE_ADMIN")
 	@RequestMapping(value="/admin/users/list.html", method=RequestMethod.GET)
 	public String displayUsers(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
@@ -698,10 +702,10 @@ public class UserController {
 							return resp.toString();
 						}
 					
-						Map entry = new HashMap();
-						entry.put("1", dbUser.getQuestion1());
-						entry.put("2", dbUser.getQuestion1());
-						entry.put("3", dbUser.getQuestion1());
+						Map<String,String> entry = new HashMap<String,String>();
+						entry.put(QUESTION_1, dbUser.getQuestion1());
+						entry.put(QUESTION_2, dbUser.getQuestion1());
+						entry.put(QUESTION_3, dbUser.getQuestion1());
 						resp.addDataEntry(entry);
 						resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 				
@@ -728,9 +732,9 @@ public class UserController {
 	public @ResponseBody String resetPasswordSecurityQtn(@ModelAttribute(value="userReset") UserReset userReset,HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		
 		AjaxResponse resp = new AjaxResponse();
-		String question1 = request.getParameter("question1");
-		String question2 = request.getParameter("question2");
-		String question3 = request.getParameter("question3");
+		//String question1 = request.getParameter("question1");
+		//String question2 = request.getParameter("question2");
+		//String question3 = request.getParameter("question3");
 
 		String answer1 = request.getParameter("answer1");
 		String answer2 = request.getParameter("answer2");
@@ -741,7 +745,7 @@ public class UserController {
 			HttpSession session = request.getSession();
 			User dbUser = userService.getByUserName((String) session.getAttribute("username_reset"));
 			if(dbUser!= null){
-				if(dbUser.getQuestion1().equals(question1.trim()) && dbUser.getQuestion2().equals(question2.trim()) && dbUser.getQuestion3().equals(question3.trim())  && dbUser.getAnswer1().equals(answer1.trim()) && dbUser.getAnswer2().equals(answer2.trim()) && dbUser.getAnswer3().equals(answer3.trim()))
+				if(dbUser.getAnswer1().equals(answer1.trim()) && dbUser.getAnswer2().equals(answer2.trim()) && dbUser.getAnswer3().equals(answer3.trim()))
 				{
 					String tempPass = userReset.generateRandomString();
 					String pass = passwordEncoder.encodePassword(tempPass, null);
