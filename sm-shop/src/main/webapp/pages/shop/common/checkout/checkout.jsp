@@ -4,7 +4,7 @@
 
 				
 
-				<div class="span8">
+		<div class="span8">
 
 					<div class="box">
 						<span class="box-title">
@@ -110,29 +110,136 @@
 			</div>
 			<div class="row-fluid">
 
-  			<div class="control-group"> 
-				<label>Country</label>
-    				<div class="controls"> 
-      					<input type="text" class="input-large" id="country">
-    				</div> 
-  			</div>
+	  			<div class="control-group"> 
+					<label>Country</label>
+	    				<div class="controls"> 
+	      					<input type="text" class="input-large" id="country">
+	    				</div> 
+	  			</div>
+	
+	  			<div class="control-group"> 
+					<label>Phone</label>
+	    				<div class="controls"> 
+	      					<input type="text" class="input-large" id="phone">
+	    				</div> 
+	  			</div>
 
-  			<div class="control-group"> 
-				<label>Phone</label>
-    				<div class="controls"> 
-      					<input type="text" class="input-large" id="phone">
-    				</div> 
-  			</div>
 
-
-			<label class="checkbox"> <input type="checkbox" id="useAddress"> Ship to this address</label>
+				<label class="checkbox" checked> <input type="checkbox" id="useAddress"> Ship to this address</label>
 			</div>
 
 
 			
 
 
-					</div>
+		</div>
+
+		<div class="span8">
+
+					<div class="box">
+						<span class="box-title">
+							<p><font color="#FF8C00">Shipping information</font></p>
+						</span>
+
+						
+			<div class="row-fluid">
+
+				<div class="span4">
+  				   <div class="control-group"> 
+					<label>First</label>
+    					<div class="controls"> 
+      					<input type="text" class="input-medium" id="first"> 
+    					</div> 
+  				   </div> 
+				</div>
+
+
+				<div class="span4">
+  				   <div class="control-group"> 
+					<label>Last</label>
+    					<div class="controls"> 
+      					<input type="text" class="input-medium" id="last"> 
+    					</div> 
+  				   </div> 
+				</div>
+
+			</div>
+
+
+
+			<div class="row-fluid">
+
+
+
+  			<div class="control-group"> 
+				<label>Address</label>
+    				<div class="controls"> 
+      					<input type="text" class="input-xlarge" id="address1">
+    				</div> 
+  			</div> 
+
+			</div>
+
+			<div class="row-fluid">
+
+
+			<div class="span4">
+  			<div class="control-group"> 
+				<label>City</label>
+    				<div class="controls"> 
+      					<input type="text" class="input-medium" id="city">
+    				</div> 
+  			</div>
+			</div>
+
+
+
+			<div class="span4">
+  			<div class="control-group"> 
+				<label>State / Province</label>
+    				<div class="controls"> 
+      					<input type="text" class="input-medium" id="state">
+    				</div> 
+  			</div>
+			</div>
+
+
+			<div class="span4">
+  			<div class="control-group"> 
+				<label>Postal code</label>
+    				<div class="controls"> 
+      					<input type="text" class="input-small" id="postalcode">
+    				</div> 
+  			</div>
+			</div>
+
+			</div>
+			<div class="row-fluid">
+
+	  			<div class="control-group"> 
+					<label>Country</label>
+	    				<div class="controls"> 
+	      					<input type="text" class="input-large" id="country">
+	    				</div> 
+	  			</div>
+	
+	  			<div class="control-group"> 
+					<label>Phone</label>
+	    				<div class="controls"> 
+	      					<input type="text" class="input-large" id="phone">
+	    				</div> 
+	  			</div>
+
+
+			</div>
+
+
+			
+
+
+		</div>
+
+
 
 
 					<br/>

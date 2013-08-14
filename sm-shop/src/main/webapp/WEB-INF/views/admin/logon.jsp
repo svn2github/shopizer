@@ -119,17 +119,17 @@
 
 				<script language="javascript">
 				
-				function doAjaxPost() {
+				function getUserInformation() {
 					 // get the form values 
-				$('#securityQtn1Select').empty();
-				$('#securityQtn2Select').empty();
-				$('#securityQtn3Select').empty();
-				$('#answer1').val('');
-				$('#answer2').val('');
-				$('#answer3').val('');
-				var userName = $('#username').val();
+					$('#securityQtn1Select').empty();
+					$('#securityQtn2Select').empty();
+					$('#securityQtn3Select').empty();
+					$('#answer1').val('');
+					$('#answer2').val('');
+					$('#answer3').val('');
+					var userName = $('#username').val();
 		        if(!userName){
-				    alert("please enter username");
+				    alert("<s:message code="message.username.required" text="User name is required" />");
 			    }else{
 					$.ajax({
 							type: 'POST',
@@ -137,20 +137,23 @@
 							url: "<c:url value="/admin/users/resetPassword.html" />",
 							data: "username="+ userName ,
 							success: function(response) { 
-								 console.log("responcesajid "+response);
-								 console.log(response);
 								 var msg = isc.XMLTools.selectObjects(response, "/response/statusMessage");
 								 var status = isc.XMLTools.selectObjects(response, "/response/status");
 								 if(status==0 || status ==9999) {
 									 $("#getPassword").modal('hide'),
 									 $('#getSecurityQtn').modal({
-    								 backdrop: true
+    								 	backdrop: true
     						   		 })
     						
     								 var data = isc.XMLTools.selectObjects(response, "/response/data");
     						  	     if(data && data.length>0) {
-    								 	console.log(data[0]);
-    								 	$.each(data[0], function(key, value) {   
+    						  	     
+    						  	     	$('#question1').text(data[0].1);
+		    						  	$('#question2').text(data[0].2);
+		    						  	$('#question3').text(data[0].3);
+    						  	     
+    								 	//console.log(data[0]);
+    								 	/*$.each(data[0], function(key, value) {   
     							    	 	$('#securityQtn1Select')
     							        	 	.append($("<option></option>")
     							        	 	.attr("value",key)
@@ -163,13 +166,11 @@
 							        	 	     .append($("<option></option>")
 							        			 .attr("value",key)
 							        			 .text(value)); 
-    								 	   	   });
-    								 } else {
-
-			    					 }
+    								 	 });*/
+    								 } 
 								} else {
 									if(msg!=null && msg !='') {
-										alert("! " + msg);
+										alert(msg);
 									}
 								}
 								
@@ -185,9 +186,9 @@
 				
 				
 				function doSecurityQtnSubmit() {
-					var question1 = $('#securityQtn1Select').val();
-					var question2 = $('#securityQtn2Select').val();
-					var question3 = $('#securityQtn3Select').val();
+					//var question1 = $('#securityQtn1Select').val();
+					//var question2 = $('#securityQtn2Select').val();
+					//var question3 = $('#securityQtn3Select').val();
 					
 					//console.log("question1"+question1);
 					//console.log("question2"+question2);
@@ -211,7 +212,7 @@
 									type: 'POST',
 									dataType: "json",
 									url: "<c:url value="/admin/users/resetPasswordSecurityQtn.html" />",
-									data: "question1="+ question1+"&question2="+ question2+"&question3="+ question3+"&answer1="+ answer1+"&answer2="+ answer2+"&answer3="+ answer3,
+									data: "answer1="+ answer1+"&answer2="+ answer2+"&answer3="+ answer3,
 									success: function(response) { 
 										 //console.log("responcesajid "+response);
 										 //console.log(response);
@@ -225,10 +226,13 @@
 					 						 $("#finaltext").val (msg);
 											 var div = document.getElementById('finaltext1');
 											 div.innerHTML =  msg;		    						
-		    								 /* var data = isc.XMLTools.selectObjects(response, "/response/data");
+		    								 var data = isc.XMLTools.selectObjects(response, "/response/data");
 		    						  	     if(data && data.length>0) {
-		    								 	console.log(data[0]);
-		    								 	$.each(data[0], function(key, value) {   
+		    						  	     	//$('#question1').text(data[0].1);
+		    						  	     	//$('#question2').text(data[0].2);
+		    						  	     	//$('#question3').text(data[0].3);
+		    								 	//console.log(data[0]);
+		    								 	/*$.each(data[0], function(key, value) {   
 		    							    	 	$('#securityQtn1Select')
 		    							        	 	.append($("<option></option>")
 		    							        	 	.attr("value",key)
@@ -272,12 +276,6 @@
 	$(document)
 			.ready(
 					function() {
-					
-					
-						//$('#getPassword').modal('hide');
-						//alert('After modal');
-						
-
 						
 						$('#changePassword').click(function() {
 							//$('#getPassword').show();
@@ -428,37 +426,10 @@
 						</div>
 					</div>
 
-					<!--
-		<form id="loginform" name="loginform" method="post" action="">
-		<div style="margin-top:20px;">
 
-			<p><label for="name"><s:message code="label.username" text="Username"/>:</label> <input name="username" id="username" class="form-login" title="<s:message code="label.username" text="Username"/>" value="" size="30" maxlength="60" /></p>
-			<p><label for="pass"><s:message code="label.password" text="Password"/>:</label> <input name="password" id="password" type="password" class="form-login" title="<s:message code="label.password" text="Password"/>" value="" size="30" maxlength="30" /></p>
-			
-
-			<p>
-
-					<label for="remember">&nbsp;</label>
-					<div style="margin-feft:0px;"><input type="checkbox" id="remember" name="remember" value="1" ><s:message code="label.logonform.rememberusername" text="Remember my user name"/></div>
-					<br/>
-					<label for="forgot">&nbsp;</label><a href="#getPassword" id="changePassword"><s:message code="label.logonform.forgotpassword" text="Forgot Password"/>?</a>
-
-			</p>
-
-			<p class="submit">
-					<label for="submit">&nbsp;</label>
-					<a href="#" id="logon-button" class="button">
-						<div class="button-img"><div class="button-text"><s:message code="button.label.submit2" text="button.label.submit2"/></div></div>
-					</a>
-
-			</p>
-		</div>
-		</form>
-		-->
 		
-		<!-- code for reset password-username prompt   sajid shajahan -->
-				<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal hide fade" id="getPassword" style="display: none;">
-				<!--<div class="modal" id="getPassword" tabindex="-1" role="dialog" class="modal hide fade" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">-->
+					<!-- code for reset password-username prompt   sajid shajahan -->
+					<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal hide fade" id="getPassword" style="display: none;">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"
 							aria-hidden="true">
@@ -492,9 +463,7 @@
 					</div>
 					<div class="modal-footer">
 									<div class="controls">
-										<!-- <a href="#" class="btn" id="passwordResetSubmitButton"> 
-										<s:message code="button.label.submit2" text="Submit" /> </a> -->
-										<input type="button" value="Submit" onclick="doAjaxPost()" class="btn" >
+										<input type="button" value="<s:message code="button.label.logon" text="button.label.submit2" />" onclick="getUserInformation()" class="btn" >
 									</div>
 								</div>
 					</div>
@@ -504,9 +473,8 @@
 				
 
 
-<!-- code for reset password-security question prompt   sajid shajahan -->
+				<!-- code for reset password-security question prompt   sajid shajahan -->
 				<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal hide fade" id="getSecurityQtn" style="display: none;">
-				<!--<div class="modal" id="getPassword" tabindex="-1" role="dialog" class="modal hide fade" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">-->
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"
 							aria-hidden="true">
@@ -523,14 +491,10 @@
 								
 								<div class="control-group">
 								
-									<label class="control-label" for="inputUser" style="color:#333333;">
+									<label class="control-label" for="inputUser" style="color:#333333;" id="question1">
 										<s:message code="security.question1" text="" />
 									</label>
 									<div class="controls">
-										<select id="securityQtn1Select">
-  											
-										</select>
-										
 										<input type="text" id="answer1" name="answer1"
 											placeholder="<s:message code="security.answer.question1.message" text="answer1"/>">
 											
@@ -541,13 +505,10 @@
 								</div>
 								
 								<div class="control-group">
-									<label class="control-label" for="inputUser" style="color:#333333;">
+									<label class="control-label" for="inputUser" style="color:#333333;" id="question2">
 										<s:message code="security.question2" text="" />
 									</label>
 									<div class="controls">
-										<select id="securityQtn2Select">
-  											
-										</select>
 										<input type="text" id="answer2" name="answer2"
 											placeholder="<s:message code="security.answer.question2.message" text="answer2"/>">
 											
@@ -556,13 +517,10 @@
 								</div>
 									
 									<div class="control-group">
-									<label class="control-label" for="inputUser" style="color:#333333;">
+									<label class="control-label" for="inputUser" style="color:#333333;" id="question3">
 										<s:message code="security.question3" text="" />
 									</label>
 									<div class="controls">
-										<select  id="securityQtn3Select">
-  											
-										</select>
 										<input type="text" id="answer3" name="answer3"
 											placeholder="<s:message code="security.answer.question3.message" text="answer3"/>">
 										
@@ -587,7 +545,7 @@
 
 
 
-<!-- code for reset password-final window   sajid shajahan -->
+				<!-- code for reset password-final window   sajid shajahan -->
 				<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal hide fade" id="finalWindow" style="display: none;">
 				<!--<div class="modal" id="getPassword" tabindex="-1" role="dialog" class="modal hide fade" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">-->
 					<div class="modal-header">
@@ -629,126 +587,7 @@
 					</form>
 				</div>
 				
-			
-	<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" class="modal hide fade" id="myModal" style="display: none;">
-            <div class="modal-header">
-              <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
-              <h3 id="myModalLabel">Modal Heading</h3>
-            </div>
-            <div class="modal-body">
-              <h4>Text in a modal</h4>
-              <p>Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem.</p>
 
-              <h4>Popover in a modal</h4>
-              <p>This <a data-content="And here's some amazing content. It's very engaging. right?" class="btn popover-test" role="button" href="#" data-original-title="A Title">button</a> should trigger a popover on hover.</p>
-
-              <h4>Tooltips in a modal</h4>
-              <p><a class="tooltip-test" href="#" data-original-title="Tooltip">This link</a> and <a class="tooltip-test" href="#" data-original-title="Tooltip">that link</a> should have tooltips on hover.</p>
-
-              <hr>
-
-              <h4>Overflowing text to show optional scrollbar</h4>
-              <p>We set a fixed <code>max-height</code> on the <code>.modal-body</code>. Watch it overflow with all this extra lorem ipsum text we've included.</p>
-              <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
-              <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
-              <p>Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-              <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
-              <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla non metus auctor fringilla.</p>
-            </div>
-            <div class="modal-footer">
-              <button data-dismiss="modal" class="btn">Close</button>
-              <button class="btn btn-primary">Save changes</button>
-            </div>
-          </div>
-
-				<!--
-				<div id="change-password" style="display: none;"
-					title="<s:message code="label.logonform.resetpassword" text="Reset password"/>">
-					<form id="resetPassword" name="resetPassword" action="">
-						<div id="loadingimage" style="display: none;">
-							<center>`<img
-								src="<c:url value="/resources/img/ajax-loader.gif" />"></center>
-						</div>
-						<div id="resetPasswordMessage" style="display: none;"></div>
-						<p>
-							<label for="merchantId">
-								<s:message code="label.store.merchantid" text="Merchant Id" />
-								:
-							</label>
-							<input name="merchantId" id="merchantId"
-								title="<s:message code="label.store.merchantid" text="Merchant Id"/>"
-								value="" size="10" maxlength="15" />
-						</p>
-						<p>
-							<label for="adminName">
-								<s:message code="label.username" text="Username" />
-								:
-							</label>
-							<input name="adminName" id="adminName"
-								title="<s:message code="label.username" text="Username"/>"
-								value="" size="20" maxlength="60" />
-						</p>
-
-
-						<p class="submit">
-
-							<label for="submit">
-								&nbsp;
-							</label>
-							<button id="reset" type="submit">
-								<s:message code="button.label.submit2" text="Submit" />
-							</button>
-						</p>
-					</form>
-				</div>
-				-->
-
-
-				<script type="text/javascript">
-				
-				
-							
-	function validateForm() {
-
-		//var username = new LiveValidation( 'username', {validMessage: " ",onlyOnSubmit: true}); 
-		//username.add( Validate.Presence,{failureMessage:'*'}); 
-		//var password = new LiveValidation( 'password', {validMessage: " ",onlyOnSubmit: true } ); 
-		//password.add( Validate.Presence,{failureMessage:'*'}); 
-
-		//var areAllValid = LiveValidation.massValidate( [username,password] );
-
-		//if(areAllValid) {
-		//submitForm();
-
-		//}
-
-	}
-
-	function validateResetPassword() {
-
-		//var merchantId = new LiveValidation( 'merchantId', {validMessage: " ",onlyOnSubmit: true}); 
-		//merchantId.add( Validate.Presence,{failureMessage:'*'}); 
-		//merchantId.add( Validate.Numericality,{failureMessage:''}); 
-
-		//var userName = new LiveValidation( 'adminName', {validMessage: " ",onlyOnSubmit: true } ); 
-		//userName.add( Validate.Presence,{failureMessage:'*'});
-
-		//var areAllValid = LiveValidation.massValidate( [merchantId,userName] );
-
-		//if(areAllValid) {
-
-		//return true;
-
-		//} else {
-
-		//return false;
-		//}
-
-		return true;
-
-	}
-</script>
 
 
 
