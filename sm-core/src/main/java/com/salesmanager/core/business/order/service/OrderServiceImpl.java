@@ -1,6 +1,7 @@
 package com.salesmanager.core.business.order.service;
 
 import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -17,9 +18,14 @@ import com.salesmanager.core.business.order.dao.OrderDao;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.model.OrderCriteria;
 import com.salesmanager.core.business.order.model.OrderList;
+import com.salesmanager.core.business.order.model.OrderSummary;
+import com.salesmanager.core.business.order.model.OrderTotal;
+import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.order.model.Order_;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
+import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.modules.order.InvoiceModule;
 
 
@@ -84,6 +90,49 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 	public OrderList listByStore(MerchantStore store, OrderCriteria criteria) {
 
 		return orderDao.listByStore(store, criteria);
+	}
+	
+	public List<OrderTotal> calculateShoppingCart(OrderSummary orderSummary, MerchantStore store, Language language) throws ServiceException {
+		Validate.notNull(orderSummary,"Order summary cannot be null");
+		Validate.notNull(orderSummary.getProducts(),"Order summary.products cannot be null");
+		
+
+		
+		
+		
+		return null;
+	}
+	
+	private OrderTotalSummary caculateShoppingCart(OrderSummary summary, Customer customer, MerchantStore store, Language language) throws Exception {
+		
+		OrderTotalSummary totalSummary = new OrderTotalSummary();
+		
+		//price by item
+		/**
+		 * qty * price
+		 * subtotal
+		 */
+		BigDecimal subTotal = new BigDecimal(0);
+		for(ShoppingCartItem item : summary.getProducts()) {
+			
+			subTotal = subTotal.add(item.getItemPrice().multiply(new BigDecimal(item.getQuantity())));
+			
+		}
+		
+		totalSummary.setSubTotal(subTotal);
+		OrderTotal orderTotalSubTotal = new OrderTotal();
+		orderTotalSubTotal.setModule("subtotal");
+		orderTotalSubTotal.setOrderTotalCode("order.total.subtotal");
+		orderTotalSubTotal.setSortOrder(0);
+		orderTotalSubTotal.setValue(subTotal);
+		
+		
+		//shipping
+		
+		//tax
+		
+		return totalSummary;
+		
 	}
 	
 	@Override

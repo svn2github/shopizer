@@ -38,6 +38,9 @@ public class OrderTotal extends SalesManagerEntity<Long, OrderTotal> {
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
 	
+	@Column (name ="CODE", nullable=false)
+	private String orderTotalCode;
+	
 	@Column (name ="TITLE", nullable=false)
 	private String title;
 	
@@ -115,5 +118,13 @@ public class OrderTotal extends SalesManagerEntity<Long, OrderTotal> {
 
 	public void setOrder(Order order) {
 		this.order = order;
+	}
+
+	public void setOrderTotalCode(String orderTotalCode) {
+		this.orderTotalCode = orderTotalCode;
+	}
+
+	public String getOrderTotalCode() {
+		return orderTotalCode;
 	}
 }

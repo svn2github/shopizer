@@ -4,7 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Transient;
 
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.common.model.audit.AuditListener;
@@ -38,8 +38,12 @@ public class ShoppingCartAttributeItem extends SalesManagerEntity<Long, Shopping
 	@Embedded
 	private AuditSection auditSection = new AuditSection();
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="ATTRIBUTE_ID", nullable=false)
+
+	
+	@Column(name="PRODUCT_ATTR_ID")
+	private Long productAttributeId;
+	
+	@Transient
 	private ProductAttribute productAttribute;
 	
 
@@ -60,7 +64,6 @@ public class ShoppingCartAttributeItem extends SalesManagerEntity<Long, Shopping
 
 	@Override
 	public AuditSection getAuditSection() {
-		// TODO Auto-generated method stub
 		return auditSection;
 	}
 
@@ -72,7 +75,6 @@ public class ShoppingCartAttributeItem extends SalesManagerEntity<Long, Shopping
 
 	@Override
 	public Long getId() {
-		// TODO Auto-generated method stub
 		return id;
 	}
 
@@ -80,6 +82,15 @@ public class ShoppingCartAttributeItem extends SalesManagerEntity<Long, Shopping
 	public void setId(Long id) {
 		this.id = id;
 		
+	}
+
+
+	public void setProductAttributeId(Long productAttributeId) {
+		this.productAttributeId = productAttributeId;
+	}
+
+	public Long getProductAttributeId() {
+		return productAttributeId;
 	}
 
 	public void setProductAttribute(ProductAttribute productAttribute) {

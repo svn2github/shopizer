@@ -25,6 +25,7 @@ import com.salesmanager.core.business.common.model.audit.AuditSection;
 import com.salesmanager.core.business.common.model.audit.Auditable;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.constants.SchemaConstant;
 
 /**
@@ -64,9 +65,13 @@ public class ShoppingCart extends SalesManagerEntity<Long, ShoppingCart> impleme
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "shoppingCart")
 	private Set<ShoppingCartItem> lineItems;
 	
-	@ManyToOne(targetEntity = Customer.class)
-	@JoinColumn(name = "CUSTOMER_ID", nullable = false)
-	private Customer customer;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="MERCHANT_ID", nullable=false)
+	private MerchantStore merchantStore;
+	
+
+	@Column(name = "CUSTOMER_ID", nullable = true)
+	private Long customerId;
     
 	@Override
 	public AuditSection getAuditSection() {
@@ -108,12 +113,21 @@ public class ShoppingCart extends SalesManagerEntity<Long, ShoppingCart> impleme
         this.shoppingCartCode = shoppingCartCode;
     }
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
+
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
 	}
 
-	public Customer getCustomer() {
-		return customer;
+	public Long getCustomerId() {
+		return customerId;
+	}
+
+	public void setMerchantStore(MerchantStore merchantStore) {
+		this.merchantStore = merchantStore;
+	}
+
+	public MerchantStore getMerchantStore() {
+		return merchantStore;
 	}
 	
 	
