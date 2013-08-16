@@ -24,6 +24,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 import com.salesmanager.core.business.shipping.service.ShippingService;
+import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.tax.model.TaxBasisCalculation;
 import com.salesmanager.core.business.tax.model.TaxConfiguration;
@@ -123,7 +124,7 @@ public class TaxTestCase extends AbstractSalesManagerCoreTestCase {
 
 	    dprice.getDescriptions().add(dpd);
 	    
-	    ShoppingCartItem shoppingCartItem = new ShoppingCartItem(product);
+	    ShoppingCartItem shoppingCartItem = new ShoppingCartItem(new ShoppingCart(),product);
 	    
 	    shoppingCartItem.setItemPrice(new BigDecimal(29.99));
 	    shoppingCartItem.setProduct(product);
