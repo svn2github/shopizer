@@ -82,7 +82,7 @@ public class TaxTestCase extends AbstractSalesManagerCoreTestCase {
 	    OrderSummary orderSummary = new OrderSummary();
 	    orderSummary.setShipping(new BigDecimal(10));
 	    
-	    ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
+	    
 	    
 	    Product product = new Product();
 	    product.setProductHeight(new BigDecimal(4));
@@ -122,6 +122,8 @@ public class TaxTestCase extends AbstractSalesManagerCoreTestCase {
 	    dpd.setLanguage(en);
 
 	    dprice.getDescriptions().add(dpd);
+	    
+	    ShoppingCartItem shoppingCartItem = new ShoppingCartItem(product);
 	    
 	    shoppingCartItem.setItemPrice(new BigDecimal(29.99));
 	    shoppingCartItem.setProduct(product);
