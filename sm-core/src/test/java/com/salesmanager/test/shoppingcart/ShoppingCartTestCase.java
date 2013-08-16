@@ -226,7 +226,7 @@ public class ShoppingCartTestCase extends AbstractSalesManagerCoreTestCase {
 	    UUID cartCode = UUID.randomUUID();
 	    shoppingCart.setShoppingCartCode(cartCode.toString());
 
-	    ShoppingCartItem item = new ShoppingCartItem(product);
+	    ShoppingCartItem item = new ShoppingCartItem(shoppingCart,product);
 	    item.setShoppingCart(shoppingCart);
 	    FinalPrice price = productPriceUtil.getFinalPrice(product);
 	    
