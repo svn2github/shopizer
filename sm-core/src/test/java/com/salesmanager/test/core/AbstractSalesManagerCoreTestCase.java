@@ -42,6 +42,7 @@ import com.salesmanager.core.business.reference.init.service.InitializationDatab
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
+import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 
 @ContextConfiguration(locations = {
 		"classpath:spring/test-spring-context.xml"
@@ -132,6 +133,9 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	
 	@Autowired
 	protected PaymentService paymentService;
+	
+	@Autowired
+	protected ShoppingCartService shoppingCartService;
 
 
 	@Before
