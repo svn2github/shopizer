@@ -11,6 +11,8 @@ public interface ShoppingCartDao extends SalesManagerEntityDao<Long, ShoppingCar
 
 	ShoppingCart getByCustomer(Customer customer);
 
+	ShoppingCart getByCode(String code, MerchantStore store);
+
 
 	
 }

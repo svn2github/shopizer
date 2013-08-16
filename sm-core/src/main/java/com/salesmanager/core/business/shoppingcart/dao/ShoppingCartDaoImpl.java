@@ -56,6 +56,26 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 	}
 	
 	@Override
+	public ShoppingCart getByCode(String code, MerchantStore store) {
+		
+		
+		QShoppingCart qShoppingCart = QShoppingCart.shoppingCart;
+		QShoppingCartItem qShoppingCartItem = QShoppingCartItem.shoppingCartItem;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qShoppingCart)
+			.leftJoin(qShoppingCart.lineItems, qShoppingCartItem).fetch()
+			.leftJoin(qShoppingCartItem.attributes).fetch()
+			.leftJoin(qShoppingCart.merchantStore).fetch()
+			.where(qShoppingCart.shoppingCartCode.eq(code)
+					.and(qShoppingCart.merchantStore.id.eq(store.getId())));
+		
+		return query.uniqueResult(qShoppingCart);
+		
+	}
+	
+	@Override
 	public ShoppingCart getByCustomer(Customer customer) {
 		
 		

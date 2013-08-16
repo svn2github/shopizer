@@ -53,7 +53,7 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	@Embedded
 	private AuditSection auditSection = new AuditSection();
 	
-	@Column(name="PRODUCT_ID")
+	@Column(name="PRODUCT_ID", nullable=false)
 	private Long productId;
 	
 
@@ -68,6 +68,12 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	private Product product;
 
 
+	public ShoppingCartItem(Product product) {
+		this.product = product;
+		this.productId = product.getId();
+		this.quantity = 1;
+		
+	}
 
 	@Override
 	public AuditSection getAuditSection() {

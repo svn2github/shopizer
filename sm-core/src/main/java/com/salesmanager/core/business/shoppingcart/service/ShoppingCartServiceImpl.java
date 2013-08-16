@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +41,8 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	@Autowired
 	private ProductPriceUtils productPriceUtils;
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ShoppingCartServiceImpl.class);
+	
 	@Autowired
 	public ShoppingCartServiceImpl(
 			ShoppingCartDao shoppingCartDao) {
@@ -52,8 +56,16 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	 * Retrieve a {@link ShoppingCart} cart for a given customer
 	 */
 	public ShoppingCart getShoppingCart(Customer customer) throws ServiceException {
-		//TODO populate cart
-		return shoppingCartDao.getByCustomer(customer);
+
+		try {
+
+			ShoppingCart shoppingCart = shoppingCartDao.getByCustomer(customer);
+			return populateShoppingCart(shoppingCart);
+		
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
 	}
 	
 	/**
@@ -73,13 +85,39 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	 */
 	@Override
 	public ShoppingCart getById(Long id, MerchantStore store) throws ServiceException {
+
+		try {
+			ShoppingCart shoppingCart = shoppingCartDao.getById(id, store);
+			return populateShoppingCart(shoppingCart);
 		
-		//TODO same logic for getById and getByCustomer
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
+		
+	}
+	
+	@Override
+	public ShoppingCart getByCode(String code, MerchantStore store) throws ServiceException {
+
+		try {
+			ShoppingCart shoppingCart = shoppingCartDao.getByCode(code, store);
+			return populateShoppingCart(shoppingCart);
+		
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
+		
+	}
+	
+
+	
+	@Transactional
+	private ShoppingCart populateShoppingCart(ShoppingCart shoppingCart) throws Exception {
 		
 		try {
 
-			//TODO populate ShoppingCart with item
-			ShoppingCart shoppingCart = shoppingCartDao.getById(id, store);
 			if(shoppingCart!=null) {
 				
 				Set<ShoppingCartItem> items = shoppingCart.getLineItems();
@@ -94,6 +132,7 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 				for(ShoppingCartItem item : items) {
 					this.populateItem(item);
 					if(item.getProduct()==null) {//product has been removed
+						LOGGER.debug("Removing shopping cart item for product id " + item.getProductId());
 						shoppingCartItemDao.delete(item);
 					} else {
 						shoppingCartItems.add(item);
@@ -103,6 +142,7 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 				shoppingCart.setLineItems(shoppingCartItems);
 				
 				if(shoppingCart.getLineItems().size()==0) {
+					LOGGER.debug("Deleting cart with id " + shoppingCart.getId());
 					shoppingCartDao.delete(shoppingCart);
 					return null;
 				}
@@ -149,6 +189,7 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		} else {
 			
 			if(productAttributes!=null && productAttributes.size()>0) {
+				LOGGER.debug("Removing attributes for shopping cart item " + item.getId());
 				item.setAttributes(null);//TODO check should update shopping cart
 			}
 			

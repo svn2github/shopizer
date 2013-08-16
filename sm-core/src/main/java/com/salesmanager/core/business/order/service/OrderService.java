@@ -3,7 +3,6 @@ package com.salesmanager.core.business.order.service;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
-import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;

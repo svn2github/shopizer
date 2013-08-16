@@ -40,7 +40,7 @@ public class ShoppingCartAttributeItem extends SalesManagerEntity<Long, Shopping
 	
 
 	
-	@Column(name="PRODUCT_ATTR_ID")
+	@Column(name="PRODUCT_ATTR_ID", nullable=false)
 	private Long productAttributeId;
 	
 	@Transient
@@ -51,6 +51,12 @@ public class ShoppingCartAttributeItem extends SalesManagerEntity<Long, Shopping
 	@ManyToOne(targetEntity = ShoppingCartItem.class)
 	@JoinColumn(name = "SHP_CART_ITEM_ID", nullable = false)
 	private ShoppingCartItem shoppingCartItem;
+	
+	public ShoppingCartAttributeItem(ShoppingCartItem shoppingCartItem, ProductAttribute productAttribute) {
+		this.shoppingCartItem = shoppingCartItem;
+		this.productAttribute = productAttribute;
+		this.productAttributeId = productAttribute.getId();
+	}
 	
 	
 

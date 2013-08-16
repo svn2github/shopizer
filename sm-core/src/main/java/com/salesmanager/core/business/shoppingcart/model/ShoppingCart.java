@@ -3,6 +3,7 @@
  */
 package com.salesmanager.core.business.shoppingcart.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -20,10 +21,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 
+import org.hibernate.annotations.Index;
+
 import com.salesmanager.core.business.common.model.audit.AuditListener;
 import com.salesmanager.core.business.common.model.audit.AuditSection;
 import com.salesmanager.core.business.common.model.audit.Auditable;
-import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.constants.SchemaConstant;
@@ -55,21 +57,21 @@ public class ShoppingCart extends SalesManagerEntity<Long, ShoppingCart> impleme
 	
 	/**
 	 * Will be used to fetch shopping cart model from the controller
-	 * this code will also be stored in the ShoppingCartData which will be
-	 * used in the UI.
+	 * this is a unique code that should be attributed from the client (UI)
 	 * 
 	 */
+	@Index(name="SHP_CART_CODE")
 	@Column(name = "SHP_CART_CODE", unique=true, nullable=false)
 	private String shoppingCartCode;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "shoppingCart")
-	private Set<ShoppingCartItem> lineItems;
+	private Set<ShoppingCartItem> lineItems = new HashSet<ShoppingCartItem>();
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
 	private MerchantStore merchantStore;
 	
-
+	@Index(name="SHP_CART_CUSTOMER")
 	@Column(name = "CUSTOMER_ID", nullable = true)
 	private Long customerId;
     
