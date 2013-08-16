@@ -600,7 +600,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 	    
 	    
 	    /**
-	     * Create the product
+	     * Create a complex product
 	     */
 	    Product product = new Product();
 	    product.setProductHeight(new BigDecimal(4));
