@@ -1,6 +1,7 @@
 package com.salesmanager.core.business.catalog.product.service;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -53,6 +54,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	
 	@Autowired
 	ProductPriceService productPriceService;
+	
 	
 	@Autowired
 	ProductAttributeService productAttributeService;
@@ -135,7 +137,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 			throws ServiceException {
 		Product product =  productDao.getProductForLocale(productId, language, locale);
 		
-		//TODO do we still need this
+		//TODO still need this
 		CatalogServiceHelper.setToAvailability(product, locale);
 		CatalogServiceHelper.setToLanguage(product, language.getId());
 		return product;
@@ -249,14 +251,22 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	
 	@Override	
 	public void saveOrUpdate(Product product) throws ServiceException {
-		
 
-		
-		LOGGER.debug("Creating description");
-		
+		LOGGER.debug("Save or update product");
 
+		//List of original availabilities
+		Set<ProductAvailability> originalAvailabilities = null;
+		
+		//List of original attributes
+		Set<ProductAttribute> originalAttributes = null;
+		
 		
 		if(product.getId()!=null && product.getId()>0) {
+			LOGGER.debug("Update product",product.getId());
+			//get original product
+			Product originalProduct = this.getById(product.getId());
+			originalAvailabilities = originalProduct.getAvailabilities();
+			originalAttributes = originalProduct.getAttributes();
 			super.update(product);
 		} else {
 			
@@ -277,11 +287,12 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		
 		//get availabilities
 		Set<ProductAvailability> availabilities = product.getAvailabilities();
-		
+		List<Long> newAvailabilityIds = new ArrayList<Long>();
 		if(availabilities!=null && availabilities.size()>0) {
 			for(ProductAvailability availability : availabilities) {
 				availability.setProduct(product);
 				productAvailabilityService.saveOrUpdate(availability);
+				newAvailabilityIds.add(availability.getId());
 				//check prices
 				Set<ProductPrice> prices = availability.getPrices();
 				if(prices!=null && prices.size()>0) {
@@ -294,20 +305,38 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 			}
 		}
 		
+		//cleanup old availability
+		if(originalAvailabilities!=null) {
+			for(ProductAvailability availability : originalAvailabilities) {
+				if(!newAvailabilityIds.contains(availability.getId())) {
+					productAvailabilityService.delete(availability);
+				}
+			}
+		}
 		
 		LOGGER.debug("Creating attributes");
-		
+		List<Long> newAttributesIds = new ArrayList<Long>();
 		if(product.getAttributes()!=null && product.getAttributes().size()>0) {
 			Set<ProductAttribute> attributes = product.getAttributes();
 			for(ProductAttribute attribute : attributes) {
 				attribute.setProduct(product);
 				productAttributeService.saveOrUpdate(attribute);
+				newAttributesIds.add(attribute.getId());
+			}
+		}
+		
+		//cleanup old attributes
+		if(originalAttributes!=null) {
+			for(ProductAttribute attribute : originalAttributes) {
+				if(!newAttributesIds.contains(attribute.getId())) {
+					productAttributeService.delete(attribute);
+				}
 			}
 		}
 		
 		
 		LOGGER.debug("Creating relationships");
-		
+		//TODO remove old relationships
 		if(product.getRelationships()!=null && product.getRelationships().size()>0) {
 			Set<ProductRelationship> relationships = product.getRelationships();
 			for(ProductRelationship relationship : relationships) {
@@ -320,6 +349,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		LOGGER.debug("Creating images");
 
 		//get images
+		//TODO remove old images
 		Set<ProductImage> images = product.getImages();
 		if(images!=null && images.size()>0) {
 			for(ProductImage image : images) {
@@ -340,7 +370,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 			}
 		}
 		
-		
+		//TODO test category updates
 		
 	}
 	
