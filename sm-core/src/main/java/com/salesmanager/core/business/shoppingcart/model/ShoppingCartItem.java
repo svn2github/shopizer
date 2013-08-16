@@ -68,10 +68,11 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	private Product product;
 
 
-	public ShoppingCartItem(Product product) {
+	public ShoppingCartItem(ShoppingCart shoppingCart, Product product) {
 		this.product = product;
 		this.productId = product.getId();
 		this.quantity = 1;
+		this.shoppingCart = shoppingCart;
 		
 	}
 
