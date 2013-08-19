@@ -1,6 +1,7 @@
 package com.salesmanager.core.business.reference.language.service;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -14,4 +15,6 @@ public interface LanguageService extends SalesManagerEntityService<Integer, Lang
 	Map<String, Language> getLanguagesMap() throws ServiceException;
 
 	List<Language> getLanguages() throws ServiceException;
+
+	Locale toLocale(Language language);
 }

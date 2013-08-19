@@ -25,6 +25,8 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
+import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingBasisType;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
@@ -33,6 +35,7 @@ import com.salesmanager.core.business.shipping.model.ShippingOptionPriceType;
 import com.salesmanager.core.business.shipping.model.ShippingPackageType;
 import com.salesmanager.core.business.shipping.model.ShippingProduct;
 import com.salesmanager.core.business.shipping.model.ShippingQuote;
+import com.salesmanager.core.business.shipping.model.ShippingSummary;
 import com.salesmanager.core.business.shipping.model.ShippingType;
 import com.salesmanager.core.business.system.model.CustomIntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
@@ -70,6 +73,9 @@ public class ShippingServiceImpl implements ShippingService {
 	
 	@Autowired
 	private Packaging packaging;
+	
+	@Autowired
+	private LanguageService languageService;
 	
 	@Autowired
 	private Encryption encryption;
@@ -322,7 +328,20 @@ public class ShippingServiceImpl implements ShippingService {
 	}
 	
 	@Override
-	public ShippingQuote getShippingQuote(MerchantStore store, Customer customer, List<ShippingProduct> products, Locale locale) throws ServiceException  {
+	public ShippingSummary getShippingSummary(MerchantStore store, ShippingQuote shippingQuote, ShippingOption selectedShippingOption) throws ServiceException {
+		
+		ShippingSummary shippingSummary = new ShippingSummary();
+		shippingSummary.setFreeShipping(shippingQuote.isFreeShipping());
+		shippingSummary.setHandling(shippingQuote.getHandlingFees());
+		shippingSummary.setShipping(selectedShippingOption.getOptionPrice());
+		shippingSummary.setShippingModule(shippingQuote.getShippingModuleCode());
+		shippingSummary.setShippingOption(selectedShippingOption.getDescription());
+		
+		return shippingSummary;
+	}
+	
+	@Override
+	public ShippingQuote getShippingQuote(MerchantStore store, Customer customer, List<ShippingProduct> products, Language language) throws ServiceException  {
 		
 		ShippingQuote shippingQuote = new ShippingQuote();
 		ShippingQuoteModule shippingQuoteModule = null;
@@ -479,7 +498,7 @@ public class ShippingServiceImpl implements ShippingService {
 			}
 						
 
-
+			Locale locale = languageService.toLocale(language);
 
 			//invoke module
 			List<ShippingOption> shippingOptions = shippingQuoteModule.getShippingQuotes(packages, orderTotal, delivery, store, configuration, shippingModule, shippingConfiguration, locale);

@@ -7,6 +7,7 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.OrderSummary;
+import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.tax.model.TaxConfiguration;
 import com.salesmanager.core.business.tax.model.TaxItem;
 
@@ -41,7 +42,7 @@ public interface TaxService   {
 	 * @throws ServiceException
 	 */
 	List<TaxItem> calculateTax(OrderSummary orderSummary, Customer customer,
-			MerchantStore store, Locale locale) throws ServiceException;
+			MerchantStore store, Language language) throws ServiceException;
 
 
 }

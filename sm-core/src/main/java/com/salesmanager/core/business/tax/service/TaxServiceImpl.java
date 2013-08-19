@@ -25,6 +25,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
+import com.salesmanager.core.business.shipping.model.ShippingSummary;
 import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
@@ -93,14 +94,9 @@ public class TaxServiceImpl
 	}
 	
 	@Override
-	public List<TaxItem> calculateTax(OrderSummary orderSummary, Customer customer, MerchantStore store, Locale locale) throws ServiceException {
+	public List<TaxItem> calculateTax(OrderSummary orderSummary, Customer customer, MerchantStore store, Language language) throws ServiceException {
 		
 
-		Language language = languageService.getByCode(locale.getLanguage());
-		
-		if(language==null){
-			language = store.getDefaultLanguage();
-		}
 
 		List<ShoppingCartItem> items = orderSummary.getProducts();
 		
@@ -205,9 +201,12 @@ public class TaxServiceImpl
 				if(amount==null) {
 					amount = new BigDecimal(0);
 				}
-				amount = amount.add(orderSummary.getShipping());
-				taxClassAmountMap.put(defaultTaxClass.getId(), amount);
-				taxClasses.put(defaultTaxClass.getId(), defaultTaxClass);
+				ShippingSummary shippingSummary = orderSummary.getShippingSummary();
+				if(shippingSummary!=null) {
+					amount = amount.add(shippingSummary.getShipping());
+					taxClassAmountMap.put(defaultTaxClass.getId(), amount);
+					taxClasses.put(defaultTaxClass.getId(), defaultTaxClass);
+				}
 			}
 		}
 		

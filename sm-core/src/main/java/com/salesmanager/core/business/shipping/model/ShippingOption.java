@@ -26,6 +26,7 @@ public class ShippingOption implements Serializable {
 	private String description;
 	
 	private String estimatedNumberOfDays;
+
 	
 
 	public BigDecimal getOptionPrice() {
@@ -94,5 +95,7 @@ public class ShippingOption implements Serializable {
 	public String getEstimatedNumberOfDays() {
 		return estimatedNumberOfDays;
 	}
+
+
 
 }

@@ -12,6 +12,10 @@ public class ShippingQuote implements Serializable {
 
 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public final static String NO_SHIPPING_TO_SELECTED_COUNTRY = "NO_SHIPPING_TO_SELECTED_COUNTRY";
 	public final static String NO_SHIPPING_MODULE_CONFIGURED= "NO_SHIPPING_MODULE_CONFIGURED";
 
@@ -27,6 +31,8 @@ public class ShippingQuote implements Serializable {
 	private BigDecimal handlingFees;
 	/** apply tax on shipping **/
 	private boolean applyTaxOnShipping;
+	
+	private ShippingOption selectedShippingOption = null;
 	
 	
 	
@@ -71,6 +77,12 @@ public class ShippingQuote implements Serializable {
 	}
 	public boolean isApplyTaxOnShipping() {
 		return applyTaxOnShipping;
+	}
+	public void setSelectedShippingOption(ShippingOption selectedShippingOption) {
+		this.selectedShippingOption = selectedShippingOption;
+	}
+	public ShippingOption getSelectedShippingOption() {
+		return selectedShippingOption;
 	}
 	
 	

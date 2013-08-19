@@ -260,6 +260,12 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		//List of original attributes
 		Set<ProductAttribute> originalAttributes = null;
 		
+		//List of original reviews
+		Set<ProductRelationship> originalRelationships = null;
+		
+		//List of original images
+		Set<ProductImage> originalProductImages = null;
+		
 		
 		if(product.getId()!=null && product.getId()>0) {
 			LOGGER.debug("Update product",product.getId());
@@ -267,6 +273,8 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 			Product originalProduct = this.getById(product.getId());
 			originalAvailabilities = originalProduct.getAvailabilities();
 			originalAttributes = originalProduct.getAttributes();
+			originalRelationships = originalProduct.getRelationships();
+			originalProductImages = originalProduct.getImages();
 			super.update(product);
 		} else {
 			
@@ -279,8 +287,6 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 				addProductDescription(product,productDescription);
 			}
 		}
-		
-		
 
 		
 		LOGGER.debug("Creating availabilities");
@@ -336,12 +342,21 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		
 		
 		LOGGER.debug("Creating relationships");
-		//TODO remove old relationships
+		List<Long> newRelationshipIds = new ArrayList<Long>();
 		if(product.getRelationships()!=null && product.getRelationships().size()>0) {
 			Set<ProductRelationship> relationships = product.getRelationships();
 			for(ProductRelationship relationship : relationships) {
 				relationship.setProduct(product);
 				productRelationshipService.saveOrUpdate(relationship);
+				newRelationshipIds.add(relationship.getId());
+			}
+		}
+		//cleanup old relationships
+		if(originalRelationships!=null) {
+			for(ProductRelationship relationship : originalRelationships) {
+				if(!newRelationshipIds.contains(relationship.getId())) {
+					productRelationshipService.delete(relationship);
+				}
 			}
 		}
 		
@@ -349,7 +364,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		LOGGER.debug("Creating images");
 
 		//get images
-		//TODO remove old images
+		List<Long> newImageIds = new ArrayList<Long>();
 		Set<ProductImage> images = product.getImages();
 		if(images!=null && images.size()>0) {
 			for(ProductImage image : images) {
@@ -364,14 +379,22 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 					
 					
 					productImageService.addProductImage(product, image, cmsContentImage);
+					newRelationshipIds.add(image.getId());
 				} else {
 					productImageService.update(image);
 				}
 			}
 		}
 		
-		//TODO test category updates
-		
+		//cleanup old images
+		if(originalProductImages!=null) {
+			for(ProductImage image : originalProductImages) {
+				if(!newImageIds.contains(image.getId())) {
+					productImageService.delete(image);
+				}
+			}
+		}
+
 	}
 	
 	

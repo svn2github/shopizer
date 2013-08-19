@@ -2,6 +2,7 @@ package com.salesmanager.core.business.reference.language.service;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -30,6 +31,11 @@ public class LanguageServiceImpl extends SalesManagerEntityServiceImpl<Integer, 
 	@Override
 	public Language getByCode(String code) throws ServiceException {
 		return getByField(Language_.code, code);
+	}
+	
+	@Override
+	public Locale toLocale(Language language) {
+		return new Locale(language.getCode());
 	}
 	
 	@Override

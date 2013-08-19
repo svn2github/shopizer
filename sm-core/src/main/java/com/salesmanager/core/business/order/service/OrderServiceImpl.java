@@ -24,7 +24,11 @@ import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.order.model.Order_;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
+import com.salesmanager.core.business.shipping.model.ShippingType;
+import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
+import com.salesmanager.core.business.tax.service.TaxService;
 import com.salesmanager.core.modules.order.InvoiceModule;
 
 
@@ -35,6 +39,12 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 	
 	@Autowired
 	private InvoiceModule invoiceModule;
+	
+	@Autowired
+	private ShippingService shippingService;
+	
+	@Autowired
+	private TaxService taxService;
 	
 	private OrderDao orderDao;
 	
@@ -106,6 +116,11 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		
 		OrderTotalSummary totalSummary = new OrderTotalSummary();
 		
+		
+		ShippingConfiguration shippingConfiguration = null;
+		
+		BigDecimal grandTotal = new BigDecimal(0);
+		
 		//price by item
 		/**
 		 * qty * price
@@ -119,6 +134,8 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		}
 		
 		totalSummary.setSubTotal(subTotal);
+		grandTotal.add(subTotal);
+		
 		OrderTotal orderTotalSubTotal = new OrderTotal();
 		orderTotalSubTotal.setModule("subtotal");
 		orderTotalSubTotal.setOrderTotalCode("order.total.subtotal");
@@ -127,8 +144,38 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		
 		
 		//shipping
+		if(summary.getShippingSummary()!=null) {
+
+			OrderTotal shippingSubTotal = new OrderTotal();
+			shippingSubTotal.setModule("shipping");
+			shippingSubTotal.setOrderTotalCode("order.total.shipping");
+			shippingSubTotal.setSortOrder(10);
+			
+			
+			if(!summary.getShippingSummary().isFreeShipping()) {
+				shippingSubTotal.setValue(summary.getShippingSummary().getShipping());
+				grandTotal.add(summary.getShippingSummary().getShipping());
+			} else {
+				shippingSubTotal.setValue(new BigDecimal(0));
+				grandTotal.add(new BigDecimal(0));
+			}
+			
+			//check handling fees
+			shippingConfiguration = shippingService.getShippingConfiguration(store);
+			if(summary.getShippingSummary().getHandling()!=null && summary.getShippingSummary().getHandling().doubleValue()>0) {
+				if(shippingConfiguration.getHandlingFees()!=null && shippingConfiguration.getHandlingFees().doubleValue()>0) {
+					OrderTotal handlingubTotal = new OrderTotal();
+					handlingubTotal.setModule("handling");
+					handlingubTotal.setOrderTotalCode("order.total.handling");
+					handlingubTotal.setSortOrder(12);
+					handlingubTotal.setValue(summary.getShippingSummary().getHandling());
+					grandTotal.add(summary.getShippingSummary().getHandling());
+				}
+			}
+		}
 		
 		//tax
+		taxService.calculateTax(summary, customer, store, language);
 		
 		return totalSummary;
 		

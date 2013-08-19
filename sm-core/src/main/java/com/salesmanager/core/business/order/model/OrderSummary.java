@@ -1,10 +1,10 @@
 package com.salesmanager.core.business.order.model;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.salesmanager.core.business.shipping.model.ShippingSummary;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 
 
@@ -21,19 +21,20 @@ public class OrderSummary implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private BigDecimal shipping;
+	private ShippingSummary shippingSummary;
 	private List<ShoppingCartItem> products = new ArrayList<ShoppingCartItem>();
-	public void setShipping(BigDecimal shipping) {
-		this.shipping = shipping;
-	}
-	public BigDecimal getShipping() {
-		return shipping;
-	}
+
 	public void setProducts(List<ShoppingCartItem> products) {
 		this.products = products;
 	}
 	public List<ShoppingCartItem> getProducts() {
 		return products;
+	}
+	public void setShippingSummary(ShippingSummary shippingSummary) {
+		this.shippingSummary = shippingSummary;
+	}
+	public ShippingSummary getShippingSummary() {
+		return shippingSummary;
 	}
 
 }

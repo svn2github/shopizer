@@ -7,10 +7,13 @@ import java.util.Map;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
+import com.salesmanager.core.business.shipping.model.ShippingOption;
 import com.salesmanager.core.business.shipping.model.ShippingProduct;
 import com.salesmanager.core.business.shipping.model.ShippingQuote;
+import com.salesmanager.core.business.shipping.model.ShippingSummary;
 import com.salesmanager.core.business.system.model.CustomIntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
@@ -95,16 +98,17 @@ public interface ShippingService {
 
 	/**
 	 * Get a list of ShippingQuote from a configured
-	 * shipping gateway
+	 * shipping gateway. The quotes are displayed to the end user so he can pick
+	 * the ShippingOption he wants
 	 * @param store
 	 * @param customer
 	 * @param products
-	 * @param locale
+	 * @param language
 	 * @return
 	 * @throws ServiceException
 	 */
 	ShippingQuote getShippingQuote(MerchantStore store, Customer customer,
-			List<ShippingProduct> products, Locale locale)
+			List<ShippingProduct> products, Language language)
 			throws ServiceException;
 	
 
@@ -150,6 +154,18 @@ public interface ShippingService {
 	 */
 	void removeCustomShippingQuoteModuleConfiguration(String moduleCode,
 			MerchantStore store) throws ServiceException;
+
+	/**
+	 * The {@link ShippingSummary} is built from the ShippingOption the user has selected
+	 * The ShippingSummary is used for order calculation
+	 * @param store
+	 * @param shippingQuote
+	 * @param selectedShippingOption
+	 * @return
+	 * @throws ServiceException
+	 */
+	ShippingSummary getShippingSummary(MerchantStore store, ShippingQuote shippingQuote, 
+			ShippingOption selectedShippingOption) throws ServiceException;
 
 
 
