@@ -3,7 +3,6 @@ package com.salesmanager.test.tax;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,6 +22,7 @@ import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
+import com.salesmanager.core.business.shipping.model.ShippingSummary;
 import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
@@ -81,7 +81,11 @@ public class TaxTestCase extends AbstractSalesManagerCoreTestCase {
 	    shippingService.saveShippingConfiguration(shippingConfiguration, store);
 	    
 	    OrderSummary orderSummary = new OrderSummary();
-	    orderSummary.setShipping(new BigDecimal(10));
+	    
+	    ShippingSummary shippingSummary = new ShippingSummary();
+	    shippingSummary.setShipping(new BigDecimal(10));
+	    
+	    orderSummary.setShippingSummary(shippingSummary);
 	    
 	    
 	    
@@ -224,7 +228,7 @@ public class TaxTestCase extends AbstractSalesManagerCoreTestCase {
 	    delivery.setZone(on);
 	    delivery.setPostalCode("J4B-8J9");
 	    
-	    List<TaxItem> taxLines = taxService.calculateTax(orderSummary, customer, store, Locale.ENGLISH);
+	    List<TaxItem> taxLines = taxService.calculateTax(orderSummary, customer, store, en);
 	    
 	    Assert.assertNotNull(taxLines);
 	    
