@@ -94,6 +94,9 @@ public class ShopProductController {
 		//TODO reviews
 		
 		
+		//Attributes
+		
+		
 			
 		model.addAttribute("product", product);
 
