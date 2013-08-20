@@ -148,9 +148,9 @@
     								 var data = isc.XMLTools.selectObjects(response, "/response/data");
     						  	     if(data && data.length>0) {
     						  	     
-    						  	     	$('#question1').text(data[0].1);
-		    						  	$('#question2').text(data[0].2);
-		    						  	$('#question3').text(data[0].3);
+    						  	     	//$('#question1').text(data[0].1);
+		    						  	//$('#question2').text(data[0].2);
+		    						  	//$('#question3').text(data[0].3);
     						  	     
     								 	//console.log(data[0]);
     								 	/*$.each(data[0], function(key, value) {   
@@ -199,35 +199,35 @@
 					var answer3 = $('#answer3').val();
 					
 				   		 
-					 if(!answer1){
-						    alert("please enter answer one");
-					 }else if(!answer2){
-						 	alert("please enter answer two");
-					 }else if(!answer3){
-						   alert("please enter answer three");
-					 }else{
+					 //if(!answer1){
+					//	    alert("please enter answer one");
+					 //}else if(!answer2){
+					//	 	alert("please enter answer two");
+					 //}else if(!answer3){
+					//	   alert("please enter answer three");
+					 //}else{
 						 
 					
-							$.ajax({
-									type: 'POST',
-									dataType: "json",
-									url: "<c:url value="/admin/users/resetPasswordSecurityQtn.html" />",
-									data: "answer1="+ answer1+"&answer2="+ answer2+"&answer3="+ answer3,
-									success: function(response) { 
+							//$.ajax({
+								//	type: 'POST',
+								//	dataType: "json",
+								//	url: "<c:url value="/admin/users/resetPasswordSecurityQtn.html" />",
+								//	data: "answer1="+ answer1+"&answer2="+ answer2+"&answer3="+ answer3,
+								//	success: function(response) { 
 										 //console.log("responcesajid "+response);
 										 //console.log(response);
-										 var msg = isc.XMLTools.selectObjects(response, "/response/statusMessage");
-										 var status = isc.XMLTools.selectObjects(response, "/response/status");
-										 if(status==0 || status ==9999) {
-											 $("#getSecurityQtn").modal('hide')
-											  $('#finalWindow').modal({
-		    								 backdrop: true
-		    						   		 }) 
-					 						 $("#finaltext").val (msg);
-											 var div = document.getElementById('finaltext1');
-											 div.innerHTML =  msg;		    						
-		    								 var data = isc.XMLTools.selectObjects(response, "/response/data");
-		    						  	     if(data && data.length>0) {
+								//		 var msg = isc.XMLTools.selectObjects(response, "/response/statusMessage");
+								//		 var status = isc.XMLTools.selectObjects(response, "/response/status");
+								//		 if(status==0 || status ==9999) {
+								//			 $("#getSecurityQtn").modal('hide')
+								//			  $('#finalWindow').modal({
+		    					//				 backdrop: true
+		    					//	   		 }) 
+					 			//			 $("#finaltext").val (msg);
+								//			 var div = document.getElementById('finaltext1');
+								//			 div.innerHTML =  msg;		    						
+		    					//			 var data = isc.XMLTools.selectObjects(response, "/response/data");
+		    					//	  	     if(data && data.length>0) {
 		    						  	     	//$('#question1').text(data[0].1);
 		    						  	     	//$('#question2').text(data[0].2);
 		    						  	     	//$('#question3').text(data[0].3);
@@ -249,29 +249,32 @@
 		    								 } else {
 		
 					    					 }
-		 */								} else {
-											if(msg!=null && msg !='') {
-												//alert("! " + msg);
-												 $("#getSecurityQtn").modal('hide')
-												  $('#finalWindow').modal({
-			    								 backdrop: true
-			    						   		 }) 
-						 						 $("#finaltext").val (msg);
-												var div = document.getElementById('finaltext1');
-												div.innerHTML =  msg;
+		 */							//	} else {
+									//		if(msg!=null && msg !='') {
+									//			//alert("! " + msg);
+									//			 $("#getSecurityQtn").modal('hide')
+									//			  $('#finalWindow').modal({
+			    					//			 	backdrop: true
+			    					//	   		 	}) 
+						 			//			 $("#finaltext").val (msg);
+									//			var div = document.getElementById('finaltext1');
+									//			div.innerHTML =  msg;
 
 												 
-											}
-										}
+											//}
+										//}
 										
-									}/* ,
-									error: function(e){  
-									      alert('Error: ' + e);  
-									      console.log(e);
-									    } */
-									});
-					 }
-				}
+									//}
+									
+									//,
+									//error: function(e){  
+									//      alert('Error: ' + e);  
+									//      console.log(e);
+									//    }
+								//});
+					 
+				 //}
+			}
 
 	$(document)
 			.ready(
