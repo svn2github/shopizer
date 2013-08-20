@@ -24,6 +24,7 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingBasisType;
@@ -46,6 +47,9 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 	
 	@Autowired
 	private ShippingService shippingService;
+	
+	@Autowired
+	private LanguageService languageService;
 	
 	/**
 	 * This test will invoke a shipping module to get real time shipping quotes
@@ -384,7 +388,7 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 		
 		customerService.create(customer);
 	    
-	    ShippingQuote shippingQuote = shippingService.getShippingQuote(store, customer, shippingProducts, Locale.US);
+	    ShippingQuote shippingQuote = shippingService.getShippingQuote(store, customer, shippingProducts, en);
 
 	    Assert.notNull(shippingQuote);
 	    
