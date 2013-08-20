@@ -34,6 +34,10 @@ public interface ControllerConstants
             final String content="content";
         }
         
+        interface Pages{
+            final String notFound="404";
+        }
+        
 
         
     }

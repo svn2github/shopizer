@@ -3,6 +3,7 @@ package com.salesmanager.web.shop.controller.product;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationship;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationshipType;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
@@ -27,6 +31,7 @@ import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.utils.CatalogUtils;
+import com.salesmanager.web.utils.PageBuilderUtils;
 
 @Controller
 public class ShopProductController {
@@ -56,8 +61,7 @@ public class ShopProductController {
 		Product product = productService.getBySeUrl(store, friendlyUrl, locale);
 		
 		if(product==null) {
-			//TODO product is not found page
-			return "redirect:/shop";
+			return PageBuilderUtils.build404(store);
 		}
 		
 		com.salesmanager.web.entity.catalog.Product productProxy = catalogUtils.buildProxyProduct(product, store, locale);
@@ -72,12 +76,7 @@ public class ShopProductController {
 		
 		request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
 		
-		
 
-		
-		
-		
-		
 		//related items
 		List<ProductRelationship> relatedItems = productRelationshipService.getByType(store, product, ProductRelationshipType.RELATED_ITEM);
 		if(relatedItems!=null && relatedItems.size()>0) {
@@ -90,11 +89,81 @@ public class ShopProductController {
 			model.addAttribute("relatedProducts",items);		
 		}
 		
+		Set<ProductAttribute> attributes = product.getAttributes();
+		
+
+		//Attributes
+		if (attributes != null && attributes.size() > 0) {
+			// extract read only
+			long lastOptionId = -1;
+			long lastSpecificationOptionId = -1;
+			for (ProductAttribute attribute : attributes) {
+				ProductOption productOption = attribute.getProductOption();
+				// setValues ???
+				ProductOptionValue productOptionValue = attribute.getProductOptionValue();
+				if (productOption != null) {
+					if (attribute.getAttributeDisplayOnly()) {
+						
+						
+						
+						
+						
+						
+						
+						if (lastSpecificationOptionId == -1) {
+							lastSpecificationOptionId = po.getProductOptionId();
+							pod = new ProductOptionDescriptor();
+							pod.setOptionType(po.getProductOptionType());
+							pod.setName(po.getName());
+							specifications.add(pod);
+						} else {
+							if (pa.getOptionId() != lastOptionId) {
+								lastSpecificationOptionId = po
+										.getProductOptionId();
+								pod = new ProductOptionDescriptor();
+								pod.setOptionType(po.getProductOptionType());
+								pod.setName(po.getName());
+								specifications.add(pod);
+							}
+						}
+					} else {// option
+						if (lastOptionId == -1) {
+							lastOptionId = po.getProductOptionId();
+							pod = new ProductOptionDescriptor();
+							pod.setOptionType(po.getProductOptionType());
+							pod.setName(po.getName());
+							options.add(pod);
+							if (pa.isAttributeDefault()) {
+								defaultOptions.add(pa);
+							}
+						} else {
+							if (pa.getOptionId() != lastOptionId) {
+								lastOptionId = po.getProductOptionId();
+								pod = new ProductOptionDescriptor();
+								pod.setOptionType(po.getProductOptionType());
+								pod.setName(po.getName());
+								options.add(pod);
+								if (pa.isAttributeDefault()) {
+									defaultOptions.add(pa);
+								}
+							}
+						}
+					}
+					pod.addValue(pa);
+					pod.setOptionId(pa.getOptionId());
+					if (pa.isAttributeDefault()) {
+						pod.setDefaultOption(pa.getProductAttributeId());
+					}
+				}
+			}
+		}
+		model.addObject("specifications", specifications);
+		model.addObject("options", options);
+		
+		
+		
 		
 		//TODO reviews
-		
-		
-		//Attributes
 		
 		
 			
