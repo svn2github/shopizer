@@ -47,14 +47,7 @@ public class ProductOption extends SalesManagerEntity<Long, ProductOption> {
 	@Transient
 	private List<ProductOptionDescription> descriptionsList = new ArrayList<ProductOptionDescription>();
 	
-	
-	
-/*	@ManyToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinTable(name = "MERCHANT_PRD_OPTION", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
-			@JoinColumn(name = "PRODUCT_OPTION_ID", nullable = false) },
-			inverseJoinColumns = { @JoinColumn(name = "MERCHANT_ID", 
-					nullable = false) })
-	private Set<MerchantStore> stores = new HashSet<MerchantStore>();*/
+
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=false)

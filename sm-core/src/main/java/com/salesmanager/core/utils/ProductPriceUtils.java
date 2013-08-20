@@ -75,7 +75,8 @@ public class ProductPriceUtils {
 	
 	/**
 	 * This method calculates the final price taking into account
-	 * all attributes included in the product object. The calculation is based
+	 * all attributes included having a specified default attribute with an attribute price gt 0
+	 * in the product object. The calculation is based
 	 * on the default price.
 	 * Attributes may be null
 	 * @param Product
@@ -91,7 +92,11 @@ public class ProductPriceUtils {
 		BigDecimal attributePrice = new BigDecimal(0);
 		if(attributes!=null && attributes.size()>0) {
 			for(ProductAttribute attribute : attributes) {
-				attributePrice = attributePrice.add(attribute.getProductAttributePrice());
+				if(attribute.getAttributeDefault()) {
+					if(attribute.getProductAttributePrice()!=null && attribute.getProductAttributePrice().doubleValue()>0) {
+						attributePrice = attributePrice.add(attribute.getProductAttributePrice());
+					}
+				}
 			}
 		}
 		
