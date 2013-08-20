@@ -93,7 +93,7 @@ public class ShopProductController {
 		
 
 		//Attributes
-		if (attributes != null && attributes.size() > 0) {
+/*		if (attributes != null && attributes.size() > 0) {
 			// extract read only
 			long lastOptionId = -1;
 			long lastSpecificationOptionId = -1;
@@ -158,7 +158,7 @@ public class ShopProductController {
 			}
 		}
 		model.addObject("specifications", specifications);
-		model.addObject("options", options);
+		model.addObject("options", options);*/
 		
 		
 		
