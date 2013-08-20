@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
@@ -72,7 +73,15 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
     	q.setParameter("dt", new Date());
     	q.setParameter("seUrl", seUrl);
 
-    	Product p = (Product)q.getSingleResult();
+    	Product p = null;
+    	
+    	try {
+    		p = (Product)q.getSingleResult();
+    	} catch(javax.persistence.NoResultException ignore) {
+
+    	}
+    			
+    			
 
 
 		return p;
