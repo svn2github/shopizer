@@ -46,6 +46,7 @@ public class CustomerSalesManagerTestCase extends AbstractSalesManagerCoreTestCa
 		customer.setTelephone("123123");
 		customer.setCountry(country);
 		customer.setZone(zone);
+		customer.setDefaultLanguage(store.getDefaultLanguage());
 		
 	    Delivery delivery = new Delivery();
 	    delivery.setAddress("Shipping address");
