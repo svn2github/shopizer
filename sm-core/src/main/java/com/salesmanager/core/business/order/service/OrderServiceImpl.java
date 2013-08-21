@@ -2,6 +2,7 @@ package com.salesmanager.core.business.order.service;
 
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -25,9 +26,9 @@ import com.salesmanager.core.business.order.model.Order_;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
-import com.salesmanager.core.business.shipping.model.ShippingType;
 import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
+import com.salesmanager.core.business.tax.model.TaxItem;
 import com.salesmanager.core.business.tax.service.TaxService;
 import com.salesmanager.core.modules.order.InvoiceModule;
 
@@ -101,21 +102,23 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		return orderDao.listByStore(store, criteria);
 	}
 	
-	public List<OrderTotal> calculateShoppingCart(OrderSummary orderSummary, MerchantStore store, Language language) throws ServiceException {
+	public OrderTotalSummary calculateShoppingCart(OrderSummary orderSummary, MerchantStore store, Language language) throws ServiceException {
 		Validate.notNull(orderSummary,"Order summary cannot be null");
 		Validate.notNull(orderSummary.getProducts(),"Order summary.products cannot be null");
+		Validate.notNull(store,"MerchantStore cannot be null");
 		
-
+		try {
+			return caculateOrderTotal(orderSummary, null, store, language);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
 		
-		
-		
-		return null;
 	}
 	
-	private OrderTotalSummary caculateShoppingCart(OrderSummary summary, Customer customer, MerchantStore store, Language language) throws Exception {
+	private OrderTotalSummary caculateOrderTotal(OrderSummary summary, Customer customer, MerchantStore store, Language language) throws Exception {
 		
 		OrderTotalSummary totalSummary = new OrderTotalSummary();
-		
+		List<OrderTotal> orderTotals = new ArrayList<OrderTotal>();
 		
 		ShippingConfiguration shippingConfiguration = null;
 		
@@ -142,6 +145,8 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		orderTotalSubTotal.setSortOrder(0);
 		orderTotalSubTotal.setValue(subTotal);
 		
+		orderTotals.add(orderTotalSubTotal);
+		
 		
 		//shipping
 		if(summary.getShippingSummary()!=null) {
@@ -150,6 +155,8 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 			shippingSubTotal.setModule("shipping");
 			shippingSubTotal.setOrderTotalCode("order.total.shipping");
 			shippingSubTotal.setSortOrder(10);
+			
+			orderTotals.add(shippingSubTotal);
 			
 			
 			if(!summary.getShippingSummary().isFreeShipping()) {
@@ -169,13 +176,42 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 					handlingubTotal.setOrderTotalCode("order.total.handling");
 					handlingubTotal.setSortOrder(12);
 					handlingubTotal.setValue(summary.getShippingSummary().getHandling());
+					orderTotals.add(handlingubTotal);
 					grandTotal.add(summary.getShippingSummary().getHandling());
 				}
 			}
 		}
 		
 		//tax
-		taxService.calculateTax(summary, customer, store, language);
+		List<TaxItem> taxes = taxService.calculateTax(summary, customer, store, language);
+		if(taxes!=null && taxes.size()>0) {
+			
+			int taxCount = 20;
+			for(TaxItem tax : taxes) {
+				
+				OrderTotal taxLine = new OrderTotal();
+				taxLine.setModule("order.total.tax");
+				taxLine.setOrderTotalCode(tax.getItemCode());
+				taxLine.setSortOrder(taxCount);
+				taxLine.setText(tax.getLabel());
+				taxLine.setValue(tax.getItemPrice());
+				
+				orderTotals.add(taxLine);
+				grandTotal.add(tax.getItemPrice());
+				
+				taxCount ++;
+				
+			}
+		}
+		
+		// grand total
+		OrderTotal orderTotal = new OrderTotal();
+		orderTotal.setModule("ordertotal");
+		orderTotal.setOrderTotalCode("order.total.total");
+		orderTotal.setSortOrder(30);
+		orderTotal.setValue(grandTotal);
+		
+		totalSummary.setTotal(grandTotal);
 		
 		return totalSummary;
 		

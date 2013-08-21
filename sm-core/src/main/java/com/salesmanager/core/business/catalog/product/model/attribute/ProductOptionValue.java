@@ -18,7 +18,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
-import javax.validation.Valid;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,14 +54,7 @@ public class ProductOptionValue extends SalesManagerEntity<Long, ProductOptionVa
 	
 	@Transient
 	private List<ProductOptionValueDescription> descriptionsList = new ArrayList<ProductOptionValueDescription>();
-	
-/*	@ManyToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinTable(name = "MERCHANT_PRD_OPT_VAL", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
-			@JoinColumn(name = "PRODUCT_OPTION_VALUE_ID", nullable = false) }, 
-			inverseJoinColumns = { @JoinColumn(name = "MERCHANT_ID", 
-					nullable = false) })
-	private Set<MerchantStore> stores = new HashSet<MerchantStore>();*/
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
 	private MerchantStore merchantStore;

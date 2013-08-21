@@ -14,11 +14,12 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.CustomerCriteria;
 import com.salesmanager.core.business.customer.model.CustomerList;
 import com.salesmanager.core.business.customer.model.QCustomer;
+import com.salesmanager.core.business.customer.model.attribute.QCustomerAttribute;
+import com.salesmanager.core.business.customer.model.attribute.QCustomerOption;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.QCountry;
 import com.salesmanager.core.business.reference.zone.model.QZone;
-import com.salesmanager.core.business.user.model.QGroup;
 
 @Repository("customerDao")
 public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> implements CustomerDAO {
@@ -33,6 +34,8 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		QCustomer qCustomer = QCustomer.customer;
 		QCountry qCountry = QCountry.country;
 		QZone qZone = QZone.zone;
+		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
+		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
@@ -41,6 +44,9 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.leftJoin(qCustomer.country,qCountry).fetch()
 			.leftJoin(qCustomer.zone,qZone).fetch()
 			.leftJoin(qCustomer.defaultLanguage).fetch()
+			.leftJoin(qCustomer.attributes,qCustomerAttribute).fetch()
+			.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
+			.leftJoin(qCustomerOption.descriptions).fetch()
 			.where(qCustomer.id.eq(id));
 		
 		return query.uniqueResult(qCustomer);
@@ -208,13 +214,13 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		
 	}
 	
-	@SuppressWarnings("static-access")
+
 	@Override
 	public Customer getByNick(String nick){
 		QCustomer qCustomer = QCustomer.customer;
 		QCountry qCountry = QCountry.country;
 		QZone qZone = QZone.zone;
-		QGroup qGroup = QGroup.group;
+
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		

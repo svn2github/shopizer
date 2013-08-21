@@ -1,0 +1,155 @@
+package com.salesmanager.core.business.customer.model.attribute;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.TableGenerator;
+import javax.persistence.Transient;
+
+import org.springframework.web.multipart.MultipartFile;
+
+import com.salesmanager.core.business.generic.model.SalesManagerEntity;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.constants.SchemaConstant;
+
+
+@Entity
+@Table(name="CUSTOMER_OPTION_VALUE", schema=SchemaConstant.SALESMANAGER_SCHEMA)
+public class CustomerOptionValue extends SalesManagerEntity<Long, CustomerOptionValue> {
+	private static final long serialVersionUID = 3736085877929910891L;
+
+	@Id
+	@Column(name="CUSTOMER_OPTION_VALUE_ID")
+	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "CUSTOMER_OPT_VAL_SEQ_NEXT_VAL")
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
+	private Long id;
+	
+	@Column(name="CUSTOMER_OPT_VAL_SORT_ORD")
+	private Integer customerOptionValueSortOrder;
+	
+	@Column(name="CUSTOMER_OPT_VAL_IMAGE")
+	private String customerOptionValueImage;
+	
+	@Column(name="CUSTOMER_OPT_VAL_CODE")
+	private String code;
+	
+	@Transient
+	private MultipartFile image = null;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "customerOptionValue")
+	private Set<CustomerOptionValueDescription> descriptions = new HashSet<CustomerOptionValueDescription>();
+	
+	@Transient
+	private List<CustomerOptionValueDescription> descriptionsList = new ArrayList<CustomerOptionValueDescription>();
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="MERCHANT_ID", nullable=false)
+	private MerchantStore merchantStore;
+	
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.customerOptionValue", cascade=CascadeType.ALL)
+	private Set<CustomerOptionValueCustomerOption> customerOptions = new HashSet<CustomerOptionValueCustomerOption>();
+
+	
+	public CustomerOptionValue() {
+	}
+
+	@Override
+	public Long getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+
+	public Set<CustomerOptionValueDescription> getDescriptions() {
+		return descriptions;
+	}
+
+	public void setDescriptions(Set<CustomerOptionValueDescription> descriptions) {
+		this.descriptions = descriptions;
+	}
+
+	public MerchantStore getMerchantStore() {
+		return merchantStore;
+	}
+
+	public void setMerchantStore(MerchantStore merchantStore) {
+		this.merchantStore = merchantStore;
+	}
+
+	public void setDescriptionsList(List<CustomerOptionValueDescription> descriptionsList) {
+		this.descriptionsList = descriptionsList;
+	}
+
+	public List<CustomerOptionValueDescription> getDescriptionsList() {
+		return descriptionsList; 
+	}
+	
+	public List<CustomerOptionValueDescription> getDescriptionsSettoList() {
+		if(descriptionsList==null || descriptionsList.size()==0) {
+			descriptionsList = new ArrayList<CustomerOptionValueDescription>(this.getDescriptions());
+		} 
+		return descriptionsList;
+	}
+
+	public void setImage(MultipartFile image) {
+		this.image = image;
+	}
+
+	public MultipartFile getImage() {
+		return image;
+	}
+
+	public Integer getCustomerOptionValueSortOrder() {
+		return customerOptionValueSortOrder;
+	}
+
+	public void setCustomerOptionValueSortOrder(Integer customerOptionValueSortOrder) {
+		this.customerOptionValueSortOrder = customerOptionValueSortOrder;
+	}
+
+	public String getCustomerOptionValueImage() {
+		return customerOptionValueImage;
+	}
+
+	public void setCustomerOptionValueImage(String customerOptionValueImage) {
+		this.customerOptionValueImage = customerOptionValueImage;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public void setCustomerOptions(Set<CustomerOptionValueCustomerOption> customerOptions) {
+		this.customerOptions = customerOptions;
+	}
+
+	public Set<CustomerOptionValueCustomerOption> getCustomerOptions() {
+		return customerOptions;
+	}
+	
+
+
+
+}

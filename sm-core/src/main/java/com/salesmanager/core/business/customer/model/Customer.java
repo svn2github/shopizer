@@ -2,7 +2,9 @@ package com.salesmanager.core.business.customer.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -26,7 +28,9 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cascade;
 
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.catalog.product.model.review.ProductReview;
+import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
@@ -47,6 +51,9 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 	pkColumnValue = "CUSTOMER_SEQ_NEXT_VAL")
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "customer")
+	private Set<CustomerAttribute> attributes = new HashSet<CustomerAttribute>();
 	
 	@Column(name="CUSTOMER_GENDER", length=1, nullable=true)
 	private String gender;
@@ -376,6 +383,14 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 
 	public void setDefaultLanguage(Language defaultLanguage) {
 		this.defaultLanguage = defaultLanguage;
+	}
+
+	public void setAttributes(Set<CustomerAttribute> attributes) {
+		this.attributes = attributes;
+	}
+
+	public Set<CustomerAttribute> getAttributes() {
+		return attributes;
 	}
 	
 }
