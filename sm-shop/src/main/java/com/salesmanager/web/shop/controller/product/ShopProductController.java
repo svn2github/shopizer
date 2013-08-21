@@ -91,7 +91,9 @@ public class ShopProductController {
 		
 		Set<ProductAttribute> attributes = product.getAttributes();
 		
-
+		//temporary working objects
+		//Map<Long,>
+		
 		//Attributes
 /*		if (attributes != null && attributes.size() > 0) {
 			// extract read only
@@ -99,17 +101,12 @@ public class ShopProductController {
 			long lastSpecificationOptionId = -1;
 			for (ProductAttribute attribute : attributes) {
 				ProductOption productOption = attribute.getProductOption();
-				// setValues ???
 				ProductOptionValue productOptionValue = attribute.getProductOptionValue();
 				if (productOption != null) {
 					if (attribute.getAttributeDisplayOnly()) {
 						
 						
-						
-						
-						
-						
-						
+
 						if (lastSpecificationOptionId == -1) {
 							lastSpecificationOptionId = po.getProductOptionId();
 							pod = new ProductOptionDescriptor();

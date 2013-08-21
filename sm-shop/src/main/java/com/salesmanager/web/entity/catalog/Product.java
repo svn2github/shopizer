@@ -25,6 +25,7 @@ public class Product extends CatalogEntity implements Serializable {
 	private String type;
 	private String manufacturer;
 	private String id;
+	private String language;
 	
 	private boolean discounted = false;
 	/**
@@ -35,7 +36,7 @@ public class Product extends CatalogEntity implements Serializable {
 	private String image;
 	private String imageUrl;
 	
-	private Image[] images;
+	private Image[] images; //TODO List or Array
 
 
 	
@@ -113,6 +114,12 @@ public class Product extends CatalogEntity implements Serializable {
 	}
 	public Image[] getImages() {
 		return images;
+	}
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+	public String getLanguage() {
+		return language;
 	}
 
 

@@ -61,6 +61,7 @@ public class CatalogUtils {
 		
 		proxyProduct.setId(String.valueOf(product.getId()));
 		proxyProduct.setSku(product.getSku());
+		proxyProduct.setLanguage(locale.getLanguage());
 
 		FinalPrice price = productPriceUtils.getFinalPrice(product);
 		proxyProduct.setProductPrice(productPriceUtils.getStoreFormatedAmountWithCurrency(store,price.getFinalPrice()));
