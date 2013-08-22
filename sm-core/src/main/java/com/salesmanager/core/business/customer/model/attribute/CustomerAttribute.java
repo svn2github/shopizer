@@ -36,12 +36,7 @@ public class CustomerAttribute extends SalesManagerEntity<Long, CustomerAttribut
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
 
-	
-	@Column(name="CUSTOMER_ATTR_OPT_CD")
-	private String optionCode;
-	
-	@Column(name="CUSTOMER_ATTR_OPT_VAL_CD")
-	private String optionValueCode;
+
 
 	@Column(name="CUSTOMER_ATTRIBUTE_DEFAULT")
 	private boolean attributeDefault=false;
@@ -175,21 +170,7 @@ public class CustomerAttribute extends SalesManagerEntity<Long, CustomerAttribut
 		this.attributeAdditionalWeight = attributeAdditionalWeight;
 	}
 
-	public String getOptionCode() {
-		return optionCode;
-	}
 
-	public void setOptionCode(String optionCode) {
-		this.optionCode = optionCode;
-	}
-
-	public String getOptionValueCode() {
-		return optionValueCode;
-	}
-
-	public void setOptionValueCode(String optionValueCode) {
-		this.optionValueCode = optionValueCode;
-	}
 
 	public Customer getCustomer() {
 		return customer;

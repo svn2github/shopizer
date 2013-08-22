@@ -4,7 +4,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.mysema.query.jpa.JPQLQuery;
+import com.mysema.query.jpa.impl.JPAQuery;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue;
+import com.salesmanager.core.business.customer.model.attribute.QCustomerOptionValue;
+import com.salesmanager.core.business.customer.model.attribute.QCustomerOptionValueDescription;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -17,23 +21,23 @@ public class CustomerOptionValueDaoImpl extends SalesManagerEntityDaoImpl<Long, 
 	@Override
 	public List<CustomerOptionValue> listByStore(MerchantStore store, Language language) {
 		
-/*		QProductOptionValue qProductOption = QProductOptionValue.productOptionValue;
-		QProductOptionValueDescription qDescription = QProductOptionValueDescription.productOptionValueDescription;
+		
+		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
+		QCustomerOptionValueDescription qCustomerOptionValueDescription = QCustomerOptionValueDescription.customerOptionValueDescription;
+		
+		
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
-		query.from(qProductOption)
-			.leftJoin(qProductOption.descriptions, qDescription).fetch()
-			.leftJoin(qProductOption.merchantStore).fetch()
-			.where(qProductOption.merchantStore.id.eq(store.getId())
-			.and(qDescription.language.id.eq(language.getId())));
-			query.orderBy(qProductOption.id.asc());
-			
-			
+		query.from(qCustomerOptionValue)
+			.leftJoin(qCustomerOptionValue.descriptions, qCustomerOptionValueDescription).fetch()
+			.leftJoin(qCustomerOptionValue.merchantStore).fetch()
+			.where(qCustomerOptionValue.merchantStore.id.eq(store.getId())
+			.and(qCustomerOptionValueDescription.language.id.eq(language.getId())))
+			.orderBy(qCustomerOptionValue.id.asc());
 		
-		return query.listDistinct(qProductOption);*/
-		
-		return null;
+		return query.listDistinct(qCustomerOptionValue);
+
 		
 	}
 	
@@ -42,21 +46,24 @@ public class CustomerOptionValueDaoImpl extends SalesManagerEntityDaoImpl<Long, 
 
 	
 	@Override
-	public CustomerOptionValue getById(MerchantStore store, Long id) {
-/*		QProductOptionValue qProductOption = QProductOptionValue.productOptionValue;
-		QProductOptionValueDescription qDescription = QProductOptionValueDescription.productOptionValueDescription;
+	public CustomerOptionValue getById(Long id) {
+		
+		
+		
+		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
+		QCustomerOptionValueDescription qCustomerOptionValueDescription = QCustomerOptionValueDescription.customerOptionValueDescription;
+		
+		
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
-		query.from(qProductOption)
-			.leftJoin(qProductOption.descriptions, qDescription).fetch()
-			.leftJoin(qProductOption.merchantStore).fetch()
-			.where(qProductOption.id.eq(id)
-			.and(qProductOption.merchantStore.id.eq(store.getId())));
+		query.from(qCustomerOptionValue)
+			.leftJoin(qCustomerOptionValue.descriptions, qCustomerOptionValueDescription).fetch()
+			.leftJoin(qCustomerOptionValue.merchantStore).fetch()
+			.where(qCustomerOptionValue.id.eq(id));
 		
-		return query.uniqueResult(qProductOption);*/
-		
-		return null;
+		return query.uniqueResult(qCustomerOptionValue);
+
 	}
 	
 

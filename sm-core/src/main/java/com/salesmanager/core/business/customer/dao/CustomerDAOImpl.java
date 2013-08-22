@@ -16,6 +16,7 @@ import com.salesmanager.core.business.customer.model.CustomerList;
 import com.salesmanager.core.business.customer.model.QCustomer;
 import com.salesmanager.core.business.customer.model.attribute.QCustomerAttribute;
 import com.salesmanager.core.business.customer.model.attribute.QCustomerOption;
+import com.salesmanager.core.business.customer.model.attribute.QCustomerOptionValue;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.QCountry;
@@ -36,6 +37,7 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		QZone qZone = QZone.zone;
 		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
 		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
+		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
@@ -46,7 +48,9 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.leftJoin(qCustomer.defaultLanguage).fetch()
 			.leftJoin(qCustomer.attributes,qCustomerAttribute).fetch()
 			.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
+			.leftJoin(qCustomerAttribute.customerOptionValue, qCustomerOptionValue).fetch()
 			.leftJoin(qCustomerOption.descriptions).fetch()
+			.leftJoin(qCustomerOptionValue.descriptions).fetch()
 			.where(qCustomer.id.eq(id));
 		
 		return query.uniqueResult(qCustomer);
@@ -59,6 +63,10 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		QCustomer qCustomer = QCustomer.customer;
 		QCountry qCountry = QCountry.country;
 		QZone qZone = QZone.zone;
+		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
+		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
+		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
+		
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
@@ -67,6 +75,11 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.leftJoin(qCustomer.country,qCountry).fetch()
 			.leftJoin(qCustomer.zone,qZone).fetch()
 			.leftJoin(qCustomer.defaultLanguage).fetch()
+			.leftJoin(qCustomer.attributes,qCustomerAttribute).fetch()
+			.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
+			.leftJoin(qCustomerAttribute.customerOptionValue, qCustomerOptionValue).fetch()
+			.leftJoin(qCustomerOption.descriptions).fetch()
+			.leftJoin(qCustomerOptionValue.descriptions).fetch()
 			.where(
 					qCustomer.firstname.eq(name).or(qCustomer.lastname.eq(name))
 					
@@ -148,6 +161,10 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		QCustomer qCustomer = QCustomer.customer;
 		QCountry qCountry = QCountry.country;
 		QZone qZone = QZone.zone;
+		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
+		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
+		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
+		
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
@@ -155,7 +172,12 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.join(qCustomer.merchantStore).fetch()
 			.leftJoin(qCustomer.country,qCountry).fetch()
 			.leftJoin(qCustomer.defaultLanguage).fetch()
-			.leftJoin(qCustomer.zone,qZone).fetch();
+			.leftJoin(qCustomer.zone,qZone).fetch()
+			.leftJoin(qCustomer.attributes,qCustomerAttribute).fetch()
+			.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
+			.leftJoin(qCustomerAttribute.customerOptionValue, qCustomerOptionValue).fetch()
+			.leftJoin(qCustomerOption.descriptions).fetch()
+			.leftJoin(qCustomerOptionValue.descriptions).fetch();
 
 
 			
@@ -220,6 +242,10 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		QCustomer qCustomer = QCustomer.customer;
 		QCountry qCountry = QCountry.country;
 		QZone qZone = QZone.zone;
+		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
+		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
+		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
+		
 
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
@@ -230,6 +256,11 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.leftJoin(qCustomer.zone,qZone).fetch()
 			.leftJoin(qCustomer.defaultLanguage).fetch()
 			.leftJoin(qCustomer.groups).fetch()
+			.leftJoin(qCustomer.attributes,qCustomerAttribute).fetch()
+			.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
+			.leftJoin(qCustomerAttribute.customerOptionValue, qCustomerOptionValue).fetch()
+			.leftJoin(qCustomerOption.descriptions).fetch()
+			.leftJoin(qCustomerOptionValue.descriptions).fetch()
 			.where(qCustomer.nick.eq(nick));
 		
 		return query.uniqueResult(qCustomer);
@@ -240,6 +271,10 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		QCustomer qCustomer = QCustomer.customer;
 		QCountry qCountry = QCountry.country;
 		QZone qZone = QZone.zone;
+		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
+		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
+		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
+		
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
@@ -248,6 +283,11 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.leftJoin(qCustomer.country,qCountry).fetch()
 			.leftJoin(qCustomer.zone,qZone).fetch()
 			.leftJoin(qCustomer.defaultLanguage).fetch()
+			.leftJoin(qCustomer.attributes,qCustomerAttribute).fetch()
+			.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
+			.leftJoin(qCustomerAttribute.customerOptionValue, qCustomerOptionValue).fetch()
+			.leftJoin(qCustomerOption.descriptions).fetch()
+			.leftJoin(qCustomerOptionValue.descriptions).fetch()
 			.where(qCustomer.merchantStore.id.eq(store.getId()));
 		
 		return query.list(qCustomer);

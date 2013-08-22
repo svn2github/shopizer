@@ -4,7 +4,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
+import com.mysema.query.jpa.JPQLQuery;
+import com.mysema.query.jpa.impl.JPAQuery;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOption;
+import com.salesmanager.core.business.customer.model.attribute.QCustomerOption;
+import com.salesmanager.core.business.customer.model.attribute.QCustomerOptionDescription;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -17,39 +21,45 @@ public class CustomerOptionDaoImpl extends SalesManagerEntityDaoImpl<Long, Custo
 	@Override
 	public List<CustomerOption> listByStore(MerchantStore store, Language language) {
 		
-/*		QProductOption qProductOption = QProductOption.productOption;
-		QProductOptionDescription qDescription = QProductOptionDescription.productOptionDescription;
+
+		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
+		QCustomerOptionDescription qCustomerOptionDescription = QCustomerOptionDescription.customerOptionDescription;
+		
+		
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
-		query.from(qProductOption)
-			.leftJoin(qProductOption.descriptions, qDescription).fetch()
-			.leftJoin(qProductOption.merchantStore).fetch()
-			.where(qProductOption.merchantStore.id.eq(store.getId())
-			.and(qDescription.language.id.eq(language.getId())))
-			.orderBy(qProductOption.id.asc());
+		query.from(qCustomerOption)
+			.leftJoin(qCustomerOption.descriptions, qCustomerOptionDescription).fetch()
+			.leftJoin(qCustomerOption.merchantStore).fetch()
+			.where(qCustomerOption.merchantStore.id.eq(store.getId())
+			.and(qCustomerOptionDescription.language.id.eq(language.getId())))
+			.orderBy(qCustomerOption.id.asc());
 		
-		return query.listDistinct(qProductOption);
-		*/
-		
-		return null;
+		return query.listDistinct(qCustomerOption);
+
 	}
 	
 	@Override
 	public CustomerOption getById(Long id) {
-/*		QProductOption qProductOption = QProductOption.productOption;
-		QProductOptionDescription qDescription = QProductOptionDescription.productOptionDescription;
+		
+		
+		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
+		QCustomerOptionDescription qCustomerOptionDescription = QCustomerOptionDescription.customerOptionDescription;
+		
+		
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
-		query.from(qProductOption)
-			.leftJoin(qProductOption.descriptions, qDescription).fetch()
-			.leftJoin(qProductOption.merchantStore).fetch()
-			.where(qProductOption.id.eq(id));
+		query.from(qCustomerOption)
+			.leftJoin(qCustomerOption.descriptions, qCustomerOptionDescription).fetch()
+			.leftJoin(qCustomerOption.merchantStore).fetch()
+			.where(qCustomerOption.id.eq(id));
 		
-		return query.uniqueResult(qProductOption);*/
+		return query.uniqueResult(qCustomerOption);
 		
-		return null;
+
+
 	}
 	
 

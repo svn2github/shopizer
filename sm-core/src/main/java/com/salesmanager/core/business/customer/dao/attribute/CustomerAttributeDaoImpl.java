@@ -4,11 +4,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.salesmanager.core.business.customer.model.Customer;
+import com.mysema.query.jpa.JPQLQuery;
+import com.mysema.query.jpa.impl.JPAQuery;
 import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
+import com.salesmanager.core.business.customer.model.attribute.QCustomerAttribute;
+import com.salesmanager.core.business.customer.model.attribute.QCustomerOption;
+import com.salesmanager.core.business.customer.model.attribute.QCustomerOptionValue;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.reference.language.model.Language;
 
 @Repository("customerAttributeDao")
 public class CustomerAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, CustomerAttribute> 
@@ -17,50 +20,71 @@ public class CustomerAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Cu
 	
 	@Override
 	public CustomerAttribute getById(Long id) {
-/*		QProductAttribute qEntity = QProductAttribute.productAttribute;
-		QProductOption qProductOption = QProductOption.productOption;
-		QProductOptionValue qProductOptionValue = QProductOptionValue.productOptionValue;
+		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
+		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
+		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
 		
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
-		query.from(qEntity)
-			.join(qEntity.product).fetch()
-			.leftJoin(qEntity.productOption, qProductOption).fetch()
-			.leftJoin(qEntity.productOptionValue, qProductOptionValue).fetch()
-			.leftJoin(qProductOption.descriptions).fetch()
-			.leftJoin(qProductOptionValue.descriptions).fetch()
-			.leftJoin(qProductOption.merchantStore).fetch()
-			.where(qEntity.id.eq(id));
+		query.from(qCustomerAttribute)
+			.join(qCustomerAttribute.customer).fetch()
+			.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
+			.leftJoin(qCustomerAttribute.customerOptionValue, qCustomerOptionValue).fetch()
+			.leftJoin(qCustomerOption.descriptions).fetch()
+			.leftJoin(qCustomerOptionValue.descriptions).fetch()
+			.where(qCustomerAttribute.id.eq(id));
 		
-		return query.uniqueResult(qEntity);*/
+		return query.uniqueResult(qCustomerAttribute);
+
+	}
+	
+	@Override
+	public List<CustomerAttribute> getByOptionId(MerchantStore store, Long id) {
+		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
+		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
+		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
 		
-		return null;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCustomerAttribute)
+		.join(qCustomerAttribute.customer).fetch()
+		.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
+		.leftJoin(qCustomerAttribute.customerOptionValue, qCustomerOptionValue).fetch()
+		.leftJoin(qCustomerOption.descriptions).fetch()
+		.leftJoin(qCustomerOptionValue.descriptions).fetch()
+		.where(qCustomerOption.merchantStore.id.eq(store.getId())
+				.and(qCustomerOption.id.eq(id)));
+
+		
+		return query.list(qCustomerAttribute);
+	}
+	
+	@Override
+	public List<CustomerAttribute> getByOptionValueId(MerchantStore store, Long id) {
+		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
+		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
+		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
+		
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCustomerAttribute)
+		.join(qCustomerAttribute.customer).fetch()
+		.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
+		.leftJoin(qCustomerAttribute.customerOptionValue, qCustomerOptionValue).fetch()
+		.leftJoin(qCustomerOption.descriptions).fetch()
+		.leftJoin(qCustomerOptionValue.descriptions).fetch()
+		.where(qCustomerOptionValue.merchantStore.id.eq(store.getId())
+				.and(qCustomerOptionValue.id.eq(id)));
+
+		
+		return query.list(qCustomerAttribute);
 	}
 
 
 	
-	@Override
-	public List<CustomerAttribute> getByCustomer(MerchantStore store, Customer customer, Language language) {
-/*		QProductAttribute qEntity = QProductAttribute.productAttribute;
-		QProductOptionValue qProductOptionValue = QProductOptionValue.productOptionValue;
-		QProductOptionValueDescription qProductOptionValueDescription = QProductOptionValueDescription.productOptionValueDescription;
-		QProduct qProduct = QProduct.product;
-		
-		JPQLQuery query = new JPAQuery (getEntityManager());
-		
-		query.from(qEntity)
-			.leftJoin(qEntity.productOptionValue, qProductOptionValue).fetch()
-			.leftJoin(qProductOptionValue.merchantStore).fetch()
-			.join(qEntity.product,qProduct).fetch()
-			.leftJoin(qProductOptionValue.descriptions,qProductOptionValueDescription).fetch()
-			.where(qProduct.id.eq(product.getId())
-			.and(qProductOptionValue.merchantStore.id.eq(store.getId()))
-			.and(qProductOptionValueDescription.language.id.eq(language.getId())));
-		
-		return query.list(qEntity);*/
-		
-		return null;
-	}
+
 	
 }
