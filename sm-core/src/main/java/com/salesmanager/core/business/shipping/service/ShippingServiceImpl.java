@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
+import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -48,7 +49,6 @@ import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.shipping.model.Packaging;
 import com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule;
 import com.salesmanager.core.modules.utils.Encryption;
-import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.core.utils.reference.ConfigurationModulesLoader;
 
 @Service("shippingService")
@@ -66,7 +66,7 @@ public class ShippingServiceImpl implements ShippingService {
 	
 
 	@Autowired
-	private ProductPriceUtils productPriceUtils;
+	private PricingService pricingService;
 	
 	@Autowired
 	private ModuleConfigurationService moduleConfigurationService;
@@ -613,7 +613,7 @@ public class ShippingServiceImpl implements ShippingService {
 		
 		BigDecimal total = new BigDecimal(0);
 		for(ShippingProduct shippingProduct : products) {
-			FinalPrice price = productPriceUtils.getFinalPrice(shippingProduct.getProduct());
+			FinalPrice price = pricingService.calculateProductPrice(shippingProduct.getProduct());
 			
 			BigDecimal currentPrice = price.getFinalPrice();
 			currentPrice = currentPrice.multiply(new BigDecimal(shippingProduct.getQuantity()));
