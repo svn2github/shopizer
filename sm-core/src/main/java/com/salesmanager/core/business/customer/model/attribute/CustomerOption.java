@@ -18,6 +18,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -41,6 +45,8 @@ public class CustomerOption extends SalesManagerEntity<Long, CustomerOption> {
 	@Column(name="CUSTOMER_OPTION_TYPE", length=10)
 	private String customerOptionType;
 	
+	@NotEmpty
+	@Pattern(regexp="^[a-zA-Z0-9_]*$")
 	@Column(name="CUSTOMER_OPT_CODE")
 	private String code;
 	
@@ -50,6 +56,7 @@ public class CustomerOption extends SalesManagerEntity<Long, CustomerOption> {
 	@Column(name="CUSTOMER_OPT_PUBLIC")
 	private boolean publicOption;
 	
+	@Valid
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "customerOption")
 	private Set<CustomerOptionDescription> descriptions = new HashSet<CustomerOptionDescription>();
 	
