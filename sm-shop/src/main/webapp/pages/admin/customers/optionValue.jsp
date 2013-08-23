@@ -49,7 +49,7 @@ $(document).ready(function() {
 					
 					
 					<div class="control-group">
-	                        <label class="required"><s:message code="label.customer.optionvalue.code" text="Option code"/> </label>
+	                        <label class="required"><s:message code="label.customer.optionvalue.code" text="Option value code"/> </label>
 	                        <div class="controls">
 	                        			<form:input cssClass="highlight" id="code" path="code"/>
 	                        			<span class="help-inline"><form:errors path="code" cssClass="error" /></span>
