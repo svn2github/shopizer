@@ -18,7 +18,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
@@ -43,12 +46,15 @@ public class CustomerOptionValue extends SalesManagerEntity<Long, CustomerOption
 	@Column(name="CUSTOMER_OPT_VAL_IMAGE")
 	private String customerOptionValueImage;
 	
+	@NotEmpty
+	@Pattern(regexp="^[a-zA-Z0-9_]*$")
 	@Column(name="CUSTOMER_OPT_VAL_CODE")
 	private String code;
 	
 	@Transient
 	private MultipartFile image = null;
 	
+	@Valid
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "customerOptionValue")
 	private Set<CustomerOptionValueDescription> descriptions = new HashSet<CustomerOptionValueDescription>();
 	
