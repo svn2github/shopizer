@@ -34,7 +34,7 @@ public class CustomerOptionDaoImpl extends SalesManagerEntityDaoImpl<Long, Custo
 			.leftJoin(qCustomerOption.merchantStore).fetch()
 			.where(qCustomerOption.merchantStore.id.eq(store.getId())
 			.and(qCustomerOptionDescription.language.id.eq(language.getId())))
-			.orderBy(qCustomerOption.id.asc());
+			.orderBy(qCustomerOption.sortOrder.asc());
 		
 		return query.listDistinct(qCustomerOption);
 

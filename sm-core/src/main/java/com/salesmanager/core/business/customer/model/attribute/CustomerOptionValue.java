@@ -40,8 +40,8 @@ public class CustomerOptionValue extends SalesManagerEntity<Long, CustomerOption
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
 	
-	@Column(name="CUSTOMER_OPT_VAL_SORT_ORD")
-	private Integer customerOptionValueSortOrder;
+	@Column(name="SORT_ORDER")
+	private Integer sortOrder;
 	
 	@Column(name="CUSTOMER_OPT_VAL_IMAGE")
 	private String customerOptionValueImage;
@@ -123,13 +123,6 @@ public class CustomerOptionValue extends SalesManagerEntity<Long, CustomerOption
 		return image;
 	}
 
-	public Integer getCustomerOptionValueSortOrder() {
-		return customerOptionValueSortOrder;
-	}
-
-	public void setCustomerOptionValueSortOrder(Integer customerOptionValueSortOrder) {
-		this.customerOptionValueSortOrder = customerOptionValueSortOrder;
-	}
 
 	public String getCustomerOptionValueImage() {
 		return customerOptionValueImage;
@@ -153,6 +146,14 @@ public class CustomerOptionValue extends SalesManagerEntity<Long, CustomerOption
 
 	public Set<CustomerOptionValueCustomerOption> getCustomerOptions() {
 		return customerOptions;
+	}
+
+	public void setSortOrder(Integer sortOrder) {
+		this.sortOrder = sortOrder;
+	}
+
+	public Integer getSortOrder() {
+		return sortOrder;
 	}
 	
 

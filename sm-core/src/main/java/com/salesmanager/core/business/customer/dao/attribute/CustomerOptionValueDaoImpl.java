@@ -25,8 +25,7 @@ public class CustomerOptionValueDaoImpl extends SalesManagerEntityDaoImpl<Long, 
 		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
 		QCustomerOptionValueDescription qCustomerOptionValueDescription = QCustomerOptionValueDescription.customerOptionValueDescription;
 		
-		
-		
+
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qCustomerOptionValue)
@@ -34,7 +33,7 @@ public class CustomerOptionValueDaoImpl extends SalesManagerEntityDaoImpl<Long, 
 			.leftJoin(qCustomerOptionValue.merchantStore).fetch()
 			.where(qCustomerOptionValue.merchantStore.id.eq(store.getId())
 			.and(qCustomerOptionValueDescription.language.id.eq(language.getId())))
-			.orderBy(qCustomerOptionValue.id.asc());
+			.orderBy(qCustomerOptionValue.sortOrder.asc());
 		
 		return query.listDistinct(qCustomerOptionValue);
 
