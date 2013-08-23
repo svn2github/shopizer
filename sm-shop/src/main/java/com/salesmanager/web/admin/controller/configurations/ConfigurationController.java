@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +26,7 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
 import com.salesmanager.core.business.system.model.MerchantConfigurationType;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
+import com.salesmanager.core.modules.email.EmailConfig;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
@@ -38,13 +40,15 @@ public class ConfigurationController {
 	@Autowired
 	private MerchantConfigurationService merchantConfigurationService;
 
+	@Autowired
+	Environment env;
 	
 
 	@Secured("AUTH")
 	@RequestMapping(value="/admin/configuration/accounts.html", method=RequestMethod.GET)
 	public String displayAccountsConfguration(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		this.setMenu(model, request);
+		setConfigurationMenu(model, request);
 		List<MerchantConfiguration> configs = new ArrayList<MerchantConfiguration>();
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		MerchantConfiguration merchantFBConfiguration = merchantConfigurationService.getMerchantConfiguration(Constants.KEY_FACEBOOK_PAGE_URL,store);
@@ -85,7 +89,7 @@ public class ConfigurationController {
 	@RequestMapping(value="/admin/configuration/saveConfiguration.html", method=RequestMethod.POST)
 	public String saveConfigurations(@ModelAttribute("configuration") ConfigListWrapper configWrapper, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception
 	{
-		setMenu(model, request);
+		setConfigurationMenu(model, request);
 		List<MerchantConfiguration> configs = configWrapper.getMerchantConfigs();
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		for(MerchantConfiguration mConfigs : configs)
@@ -108,41 +112,56 @@ public class ConfigurationController {
 	}
 	
 	@Secured("AUTH")
-	@RequestMapping(value="/admin/configuration/emailConfig.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/configuration/email.html", method=RequestMethod.GET)
 	public String displayEmailSettings(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-		this.setMenu(model, request);
+		setEmailConfigurationMenu(model, request);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		EmailConfig emailConfig = merchantConfigurationService.getMerchantEmailConfiguration(store);
+		if(emailConfig == null){
+			emailConfig = new EmailConfig();
+			//TODO: Need to check below properties. When there are no record available in MerchantConfguration table with EMAIL_CONFIG key, 
+			// instead of showing blank fields in setup screen, show default configured values from email.properties
+			emailConfig.setProtocol(env.getProperty("mailSender.protocol"));
+			emailConfig.setHost(env.getProperty("mailSender.host"));
+			emailConfig.setPort(env.getProperty("mailSender.port}"));
+			emailConfig.setUsername(env.getProperty("mailSender.username"));
+			emailConfig.setPassword(env.getProperty("mailSender.password"));
+			emailConfig.setSmtpAuth(Boolean.parseBoolean(env.getProperty("mailSender.mail.smtp.auth")));
+			emailConfig.setStarttls(Boolean.parseBoolean(env.getProperty("mail.smtp.starttls.enable")));
+		}
 		
-		//must be able to store smtp server settings
-		/*
-		protocol=smtp
-		host=smtpout.secureserver.net
-		port=3535
-		username=support@shopizer.com
-		password=buzz
-
-		auth=true
-		starttls.enable=false
-		 */
-		//see sm-core / system.model.email.EmailConfig
-		
-		//save in MerchantConfiguration using key EMAIL_CONFIG (see similar shippingService.saveShippingConfiguration and shippingService.getShippingConfiguration)
-		
-		//may use the default configuration from spring if nothing is configured see shopizer-core-modules.xml)
-		
-		
-		
-		//Get from MerchantConfiguration KEY - JSON VALUE
-		
+		model.addAttribute("configuration", emailConfig);
 		return ControllerConstants.Tiles.Configuration.email;
-		
 	}
 	
-
-	
-	private void setMenu(Model model, HttpServletRequest request) throws Exception {
+	@Secured("AUTH")
+	@RequestMapping(value="/admin/configuration/saveEmailConfiguration.html", method=RequestMethod.POST)
+	public String saveEmailSettings(@ModelAttribute("configuration") EmailConfig config, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+		setEmailConfigurationMenu(model, request);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		EmailConfig emailConfig = merchantConfigurationService.getMerchantEmailConfiguration(store);
+		if(emailConfig == null){
+			emailConfig = new EmailConfig();
+		}
 		
-		//display menu
+		// populte EmailConfig model from UI values
+		emailConfig.setProtocol(config.getProtocol());
+		emailConfig.setHost(config.getHost());
+		emailConfig.setPort(config.getPort());
+		emailConfig.setUsername(config.getUsername());
+		emailConfig.setPassword(config.getPassword());
+		emailConfig.setSmtpAuth(config.isSmtpAuth());
+		emailConfig.setStarttls(config.isStarttls());
+		
+		merchantConfigurationService.saveMerchantEmailConfiguration(emailConfig, store);
+		
+		model.addAttribute("configuration", emailConfig);
+		model.addAttribute("success","success");
+		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Configuration.email;
+	}
+	
+	private void setConfigurationMenu(Model model, HttpServletRequest request) throws Exception {
+		
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("configuration", "configuration");
 		activeMenus.put("accounts-conf", "accounts-conf");
@@ -153,7 +172,19 @@ public class ConfigurationController {
 		Menu currentMenu = (Menu)menus.get("configuration");
 		model.addAttribute("currentMenu",currentMenu);
 		model.addAttribute("activeMenus",activeMenus);
-		//
+	}
+	
+	private void setEmailConfigurationMenu(Model model, HttpServletRequest request) throws Exception {
 		
+		Map<String,String> activeMenus = new HashMap<String,String>();
+		activeMenus.put("configuration", "configuration");
+		activeMenus.put("email-conf", "email-conf");
+		
+		@SuppressWarnings("unchecked")
+		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
+		
+		Menu currentMenu = (Menu)menus.get("configuration");
+		model.addAttribute("currentMenu",currentMenu);
+		model.addAttribute("activeMenus",activeMenus);
 	}
 }

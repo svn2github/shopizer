@@ -247,7 +247,7 @@
   		<put-attribute name="body" value="/pages/admin/configuration/accounts.jsp" /> 
   	</definition>
   	
-  	<definition name="configuration-email" template="/layout/admin/layout.jsp"> 
+  	<definition name="config-email" template="/layout/admin/layout.jsp"> 
   		<put-attribute name="body" value="/pages/admin/configuration/email.jsp" /> 
   	</definition>
   	

@@ -24,12 +24,12 @@
 
 
 								<div class="sm-ui-component">
-								<h3>//TODO title <s:message code="label.shipping.options" text="Shipping options" /></h3>	
+								<h3><s:message code="label.emailconfig.options" text="Email Configuration Options" /></h3>	
 								<br/>
 								
 							<div class="box">
 							<span class="box-title"><p>Email settings</p></span>
-							<c:url var="saveEmailConfiguration" value="/admin/CHANGE-URL.html"/>
+							<c:url var="saveEmailConfiguration" value="/admin/configuration/saveEmailConfiguration.html"/>
 							<form:form method="POST" commandName="configuration" action="${saveEmailConfiguration}">
 
       							
@@ -38,45 +38,58 @@
 
                   					
                   					<div class="control-group">
-                        				<label>//Protocol<s:message code="label.shipping.handlingfees" text="Handling fees"/></label>
+                        				<label><s:message code="label.emailconfig.protocol" text="Protocol"/></label>
                         				<div class="controls">
-											<form:input cssClass="input-large" path="handlingFeesText" />
+											<form:input cssClass="input-large" path="protocol" />
                         				</div>
-	                                	<span class="help-inline"><form:errors path="handlingFeesText" cssClass="error" /></span>
+	                                	<span class="help-inline"><form:errors path="protocol" cssClass="error" /></span>
 	                        		</div>
 	                        		
 	                        		<div class="control-group">
-                        				<label>//Host<s:message code="label.shipping.handlingfees" text="Handling fees"/></label>
+                        				<label><s:message code="label.emailconfig.host" text="Host"/></label>
                         				<div class="controls">
-											<form:input cssClass="input-large" path="handlingFeesText" />
+											<form:input cssClass="input-large" path="host" />
                         				</div>
-	                                	<span class="help-inline"><form:errors path="handlingFeesText" cssClass="error" /></span>
+	                                	<span class="help-inline"><form:errors path="host" cssClass="error" /></span>
 	                        		</div>
 
-
 	                        		<div class="control-group">
-                        				<label>//Port<s:message code="label.shipping.handlingfees" text="Handling fees"/></label>
+                        				<label><s:message code="label.emailconfig.port" text="Port"/></label>
                         				<div class="controls">
-											<form:input cssClass="input-large" path="handlingFeesText" />
+											<form:input cssClass="input-large" path="port" />
                         				</div>
-	                                	<span class="help-inline"><form:errors path="handlingFeesText" cssClass="error" /></span>
+	                                	<span class="help-inline"><form:errors path="port" cssClass="error" /></span>
 	                        		</div>
 	                        		
 	                        		<div class="control-group">
-                        				<label>//Username<s:message code="label.shipping.handlingfees" text="Handling fees"/></label>
+                        				<label><s:message code="label.emailconfig.username" text="Username"/></label>
                         				<div class="controls">
-											<form:input cssClass="input-large" path="handlingFeesText" />
+											<form:input cssClass="input-large" path="username" />
                         				</div>
-	                                	<span class="help-inline"><form:errors path="handlingFeesText" cssClass="error" /></span>
+	                                	<span class="help-inline"><form:errors path="username" cssClass="error" /></span>
 	                        		</div>	    
 	                        		
 	                        		<div class="control-group">
-                        				<label>//Password<s:message code="label.shipping.handlingfees" text="Handling fees"/></label>
+                        				<label><s:message code="label.emailconfig.password" text="Password"/></label>
                         				<div class="controls">
-											<form:input cssClass="input-large" path="handlingFeesText" />
+											<form:input cssClass="input-large" path="password" />
                         				</div>
-	                                	<span class="help-inline"><form:errors path="handlingFeesText" cssClass="error" /></span>
-	                        		</div>	                     		
+	                                	<span class="help-inline"><form:errors path="password" cssClass="error" /></span>
+	                        		</div>	
+	                        		
+	                        		<div class="control-group">
+                        				<label><s:message code="label.emailconfig.smtpauth" text="SmtpAuth"/></label>
+                        				<div class="controls">
+											<form:checkbox cssClass="input-large" path="smtpAuth" />
+                        				</div>
+	                        		</div> 
+	                        		
+	                        		<div class="control-group">
+                        				<label><s:message code="label.emailconfig.starttls" text="Starttls"/></label>
+                        				<div class="controls">
+											<form:checkbox cssClass="input-large" path="starttls" />
+                        				</div>
+	                        		</div>                       		
 	                        		
 	                        		
 	                        		<div class="form-actions">
