@@ -72,9 +72,50 @@
 			</loader>
 
 
-		-->
+		--><!--
 		
-			  <loader class="org.infinispan.loaders.file.FileCacheStore" fetchPersistentState="false"
+		
+		
+		<loader class="org.infinispan.loaders.jdbc.mixed.JdbcMixedCacheStore"
+                fetchPersistentState="false" ignoreModifications="false"
+                purgeOnStartup="false">
+                <properties>
+                    <property name="tableNamePrefixForStrings" value="ISPN_MIXED_STR_TABLE" />
+                    <property name="tableNamePrefixForBinary" value="ISPN_MIXED_BINARY_TABLE" />
+                    <property name="idColumnNameForStrings" value="ID_COLUMN" />
+                    <property name="idColumnNameForBinary" value="ID_COLUMN" />
+                    <property name="dataColumnNameForStrings" value="DATA_COLUMN" />
+                    <property name="dataColumnNameForBinary" value="DATA_COLUMN" />
+                    <property name="timestampColumnNameForStrings" value="TIMESTAMP_COLUMN" />
+                    <property name="timestampColumnNameForBinary" value="TIMESTAMP_COLUMN" />
+                    <property name="timestampColumnTypeForStrings" value="BIGINT" />
+                    <property name="timestampColumnTypeForBinary" value="BIGINT" />
+                    <property name="connectionFactoryClass"
+                        value="org.infinispan.loaders.jdbc.connectionfactory.PooledConnectionFactory" />
+                    <property name="connectionUrl"
+                        value="jdbc:mysql://localhost:3306/shopizer_infinispan" />
+                    <property name="userName" value="root" />
+                    <property name="password" value="root" />
+                    <property name="driverClass" value="com.mysql.jdbc.Driver" />
+                    <property name="idColumnTypeForStrings" value="VARCHAR(255)" />
+                    <property name="idColumnTypeForBinary" value="VARCHAR(255)" />
+                    <property name="dataColumnTypeForStrings" value="BINARY" />
+                    <property name="dataColumnTypeForBinary" value="BINARY" />
+                    <property name="dropTableOnExitForStrings" value="false" />
+                    <property name="dropTableOnExitForBinary" value="false" />
+                    <property name="createTableOnStartForStrings" value="true" />
+                    <property name="createTableOnStartForBinary" value="true" />
+                    <property name="createTableOnStartForStrings" value="true" />
+                    <property name="createTableOnStartForBinary" value="true" />
+                </properties>
+          </loader>
+		  <transaction transactionManagerLookupClass="org.infinispan.transaction.lookup.DummyTransactionManagerLookup" transactionMode="TRANSACTIONAL" lockingMode="OPTIMISTIC" />
+
+		
+		
+		
+		
+			  --><loader class="org.infinispan.loaders.file.FileCacheStore" fetchPersistentState="false"
 	               ignoreModifications="false" purgeOnStartup="false">
 	               <properties>
 	                 <property name="location" value="/Users/csamson777/Documents/workspace2/infinispan/store"/>
