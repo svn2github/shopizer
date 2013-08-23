@@ -53,6 +53,22 @@
   		<put-attribute name="body" value="/pages/admin/customers/customer.jsp" /> 
   	</definition>
   	
+  	 <definition name="admin-customer-options-values-list" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/customers/optionsValues.jsp" /> 
+  	</definition>
+  	
+  	 <definition name="admin-customer-options-values-details" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/customers/optionsValue.jsp" /> 
+  	</definition>
+  	
+  	 <definition name="admin-customer-options-list" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/customers/options.jsp" /> 
+  	</definition>
+  	
+  	 <definition name="admin-customer-options-details" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/customers/option.jsp" /> 
+  	</definition>
+  	
   	 <definition name="admin-products" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/products/products.jsp" /> 
   	</definition>
