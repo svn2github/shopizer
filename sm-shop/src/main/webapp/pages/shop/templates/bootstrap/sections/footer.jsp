@@ -53,7 +53,7 @@ response.setDateHeader ("Expires", -1);
 		    <div id="footer-bottom">
 				<div class="container">
 				   <div class="row">
-					<div class="span12 text">[STORE COPY]&nbsp;<s:message code="label.generic.providedby" /> <a href="http://www.shopizer.com" class="footer-href" target="_blank">Shopizer</div>
+					<div class="span12 text">&copy;&nbsp;<s:message code="label.generic.providedby" /> <a href="http://www.shopizer.com" class="footer-href" target="_blank">Shopizer</div>
 				   </div>
 				 </div>
 		    </div>
