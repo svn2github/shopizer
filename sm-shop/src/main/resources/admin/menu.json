@@ -202,10 +202,32 @@
 "order":7,
 "menus":[
 	{"menu":{
-		"code":"customer-list","url":"/admin/customers/list.html","role":"CUSTOMER","order":0
+		"code":"customer-list","url":"","role":"CUSTOMER","order":0,"menus":
+		[
+			{"menu":{
+				"code":"customer-list","url":"/admin/customers/list.html","role":"CUSTOMER","order":0
+			}},
+			{"menu":{
+				"code":"customer-create","url":"/admin/customers/customer.html","role":"CUSTOMER","order":1
+			}}
+		]
 	}},
 	{"menu":{
-		"code":"customer-create","url":"/admin/customers/customer.html","role":"CUSTOMER","order":1
+		"code":"customer-options","url":"","role":"CUSTOMER","order":1,"menus":
+		[
+			{"menu":{
+				"code":"customer-options-list","url":"/admin/customers/options/list.html","role":"CUSTOMER","order":0
+			}},
+			{"menu":{
+				"code":"customer-options-create","url":"/admin/customers/options/create.html","role":"CUSTOMER","order":1
+			}},
+			{"menu":{
+				"code":"customer-options-values-list","url":"/admin/customers/options/values/list.html","role":"CUSTOMER","order":2
+			}},
+			{"menu":{
+				"code":"customer-options-values-create","url":"/admin/customers/options/values/create.html","role":"CUSTOMER","order":3
+			}}
+		]
 	}}
 ]
 }},
