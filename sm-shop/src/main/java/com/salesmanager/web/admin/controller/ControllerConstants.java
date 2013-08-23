@@ -36,6 +36,15 @@ public interface ControllerConstants
 
         }
         
+        interface Customer{
+            final String optionsList="admin-customer-options-list";
+            final String optionDetails="admin-customer-options-details";
+            final String optionsValuesList="admin-customer-options-values-list";
+            final String optionsValueDetails="admin-customer-options-values-details";
+
+
+        }
+        
         interface Product{
             final String productReviews="catalogue-product-reviews";
             final String productPrices="admin-products-prices";
