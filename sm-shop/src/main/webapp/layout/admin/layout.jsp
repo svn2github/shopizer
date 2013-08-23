@@ -250,6 +250,18 @@ response.setDateHeader ("Expires", -1);
 			$("#customer-create-link").click(function() {
   				window.location='<c:url value="/admin/customers/customer.html" />';
 			});
+			$("#customer-options-list-link").click(function() {
+  				window.location='<c:url value="/admin/customers/options/list.html" />';
+			});
+			$("#customer-options-create-link").click(function() {
+  				window.location='<c:url value="/admin/customers/options/create.html" />';
+			});
+			$("#customer-options-values-list-link").click(function() {
+  				window.location='<c:url value="/admin/customers/options/values/list.html" />';
+			});
+			$("#customer-options-values-create-link").click(function() {
+  				window.location='<c:url value="/admin/customers/options/values/create.html" />';
+			});
 			$("#order-list-link").click(function() {
   				window.location='<c:url value="/admin/orders/list.html" />';
 			});
