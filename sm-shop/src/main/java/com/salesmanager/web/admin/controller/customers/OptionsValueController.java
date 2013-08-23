@@ -85,13 +85,13 @@ public class OptionsValueController {
 	 */
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/customers/options/values/edit.html", method=RequestMethod.GET)
-	public String displayOptionEdit(@RequestParam("id") long id, HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
+	public String displayOptionValueEdit(@RequestParam("id") long id, HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
 		return displayOption(id,request,response,model,locale);
 	}
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/customers/options/values/create.html", method=RequestMethod.GET)
-	public String displayOption(HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
+	public String displayOptionValueCreate(HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
 		return displayOption(null,request,response,model,locale);
 	}
 	

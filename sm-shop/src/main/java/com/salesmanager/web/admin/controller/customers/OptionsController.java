@@ -1,4 +1,4 @@
-package com.salesmanager.web.admin.controller.products;
+package com.salesmanager.web.admin.controller.customers;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,7 +52,7 @@ public class OptionsController {
 	
 	
 	@Secured("PRODUCTS")
-	@RequestMapping(value="/admin/options/options.html", method=RequestMethod.GET)
+	@RequestMapping(value="/admin/customers/options/list.html", method=RequestMethod.GET)
 	public String displayOptions(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		setMenu(model,request);
@@ -67,14 +67,14 @@ public class OptionsController {
 	}
 	
 	@Secured("PRODUCTS")
-	@RequestMapping(value="/admin/options/editOption.html", method=RequestMethod.GET)
-	public String displayOptionEdit(@RequestParam("id") long optionId, HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
-		return displayOption(optionId,request,response,model,locale);
+	@RequestMapping(value="/admin/customers/options/edit.html", method=RequestMethod.GET)
+	public String displayOptionEdit(@RequestParam("id") long id, HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
+		return displayOption(id,request,response,model,locale);
 	}
 	
 	@Secured("PRODUCTS")
-	@RequestMapping(value="/admin/options/createOption.html", method=RequestMethod.GET)
-	public String displayOption(HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
+	@RequestMapping(value="/admin/customers/options/create.html", method=RequestMethod.GET)
+	public String displayOptionCreate(HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
 		return displayOption(null,request,response,model,locale);
 	}
 	
@@ -152,7 +152,7 @@ public class OptionsController {
 		
 	
 	@Secured("PRODUCTS")
-	@RequestMapping(value="/admin/options/save.html", method=RequestMethod.POST)
+	@RequestMapping(value="/admin/customers/options/save.html", method=RequestMethod.POST)
 	public String saveOption(@Valid @ModelAttribute("option") ProductOption option, BindingResult result, Model model, HttpServletRequest request) throws Exception {
 		
 
@@ -215,7 +215,7 @@ public class OptionsController {
 	
 	@SuppressWarnings("unchecked")
 	@Secured("PRODUCTS")
-	@RequestMapping(value="/admin/options/paging.html", method=RequestMethod.POST, produces="application/json")
+	@RequestMapping(value="/admin/customers/options/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageOptions(HttpServletRequest request, HttpServletResponse response) {
 		
 		String optionName = request.getParameter("name");
@@ -283,8 +283,8 @@ public class OptionsController {
 		
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
-		activeMenus.put("catalogue", "catalogue");
-		activeMenus.put("catalogue-options", "catalogue-options");
+		activeMenus.put("customer", "customer");
+		activeMenus.put("customer-options", "customer-options");
 		
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
@@ -296,7 +296,7 @@ public class OptionsController {
 		
 	}
 	
-	@RequestMapping(value="/admin/options/remove.html", method=RequestMethod.POST, produces="application/json")
+	@RequestMapping(value="/admin/customers/options/remove.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String deleteOption(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String sid = request.getParameter("optionId");
 
