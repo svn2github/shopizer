@@ -83,13 +83,13 @@ public class OptionsValueController {
 	 * @return
 	 * @throws Exception
 	 */
-	@Secured("PRODUCTS")
+	@Secured("CUSTOMER")
 	@RequestMapping(value="/admin/customers/options/values/edit.html", method=RequestMethod.GET)
 	public String displayOptionValueEdit(@RequestParam("id") long id, HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
 		return displayOption(id,request,response,model,locale);
 	}
 	
-	@Secured("PRODUCTS")
+	@Secured("CUSTOMER")
 	@RequestMapping(value="/admin/customers/options/values/create.html", method=RequestMethod.GET)
 	public String displayOptionValueCreate(HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
 		return displayOption(null,request,response,model,locale);
@@ -162,7 +162,7 @@ public class OptionsValueController {
 	}
 		
 	
-	@Secured("PRODUCTS")
+	@Secured("CUSTOMER")
 	@RequestMapping(value="/admin/customers/options/values/save.html", method=RequestMethod.POST)
 	public String saveOption(@Valid @ModelAttribute("optionValue") CustomerOptionValue optionValue, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
@@ -284,7 +284,7 @@ public class OptionsValueController {
 		
 	}
 	
-	@Secured("PRODUCTS")
+	@Secured("CUSTOMER")
 	@RequestMapping(value="/admin/customers/options/values/remove.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String deleteOptionValue(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String sid = request.getParameter("id");
