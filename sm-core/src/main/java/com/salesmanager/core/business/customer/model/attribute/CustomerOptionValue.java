@@ -67,7 +67,7 @@ public class CustomerOptionValue extends SalesManagerEntity<Long, CustomerOption
 	
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.customerOptionValue", cascade=CascadeType.ALL)
-	private Set<CustomerOptionValueCustomerOption> customerOptions = new HashSet<CustomerOptionValueCustomerOption>();
+	private Set<CustomerOptionSet> customerOptions = new HashSet<CustomerOptionSet>();
 
 	
 	public CustomerOptionValue() {
@@ -140,11 +140,11 @@ public class CustomerOptionValue extends SalesManagerEntity<Long, CustomerOption
 		this.code = code;
 	}
 
-	public void setCustomerOptions(Set<CustomerOptionValueCustomerOption> customerOptions) {
+	public void setCustomerOptions(Set<CustomerOptionSet> customerOptions) {
 		this.customerOptions = customerOptions;
 	}
 
-	public Set<CustomerOptionValueCustomerOption> getCustomerOptions() {
+	public Set<CustomerOptionSet> getCustomerOptions() {
 		return customerOptions;
 	}
 

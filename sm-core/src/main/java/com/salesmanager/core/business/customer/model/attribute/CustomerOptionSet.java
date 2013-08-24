@@ -18,7 +18,7 @@ import com.salesmanager.core.constants.SchemaConstant;
         @AssociationOverride(name = "pk.customerOptionValue", 
             joinColumns = @JoinColumn(name = "CUSTOMER_OPTION_VALUE_ID")) })
 
-public class CustomerOptionValueCustomerOption extends SalesManagerEntity<Long, CustomerOptionValueCustomerOption> {
+public class CustomerOptionSet extends SalesManagerEntity<Long, CustomerOptionSet> {
 
 	
 	/**
@@ -26,7 +26,7 @@ public class CustomerOptionValueCustomerOption extends SalesManagerEntity<Long, 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	CustomerOptionValueCustomerOptionId pk = new CustomerOptionValueCustomerOptionId();
+	CustomerOptionSetId pk = new CustomerOptionSetId();
 	
 
 
@@ -53,11 +53,11 @@ public class CustomerOptionValueCustomerOption extends SalesManagerEntity<Long, 
 	}
 
 	@EmbeddedId
-	public CustomerOptionValueCustomerOptionId getPk() {
+	public CustomerOptionSetId getPk() {
 		return pk;
 	}
 
-	public void setPk(CustomerOptionValueCustomerOptionId pk) {
+	public void setPk(CustomerOptionSetId pk) {
 		this.pk = pk;
 	}
 

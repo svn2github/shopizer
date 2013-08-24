@@ -6,7 +6,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 
 @Embeddable
-public class CustomerOptionValueCustomerOptionId implements Serializable {
+public class CustomerOptionSetId implements Serializable {
 	
 	
 	/**
