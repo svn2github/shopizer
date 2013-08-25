@@ -108,7 +108,8 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		customer.setFax("555-666-7777");
 		customer.setNewsletter('c');
 		customer.setNick("My nick");
-		customer.setPostalCode("J4B-8J9");			
+		customer.setPostalCode("J4B-8J9");
+		customer.setDefaultLanguage(en);
 		customer.setStreetAddress("358 Du Languadoc");
 		customer.setTelephone("444-555-6666");
 		customer.setCountry(country);
@@ -216,6 +217,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		subtotal.setSortOrder(0);
 		subtotal.setText("Summary" );
 		subtotal.setTitle("Summary" );
+		subtotal.setOrderTotalCode("summary");
 		subtotal.setValue(new BigDecimal(19.99 ) );
 		subtotal.setOrder(order);
 		
@@ -226,6 +228,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		tax.setSortOrder(1);
 		tax.setText("Tax" );
 		tax.setTitle("Tax" );
+		tax.setOrderTotalCode("tax");
 		tax.setValue(new BigDecimal(4) );
 		tax.setOrder(order);
 		
@@ -236,6 +239,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		total.setSortOrder(2);
 		total.setText("Total" );
 		total.setTitle("Total" );
+		total.setOrderTotalCode("total");
 		total.setValue(new BigDecimal(23.99) );
 		total.setOrder(order);
 		
