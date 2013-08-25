@@ -134,8 +134,7 @@ public interface ContentService
 	void addOptionImage(String merchantStoreCode, InputContentFile cmsContentImage)
 			throws ServiceException;
 
-	List<Content> listByType(ContentType contentType, MerchantStore store)
-			throws ServiceException;
+
 
 	List<Content> listByType(List<ContentType> contentType, MerchantStore store)
 			throws ServiceException;
