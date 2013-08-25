@@ -31,9 +31,9 @@ import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufac
 import com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDescription;
-import com.salesmanager.core.business.content.model.content.FileContentType;
-import com.salesmanager.core.business.content.model.content.ImageContentFile;
-import com.salesmanager.core.business.content.model.content.OutputContentFile;
+import com.salesmanager.core.business.content.model.FileContentType;
+import com.salesmanager.core.business.content.model.ImageContentFile;
+import com.salesmanager.core.business.content.model.OutputContentFile;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
