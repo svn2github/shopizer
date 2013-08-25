@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -60,7 +62,7 @@ import com.salesmanager.web.constants.Constants;
 @Component
 public class InitStoreData implements InitData {
 	
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger(InitStoreData.class);
 	
 	@Autowired
 	protected ProductService productService;
@@ -123,7 +125,7 @@ public class InitStoreData implements InitData {
 	public void initInitialData() throws ServiceException {
 		
 
-		
+		LOGGER.info("Starting the initialization of test data");
 		Date date = new Date(System.currentTimeMillis());
 		
 		Language en = languageService.getByCode("en");
@@ -711,6 +713,7 @@ public class InitStoreData implements InitData {
 			subtotal.setSortOrder(0);
 			subtotal.setText("Summary" );
 			subtotal.setTitle("Summary" );
+			subtotal.setOrderTotalCode("subtotal");
 			subtotal.setValue(new BigDecimal(19.99 ) );
 			subtotal.setOrder(order);
 			
@@ -721,6 +724,7 @@ public class InitStoreData implements InitData {
 			tax.setSortOrder(1);
 			tax.setText("Tax" );
 			tax.setTitle("Tax" );
+			tax.setOrderTotalCode("tax");
 			tax.setValue(new BigDecimal(4) );
 			tax.setOrder(order);
 			
@@ -731,12 +735,15 @@ public class InitStoreData implements InitData {
 			total.setSortOrder(2);
 			total.setText("Total" );
 			total.setTitle("Total" );
+			total.setOrderTotalCode("total");
 			total.setValue(new BigDecimal(23.99) );
 			total.setOrder(order);
 			
 			order.getOrderTotal().add(total);
 			
-			orderService.create(order);		
+			orderService.create(order);	
+			
+			LOGGER.info("Ending the initialization of test data");
 		
 	}
 

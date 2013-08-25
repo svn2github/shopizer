@@ -29,7 +29,7 @@
 				 <c:set value="/admin/customers/options/remove.html" var="removeUrl" scope="request"/>
 				 <c:set value="/admin/customers/options/edit.html" var="editUrl" scope="request"/>
 				 <c:set value="/admin/customers/options/list.html" var="afterRemoveUrl" scope="request"/>
-				 <c:set var="entityId" value="optionId" scope="request"/>
+				 <c:set var="entityId" value="id" scope="request"/>
 				 <c:set var="componentTitleKey" value="menu.catalogue-options-list" scope="request"/>
 				 <c:set var="gridHeader" value="/pages/admin/customers/options-gridHeader.jsp" scope="request"/>
 				 <c:set var="canRemoveEntry" value="true" scope="request"/>

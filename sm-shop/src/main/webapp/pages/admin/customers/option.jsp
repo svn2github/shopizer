@@ -71,7 +71,7 @@ $(document).ready(function() {
                  <div class="control-group">
                         <label class="required"><s:message code="label.customer.option.name" text="Option name"/> (<c:out value="${description.language.code}"/>)</label>
                         <div class="controls">
-                        			<form:input id="name${counter.index}" path="descriptionsList[${counter.index}].name"/>
+                        			<form:input cssClass="highlight input-xxlarge" id="name${counter.index}" path="descriptionsList[${counter.index}].name"/>
                         			<span class="help-inline"><form:errors path="descriptionsList[${counter.index}].name" cssClass="error" /></span>
                         </div>
 

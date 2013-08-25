@@ -1,7 +1,7 @@
 package com.salesmanager.web.utils;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.FileContentType;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.web.constants.Constants;
 

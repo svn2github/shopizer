@@ -39,7 +39,7 @@ import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
-public class OptionsValueController {
+public class CustomerOptionsValueController {
 	
 	@Autowired
 	LanguageService languageService;
@@ -51,7 +51,7 @@ public class OptionsValueController {
 	@Autowired
 	LabelUtils messages;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(OptionsValueController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerOptionsValueController.class);
 	
 	/**
 	 * Displays the list of customer options values
@@ -333,7 +333,7 @@ public class OptionsValueController {
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
 		
-		Menu currentMenu = (Menu)menus.get("catalogue");
+		Menu currentMenu = (Menu)menus.get("customer");
 		model.addAttribute("currentMenu",currentMenu);
 		model.addAttribute("activeMenus",activeMenus);
 		//

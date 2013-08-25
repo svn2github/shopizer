@@ -121,10 +121,10 @@
 	                     <label><s:message code="label.storecountry" text="Store Country"/></label>
 	                     <div class="controls">
 	                        					
-	                        		  <form:select cssClass="country-list" path="position">
+	                        		  <form:select cssClass="country-list" path="contentPosition">
 					  								<form:options items="${boxPositions}" itemValue="value" itemLabel="key" />
 				       				  </form:select>
-	                                  <span class="help-inline"><form:errors path="position" cssClass="error" /></span>
+	                                  <span class="help-inline"><form:errors path="contentPosition" cssClass="error" /></span>
 	                     </div>
 	         </div>
              </c:if>

@@ -58,7 +58,7 @@
   	</definition>
   	
   	 <definition name="admin-customer-options-values-details" template="/layout/admin/layout.jsp">
-  		<put-attribute name="body" value="/pages/admin/customers/optionsValue.jsp" /> 
+  		<put-attribute name="body" value="/pages/admin/customers/optionValue.jsp" /> 
   	</definition>
   	
   	 <definition name="admin-customer-options-list" template="/layout/admin/layout.jsp">

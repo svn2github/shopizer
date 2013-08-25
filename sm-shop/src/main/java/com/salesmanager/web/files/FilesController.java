@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.salesmanager.core.business.content.model.content.FileContentType;
-import com.salesmanager.core.business.content.model.content.OutputContentFile;
+import com.salesmanager.core.business.content.model.FileContentType;
+import com.salesmanager.core.business.content.model.OutputContentFile;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 

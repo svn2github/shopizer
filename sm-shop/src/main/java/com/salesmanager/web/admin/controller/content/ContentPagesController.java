@@ -24,10 +24,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.salesmanager.core.business.content.model.content.Content;
-import com.salesmanager.core.business.content.model.content.ContentDescription;
-import com.salesmanager.core.business.content.model.content.ContentType;
-import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.Content;
+import com.salesmanager.core.business.content.model.ContentDescription;
+import com.salesmanager.core.business.content.model.ContentType;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -202,7 +201,7 @@ public class ContentPagesController {
 			if(ContentType.BOX.name().equals(contentType)) {
 				cType = ContentType.BOX;
 			} 
-			List<Content> contentList = contentService.listByType(cType, store);
+			List<Content> contentList = contentService.listByType(cType, store, language);
 			
 			if(contentList!=null) {
 
