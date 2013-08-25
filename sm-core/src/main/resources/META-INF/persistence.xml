@@ -37,15 +37,15 @@
 		<class>com.salesmanager.core.business.customer.model.attribute.CustomerOption</class>
 		<class>com.salesmanager.core.business.customer.model.attribute.CustomerOptionDescription</class>
 		<class>com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue</class>
-		<class>com.salesmanager.core.business.customer.model.attribute.CustomerOptionValueCustomerOption</class>
-		<class>com.salesmanager.core.business.customer.model.attribute.CustomerOptionValueCustomerOptionId</class>
+		<class>com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet</class>
+		<class>com.salesmanager.core.business.customer.model.attribute.CustomerOptionSetId</class>
 		<class>com.salesmanager.core.business.customer.model.attribute.CustomerOptionValueDescription</class>
 		
 		<class>com.salesmanager.core.business.catalog.category.model.Category</class>
 		<class>com.salesmanager.core.business.catalog.category.model.CategoryDescription</class>
 			   
-		<class>com.salesmanager.core.business.content.model.content.Content</class>
-		<class>com.salesmanager.core.business.content.model.content.ContentDescription</class>
+		<class>com.salesmanager.core.business.content.model.Content</class>
+		<class>com.salesmanager.core.business.content.model.ContentDescription</class>
 		
 		<class>com.salesmanager.core.business.catalog.product.model.Product</class>
 		<class>com.salesmanager.core.business.catalog.product.model.description.ProductDescription</class>

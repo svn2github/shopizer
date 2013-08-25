@@ -1,4 +1,4 @@
-package com.salesmanager.core.business.content.model.content;
+package com.salesmanager.core.business.content.model;
 
 import java.io.InputStream;
 import java.io.Serializable;

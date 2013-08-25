@@ -18,9 +18,9 @@ import org.infinispan.tree.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.salesmanager.core.business.content.model.content.FileContentType;
-import com.salesmanager.core.business.content.model.content.InputContentFile;
-import com.salesmanager.core.business.content.model.content.OutputContentFile;
+import com.salesmanager.core.business.content.model.FileContentType;
+import com.salesmanager.core.business.content.model.InputContentFile;
+import com.salesmanager.core.business.content.model.OutputContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.modules.cms.impl.CacheManager;
 

@@ -5,7 +5,7 @@ package com.salesmanager.core.modules.cms.common;
 
 import java.io.Serializable;
 
-import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.FileContentType;
 
 
 /**

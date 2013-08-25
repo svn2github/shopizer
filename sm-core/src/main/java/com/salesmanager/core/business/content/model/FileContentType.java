@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.salesmanager.core.business.content.model.content;
+package com.salesmanager.core.business.content.model;
 
 /**
  * Enum defining type of static content.

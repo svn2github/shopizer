@@ -1,7 +1,7 @@
 package com.salesmanager.core.modules.cms.content;
 
 
-import com.salesmanager.core.business.content.model.content.FileContentType;
+import com.salesmanager.core.business.content.model.FileContentType;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.modules.cms.common.ImageRemove;
 

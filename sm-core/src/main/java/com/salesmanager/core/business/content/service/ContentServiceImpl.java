@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import com.salesmanager.core.business.content.dao.ContentDao;
-import com.salesmanager.core.business.content.model.content.Content;
-import com.salesmanager.core.business.content.model.content.ContentDescription;
-import com.salesmanager.core.business.content.model.content.ContentType;
-import com.salesmanager.core.business.content.model.content.FileContentType;
-import com.salesmanager.core.business.content.model.content.InputContentFile;
-import com.salesmanager.core.business.content.model.content.OutputContentFile;
+import com.salesmanager.core.business.content.model.Content;
+import com.salesmanager.core.business.content.model.ContentDescription;
+import com.salesmanager.core.business.content.model.ContentType;
+import com.salesmanager.core.business.content.model.FileContentType;
+import com.salesmanager.core.business.content.model.InputContentFile;
+import com.salesmanager.core.business.content.model.OutputContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;

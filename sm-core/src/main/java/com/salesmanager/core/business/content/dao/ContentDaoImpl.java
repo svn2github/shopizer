@@ -7,12 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
-import com.salesmanager.core.business.catalog.category.model.Category;
-import com.salesmanager.core.business.content.model.content.Content;
-import com.salesmanager.core.business.content.model.content.ContentDescription;
-import com.salesmanager.core.business.content.model.content.ContentType;
-import com.salesmanager.core.business.content.model.content.QContent;
-import com.salesmanager.core.business.content.model.content.QContentDescription;
+import com.salesmanager.core.business.content.model.Content;
+import com.salesmanager.core.business.content.model.ContentDescription;
+import com.salesmanager.core.business.content.model.ContentType;
+import com.salesmanager.core.business.content.model.QContent;
+import com.salesmanager.core.business.content.model.QContentDescription;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;

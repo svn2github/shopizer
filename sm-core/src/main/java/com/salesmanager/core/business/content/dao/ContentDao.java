@@ -2,9 +2,9 @@ package com.salesmanager.core.business.content.dao;
 
 import java.util.List;
 
-import com.salesmanager.core.business.content.model.content.Content;
-import com.salesmanager.core.business.content.model.content.ContentDescription;
-import com.salesmanager.core.business.content.model.content.ContentType;
+import com.salesmanager.core.business.content.model.Content;
+import com.salesmanager.core.business.content.model.ContentDescription;
+import com.salesmanager.core.business.content.model.ContentType;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDao;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;

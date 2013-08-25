@@ -1,4 +1,4 @@
-package com.salesmanager.core.business.content.model.content;
+package com.salesmanager.core.business.content.model;
 
 public abstract class StaticContentFile extends ContentFile {
 	
