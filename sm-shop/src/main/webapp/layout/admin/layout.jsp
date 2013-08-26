@@ -262,6 +262,9 @@ response.setDateHeader ("Expires", -1);
 			$("#customer-options-values-create-link").click(function() {
   				window.location='<c:url value="/admin/customers/options/values/create.html" />';
 			});
+			$("#customer-options-set-link").click(function() {
+  				window.location='<c:url value="/admin/customers/optionsset/list.html" />';
+			});
 			$("#order-list-link").click(function() {
   				window.location='<c:url value="/admin/orders/list.html" />';
 			});

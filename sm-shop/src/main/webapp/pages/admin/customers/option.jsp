@@ -38,7 +38,7 @@ $(document).ready(function() {
 				<h3>
 					<c:choose>
 						<c:when test="${option.id!=null && option.id>0}">
-								<s:message code="label.customer.optionv.edit" text="Edit option" /> 
+								<s:message code="label.customer.options.edit" text="Edit option" /> 
 						</c:when>
 						<c:otherwise>
 								<s:message code="menu.customer-options-create" text="Create option" />

@@ -118,10 +118,10 @@
              
              <c:if test="${positions!=null}">
              <div class="control-group">
-	                     <label><s:message code="label.storecountry" text="Store Country"/></label>
+	                     <label><s:message code="label.content.boxes.position" text="Box position"/></label>
 	                     <div class="controls">
 	                        					
-	                        		  <form:select cssClass="country-list" path="contentPosition">
+	                        		  <form:select cssClass="list" path="contentPosition">
 					  								<form:options items="${boxPositions}" itemValue="value" itemLabel="key" />
 				       				  </form:select>
 	                                  <span class="help-inline"><form:errors path="contentPosition" cssClass="error" /></span>
@@ -134,7 +134,16 @@
                  <c:forEach items="${content.descriptions}" var="description" varStatus="counter">
                   
                  <div class="control-group">
-                        <label><s:message code="label.content.pages.page.name" text="Page name"/> (<c:out value="${description.language.code}"/>)</label>
+                 		
+                 		<c:choose>
+							<c:when test="${menu.boxes!=null}">
+									<label><s:message code="label.content.boxes.name" text="Box name"/> (<c:out value="${description.language.code}"/>)</label>
+							</c:when>
+							<c:otherwise>
+									<label><s:message code="label.content.pages.page.name" text="Page name"/> (<c:out value="${description.language.code}"/>)</label>
+							</c:otherwise>
+						</c:choose>
+                        
                         <div class="controls">
                         			<form:input cssClass="input-large highlight" id="name${counter.index}" path="descriptions[${counter.index}].name"/>
                         			<span class="help-inline"><form:errors path="descriptions[${counter.index}].name" cssClass="error" /></span>
@@ -142,6 +151,7 @@
 
                   </div>
                   
+                  <c:if test="${menu.boxes==null}">
                   <div class="control-group">
                         <label><s:message code="label.sefurl" text="SEF Url"/> (<c:out value="${description.language.code}"/>)</label>
                         <div class="controls">
@@ -150,6 +160,7 @@
                         </div>
 
                   </div>
+                  </c:if>
                   
                   <div class="control-group">
                         <label><s:message code="label.content.pages.page.content" text="Page content"/> (<c:out value="${description.language.code}"/>)</label>
@@ -195,7 +206,8 @@
 						</script>
 
                   </div>
-                                    
+                  
+                  <c:if test="${menu.boxes==null}">               
                   <div class="control-group">
                         <label><s:message code="label.generic.title" text="Metatag title"/> (<c:out value="${description.language.code}"/>)</label>
                         <div class="controls">
@@ -219,6 +231,7 @@
                         			<span class="help-inline"><form:errors path="descriptions[${counter.index}].metatagDescription" cssClass="error" /></span>
                         </div>
                   </div>
+                  </c:if>
                   
                   <form:hidden path="descriptions[${counter.index}].language.code" />
                   <form:hidden path="descriptions[${counter.index}].id" />
