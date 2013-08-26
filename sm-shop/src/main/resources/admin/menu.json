@@ -226,6 +226,9 @@
 			}},
 			{"menu":{
 				"code":"customer-options-values-create","url":"/admin/customers/options/values/create.html","role":"CUSTOMER","order":3
+			}},
+			{"menu":{
+				"code":"customer-options-set","url":"/admin/customers/optionsset/list.html","role":"CUSTOMER","order":4
 			}}
 		]
 	}}
