@@ -2,10 +2,14 @@ package com.salesmanager.core.business.customer.model.attribute;
 
 import javax.persistence.AssociationOverrides;
 import javax.persistence.AssociationOverride;
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Table;
 import javax.persistence.JoinColumn;
+import javax.persistence.TableGenerator;
 
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.constants.SchemaConstant;
@@ -28,19 +32,23 @@ public class CustomerOptionSet extends SalesManagerEntity<Long, CustomerOptionSe
 
 	CustomerOptionSetId pk = new CustomerOptionSetId();
 	
+	@Column(name = "CUSTOMER_OPTIONSET_ID", unique=true, nullable=false)
+	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "CUST_OPTSET_SEQ_NEXT_VAL")
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
+	private Long id;
+	
 
 
 	private int sortOrder;
 	
 	@Override
 	public Long getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.id;
 	}
 
 	@Override
 	public void setId(Long id) {
-		// TODO Auto-generated method stub
+		this.id = id;
 		
 	}
 

@@ -17,4 +17,6 @@ public interface LanguageService extends SalesManagerEntityService<Integer, Lang
 	List<Language> getLanguages() throws ServiceException;
 
 	Locale toLocale(Language language);
+
+	Language toLanguage(Locale locale);
 }
