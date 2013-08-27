@@ -1,16 +1,15 @@
 package com.salesmanager.web.admin.controller.customers;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,7 @@ import com.salesmanager.core.business.customer.model.attribute.CustomerOption;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionDescription;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue;
+import com.salesmanager.core.business.customer.model.attribute.CustomerOptionValueDescription;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionValueService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -92,7 +92,7 @@ public class CustomerOptionsSetController {
 		return displayOption(id,request,response,model,locale);
 	}*/
 	
-	@Secured("CUSTOMER")
+/*	@Secured("CUSTOMER")
 	@RequestMapping(value="/admin/customers/optionsset/create.html", method=RequestMethod.GET)
 	public String displayOptionCreate(HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
 		
@@ -119,74 +119,87 @@ public class CustomerOptionsSetController {
 		return ControllerConstants.Tiles.Customer.optionsSet;
 		
 		
-	}
+	}*/
 		
 	
 	@Secured("CUSTOMER")
 	@RequestMapping(value="/admin/customers/optionsset/save.html", method=RequestMethod.POST)
-	public String saveOption(@Valid @ModelAttribute("optionSet") CustomerOption option, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+	public String saveOption(@Valid @ModelAttribute("optionSet") CustomerOptionSet optionSet, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
 
 		//display menu
 		setMenu(model,request);
 		
+		Language language = languageService.toLanguage(locale);
+		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		CustomerOption dbEntity =	null;	
+		
+		
+		/** reference objects **/
+		
+		//get options 
+		List<CustomerOption> options = customerOptionService.listByStore(store, language);
+		
+		
+		//get values
+		List<CustomerOptionValue> optionsValues = customerOptionValueService.listByStore(store, language);
 
-		if(option.getId() != null && option.getId() >0) { //edit entry
+
+		model.addAttribute("options", options);
+		model.addAttribute("optionsValues", optionsValues);
+
+		
+		
+		//see if association already exist
+		CustomerOption option =	null;	
+
+		//get from DB
+		option = customerOptionService.getById(optionSet.getPk().getCustomerOption().getId());
 			
-			//get from DB
-			dbEntity = customerOptionService.getById(option.getId());
+		if(option==null) {
+				return "redirect:/admin/customers/optionsset/list.html";
+		}
+
+		CustomerOptionValue optionValue = customerOptionValueService.getById(optionSet.getPk().getCustomerOptionValue().getId());
 			
-			if(dbEntity==null) {
-				return "redirect:/admin/options/options.html";
+		if(optionValue==null) {
+			return "redirect:/admin/customers/optionsset/list.html";
+		}
+		
+		
+		Set<CustomerOptionSet> optionsSet = option.getCustomerOptions();
+		
+		if(optionsSet!=null && optionsSet.size()>0) {
+			
+			for(CustomerOptionSet optSet : optionsSet) {
+				
+				CustomerOption opt = optSet.getPk().getCustomerOption();
+				CustomerOptionValue optValue = optSet.getPk().getCustomerOptionValue();
+				
+				if(opt.getId().longValue()==optionSet.getPk().getCustomerOption().getId().longValue() 
+						&& optValue.getId().longValue() == optionSet.getPk().getCustomerOptionValue().getId().longValue()) {
+						model.addAttribute("errorMessage",messages.getMessage("message.region.null", locale));
+						ObjectError error = new ObjectError("region",messages.getMessage("message.region.exists", locale));
+						result.addError(error);
+						break;
+				}
 			}
 		}
-
-			
-		Map<String,Language> langs = languageService.getLanguagesMap();
-			
-
-		List<CustomerOptionDescription> descriptions = option.getDescriptionsList();
-		
-		if(descriptions!=null) {
-				
-				for(CustomerOptionDescription description : descriptions) {
-					
-					if(StringUtils.isBlank(description.getName())) {
-						ObjectError error = new ObjectError("name",messages.getMessage("message.name.required", locale));
-						result.addError(error);
-					} else {
-					
-						String code = description.getLanguage().getCode();
-						Language l = langs.get(code);
-						description.setLanguage(l);
-						description.setCustomerOption(option);
-					
-					}
-	
-				}
-				
-		}
-			
-		option.setDescriptions(new HashSet<CustomerOptionDescription>(descriptions));
-		option.setMerchantStore(store);
-
 		
 		if (result.hasErrors()) {
-			return ControllerConstants.Tiles.Customer.optionDetails;
+			return ControllerConstants.Tiles.Customer.optionsSet;
 		}
 		
+		
+		optionSet.getPk().setCustomerOption(option);
+		optionSet.getPk().setCustomerOptionValue(optionValue);
+		customerOptionService.addCustomerOptionSet(optionSet, option);
 
 		
-		
-		customerOptionService.saveOrUpdate(option);
 
-
-		
 
 		model.addAttribute("success","success");
-		return ControllerConstants.Tiles.Customer.optionDetails;
+		return ControllerConstants.Tiles.Customer.optionsSet;
 	}
 
 	
@@ -207,28 +220,38 @@ public class CustomerOptionsSetController {
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			
 			List<CustomerOption> options = null;
-					
-
 				
 			options = customerOptionService.listByStore(store, language);
-				
-
-					
-					
 
 			for(CustomerOption option : options) {
 				
-				@SuppressWarnings("rawtypes")
-				Map entry = new HashMap();
-				entry.put("id", option.getId());
 				
-				CustomerOptionDescription description = option.getDescriptions().iterator().next();
+				Set<CustomerOptionSet> optionSet = option.getCustomerOptions();
 				
-				entry.put("name", description.getName());
-				entry.put("type", option.getCustomerOptionType());
-				entry.put("active", option.isActive());
-				entry.put("public", option.isPublicOption());
-				resp.addDataEntry(entry);
+				if(optionSet!=null && optionSet.size()>0) {
+					
+					for(CustomerOptionSet optSet : optionSet) {
+						
+
+						CustomerOptionValue customerOptionValue = optSet.getPk().getCustomerOptionValue();
+						
+						@SuppressWarnings("rawtypes")
+						Map entry = new HashMap();
+						entry.put("id", optSet.getId());
+						
+						CustomerOptionDescription description = option.getDescriptionsList().get(0);
+						CustomerOptionValueDescription valueDescription = customerOptionValue.getDescriptionsList().get(0);
+						
+						entry.put("optionCode", option.getCode());
+						entry.put("optionName", description.getName());
+						entry.put("optionValueCode", customerOptionValue.getCode());
+						entry.put("optionValueName", valueDescription.getName());
+						entry.put("order", option.getSortOrder());
+						resp.addDataEntry(entry);
+					
+					}
+				
+				}
 				
 				
 			}
