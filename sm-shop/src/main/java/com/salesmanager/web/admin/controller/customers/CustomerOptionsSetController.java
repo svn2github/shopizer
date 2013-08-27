@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -60,9 +59,28 @@ public class CustomerOptionsSetController {
 	
 	@Secured("CUSTOMER")
 	@RequestMapping(value="/admin/customers/optionsset/list.html", method=RequestMethod.GET)
-	public String displayOptions(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String displayOptions(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
-		setMenu(model,request);
+		Language language = languageService.toLanguage(locale);
+		
+		
+		this.setMenu(model, request);
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+
+		
+		//get options 
+		List<CustomerOption> options = customerOptionService.listByStore(store, language);
+		
+		
+		//get values
+		List<CustomerOptionValue> optionsValues = customerOptionValueService.listByStore(store, language);
+
+		
+		CustomerOptionSet optionSet = new CustomerOptionSet();
+		
+		model.addAttribute("optionSet", optionSet);
+		model.addAttribute("options", options);
+		model.addAttribute("optionsValues", optionsValues);
 		return ControllerConstants.Tiles.Customer.optionsSet;
 		
 
