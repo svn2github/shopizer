@@ -2,12 +2,14 @@ package com.salesmanager.core.business.customer.service.attribute;
 
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.customer.dao.attribute.CustomerOptionDao;
 import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOption;
+import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -52,6 +54,16 @@ public class CustomerOptionServiceImpl extends
 			super.save(entity);
 		}
 		
+	}
+	
+	@Override
+	public void addCustomerOptionSet(CustomerOptionSet optionSet, CustomerOption option) throws ServiceException {
+		
+		Validate.notNull(optionSet,"optionSet cannot be null");
+		Validate.notNull(option,"option cannot be null");
+		
+		option.getCustomerOptions().add(optionSet);
+		this.saveOrUpdate(option);
 	}
 	
 	@Override

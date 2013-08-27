@@ -3,6 +3,7 @@ package com.salesmanager.core.business.customer.service.attribute;
 import java.util.List;
 
 import com.salesmanager.core.business.customer.model.attribute.CustomerOption;
+import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -16,6 +17,16 @@ public interface CustomerOptionService extends SalesManagerEntityService<Long, C
 
 
 	void saveOrUpdate(CustomerOption entity) throws ServiceException;
+
+
+	/**
+	 * Adds a CustomerOptionSet to a customer option
+	 * @param optionSet
+	 * @param option
+	 * @throws ServiceException
+	 */
+	void addCustomerOptionSet(CustomerOptionSet optionSet, CustomerOption option)
+			throws ServiceException;
 	
 
 

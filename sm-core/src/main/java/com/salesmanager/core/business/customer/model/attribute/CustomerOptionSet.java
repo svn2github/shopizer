@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Table;
 import javax.persistence.JoinColumn;
 import javax.persistence.TableGenerator;
+import javax.validation.Valid;
 
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.constants.SchemaConstant;
@@ -30,7 +31,8 @@ public class CustomerOptionSet extends SalesManagerEntity<Long, CustomerOptionSe
 	 */
 	private static final long serialVersionUID = 1L;
 
-	CustomerOptionSetId pk = new CustomerOptionSetId();
+	@Valid
+	private CustomerOptionSetId pk = new CustomerOptionSetId();
 	
 	@Column(name = "CUSTOMER_OPTIONSET_ID", unique=true, nullable=false)
 	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "CUST_OPTSET_SEQ_NEXT_VAL")
@@ -60,6 +62,7 @@ public class CustomerOptionSet extends SalesManagerEntity<Long, CustomerOptionSe
 		this.sortOrder = sortOrder;
 	}
 
+	
 	@EmbeddedId
 	public CustomerOptionSetId getPk() {
 		return pk;

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 @Embeddable
 public class CustomerOptionSetId implements Serializable {
@@ -13,8 +14,10 @@ public class CustomerOptionSetId implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private CustomerOption customerOption;
-	private CustomerOptionValue customerOptionValue;
+	@NotNull
+	private CustomerOption customerOption = null;
+	@NotNull
+	private CustomerOptionValue customerOptionValue = null;
 	
 	
 	@ManyToOne
