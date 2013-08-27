@@ -70,7 +70,7 @@
 								 <c:set value="/admin/customers/optionsset/edit.html" var="editUrl" scope="request"/>
 								 <c:set value="/admin/customers/optionsset/list.html" var="afterRemoveUrl" scope="request"/>
 								 <c:set var="entityId" value="id" scope="request"/>
-								 <c:set var="groupByEntity" value="code" scope="request"/>
+								 <c:set var="groupByEntity" value="optionCode" scope="request"/>
 								 <c:set var="componentTitleKey" value="menu.customer-options-list" scope="request"/>
 							     <c:set var="gridHeader" value="/pages/admin/customers/optionsset-gridHeader.jsp" scope="request"/>
 								 <c:set var="canRemoveEntry" value="true" scope="request"/>
