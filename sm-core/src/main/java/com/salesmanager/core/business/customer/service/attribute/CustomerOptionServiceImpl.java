@@ -77,6 +77,14 @@ public class CustomerOptionServiceImpl extends
 	}
 	
 	@Override
+	public List<CustomerOptionSet> listCustomerOptionSetByStore(MerchantStore store, Language language) throws ServiceException {
+		Validate.notNull(store,"merchant store cannot be null");
+
+		
+		return customerOptionSetDao.listByStore(store,language);
+	}
+	
+	@Override
 	public CustomerOptionSet getCustomerOptionSetById(Long id) throws ServiceException {
 		return customerOptionSetDao.getById(id);
 	}

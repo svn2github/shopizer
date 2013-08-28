@@ -65,6 +65,11 @@ public interface CustomerOptionService extends SalesManagerEntityService<Long, C
 
 	void updateCustomerOptionSet(CustomerOptionSet customerOptionSet)
 			throws ServiceException;
+
+
+
+	List<CustomerOptionSet> listCustomerOptionSetByStore(MerchantStore store,
+			Language language) throws ServiceException;
 	
 
 
