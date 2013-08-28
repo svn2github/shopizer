@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,41 +88,6 @@ public class CustomerOptionsSetController {
 
 	}
 	
-/*	@Secured("CUSTOMER")
-	@RequestMapping(value="/admin/customers/optionsset/edit.html", method=RequestMethod.GET)
-	public String displayOptionEdit(@RequestParam("id") long id, HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
-		return displayOption(id,request,response,model,locale);
-	}*/
-	
-/*	@Secured("CUSTOMER")
-	@RequestMapping(value="/admin/customers/optionsset/create.html", method=RequestMethod.GET)
-	public String displayOptionCreate(HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
-		
-		Language language = languageService.toLanguage(locale);
-		
-	
-		this.setMenu(model, request);
-		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-
-		
-		//get options 
-		List<CustomerOption> options = customerOptionService.listByStore(store, language);
-		
-		
-		//get values
-		List<CustomerOptionValue> optionsValues = customerOptionValueService.listByStore(store, language);
-
-		
-		CustomerOptionSet optionSet = new CustomerOptionSet();
-		
-		model.addAttribute("optionSet", optionSet);
-		model.addAttribute("options", options);
-		model.addAttribute("optionsValues", optionsValues);
-		return ControllerConstants.Tiles.Customer.optionsSet;
-		
-		
-	}*/
-		
 	
 	@Secured("CUSTOMER")
 	@RequestMapping(value="/admin/customers/optionsset/save.html", method=RequestMethod.POST)
@@ -216,13 +183,10 @@ public class CustomerOptionsSetController {
 			
 			
 			Language language = (Language)request.getAttribute("LANGUAGE");	
-		
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-			
 			List<CustomerOption> options = null;
 				
 			options = customerOptionService.listByStore(store, language);
-
 			for(CustomerOption option : options) {
 				
 				
@@ -298,7 +262,6 @@ public class CustomerOptionsSetController {
 		String sid = request.getParameter("id");
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		
 		AjaxResponse resp = new AjaxResponse();
 
 		
@@ -306,16 +269,15 @@ public class CustomerOptionsSetController {
 			
 			Long id = Long.parseLong(sid);
 			
-			CustomerOption entity = customerOptionService.getById(id);
-
-			if(entity==null || entity.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			CustomerOptionSet entity = customerOptionService.getCustomerOptionSetById(id);
+			if(entity==null || entity.getPk().getCustomerOption().getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 
 				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
 				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
 				
 			} else {
 				
-				customerOptionService.delete(entity);
+				customerOptionService.removeCustomerOptionSet(entity);
 				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 				
 			}
@@ -331,5 +293,52 @@ public class CustomerOptionsSetController {
 		
 		return returnString;
 	}
+	
+	
+
+	@Secured("CUSTOMER")
+	@RequestMapping(value="/admin/customers/optionsset/update.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String updateCountry(HttpServletRequest request, HttpServletResponse response) {
+		String values = request.getParameter("_oldValues");
+		String order = request.getParameter("order");
+
+		AjaxResponse resp = new AjaxResponse();
+
+		try {
+			
+			/**
+			 * Values
+			 */
+			ObjectMapper mapper = new ObjectMapper();
+			@SuppressWarnings("rawtypes")
+			Map conf = mapper.readValue(values, Map.class);
+			
+			String sid = (String)conf.get("id");
+
+			Long id = Long.parseLong(sid);
+			
+			CustomerOptionSet entity = customerOptionService.getCustomerOptionSetById(id);
+			
+			
+			if(entity!=null) {
+				
+				entity.setSortOrder(Integer.parseInt(order));
+				customerOptionService.updateCustomerOptionSet(entity);
+				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+				
+			}
+
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while paging shipping countries", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
+	}
+	
+	
 
 }
