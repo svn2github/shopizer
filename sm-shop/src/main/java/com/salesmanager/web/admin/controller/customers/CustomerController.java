@@ -27,7 +27,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.CustomerCriteria;
 import com.salesmanager.core.business.customer.model.CustomerList;
+import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
 import com.salesmanager.core.business.customer.service.CustomerService;
+import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
@@ -51,6 +53,9 @@ public class CustomerController {
 	
 	@Autowired
 	CustomerService customerService;
+	
+	@Autowired
+	CustomerOptionService customerOptionService;
 	
 	@Autowired
 	CountryService countryService;
@@ -80,6 +85,8 @@ public class CustomerController {
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
 		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
 		List<Language> languages = languageService.getLanguages();
 		
 		Menu currentMenu = (Menu)menus.get("customer");
@@ -94,6 +101,9 @@ public class CustomerController {
 			
 			//get from DB
 			customer = customerService.getById(id);
+			if(customer.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+				return "redirect:/admin/customers/list.html";
+			}
 			
 		} else {
 			 customer = new Customer();
@@ -105,6 +115,12 @@ public class CustomerController {
 		
 		//get list of zones
 		List<Zone> zones = zoneService.list();
+		
+		
+		//get options
+		List<CustomerOptionSet> options = customerOptionService.listCustomerOptionSetByStore(store, language);
+		
+		
 		
 		model.addAttribute("zones", zones);
 		model.addAttribute("countries", countries);
