@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.customer.dao.attribute.CustomerOptionDao;
+import com.salesmanager.core.business.customer.dao.attribute.CustomerOptionSetDao;
 import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOption;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
@@ -25,6 +26,9 @@ public class CustomerOptionServiceImpl extends
 	@Autowired
 	private CustomerAttributeService customerAttributeService;
 	
+	@Autowired
+	private CustomerOptionSetDao customerOptionSetDao;
+	
 
 	@Autowired
 	public CustomerOptionServiceImpl(
@@ -35,11 +39,9 @@ public class CustomerOptionServiceImpl extends
 	
 	@Override
 	public List<CustomerOption> listByStore(MerchantStore store, Language language) throws ServiceException {
-		
-		
+
 		return customerOptionDao.listByStore(store, language);
-		
-		
+
 	}
 	
 
@@ -64,6 +66,31 @@ public class CustomerOptionServiceImpl extends
 		
 		option.getCustomerOptions().add(optionSet);
 		this.saveOrUpdate(option);
+	}
+	
+	@Override
+	public List<CustomerOptionSet> listByOption(CustomerOption option, MerchantStore store) throws ServiceException {
+		Validate.notNull(store,"merchant store cannot be null");
+		Validate.notNull(option,"option cannot be null");
+		
+		return customerOptionSetDao.getByOptionId(store, option.getId());
+	}
+	
+	@Override
+	public CustomerOptionSet getCustomerOptionSetById(Long id) throws ServiceException {
+		return customerOptionSetDao.getById(id);
+	}
+	
+	@Override
+	public void removeCustomerOptionSet(CustomerOptionSet customerOptionSet) throws ServiceException {
+		Validate.notNull(customerOptionSet,"customerOptionSet cannot be null");
+		customerOptionSetDao.delete(customerOptionSet);
+	}
+	
+	@Override
+	public void updateCustomerOptionSet(CustomerOptionSet customerOptionSet) throws ServiceException {
+		Validate.notNull(customerOptionSet,"customerOptionSet cannot be null");
+		customerOptionSetDao.update(customerOptionSet);
 	}
 	
 	@Override
