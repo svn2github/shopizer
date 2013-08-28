@@ -464,5 +464,20 @@ function getBillingZones(countryCode){
 
       					
 				</form:form>
+				
+				
+				
+				<!-- properties -->
+				<c:if test="${options!=null && fn:length(options)>0}">
+					<c:forEach values="${options}" var="option">
+					
+						<c:out value="${option.key.customerOptionType}"/>
+						<c:forEach values="${option.value}" var="optionValue">
+							<c:out value="${optionValue.descriptionsList[0].name}"/>
+						</c:forEach>
+					
+					</c:forEach>
+				
+				</c:if>
 
 </div>
