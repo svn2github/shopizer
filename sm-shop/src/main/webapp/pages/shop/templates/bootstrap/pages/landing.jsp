@@ -58,139 +58,65 @@ response.setDateHeader ("Expires", -1);
 			
 			<br/>
 	
-
+			<sm:shopProductGroup groupName="FEATURED_ITEM"/>
+			<sm:shopProductGroup groupName="SPECIALS"/>
+			
+			<c:if test="${requestScope.FEATURED_ITEM!=null || requestScope.SPECIALS!=null}" >
 
 			<div class="row-fluid">
 				<div class="span12">
 					<ul class="nav nav-tabs home" id="product-tab">
-						<li class="active"><a href="#tab1"><s:message code="menu.catalogue-featured" text="Featured items" /></a></li>
-						<li><a href="#tab2">Specials</a></li>
-						<li><a href="#tab3">Top sellers</a></li>
+						<c:if test="${requestScope.FEATURED_ITEM!=null" ><li class="active"><a href="#tab1"><s:message code="menu.catalogue-featured" text="Featured items" /></a></li></c:if>
+						<c:if test="${requestScope.SPECIALS!=null" ><li><a href="#tab2">Specials</a></li></c:if>
 					</ul>							 
 					<div class="tab-content">
 						<!-- one div by section -->
 						<div class="tab-pane active" id="tab1">
-							<!--<div class="row">-->
-								<!--<div class="span12">-->
 									<ul class="thumbnails product-list">
 										<!-- Iterate over featuredItems -->
-										<sm:shopProductGroup groupName="LIQUIDATION"/>
-										<c:forEach items="${requestScope.LIQUIDATION}" var="product">
+										<c:forEach items="${requestScope.FEATURED_ITEM}" var="product">
 											<li class="span3">
 												<div class="product-box">                                        
-													<a href="http://#WB0M3G9S1/product_detail.html"><h4><c:out value="${product.name}"/></h4></a>
-													<a href="http://#WB0M3G9S1/product_detail.html"><img src="<sm:shopProductImage imageName="${product.image}" sku="${product.sku}"/>" width="200"/></a>
+													<a href="<c:url value="/shop/product/" /><c:out value="${product.friendlyUrl}"/>.html"><h4><c:out value="${product.name}"/></h4></a>
+													<a href="<c:url value="/shop/product/" /><c:out value="${product.friendlyUrl}"/>.html"><img src="<sm:shopProductImage imageName="${product.image}" sku="${product.sku}"/>" width="200"/></a>
 													<h3><c:out value="${product.productPrice}" /></h3>
 													<div class="bottom">
-														<a class="view" href="http://#WB0M3G9S1/product_detail.html">view</a> / <a class="addToCart" href="#" productId="${product.id}">add to cart</a>
+														<a href="<c:url value="/shop/product/" /><c:out value="${product.friendlyUrl}"/>.html">view</a> / <a class="addToCart" href="#" productId="${product.id}">add to cart</a>
 													</div>
 												</div>
 										    </li>
 										</c:forEach>                             
 									</ul>
-								<!--</div>-->
-							<!--</div>-->
 						</div>
 						<div class="tab-pane" id="tab2">
-							<div class="row">
-								<div class="span12">
-									<ul class="thumbnails product-list">
-										<li class="span3">
-											<div class="product-box">
-												<a href="http://#WB0M3G9S1/product_detail.html"><h4>Praesent tempor sem sodales</h4></a>
-												<a href="http://#WB0M3G9S1/product_detail.html"><img alt="" src="index_files/m6.jpg"></a>
-												<p>Nam imperdiet urna nec lectus mollis</p>
-												<div class="bottom">
-													<a class="view" href="http://#WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://#WB0M3G9S1/cart.html">add to cart</a>
+								<ul class="thumbnails product-list">
+										<!-- Iterate over specials -->
+										<c:forEach items="${requestScope."SPECIALS"}" var="product">
+											<li class="span3">
+												<div class="product-box">                                        
+													<a href="<c:url value="/shop/product/" /><c:out value="${product.friendlyUrl}"/>.html"><h4><c:out value="${product.name}"/></h4></a>
+													<a href="<c:url value="/shop/product/" /><c:out value="${product.friendlyUrl}"/>.html"><img src="<sm:shopProductImage imageName="${product.image}" sku="${product.sku}"/>" width="200"/></a>
+													<h3><c:out value="${product.productPrice}" /></h3>
+													<div class="bottom">
+														<a href="<c:url value="/shop/product/" /><c:out value="${product.friendlyUrl}"/>.html">view</a> / <a class="addToCart" href="#" productId="${product.id}">add to cart</a>
+													</div>
 												</div>
-											</div>
-										</li>
-										<li class="span3">
-											<div class="product-box">                                        
-												<a href="http://#WB0M3G9S1/product_detail.html"><h4>Fusce id molestie massa</h4></a>
-												<a href="http://#WB0M3G9S1/product_detail.html"><img alt="" src="index_files/m7.jpg"></a>
-												<p>Phasellus consequat sem congue diam congue</p>
-												<div class="bottom">
-													<a class="view" href="http://#WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://#WB0M3G9S1/cart.html">add to cart</a>
-												</div>
-											</div>
-										</li>       
-										<li class="span3">
-											<div class="product-box">
-												<a href="http://#WB0M3G9S1/product_detail.html"><h4>Praesent tempor sem sodales</h4></a>
-												<a href="http://#WB0M3G9S1/product_detail.html"><img alt="" src="index_files/m3.jpg"></a>
-												<p>Integer in ligula et erat gravida placerat</p>
-												<div class="bottom">
-													<a class="view" href="http://#WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://#WB0M3G9S1/cart.html">add to cart</a>
-												</div>
-											</div>
-										</li>										
-										<li class="span3">
-											<div class="product-box">
-												<a href="http://#WB0M3G9S1/product_detail.html"><h4>Luctus quam ultrices rutrum</h4></a>
-												<a href="http://#WB0M3G9S1/product_detail.html"><img alt="" src="index_files/m4.jpg"></a>
-												<p>Suspendisse aliquet orci et nisl iaculis</p>
-												<div class="bottom">
-													<a class="view" href="http://#WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://#WB0M3G9S1/cart.html">add to cart</a>
-												</div>
-											</div>
-										</li>
+										    </li>
+										</c:forEach>                             
 									</ul>
-								</div>
-							</div>
 						</div>
-						<div class="tab-pane" id="tab3">
-							<div class="row">
-								<div class="span12">
-									<ul class="thumbnails product-list">
-										<li class="span3">
-											<div class="product-box">
-												<a href="http://#WB0M3G9S1/product_detail.html"><h4>Praesent tempor sem sodales</h4></a>
-												<a href="http://#WB0M3G9S1/product_detail.html"><img alt="" src="index_files/m3.jpg"></a>
-												<p>Nam imperdiet urna nec lectus mollis</p>
-												<div class="bottom">
-													<a class="view" href="http://#WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://#WB0M3G9S1/cart.html">add to cart</a>
-												</div>
-											</div>
-										</li>
-										<li class="span3">
-											<div class="product-box">
-												<a href="http://#WB0M3G9S1/product_detail.html"><h4>Luctus quam ultrices rutrum</h4></a>
-												<a href="http://#WB0M3G9S1/product_detail.html"><img alt="" src="index_files/m4.jpg"></a>
-												<p>Suspendisse aliquet orci et nisl iaculis</p>
-												<div class="bottom">
-													<a class="view" href="http://#WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://#WB0M3G9S1/cart.html">add to cart</a>
-												</div>
-											</div>
-										</li>
-										<li class="span3">
-											<div class="product-box">                                        
-												<a href="http://#WB0M3G9S1/product_detail.html"><h4>Fusce id molestie massa</h4></a>
-												<a href="http://#WB0M3G9S1/product_detail.html"><img alt="" src="index_files/m2.jpg"></a>
-												<p>Phasellus consequat sem congue diam congue</p>
-												<div class="bottom">
-													<a class="view" href="http://#WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://#WB0M3G9S1/cart.html">add to cart</a>
-												</div>
-											</div>
-										</li>       
-										<li class="span3">
-											<div class="product-box">
-												<a href="http://#WB0M3G9S1/product_detail.html"><h4>Praesent tempor sem sodales</h4></a>
-												<a href="http://#WB0M3G9S1/product_detail.html"><img alt="" src="index_files/m3.jpg"></a>
-												<p>Integer in ligula et erat gravida placerat</p>
-												<div class="bottom">
-													<a class="view" href="http://#WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://#WB0M3G9S1/cart.html">add to cart</a>
-												</div>
-											</div>
-										</li>										
-									</ul>
-								</div>
-							</div>
+
+
+
+
+
+
+
 						</div>
 					</div>							
 				</div>
-			</div>
 
 
+			</c:if>
 			
 		
