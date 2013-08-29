@@ -259,6 +259,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				 * - Google analytics
 				 * - Facebook page
 				 * - Twitter handle
+				 * - Show customer login
 				 */
 				
 				this.getMerchantConfigurations(store,request);
