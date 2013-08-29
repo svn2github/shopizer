@@ -190,7 +190,7 @@
 	<!-- Email -->
 	<bean id="freemarkerMailConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
                  <!-- Uses HTML with templates and freemarker template engine -->
-                 <property name="templateLoaderPath" value="/template/mail"/>
+                 <property name="templateLoaderPath" value="/templates/email"/>
     </bean>
 
 

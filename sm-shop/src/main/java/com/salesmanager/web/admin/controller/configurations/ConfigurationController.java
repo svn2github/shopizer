@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
 import com.salesmanager.core.business.system.model.MerchantConfigurationType;
+import com.salesmanager.core.business.system.service.EmailService;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
 import com.salesmanager.core.modules.email.EmailConfig;
 import com.salesmanager.web.admin.controller.ControllerConstants;
@@ -39,6 +40,9 @@ public class ConfigurationController {
 	
 	@Autowired
 	private MerchantConfigurationService merchantConfigurationService;
+	
+	@Autowired
+	private EmailService emailService;
 
 	@Autowired
 	Environment env;
@@ -116,7 +120,7 @@ public class ConfigurationController {
 	public String displayEmailSettings(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		setEmailConfigurationMenu(model, request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		EmailConfig emailConfig = merchantConfigurationService.getMerchantEmailConfiguration(store);
+		EmailConfig emailConfig = emailService.getEmailConfiguration(store);
 		if(emailConfig == null){
 			emailConfig = new EmailConfig();
 			//TODO: Need to check below properties. When there are no record available in MerchantConfguration table with EMAIL_CONFIG key, 
@@ -139,7 +143,7 @@ public class ConfigurationController {
 	public String saveEmailSettings(@ModelAttribute("configuration") EmailConfig config, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		setEmailConfigurationMenu(model, request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		EmailConfig emailConfig = merchantConfigurationService.getMerchantEmailConfiguration(store);
+		EmailConfig emailConfig = emailService.getEmailConfiguration(store);
 		if(emailConfig == null){
 			emailConfig = new EmailConfig();
 		}
@@ -153,11 +157,11 @@ public class ConfigurationController {
 		emailConfig.setSmtpAuth(config.isSmtpAuth());
 		emailConfig.setStarttls(config.isStarttls());
 		
-		merchantConfigurationService.saveMerchantEmailConfiguration(emailConfig, store);
+		emailService.saveEmailConfiguration(emailConfig, store);
 		
 		model.addAttribute("configuration", emailConfig);
 		model.addAttribute("success","success");
-		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Configuration.email;
+		return ControllerConstants.Tiles.Configuration.email;
 	}
 	
 	private void setConfigurationMenu(Model model, HttpServletRequest request) throws Exception {

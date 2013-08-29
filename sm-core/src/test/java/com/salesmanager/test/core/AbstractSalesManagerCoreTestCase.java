@@ -43,6 +43,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
+import com.salesmanager.core.business.system.service.EmailService;
 
 @ContextConfiguration(locations = {
 		"classpath:spring/test-spring-context.xml"
@@ -136,6 +137,9 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	
 	@Autowired
 	protected ShoppingCartService shoppingCartService;
+	
+	@Autowired
+	protected EmailService emailService;
 
 
 	@Before

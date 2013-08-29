@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -19,17 +20,11 @@ import javax.mail.internet.MimeMultipart;
 import org.springframework.mail.MailPreparationException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-//import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-
-//import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean
-
-
-
 
 
 public class HtmlEmailSenderImpl implements HtmlEmailSender {
@@ -38,7 +33,7 @@ public class HtmlEmailSenderImpl implements HtmlEmailSender {
 	private Configuration freemarkerMailConfiguration;
 	private JavaMailSender mailSender;
 	private EmailConfig emailConfig;
-
+	
 	@Override
 	public void send(Email email)
 			throws Exception {
@@ -54,14 +49,22 @@ public class HtmlEmailSenderImpl implements HtmlEmailSender {
 			public void prepare(MimeMessage mimeMessage)
 					throws MessagingException, IOException {
 				
-				
 				JavaMailSenderImpl impl = (JavaMailSenderImpl)mailSender;
-				//impl.setProtocol(protocol)
+				// if email configuration is present in Database, use the same
+				if(emailConfig != null) {
+					impl.setProtocol(emailConfig.getProtocol());
+					impl.setHost(emailConfig.getHost());
+					impl.setPort(Integer.parseInt(emailConfig.getPort()));
+					impl.setUsername(emailConfig.getUsername());
+					impl.setPassword(emailConfig.getPassword());
+					
+					Properties prop = new Properties();
+					prop.put("mail.smtp.auth", emailConfig.isSmtpAuth());
+					prop.put("mail.smtp.starttls.enable", emailConfig.isStarttls());
+					impl.setJavaMailProperties(prop);
+				}
 				
-				//(FreeMarkerConfigurationFactoryBean)freemarkerMailConfiguration.setTemplateLoader(loader)
-
-				mimeMessage.setRecipient(Message.RecipientType.TO,
-						new InternetAddress(to));
+				mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
 
 				InternetAddress inetAddress = new InternetAddress();
 
@@ -159,21 +162,13 @@ public class HtmlEmailSenderImpl implements HtmlEmailSender {
 		};
 
 		mailSender.send(preparator);
-
-
-		
-		
-		
-		
-
 	}
 
 	public Configuration getFreemarkerMailConfiguration() {
 		return freemarkerMailConfiguration;
 	}
 
-	public void setFreemarkerMailConfiguration(
-			Configuration freemarkerMailConfiguration) {
+	public void setFreemarkerMailConfiguration(Configuration freemarkerMailConfiguration) {
 		this.freemarkerMailConfiguration = freemarkerMailConfiguration;
 	}
 
