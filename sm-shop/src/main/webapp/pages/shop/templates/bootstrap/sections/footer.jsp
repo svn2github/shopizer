@@ -34,6 +34,7 @@ response.setDateHeader ("Expires", -1);
 						</ul>
                     </div>
                     <div class="span3">
+                    	<c:if test="${requestScope.CONFIGS!=null && requestScope.CONFIGS.SHOW_CUSTOMER_SECTION=="true">
                         <h4>My Account</h4>
                         <ul>
 							<li><a href="#">My Account</a></li>
@@ -41,6 +42,7 @@ response.setDateHeader ("Expires", -1);
 							<li><a href="#">Wish List</a></li>
 							<li><a href="#">Newsletter</a></li>
 						</ul>
+						</c:if>
                     </div>
                     <div class="span3">
                     	<!-- Social links -->
