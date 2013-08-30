@@ -145,6 +145,9 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		orderTotalSubTotal.setSortOrder(0);
 		orderTotalSubTotal.setValue(subTotal);
 		
+		//TODO autowire a list of post processing modules for price calculation - drools, custom modules
+		//may affect the sub total
+		
 		orderTotals.add(orderTotalSubTotal);
 		
 		
@@ -213,6 +216,7 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		
 		totalSummary.setTotal(grandTotal);
 		
+
 		return totalSummary;
 		
 	}
