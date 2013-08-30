@@ -134,7 +134,7 @@ public class ProductImagesController {
 				for(ProductImage image : images) {
 					
 					Map entry = new HashMap();
-					entry.put("picture", ImageFilePathUtils.buildProductImageFilePath(store, product, image.getProductImage()));
+					entry.put("picture", new StringBuilder().append(request.getContextPath()).append(ImageFilePathUtils.buildProductImageFilePath(store, product, image.getProductImage()))).toString();
 					entry.put("name", image.getProductImage());
 					entry.put("id",image.getId());
 					

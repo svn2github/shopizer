@@ -483,6 +483,14 @@ public class ProductController {
 			
 			String imageName = product.getImage().getOriginalFilename();
 			
+
+			
+			ProductImage productImage = new ProductImage();
+			productImage.setDefaultImage(true);
+			productImage.setImage(product.getImage().getInputStream());
+			productImage.setProductImage(imageName);
+			
+			
 			List<ProductImageDescription> imagesDescriptions = new ArrayList<ProductImageDescription>();
 
 			for(Language l : languages) {
@@ -490,15 +498,13 @@ public class ProductController {
 				ProductImageDescription imageDescription = new ProductImageDescription();
 				imageDescription.setName(imageName);
 				imageDescription.setLanguage(l);
+				imageDescription.setProductImage(productImage);
 				imagesDescriptions.add(imageDescription);
 				
 			}
 			
-			ProductImage productImage = new ProductImage();
-			productImage.setDefaultImage(true);
-			productImage.setImage(product.getImage().getInputStream());
-			productImage.setProductImage(imageName);
 			productImage.setDescriptions(imagesDescriptions);
+			productImage.setProduct(newProduct);
 			
 			newProduct.getImages().add(productImage);
 			

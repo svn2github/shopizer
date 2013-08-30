@@ -113,8 +113,9 @@ public class ShopProductRelationshipTag extends RequestContextAwareTag  {
 		} else {
 			objects = getProducts(request);
 		}
-
-		request.setAttribute(this.getGroupName(), objects);
+		if(objects!=null && objects.size()>0) {
+			request.setAttribute(this.getGroupName(), objects);
+		}
 		
 		return SKIP_BODY;
 
