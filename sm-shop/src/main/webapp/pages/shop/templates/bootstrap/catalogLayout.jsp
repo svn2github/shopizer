@@ -46,7 +46,6 @@ response.setDateHeader ("Expires", -1);
 
 
 				<tiles:insertAttribute name="navbar"/>
-				
 
 				<tiles:insertAttribute name="body"/>
 				
@@ -54,7 +53,8 @@ response.setDateHeader ("Expires", -1);
 				<tiles:insertAttribute name="footer"/>
 
 
-</div><!-- container -->
+</div>
+<!-- container -->
 	   <jsp:include page="/pages/shop/templates/bootstrap/sections/jsLinks.jsp" />
 
  	</body>
