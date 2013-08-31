@@ -67,7 +67,7 @@ public class CatalogUtils {
 		proxyProduct.setProductPrice(productPriceUtils.getStoreFormatedAmountWithCurrency(store,price.getFinalPrice()));
 
 		if(price.isDiscounted()) {
-			proxyProduct.isDiscounted();
+			proxyProduct.setDiscounted(true);
 			proxyProduct.setOriginalProductPrice(productPriceUtils.getStoreFormatedAmountWithCurrency(store,price.getOriginalPrice()));
 		}
 		

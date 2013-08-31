@@ -510,6 +510,7 @@ public class ProductController {
 			
 			productService.saveOrUpdate(newProduct);
 			
+			//product displayed
 			product.setProductImage(productImage);
 			
 			

@@ -239,7 +239,7 @@ public class CustomProductGroupsController {
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/group/edit.html", method=RequestMethod.GET)
-	public String displayCustomProductGroup(@RequestParam("id") String groupCode, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String displayCustomProductGroup(@RequestParam("code") String groupCode, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		
 		setMenu(model,request);
@@ -399,6 +399,7 @@ public class CustomProductGroupsController {
 			for(ProductRelationship r : relationships) {
 				if(r.getRelatedProduct().getId().longValue()==lproductId.longValue()) {
 					relationship = r;
+					break;
 				}
 			}
 			

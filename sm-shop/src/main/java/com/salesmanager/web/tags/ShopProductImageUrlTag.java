@@ -65,14 +65,13 @@ public class ShopProductImageUrlTag extends TagSupport {
 			
 			imagePath.append(scheme).append("://")
 			.append(merchantStore.getDomainName())
-			.append("/")
 			.append(request.getContextPath());
 			
 			imagePath
 			
 			//.append(scheme).append("://").append(merchantStore.getDomainName())
-				.append(Constants.STATIC_URI)
-				.append("/").append(ImageFilePathUtils.buildProductImageFilePath(merchantStore, this.getSku(), this.getImageName())).toString();
+				
+				.append(ImageFilePathUtils.buildProductImageFilePath(merchantStore, this.getSku(), this.getImageName())).toString();
 
 			
 
