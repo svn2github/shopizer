@@ -51,6 +51,10 @@ a:hover{
 	color:#a2a1a1;
 }
 
+.specialPrice{
+	color:#ff0000;
+}
+
 
 /* Main Menu */
 .res-menu{display: none;}
