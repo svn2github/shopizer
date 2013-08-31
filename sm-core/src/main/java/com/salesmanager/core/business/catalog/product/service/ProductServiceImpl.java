@@ -275,7 +275,6 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 			originalAttributes = originalProduct.getAttributes();
 			originalRelationships = originalProduct.getRelationships();
 			originalProductImages = originalProduct.getImages();
-			super.update(product);
 		} else {
 			
 			Set<ProductDescription> productDescriptions = product.getDescriptions();
@@ -393,6 +392,10 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 					productImageService.delete(image);
 				}
 			}
+		}
+		
+		if(product.getId()!=null && product.getId()>0) {
+			super.update(product);
 		}
 
 	}

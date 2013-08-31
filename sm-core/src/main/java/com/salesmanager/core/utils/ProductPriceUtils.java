@@ -478,6 +478,9 @@ public class ProductPriceUtils {
 							}
 						}
 						finalPrice.setDefaultPrice(price);
+						if(hasDiscount) {
+							finalPrice.setDiscounted(true);
+						}
 					}
 					
 				}
@@ -485,6 +488,7 @@ public class ProductPriceUtils {
 			
 		}
 		
+
 		finalPrice.setFinalPrice(fPrice);
 		finalPrice.setOriginalPrice(oPrice);
 		return finalPrice;
