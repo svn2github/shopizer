@@ -1,15 +1,21 @@
 package com.salesmanager.web.entity.shoppingcart;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ShoppingCartItem implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String name;
 	private String price;
 	private int quantity;
 	private long id;
+	private String code;
 	
-	private ShoppingCartAttribute[] shoppingCartAttributes;
+	private List<ShoppingCartAttribute> shoppingCartAttributes;
 	
 	
 	public String getName() {
@@ -36,11 +42,18 @@ public class ShoppingCartItem implements Serializable {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public void setShoppingCartAttributes(ShoppingCartAttribute[] shoppingCartAttributes) {
-		this.shoppingCartAttributes = shoppingCartAttributes;
+
+	public String getCode() {
+		return code;
 	}
-	public ShoppingCartAttribute[] getShoppingCartAttributes() {
+	public void setCode(String code) {
+		this.code = code;
+	}
+	public List<ShoppingCartAttribute> getShoppingCartAttributes() {
 		return shoppingCartAttributes;
+	}
+	public void setShoppingCartAttributes(List<ShoppingCartAttribute> shoppingCartAttributes) {
+		this.shoppingCartAttributes = shoppingCartAttributes;
 	}
 
 

@@ -11,6 +11,7 @@ public class ShoppingCartAttribute implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private long optionId;
 	private long optionValueId;
+	private long attributeId;
 	private String optionName;
 	private String optionValue;
 	public long getOptionId() {
@@ -36,5 +37,11 @@ public class ShoppingCartAttribute implements Serializable {
 	}
 	public void setOptionValue(String optionValue) {
 		this.optionValue = optionValue;
+	}
+	public long getAttributeId() {
+		return attributeId;
+	}
+	public void setAttributeId(long attributeId) {
+		this.attributeId = attributeId;
 	}
 }

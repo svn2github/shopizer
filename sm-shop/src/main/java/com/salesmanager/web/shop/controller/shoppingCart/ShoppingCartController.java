@@ -1,16 +1,35 @@
 package com.salesmanager.web.shop.controller.shoppingCart;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
+import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
+import com.salesmanager.core.business.catalog.product.service.PricingService;
+import com.salesmanager.core.business.catalog.product.service.ProductService;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
+import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.shoppingcart.ShoppingCart;
+import com.salesmanager.web.entity.shoppingcart.ShoppingCartAttribute;
+import com.salesmanager.web.entity.shoppingcart.ShoppingCartItem;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 
 
@@ -70,6 +89,13 @@ import com.salesmanager.web.shop.controller.ControllerConstants;
 public class ShoppingCartController {
 	
 	
+	@Autowired
+	private ProductService productService;
+	
+	@Autowired
+	private PricingService pricingService;
+	
+	
 	/**
 	 * Retrieves a Shopping cart from the database
 	 * @param model
@@ -107,14 +133,22 @@ public class ShoppingCartController {
 	 */
 	@RequestMapping(value={"/shop/addShoppingCartItem.html"}, method=RequestMethod.GET)
 	public @ResponseBody
-	String addShoppingCartItem(@ModelAttribute Long id, @ModelAttribute Integer quantity, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	String addShoppingCartItem(@RequestBody ShoppingCartItem item, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		
-		/*** UPDATE **/
-		/**
-		 * May have to be modified to accept ShoppingCartItem
-		 */
 
+		ShoppingCart shoppingCart = (ShoppingCart)request.getSession().getAttribute(Constants.SESSION_SHOPPING_CART);
+		//cart exist in http session
+		if(shoppingCart!=null) {
+			
+			String shoppingCartCode = shoppingCart.getCode();
+			if(!StringUtils.isBlank(shoppingCartCode)) {
+				if(item.getCode().equals(shoppingCartCode)) {
+					//compare items and add
+				}
+			}
+		}
+		
 		//Looks in the HttpSession to see if a customer is logged in
 		//Looks in the HttpSession to see if a shopping cart exists
 		
@@ -161,6 +195,141 @@ public class ShoppingCartController {
 		
 		return resp.toJSONString();
 		
+		
+	}
+	
+	@SuppressWarnings("unused")
+	private void addShoppingCartItem(ShoppingCart cart, ShoppingCartItem item, MerchantStore store) throws Exception{
+		
+		List<ShoppingCartItem> items = cart.getShoppingCartItems();
+		boolean itemFound = false;
+		for(ShoppingCartItem shoppingCartItem : items) {
+			if(shoppingCartItem.getId()==item.getId()) {
+				itemFound = true;
+				if(CollectionUtils.isEmpty(shoppingCartItem.getShoppingCartAttributes()) 
+						&& CollectionUtils.isEmpty(item.getShoppingCartAttributes())) {
+					//TODO price ???
+					int qty = shoppingCartItem.getQuantity();
+					qty = qty + item.getQuantity();
+					break;
+				} else {
+					List<ShoppingCartAttribute> itemAttributes = item.getShoppingCartAttributes();
+					List<ShoppingCartAttribute> originalitemAttributes = shoppingCartItem.getShoppingCartAttributes();
+					if(!CollectionUtils.isEmpty(itemAttributes) && !CollectionUtils.isEmpty(originalitemAttributes)) {	
+							if(itemAttributes.size()==originalitemAttributes.size()) {
+								boolean attributesMatch = true;
+								for(ShoppingCartAttribute itemAttribute : itemAttributes) {
+									boolean singleAttributeMatch = false;
+									for(ShoppingCartAttribute originalAttribute : originalitemAttributes) {
+										if(originalAttribute.getOptionId()==itemAttribute.getOptionId()) {
+											singleAttributeMatch = true;
+										}
+									}
+									if(!singleAttributeMatch) {
+										//Attributes are not identical
+										createItemInShoppingCart(cart,item,store);
+										attributesMatch = false;
+										break;
+									}
+								}
+								
+								if(attributesMatch) {
+									int qty = shoppingCartItem.getQuantity();
+									qty = qty + item.getQuantity();
+									break;
+								}
+								
+							} else {
+								
+								createItemInShoppingCart(cart,item,store);
+								
+							}
+					}//end if
+				}//end else
+				
+			}
+			
+			
+		}//end for
+		
+		if(!itemFound) {
+			createItemInShoppingCart(cart,item,store);
+		}
+	}
+	
+	private void createItemInShoppingCart(ShoppingCart cart, ShoppingCartItem item, MerchantStore store) throws Exception {
+		
+		Product product = productService.getById(item.getId());
+		
+		if(product==null) {
+			throw new Exception("Item with id " + item.getId() + " does not exist");
+		}
+		
+		if(product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			throw new Exception("Item with id " + item.getId() + " does not belong to merchant " + store.getId());
+		}
+		
+		item.setCode(cart.getCode());
+		item.setId(product.getId());
+		item.setName(product.getProductDescription().getName());
+		
+		
+		List<ShoppingCartAttribute> cartAttributes = item.getShoppingCartAttributes();
+		Set<ProductAttribute> attributes = product.getAttributes();
+		List<ProductAttribute> pricingAttributes = null;
+		if(!CollectionUtils.isEmpty(cartAttributes) && !CollectionUtils.isEmpty(attributes)) {
+			List<ShoppingCartAttribute> savedAttributes = new ArrayList<ShoppingCartAttribute>();
+			for(ShoppingCartAttribute cartAttribute : cartAttributes) {
+				boolean attributeFound = false;
+				for(ProductAttribute productAttribute : attributes) {
+					if(productAttribute.getId().longValue()==cartAttribute.getAttributeId()){
+						attributeFound = true;
+						if(pricingAttributes==null) {
+							pricingAttributes = new ArrayList<ProductAttribute>();
+						}
+						pricingAttributes.add(productAttribute);
+						cartAttribute.setOptionName(productAttribute.getProductOption().getDescriptionsList().get(0).getName());
+						cartAttribute.setOptionValue(productAttribute.getProductOptionValue().getDescriptionsSettoList().get(0).getName());
+						cartAttribute.setOptionId(productAttribute.getProductOption().getId());
+						cartAttribute.setOptionValueId(productAttribute.getProductOptionValue().getId());
+					}
+				}
+				if(attributeFound) {
+					savedAttributes.add(cartAttribute);
+				}
+			}
+			
+			item.setShoppingCartAttributes(savedAttributes);
+			
+			
+		} else {//check if product has default attributes
+			item.setShoppingCartAttributes(null);
+			if(!CollectionUtils.isEmpty(attributes)) {
+				
+				for(ProductAttribute productAttribute : attributes) {
+					
+						if(productAttribute.getAttributeDefault()) {
+					
+							if(pricingAttributes==null) {
+								pricingAttributes = new ArrayList<ProductAttribute>();
+							}
+							pricingAttributes.add(productAttribute);
+							ShoppingCartAttribute cartAttribute = new ShoppingCartAttribute();
+							cartAttribute.setOptionName(productAttribute.getProductOption().getDescriptionsList().get(0).getName());
+							cartAttribute.setOptionValue(productAttribute.getProductOptionValue().getDescriptionsSettoList().get(0).getName());
+							cartAttribute.setOptionId(productAttribute.getProductOption().getId());
+							cartAttribute.setOptionValueId(productAttribute.getProductOptionValue().getId());
+							
+						}
+				}
+				
+			}
+		}
+		
+		FinalPrice finalPrice = pricingService.calculateProductPrice(product, pricingAttributes);
+		item.setPrice(pricingService.getDisplayAmount(finalPrice.getFinalPrice(), store));
+		
+		//TODO update database cart
 		
 	}
 	

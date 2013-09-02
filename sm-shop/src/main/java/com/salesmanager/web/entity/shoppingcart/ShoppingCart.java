@@ -1,15 +1,20 @@
 package com.salesmanager.web.entity.shoppingcart;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ShoppingCart implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String message;
 	private String code;
 	private int quantity;
 	private String total;
 	
-	private ShoppingCartItem[] shoppingCartItems;
+	private List<ShoppingCartItem> shoppingCartItems;
 	
 	
 	public String getMessage() {
@@ -36,11 +41,12 @@ public class ShoppingCart implements Serializable {
 	public void setTotal(String total) {
 		this.total = total;
 	}
-	public void setShoppingCartItems(ShoppingCartItem[] shoppingCartItems) {
-		this.shoppingCartItems = shoppingCartItems;
-	}
-	public ShoppingCartItem[] getShoppingCartItems() {
+	public List<ShoppingCartItem> getShoppingCartItems() {
 		return shoppingCartItems;
 	}
+	public void setShoppingCartItems(List<ShoppingCartItem> shoppingCartItems) {
+		this.shoppingCartItems = shoppingCartItems;
+	}
+
 
 }
