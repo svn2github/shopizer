@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.catalog.product.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
@@ -7,6 +8,7 @@ import com.salesmanager.core.business.catalog.product.model.attribute.ProductAtt
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 
 
 /**
@@ -62,5 +64,15 @@ public interface PricingService {
 	 */
 	FinalPrice calculateProductPrice(Product product,
 			List<ProductAttribute> attributes, Customer customer)
+			throws ServiceException;
+
+	/**
+	 * Method to be used to print a displayable formated amount to the end user
+	 * @param amount
+	 * @param store
+	 * @return
+	 * @throws ServiceException
+	 */
+	String getDisplayAmount(BigDecimal amount, MerchantStore store)
 			throws ServiceException;
 }
