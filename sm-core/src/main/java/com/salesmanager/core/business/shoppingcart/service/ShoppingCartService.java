@@ -17,6 +17,8 @@ public interface ShoppingCartService extends SalesManagerEntityService<Long, Sho
 
 	ShoppingCart getByCode(String code, MerchantStore store)
 			throws ServiceException;
+
+	ShoppingCart getByCustomer(Customer customer) throws ServiceException;
 	
 
 

@@ -26,7 +26,6 @@ import com.salesmanager.core.business.shoppingcart.dao.ShoppingCartItemDao;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartAttributeItem;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
-import com.salesmanager.core.utils.ProductPriceUtils;
 
 @Service("shoppingCartService")
 public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long, ShoppingCart> implements ShoppingCartService {
@@ -111,6 +110,18 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		}
 		
 		
+	}
+	
+	@Override
+	public ShoppingCart getByCustomer(Customer customer) throws ServiceException {
+		
+		try {
+			ShoppingCart shoppingCart = shoppingCartDao.getByCustomer(customer);
+			return populateShoppingCart(shoppingCart);
+		
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
 	}
 	
 
@@ -234,6 +245,8 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		if(product==null) {
 			return;
 		}
+		
+		item.setProduct(product);
 		
 		Set<ShoppingCartAttributeItem> attributes = item.getAttributes();
 		Set<ProductAttribute> productAttributes = product.getAttributes();
