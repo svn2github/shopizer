@@ -27,8 +27,7 @@
 								<h3><s:message code="label.emailconfig.options" text="Email Configuration Options" /></h3>	
 								<br/>
 								
-							<div class="box">
-							<span class="box-title"><p>Email settings</p></span>
+
 							<c:url var="saveEmailConfiguration" value="/admin/configuration/saveEmailConfiguration.html"/>
 							<form:form method="POST" commandName="configuration" action="${saveEmailConfiguration}">
 
@@ -82,6 +81,7 @@
                         				<div class="controls">
 											<form:checkbox cssClass="input-large" path="smtpAuth" />
                         				</div>
+                        				<span class="help-inline"><s:message code="label.emailconfig.requiresauthentication" text="Email server requires authentication (should be set to true)"/></span>
 	                        		</div> 
 	                        		
 	                        		<div class="control-group">
@@ -89,6 +89,7 @@
                         				<div class="controls">
 											<form:checkbox cssClass="input-large" path="starttls" />
                         				</div>
+                        				<span class="help-inline"><s:message code="label.emailconfig.requiresstarttls" text="Email server requires STARTLS encryption (should be false, check server configurations)"/></span>
 	                        		</div>                       		
 	                        		
 	                        		
@@ -104,14 +105,6 @@
 							
 
 
-      					</div>
-      					
-
-      			     
-      			     
-
-
-      			     
       			     
     
 
