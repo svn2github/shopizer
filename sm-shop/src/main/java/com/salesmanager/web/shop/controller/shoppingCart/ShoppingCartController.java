@@ -115,7 +115,7 @@ public class ShoppingCartController {
 	
 	
 	/**
-	 * Retrieves a Shopping cart from the database
+	 * Retrieves a Shopping cart from the database (regular shopping cart)
 	 * @param model
 	 * @param request
 	 * @param response
@@ -149,7 +149,7 @@ public class ShoppingCartController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value={"/shop/addShoppingCartItem.html"}, method=RequestMethod.GET)
+	@RequestMapping(value={"/shop/addShoppingCartItem.html"}, method=RequestMethod.POST)
 	public @ResponseBody
 	String addShoppingCartItem(@RequestBody ShoppingCartItem item, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
