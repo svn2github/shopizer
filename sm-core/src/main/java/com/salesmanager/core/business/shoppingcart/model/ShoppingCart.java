@@ -21,7 +21,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Index;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.salesmanager.core.business.common.model.audit.AuditListener;
 import com.salesmanager.core.business.common.model.audit.AuditSection;
@@ -64,7 +67,7 @@ public class ShoppingCart extends SalesManagerEntity<Long, ShoppingCart> impleme
 	@Column(name = "SHP_CART_CODE", unique=true, nullable=false)
 	private String shoppingCartCode;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "shoppingCart")
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "shoppingCart")
 	private Set<ShoppingCartItem> lineItems = new HashSet<ShoppingCartItem>();
 	
 	@ManyToOne(fetch = FetchType.LAZY)

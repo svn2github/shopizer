@@ -102,6 +102,7 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		return orderDao.listByStore(store, criteria);
 	}
 	
+	@Override
 	public OrderTotalSummary calculateShoppingCart(OrderSummary orderSummary, MerchantStore store, Language language) throws ServiceException {
 		Validate.notNull(orderSummary,"Order summary cannot be null");
 		Validate.notNull(orderSummary.getProducts(),"Order summary.products cannot be null");
