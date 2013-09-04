@@ -1,6 +1,7 @@
 package com.salesmanager.web.entity.shoppingcart;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 public class ShoppingCartItem implements Serializable {
@@ -11,6 +12,7 @@ public class ShoppingCartItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String name;
 	private String price;
+	private BigDecimal productPrice;
 	private int quantity;
 	private long id;
 	private String code;
@@ -54,6 +56,12 @@ public class ShoppingCartItem implements Serializable {
 	}
 	public void setShoppingCartAttributes(List<ShoppingCartAttribute> shoppingCartAttributes) {
 		this.shoppingCartAttributes = shoppingCartAttributes;
+	}
+	public void setProductPrice(BigDecimal productPrice) {
+		this.productPrice = productPrice;
+	}
+	public BigDecimal getProductPrice() {
+		return productPrice;
 	}
 
 
