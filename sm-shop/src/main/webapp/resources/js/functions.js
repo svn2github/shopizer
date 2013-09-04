@@ -103,8 +103,8 @@
 			var shoppingCartItem = shoppingCartItem + '"quantity":' + qty;
 			var shoppingCartItem = shoppingCartItem + '"productId":' + sku;
 			
-			//TODO post shopping cart item
-			//TODO get shopping cart code from cookie (jquery-cookie)
+			//TODO cart attributes
+
 			
 			var scItem = prefix + shoppingCartItem + suffix;
 			
