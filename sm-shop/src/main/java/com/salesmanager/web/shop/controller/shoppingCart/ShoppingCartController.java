@@ -324,14 +324,14 @@ public class ShoppingCartController {
 	
 	private void createItemInShoppingCart(ShoppingCart cart, ShoppingCartItem item, MerchantStore store) throws Exception {
 		
-		Product product = productService.getById(item.getId());
+		Product product = productService.getById(item.getProductId());
 		
 		if(product==null) {
-			throw new Exception("Item with id " + item.getId() + " does not exist");
+			throw new Exception("Item with id " + item.getProductId() + " does not exist");
 		}
 		
 		if(product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
-			throw new Exception("Item with id " + item.getId() + " does not belong to merchant " + store.getId());
+			throw new Exception("Item with id " + item.getProductId() + " does not belong to merchant " + store.getId());
 		}
 		
 		item.setCode(cart.getCode());
@@ -409,6 +409,7 @@ public class ShoppingCartController {
 				
 				ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
 				shoppingCartItem.setCode(cart.getCode());
+				shoppingCartItem.setProductCode(item.getProduct().getSku());
 				shoppingCartItem.setId(item.getId());
 				shoppingCartItem.setName(item.getProduct().getProductDescription().getName());
 				shoppingCartItem.setPrice(pricingService.getDisplayAmount(item.getItemPrice(),store));
@@ -491,14 +492,14 @@ public class ShoppingCartController {
 	
 	private com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem createCartItem(com.salesmanager.core.business.shoppingcart.model.ShoppingCart cart, ShoppingCartItem shoppingCartItem, MerchantStore store) throws Exception {
 		
-		Product product = productService.getById(shoppingCartItem.getId());
+		Product product = productService.getById(shoppingCartItem.getProductId());
 		
 		if(product==null) {
-			throw new Exception("Item with id " + shoppingCartItem.getId() + " does not exist");
+			throw new Exception("Item with id " + shoppingCartItem.getProductId() + " does not exist");
 		}
 		
 		if(product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
-			throw new Exception("Item with id " + shoppingCartItem.getId() + " does not belong to merchant " + store.getId());
+			throw new Exception("Item with id " + shoppingCartItem.getProductId() + " does not belong to merchant " + store.getId());
 		}
 		
 		com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem item = new com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem(cart,product);

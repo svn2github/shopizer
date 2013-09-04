@@ -15,7 +15,9 @@ public class ShoppingCartItem implements Serializable {
 	private BigDecimal productPrice;
 	private int quantity;
 	private long id;
-	private String code;
+	private long productId;
+	private String productCode;
+	private String code;//shopping cart code
 	
 	private List<ShoppingCartAttribute> shoppingCartAttributes;
 	
@@ -62,6 +64,18 @@ public class ShoppingCartItem implements Serializable {
 	}
 	public BigDecimal getProductPrice() {
 		return productPrice;
+	}
+	public void setProductId(long productId) {
+		this.productId = productId;
+	}
+	public long getProductId() {
+		return productId;
+	}
+	public void setProductCode(String productCode) {
+		this.productCode = productCode;
+	}
+	public String getProductCode() {
+		return productCode;
 	}
 
 
