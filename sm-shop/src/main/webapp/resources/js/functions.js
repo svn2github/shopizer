@@ -56,10 +56,9 @@
 			var formId = '#input-' + sku +' :input';
 			var $inputs = $(formId); 
 			
-			
+			var values = {}; //TODO ShoppingCartAttribute
 			if($inputs.length>0) {//check for attributes
-			
-				var values = {}; //TODO ShoppingCartAttribute
+
 				$inputs.each(function() { //properties
 					if($(this).hasClass('attribute')) {
 					   //TODO remove class
@@ -69,7 +68,7 @@
 						   
 					    }
 						
-				       if($(this).is(':checkbox')) {
+				        if($(this).is(':checkbox')) {
 							if($(this).is(':checked') ) {
 								values[this.name] = $(this).val(); 
 							}
@@ -94,9 +93,34 @@
 			}
 			
 			alert('product ' + sku + ' added to cart');
-			//TODO build ShoppingCartItem
+			//TODO get cart code from cookie
+			var code = '123';
+			
+
+			var prefix = "{"
+			var suffix = "}"
+			var shoppingCartItem = '"code":' + code;
+			var shoppingCartItem = shoppingCartItem + '"quantity":' + qty;
+			var shoppingCartItem = shoppingCartItem + '"productId":' + sku;
+			
 			//TODO post shopping cart item
 			//TODO get shopping cart code from cookie (jquery-cookie)
+			
+			var scItem = prefix + shoppingCartItem + suffix;
+			
+			$.ajax({  
+				 type: 'POST',  
+				 url: '',  
+				 data: scItem, 
+				 contentType: 'application/json', 
+				 dataType: 'json', 
+				 error: function() { 
+				    alert('failure'); 
+				 },
+				 success: function(hxr) {  
+				     alert("Success: " + xhr);  
+				 } 
+			}); 
 
 	    });
 		
