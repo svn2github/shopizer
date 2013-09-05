@@ -468,15 +468,57 @@ function getBillingZones(countryCode){
 				
 				
 				<!-- properties -->
+				<!--  @ModelAttribute("optionList") List<Option> options  -->
+				
 				<c:if test="${options!=null && fn:length(options)>0}">
-					<c:forEach values="${options}" var="option">
-					
-						<c:out value="${option.key.customerOptionType}"/>
-						<c:forEach values="${option.value}" var="optionValue">
-							<c:out value="${optionValue.descriptionsList[0].name}"/>
-						</c:forEach>
+					<c:url var="customerOptions" value="/admin/customers/options/save.html"/>
+					<form:form method="POST" action="${customerOptions}" modelAttribute="optionList">
+					<c:forEach values="${options}" var="option" varStatus="status">
+						<div class="control-group"> 
+	                        <label><c:out value="${option.name}"/></label>
+	                        <div class="controls">		       							
+									<c:choose>
+										<c:when test="${option.type=='Select'}">
+											<select id="${option.id}" name="options[${status.index}].id">
+											<c:forEach items="${option.option.id}" var="optionValue">
+												<option value="${optionValue.id}" <c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> SELECTED</c:if>>${optionValue.name}</option>
+											</c:forEach>
+											</select>
+										</c:when>
+										<c:when test="${option.type=='Radio'}">
+											<c:forEach items="${option.availableValues}" var="optionValue">
+												<input type="radio" id="<c:out value="${optionValue.id}"/>" name="options[${status.index}].id"/>" value="<c:out value="${optionValue.id}"/>"<c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> checked="checked" </c:if> />
+												<c:out value="${optionValue.name}"/>
+											</c:forEach>
+										</c:when>
+										<c:when test="${option.type=='Text'}">
+											<form:input id="${option.id}" name="options[${status.index}].id" cssClass="input-large" value="" />
+										</c:when>
+										<c:when test="${option.type=='Checkbox'}">
+											<c:forEach items="${option.availableValues}" var="optionValue">
+												<input type="checkbox" id="<c:out value="${optionValue.id}"/>" name="options[${status.index}].id" value="<c:out value="${optionValue.id}"/>"<c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> checked="checked" </c:if>  />
+												<c:out value="${optionValue.name}"/>
+											</c:forEach>
+										</c:when>										
+										
+										
+									</c:choose>				       							
+                                 	<span class="help-inline"></span>
+	                        </div>
+	                    </div> 
+
 					
 					</c:forEach>
+					
+					<div class="form-actions">
+                 	  <div class="pull-right">
+                 			<button type="submit" class="btn btn-success"><s:message code="button.label.save" text="Save"/></button>
+                 	  </div> 
+           	  		 </div>
+
+
+      					
+				</form:form>
 				
 				</c:if>
 
