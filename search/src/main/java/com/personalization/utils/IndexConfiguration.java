@@ -1,4 +1,4 @@
-package com.personalization.utils;
+package com.shopizer.utils;
 
 /**
  * Configured from Spring

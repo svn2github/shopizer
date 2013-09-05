@@ -1,4 +1,4 @@
-package com.personalization.utils;
+package com.shopizer.utils;
 
 import org.springframework.beans.factory.access.BeanFactoryLocator;
 import org.springframework.beans.factory.access.BeanFactoryReference;

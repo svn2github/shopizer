@@ -1,4 +1,4 @@
-package com.personalization.search;
+package com.shopizer.search;
 
 import java.util.Collection;
 import java.util.Map;
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.personalization.services.search.SearchRequest;
-import com.personalization.services.search.SearchResponse;
-import com.personalization.services.search.SearchService;
-import com.personalization.services.search.impl.SearchServiceImpl;
+import com.shopizer.services.search.SearchRequest;
+import com.shopizer.services.search.SearchResponse;
+import com.shopizer.services.search.SearchService;
+import com.shopizer.services.search.impl.SearchServiceImpl;
 
 @Controller
 //@RequestMapping("search/*")

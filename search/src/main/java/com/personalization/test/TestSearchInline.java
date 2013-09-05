@@ -1,10 +1,10 @@
-package com.personalization.test;
+package com.shopizer.test;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.personalization.services.search.SearchRequest;
-import com.personalization.services.search.SearchService;
-import com.personalization.services.search.SearchResponse;
+import com.shopizer.services.search.SearchRequest;
+import com.shopizer.services.search.SearchResponse;
+import com.shopizer.services.search.SearchService;
 
 public class TestSearchInline {
 

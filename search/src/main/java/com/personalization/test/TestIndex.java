@@ -1,6 +1,6 @@
-package com.personalization.test;
+package com.shopizer.test;
 
-import com.personalization.services.search.SearchService;
+import com.shopizer.services.search.SearchService;
 
 public class TestIndex {
 

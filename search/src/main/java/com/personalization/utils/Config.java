@@ -1,4 +1,4 @@
-package com.personalization.utils;
+package com.shopizer.utils;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.PropertiesConfiguration;

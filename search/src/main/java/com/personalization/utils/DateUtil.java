@@ -1,4 +1,4 @@
-package com.personalization.utils;
+package com.shopizer.utils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

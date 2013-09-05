@@ -1,4 +1,4 @@
-package com.personalization.utils;
+package com.shopizer.utils;
 
 public class CustomIndexFieldConfiguration {
 	
