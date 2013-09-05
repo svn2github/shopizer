@@ -73,7 +73,7 @@ public class ContentBoxesController {
 	@Secured("CONTENT")
 	@RequestMapping(value="/admin/content/boxes/create.html", method=RequestMethod.GET)
 	public String createBox(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		model.addAttribute("menu.boxes", true);
+		model.addAttribute("boxes", true);
 		setMenu(model,request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		Content content = new Content();
@@ -108,7 +108,7 @@ public class ContentBoxesController {
 	@Secured("CONTENT")
 	@RequestMapping(value="/admin/content/boxes/details.html", method=RequestMethod.GET)
 	public String getContentDetails(@RequestParam("id") Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		model.addAttribute("menu.boxes", true);
+		model.addAttribute("boxes", true);
 		setMenu(model,request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		Content content = contentService.getById(id);
@@ -162,7 +162,7 @@ public class ContentBoxesController {
 	@Secured("CONTENT")
 	@RequestMapping(value="/admin/content/boxes/save.html", method=RequestMethod.POST)
 	public String saveContent(@Valid @ModelAttribute Content content, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		model.addAttribute("menu.boxes", true);
+		model.addAttribute("boxes", true);
 		setMenu(model,request);
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);

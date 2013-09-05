@@ -266,57 +266,58 @@ public class ShoppingCartController {
 		
 		
 	}
-	
-	@SuppressWarnings("unused")
+
 	private void addShoppingCartItem(ShoppingCart cart, ShoppingCartItem item, MerchantStore store) throws Exception{
 		
 		List<ShoppingCartItem> items = cart.getShoppingCartItems();
 		boolean itemFound = false;
-		for(ShoppingCartItem shoppingCartItem : items) {
-			if(shoppingCartItem.getId()==item.getId()) {
-				itemFound = true;
-				if(CollectionUtils.isEmpty(shoppingCartItem.getShoppingCartAttributes()) 
-						&& CollectionUtils.isEmpty(item.getShoppingCartAttributes())) {
-					int qty = shoppingCartItem.getQuantity();
-					qty = qty + item.getQuantity();
-					break;
-				} else {
-					List<ShoppingCartAttribute> itemAttributes = item.getShoppingCartAttributes();
-					List<ShoppingCartAttribute> originalitemAttributes = shoppingCartItem.getShoppingCartAttributes();
-					if(!CollectionUtils.isEmpty(itemAttributes) && !CollectionUtils.isEmpty(originalitemAttributes)) {	
-							if(itemAttributes.size()==originalitemAttributes.size()) {
-								boolean attributesMatch = true;
-								for(ShoppingCartAttribute itemAttribute : itemAttributes) {
-									boolean singleAttributeMatch = false;
-									for(ShoppingCartAttribute originalAttribute : originalitemAttributes) {
-										if(originalAttribute.getOptionId()==itemAttribute.getOptionId()) {
-											singleAttributeMatch = true;
+		if(items!=null) {
+			for(ShoppingCartItem shoppingCartItem : items) {
+				if(shoppingCartItem.getId()==item.getId()) {
+					itemFound = true;
+					if(CollectionUtils.isEmpty(shoppingCartItem.getShoppingCartAttributes()) 
+							&& CollectionUtils.isEmpty(item.getShoppingCartAttributes())) {
+						int qty = shoppingCartItem.getQuantity();
+						qty = qty + item.getQuantity();
+						break;
+					} else {
+						List<ShoppingCartAttribute> itemAttributes = item.getShoppingCartAttributes();
+						List<ShoppingCartAttribute> originalitemAttributes = shoppingCartItem.getShoppingCartAttributes();
+						if(!CollectionUtils.isEmpty(itemAttributes) && !CollectionUtils.isEmpty(originalitemAttributes)) {	
+								if(itemAttributes.size()==originalitemAttributes.size()) {
+									boolean attributesMatch = true;
+									for(ShoppingCartAttribute itemAttribute : itemAttributes) {
+										boolean singleAttributeMatch = false;
+										for(ShoppingCartAttribute originalAttribute : originalitemAttributes) {
+											if(originalAttribute.getOptionId()==itemAttribute.getOptionId()) {
+												singleAttributeMatch = true;
+											}
+										}
+										if(!singleAttributeMatch) {
+											//Attributes are not identical
+											createItemInShoppingCart(cart,item,store);
+											attributesMatch = false;
+											break;
 										}
 									}
-									if(!singleAttributeMatch) {
-										//Attributes are not identical
-										createItemInShoppingCart(cart,item,store);
-										attributesMatch = false;
+									
+									if(attributesMatch) {
+										int qty = shoppingCartItem.getQuantity();
+										qty = qty + item.getQuantity();
 										break;
 									}
+									
+								} else {
+									
+									createItemInShoppingCart(cart,item,store);
+									
 								}
-								
-								if(attributesMatch) {
-									int qty = shoppingCartItem.getQuantity();
-									qty = qty + item.getQuantity();
-									break;
-								}
-								
-							} else {
-								
-								createItemInShoppingCart(cart,item,store);
-								
-							}
-					}//end if
-				}//end else
-				
-			}
-		}//end for
+						}//end if
+					}//end else
+					
+				}
+			}//end for
+		}//end if
 		if(!itemFound) {
 			createItemInShoppingCart(cart,item,store);
 		}

@@ -32,7 +32,7 @@
 			  <c:choose>
            			<c:when test="${boxes==true}">
            			
-           			    <c:set value="/admin/content/page.html?contentType=BOXES" var="pagingUrl" scope="request" />
+           			    <c:set value="/admin/content/page.html?contentType=BOX" var="pagingUrl" scope="request" />
 						<c:set value="/admin/content/remove.html" var="removeUrl" scope="request" />
 						<c:set value="/admin/content/boxes/list.html" var="refreshUrl" scope="request" />
 						<c:set value="/admin/content/boxes/details.html" var="editUrl" scope="request"/>

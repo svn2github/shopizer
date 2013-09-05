@@ -99,8 +99,8 @@
 
 			var prefix = "{"
 			var suffix = "}"
-			var shoppingCartItem = '"code":' + code;
-			var shoppingCartItem = shoppingCartItem + '"quantity":' + qty;
+			var shoppingCartItem = '"code":' + code + ',';
+			var shoppingCartItem = shoppingCartItem + '"quantity":' + quantity + ',';
 			var shoppingCartItem = shoppingCartItem + '"productId":' + sku;
 			
 			//TODO cart attributes
@@ -108,9 +108,11 @@
 			
 			var scItem = prefix + shoppingCartItem + suffix;
 			
+			alert(scItem);
+			
 			$.ajax({  
 				 type: 'POST',  
-				 url: '',  
+				 url: getContextPath() + '/shop/addShoppingCartItem.html',  
 				 data: scItem, 
 				 contentType: 'application/json', 
 				 dataType: 'json', 

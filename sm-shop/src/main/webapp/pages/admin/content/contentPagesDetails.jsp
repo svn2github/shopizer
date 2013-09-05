@@ -75,7 +75,7 @@
 			<!--  Add content page / box -->
 			
 			<c:choose>
-				<c:when test="${menu.boxes!=null}">
+				<c:when test="${boxes!=null}">
 						<c:url var="saveContent" value="/admin/content/boxes/save.html" />
 				</c:when>
 				<c:otherwise>
@@ -136,7 +136,7 @@
                  <div class="control-group">
                  		
                  		<c:choose>
-							<c:when test="${menu.boxes!=null}">
+							<c:when test="${boxes!=null}">
 									<label><s:message code="label.content.boxes.name" text="Box name"/> (<c:out value="${description.language.code}"/>)</label>
 							</c:when>
 							<c:otherwise>
@@ -151,7 +151,7 @@
 
                   </div>
                   
-                  <c:if test="${menu.boxes==null}">
+                  <c:if test="${boxes==null}">
                   <div class="control-group">
                         <label><s:message code="label.sefurl" text="SEF Url"/> (<c:out value="${description.language.code}"/>)</label>
                         <div class="controls">
@@ -207,7 +207,7 @@
 
                   </div>
                   
-                  <c:if test="${menu.boxes==null}">               
+                  <c:if test="${boxes==null}">               
                   <div class="control-group">
                         <label><s:message code="label.generic.title" text="Metatag title"/> (<c:out value="${description.language.code}"/>)</label>
                         <div class="controls">

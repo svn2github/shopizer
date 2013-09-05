@@ -121,7 +121,7 @@ public class CustomerController {
 		List<CustomerOptionSet> options = customerOptionService.listCustomerOptionSetByStore(store, language);
 		
 		
-		
+		model.addAttribute("options", options);
 		model.addAttribute("zones", zones);
 		model.addAttribute("countries", countries);
 		model.addAttribute("customer", customer);

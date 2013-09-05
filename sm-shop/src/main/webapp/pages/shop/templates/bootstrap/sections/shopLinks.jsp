@@ -5,7 +5,8 @@
 
 <%@ page session="false" %>
 
-    <!-- The one provided with the system -->
+
+    <jsp:include page="/resources/js/functions.jsp" />
     <script src="<c:url value="/resources/js/bootstrap/jquery.js" />"></script>
     <script src="<c:url value="/resources/js/functions.js" />"></script>
     <script src="<c:url value="/resources/js/jquery-cookie.js" />"></script>
