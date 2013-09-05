@@ -45,6 +45,7 @@
 		
 		$(".addToCart").click(function(){ 
 			
+			var cart = $.cookie( 'cart' );
 			//core properties
 			var sku = $(this).attr("productId");
 			var qty = '#qty-productId-'+ sku;
