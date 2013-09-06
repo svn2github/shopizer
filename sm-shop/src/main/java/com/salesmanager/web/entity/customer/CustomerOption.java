@@ -3,6 +3,8 @@ package com.salesmanager.web.entity.customer;
 import java.io.Serializable;
 import java.util.List;
 
+import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
+
 public class CustomerOption implements Serializable {
 	
 	/**
@@ -14,6 +16,7 @@ public class CustomerOption implements Serializable {
 	private String name;
 	
 	private CustomerOptionValue defaultValue;
+
 	
 	private List<CustomerOptionValue> availableValues;
 
@@ -56,5 +59,15 @@ public class CustomerOption implements Serializable {
 	public void setAvailableValues(List<CustomerOptionValue> availableValues) {
 		this.availableValues = availableValues;
 	}
+
+	public void setSelectedValue(CustomerOptionValue selectedValue) {
+		this.selectedValue = selectedValue;
+	}
+
+	public CustomerOptionValue getSelectedValue() {
+		return selectedValue;
+	}
+
+
 
 }

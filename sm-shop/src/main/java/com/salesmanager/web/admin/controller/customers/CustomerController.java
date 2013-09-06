@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.CustomerCriteria;
 import com.salesmanager.core.business.customer.model.CustomerList;
+import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
@@ -43,6 +45,7 @@ import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.customer.CustomerOption;
+import com.salesmanager.web.entity.customer.CustomerOptionValue;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
@@ -123,21 +126,35 @@ public class CustomerController {
 		List<CustomerOptionSet> optionSet = customerOptionService.listCustomerOptionSetByStore(store, language);
 		if(!CollectionUtils.isEmpty(optionSet)) {
 			
+			Set<CustomerAttribute> customerAttributes = customer.getAttributes();
+			
 			for(CustomerOptionSet optSet : optionSet) {
 				
 				com.salesmanager.core.business.customer.model.attribute.CustomerOption custOption = optSet.getPk().getCustomerOption();
-				if(!options.containsKey(custOption.getId())) {
-					CustomerOption customerOption = new CustomerOption();
+				CustomerOption customerOption = options.get(custOption.getId());
+				if(customerOption==null) {
+					customerOption = new CustomerOption();
 					customerOption.setId(custOption.getId());
 					customerOption.setType(custOption.getCustomerOptionType());
+					options.put(customerOption.getId(), customerOption);
 				}
 				
-				
+				if(!CollectionUtils.isEmpty(customerAttributes)) {
+					for(CustomerAttribute customerAttribute : customerAttributes) {
+						if(customerAttribute.getCustomerOption().getId().longValue()==customerOption.getId()){
+							CustomerOptionValue selectedValue = new CustomerOptionValue();
+							com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue attributeValue = customerAttribute.getCustomerOptionValue();
+							selectedValue.setId(attributeValue.getId());
+							selectedValue.setName(attributeValue.getDescriptionsList().get(0).getName());
+							customerOption.setDefaultValue(selectedValue);
+						}
+					}
+				}
 			}
 		}
 		
 		
-		model.addAttribute("options", options);
+		model.addAttribute("options", options.values());
 		model.addAttribute("zones", zones);
 		model.addAttribute("countries", countries);
 		model.addAttribute("customer", customer);
