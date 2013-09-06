@@ -28,7 +28,6 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cascade;
 
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.catalog.product.model.review.ProductReview;
 import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
