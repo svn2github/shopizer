@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,7 @@ import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.customer.CustomerOption;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
@@ -116,9 +118,23 @@ public class CustomerController {
 		//get list of zones
 		List<Zone> zones = zoneService.list();
 		
-		
+		Map<Long,CustomerOption> options = new HashMap<Long,CustomerOption>();
 		//get options
-		List<CustomerOptionSet> options = customerOptionService.listCustomerOptionSetByStore(store, language);
+		List<CustomerOptionSet> optionSet = customerOptionService.listCustomerOptionSetByStore(store, language);
+		if(!CollectionUtils.isEmpty(optionSet)) {
+			
+			for(CustomerOptionSet optSet : optionSet) {
+				
+				com.salesmanager.core.business.customer.model.attribute.CustomerOption custOption = optSet.getPk().getCustomerOption();
+				if(!options.containsKey(custOption.getId())) {
+					CustomerOption customerOption = new CustomerOption();
+					customerOption.setId(custOption.getId());
+					customerOption.setType(custOption.getCustomerOptionType());
+				}
+				
+				
+			}
+		}
 		
 		
 		model.addAttribute("options", options);
