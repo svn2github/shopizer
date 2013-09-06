@@ -41,6 +41,7 @@ import com.salesmanager.core.business.user.model.GroupType;
 import com.salesmanager.core.business.user.model.User;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.UserService;
+import com.salesmanager.core.modules.email.Email;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.secutity.Password;
@@ -579,8 +580,39 @@ public class UserController {
 			user.setAdminPassword(encoded);
 		}
 		//save or update user
-		userService.saveOrUpdate(user);
-		//model.addAttribute("user", user);
+		if(user.getId().longValue()==0) {
+			
+			Map<String, String> templateTokens = new HashMap<String, String>();
+			templateTokens.put("EMAIL_NEW_USER_TEXT", "Hi Tapas,");
+			templateTokens.put("EMAIL_STORE_NAME", "Ebay Store");
+			templateTokens.put("EMAIL_ADMIN_LABEL", "Adminstrator:");
+			templateTokens.put("EMAIL_CUSTOMER_FIRSTNAME", "Tapas");
+			templateTokens.put("EMAIL_CUSTOMER_LAST", "Jena");
+			templateTokens.put("EMAIL_ADMIN_USERNAME_LABEL", "UserName:");
+			templateTokens.put("EMAIL_ADMIN_NAME", "Admin");
+			templateTokens.put("EMAIL_ADMIN_PASSWORD_LABEL", "Password:");
+			templateTokens.put("EMAIL_ADMIN_PASSWORD", "12345");
+			templateTokens.put("EMAIL_ADMIN_URL_LABEL", "URL:");
+			templateTokens.put("EMAIL_ADMIN_URL", "http://www.shopizer.com");
+			
+			templateTokens.put("EMAIL_FOOTER_COPYRIGHT", "Copyright @ Shopizer 2013, All Rights Reserved!");
+			templateTokens.put("EMAIL_DISCLAIMER", messages.getMessage("email.disclaimer", locale));
+			templateTokens.put("EMAIL_SPAM_DISCLAIMER", messages.getMessage("email.spam.disclaimer", locale));
+			
+			
+			Email email = new Email();
+			email.setFrom("Shopizer");
+			email.setFromEmail("admin@shopizer.com");
+			email.setSubject("HTML Test Mail");
+			email.setTo("carl@csticonsulting.com");
+			email.setTemplateName("email_template_new_user.ftl");
+			email.setTemplateTokens(templateTokens);
+			
+			
+			
+		} else {
+			userService.saveOrUpdate(user);
+		}
 
 		model.addAttribute("success","success");
 		return ControllerConstants.Tiles.User.profile;
