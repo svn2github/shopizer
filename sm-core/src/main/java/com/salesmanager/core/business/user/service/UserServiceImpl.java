@@ -7,15 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.system.service.EmailService;
 import com.salesmanager.core.business.user.dao.UserDao;
 import com.salesmanager.core.business.user.model.User;
+import com.salesmanager.core.modules.email.Email;
 
 
 public class UserServiceImpl extends SalesManagerEntityServiceImpl<Long, User>
 		implements UserService {
 
 
-	UserDao userDao;
+	private UserDao userDao;
 	
 	@Autowired
 	public UserServiceImpl(UserDao userDao) {
@@ -23,6 +25,9 @@ public class UserServiceImpl extends SalesManagerEntityServiceImpl<Long, User>
 		this.userDao = userDao;
 
 	}
+	
+	@Autowired
+	private EmailService emailService;
 	
 	@Override
 	public User getByUserName(String userName) throws ServiceException {
@@ -52,6 +57,18 @@ public class UserServiceImpl extends SalesManagerEntityServiceImpl<Long, User>
 	public List<User> listByStore(MerchantStore store) throws ServiceException {
 		try {
 			return userDao.listUserByStore(store);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	@Override
+	public void createUser(User user, MerchantStore store, Email email) throws ServiceException {
+		
+
+		try {
+			userDao.save(user);
+			emailService.sendHtmlEmail(store, email);
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}

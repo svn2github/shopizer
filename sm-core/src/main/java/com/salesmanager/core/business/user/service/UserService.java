@@ -6,6 +6,7 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.user.model.User;
+import com.salesmanager.core.modules.email.Email;
 
 public interface UserService extends SalesManagerEntityService<Long, User> {
 
@@ -21,5 +22,15 @@ public interface UserService extends SalesManagerEntityService<Long, User> {
 	void saveOrUpdate(User user) throws ServiceException;
 
 	List<User> listByStore(MerchantStore store) throws ServiceException;
+
+	/**
+	 * Send an email to the created User
+	 * @param user
+	 * @param store
+	 * @param email
+	 * @throws ServiceException
+	 */
+	void createUser(User user, MerchantStore store, Email email)
+			throws ServiceException;
 
 }
