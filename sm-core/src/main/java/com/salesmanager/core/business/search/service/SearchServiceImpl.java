@@ -1,6 +1,7 @@
 package com.salesmanager.core.business.search.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -14,6 +15,7 @@ public class SearchServiceImpl implements SearchService {
 	//private com.shopizer.search.SearchService searchService;
 
 	@Override
+	@Transactional
 	public void index(MerchantStore store, Product product, Language language)
 			throws ServiceException {
 		
@@ -61,5 +63,22 @@ public class SearchServiceImpl implements SearchService {
 		 */
 
 	}
-
+	
+	@Transactional
+	public void deleteIndex(MerchantStore store, Product product, Language language) throws ServiceException {
+		
+		/**
+		 * When a product is deleted the associated indexes are deleted
+		 * 
+		 */
+		
+		//searchService.deleteObject(collection, object, id);
+		
+	}
+	
+	//public SearchResponse searchForKeywords(MerchantStore store, String jsonString, int entriesCount) throws ServiceException {
+		
+	//}
+	
 }
+
