@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.shopizer.services.search.SearchRequest;
-import com.shopizer.services.search.SearchResponse;
+import com.shopizer.search.services.SearchRequest;
+import com.shopizer.search.services.SearchResponse;
 import com.shopizer.services.search.impl.SearchServiceImpl;
 import com.shopizer.services.search.worker.KeywordSearchWorker;
 import com.shopizer.services.search.worker.SearchWorker;

@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Component;
 
-import com.shopizer.services.search.SearchService;
+import com.shopizer.search.services.SearchService;
 import com.shopizer.services.search.worker.DeleteObjectWorker;
 import com.shopizer.services.search.worker.ExecutionContext;
 import com.shopizer.services.search.worker.IndexWorker;

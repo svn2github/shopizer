@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.shopizer.search.services.IndexKeywordRequest;
 import com.shopizer.search.utils.Config;
 import com.shopizer.search.utils.CustomIndexConfiguration;
 import com.shopizer.search.utils.CustomIndexFieldConfiguration;
@@ -22,7 +23,6 @@ import com.shopizer.search.utils.DateUtil;
 import com.shopizer.search.utils.DynamicIndexNameUtil;
 import com.shopizer.search.utils.IndexConfiguration;
 import com.shopizer.search.utils.SearchClient;
-import com.shopizer.services.search.IndexKeywordRequest;
 import com.shopizer.services.search.field.BooleanField;
 import com.shopizer.services.search.field.DoubleField;
 import com.shopizer.services.search.field.Field;

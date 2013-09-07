@@ -9,7 +9,7 @@ import com.shopizer.services.search.impl.SearchServiceImpl;
 public class GetWorkflow extends Workflow {
 	
 	
-	public com.shopizer.services.search.GetResponse getObject(String collection, String object, String id) throws Exception {
+	public com.shopizer.search.services.GetResponse getObject(String collection, String object, String id) throws Exception {
 		
 		SearchServiceImpl search = new SearchServiceImpl(super.getSearchClient());
 		return search.getObject(collection, object, id);

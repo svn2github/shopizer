@@ -7,10 +7,10 @@ import java.util.Map;
 import org.codehaus.jackson.map.ObjectMapper;
 
 
+import com.shopizer.search.services.SearchHit;
+import com.shopizer.search.services.SearchRequest;
+import com.shopizer.search.services.SearchResponse;
 import com.shopizer.search.utils.SearchClient;
-import com.shopizer.services.search.SearchHit;
-import com.shopizer.services.search.SearchRequest;
-import com.shopizer.services.search.SearchResponse;
 import com.shopizer.services.search.impl.SearchServiceImpl;
 
 public class DeleteObjectImpl implements DeleteObjectWorker {
@@ -20,7 +20,7 @@ public class DeleteObjectImpl implements DeleteObjectWorker {
 		
 		//need to get the original entry
 		SearchServiceImpl s = new SearchServiceImpl(client);
-		com.shopizer.services.search.GetResponse r = s.getObject(collection, object, id);
+		com.shopizer.search.services.GetResponse r = s.getObject(collection, object, id);
 		
 		if(r!=null) {
 			

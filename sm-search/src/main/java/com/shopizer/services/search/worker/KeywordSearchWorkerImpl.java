@@ -2,9 +2,9 @@ package com.shopizer.services.search.worker;
 
 import java.util.Collection;
 
+import com.shopizer.search.services.SearchRequest;
+import com.shopizer.search.services.SearchResponse;
 import com.shopizer.search.utils.SearchClient;
-import com.shopizer.services.search.SearchRequest;
-import com.shopizer.services.search.SearchResponse;
 import com.shopizer.services.search.impl.SearchServiceImpl;
 
 public class KeywordSearchWorkerImpl implements KeywordSearchWorker {
