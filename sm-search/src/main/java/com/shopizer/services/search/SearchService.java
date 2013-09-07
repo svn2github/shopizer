@@ -5,11 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.shopizer.search.utils.BeanUtil;
 import com.shopizer.services.search.workflow.DeleteObjectWorkflow;
 import com.shopizer.services.search.workflow.GetWorkflow;
 import com.shopizer.services.search.workflow.IndexWorkflow;
 import com.shopizer.services.search.workflow.SearchWorkflow;
-import com.shopizer.utils.BeanUtil;
 
 /**
  * This is the main class for indexing and searching services

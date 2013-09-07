@@ -1,6 +1,6 @@
 package com.shopizer.services.search.worker;
 
-import com.shopizer.utils.SearchClient;
+import com.shopizer.search.utils.SearchClient;
 
 /**
  * Deletes an object from the index

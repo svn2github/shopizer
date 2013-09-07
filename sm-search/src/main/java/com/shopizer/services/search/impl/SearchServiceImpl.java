@@ -54,6 +54,7 @@ import org.elasticsearch.search.facet.statistical.StatisticalFacet;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.facet.terms.TermsFacet.Entry;
 
+import com.shopizer.search.utils.SearchClient;
 import com.shopizer.services.search.IndexKeywordRequest;
 import com.shopizer.services.search.SearchField;
 import com.shopizer.services.search.SearchRequest;
@@ -66,7 +67,6 @@ import com.shopizer.services.search.field.IntegerField;
 import com.shopizer.services.search.field.ListField;
 import com.shopizer.services.search.field.StringField;
 import com.shopizer.services.search.worker.ExecutionContext;
-import com.shopizer.utils.SearchClient;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.*;
 

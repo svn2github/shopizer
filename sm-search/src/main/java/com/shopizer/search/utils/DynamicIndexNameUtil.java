@@ -1,4 +1,4 @@
-package com.shopizer.utils;
+package com.shopizer.search.utils;
 
 import java.util.Map;
 

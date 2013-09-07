@@ -2,8 +2,8 @@ package com.shopizer.services.search.workflow;
 
 import org.springframework.stereotype.Component;
 
+import com.shopizer.search.utils.SearchClient;
 import com.shopizer.services.search.impl.SearchServiceImpl;
-import com.shopizer.utils.SearchClient;
 
 @Component
 public class GetWorkflow extends Workflow {

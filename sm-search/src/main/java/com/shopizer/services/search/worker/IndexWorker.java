@@ -1,6 +1,6 @@
 package com.shopizer.services.search.worker;
 
-import com.shopizer.utils.SearchClient;
+import com.shopizer.search.utils.SearchClient;
 
 public interface IndexWorker {
 	

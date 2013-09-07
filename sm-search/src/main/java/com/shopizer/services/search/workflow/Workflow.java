@@ -1,6 +1,6 @@
 package com.shopizer.services.search.workflow;
 
-import com.shopizer.utils.SearchClient;
+import com.shopizer.search.utils.SearchClient;
 
 public class Workflow {
 

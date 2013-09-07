@@ -1,4 +1,4 @@
-package com.shopizer.utils;
+package com.shopizer.search.utils;
 
 import org.springframework.beans.factory.access.BeanFactoryLocator;
 import org.springframework.beans.factory.access.BeanFactoryReference;

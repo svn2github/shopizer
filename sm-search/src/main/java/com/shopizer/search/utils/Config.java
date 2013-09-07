@@ -1,4 +1,4 @@
-package com.shopizer.utils;
+package com.shopizer.search.utils;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.PropertiesConfiguration;
