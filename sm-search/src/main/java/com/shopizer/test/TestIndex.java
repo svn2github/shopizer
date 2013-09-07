@@ -1,6 +1,6 @@
 package com.shopizer.test;
 
-import com.shopizer.services.search.SearchService;
+import com.shopizer.search.services.SearchService;
 
 public class TestIndex {
 

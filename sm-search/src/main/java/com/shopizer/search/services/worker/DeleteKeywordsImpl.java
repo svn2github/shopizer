@@ -9,10 +9,11 @@ import java.util.StringTokenizer;
 
 import com.shopizer.search.services.SearchRequest;
 import com.shopizer.search.services.SearchResponse;
+import com.shopizer.search.services.impl.SearchServiceImpl;
 import com.shopizer.search.utils.CustomIndexConfiguration;
 import com.shopizer.search.utils.DynamicIndexNameUtil;
 import com.shopizer.search.utils.SearchClient;
-import com.shopizer.services.search.impl.SearchServiceImpl;
+
 
 public class DeleteKeywordsImpl implements DeleteObjectWorker {
 	

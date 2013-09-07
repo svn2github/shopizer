@@ -3,16 +3,17 @@ package com.shopizer.search.services;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Locale;
 
-import com.shopizer.services.search.field.Field;
+import com.shopizer.search.services.field.Field;
+
+
 
 public class IndexKeywordRequest implements Serializable {
 	
 	private String id;
 	//private Locale locale;
 	private String key;
-	private Collection<Field> filters = new ArrayList();
+	private Collection<Field> filters = new ArrayList<Field>();
 	
 	
 	public Collection<Field> getFilters() {

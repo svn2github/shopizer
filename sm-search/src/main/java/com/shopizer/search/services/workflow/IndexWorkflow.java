@@ -9,10 +9,9 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Component;
 
-import com.shopizer.search.services.SearchService;
-import com.shopizer.services.search.worker.ExecutionContext;
-import com.shopizer.services.search.worker.IndexWorker;
-import com.shopizer.services.search.worker.SearchWorker;
+import com.shopizer.search.services.worker.ExecutionContext;
+import com.shopizer.search.services.worker.IndexWorker;
+
 
 @Component
 public class IndexWorkflow extends Workflow {

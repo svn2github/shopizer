@@ -1,6 +1,6 @@
 package com.shopizer.search.services.impl;
 
-import static org.elasticsearch.node.NodeBuilder.*; 
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,10 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
-import org.codehaus.jackson.map.ObjectMapper;
-import org.elasticsearch.action.ListenableActionFuture;
-import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -24,51 +20,31 @@ import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
-import org.elasticsearch.index.query.PrefixQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-//import org.elasticsearch.index.query.XContentFilterBuilder;
-//import org.elasticsearch.index.query.XContentQueryBuilder;
-
-//??????
-import static org.elasticsearch.index.query.FilterBuilders.*; 
-import static org.elasticsearch.index.query.QueryBuilders.*; 
-
-import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHitField;
 import org.elasticsearch.search.facet.Facet;
 import org.elasticsearch.search.facet.Facets;
 import org.elasticsearch.search.facet.datehistogram.DateHistogramFacet;
-import org.elasticsearch.search.facet.filter.FilterFacet;
 import org.elasticsearch.search.facet.geodistance.GeoDistanceFacet;
 import org.elasticsearch.search.facet.histogram.HistogramFacet;
-import org.elasticsearch.search.facet.query.QueryFacet;
 import org.elasticsearch.search.facet.range.RangeFacet;
-import org.elasticsearch.search.facet.statistical.StatisticalFacet;
 import org.elasticsearch.search.facet.terms.TermsFacet;
 import org.elasticsearch.search.facet.terms.TermsFacet.Entry;
 
 import com.shopizer.search.services.IndexKeywordRequest;
-import com.shopizer.search.services.SearchField;
 import com.shopizer.search.services.SearchRequest;
 import com.shopizer.search.services.SearchResponse;
+import com.shopizer.search.services.field.BooleanField;
+import com.shopizer.search.services.field.DateField;
+import com.shopizer.search.services.field.DoubleField;
+import com.shopizer.search.services.field.Field;
+import com.shopizer.search.services.field.IntegerField;
+import com.shopizer.search.services.field.ListField;
+import com.shopizer.search.services.field.StringField;
 import com.shopizer.search.utils.SearchClient;
-import com.shopizer.services.search.field.BooleanField;
-import com.shopizer.services.search.field.DateField;
-import com.shopizer.services.search.field.DoubleField;
-import com.shopizer.services.search.field.Field;
-import com.shopizer.services.search.field.IntegerField;
-import com.shopizer.services.search.field.ListField;
-import com.shopizer.services.search.field.StringField;
-import com.shopizer.services.search.worker.ExecutionContext;
-
-import static org.elasticsearch.common.xcontent.XContentFactory.*;
+//import org.elasticsearch.index.query.XContentFilterBuilder;
+//import org.elasticsearch.index.query.XContentQueryBuilder;
+//??????
 
 public class SearchServiceImpl {
 	

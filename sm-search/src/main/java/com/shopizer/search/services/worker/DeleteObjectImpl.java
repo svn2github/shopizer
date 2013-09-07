@@ -1,17 +1,8 @@
 package com.shopizer.search.services.worker;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import org.codehaus.jackson.map.ObjectMapper;
-
-
-import com.shopizer.search.services.SearchHit;
-import com.shopizer.search.services.SearchRequest;
-import com.shopizer.search.services.SearchResponse;
+import com.shopizer.search.services.impl.SearchServiceImpl;
 import com.shopizer.search.utils.SearchClient;
-import com.shopizer.services.search.impl.SearchServiceImpl;
+
 
 public class DeleteObjectImpl implements DeleteObjectWorker {
 

@@ -2,14 +2,13 @@ package com.shopizer.search.services;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import com.shopizer.search.utils.BeanUtil;
-import com.shopizer.services.search.workflow.DeleteObjectWorkflow;
-import com.shopizer.services.search.workflow.GetWorkflow;
-import com.shopizer.services.search.workflow.IndexWorkflow;
-import com.shopizer.services.search.workflow.SearchWorkflow;
+import com.shopizer.search.services.workflow.DeleteObjectWorkflow;
+import com.shopizer.search.services.workflow.GetWorkflow;
+import com.shopizer.search.services.workflow.IndexWorkflow;
+import com.shopizer.search.services.workflow.SearchWorkflow;
+
 
 /**
  * This is the main class for indexing and searching services

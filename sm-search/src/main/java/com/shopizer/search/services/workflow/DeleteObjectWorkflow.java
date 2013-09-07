@@ -1,19 +1,13 @@
 package com.shopizer.search.services.workflow;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Component;
 
-import com.shopizer.search.services.SearchService;
-import com.shopizer.services.search.worker.DeleteObjectWorker;
-import com.shopizer.services.search.worker.ExecutionContext;
-import com.shopizer.services.search.worker.IndexWorker;
-import com.shopizer.services.search.worker.SearchWorker;
+import com.shopizer.search.services.worker.DeleteObjectWorker;
+import com.shopizer.search.services.worker.ExecutionContext;
+
 
 @Component
 public class DeleteObjectWorkflow extends Workflow{

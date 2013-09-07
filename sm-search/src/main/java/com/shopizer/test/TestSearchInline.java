@@ -2,9 +2,9 @@ package com.shopizer.test;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.shopizer.services.search.SearchRequest;
-import com.shopizer.services.search.SearchResponse;
-import com.shopizer.services.search.SearchService;
+import com.shopizer.search.services.SearchRequest;
+import com.shopizer.search.services.SearchResponse;
+import com.shopizer.search.services.SearchService;
 
 public class TestSearchInline {
 

@@ -8,28 +8,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import com.shopizer.search.services.IndexKeywordRequest;
-import com.shopizer.search.utils.Config;
+import com.shopizer.search.services.field.BooleanField;
+import com.shopizer.search.services.field.DoubleField;
+import com.shopizer.search.services.field.Field;
+import com.shopizer.search.services.field.IntegerField;
+import com.shopizer.search.services.field.ListField;
+import com.shopizer.search.services.field.StringField;
+import com.shopizer.search.services.impl.SearchServiceImpl;
 import com.shopizer.search.utils.CustomIndexConfiguration;
 import com.shopizer.search.utils.CustomIndexFieldConfiguration;
 import com.shopizer.search.utils.DateUtil;
 import com.shopizer.search.utils.DynamicIndexNameUtil;
-import com.shopizer.search.utils.IndexConfiguration;
 import com.shopizer.search.utils.SearchClient;
-import com.shopizer.services.search.field.BooleanField;
-import com.shopizer.services.search.field.DoubleField;
-import com.shopizer.services.search.field.Field;
-import com.shopizer.services.search.field.IntegerField;
-import com.shopizer.services.search.field.ListField;
-import com.shopizer.services.search.field.StringField;
-import com.shopizer.services.search.impl.SearchServiceImpl;
+
 
 public class KeywordIndexerImpl implements IndexWorker {
 	

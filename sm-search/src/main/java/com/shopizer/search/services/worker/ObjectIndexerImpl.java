@@ -7,11 +7,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 
-import com.shopizer.search.services.SearchService;
+import com.shopizer.search.services.impl.SearchServiceImpl;
 import com.shopizer.search.utils.FileUtil;
 import com.shopizer.search.utils.IndexConfiguration;
 import com.shopizer.search.utils.SearchClient;
-import com.shopizer.services.search.impl.SearchServiceImpl;
+
 
 public class ObjectIndexerImpl implements IndexWorker {
 	

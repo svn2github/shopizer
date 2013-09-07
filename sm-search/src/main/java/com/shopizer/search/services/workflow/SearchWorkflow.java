@@ -1,15 +1,14 @@
 package com.shopizer.search.services.workflow;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
 import com.shopizer.search.services.SearchRequest;
 import com.shopizer.search.services.SearchResponse;
-import com.shopizer.services.search.impl.SearchServiceImpl;
-import com.shopizer.services.search.worker.KeywordSearchWorker;
-import com.shopizer.services.search.worker.SearchWorker;
+import com.shopizer.search.services.worker.KeywordSearchWorker;
+import com.shopizer.search.services.worker.SearchWorker;
+
 
 @Component
 public class SearchWorkflow extends Workflow{
