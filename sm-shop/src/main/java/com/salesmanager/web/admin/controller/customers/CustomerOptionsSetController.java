@@ -134,7 +134,7 @@ public class CustomerOptionsSetController {
 		}
 		
 		
-		Set<CustomerOptionSet> optionsSet = option.getCustomerOptions();
+		List<CustomerOptionSet> optionsSet = customerOptionService.listCustomerOptionSetByStore(store, language);
 		
 		if(optionsSet!=null && optionsSet.size()>0) {
 			
@@ -186,31 +186,31 @@ public class CustomerOptionsSetController {
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			List<CustomerOption> options = null;
 				
-			options = customerOptionService.listByStore(store, language);
-			for(CustomerOption option : options) {
+			List<CustomerOptionSet> optionSet = customerOptionService.listCustomerOptionSetByStore(store, language);
+			//for(CustomerOption option : options) {
 				
 				
-				Set<CustomerOptionSet> optionSet = option.getCustomerOptions();
+				//Set<CustomerOptionSet> optionSet = option.getCustomerOptions();
 				
 				if(optionSet!=null && optionSet.size()>0) {
 					
 					for(CustomerOptionSet optSet : optionSet) {
 						
-
+						CustomerOption customerOption = optSet.getPk().getCustomerOption();
 						CustomerOptionValue customerOptionValue = optSet.getPk().getCustomerOptionValue();
 						
 						@SuppressWarnings("rawtypes")
 						Map entry = new HashMap();
 						entry.put("id", optSet.getId());
 						
-						CustomerOptionDescription description = option.getDescriptionsList().get(0);
+						CustomerOptionDescription description = customerOption.getDescriptionsList().get(0);
 						CustomerOptionValueDescription valueDescription = customerOptionValue.getDescriptionsList().get(0);
 						
-						entry.put("optionCode", option.getCode());
+						entry.put("optionCode", customerOption.getCode());
 						entry.put("optionName", description.getName());
 						entry.put("optionValueCode", customerOptionValue.getCode());
 						entry.put("optionValueName", valueDescription.getName());
-						entry.put("order", option.getSortOrder());
+						entry.put("order", customerOption.getSortOrder());
 						resp.addDataEntry(entry);
 					
 					}
@@ -218,7 +218,7 @@ public class CustomerOptionsSetController {
 				}
 				
 				
-			}
+			//}
 			
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
 			
