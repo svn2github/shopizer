@@ -473,7 +473,7 @@ function getBillingZones(countryCode){
 				<c:if test="${options!=null && fn:length(options)>0}">
 					<c:url var="customerOptions" value="/admin/customers/options/save.html"/>
 					<form:form method="POST" action="${customerOptions}" modelAttribute="optionList">
-					<c:forEach values="${options}" var="option" varStatus="status">
+					<c:forEach items="${options}" var="option" varStatus="status">
 						<div class="control-group"> 
 	                        <label><c:out value="${option.name}"/></label>
 	                        <div class="controls">		       							
@@ -492,7 +492,7 @@ function getBillingZones(countryCode){
 											</c:forEach>
 										</c:when>
 										<c:when test="${option.type=='Text'}">
-											<form:input id="${option.id}" name="options[${status.index}].id" cssClass="input-large" value="" />
+											<input type="text" id="${option.id}" name="options[${status.index}].id" class="input-large">
 										</c:when>
 										<c:when test="${option.type=='Checkbox'}">
 											<c:forEach items="${option.availableValues}" var="optionValue">
