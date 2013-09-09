@@ -1,6 +1,7 @@
 package com.salesmanager.web.entity.catalog;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * A Product is used in the web application shopping section
@@ -36,7 +37,7 @@ public class Product extends CatalogEntity implements Serializable {
 	private String image;
 	private String imageUrl;
 	
-	private Image[] images; //TODO List or Array
+	private List<Image> images;
 
 
 	
@@ -109,17 +110,18 @@ public class Product extends CatalogEntity implements Serializable {
 	public String getImageUrl() {
 		return imageUrl;
 	}
-	public void setImages(Image[] images) {
-		this.images = images;
-	}
-	public Image[] getImages() {
-		return images;
-	}
+
 	public void setLanguage(String language) {
 		this.language = language;
 	}
 	public String getLanguage() {
 		return language;
+	}
+	public void setImages(List<Image> images) {
+		this.images = images;
+	}
+	public List<Image> getImages() {
+		return images;
 	}
 
 

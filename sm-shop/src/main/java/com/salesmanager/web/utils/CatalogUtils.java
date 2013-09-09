@@ -1,5 +1,7 @@
 package com.salesmanager.web.utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -11,6 +13,7 @@ import com.salesmanager.core.business.catalog.category.model.CategoryDescription
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
+import com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.utils.ProductPriceUtils;
@@ -34,6 +37,12 @@ public class CatalogUtils {
 			proxyProduct.setName(description.getName());
 			proxyProduct.setDescription(description.getDescription());
 		}
+		
+		if(product.getManufacturer()!=null) {
+			ManufacturerDescription maufacturer = product.getManufacturer().getDescriptions().iterator().next(); 
+			proxyProduct.setManufacturer(maufacturer.getName());
+		}
+		
 		ProductImage image = product.getProductImage();
 		if(image!=null) {
 			proxyProduct.setImage(image.getProductImage());
@@ -42,20 +51,18 @@ public class CatalogUtils {
 			
 			//other images
 			Set<ProductImage> images = product.getImages();
-			if(images!=null) {
+			if(images!=null && images.size()>0) {
 				
-				Image[] imageArray = new Image[images.size()];
-				int imageCount = 0;
+				List<Image> imageList = new ArrayList<Image>();
 				for(ProductImage img : images) {
 					
 					Image prdImage = new Image();
 					prdImage.setImageName(img.getProductImage());
 					String imgPath = ImageFilePathUtils.buildProductImageFilePath(store, product.getSku(), img.getProductImage());
 					prdImage.setImageUrl(imgPath);
-					
-					imageArray[imageCount] = prdImage;
-					imageCount ++;
+					imageList.add(prdImage);
 				}
+				proxyProduct.setImages(imageList);
 			}
 		}
 		

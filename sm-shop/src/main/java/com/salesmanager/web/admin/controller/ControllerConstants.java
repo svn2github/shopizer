@@ -54,6 +54,8 @@ public interface ControllerConstants
             final String productImages="admin-products-images";
             final String customGroups="admin-products-groups";
             final String customGroupsDetails="admin-products-groups-details";
+            final String manufacturerList="admin-products-manufacturer";
+            final String manufacturerDetails="admin-products-manufacturer-details";
         }
         
         interface User{

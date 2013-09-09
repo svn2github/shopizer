@@ -125,7 +125,7 @@ public class ShoppingCategoryController {
 		
 		//TODO get products by category
 		//TODO number of items by category
-		
+
 		model.addAttribute("category", categoryProxy);
 		model.addAttribute("subCategories", subCategories);
 		

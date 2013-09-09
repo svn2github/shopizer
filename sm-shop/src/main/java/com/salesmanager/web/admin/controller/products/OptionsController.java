@@ -250,7 +250,7 @@ public class OptionsController {
 				@SuppressWarnings("rawtypes")
 				Map entry = new HashMap();
 				entry.put("optionId", option.getId());
-				
+				entry.put("display", option.isReadOnly());
 				ProductOptionDescription description = option.getDescriptions().iterator().next();
 				
 				entry.put("name", description.getName());
