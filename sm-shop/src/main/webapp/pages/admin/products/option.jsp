@@ -46,6 +46,23 @@
       				<form:errors path="*" cssClass="alert alert-error" element="div" />
 					<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
 								
+                 
+                  <div class="control-group">
+                        <label><s:message code="label.product.option.displayonly" text="Display only"/></label>
+                        <div class="controls">
+                                    <form:checkbox id="readOnly" path="readOnly"/>	
+                                    <span class="help-inline"><form:errors path="readOnly" cssClass="error" /></span>
+                        </div>
+                  </div>
+                  
+                  <div class="control-group">
+                        <label><s:message code="label.product.option.code" text="Option code"/></label>
+                        <div class="controls">
+                                    <form:input id="code" path="code"/>
+                                    <span class="help-inline"><s:message code="label.product.option.codehelp" text="Option code is required for querying products by attributes"/>&nbsp;<form:errors path="code" cssClass="error" /></span>
+                        </div>
+                  </div>
+                 
                  <c:forEach items="${option.descriptionsSettoList}" var="description" varStatus="counter">
                   
                  <div class="control-group">

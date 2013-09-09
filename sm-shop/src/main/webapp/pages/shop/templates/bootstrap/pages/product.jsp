@@ -9,33 +9,30 @@
                 
                 
                 <div class="span12">
-                    <div class="row-fluid">
+                    <!--<div class="row-fluid">
                         <div class="span12">
                             <h2 class="title">+ Women</h2>
 							<hr>
                         </div>
                     </div>
+                    -->
                     <div class="row">
 						<div class="span4">
-							<a href="http://wbpreview.com/previews/WB0M3G9S1/img/products/l0.jpg" class="thumbnail" data-fancybox-group="group1" title="Description 1"><img alt="" src="product_detail_files/m5.png"></a>												
-							<ul class="thumbnails small">								
+							<c:if test="${product.image!=null}"/>
+							<a href="<c:out value="${product.imageUrl}"/>" class="thumbnail" data-fancybox-group="group1" title="<c:out value="${product.name}"/>"><img alt="<c:out value="${product.name}"/>" src="<c:out value="${product.imageUrl}"/>"></a>												
+							<c:if test="${product.images!=null}"/>
+							<ul class="thumbnails small">
+								<c:forEach items="${product.images}" var="thumbnail">								
 								<li class="span1">
-									<a href="http://wbpreview.com/previews/WB0M3G9S1/img/products/l1.jpg" class="thumbnail" data-fancybox-group="group1" title="Description 2"><img src="product_detail_files/1.jpg" alt=""></a>
-								</li>								
-								<li class="span1">
-									<a href="http://wbpreview.com/previews/WB0M3G9S1/img/products/l2.jpg" class="thumbnail" data-fancybox-group="group1" title="Description 3"><img src="product_detail_files/2.jpg" alt=""></a>
-								</li>													
-								<li class="span1">
-									<a href="http://wbpreview.com/previews/WB0M3G9S1/img/products/l3.jpg" class="thumbnail" data-fancybox-group="group1" title="Description 4"><img src="product_detail_files/3.jpg" alt=""></a>
+									<a href="<c:out value="${thumbnail.imageUrl}"/>" class="thumbnail" data-fancybox-group="group1" title="<c:out value="${thumbnail.name}"/>"><img src="<c:out value="${thumbnail.imageUrl}"/>" alt="<c:out value="${thumbnail.name}"/>"></a>
 								</li>
-								<li class="span1">
-									<a href="http://wbpreview.com/previews/WB0M3G9S1/img/products/l1.jpg" class="thumbnail" data-fancybox-group="group1" title="Description 5"><img src="product_detail_files/1.jpg" alt=""></a>
-								</li>
+								</c:forEach>								
 							</ul>
+							</c:if>
 						</div>
 						<div class="span5">
 							<address>
-								<strong>Brand:</strong> <span>Apple</span><br>
+								<strong>Brand:</strong> <span><c:out value="${product.manufacturer}" /></span><br>
 								<strong>Product Code:</strong> <span>Product 14</span><br>
 								<strong>Reward Points:</strong> <span>0</span><br>
 								<strong>Availability:</strong> <span>Out Of Stock</span><br>								

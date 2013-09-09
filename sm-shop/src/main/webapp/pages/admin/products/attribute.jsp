@@ -134,6 +134,15 @@ function checkReadOnlyAttribute(optionId){
                                     <span class="help-inline"><form:errors path="attributeDisplayOnly" cssClass="error" /></span>
                         </div>
                   </div>
+                  
+                  <div class="control-group">
+                        <label><s:message code="label.product.productoptions.price" text="Attribute code"/></label>
+                        <div class="controls">
+                                    <form:input id="attributeCode" path="attributeCode"/>
+                                    <span class="help-inline"><form:errors path="attributeCode" cssClass="error" /></span>
+                        </div>
+                  </div>
+                  
                  <div class="control-group" id="optionValue" style="display:<c:choose><c:when test="${attribute.productOption.productOptionType=='text'}">none;</c:when><c:otherwise>block;</c:otherwise></c:choose>">
                         <label><s:message code="label.product.productoptiosvalue.title" text="Option value name"/></label>
                         <div class="controls">    
