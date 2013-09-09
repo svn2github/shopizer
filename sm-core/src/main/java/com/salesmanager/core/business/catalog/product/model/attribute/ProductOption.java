@@ -19,6 +19,8 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Index;
+
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.constants.SchemaConstant;
@@ -46,12 +48,17 @@ public class ProductOption extends SalesManagerEntity<Long, ProductOption> {
 	
 	@Transient
 	private List<ProductOptionDescription> descriptionsList = new ArrayList<ProductOptionDescription>();
-	
 
-	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
 	private MerchantStore merchantStore;
+	
+	@Column(name="PRODUCT_OPTION_READ")
+	private boolean readOnly;
+	
+	@Column(name="PRODUCT_OPTION_CODE")
+	@Index(name="prd_opt_cd")
+	private String code;
 	
 	public ProductOption() {
 	}
@@ -115,5 +122,21 @@ public class ProductOption extends SalesManagerEntity<Long, ProductOption> {
 		} 
 		return descriptionsList;
 
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
+	}
+
+	public boolean isReadOnly() {
+		return readOnly;
 	}
 }

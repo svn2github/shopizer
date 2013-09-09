@@ -39,6 +39,14 @@ public class ProductOptionServiceImpl extends
 		
 	}
 	
+	@Override
+	public List<ProductOption> listReadOnly(MerchantStore store, Language language) throws ServiceException {
+
+		return productOptionDao.getReadOnly(store, language);
+		
+		
+	}
+	
 
 	
 	@Override

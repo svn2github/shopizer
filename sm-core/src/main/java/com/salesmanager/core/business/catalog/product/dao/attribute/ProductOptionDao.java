@@ -17,4 +17,13 @@ public interface ProductOptionDao extends SalesManagerEntityDao<Long, ProductOpt
 
 	void saveOrUpdate(ProductOption entity) throws ServiceException;
 
+	/**
+	 * Get read only attributes.
+	 * @param store
+	 * @param language
+	 * @return
+	 */
+	List<ProductOption> getReadOnly(MerchantStore store,
+			Language language);
+
 }

@@ -21,6 +21,7 @@ import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
@@ -48,6 +49,7 @@ public class CustomerOption extends SalesManagerEntity<Long, CustomerOption> {
 	@NotEmpty
 	@Pattern(regexp="^[a-zA-Z0-9_]*$")
 	@Column(name="CUSTOMER_OPT_CODE")
+	@Index(name="cust_opt_cd")
 	private String code;
 	
 	@Column(name="CUSTOMER_OPT_ACTIVE")

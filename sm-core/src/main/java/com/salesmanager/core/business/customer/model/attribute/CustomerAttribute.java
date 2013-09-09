@@ -58,14 +58,7 @@ public class CustomerAttribute extends SalesManagerEntity<Long, CustomerAttribut
 	private CustomerOptionValue customerOptionValue;
 	
 	
-	/**
-	 * This transient object property
-	 * is a utility used only to submit from a free text
-	 */
-	@Transient
-	private String attributePrice = "0";
-	
-	
+
 	/**
 	 * This transient object property
 	 * is a utility used only to submit from a free text
@@ -75,20 +68,6 @@ public class CustomerAttribute extends SalesManagerEntity<Long, CustomerAttribut
 	
 
 
-	/**
-	 * This transient object property
-	 * is a utility used only to submit from a free text
-	 */
-	@Transient
-	private String attributeAdditionalWeight = "0";
-	
-	public String getAttributePrice() {
-		return attributePrice;
-	}
-
-	public void setAttributePrice(String attributePrice) {
-		this.attributePrice = attributePrice;
-	}
 
 	@ManyToOne(targetEntity = Customer.class)
 	@JoinColumn(name = "CUSTOMER_ID", nullable = false)
@@ -160,14 +139,6 @@ public class CustomerAttribute extends SalesManagerEntity<Long, CustomerAttribut
 
 	public void setAttributeSortOrder(String attributeSortOrder) {
 		this.attributeSortOrder = attributeSortOrder;
-	}
-
-	public String getAttributeAdditionalWeight() {
-		return attributeAdditionalWeight;
-	}
-
-	public void setAttributeAdditionalWeight(String attributeAdditionalWeight) {
-		this.attributeAdditionalWeight = attributeAdditionalWeight;
 	}
 
 

@@ -15,6 +15,8 @@ import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.Index;
+
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.constants.SchemaConstant;
@@ -59,9 +61,13 @@ public class ProductAttribute extends SalesManagerEntity<Long, ProductAttribute>
 	@Column(name="PRODUCT_ATTRIBUTE_REQUIRED")
 	private boolean attributeRequired=false;
 	
+	/**
+	 * a read only attribute is considered as a core attribute addition
+	 */
 	@Column(name="PRODUCT_ATTRIBUTE_FOR_DISP")
 	private boolean attributeDisplayOnly=false;
 	
+
 	@Column(name="PRODUCT_ATTRIBUTE_DISCOUNTED")
 	private boolean attributeDiscounted=false;
 	
@@ -231,6 +237,7 @@ public class ProductAttribute extends SalesManagerEntity<Long, ProductAttribute>
 	public void setProductAttributePrice(BigDecimal productAttributePrice) {
 		this.productAttributePrice = productAttributePrice;
 	}
+
 
 
 }

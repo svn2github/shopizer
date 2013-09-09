@@ -8,13 +8,14 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
 import com.salesmanager.core.business.catalog.product.model.ProductList;
+import com.salesmanager.core.business.catalog.product.model.attribute.AttributeCriteria;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -466,8 +467,25 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		}
 		
 		if(!StringUtils.isBlank(criteria.getCode())) {
+			
 			countBuilderWhere.append(" and p.sku like :sku");
 		}
+		
+		if(!CollectionUtils.isEmpty(criteria.getAttributeCriteria())) {
+		
+			countBuilderSelect.append(" INNER JOIN p.attributes pattr");
+			countBuilderSelect.append(" INNER JOIN pattr.productOption po");
+			countBuilderSelect.append(" INNER JOIN pattr.productOptionValue pov ");
+			countBuilderSelect.append(" INNER JOIN pov.descriptions povd ");
+			
+			for(AttributeCriteria attributeCriteria : criteria.getAttributeCriteria()) {
+				countBuilderWhere.append(" and po.code =:").append(attributeCriteria.getAttributeCode());
+				countBuilderWhere.append(" and povd.description like:").append("v-").append(attributeCriteria.getAttributeCode());
+			}
+			countBuilderWhere.append(" and povd.language.id=:lang");
+
+		}
+		
 		
 		if(criteria.getAvailable()!=null) {
 			if(criteria.getAvailable().booleanValue()) {
@@ -495,6 +513,13 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 			countQ.setParameter("sku", "%" + criteria.getCode() + "%");
 		}
 		
+		if(!CollectionUtils.isEmpty(criteria.getAttributeCriteria())) {
+			for(AttributeCriteria attributeCriteria : criteria.getAttributeCriteria()) {
+				countQ.setParameter(attributeCriteria.getAttributeCode(),attributeCriteria.getAttributeCode());
+				countQ.setParameter("v-" + attributeCriteria.getAttributeCode(),attributeCriteria.getAttributeValue());
+			}
+		}
+		
 		if(!StringUtils.isBlank(criteria.getProductName())) {
 			countQ.setParameter("nm", "%" + criteria.getProductName() + "%");
 			countQ.setParameter("lang", language.getId());
@@ -518,7 +543,6 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		qs.append("left join fetch p.categories categs ");
 		
 
-		
 		//images
 		qs.append("left join fetch p.images images ");
 		
@@ -536,7 +560,6 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		}
 		
 
-		
 		if(criteria.getAvailable()!=null) {
 			if(criteria.getAvailable().booleanValue()) {
 				qs.append(" and p.available=true and p.dateAvailable<=:dt");
@@ -551,6 +574,18 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		
 		if(!StringUtils.isBlank(criteria.getCode())) {
 			qs.append(" and p.sku like :sku");
+		}
+		
+		if(!CollectionUtils.isEmpty(criteria.getAttributeCriteria())) {
+			qs.append(" inner join p.attributes pattr");
+			qs.append(" inner join pattr.productOption po");
+			qs.append(" inner join pattr.productOptionValue pov ");
+			qs.append(" inner join pov.descriptions povd ");
+			for(AttributeCriteria attributeCriteria : criteria.getAttributeCriteria()) {
+				qs.append(" and po.code =:").append(attributeCriteria.getAttributeCode());
+				qs.append(" and povd.description like:").append("v-").append(attributeCriteria.getAttributeCode());
+			}
+
 		}
 
 
@@ -573,6 +608,13 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		
 		if(!StringUtils.isBlank(criteria.getCode())) {
 			q.setParameter("sku", "%" + criteria.getCode() + "%");
+		}
+		
+		if(!CollectionUtils.isEmpty(criteria.getAttributeCriteria())) {
+			for(AttributeCriteria attributeCriteria : criteria.getAttributeCriteria()) {
+				q.setParameter(attributeCriteria.getAttributeCode(),attributeCriteria.getAttributeCode());
+				q.setParameter("v-" + attributeCriteria.getAttributeCode(),attributeCriteria.getAttributeValue());
+			}
 		}
 		
 		if(!StringUtils.isBlank(criteria.getProductName())) {

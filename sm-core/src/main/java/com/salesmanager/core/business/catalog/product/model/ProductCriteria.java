@@ -3,12 +3,14 @@ package com.salesmanager.core.business.catalog.product.model;
 import java.util.List;
 import java.util.Set;
 
+import com.salesmanager.core.business.catalog.product.model.attribute.AttributeCriteria;
 import com.salesmanager.core.business.common.model.Criteria;
 
 public class ProductCriteria extends Criteria {
 	
 	
 	private String productName;
+	private List<AttributeCriteria> attributeCriteria;
 
 	
 	private Boolean available = null;
@@ -49,6 +51,15 @@ public class ProductCriteria extends Criteria {
 	public void setAvailable(Boolean available) {
 		this.available = available;
 	}
+
+	public void setAttributeCriteria(List<AttributeCriteria> attributeCriteria) {
+		this.attributeCriteria = attributeCriteria;
+	}
+
+	public List<AttributeCriteria> getAttributeCriteria() {
+		return attributeCriteria;
+	}
+
 
 
 }

@@ -18,6 +18,10 @@ public interface ProductOptionService extends SalesManagerEntityService<Long, Pr
 			Language language) throws ServiceException;
 
 	void saveOrUpdate(ProductOption entity) throws ServiceException;
+
+
+	List<ProductOption> listReadOnly(MerchantStore store, Language language)
+			throws ServiceException;
 	
 
 

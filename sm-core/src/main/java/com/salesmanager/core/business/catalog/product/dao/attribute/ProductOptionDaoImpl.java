@@ -73,6 +73,26 @@ public class ProductOptionDaoImpl extends SalesManagerEntityDaoImpl<Long, Produc
 	}
 	
 	@Override
+	public List<ProductOption> getReadOnly(MerchantStore store, Language language) {
+		QProductOption qProductOption = QProductOption.productOption;
+		QProductOptionDescription qDescription = QProductOptionDescription.productOptionDescription;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qProductOption)
+			.leftJoin(qProductOption.descriptions, qDescription).fetch()
+			.leftJoin(qProductOption.merchantStore).fetch()
+			.where(qProductOption.readOnly.eq(true)
+			.and(qDescription.language.id.eq(language.getId()))
+			.and(qProductOption.merchantStore.id.eq(store.getId())));
+		
+
+		
+		List<ProductOption> options = query.list(qProductOption);
+		return options;
+	}
+	
+	@Override
 	public void saveOrUpdate(ProductOption entity) throws ServiceException {
 		
 		
