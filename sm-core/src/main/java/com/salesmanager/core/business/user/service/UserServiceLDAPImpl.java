@@ -5,6 +5,7 @@ import java.util.List;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.user.model.User;
+import com.salesmanager.core.modules.email.Email;
 
 public class UserServiceLDAPImpl implements UserService {
 
@@ -50,11 +51,7 @@ public class UserServiceLDAPImpl implements UserService {
 		return null;
 	}
 
-	@Override
-	public User getEntity(Class<? extends User> clazz, Long id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	@Override
 	public Long count() {
@@ -97,6 +94,19 @@ public class UserServiceLDAPImpl implements UserService {
 			throws ServiceException {
 		// TODO Auto-generated method stub
 		throw new ServiceException("Not implemented");
+	}
+
+	@Override
+	public User getEntity(Class<? extends User> clazz, Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void createUser(User user, MerchantStore store, Email email)
+			throws ServiceException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
