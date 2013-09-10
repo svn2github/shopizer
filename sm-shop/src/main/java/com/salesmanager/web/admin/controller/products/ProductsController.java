@@ -1,11 +1,10 @@
 package com.salesmanager.web.admin.controller.products;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -131,7 +130,7 @@ public class ProductsController {
 					
 					List<Category> categories = categoryService.listByLineage(store, lineage.toString());
 					
-					Set<Long> categoryIds = new HashSet<Long>();
+					List<Long> categoryIds = new ArrayList<Long>();
 					
 					for(Category cat : categories) {
 						categoryIds.add(cat.getId());
