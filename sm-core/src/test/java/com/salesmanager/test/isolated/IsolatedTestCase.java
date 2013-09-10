@@ -3,7 +3,6 @@ package com.salesmanager.test.isolated;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -16,7 +15,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.junit.Test;
@@ -51,7 +49,6 @@ import com.salesmanager.core.business.catalog.product.service.image.ProductImage
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
 import com.salesmanager.core.business.catalog.product.service.price.ProductPriceService;
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
-
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -189,7 +186,7 @@ public class IsolatedTestCase
         criteria.setStartIndex( 0 );
         criteria.setMaxCount( 75 );
 
-        final Set<Long> categoryIds = new HashSet<Long>();
+        final List<Long> categoryIds = new ArrayList<Long>();
         categoryIds.add( 1L );
         categoryIds.add( 2L );
         categoryIds.add( 3L );
