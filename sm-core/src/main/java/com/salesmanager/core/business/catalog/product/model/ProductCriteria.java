@@ -1,7 +1,6 @@
 package com.salesmanager.core.business.catalog.product.model;
 
 import java.util.List;
-import java.util.Set;
 
 import com.salesmanager.core.business.catalog.product.model.attribute.AttributeCriteria;
 import com.salesmanager.core.business.common.model.Criteria;
@@ -15,7 +14,7 @@ public class ProductCriteria extends Criteria {
 	
 	private Boolean available = null;
 	
-	private Set<Long> categoryIds;
+	private List<Long> categoryIds;
 	
 	private List<String> availabilities;
 
@@ -28,11 +27,11 @@ public class ProductCriteria extends Criteria {
 	}
 
 
-	public Set<Long> getCategoryIds() {
+	public List<Long> getCategoryIds() {
 		return categoryIds;
 	}
 
-	public void setCategoryIds(Set<Long> categoryIds) {
+	public void setCategoryIds(List<Long> categoryIds) {
 		this.categoryIds = categoryIds;
 	}
 
