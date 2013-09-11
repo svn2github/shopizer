@@ -11,11 +11,13 @@ import org.springframework.stereotype.Component;
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.constants.Constants;
 import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.web.entity.catalog.Image;
 
@@ -31,7 +33,7 @@ public class CatalogUtils {
 		ProductDescription description = product.getProductDescription();
 		com.salesmanager.web.entity.catalog.Product proxyProduct = new com.salesmanager.web.entity.catalog.Product();
 		
-		proxyProduct.setId(String.valueOf(product.getId()));
+		proxyProduct.setId(product.getId());
 		if(description!=null) {
 			proxyProduct.setFriendlyUrl(description.getSeUrl());
 			proxyProduct.setName(description.getName());
@@ -65,8 +67,7 @@ public class CatalogUtils {
 				proxyProduct.setImages(imageList);
 			}
 		}
-		
-		proxyProduct.setId(String.valueOf(product.getId()));
+
 		proxyProduct.setSku(product.getSku());
 		proxyProduct.setLanguage(locale.getLanguage());
 
@@ -76,6 +77,14 @@ public class CatalogUtils {
 		if(price.isDiscounted()) {
 			proxyProduct.setDiscounted(true);
 			proxyProduct.setOriginalProductPrice(productPriceUtils.getStoreFormatedAmountWithCurrency(store,price.getOriginalPrice()));
+		}
+		
+		//availability
+		for(ProductAvailability availability : product.getAvailabilities()) {
+			if(availability.getRegion().equals(Constants.ALL_REGIONS)) {//TODO REL 2.1 accept a region
+				proxyProduct.setQuantity(availability.getProductQuantity());
+				proxyProduct.setQuantityOrderMaximum(availability.getProductQuantityOrderMax());
+			}
 		}
 		
 		
@@ -114,7 +123,8 @@ public class CatalogUtils {
 		}
 		
 		categoryProxy.setCode(category.getCode());
-		categoryProxy.setId(String.valueOf(category.getId()));
+		categoryProxy.setId(category.getId());
+		categoryProxy.setLanguage(locale.getLanguage());
 		
 		return categoryProxy;
 	}

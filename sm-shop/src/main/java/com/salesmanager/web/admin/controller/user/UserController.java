@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,13 +28,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
+import com.salesmanager.core.business.system.service.EmailService;
 import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.business.user.model.GroupType;
 import com.salesmanager.core.business.user.model.User;
@@ -51,16 +50,6 @@ import com.salesmanager.web.admin.security.SecurityQuestion;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LabelUtils;
 import com.salesmanager.web.utils.UserUtils;
-
-
-
-import java.io.*;
-import java.util.*;
-import javax.mail.*;
-import javax.mail.internet.*;
-import javax.activation.*;
-import javax.servlet.http.*;
-import javax.servlet.*;
 
 @Controller
 public class UserController {
@@ -78,6 +67,9 @@ public class UserController {
 	
 	@Autowired
 	CountryService countryService;
+	
+	@Autowired
+	EmailService emailService;
 	
 	@Autowired
 	MerchantStoreService merchantStoreService;
@@ -579,7 +571,8 @@ public class UserController {
 			String encoded = passwordEncoder.encodePassword(user.getAdminPassword(),null);
 			user.setAdminPassword(encoded);
 		}
-		//save or update user
+		
+		
 		if(user.getId().longValue()==0) {
 			
 			Map<String, String> templateTokens = new HashMap<String, String>();
@@ -601,16 +594,20 @@ public class UserController {
 			
 			
 			Email email = new Email();
-			email.setFrom("Shopizer");
-			email.setFromEmail("admin@shopizer.com");
+			email.setFrom("Shopizer");//store name
+			email.setFromEmail("admin@shopizer.com");//store email
 			email.setSubject("HTML Test Mail");
 			email.setTo("carl@csticonsulting.com");
 			email.setTemplateName("email_template_new_user.ftl");
 			email.setTemplateTokens(templateTokens);
 			
+			emailService.sendHtmlEmail(store, email);
 			
+			//save or update user
+			userService.saveOrUpdate(user);
 			
 		} else {
+			//save or update user
 			userService.saveOrUpdate(user);
 		}
 

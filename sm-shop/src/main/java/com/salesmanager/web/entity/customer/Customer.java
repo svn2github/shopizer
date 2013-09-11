@@ -2,7 +2,9 @@ package com.salesmanager.web.entity.customer;
 
 import java.io.Serializable;
 
-public class Customer implements Serializable {
+import com.salesmanager.web.entity.ShopEntity;
+
+public class Customer extends ShopEntity implements Serializable {
 	
 	
 	/**

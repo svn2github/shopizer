@@ -4,14 +4,14 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
+import com.salesmanager.web.entity.ShopEntity;
 
-public class CustomerOption implements Serializable {
+public class CustomerOption extends ShopEntity implements Serializable {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private long id;
 	private String type;
 	private String name;
 	
@@ -20,13 +20,6 @@ public class CustomerOption implements Serializable {
 	
 	private List<CustomerOptionValue> availableValues;
 
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
 
 	public String getType() {
 		return type;
@@ -60,13 +53,7 @@ public class CustomerOption implements Serializable {
 		this.availableValues = availableValues;
 	}
 
-	public void setSelectedValue(CustomerOptionValue selectedValue) {
-		this.selectedValue = selectedValue;
-	}
 
-	public CustomerOptionValue getSelectedValue() {
-		return selectedValue;
-	}
 
 
 

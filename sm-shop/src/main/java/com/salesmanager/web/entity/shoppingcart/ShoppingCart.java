@@ -3,13 +3,14 @@ package com.salesmanager.web.entity.shoppingcart;
 import java.io.Serializable;
 import java.util.List;
 
-public class ShoppingCart implements Serializable {
+import com.salesmanager.web.entity.ShopEntity;
+
+public class ShoppingCart extends ShopEntity implements Serializable {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private long id;
 	private String message;
 	private String code;
 	private int quantity;
@@ -48,12 +49,7 @@ public class ShoppingCart implements Serializable {
 	public void setShoppingCartItems(List<ShoppingCartItem> shoppingCartItems) {
 		this.shoppingCartItems = shoppingCartItems;
 	}
-	public void setId(long id) {
-		this.id = id;
-	}
-	public long getId() {
-		return id;
-	}
+
 
 
 }

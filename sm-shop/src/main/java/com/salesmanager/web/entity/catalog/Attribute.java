@@ -3,7 +3,9 @@ package com.salesmanager.web.entity.catalog;
 import java.io.Serializable;
 import java.util.List;
 
-public class Attribute implements Serializable {
+import com.salesmanager.web.entity.ShopEntity;
+
+public class Attribute extends ShopEntity implements Serializable {
 	
 	/**
 	 * 
@@ -11,6 +13,8 @@ public class Attribute implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String name = null;
 	private String type = null;
+	private String code = null;
+	private List<AttributeValue> values = null;
 	public String getName() {
 		return name;
 	}
@@ -24,6 +28,23 @@ public class Attribute implements Serializable {
 		this.type = type;
 	}
 	
-	private List<AttributeValue> values = null;
+
+
+	public void setValues(List<AttributeValue> values) {
+		this.values = values;
+	}
+	public List<AttributeValue> getValues() {
+		return values;
+	}
+	public void setCode(String code) {
+		this.code = code;
+	}
+	public String getCode() {
+		return code;
+	}
+
+
+
+	
 
 }

@@ -2,23 +2,19 @@ package com.salesmanager.web.entity.catalog;
 
 import java.io.Serializable;
 
-public class AttributeValue implements Serializable {
+import com.salesmanager.web.entity.ShopEntity;
+
+public class AttributeValue extends ShopEntity implements Serializable {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Long id;
 	private String name = null;
 	private boolean defaultAttribute;
 	private String image;
 	private String price;
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
+
 	public String getName() {
 		return name;
 	}

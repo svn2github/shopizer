@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * A Product is used in the web application shopping section
  * This object is a simplification of com.salesmanager.core.business.catalog.product.model.Product
- * @author casams1
+ * @author Carl Samson
  *
  */
 public class Product extends CatalogEntity implements Serializable {
@@ -25,8 +25,9 @@ public class Product extends CatalogEntity implements Serializable {
 	private boolean productVirtual;
 	private String type;
 	private String manufacturer;
-	private String id;
-	private String language;
+	private int quantity = 0;
+	private int quantityOrderMaximum =-1;//default unlimited
+
 	
 	private boolean discounted = false;
 	/**
@@ -98,12 +99,7 @@ public class Product extends CatalogEntity implements Serializable {
 	public boolean isDiscounted() {
 		return discounted;
 	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public String getId() {
-		return id;
-	}
+
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
 	}
@@ -111,18 +107,26 @@ public class Product extends CatalogEntity implements Serializable {
 		return imageUrl;
 	}
 
-	public void setLanguage(String language) {
-		this.language = language;
-	}
-	public String getLanguage() {
-		return language;
-	}
 	public void setImages(List<Image> images) {
 		this.images = images;
 	}
 	public List<Image> getImages() {
 		return images;
 	}
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+	public int getQuantity() {
+		return quantity;
+	}
+	public void setQuantityOrderMaximum(int quantityOrderMaximum) {
+		this.quantityOrderMaximum = quantityOrderMaximum;
+	}
+	public int getQuantityOrderMaximum() {
+		return quantityOrderMaximum;
+	}
+
+
 
 
 

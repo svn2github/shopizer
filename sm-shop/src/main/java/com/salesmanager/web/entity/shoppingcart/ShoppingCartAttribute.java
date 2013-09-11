@@ -2,14 +2,15 @@ package com.salesmanager.web.entity.shoppingcart;
 
 import java.io.Serializable;
 
-public class ShoppingCartAttribute implements Serializable {
+import com.salesmanager.web.entity.ShopEntity;
+
+public class ShoppingCartAttribute extends ShopEntity implements Serializable {
 
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private long id;//database id
 	private long optionId;
 	private long optionValueId;
 	private long attributeId;
@@ -45,10 +46,5 @@ public class ShoppingCartAttribute implements Serializable {
 	public void setAttributeId(long attributeId) {
 		this.attributeId = attributeId;
 	}
-	public void setId(long id) {
-		this.id = id;
-	}
-	public long getId() {
-		return id;
-	}
+
 }

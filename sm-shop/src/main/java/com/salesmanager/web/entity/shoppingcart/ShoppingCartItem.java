@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class ShoppingCartItem implements Serializable {
+import com.salesmanager.web.entity.ShopEntity;
+
+public class ShoppingCartItem extends ShopEntity implements Serializable {
 	
 	/**
 	 * 
@@ -14,7 +16,6 @@ public class ShoppingCartItem implements Serializable {
 	private String price;
 	private BigDecimal productPrice;
 	private int quantity;
-	private long id;
 	private long productId;
 	private String productCode;
 	private String code;//shopping cart code
@@ -40,12 +41,7 @@ public class ShoppingCartItem implements Serializable {
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
-	public long getId() {
-		return id;
-	}
-	public void setId(long id) {
-		this.id = id;
-	}
+
 
 	public String getCode() {
 		return code;

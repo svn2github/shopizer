@@ -16,7 +16,6 @@ public class Category extends CatalogEntity implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String id;
 	private String code;
 	private int order;
 	private int depth;
@@ -41,12 +40,6 @@ public class Category extends CatalogEntity implements Serializable {
 		this.depth = depth;
 	}
 
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
 	
 
 }
