@@ -1,7 +1,6 @@
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=$CHARSET" />
-<base href="$BASE_HREF" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
 <style type="text/css">
 body {background-color:#ffffff; color:#000000; font-family:Verdana, Arial, Helvetica, sans-serif; text-align:center;}
