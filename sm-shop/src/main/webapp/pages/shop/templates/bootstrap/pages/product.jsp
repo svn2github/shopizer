@@ -29,21 +29,32 @@
 								</c:forEach>								
 							</ul>
 							</c:if>
+							</c:if>
 						</div>
 						<div class="span5">
 							<address>
-								<strong>Brand:</strong> <span><c:out value="${product.manufacturer}" /></span><br>
-								<strong>Product Code:</strong> <span>Product 14</span><br>
-								<strong>Reward Points:</strong> <span>0</span><br>
-								<strong>Availability:</strong> <span>Out Of Stock</span><br>								
+								<strong><s:message code="label.product.brand" text="Brand"/></strong> <span><c:out value="${product.manufacturer}" /></span><br>
+								<strong><s:message code="label.product.code" text="Product code"/></strong> <span>${product.sku}</span><br>
+								<strong><s:message code="label.product.available" text="Availability"/></strong> <span><c:choose><c:when test="${product.quantity>0}"/>${product.quantity}</c:when><c:otherwise></c:otherwise></c:choose>Out Of Stock</span><br>								
 							</address>
-							<h4><strong>Price: $587.50</strong></h4>
+							<h4>
+									<c:choose>
+										<c:when test="${product.discounted}">
+												<del><c:out value="${product.originalProductPrice}" /></del>&nbsp;<span class="specialPrice"><c:out value="${product.productPrice}" /></span>
+										</c:when>
+										<c:otherwise>
+												<c:out value="${product.productPrice}" />
+										</c:otherwise>
+									</c:choose>
+							</h4>
 						</div>
 						<div class="span5">
 							<form class="form-inline">								
-								<label>Qty:</label>
+								<c:if test="${product.quantityOrderMaximum==-1 || product.quantityOrderMaximum>1}" />
+								<label><s:message code="label.quantity" text="Quantity"/></label>
 								<input class="span1" placeholder="1" type="text">
-								<button class="btn" type="submit">Add to cart</button>
+								</c:if>
+								<button class="btn" type="submit"><s:message code="button.label.addToCart" text="Add to cart"/></button>
 							</form>
 						</div>
 						<div class="span5">
