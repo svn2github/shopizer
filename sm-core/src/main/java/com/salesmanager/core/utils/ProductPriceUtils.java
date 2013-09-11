@@ -442,7 +442,7 @@ public class ProductPriceUtils {
 		BigDecimal oPrice = new BigDecimal(0);
 		Set<ProductAvailability> availabilities = product.getAvailabilities();
 		for(ProductAvailability availability : availabilities) {
-			if(availability.getRegion().equals(Constants.ALL_REGIONS)) {
+			if(availability.getRegion().equals(Constants.ALL_REGIONS)) {//TODO REL 2.1 accept a region
 				Set<ProductPrice> prices = availability.getPrices();
 				for(ProductPrice price : prices) {
 					
