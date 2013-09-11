@@ -23,14 +23,6 @@ public interface UserService extends SalesManagerEntityService<Long, User> {
 
 	List<User> listByStore(MerchantStore store) throws ServiceException;
 
-	/**
-	 * Send an email to the created User
-	 * @param user
-	 * @param store
-	 * @param email
-	 * @throws ServiceException
-	 */
-	void createUser(User user, MerchantStore store, Email email)
-			throws ServiceException;
+
 
 }

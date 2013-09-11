@@ -61,18 +61,7 @@ public class UserServiceImpl extends SalesManagerEntityServiceImpl<Long, User>
 			throw new ServiceException(e);
 		}
 	}
-	
-	@Override
-	public void createUser(User user, MerchantStore store, Email email) throws ServiceException {
-		
 
-		try {
-			userDao.save(user);
-			emailService.sendHtmlEmail(store, email);
-		} catch (Exception e) {
-			throw new ServiceException(e);
-		}
-	}
 	
 	@Override
 	public void saveOrUpdate(User user) throws ServiceException {
