@@ -17,11 +17,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionDescription;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationship;
@@ -30,9 +28,9 @@ import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.relationship.ProductRelationshipService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.catalog.Attribute;
+import com.salesmanager.web.entity.catalog.AttributeValue;
 import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.utils.CatalogUtils;
@@ -110,6 +108,7 @@ public class ShopProductController {
 					attr = readOnlyAttributes.get(attribute.getProductOption().getId());
 					if(attr==null) {
 						attr = createAttribute(attribute, language);
+						readOnlyAttributes.put(attribute.getProductOption().getId(), attr);
 					}
 					readOnlyAttributes.put(attribute.getProductOption().getId(), attr);
 				} else {
@@ -119,9 +118,22 @@ public class ShopProductController {
 					attr = selectableOptions.get(attribute.getProductOption().getId());
 					if(attr==null) {
 						attr = createAttribute(attribute, language);
+						readOnlyAttributes.put(attribute.getProductOption().getId(), attr);
 					}
 					readOnlyAttributes.put(attribute.getProductOption().getId(), attr);
 				}
+				ProductOptionValue optionValue = attribute.getProductOptionValue();
+				AttributeValue attrValue = new AttributeValue();
+				attrValue.setDefaultAttribute(attribute.getAttributeDefault());
+				attrValue.setId(optionValue.getId());
+				attrValue.setLanguage(language.getCode());
+				attrValue.setName(optionValue.getDescriptionsList().get(0).getDescription());
+				List<AttributeValue> attrs = attr.getValues();
+				if(attrs==null) {
+					attrs = new ArrayList<AttributeValue>();
+					attr.setValues(attrs);
+				}
+				attrs.add(attrValue);
 				
 			}
 		}
