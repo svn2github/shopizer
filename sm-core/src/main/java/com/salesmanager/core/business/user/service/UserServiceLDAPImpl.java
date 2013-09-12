@@ -102,11 +102,5 @@ public class UserServiceLDAPImpl implements UserService {
 		return null;
 	}
 
-	@Override
-	public void createUser(User user, MerchantStore store, Email email)
-			throws ServiceException {
-		// TODO Auto-generated method stub
-		
-	}
 
 }
