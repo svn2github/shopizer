@@ -48,10 +48,7 @@ public class ShopProductController {
 	@Autowired
 	private ProductRelationshipService productRelationshipService;
 	
-	@Autowired
-	private CategoryService categoryService;
-	
-	
+
 
 	@RequestMapping("/shop/product/{friendlyUrl}.html")
 	public String displayProduct(@PathVariable final String friendlyUrl, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
@@ -137,79 +134,12 @@ public class ShopProductController {
 				
 			}
 		}
-		
-		//temporary working objects
-		//Map<Long,>
-		
-		//Attributes
-/*		if (attributes != null && attributes.size() > 0) {
-			// extract read only
-			long lastOptionId = -1;
-			long lastSpecificationOptionId = -1;
-			for (ProductAttribute attribute : attributes) {
-				ProductOption productOption = attribute.getProductOption();
-				ProductOptionValue productOptionValue = attribute.getProductOptionValue();
-				if (productOption != null) {
-					if (attribute.getAttributeDisplayOnly()) {
-						
-						
 
-						if (lastSpecificationOptionId == -1) {
-							lastSpecificationOptionId = po.getProductOptionId();
-							pod = new ProductOptionDescriptor();
-							pod.setOptionType(po.getProductOptionType());
-							pod.setName(po.getName());
-							specifications.add(pod);
-						} else {
-							if (pa.getOptionId() != lastOptionId) {
-								lastSpecificationOptionId = po
-										.getProductOptionId();
-								pod = new ProductOptionDescriptor();
-								pod.setOptionType(po.getProductOptionType());
-								pod.setName(po.getName());
-								specifications.add(pod);
-							}
-						}
-					} else {// option
-						if (lastOptionId == -1) {
-							lastOptionId = po.getProductOptionId();
-							pod = new ProductOptionDescriptor();
-							pod.setOptionType(po.getProductOptionType());
-							pod.setName(po.getName());
-							options.add(pod);
-							if (pa.isAttributeDefault()) {
-								defaultOptions.add(pa);
-							}
-						} else {
-							if (pa.getOptionId() != lastOptionId) {
-								lastOptionId = po.getProductOptionId();
-								pod = new ProductOptionDescriptor();
-								pod.setOptionType(po.getProductOptionType());
-								pod.setName(po.getName());
-								options.add(pod);
-								if (pa.isAttributeDefault()) {
-									defaultOptions.add(pa);
-								}
-							}
-						}
-					}
-					pod.addValue(pa);
-					pod.setOptionId(pa.getOptionId());
-					if (pa.isAttributeDefault()) {
-						pod.setDefaultOption(pa.getProductAttributeId());
-					}
-				}
-			}
-		}
-		model.addObject("specifications", specifications);
-		model.addObject("options", options);*/
-		
-		
-		
 		
 		//TODO reviews
 		
-		
+		model.addAttribute("attributes", readOnlyAttributes);
+		model.addAttribute("options", selectableOptions);
 			
 		model.addAttribute("product", product);
 
