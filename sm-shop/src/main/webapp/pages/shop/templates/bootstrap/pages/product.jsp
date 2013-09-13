@@ -8,18 +8,11 @@
 
                 
                 
-                <div class="span12">
-                    <!--<div class="row-fluid">
-                        <div class="span12">
-                            <h2 class="title">+ Women</h2>
-							<hr>
-                        </div>
-                    </div>
-                    -->
+                <div class="span12" itemscope itemtype="http://data-vocabulary.org/Product">
                     <div class="row">
 						<div class="span4">
 							<c:if test="${product.image!=null}"/>
-							<a href="<c:out value="${product.imageUrl}"/>" class="thumbnail" data-fancybox-group="group1" title="<c:out value="${product.name}"/>"><img alt="<c:out value="${product.name}"/>" src="<c:out value="${product.imageUrl}"/>"></a>												
+							<a href="<c:out value="${product.imageUrl}"/>" class="thumbnail" data-fancybox-group="group1" title="<c:out value="${product.name}"/>"><img itemprop="image" alt="<c:out value="${product.name}"/>" src="<c:out value="${product.imageUrl}"/>"></a>												
 							<c:if test="${product.images!=null}"/>
 							<ul class="thumbnails small">
 								<c:forEach items="${product.images}" var="thumbnail">								
@@ -31,33 +24,78 @@
 							</c:if>
 							</c:if>
 						</div>
+						<!-- TDOD Google rich snippets (http://blog.hubspot.com/power-google-rich-snippets-ecommerce-seo-ht) -->
 						<div class="span5">
 							<address>
-								<strong><s:message code="label.product.brand" text="Brand"/></strong> <span><c:out value="${product.manufacturer}" /></span><br>
-								<strong><s:message code="label.product.code" text="Product code"/></strong> <span>${product.sku}</span><br>
-								<strong><s:message code="label.product.available" text="Availability"/></strong> <span><c:choose><c:when test="${product.quantity>0}"/>${product.quantity}</c:when><c:otherwise></c:otherwise></c:choose>Out Of Stock</span><br>								
+								<strong><s:message code="label.product.brand" text="Brand"/></strong> <span itemprop="brand"><c:out value="${product.manufacturer}" /></span><br>
+								<strong><s:message code="label.product.code" text="Product code"/></strong> <span itemprop="identifier" content="mpn:${product.sku}">${product.sku}</span><br>								
 							</address>
+							<span itemprop="offerDetails" itemscope itemtype="http://data-vocabulary.org/Offer">
+							<span itemprop="seller">${requestScope.MERCHANT_STORE.name}</span>
+							<meta itemprop="currency" content="<c:out value="${requestScope.MERCHANT_STORE.currency.code}" />" />
 							<h4>
 									<c:choose>
 										<c:when test="${product.discounted}">
-												<del><c:out value="${product.originalProductPrice}" /></del>&nbsp;<span class="specialPrice"><c:out value="${product.productPrice}" /></span>
+												<del><c:out value="${product.originalProductPrice}" /></del>&nbsp;<span class="specialPrice"><span itemprop="price"><c:out value="${product.productPrice}" /></span></span>
 										</c:when>
 										<c:otherwise>
-												<c:out value="${product.productPrice}" />
+												<span itemprop="price"><c:out value="${product.productPrice}" /></span>
 										</c:otherwise>
 									</c:choose>
+									
 							</h4>
+							<address>
+								<strong><s:message code="label.product.available" text="Availability"/></strong> <span><c:choose><c:when test="${product.quantity>0}"/><span itemprop="availability" content="in_stock">${product.quantity}</span></c:when><c:otherwise><span itemprop="availability" content="out_of_stock">TODO - Out Of Stock</c:otherwise></c:choose></span><br>								
+							</address>
+							</span>
 						</div>
 						<div class="span5">
-							<form class="form-inline">								
+							<form id="input-<c:out value="${product.id}" />" class="form-inline">
+								<!-- Options block -->
+								<c:if test="${options!=null}">
+									<c:forEach items="${options.values}" var="option">
+										<div class="control-group"> 
+	                        				<label><c:out value="${option.name}"/></label>
+	                        				<div class="controls">		       							
+											<c:choose>
+												<c:when test="${option.type=='Select'}">
+													<select id="${option.id}" name="options[${status.index}].id" class="attribute">
+													<c:forEach items="${option.option.id}" var="optionValue">
+														<option value="${optionValue.id}" <c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> SELECTED</c:if>>${optionValue.name}</option>
+													</c:forEach>
+													</select>
+												</c:when>
+												<c:when test="${option.type=='Radio'}">
+													<c:forEach items="${option.availableValues}" var="optionValue">
+														<input type="radio" class="attribute" id="<c:out value="${optionValue.id}"/>" name="options[${status.index}].id"/>" value="<c:out value="${optionValue.id}"/>"<c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> checked="checked" </c:if> />
+														<c:out value="${optionValue.name}"/>
+													</c:forEach>
+												</c:when>
+												<c:when test="${option.type=='Text'}">
+													<input type="text" class="attribute" id="${option.id}" name="options[${status.index}].id" class="input-large">
+												</c:when>
+												<c:when test="${option.type=='Checkbox'}">
+													<c:forEach items="${option.availableValues}" var="optionValue">
+														<input type="checkbox" class="attribute" id="<c:out value="${optionValue.id}"/>" name="options[${status.index}].id" value="<c:out value="${optionValue.id}"/>"<c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> checked="checked" </c:if>  />
+														<c:out value="${optionValue.name}"/>
+													</c:forEach>
+												</c:when>										
+											</c:choose>				       							
+		                                 	<span class="help-inline"></span>
+	                        				</div>
+	                    			</div>
+									</c:forEach>
+								</c:if>
+						
 								<c:if test="${product.quantityOrderMaximum==-1 || product.quantityOrderMaximum>1}" />
 								<label><s:message code="label.quantity" text="Quantity"/></label>
-								<input class="span1" placeholder="1" type="text">
+								<input quantity-productId-<c:out value="${product.id}" />" class="span1" placeholder="1" type="text">
 								</c:if>
 								<button class="btn" type="submit"><s:message code="button.label.addToCart" text="Add to cart"/></button>
 							</form>
 						</div>
 						<div class="span5">
+							<!-- facebook like, twitter, google + and pinterest -->
 							<ul class="social">
 								<li>									
 									<div class="fb-like" send="false" layout="button_count" data-href="example.org"></div>
@@ -74,18 +112,12 @@
                         <div class="span9">
 							<ul class="nav nav-tabs" id="myTab">
 								<li class="active"><a href="#home">Description</a></li>
-								<li><a href="#profile">Additional Information</a></li>
+								<li><a href="#profile">Additional Information</a></li><!-- TODO read only attributes -->
 							</ul>							 
 							<div class="tab-content">
-								<div class="tab-pane active" id="home">Sed ut perspiciatis unde 
-omnis iste natus error sit voluptatem accusantium doloremque laudantium,
- totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi
- architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam 
-voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia 
-consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. 
-Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, 
-consectetur, adipisci velit, sed quia non numquam eius modi tempora 
-incidunt ut labore et dolore magnam aliquam quaerat voluptatem</div>
+								<div class="tab-pane active" id="home">
+									<c:out value="${product.description}"/>
+								</div>
 								<div class="tab-pane" id="profile">
 									<table class="table table-striped shop_attributes">	
 										<tbody>
