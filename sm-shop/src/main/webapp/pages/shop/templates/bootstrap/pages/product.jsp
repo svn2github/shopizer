@@ -31,7 +31,7 @@
 								<strong><s:message code="label.product.code" text="Product code"/></strong> <span itemprop="identifier" content="mpn:${product.sku}">${product.sku}</span><br>								
 							</address>
 							<span itemprop="offerDetails" itemscope itemtype="http://data-vocabulary.org/Offer">
-							<span itemprop="seller">${requestScope.MERCHANT_STORE.name}</span>
+							<meta itemprop="seller" content="${requestScope.MERCHANT_STORE.name}"/>
 							<meta itemprop="currency" content="<c:out value="${requestScope.MERCHANT_STORE.currency.code}" />" />
 							<h4>
 									<c:choose>
