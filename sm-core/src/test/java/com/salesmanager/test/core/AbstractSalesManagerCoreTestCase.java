@@ -30,6 +30,8 @@ import com.salesmanager.core.business.catalog.product.service.price.ProductPrice
 import com.salesmanager.core.business.catalog.product.service.review.ProductReviewService;
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
 import com.salesmanager.core.business.customer.service.CustomerService;
+import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
+import com.salesmanager.core.business.customer.service.attribute.CustomerOptionValueService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.util.EntityManagerUtils;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -128,6 +130,12 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	
 	@Autowired
 	protected CustomerService customerService;
+	
+	@Autowired
+	protected CustomerOptionService customerOptionService;
+	
+	@Autowired
+	protected CustomerOptionValueService customerOptionValueService;
 	
 	@Autowired
 	protected OrderService orderService;
