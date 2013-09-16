@@ -141,7 +141,7 @@ public class ShopProductController {
 		model.addAttribute("attributes", readOnlyAttributes);
 		model.addAttribute("options", selectableOptions);
 			
-		model.addAttribute("product", product);
+		model.addAttribute("product", productProxy);
 
 		
 		/** template **/

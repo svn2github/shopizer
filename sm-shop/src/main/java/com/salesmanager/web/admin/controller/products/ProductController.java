@@ -689,6 +689,11 @@ public class ProductController {
 		//product
 		newProduct.setAuditSection(dbProduct.getAuditSection());
 		newProduct.setAvailable(dbProduct.isAvailable());
+		
+		
+
+		
+		
 		newProduct.setCategories(dbProduct.getCategories());
 		newProduct.setDateAvailable(dbProduct.getDateAvailable());
 		newProduct.setManufacturer(dbProduct.getManufacturer());
@@ -706,13 +711,19 @@ public class ProductController {
 		
 		productService.saveOrUpdate(newProduct);
 		
+		Set<Category> categories = dbProduct.getCategories();
+		for(Category category : categories) {
+			newProduct.getCategories().add(category);
+			productService.update(newProduct);
+		}
+		
 		product.setProduct(newProduct);
 		
 
 		model.addAttribute("product", product);
 		model.addAttribute("success","success");
 		
-		return "redirect:/admin/products/products.html";
+		return "redirect:/admin/products/editProduct.html?id=" + newProduct.getId();
 	}
 
 	

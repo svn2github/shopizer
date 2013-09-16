@@ -1,5 +1,6 @@
 package com.salesmanager.web.admin.controller.customers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -136,8 +137,22 @@ public class CustomerController {
 					customerOption = new CustomerOption();
 					customerOption.setId(custOption.getId());
 					customerOption.setType(custOption.getCustomerOptionType());
+					customerOption.setName(custOption.getDescriptionsSettoList().get(0).getName());
 					options.put(customerOption.getId(), customerOption);
 				}
+				
+				List<CustomerOptionValue> values = customerOption.getAvailableValues();
+				if(values==null) {
+					values = new ArrayList<CustomerOptionValue>();
+					customerOption.setAvailableValues(values);
+				}
+				
+				com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue optionValue = optSet.getPk().getCustomerOptionValue();
+				CustomerOptionValue custOptValue = new CustomerOptionValue();
+				custOptValue.setId(optionValue.getId());
+				custOptValue.setLanguage(language.getCode());
+				custOptValue.setName(optionValue.getDescriptionsSettoList().get(0).getName());
+				values.add(custOptValue);
 				
 				if(!CollectionUtils.isEmpty(customerAttributes)) {
 					for(CustomerAttribute customerAttribute : customerAttributes) {

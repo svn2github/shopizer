@@ -174,7 +174,7 @@ public class CustomerOptionsSetController {
 	@SuppressWarnings("unchecked")
 	@Secured("CUSTOMER")
 	@RequestMapping(value="/admin/customers/optionsset/paging.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String pageOptions(HttpServletRequest request, HttpServletResponse response) {
+	public @ResponseBody String pageOptionsSet(HttpServletRequest request, HttpServletResponse response) {
 
 		AjaxResponse resp = new AjaxResponse();
 
@@ -203,14 +203,14 @@ public class CustomerOptionsSetController {
 						Map entry = new HashMap();
 						entry.put("id", optSet.getId());
 						
-						CustomerOptionDescription description = customerOption.getDescriptionsList().get(0);
-						CustomerOptionValueDescription valueDescription = customerOptionValue.getDescriptionsList().get(0);
+						CustomerOptionDescription description = customerOption.getDescriptionsSettoList().get(0);
+						CustomerOptionValueDescription valueDescription = customerOptionValue.getDescriptionsSettoList().get(0);
 						
 						entry.put("optionCode", customerOption.getCode());
 						entry.put("optionName", description.getName());
 						entry.put("optionValueCode", customerOptionValue.getCode());
 						entry.put("optionValueName", valueDescription.getName());
-						entry.put("order", customerOption.getSortOrder());
+						entry.put("order", customerOptionValue.getSortOrder());
 						resp.addDataEntry(entry);
 					
 					}
