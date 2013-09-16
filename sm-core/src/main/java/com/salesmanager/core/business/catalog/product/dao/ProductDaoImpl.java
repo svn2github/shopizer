@@ -58,6 +58,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		qs.append("left join fetch p.relationships pr ");
 		//other lefts
 		qs.append("left join fetch p.manufacturer manuf ");
+		qs.append("left join fetch manuf.descriptions manufd ");
 		qs.append("left join fetch p.type type ");
 		qs.append("left join fetch p.taxClass tx ");
 		
@@ -207,12 +208,13 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		
 		//other lefts
 		qs.append("left join fetch p.manufacturer manuf ");
+		qs.append("left join fetch manuf.descriptions manufd ");
 		qs.append("left join fetch p.type type ");
 		qs.append("left join fetch p.taxClass tx ");
 		
 		//qs.append("where pa.region in (:lid) ");
 		qs.append("where categs.id in (:cid) ");
-		qs.append("and pd.language.id=:lang and papd.language.id=:lang ");
+		qs.append("and pd.language.id=:lang and papd.language.id=:lang and manufd.language.id=:lang ");
 		qs.append("and p.available=true and p.dateAvailable<=:dt ");
 
 

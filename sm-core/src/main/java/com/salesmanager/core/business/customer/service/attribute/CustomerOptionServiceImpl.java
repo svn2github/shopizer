@@ -64,8 +64,7 @@ public class CustomerOptionServiceImpl extends
 		Validate.notNull(optionSet,"optionSet cannot be null");
 		Validate.notNull(option,"option cannot be null");
 		
-		option.getCustomerOptions().add(optionSet);
-		this.saveOrUpdate(option);
+		customerOptionSetDao.save(optionSet);
 	}
 	
 	@Override
