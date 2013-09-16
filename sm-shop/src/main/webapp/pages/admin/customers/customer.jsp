@@ -471,30 +471,37 @@ function getBillingZones(countryCode){
 				<!--  @ModelAttribute("optionList") List<Option> options  -->
 				
 				<c:if test="${options!=null && fn:length(options)>0}">
+				
+				<div class="box">
+						<span class="box-title">
+						<p><s:message code="label.customer.attributes" text="Customer attributes" /></p>
+						</span>
+				
+				
 					<c:url var="customerOptions" value="/admin/customers/options/save.html"/>
 					<form:form method="POST" action="${customerOptions}" modelAttribute="optionList">
 					<c:forEach items="${options}" var="option" varStatus="status">
 						<div class="control-group"> 
 	                        <label><c:out value="${option.name}"/></label>
-	                        <div class="controls">		       							
+	                        <div class="controls">	       							
 									<c:choose>
-										<c:when test="${option.type=='Select'}">
+										<c:when test="${option.type=='select'}">
 											<select id="${option.id}" name="options[${status.index}].id">
-											<c:forEach items="${option.option.id}" var="optionValue">
+											<c:forEach items="${option.availableValues}" var="optionValue">
 												<option value="${optionValue.id}" <c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> SELECTED</c:if>>${optionValue.name}</option>
 											</c:forEach>
 											</select>
 										</c:when>
-										<c:when test="${option.type=='Radio'}">
+										<c:when test="${option.type=='radio'}">
 											<c:forEach items="${option.availableValues}" var="optionValue">
-												<input type="radio" id="<c:out value="${optionValue.id}"/>" name="options[${status.index}].id"/>" value="<c:out value="${optionValue.id}"/>"<c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> checked="checked" </c:if> />
+												<input type="radio" id="<c:out value="${optionValue.id}"/>" name="options[${status.index}].id" value="<c:out value="${optionValue.id}"/>"<c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> checked="checked" </c:if> />
 												<c:out value="${optionValue.name}"/>
 											</c:forEach>
 										</c:when>
-										<c:when test="${option.type=='Text'}">
+										<c:when test="${option.type=='text'}">
 											<input type="text" id="${option.id}" name="options[${status.index}].id" class="input-large">
 										</c:when>
-										<c:when test="${option.type=='Checkbox'}">
+										<c:when test="${option.type=='checkbox'}">
 											<c:forEach items="${option.availableValues}" var="optionValue">
 												<input type="checkbox" id="<c:out value="${optionValue.id}"/>" name="options[${status.index}].id" value="<c:out value="${optionValue.id}"/>"<c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> checked="checked" </c:if>  />
 												<c:out value="${optionValue.name}"/>
@@ -519,7 +526,7 @@ function getBillingZones(countryCode){
 
       					
 				</form:form>
-				
+				</div>
 				</c:if>
 
 </div>
