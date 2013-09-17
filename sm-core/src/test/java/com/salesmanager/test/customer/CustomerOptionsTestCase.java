@@ -1,9 +1,7 @@
 package com.salesmanager.test.customer;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import junit.framework.Assert;
@@ -11,6 +9,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import com.salesmanager.core.business.common.model.Billing;
+import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOption;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionDescription;
@@ -18,7 +17,6 @@ import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSetId;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionValueDescription;
-import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
@@ -140,37 +138,44 @@ public class CustomerOptionsTestCase extends AbstractSalesManagerCoreTestCase {
 		customerOptionService.update(subscribedToMailingList);
 		
 		
-		CustomerOptionSetId mailingListSetYesId = new CustomerOptionSetId();
+/*		CustomerOptionSetId mailingListSetYesId = new CustomerOptionSetId();
 		mailingListSetYesId.setCustomerOption(subscribedToMailingList);
-		mailingListSetYesId.setCustomerOptionValue(yes);
+		mailingListSetYesId.setCustomerOptionValue(yes);*/
 		
 		CustomerOptionSet mailingListSetYes = new CustomerOptionSet();
-		mailingListSetYes.setPk(mailingListSetYesId);
+		
+		//mailingListSetYes.setPk(mailingListSetYesId);
 		mailingListSetYes.setSortOrder(0);
+		mailingListSetYes.setCustomerOption(subscribedToMailingList);
+		mailingListSetYes.setCustomerOptionValue(yes);
 		
 		
 		subscribedToMailingList.getCustomerOptions().add(mailingListSetYes);
 		customerOptionService.update(subscribedToMailingList);
 		
-		CustomerOptionSetId mailingListSetNoId = new CustomerOptionSetId();
+/*		CustomerOptionSetId mailingListSetNoId = new CustomerOptionSetId();
 		mailingListSetNoId.setCustomerOption(subscribedToMailingList);
-		mailingListSetNoId.setCustomerOptionValue(no);
+		mailingListSetNoId.setCustomerOptionValue(no);*/
 		
 		CustomerOptionSet mailingListSetNo = new CustomerOptionSet();
-		mailingListSetNo.setPk(mailingListSetNoId);
+		//mailingListSetNo.setPk(mailingListSetNoId);
 		mailingListSetNo.setSortOrder(1);
+		mailingListSetNo.setCustomerOption(subscribedToMailingList);
+		mailingListSetNo.setCustomerOptionValue(no);
 		
 		subscribedToMailingList.getCustomerOptions().add(mailingListSetNo);
 		customerOptionService.update(subscribedToMailingList);
 		
 		
-		CustomerOptionSetId hasReturnedItemsYesId = new CustomerOptionSetId();
+/*		CustomerOptionSetId hasReturnedItemsYesId = new CustomerOptionSetId();
 		hasReturnedItemsYesId.setCustomerOption(hasReturnedItems);
-		hasReturnedItemsYesId.setCustomerOptionValue(yes);
+		hasReturnedItemsYesId.setCustomerOptionValue(yes);*/
 		
 		CustomerOptionSet hasReturnedItemsYes = new CustomerOptionSet();
-		hasReturnedItemsYes.setPk(hasReturnedItemsYesId);
+		//hasReturnedItemsYes.setPk(hasReturnedItemsYesId);
 		hasReturnedItemsYes.setSortOrder(0);
+		hasReturnedItemsYes.setCustomerOption(hasReturnedItems);
+		hasReturnedItemsYes.setCustomerOptionValue(yes);
 		
 		
 		hasReturnedItems.getCustomerOptions().add(hasReturnedItemsYes);
@@ -179,8 +184,13 @@ public class CustomerOptionsTestCase extends AbstractSalesManagerCoreTestCase {
 		subscribedToMailingList.setSortOrder(2);
 		customerOptionService.update(subscribedToMailingList);
 		
-		Assert.assertEquals(2, subscribedToMailingList.getCustomerOptions().size());
-		System.out.println("Size of options : " + subscribedToMailingList.getCustomerOptions().size());
+		CustomerOption option = customerOptionService.getById(subscribedToMailingList.getId());
+		
+		option.setSortOrder(4);
+		customerOptionService.update(option);
+		
+		Assert.assertEquals(2, option.getCustomerOptions().size());
+		System.out.println("Size of options : " + option.getCustomerOptions().size());
 		
 		
 		
