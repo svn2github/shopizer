@@ -121,13 +121,15 @@ public class CustomerOptionsSetController {
 		CustomerOption option =	null;	
 
 		//get from DB
-		option = customerOptionService.getById(optionSet.getPk().getCustomerOption().getId());
+		//option = customerOptionService.getById(optionSet.getPk().getCustomerOption().getId());
+		option = customerOptionService.getById(optionSet.getCustomerOption().getId());
 			
 		if(option==null) {
 				return "redirect:/admin/customers/optionsset/list.html";
 		}
 
-		CustomerOptionValue optionValue = customerOptionValueService.getById(optionSet.getPk().getCustomerOptionValue().getId());
+		//CustomerOptionValue optionValue = customerOptionValueService.getById(optionSet.getPk().getCustomerOptionValue().getId());
+		CustomerOptionValue optionValue = customerOptionValueService.getById(optionSet.getCustomerOptionValue().getId());
 			
 		if(optionValue==null) {
 			return "redirect:/admin/customers/optionsset/list.html";
@@ -140,11 +142,15 @@ public class CustomerOptionsSetController {
 			
 			for(CustomerOptionSet optSet : optionsSet) {
 				
-				CustomerOption opt = optSet.getPk().getCustomerOption();
-				CustomerOptionValue optValue = optSet.getPk().getCustomerOptionValue();
+				//CustomerOption opt = optSet.getPk().getCustomerOption();
+				CustomerOption opt = optSet.getCustomerOption();
+				//CustomerOptionValue optValue = optSet.getPk().getCustomerOptionValue();
+				CustomerOptionValue optValue = optSet.getCustomerOptionValue();
 				
-				if(opt.getId().longValue()==optionSet.getPk().getCustomerOption().getId().longValue() 
-						&& optValue.getId().longValue() == optionSet.getPk().getCustomerOptionValue().getId().longValue()) {
+				//if(opt.getId().longValue()==optionSet.getPk().getCustomerOption().getId().longValue() 
+				if(opt.getId().longValue()==optionSet.getCustomerOption().getId().longValue()
+						//&& optValue.getId().longValue() == optionSet.getPk().getCustomerOptionValue().getId().longValue()) {
+						&& optValue.getId().longValue() == optionSet.getCustomerOptionValue().getId().longValue()) {
 						model.addAttribute("errorMessage",messages.getMessage("message.region.null", locale));
 						ObjectError error = new ObjectError("region",messages.getMessage("message.region.exists", locale));
 						result.addError(error);
@@ -158,8 +164,10 @@ public class CustomerOptionsSetController {
 		}
 		
 		
-		optionSet.getPk().setCustomerOption(option);
-		optionSet.getPk().setCustomerOptionValue(optionValue);
+		//optionSet.getPk().setCustomerOption(option);
+		optionSet.setCustomerOption(option);
+		//optionSet.getPk().setCustomerOptionValue(optionValue);
+		optionSet.setCustomerOptionValue(optionValue);
 		customerOptionService.addCustomerOptionSet(optionSet, option);
 
 		
@@ -184,7 +192,7 @@ public class CustomerOptionsSetController {
 			
 			Language language = (Language)request.getAttribute("LANGUAGE");	
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-			List<CustomerOption> options = null;
+			//List<CustomerOption> options = null;
 				
 			List<CustomerOptionSet> optionSet = customerOptionService.listCustomerOptionSetByStore(store, language);
 			//for(CustomerOption option : options) {
@@ -196,8 +204,10 @@ public class CustomerOptionsSetController {
 					
 					for(CustomerOptionSet optSet : optionSet) {
 						
-						CustomerOption customerOption = optSet.getPk().getCustomerOption();
-						CustomerOptionValue customerOptionValue = optSet.getPk().getCustomerOptionValue();
+						//CustomerOption customerOption = optSet.getPk().getCustomerOption();
+						CustomerOption customerOption = optSet.getCustomerOption();
+						//CustomerOptionValue customerOptionValue = optSet.getPk().getCustomerOptionValue();
+						CustomerOptionValue customerOptionValue = optSet.getCustomerOptionValue();
 						
 						@SuppressWarnings("rawtypes")
 						Map entry = new HashMap();
@@ -258,7 +268,7 @@ public class CustomerOptionsSetController {
 	
 	@Secured("CUSTOMER")
 	@RequestMapping(value="/admin/customers/optionsset/remove.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String deleteOption(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+	public @ResponseBody String deleteOptionSet(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String sid = request.getParameter("id");
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
@@ -270,7 +280,8 @@ public class CustomerOptionsSetController {
 			Long id = Long.parseLong(sid);
 			
 			CustomerOptionSet entity = customerOptionService.getCustomerOptionSetById(id);
-			if(entity==null || entity.getPk().getCustomerOption().getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			//if(entity==null || entity.getPk().getCustomerOption().getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			if(entity==null || entity.getCustomerOption().getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 
 				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
 				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
@@ -298,7 +309,7 @@ public class CustomerOptionsSetController {
 
 	@Secured("CUSTOMER")
 	@RequestMapping(value="/admin/customers/optionsset/update.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String updateCountry(HttpServletRequest request, HttpServletResponse response) {
+	public @ResponseBody String updateOrder(HttpServletRequest request, HttpServletResponse response) {
 		String values = request.getParameter("_oldValues");
 		String order = request.getParameter("order");
 
