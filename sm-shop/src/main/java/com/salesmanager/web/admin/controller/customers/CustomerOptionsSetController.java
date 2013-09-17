@@ -91,7 +91,7 @@ public class CustomerOptionsSetController {
 	
 	@Secured("CUSTOMER")
 	@RequestMapping(value="/admin/customers/optionsset/save.html", method=RequestMethod.POST)
-	public String saveOption(@Valid @ModelAttribute("optionSet") CustomerOptionSet optionSet, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+	public String saveOptionSet(@Valid @ModelAttribute("optionSet") CustomerOptionSet optionSet, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
 
 		//display menu
