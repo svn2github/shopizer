@@ -32,6 +32,7 @@ public class CustomerOptionDaoImpl extends SalesManagerEntityDaoImpl<Long, Custo
 		query.from(qCustomerOption)
 			.leftJoin(qCustomerOption.descriptions, qCustomerOptionDescription).fetch()
 			.leftJoin(qCustomerOption.merchantStore).fetch()
+			.leftJoin(qCustomerOption.customerOptions).fetch()
 			.where(qCustomerOption.merchantStore.id.eq(store.getId())
 			.and(qCustomerOptionDescription.language.id.eq(language.getId())))
 			.orderBy(qCustomerOption.sortOrder.asc());
@@ -53,6 +54,7 @@ public class CustomerOptionDaoImpl extends SalesManagerEntityDaoImpl<Long, Custo
 		
 		query.from(qCustomerOption)
 			.leftJoin(qCustomerOption.descriptions, qCustomerOptionDescription).fetch()
+			.leftJoin(qCustomerOption.customerOptions).fetch()
 			.leftJoin(qCustomerOption.merchantStore).fetch()
 			.where(qCustomerOption.id.eq(id));
 		
