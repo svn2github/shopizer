@@ -2,11 +2,10 @@ package com.salesmanager.core.business.customer.model.attribute;
 
 import java.io.Serializable;
 
-import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 
-@Embeddable
+//@Embeddable
 public class CustomerOptionSetId implements Serializable {
 	
 	
@@ -14,13 +13,16 @@ public class CustomerOptionSetId implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	@NotNull
+	//@NotNull
+	@ManyToOne
+	@JoinColumn(name = "CUSTOMER_OPTION_ID")
 	private CustomerOption customerOption = null;
-	@NotNull
+	@ManyToOne
+	@JoinColumn(name = "CUSTOMER_OPTION_VALUE_ID")
 	private CustomerOptionValue customerOptionValue = null;
 	
 	
-	@ManyToOne
+	//@ManyToOne
 	public CustomerOption getCustomerOption() {
 		return customerOption;
 	}
@@ -28,7 +30,7 @@ public class CustomerOptionSetId implements Serializable {
 		this.customerOption = customerOption;
 	}
 	
-	@ManyToOne
+	//@ManyToOne
 	public CustomerOptionValue getCustomerOptionValue() {
 		return customerOptionValue;
 	}

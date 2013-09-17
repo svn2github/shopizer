@@ -66,7 +66,7 @@ public class CustomerOptionValue extends SalesManagerEntity<Long, CustomerOption
 	private MerchantStore merchantStore;
 	
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "pk.customerOptionValue", cascade=CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOptionValue", cascade=CascadeType.ALL)
 	private Set<CustomerOptionSet> customerOptions = new HashSet<CustomerOptionSet>();
 
 	
