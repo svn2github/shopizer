@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
+import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
@@ -278,6 +279,10 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		FinalPrice price = pricingService.calculateProductPrice(product, attributesList);
 		item.setItemPrice(price.getFinalPrice());
 		
+		ProductImage image = product.getProductImage();
+		if(image!=null) {
+			item.setImage(image.getProductImage());
+		}
 		
 		
 		

@@ -20,11 +20,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Transient;
 
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Index;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import com.salesmanager.core.business.common.model.audit.AuditListener;
 import com.salesmanager.core.business.common.model.audit.AuditSection;
@@ -100,6 +98,7 @@ public class ShoppingCart extends SalesManagerEntity<Long, ShoppingCart> impleme
 		
 	}
 
+
 	public Set<ShoppingCartItem> getLineItems() {
 		return lineItems;
 	}
@@ -134,7 +133,7 @@ public class ShoppingCart extends SalesManagerEntity<Long, ShoppingCart> impleme
 	public MerchantStore getMerchantStore() {
 		return merchantStore;
 	}
-	
-	
+
+
 
 }

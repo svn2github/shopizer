@@ -64,6 +64,7 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	@Transient
 	private BigDecimal itemPrice;
 	
+
 	@Transient
 	private Product product;
 
