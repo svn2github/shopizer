@@ -22,7 +22,7 @@ response.setDateHeader ("Expires", -1);
 		                  								<br/>
 				                  						<div id="shoppingcart">
 				                  						<table style="margin-bottom: 5px" class="table">
-				                  							<tbody>
+				                  							<tbody id="shoppingcartProducts">
 					                  							<tr id="42" class="cart-product">
 					                  								<td><img width="40" height="40" src="img/products/shirt1.jpg"></td>
 					                  								<td>1 Short sleeves white</td>

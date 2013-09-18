@@ -11,5 +11,9 @@ function getContextPath() {
    return "${pageContext.request.contextPath}";
 }
 
+function getMerchantStore() {
+   return "${pageContext.request.MERCHANT_STORE.id}";
+}
+
 
 </script>
