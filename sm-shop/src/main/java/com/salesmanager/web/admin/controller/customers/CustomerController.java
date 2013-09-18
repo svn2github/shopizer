@@ -131,7 +131,7 @@ public class CustomerController {
 			
 			for(CustomerOptionSet optSet : optionSet) {
 				
-				com.salesmanager.core.business.customer.model.attribute.CustomerOption custOption = optSet.getPk().getCustomerOption();
+				com.salesmanager.core.business.customer.model.attribute.CustomerOption custOption = optSet.getCustomerOption();
 				CustomerOption customerOption = options.get(custOption.getId());
 				if(customerOption==null) {
 					customerOption = new CustomerOption();
@@ -147,7 +147,7 @@ public class CustomerController {
 					customerOption.setAvailableValues(values);
 				}
 				
-				com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue optionValue = optSet.getPk().getCustomerOptionValue();
+				com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue optionValue = optSet.getCustomerOptionValue();
 				CustomerOptionValue custOptValue = new CustomerOptionValue();
 				custOptValue.setId(optionValue.getId());
 				custOptValue.setLanguage(language.getCode());
