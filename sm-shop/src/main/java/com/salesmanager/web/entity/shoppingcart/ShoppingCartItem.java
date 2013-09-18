@@ -14,6 +14,7 @@ public class ShoppingCartItem extends ShopEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String name;
 	private String price;
+	private String image;
 	private BigDecimal productPrice;
 	private int quantity;
 	private long productId;
@@ -72,6 +73,12 @@ public class ShoppingCartItem extends ShopEntity implements Serializable {
 	}
 	public String getProductCode() {
 		return productCode;
+	}
+	public void setImage(String image) {
+		this.image = image;
+	}
+	public String getImage() {
+		return image;
 	}
 
 

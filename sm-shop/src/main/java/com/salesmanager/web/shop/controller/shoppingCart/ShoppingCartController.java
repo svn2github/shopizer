@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
+import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
@@ -40,6 +41,7 @@ import com.salesmanager.web.entity.shoppingcart.ShoppingCart;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartAttribute;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartItem;
 import com.salesmanager.web.shop.controller.ControllerConstants;
+import com.salesmanager.web.utils.ImageFilePathUtils;
 
 
 /**
@@ -54,12 +56,10 @@ import com.salesmanager.web.shop.controller.ControllerConstants;
  * The add to cart is 100% driven by javascript / ajax. The code is available in webapp\resources\js\functions.js
  * 
  * <!-- Simple add to cart html example ${id} is the product id -->
- * <form id="input-${id}" class="well form-inline">
+ * <form id="input-${id}">
  *  <input type="text" class="input-small" id="quantity-productId-${id}" placeholder="1" value="1">
  * 	<a href="#" class="addToCart" productId="${id}">Add to cart</a>
  * </form>
- * 
- * This html block is ready to be implemented in webapp\pages\shop\templates\bootstrap\pages\landing.jsp. It requires from the admin to add Featured items
  * 
  * The javascript function creates com.salesmanager.web.entity.shoppingcart.ShoppingCartItem and ShoppingCartAttribute (example to come)
  * The javascript looks in the cookie if a shopping cart code exists ex $.cookie( 'cart' ); // requires jQuery-cookie
@@ -392,6 +392,11 @@ public class ShoppingCartController {
 			}
 		}
 		
+		ProductImage image = product.getProductImage();
+		if(image!=null) {
+			String imagePath = ImageFilePathUtils.buildProductImageFilePath(store, product.getSku(), image.getProductImage());
+			item.setImage(imagePath);
+		}
 		FinalPrice finalPrice = pricingService.calculateProductPrice(product, pricingAttributes);
 		item.setPrice(pricingService.getDisplayAmount(finalPrice.getFinalPrice(), store));
 		item.setProductPrice(finalPrice.getFinalPrice());
@@ -415,7 +420,11 @@ public class ShoppingCartController {
 				shoppingCartItem.setName(item.getProduct().getProductDescription().getName());
 				shoppingCartItem.setPrice(pricingService.getDisplayAmount(item.getItemPrice(),store));
 				shoppingCartItem.setQuantity(item.getQuantity());
-				
+				ProductImage image = item.getProduct().getProductImage();
+				if(image!=null) {
+					String imagePath = ImageFilePathUtils.buildProductImageFilePath(store, item.getProduct().getSku(), image.getProductImage());
+					shoppingCartItem.setImage(imagePath);
+				}
 				Set<com.salesmanager.core.business.shoppingcart.model.ShoppingCartAttributeItem> attributes = item.getAttributes();
 				if(attributes!=null) {
 					List<ShoppingCartAttribute> cartAttributes = new ArrayList<ShoppingCartAttribute>();
