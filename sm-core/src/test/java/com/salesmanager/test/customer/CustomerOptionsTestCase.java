@@ -2,6 +2,7 @@ package com.salesmanager.test.customer;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import junit.framework.Assert;
@@ -191,6 +192,11 @@ public class CustomerOptionsTestCase extends AbstractSalesManagerCoreTestCase {
 		
 		Assert.assertEquals(2, option.getCustomerOptions().size());
 		System.out.println("Size of options : " + option.getCustomerOptions().size());
+		
+		//get all options set
+		List<CustomerOptionSet> optionSets = customerOptionService.listCustomerOptionSetByStore(store, en);
+		Assert.assertNotNull(optionSets);
+		
 		
 		
 		
