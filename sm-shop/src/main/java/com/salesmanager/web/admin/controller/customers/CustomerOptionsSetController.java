@@ -211,8 +211,10 @@ public class CustomerOptionsSetController {
 						
 						@SuppressWarnings("rawtypes")
 						Map entry = new HashMap();
-						entry.put("id", optSet.getId());
 						
+						
+						entry.put("id", new StringBuilder().append(optSet.getCustomerOption().getId()).append("-").append(optSet.getCustomerOptionValue().getId()));
+
 						CustomerOptionDescription description = customerOption.getDescriptionsSettoList().get(0);
 						CustomerOptionValueDescription valueDescription = customerOptionValue.getDescriptionsSettoList().get(0);
 						
@@ -277,9 +279,13 @@ public class CustomerOptionsSetController {
 		
 		try {
 			
-			Long id = Long.parseLong(sid);
+			//parse id
+			String[] ids = sid.split("-");
 			
-			CustomerOptionSet entity = customerOptionService.getCustomerOptionSetById(id);
+			Long optionId = Long.parseLong(ids[0]);
+			Long optionValueId = Long.parseLong(ids[1]);
+			
+			CustomerOptionSet entity = customerOptionService.getCustomerOptionSetById(optionId,optionValueId);
 			//if(entity==null || entity.getPk().getCustomerOption().getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 			if(entity==null || entity.getCustomerOption().getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 
@@ -325,10 +331,14 @@ public class CustomerOptionsSetController {
 			Map conf = mapper.readValue(values, Map.class);
 			
 			String sid = (String)conf.get("id");
-
-			Long id = Long.parseLong(sid);
+			//parse id
+			String[] ids = sid.split("-");
 			
-			CustomerOptionSet entity = customerOptionService.getCustomerOptionSetById(id);
+			Long optionId = Long.parseLong(ids[0]);
+			Long optionValueId = Long.parseLong(ids[1]);
+
+			
+			CustomerOptionSet entity = customerOptionService.getCustomerOptionSetById(optionId,optionValueId);
 			
 			
 			if(entity!=null) {
