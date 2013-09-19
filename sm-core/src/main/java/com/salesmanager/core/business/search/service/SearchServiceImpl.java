@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.search.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,11 +12,10 @@ import com.salesmanager.core.business.reference.language.model.Language;
 @Service("productSearchService")
 public class SearchServiceImpl implements SearchService {
 	
-	//@Autowired
-	//private com.shopizer.search.SearchService searchService;
+	@Autowired
+	private com.shopizer.search.services.SearchService searchService;
 
 	@Override
-	@Transactional
 	public void index(MerchantStore store, Product product, Language language)
 			throws ServiceException {
 		
@@ -61,6 +61,8 @@ public class SearchServiceImpl implements SearchService {
 		 * 
 		 * 
 		 */
+		
+		
 
 	}
 	
