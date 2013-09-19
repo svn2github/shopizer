@@ -19,12 +19,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.catalog.ProductList;
 import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.utils.CatalogUtils;
@@ -57,7 +59,7 @@ public class ShoppingCategoryController {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	@RequestMapping("/shop/category/{friendlyUrl}.html")
+	@RequestMapping("/shop/category/{friendlyUrl}.html{ref}")
 	public String displayCategory(@PathVariable final String friendlyUrl, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		
@@ -122,8 +124,6 @@ public class ShoppingCategoryController {
 			subCategories = getSubCategories(store,category,language,locale);
 		}
 
-		
-		//TODO get products by category
 		//TODO number of items by category
 
 		model.addAttribute("category", categoryProxy);
@@ -253,7 +253,7 @@ public class ShoppingCategoryController {
 	 */
 	@RequestMapping("/shop/services/products/page/{start}/{max}/{store}/{language}/{category}.html")
 	@ResponseBody
-	public com.salesmanager.web.entity.catalog.Product[] pageProducts(@PathVariable int start, @PathVariable int max, @PathVariable String store, @PathVariable final String language, @PathVariable final String category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public ProductList pageProducts(@PathVariable int start, @PathVariable int max, @PathVariable String store, @PathVariable final String language, @PathVariable final String category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		
 		try {
@@ -300,25 +300,27 @@ public class ShoppingCategoryController {
 				lang = langs.get(Constants.DEFAULT_LANGUAGE);
 			}
 			
+			ProductCriteria productCriteria = new ProductCriteria();
+			productCriteria.setMaxCount(max);
+			productCriteria.setStartIndex(start);
+
+			com.salesmanager.core.business.catalog.product.model.ProductList products = productService.getProductList(productCriteria, ids, lang);
 			
-			//TODO page products
-			List<com.salesmanager.core.business.catalog.product.model.Product> products = productService.getProducts(ids, lang);
-			
-			com.salesmanager.web.entity.catalog.Product[] returnedProducts = new com.salesmanager.web.entity.catalog.Product[products.size()];
-			
-			int i = 0;
-			for(Product product : products) {
+			//com.salesmanager.web.entity.catalog.Product[] returnedProducts = new com.salesmanager.web.entity.catalog.Product[products.size()];
+			ProductList productList = new ProductList();
+			for(Product product : products.getProducts()) {
 				
 				
 				//create new proxy product
 				com.salesmanager.web.entity.catalog.Product p = catalogUtils.buildProxyProduct(product,merchantStore,LocaleUtils.getLocale(lang));
-				returnedProducts[i] = p;
-				i++;
+				productList.getProducts().add(p);
 				
 			}
 			
+			productList.setTotalCount(products.getTotalCount());
 			
-			return returnedProducts;
+			
+			return productList;
 			
 		
 		} catch (Exception e) {

@@ -1,6 +1,7 @@
 package com.salesmanager.web.entity.catalog;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductList implements Serializable {
@@ -11,7 +12,7 @@ public class ProductList implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private int totalCount;
-	private List<Product> products;
+	private List<Product> products = new ArrayList<Product>();
 	public void setProducts(List<Product> products) {
 		this.products = products;
 	}
