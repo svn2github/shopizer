@@ -9,11 +9,12 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 
+
 @Service("productSearchService")
 public class SearchServiceImpl implements SearchService {
 	
-	@Autowired
-	private com.shopizer.search.services.SearchService searchService;
+	//@Autowired
+	//private com.shopizer.search.services.SearchService searchService;
 
 	@Override
 	public void index(MerchantStore store, Product product, Language language)
