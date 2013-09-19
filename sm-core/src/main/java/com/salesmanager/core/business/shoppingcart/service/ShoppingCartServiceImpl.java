@@ -279,10 +279,7 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		FinalPrice price = pricingService.calculateProductPrice(product, attributesList);
 		item.setItemPrice(price.getFinalPrice());
 		
-		ProductImage image = product.getProductImage();
-		if(image!=null) {
-			item.setImage(image.getProductImage());
-		}
+
 		
 		
 		
