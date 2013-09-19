@@ -25,78 +25,71 @@ response.setDateHeader ("Expires", -1);
  
  <script>
  
+ var START = 0;
+ var MAX = 3;
+ 
+ 
+
  
  
  
  $(function(){
 	 
 	 var $container = $('#productsContainer');
+
+	 $container.isotope({
+		 itemSelector : '.item'
+	  });
+	  
+	 $('#sort-by a').click(function(){
+		 // get href attribute, minus the '#'
+		 $('#container').isotope({ sortBy : 'name' });
+		 return false;
+	 });
 	 
-	 
-	// $container.isotope({
-	//	 itemSelector : '.item'
-	//  });
-	 
-	//  $container.infinitescroll({
-	//	 navSelector : '#page_nav', // selector for the paged navigation
-	//	 nextSelector : '#page_nav a', // selector for the NEXT link (to page 2)
-	//	 itemSelector : '.item', // selector for all items you'll retrieve
-	//	 loading: {
-	//	    finishedMsg: 'No more pages to load.',
-	//	    img: 'http://i.imgur.com/qkKy8.gif'
-	//	 }
-	//	 },
-		 // call Isotope as a callback
-	//	 function( newElements ) {
-	//	 	$container.isotope( 'appended', $( newElements ) );
-	//	 }
-	 // ); 
-	 
-	 
-	 loadProducts(0,12);
-	 
-	 
-	 //$('#categoryPane').infiniScroll({ // calls the init method overrides defaults
-	 //	    'interval' : 200
-	 //	    ,'root_url' : '/shop'
-	 //	    ,'loading_elem': 'loading'
-	 //	    ,'data_elem': 'leaderboard'
-	 //	    ,'num' : 12
-	 // });
+ 
+	 loadProducts();
+
  });
  
  
  
-	function loadProducts(start, qty) {
-		
-		var url = '<%=request.getContextPath()%>/shop/services/products/page/' + start + '/' + qty + '/<c:out value="${requestScope.MERCHANT_STORE.code}"/>/<c:out value="${requestScope.LANGUAGE.code}"/>/<c:out value="${category.friendlyUrl}"/>.html';
+	function loadProducts() {
+		$('#productsContainer').showLoading();
+		var url = '<%=request.getContextPath()%>/shop/services/products/page/' + START + '/' + MAX + '/<c:out value="${requestScope.MERCHANT_STORE.code}"/>/<c:out value="${requestScope.LANGUAGE.code}"/>/<c:out value="${category.friendlyUrl}"/>.html';
 		
 		$.ajax({
 				type: 'POST',
 				dataType: "json",
 				url: url,
-				success: function(products) {
-					
-					
-					//var displayProducts = new Array();
-					for (var i = 0; i < products.length; i++) {
-					    //alert(products[i].name);
-					    //Do something
+				success: function(productList) {
+
+					for (var i = 0; i < productList.products.length; i++) {
 					    var productHtml = '<li class="item span3">';
 					    	productHtml = productHtml + '<div class="product-box"><a href="<c:url value="/shop/product/" />' + products[i].friendlyUrl + '.html">';
-					    	productHtml = productHtml + '<h4>' + products[i].name +'</h4></a>';
+					    	productHtml = productHtml + '<h4 class="name">' + products[i].name +'</h4></a>';
 					    	productHtml = productHtml + '<a href="<c:url value="/shop/product/" />' + products[i].friendlyUrl + '.html"><img src="<c:url value="/"/>' + products[i].imageUrl +'"></a>';
-					    	productHtml = productHtml + '<h3>' + products[i].productPrice +'</h3>';
+					    	productHtml = productHtml + '<h3 class="number">' + products[i].productPrice +'</h3>';
 					    	productHtml = productHtml + '<div class="bottom"><a href="<c:url value="/shop/product/" />' + products[i].friendlyUrl + '.html" class="view"><s:message code="button.label.view" text="View" /></a> / <a productid="' + products[i].id + '" href="#" class="addToCart"><s:message code="button.label.addToCart" text="Add to cart" /></a></div></div></li>';
 					    	//displayProducts[i] = productHtml;
 					    	$('#productsContainer').append(productHtml);
-					    	
-					    	//alert(productHtml);
+
 					}
+					
+					if(START < productList.totalCount) {
+						$("button_nav").show();
+						$("end_nav").hide();
+						start ++;
+					} else {
+						$("end_nav").show();
+						$("button_nav").hide();
+					}
+					$('#productsContainer').hideLoading();
 
 					
 				},
 				error: function(jqXHR,textStatus,errorThrown) { 
+					$('#productsContainer').hideLoading();
 					alert('Error ' + jqXHR + "-" + textStatus + "-" + errorThrown);
 				}
 				
@@ -125,9 +118,9 @@ response.setDateHeader ("Expires", -1);
         <div class="span3">
           <div class="sidebar-nav">
             <ul class="nav nav-list">
-              <li class="nav-header"><a href="<c:url value="/shop"/>/${category.friendlyUrl}.html"><c:out value="${category.name}" /></a></li>
-              <c:forEach items="${subCategories}" var="category">
-              	<li><a href="<c:url value="/shop/category/${category.friendlyUrl}.html"/>"><c:out value="${category.name}" /></a></li>
+              <li class="nav-header"><a href="<c:url value="/shop"/>/category/${category.friendlyUrl}.html"><c:out value="${category.name}" /></a></li>
+              <c:forEach items="${subCategories}" var="subCategory">
+              	<li><a href="<c:url value="/shop/category/${subCategory.friendlyUrl}.html/ref=${category.id}"/>"><c:out value="${subCategory.name}" /></a></li>
               </c:forEach>
             </ul>
           </div>
@@ -140,9 +133,10 @@ response.setDateHeader ("Expires", -1);
         	<ul id="productsContainer" class="thumbnails product-list">
 
 			</ul>
-			<nav id="page_nav">
-				<a href="../pages/2.html"></a>
+			<nav id="button_nav">
+				<button type="button" class="btn btn-primary btn-lg" onClick="loadProducts();"><spring:message code="label.product.moreitems" text="Display more items" /></button>
 			</nav>
+			<span id="end_nav"><spring:message code="label.product.nomoreitems" text="No more items to be displayed" /></span>
           
           
         </div><!--/span-->

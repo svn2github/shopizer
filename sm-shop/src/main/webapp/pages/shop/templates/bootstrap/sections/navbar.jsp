@@ -50,7 +50,7 @@ response.setDateHeader ("Expires", -1);
 	                    		            
 	                    		            <c:forEach items="${requestScope.TOP_CATEGORIES}" var="category">
 	    										<li class="">
-	    											<a href="<c:url value="/shop/category/${category.description.seUrl}.html"/>" class="current"> 
+	    											<a href="<c:url value="/shop/category/${category.description.seUrl}.html/ref=${category.id}"/>" class="current"> 
 	    												<span class="name">${category.description.name}</span>
 	    												<span class="desc">${category.description.categoryHighlight}</span> 
 	    											</a>
