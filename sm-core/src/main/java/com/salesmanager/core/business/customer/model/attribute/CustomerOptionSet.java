@@ -5,7 +5,6 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
-import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.constants.SchemaConstant;
 
 @Entity
@@ -17,7 +16,7 @@ import com.salesmanager.core.constants.SchemaConstant;
 //        @AssociationOverride(name = "pk.customerOptionValue", 
 //            joinColumns = @JoinColumn(name = "CUSTOMER_OPTION_VALUE_ID")) })
 
-public class CustomerOptionSet extends SalesManagerEntity<Long, CustomerOptionSet> {
+public class CustomerOptionSet {
 
 	
 	/**
@@ -31,7 +30,7 @@ public class CustomerOptionSet extends SalesManagerEntity<Long, CustomerOptionSe
 	//@Column(name = "CUSTOMER_OPTIONSET_ID", unique=true, nullable=false)
 	//@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "CUST_OPTSET_SEQ_NEXT_VAL")
 	//@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
-	private Long id;
+	//private Long id;
 	
 	@Id
 	private CustomerOption customerOption = null;
@@ -43,16 +42,7 @@ public class CustomerOptionSet extends SalesManagerEntity<Long, CustomerOptionSe
 
 	private int sortOrder;
 	
-	@Override
-	public Long getId() {
-		return this.id;
-	}
 
-	@Override
-	public void setId(Long id) {
-		this.id = id;
-		
-	}
 
 	public int getSortOrder() {
 		return sortOrder;

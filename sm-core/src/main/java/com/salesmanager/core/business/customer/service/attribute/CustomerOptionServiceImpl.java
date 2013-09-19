@@ -85,8 +85,8 @@ public class CustomerOptionServiceImpl extends
 	}
 	
 	@Override
-	public CustomerOptionSet getCustomerOptionSetById(Long id) throws ServiceException {
-		return customerOptionSetDao.getById(id);
+	public CustomerOptionSet getCustomerOptionSetById(Long customerOptionId, Long customerOptionValueId) throws ServiceException {
+		return customerOptionSetDao.getById(customerOptionId,customerOptionValueId);
 	}
 	
 	@Override

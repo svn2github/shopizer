@@ -42,12 +42,13 @@ public interface CustomerOptionService extends SalesManagerEntityService<Long, C
 
 
 	/**
-	 * Returns a CustomerOptionSet by the entity id
-	 * @param option
+	 * Returns a specific CustomerOptionSet
+	 * @param customerOptionId
+	 * @param customerOptionValueId
 	 * @return
 	 * @throws ServiceException
 	 */
-	CustomerOptionSet getCustomerOptionSetById(Long id)
+	CustomerOptionSet getCustomerOptionSetById(Long customerOptionId, Long customerOptionValueId)
 			throws ServiceException;
 
 
