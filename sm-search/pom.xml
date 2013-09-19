@@ -3,6 +3,9 @@
   <groupId>com.shopizer</groupId>
   <artifactId>sm-search</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>sm-search</name>
+  <url>http://www.shopizer.com</url>
   <properties>
 		<java-version>1.6</java-version>
 		<org.springframework-version>3.1.0.RELEASE</org.springframework-version>
@@ -183,4 +186,19 @@
 		</dependency>
         
 	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>				
+				<configuration>
+					<source>${java-version}</source>
+					<target>${java-version}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>
