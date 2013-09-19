@@ -10,13 +10,10 @@ import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
 import com.salesmanager.core.business.customer.model.attribute.QCustomerOption;
-import com.salesmanager.core.business.customer.model.attribute.QCustomerOptionDescription;
 import com.salesmanager.core.business.customer.model.attribute.QCustomerOptionSet;
 import com.salesmanager.core.business.customer.model.attribute.QCustomerOptionValue;
-import com.salesmanager.core.business.customer.model.attribute.QCustomerOptionValueDescription;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.merchant.model.QMerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 
 @Repository("customerOptionSetDao")
@@ -34,8 +31,8 @@ public class CustomerOptionSetDaoImpl extends SalesManagerEntityDaoImpl<Long, Cu
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qCustomerOptionSet)
-			.join(qCustomerOptionSet.pk.customerOption,qCustomerOption).fetch()
-			.join(qCustomerOptionSet.pk.customerOptionValue,qCustomerOptionValue).fetch()
+			.join(qCustomerOptionSet.customerOption,qCustomerOption).fetch()
+			.join(qCustomerOptionSet.customerOptionValue,qCustomerOptionValue).fetch()
 			.leftJoin(qCustomerOption.descriptions).fetch()
 			.leftJoin(qCustomerOptionValue.descriptions).fetch()
 			.where(qCustomerOptionSet.id.eq(id));
@@ -55,8 +52,8 @@ public class CustomerOptionSetDaoImpl extends SalesManagerEntityDaoImpl<Long, Cu
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qCustomerOptionSet)
-			.join(qCustomerOptionSet.pk.customerOption,qCustomerOption).fetch()
-			.join(qCustomerOptionSet.pk.customerOptionValue,qCustomerOptionValue).fetch()
+			.join(qCustomerOptionSet.customerOption,qCustomerOption).fetch()
+			.join(qCustomerOptionSet.customerOptionValue,qCustomerOptionValue).fetch()
 			.leftJoin(qCustomerOption.descriptions).fetch()
 			.leftJoin(qCustomerOptionValue.descriptions).fetch()
 			.where(qCustomerOption.id.eq(id)
@@ -68,16 +65,7 @@ public class CustomerOptionSetDaoImpl extends SalesManagerEntityDaoImpl<Long, Cu
 	
 	@Override
 	public List<CustomerOptionSet> listByStore(MerchantStore store, Language language) {
-		QCustomerOptionSet qCustomerOptionSet= QCustomerOptionSet.customerOptionSet;
-		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
-		QMerchantStore qMerchantStore = QMerchantStore.merchantStore;
-		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
-		QCustomerOptionDescription qCustomerOptionDescription = QCustomerOptionDescription.customerOptionDescription;
-		QCustomerOptionValueDescription qCustomerOptionValueDescription = QCustomerOptionValueDescription.customerOptionValueDescription;
-		
-		
-		//JPQLQuery query = new JPAQuery (getEntityManager());
-		
+
 		
 		StringBuilder qs = new StringBuilder();
 		qs.append("select distinct cos from CustomerOptionSet as cos ");
@@ -97,19 +85,6 @@ public class CustomerOptionSetDaoImpl extends SalesManagerEntityDaoImpl<Long, Cu
 
     	q.setParameter("mid", store.getId());
     	q.setParameter("lid", language.getId());
-		
-		
-		//query.from(qCustomerOptionSet)
-		//	.join(qCustomerOptionSet.pk.customerOption,qCustomerOption).fetch()
-		//	.join(qCustomerOption.merchantStore,qMerchantStore).fetch()
-		//	.join(qCustomerOptionSet.pk.customerOptionValue,qCustomerOptionValue).fetch()
-		//	.where(qMerchantStore.id.eq(store.getId()));
-			//.leftJoin(qCustomerOption.descriptions,qCustomerOptionDescription).fetch()
-			//.leftJoin(qCustomerOptionValue.descriptions,qCustomerOptionValueDescription).fetch()
-			
-			//.and(qCustomerOptionDescription.language.id.eq(language.getId()))
-			//.and(qCustomerOptionValueDescription.language.id.eq(language.getId())))
-			//.orderBy(qCustomerOptionSet.sortOrder.asc());
 
 		
 		@SuppressWarnings("unchecked")
