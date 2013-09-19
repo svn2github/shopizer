@@ -3,7 +3,7 @@ package com.salesmanager.web.entity.catalog;
 import java.io.Serializable;
 import java.util.List;
 
-public class PageProducts implements Serializable {
+public class ProductList implements Serializable {
 	
 
 	/**
