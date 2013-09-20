@@ -21,6 +21,8 @@
 	<import resource="classpath:/spring/shopizer-core-config.xml" />
 	<!-- modules -->
 	<import resource="classpath:/spring/shopizer-core-modules.xml" />
+	<!-- search -->
+	<import resource="classpath:/spring/shopizer-search.xml" />
 
 	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="persistenceUnitName" value="sm-unit" />
