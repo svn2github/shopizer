@@ -98,6 +98,8 @@ public class ShopProductController {
 		if(!CollectionUtils.isEmpty(attributes)) {
 			for(ProductAttribute attribute : attributes) {
 				Attribute attr = null;
+				ProductOptionValue optionValue = attribute.getProductOptionValue();
+				AttributeValue attrValue = new AttributeValue();
 				if(attribute.getProductOption().isReadOnly()) {
 					if(readOnlyAttributes==null) {
 						readOnlyAttributes = new HashMap<Long,Attribute>();
@@ -118,9 +120,9 @@ public class ShopProductController {
 						readOnlyAttributes.put(attribute.getProductOption().getId(), attr);
 					}
 					readOnlyAttributes.put(attribute.getProductOption().getId(), attr);
+					attr.setReadOnlyValue(attrValue);
 				}
-				ProductOptionValue optionValue = attribute.getProductOptionValue();
-				AttributeValue attrValue = new AttributeValue();
+				
 				attrValue.setDefaultAttribute(attribute.getAttributeDefault());
 				attrValue.setId(optionValue.getId());
 				attrValue.setLanguage(language.getCode());

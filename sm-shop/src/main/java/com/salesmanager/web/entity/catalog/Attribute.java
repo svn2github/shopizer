@@ -15,6 +15,7 @@ public class Attribute extends ShopEntity implements Serializable {
 	private String type = null;
 	private String code = null;
 	private List<AttributeValue> values = null;
+	private AttributeValue readOnlyValue = null;
 	public String getName() {
 		return name;
 	}
@@ -41,6 +42,12 @@ public class Attribute extends ShopEntity implements Serializable {
 	}
 	public String getCode() {
 		return code;
+	}
+	public void setReadOnlyValue(AttributeValue readOnlyValue) {
+		this.readOnlyValue = readOnlyValue;
+	}
+	public AttributeValue getReadOnlyValue() {
+		return readOnlyValue;
 	}
 
 
