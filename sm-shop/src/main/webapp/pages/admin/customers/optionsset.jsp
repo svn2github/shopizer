@@ -36,7 +36,7 @@
 							<s:message code="label.customer.option" text="Option" />
 						</label>
 						<div class="controls">
-							<form:select path="pk.customerOption.id">
+							<form:select path="customerOption.id">
 								<form:options items="${options}" itemValue="id"
 									itemLabel="descriptionsSettoList[0].name" />
 							</form:select>
@@ -49,7 +49,7 @@
 							<s:message code="label.customer.option.value" text="Option value" />
 						</label>
 						<div class="controls">
-							<form:select path="pk.customerOptionValue.id">
+							<form:select path="customerOptionValue.id">
 								<form:options items="${optionsValues}" itemValue="id"
 									itemLabel="descriptionsSettoList[0].name" />
 							</form:select>
