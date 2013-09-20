@@ -12,30 +12,16 @@ import com.salesmanager.core.business.customer.model.attribute.QCustomerOptionDe
 import com.salesmanager.core.business.customer.model.attribute.QCustomerOptionSet;
 import com.salesmanager.core.business.customer.model.attribute.QCustomerOptionValue;
 import com.salesmanager.core.business.customer.model.attribute.QCustomerOptionValueDescription;
-import com.salesmanager.core.business.generic.dao.SalesManagerJpaDaoSupport;
+import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 
 @Repository("customerOptionSetDao")
-public class CustomerOptionSetDaoImpl extends SalesManagerJpaDaoSupport implements CustomerOptionSetDao {
+public class CustomerOptionSetDaoImpl extends SalesManagerEntityDaoImpl<Long, CustomerOptionSet> implements CustomerOptionSetDao {
 	
-	/**
-	 * Does not respect a single ID, had to implement update delete methods
-	 */
+
 	@Override
-	public void update(CustomerOptionSet entity) {
-		super.update(entity);
-	}
-	@Override
-	public void delete(CustomerOptionSet entity) {
-		if (!getEntityManager().contains(entity)) {
-			getEntityManager().merge(entity);
-		}
-		getEntityManager().remove(entity);
-	}
-	
-	@Override
-	public CustomerOptionSet getById(Long customerOptionId, Long customerOptionValueId) {
+	public CustomerOptionSet getById(Long customerOptionSetId) {
 		QCustomerOptionSet qCustomerOptionSet= QCustomerOptionSet.customerOptionSet;
 		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
 		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
@@ -48,8 +34,7 @@ public class CustomerOptionSetDaoImpl extends SalesManagerJpaDaoSupport implemen
 			.join(qCustomerOptionSet.customerOptionValue,qCustomerOptionValue).fetch()
 			.leftJoin(qCustomerOption.descriptions).fetch()
 			.leftJoin(qCustomerOptionValue.descriptions).fetch()
-			.where(qCustomerOptionSet.customerOption.id.eq(customerOptionId)
-					.and(qCustomerOptionSet.customerOptionValue.id.eq(customerOptionValueId))
+			.where(qCustomerOptionSet.id.eq(customerOptionSetId)
 			);
 		
 		return query.uniqueResult(qCustomerOptionSet);

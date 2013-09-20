@@ -2,7 +2,6 @@ package com.salesmanager.core.business.customer.service.attribute;
 
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +9,6 @@ import com.salesmanager.core.business.customer.dao.attribute.CustomerOptionDao;
 import com.salesmanager.core.business.customer.dao.attribute.CustomerOptionSetDao;
 import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOption;
-import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -57,50 +55,8 @@ public class CustomerOptionServiceImpl extends
 		}
 		
 	}
-	
-	@Override
-	public void addCustomerOptionSet(CustomerOptionSet optionSet, CustomerOption option) throws ServiceException {
-		
-		Validate.notNull(optionSet,"optionSet cannot be null");
-		Validate.notNull(option,"option cannot be null");
-		option.getCustomerOptions().add(optionSet);
-		this.update(option);
-		//customerOptionSetDao.save(optionSet);
-	}
-	
-	@Override
-	public List<CustomerOptionSet> listByOption(CustomerOption option, MerchantStore store) throws ServiceException {
-		Validate.notNull(store,"merchant store cannot be null");
-		Validate.notNull(option,"option cannot be null");
-		
-		return customerOptionSetDao.getByOptionId(store, option.getId());
-	}
-	
-	@Override
-	public List<CustomerOptionSet> listCustomerOptionSetByStore(MerchantStore store, Language language) throws ServiceException {
-		Validate.notNull(store,"merchant store cannot be null");
 
-		
-		return customerOptionSetDao.listByStore(store,language);
-	}
-	
-	@Override
-	public CustomerOptionSet getCustomerOptionSetById(Long customerOptionId, Long customerOptionValueId) throws ServiceException {
-		return customerOptionSetDao.getById(customerOptionId,customerOptionValueId);
-	}
-	
-	@Override
-	public void removeCustomerOptionSet(CustomerOptionSet customerOptionSet) throws ServiceException {
-		Validate.notNull(customerOptionSet,"customerOptionSet cannot be null");
-		customerOptionSetDao.delete(customerOptionSet);
-	}
-	
-	@Override
-	public void updateCustomerOptionSet(CustomerOptionSet customerOptionSet) throws ServiceException {
-		Validate.notNull(customerOptionSet,"customerOptionSet cannot be null");
-		customerOptionSetDao.update(customerOptionSet);
-	}
-	
+
 	@Override
 	public void delete(CustomerOption customerOption) throws ServiceException {
 		

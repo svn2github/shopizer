@@ -64,11 +64,6 @@ public class CustomerOption extends SalesManagerEntity<Long, CustomerOption> {
 	
 	@Transient
 	private List<CustomerOptionDescription> descriptionsList = new ArrayList<CustomerOptionDescription>();
-	
-	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOption", cascade=CascadeType.ALL)
-	private Set<CustomerOptionSet> customerOptions = new HashSet<CustomerOptionSet>();
-
 
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -169,18 +164,6 @@ public class CustomerOption extends SalesManagerEntity<Long, CustomerOption> {
 
 	public void setPublicOption(boolean publicOption) {
 		this.publicOption = publicOption;
-	}
-
-
-
-	public void setCustomerOptions(Set<CustomerOptionSet> customerOptions) {
-		this.customerOptions = customerOptions;
-	}
-
-
-
-	public Set<CustomerOptionSet> getCustomerOptions() {
-		return customerOptions;
 	}
 
 

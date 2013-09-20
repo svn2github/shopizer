@@ -1,22 +1,30 @@
 package com.salesmanager.core.business.customer.model.attribute;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
+import javax.persistence.UniqueConstraint;
 
+import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.constants.SchemaConstant;
 
 @Entity
-@Table(name="CUSTOMER_OPTION_SET", schema=SchemaConstant.SALESMANAGER_SCHEMA)
-@IdClass(CustomerOptionSetId.class)
-//@AssociationOverrides({
-//        @AssociationOverride(name = "pk.customerOption", 
-//            joinColumns = @JoinColumn(name = "CUSTOMER_OPTION_ID")),
-//        @AssociationOverride(name = "pk.customerOptionValue", 
-//            joinColumns = @JoinColumn(name = "CUSTOMER_OPTION_VALUE_ID")) })
-
-public class CustomerOptionSet {
+@Table(name="CUSTOMER_OPTION_SET", schema=SchemaConstant.SALESMANAGER_SCHEMA,
+	uniqueConstraints={
+		@UniqueConstraint(columnNames={
+				"CUSTOMER_OPTIONSET_ID",
+				"OPTION_VALUE_ID",
+				"PRODUCT_ID"
+			})
+	}
+)
+public class CustomerOptionSet extends SalesManagerEntity<Long, CustomerOptionSet> {
 
 	
 	/**
@@ -24,18 +32,18 @@ public class CustomerOptionSet {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	//@Valid
-	//private CustomerOptionSetId pk = new CustomerOptionSetId();
+	@Column(name = "CUSTOMER_OPTIONSET_ID", unique=true, nullable=false)
+	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "CUST_OPTSET_SEQ_NEXT_VAL")
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
+	private Long id;
 	
-	//@Column(name = "CUSTOMER_OPTIONSET_ID", unique=true, nullable=false)
-	//@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "CUST_OPTSET_SEQ_NEXT_VAL")
-	//@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
-	//private Long id;
-	
-	@Id
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="CUSTOMER_OPTION_ID", nullable=false)
 	private CustomerOption customerOption = null;
 
-	@Id
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="CUSTOMER_OPTION_VALUE_ID", nullable=false)
 	private CustomerOptionValue customerOptionValue = null;
 	
 
@@ -52,16 +60,6 @@ public class CustomerOptionSet {
 		this.sortOrder = sortOrder;
 	}
 
-	
-	//@EmbeddedId
-	//public CustomerOptionSetId getPk() {
-	//	return pk;
-	//}
-
-	//public void setPk(CustomerOptionSetId pk) {
-	//	this.pk = pk;
-	//}
-
 	public void setCustomerOptionValue(CustomerOptionValue customerOptionValue) {
 		this.customerOptionValue = customerOptionValue;
 	}
@@ -76,6 +74,16 @@ public class CustomerOptionSet {
 
 	public CustomerOption getCustomerOption() {
 		return customerOption;
+	}
+
+	@Override
+	public Long getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 

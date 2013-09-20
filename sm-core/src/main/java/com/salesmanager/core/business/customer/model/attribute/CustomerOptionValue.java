@@ -64,12 +64,7 @@ public class CustomerOptionValue extends SalesManagerEntity<Long, CustomerOption
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
 	private MerchantStore merchantStore;
-	
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "customerOptionValue", cascade=CascadeType.ALL)
-	private Set<CustomerOptionSet> customerOptions = new HashSet<CustomerOptionSet>();
-
-	
 	public CustomerOptionValue() {
 	}
 
@@ -140,13 +135,6 @@ public class CustomerOptionValue extends SalesManagerEntity<Long, CustomerOption
 		this.code = code;
 	}
 
-	public void setCustomerOptions(Set<CustomerOptionSet> customerOptions) {
-		this.customerOptions = customerOptions;
-	}
-
-	public Set<CustomerOptionSet> getCustomerOptions() {
-		return customerOptions;
-	}
 
 	public void setSortOrder(Integer sortOrder) {
 		this.sortOrder = sortOrder;
