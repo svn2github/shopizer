@@ -111,14 +111,30 @@
                     <div class="row">
                         <div class="span9">
 							<ul class="nav nav-tabs" id="myTab">
-								<li class="active"><a href="#home">Description</a></li>
-								<li><a href="#profile">Additional Information</a></li><!-- TODO read only attributes -->
+								<li class="active"><a href="#description"><s:message code="label.productedit.productdesc" text="Product description" /></a></li>
+								<li><a href="#reviews"><s:message code="label.product.customer.reviews" text="Customer reviews" /></a></li><!-- TODO read only attributes -->
 							</ul>							 
 							<div class="tab-content">
-								<div class="tab-pane active" id="home">
+								<div class="tab-pane active" id="description">
 									<c:out value="${product.description}"/>
+									<br/>
+									<br/>
+									
+									<!--  read only properties -->
+									<c:if test="${attributes!=null}">
+										<table>
+										<c:forEach items="${attributes.values}" var="attribute">
+										<tr>
+	                        				<td><label><c:out value="${attribute.name}"/></label></td>
+											<td><label><c:out value="${attribute.readOnlyValue.name}" /></label></td>
+										</tr>
+									</c:forEach>
+									</table>
+								  </c:if>
+									
+									
 								</div>
-								<div class="tab-pane" id="profile">
+								<div class="tab-pane" id="reviews">
 									<table class="table table-striped shop_attributes">	
 										<tbody>
 											<tr class="">
@@ -218,11 +234,6 @@
             </div>
             
 
-        		
-    
-        <script src="product_detail_files/jquery-1.js"></script>		
-		<script src="product_detail_files/bootstrap.js"></script>
-		<script src="product_detail_files/jquery.js"></script>
 		<script>
 			$(function () {
 				$('#myTab a:first').tab('show');
