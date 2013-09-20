@@ -9,7 +9,7 @@ public abstract class ShopEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private String language;
-	private Long id;
+	private Long id = 0L;
 	public void setLanguage(String language) {
 		this.language = language;
 	}
