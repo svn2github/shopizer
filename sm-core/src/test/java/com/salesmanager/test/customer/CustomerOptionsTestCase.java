@@ -15,7 +15,6 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOption;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionDescription;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
-import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSetId;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionValueDescription;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -150,9 +149,9 @@ public class CustomerOptionsTestCase extends AbstractSalesManagerCoreTestCase {
 		mailingListSetYes.setCustomerOption(subscribedToMailingList);
 		mailingListSetYes.setCustomerOptionValue(yes);
 		
-		
-		subscribedToMailingList.getCustomerOptions().add(mailingListSetYes);
-		customerOptionService.update(subscribedToMailingList);
+		customerOptionSetService.create(mailingListSetYes);
+		//subscribedToMailingList.getCustomerOptions().add(mailingListSetYes);
+		//customerOptionService.update(subscribedToMailingList);
 		
 /*		CustomerOptionSetId mailingListSetNoId = new CustomerOptionSetId();
 		mailingListSetNoId.setCustomerOption(subscribedToMailingList);
@@ -164,8 +163,10 @@ public class CustomerOptionsTestCase extends AbstractSalesManagerCoreTestCase {
 		mailingListSetNo.setCustomerOption(subscribedToMailingList);
 		mailingListSetNo.setCustomerOptionValue(no);
 		
-		subscribedToMailingList.getCustomerOptions().add(mailingListSetNo);
-		customerOptionService.update(subscribedToMailingList);
+		customerOptionSetService.create(mailingListSetNo);
+		
+		//subscribedToMailingList.getCustomerOptions().add(mailingListSetNo);
+		//customerOptionService.update(subscribedToMailingList);
 		
 		
 /*		CustomerOptionSetId hasReturnedItemsYesId = new CustomerOptionSetId();
@@ -178,9 +179,11 @@ public class CustomerOptionsTestCase extends AbstractSalesManagerCoreTestCase {
 		hasReturnedItemsYes.setCustomerOption(hasReturnedItems);
 		hasReturnedItemsYes.setCustomerOptionValue(yes);
 		
+		customerOptionSetService.create(hasReturnedItemsYes);
 		
-		hasReturnedItems.getCustomerOptions().add(hasReturnedItemsYes);
-		customerOptionService.update(hasReturnedItems);
+		
+		//hasReturnedItems.getCustomerOptions().add(hasReturnedItemsYes);
+		//customerOptionService.update(hasReturnedItems);
 		
 		subscribedToMailingList.setSortOrder(2);
 		customerOptionService.update(subscribedToMailingList);
@@ -190,12 +193,12 @@ public class CustomerOptionsTestCase extends AbstractSalesManagerCoreTestCase {
 		option.setSortOrder(4);
 		customerOptionService.update(option);
 		
-		Assert.assertEquals(2, option.getCustomerOptions().size());
-		System.out.println("Size of options : " + option.getCustomerOptions().size());
+		List<CustomerOptionSet> optionSetList = customerOptionSetService.listByStore(store, en);
 		
-		//get all options set
-		List<CustomerOptionSet> optionSets = customerOptionService.listCustomerOptionSetByStore(store, en);
-		Assert.assertNotNull(optionSets);
+		Assert.assertEquals(3, optionSetList.size());
+		System.out.println("Size of options : " + optionSetList.size());
+		
+
 		
 		
 		
