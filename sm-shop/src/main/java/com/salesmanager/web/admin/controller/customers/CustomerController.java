@@ -34,6 +34,7 @@ import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
+import com.salesmanager.core.business.customer.service.attribute.CustomerOptionSetService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
@@ -62,6 +63,9 @@ public class CustomerController {
 	
 	@Autowired
 	CustomerOptionService customerOptionService;
+	
+	@Autowired
+	private CustomerOptionSetService customerOptionSetService;
 	
 	@Autowired
 	CountryService countryService;
@@ -124,7 +128,7 @@ public class CustomerController {
 		
 		Map<Long,CustomerOption> options = new HashMap<Long,CustomerOption>();
 		//get options
-		List<CustomerOptionSet> optionSet = customerOptionService.listCustomerOptionSetByStore(store, language);
+		List<CustomerOptionSet> optionSet = customerOptionSetService.listByStore(store, language);
 		if(!CollectionUtils.isEmpty(optionSet)) {
 			
 			Set<CustomerAttribute> customerAttributes = customer.getAttributes();

@@ -4,13 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +29,7 @@ import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionValueDescription;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
+import com.salesmanager.core.business.customer.service.attribute.CustomerOptionSetService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionValueService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -46,6 +45,9 @@ public class CustomerOptionsSetController {
 	
 	@Autowired
 	private LanguageService languageService;
+	
+	@Autowired
+	private CustomerOptionSetService customerOptionSetService;
 	
 	@Autowired
 	private CustomerOptionService customerOptionService;
@@ -136,7 +138,7 @@ public class CustomerOptionsSetController {
 		}
 		
 		
-		List<CustomerOptionSet> optionsSet = customerOptionService.listCustomerOptionSetByStore(store, language);
+		List<CustomerOptionSet> optionsSet = customerOptionSetService.listByStore(store, language);
 		
 		if(optionsSet!=null && optionsSet.size()>0) {
 			
@@ -168,7 +170,7 @@ public class CustomerOptionsSetController {
 		optionSet.setCustomerOption(option);
 		//optionSet.getPk().setCustomerOptionValue(optionValue);
 		optionSet.setCustomerOptionValue(optionValue);
-		customerOptionService.addCustomerOptionSet(optionSet, option);
+		customerOptionSetService.create(optionSet);
 
 		
 
@@ -194,7 +196,7 @@ public class CustomerOptionsSetController {
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 			//List<CustomerOption> options = null;
 				
-			List<CustomerOptionSet> optionSet = customerOptionService.listCustomerOptionSetByStore(store, language);
+			List<CustomerOptionSet> optionSet = customerOptionSetService.listByStore(store, language);
 			//for(CustomerOption option : options) {
 				
 				
@@ -213,7 +215,7 @@ public class CustomerOptionsSetController {
 						Map entry = new HashMap();
 						
 						
-						entry.put("id", new StringBuilder().append(optSet.getCustomerOption().getId()).append("-").append(optSet.getCustomerOptionValue().getId()));
+						entry.put("id", optSet.getId());
 
 						CustomerOptionDescription description = customerOption.getDescriptionsSettoList().get(0);
 						CustomerOptionValueDescription valueDescription = customerOptionValue.getDescriptionsSettoList().get(0);
@@ -279,13 +281,12 @@ public class CustomerOptionsSetController {
 		
 		try {
 			
-			//parse id
-			String[] ids = sid.split("-");
+
 			
-			Long optionId = Long.parseLong(ids[0]);
-			Long optionValueId = Long.parseLong(ids[1]);
+			Long optionSetId = Long.parseLong(sid);
+
 			
-			CustomerOptionSet entity = customerOptionService.getCustomerOptionSetById(optionId,optionValueId);
+			CustomerOptionSet entity = customerOptionSetService.getById(optionSetId);
 			//if(entity==null || entity.getPk().getCustomerOption().getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 			if(entity==null || entity.getCustomerOption().getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 
@@ -294,7 +295,7 @@ public class CustomerOptionsSetController {
 				
 			} else {
 				
-				customerOptionService.removeCustomerOptionSet(entity);
+				customerOptionSetService.delete(entity);
 				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 				
 			}
@@ -331,20 +332,16 @@ public class CustomerOptionsSetController {
 			Map conf = mapper.readValue(values, Map.class);
 			
 			String sid = (String)conf.get("id");
-			//parse id
-			String[] ids = sid.split("-");
-			
-			Long optionId = Long.parseLong(ids[0]);
-			Long optionValueId = Long.parseLong(ids[1]);
 
-			
-			CustomerOptionSet entity = customerOptionService.getCustomerOptionSetById(optionId,optionValueId);
+			Long optionId = Long.parseLong(sid);
+
+			CustomerOptionSet entity = customerOptionSetService.getById(optionId);
 			
 			
 			if(entity!=null) {
 				
 				entity.setSortOrder(Integer.parseInt(order));
-				customerOptionService.updateCustomerOptionSet(entity);
+				customerOptionSetService.update(entity);
 				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 				
 			}
