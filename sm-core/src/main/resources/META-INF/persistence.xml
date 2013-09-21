@@ -38,7 +38,6 @@
 		<class>com.salesmanager.core.business.customer.model.attribute.CustomerOptionDescription</class>
 		<class>com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue</class>
 		<class>com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet</class>
-		<class>com.salesmanager.core.business.customer.model.attribute.CustomerOptionSetId</class>
 		<class>com.salesmanager.core.business.customer.model.attribute.CustomerOptionValueDescription</class>
 		
 		<class>com.salesmanager.core.business.catalog.category.model.Category</class>
