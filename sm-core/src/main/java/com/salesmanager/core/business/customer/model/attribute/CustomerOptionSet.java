@@ -19,9 +19,8 @@ import com.salesmanager.core.constants.SchemaConstant;
 @Table(name="CUSTOMER_OPTION_SET", schema=SchemaConstant.SALESMANAGER_SCHEMA,
 	uniqueConstraints={
 		@UniqueConstraint(columnNames={
-				"CUSTOMER_OPTIONSET_ID",
-				"OPTION_VALUE_ID",
-				"PRODUCT_ID"
+				"CUSTOMER_OPTION_ID",
+				"CUSTOMER_OPTION_VALUE_ID"
 			})
 	}
 )
