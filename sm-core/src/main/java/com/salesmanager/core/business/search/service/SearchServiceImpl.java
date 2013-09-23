@@ -1,20 +1,35 @@
 package com.salesmanager.core.business.search.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
+import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
+import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.search.model.IndexProduct;
 
 
 @Service("productSearchService")
 public class SearchServiceImpl implements SearchService {
 	
-	//@Autowired
-	//private com.shopizer.search.services.SearchService searchService;
+	@Autowired
+	private com.shopizer.search.services.SearchService searchService;
+	
+	@Autowired
+	private PricingService pricingService;
 
 	@Override
 	public void index(MerchantStore store, Product product, Language language)
@@ -49,7 +64,7 @@ public class SearchServiceImpl implements SearchService {
 		 * of .toJSONString on IndexProduct
 		 * 
 		 * The next step will be to delegate to com.shopizer.search.SearchService.index
-		 * searchService.index(json, "product_<LANGUAGE_CODE>_<MERCHANT_ID>", "product");
+		 * searchService.index(json, "product_<LANGUAGE_CODE>_<MERCHANT_CODE>", "product");
 		 * 
 		 * example ...index(json,"product_en_1",product)
 		 * 
@@ -63,7 +78,39 @@ public class SearchServiceImpl implements SearchService {
 		 * 
 		 */
 		
+		FinalPrice price = pricingService.calculateProductPrice(product);
+
 		
+		Set<ProductDescription> descriptions = product.getDescriptions();
+		for(ProductDescription description : descriptions) {
+			
+			IndexProduct index = new IndexProduct();
+
+			index.setAvailable(product.isAvailable());
+			index.setDescription(description.getDescription());
+			index.setName(description.getName());
+			index.setPrice(price.getFinalPrice().doubleValue());
+			index.setHighlight(description.getProductHighlight());
+			if(!StringUtils.isBlank(description.getMetatagKeywords())){
+				String[] tags = description.getMetatagKeywords().split(",");
+				List<String> tagsList = Arrays.asList(tags);
+				index.setTags(tagsList);
+			}
+			
+			Set<Category> categories = product.getCategories();
+			if(!CollectionUtils.isEmpty(categories)) {
+				List<String> categoryList = new ArrayList<String>();
+				for(Category category : categories) {
+					categoryList.add(category.getCode());
+				}
+				index.setCategories(categoryList);
+			}
+			
+			
+			
+		}
+		
+		//searchService.index(json, collection, object);
 
 	}
 	

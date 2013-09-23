@@ -1,23 +1,40 @@
 package com.salesmanager.core.business.search.model;
 
 import java.util.List;
+import java.util.Map;
 
+import org.codehaus.jackson.map.ObjectMapper;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONAware;
+import org.json.simple.JSONObject;
+
+import com.salesmanager.core.business.generic.exception.ServiceException;
+import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 
 public class IndexProduct implements JSONAware {
 	
 	private String name;
-	private String price;
-	private List<String> categories;
+	private Double price;
+	private List<String> categories;//category code
 	private boolean available;
 	private String description;
 	private List<String> tags;//keywords ?
 	private String highlight;
+	private String store;
+	private String lang;
 
 	@Override
 	public String toJSONString() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		JSONArray categories = new JSONArray();
+		
+		JSONObject obj = new JSONObject();
+		obj.put("name", this.getName());
+		
+		return obj.toJSONString();
+
+		
+		
 	}
 
 	public String getName() {
@@ -28,13 +45,6 @@ public class IndexProduct implements JSONAware {
 		this.name = name;
 	}
 
-	public String getPrice() {
-		return price;
-	}
-
-	public void setPrice(String price) {
-		this.price = price;
-	}
 
 	public List<String> getCategories() {
 		return categories;
@@ -74,6 +84,30 @@ public class IndexProduct implements JSONAware {
 
 	public void setHighlight(String highlight) {
 		this.highlight = highlight;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public void setStore(String store) {
+		this.store = store;
+	}
+
+	public String getStore() {
+		return store;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+
+	public String getLang() {
+		return lang;
 	}
 
 }

@@ -10,6 +10,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -55,7 +57,8 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 	private Set<CustomerAttribute> attributes = new HashSet<CustomerAttribute>();
 	
 	@Column(name="CUSTOMER_GENDER", length=1, nullable=true)
-	private String gender;
+	@Enumerated(value = EnumType.STRING)
+	private CustomerGender gender;
 
 	@Column(name="CUSTOMER_FIRSTNAME", length=32, nullable=false)
 	private String firstname;
@@ -169,13 +172,6 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 		this.id = id;
 	}
 
-	public String getGender() {
-		return gender;
-	}
-
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
 
 	public String getFirstname() {
 		return firstname;
@@ -390,6 +386,14 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 
 	public Set<CustomerAttribute> getAttributes() {
 		return attributes;
+	}
+
+	public void setGender(CustomerGender gender) {
+		this.gender = gender;
+	}
+
+	public CustomerGender getGender() {
+		return gender;
 	}
 	
 }
