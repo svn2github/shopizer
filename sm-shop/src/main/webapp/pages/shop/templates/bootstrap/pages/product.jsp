@@ -149,86 +149,33 @@
 									</table>
 								</div>
 							</div>							
-                        </div>						
+                        </div>	
+                        
+                        <!-- Related items -->
+                        <c:if test="${relatedProducts!=null}">					
 						<div class="span9">	
 							<br>
-							<h2 class="title">Related Products</h2>
+							<h2 class="title"><s:message code="label.product.related.title" text="Related items"/></h2>
 							<hr>
-							<div id="myCarousel" class="carousel slide">
+							<div id="relatedItems" class="carousel slide">
 								<div class="carousel-inner">
 									<div class="active item">
 										<ul class="thumbnails listing-products">
-											<li class="span3">
-												<div class="product-box">
-													<a href="http://wbpreview.com/previews/WB0M3G9S1/product_detail.html"><h4>Praesent tempor sem sodales</h4></a>
-													<a href="http://wbpreview.com/previews/WB0M3G9S1/product_detail.html"><img alt="" src="product_detail_files/m3.jpg"></a>
-													<p>Integer in ligula et erat gravida placerat</p>
-													<div class="bottom">
-														<a class="view" href="http://wbpreview.com/previews/WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://wbpreview.com/previews/WB0M3G9S1/cart.html">add to cart</a>
-													</div>
-												</div>
-											</li>
-											<li class="span3">
-												<div class="product-box">
-													<a href="http://wbpreview.com/previews/WB0M3G9S1/product_detail.html"><h4>Luctus quam ultrices rutrum</h4></a>
-													<a href="http://wbpreview.com/previews/WB0M3G9S1/product_detail.html"><img alt="" src="product_detail_files/m4.jpg"></a>
-													<p>Suspendisse aliquet orci et nisl iaculis</p>
-													<div class="bottom">
-														<a class="view" href="http://wbpreview.com/previews/WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://wbpreview.com/previews/WB0M3G9S1/cart.html">add to cart</a>
-													</div>
-												</div>
-											</li>
-											<li class="span3">
-												<div class="product-box">
-													<a href="http://wbpreview.com/previews/WB0M3G9S1/product_detail.html"><h4>Praesent tempor sem sodales</h4></a>
-													<a href="http://wbpreview.com/previews/WB0M3G9S1/product_detail.html"><img alt="" src="product_detail_files/m5.jpg"></a>
-													<p>Nam imperdiet urna nec lectus mollis</p>
-													<div class="bottom">
-														<a class="view" href="http://wbpreview.com/previews/WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://wbpreview.com/previews/WB0M3G9S1/cart.html">add to cart</a>
-													</div>
-												</div>
-											</li>
+											<!-- Iterate over featuredItems -->
+											<c:set var="ITEMS" value="${relatedProducts}" scope="request" />
+	                         				<jsp:include page="/pages/shop/templates/bootstrap/sections/productBox.jsp" />
 										</ul>
 									</div>
-									<div class="item">
-										<ul class="thumbnails listing-products">
-											<li class="span3">
-												<div class="product-box">                                        
-													<a href="http://wbpreview.com/previews/WB0M3G9S1/product_detail.html"><h4>Fusce id molestie massa</h4></a>
-													<a href="http://wbpreview.com/previews/WB0M3G9S1/product_detail.html"><img alt="" src="product_detail_files/m2.jpg"></a>
-													<p>Phasellus consequat sem congue diam congue</p>
-													<div class="bottom">
-														<a class="view" href="http://wbpreview.com/previews/WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://wbpreview.com/previews/WB0M3G9S1/cart.html">add to cart</a>
-													</div>
-												</div>
-											</li>       
-											<li class="span3">
-												<div class="product-box">
-													<a href="http://wbpreview.com/previews/WB0M3G9S1/product_detail.html"><h4>Praesent tempor sem sodales</h4></a>
-													<a href="http://wbpreview.com/previews/WB0M3G9S1/product_detail.html"><img alt="" src="product_detail_files/m3.jpg"></a>
-													<p>Integer in ligula et erat gravida placerat</p>
-													<div class="bottom">
-														<a class="view" href="http://wbpreview.com/previews/WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://wbpreview.com/previews/WB0M3G9S1/cart.html">add to cart</a>
-													</div>
-												</div>
-											</li>
-											<li class="span3">
-												<div class="product-box">
-													<a href="http://wbpreview.com/previews/WB0M3G9S1/product_detail.html"><h4>Luctus quam ultrices rutrum</h4></a>
-													<a href="http://wbpreview.com/previews/WB0M3G9S1/product_detail.html"><img alt="" src="product_detail_files/m7.jpg"></a>
-													<p>Suspendisse aliquet orci et nisl iaculis</p>
-													<div class="bottom">
-														<a class="view" href="http://wbpreview.com/previews/WB0M3G9S1/product_detail.html">view</a> / <a class="addcart" href="http://wbpreview.com/previews/WB0M3G9S1/cart.html">add to cart</a>
-													</div>
-												</div>
-											</li>
-										</ul>
-									</div>
+
 								</div>
-								<a class="carousel-control left" href="#myCarousel" data-slide="prev">‹</a>
-								<a class="carousel-control right" href="#myCarousel" data-slide="next">›</a>
+							</div>
+							<a class="carousel-control left" href="#myCarousel" data-slide="prev">Previous</a>
+							<a class="carousel-control right" href="#myCarousel" data-slide="next">Next</a>
 							</div>
 						</div>
+						</c:if>
+						
+						
                     </div>
                 </div>
             </div>
