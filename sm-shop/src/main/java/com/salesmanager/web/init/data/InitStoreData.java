@@ -33,6 +33,7 @@ import com.salesmanager.core.business.catalog.product.service.price.ProductPrice
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
 import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.model.CustomerGender;
 import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -590,7 +591,7 @@ public class InitStoreData implements InitData {
 			customer.setLastname("DiCaprio");
 			customer.setCity("Boucherville");
 			customer.setEmailAddress("test@shopizer.com");
-			customer.setGender("M");						
+			customer.setGender(CustomerGender.M);						
 			customer.setTelephone("444-555-6666");
 			customer.setAnonymous(false);
 			customer.setCompany("CSTI Consulting");
