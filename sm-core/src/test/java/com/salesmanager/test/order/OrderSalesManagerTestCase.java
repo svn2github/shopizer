@@ -17,6 +17,7 @@ import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDe
 import com.salesmanager.core.business.catalog.product.model.type.ProductType;
 import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.model.CustomerGender;
 import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -100,7 +101,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		customer.setLastname("DiCaprio");
 		customer.setCity("city");
 		customer.setEmailAddress("test@test.com");
-		customer.setGender("M");						
+		customer.setGender(CustomerGender.M);						
 		customer.setTelephone("444-555-6666");
 		customer.setAnonymous(true);
 		customer.setCompany("ifactory");
@@ -295,7 +296,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		customer.setPassword("-1999");
 		customer.setNick("My New nick");
 		customer.setCompany(" Apple");	
-		customer.setGender("F");
+		customer.setGender(CustomerGender.M);
 		customer.setFax("fax-123-4443");
 		customer.setDateOfBirth(new Date());		
 		
@@ -391,7 +392,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		firstCustomer.setLastname("Di Caprio");
 		firstCustomer.setCity("city");
 		firstCustomer.setEmailAddress("test@test.com");
-		firstCustomer.setGender("M");
+		firstCustomer.setGender(CustomerGender.M);
 		firstCustomer.setTelephone("00000");
 		firstCustomer.setAnonymous(true);
 		firstCustomer.setCompany("ifactory");
@@ -429,7 +430,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		secondCustomer.setLastname("Cruise");
 		secondCustomer.setCity("city");
 		secondCustomer.setEmailAddress("test@test.com");
-		secondCustomer.setGender("M");
+		secondCustomer.setGender(CustomerGender.M);
 		secondCustomer.setTelephone("00000");
 		secondCustomer.setDateOfBirth(new Date());
 		secondCustomer.setPassword("123456");
@@ -451,7 +452,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		thirdCustomer.setLastname("Control");
 		thirdCustomer.setCity("city");
 		thirdCustomer.setEmailAddress("test@test.com");
-		thirdCustomer.setGender("M");
+		thirdCustomer.setGender(CustomerGender.M);
 		thirdCustomer.setTelephone("00000");
 		thirdCustomer.setDateOfBirth(new Date());
 		thirdCustomer.setPassword("123456");

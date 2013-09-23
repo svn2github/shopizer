@@ -19,6 +19,7 @@ import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDe
 import com.salesmanager.core.business.catalog.product.model.type.ProductType;
 import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.model.CustomerGender;
 import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -347,7 +348,7 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 		customer.setLastname("User");
 		customer.setCity("city");
 		customer.setEmailAddress("test@test.com");
-		customer.setGender("M");
+		customer.setGender(CustomerGender.M);
 		customer.setTelephone("00000");
 		customer.setAnonymous(true);
 		customer.setCompany("ifactory");
@@ -536,7 +537,7 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 		customer.setLastname("User");
 		customer.setCity("city");
 		customer.setEmailAddress("test@test.com");
-		customer.setGender("M");
+		customer.setGender(CustomerGender.M);
 		customer.setTelephone("00000");
 		customer.setAnonymous(true);
 		customer.setCompany("ifactory");
