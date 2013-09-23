@@ -97,7 +97,7 @@
 	<bean id="index" class="com.shopizer.search.services.worker.ObjectIndexerImpl">
 		<property name="indexConfigurations">
 			<list>
-				<ref bean="productindex" />
+				<ref bean="productindex_en_defaultstore" />
 			</list>
 		</property>
 	</bean>
@@ -105,8 +105,8 @@
 
 	
 	<!-- The presence of those properties will allow the creation of mapping files -->
-	<bean id="productindex" class="com.shopizer.search.utils.IndexConfiguration">
-		<property name="collectionName" value="product_%lang%_%id%"/>
+	<bean id="productindex_en_defaultstore" class="com.shopizer.search.utils.IndexConfiguration">
+		<property name="collectionName" value="product_en_default"/>
 		<property name="indexName" value="product"/>
 		<property name="mappingFileName" value="product.json"/>
 	</bean>
@@ -120,7 +120,7 @@
 	</bean>
 	
 	<bean id="keywordindex" class="com.shopizer.search.utils.CustomIndexConfiguration">
-		<property name="collectionName" value="keyword_%lang%_%id%"/>
+		<property name="collectionName" value="keyword_%lang%_%store%"/>
 		<property name="createOnIndexName" value="product"/>
 		<property name="fields">
 			<list>
