@@ -108,7 +108,7 @@
 	<bean id="productindex_en_defaultstore" class="com.shopizer.search.utils.IndexConfiguration">
 		<property name="collectionName" value="product_en_default"/>
 		<property name="indexName" value="product"/>
-		<property name="mappingFileName" value="product.json"/>
+		<property name="mappingFileName" value="spring/product.json"/>
 	</bean>
 		
 	<bean id="keyword" class="com.shopizer.search.services.worker.KeywordIndexerImpl">
