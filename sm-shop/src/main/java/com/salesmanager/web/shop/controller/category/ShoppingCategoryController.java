@@ -48,6 +48,25 @@ public class ShoppingCategoryController {
 	@Autowired
 	private CatalogUtils catalogUtils;
 	
+	/**
+	 * 
+	 * @param friendlyUrl
+	 * @param ref
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @param locale
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/shop/category/{friendlyUrl}.html/ref={ref}")
+	public String displayCategoryWithReference(@PathVariable final String friendlyUrl, @PathVariable final String ref, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+		
+		
+		return this.displayCategory(friendlyUrl,ref,model,request,response,locale);
+	}
+	
 	
 	/**
 	 * Category page entry point
@@ -58,9 +77,16 @@ public class ShoppingCategoryController {
 	 * @return
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
-	@RequestMapping("/shop/category/{friendlyUrl}.html{ref}")
-	public String displayCategory(@PathVariable final String friendlyUrl, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	@RequestMapping("/shop/category/{friendlyUrl}.html")
+	public String displayCategoryNoReference(@PathVariable final String friendlyUrl, @PathVariable final String ref, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+		
+		
+		return this.displayCategory(friendlyUrl,null,model,request,response,locale);
+	}
+	
+	
+	private String displayCategory(final String friendlyUrl, final String ref, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		
 		
@@ -135,6 +161,7 @@ public class ShoppingCategoryController {
 
 		return template.toString();
 	}
+
 
 	/**
 	 * Returns all categories for a given MerchantStore

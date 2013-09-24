@@ -201,9 +201,7 @@ public class ShoppingCartController {
 		
 		
 		//convert to entity
-		com.salesmanager.core.business.shoppingcart.model.ShoppingCart entity = this.convertToEntity(shoppingCart, store);
-		entity.setMerchantStore(store);
-		entity.setShoppingCartCode(shoppingCart.getCode());
+		com.salesmanager.core.business.shoppingcart.model.ShoppingCart entity = this.convertToEntity(shoppingCart, store, customer);
 		
 		//calculate total
 		OrderSummary summary = new OrderSummary();
@@ -447,7 +445,7 @@ public class ShoppingCartController {
 		
 	}
 	
-	private com.salesmanager.core.business.shoppingcart.model.ShoppingCart convertToEntity(ShoppingCart shoppingCart, MerchantStore store) throws Exception {
+	private com.salesmanager.core.business.shoppingcart.model.ShoppingCart convertToEntity(ShoppingCart shoppingCart, MerchantStore store, Customer customer) throws Exception {
 	
 		com.salesmanager.core.business.shoppingcart.model.ShoppingCart cart = null;
 		//if id >0 get the original from the database, override products
@@ -456,6 +454,10 @@ public class ShoppingCartController {
 		} else { //else create a new one
 			cart = new com.salesmanager.core.business.shoppingcart.model.ShoppingCart();
 			cart.setShoppingCartCode(shoppingCart.getCode());
+			cart.setMerchantStore(store);
+			if(customer!=null) {
+				cart.setCustomerId(customer.getId());
+			}
 			shoppingCartService.create(cart);
 		}
 
