@@ -2,13 +2,6 @@ package com.shopizer.search.utils;
 
 
 
-//import org.elasticsearch.client.Client;
-//import org.elasticsearch.client.transport.TransportClient;
-//import org.elasticsearch.common.settings.ImmutableSettings;
-//import org.elasticsearch.common.settings.Settings;
-//import org.elasticsearch.common.transport.InetSocketTransportAddress;
-//import org.elasticsearch.node.Node;
-
 import static org.elasticsearch.node.NodeBuilder.*;
 
 import org.elasticsearch.client.Client;
@@ -31,7 +24,7 @@ public class SearchClient {
 	private Client client = null;
 	private Node node = null;
 	private boolean init = false;
-	ServerConfiguration serverConfiguration = null;
+	private ServerConfiguration serverConfiguration = null;
 	
 
 

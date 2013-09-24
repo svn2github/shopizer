@@ -20,6 +20,10 @@ public class FileUtil {
 
         is = FileUtil.class.getClassLoader().getResourceAsStream(fileName);
         
+        if(is==null) {
+        	throw new java.io.IOException("File " + fileName + " not found");
+        }
+        
         InputStreamReader in =
         	new InputStreamReader(is
         			 );
@@ -38,16 +42,12 @@ public class FileUtil {
 			if(r!=null) {
 				try {
 					
-				} catch (Exception e) {
-					// TODO: handle exception
-				}
+				} catch (Exception ignore) {}
 			}
 			if(is!=null) {
 				try {
 					
-				} catch (Exception e) {
-					// TODO: handle exception
-				}
+				} catch (Exception ignore) {}
 			}
 		}
 

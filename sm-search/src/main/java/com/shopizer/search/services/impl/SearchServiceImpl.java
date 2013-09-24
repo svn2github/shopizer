@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequestBuilder;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -42,9 +44,6 @@ import com.shopizer.search.services.field.IntegerField;
 import com.shopizer.search.services.field.ListField;
 import com.shopizer.search.services.field.StringField;
 import com.shopizer.search.utils.SearchClient;
-//import org.elasticsearch.index.query.XContentFilterBuilder;
-//import org.elasticsearch.index.query.XContentQueryBuilder;
-//??????
 
 public class SearchServiceImpl {
 	
@@ -55,6 +54,15 @@ public class SearchServiceImpl {
 		this.searchClient = searchClient;
 	}
 	
+	public boolean indexExist(String indexName) throws Exception {
+		Client client = searchClient.getClient();
+		
+		IndicesExistsRequestBuilder indiceRequestBuilder = client.admin().indices().prepareExists(indexName);
+		IndicesExistsResponse indiceResponse = indiceRequestBuilder.execute().actionGet(); 
+		return indiceResponse.isExists();
+		
+	}
+	
 	/**
 	 * Creates a structure that represents the object and the content to be indexed
 	 */
@@ -63,18 +71,6 @@ public class SearchServiceImpl {
 	
 		
 		Client client = searchClient.getClient();
-		
-		
-/*		Map map = client.admin().cluster().state(new
-				ClusterStateRequest()).actionGet().getState().getMetaData().getIndices();
-
-		if(map!=null && map.size()>0) {
-			
-			if(map.containsKey("collection")) {
-				return;
-			}
-			
-		}*/
 
 
 		//maintain a list of created index
@@ -106,10 +102,9 @@ public class SearchServiceImpl {
 
 		
 		Client client = searchClient.getClient();
-		
-		//System.out.println(collection + " " + object + " " + id + "  " + json);
-		
-        IndexResponse r = client.prepareIndex(collection, object, id) 
+
+        @SuppressWarnings("unused")
+		IndexResponse r = client.prepareIndex(collection, object, id) 
         .setSource(json) 
         .execute() 
         .actionGet();
@@ -122,6 +117,7 @@ public class SearchServiceImpl {
 		
 		Client client = searchClient.getClient();
 		
+		@SuppressWarnings("unused")
 		DeleteResponse r = client.prepareDelete(collection, object, id) 
         .execute() 
         .actionGet();
@@ -144,7 +140,7 @@ public class SearchServiceImpl {
 				DeleteRequest dr = new DeleteRequest();
 				dr.type("keyword").index(collection).id(s);
 				
-				System.out.println(dr.toString());
+				//System.out.println(dr.toString());
 				
 				bulkRequest.add(dr);
 				
@@ -197,7 +193,8 @@ public class SearchServiceImpl {
                     .field("keyword", key.getKey())
                     .field("_id_", key.getId());
                     
-                    Collection fields = key.getFilters();
+                    @SuppressWarnings("rawtypes")
+					Collection fields = key.getFilters();
                     if(fields.size()>0) {
                     	
                     	for(Object o : fields) {
@@ -215,7 +212,8 @@ public class SearchServiceImpl {
                     			
                     		} else if(o instanceof ListField) {
                     			
-                    			List val = ((ListField)o).getValue();
+                    			@SuppressWarnings("rawtypes")
+								List val = ((ListField)o).getValue();
                     			b.field(((Field)o).getName(), val);
                     			
                     		} else if(o instanceof DoubleField) {
@@ -352,8 +350,10 @@ public class SearchServiceImpl {
 	
 	        org.elasticsearch.action.search.SearchResponse rsp = builder.execute().actionGet();
 	        SearchHit[] docs = rsp.getHits().getHits();
-	        List<com.shopizer.search.services.SearchHit> hits = new ArrayList();
-	        List ids = new ArrayList();
+	        @SuppressWarnings("unchecked")
+			List<com.shopizer.search.services.SearchHit> hits = new ArrayList();
+	        @SuppressWarnings("rawtypes")
+			List ids = new ArrayList();
 	        response.setCount(docs.length);
 	        for (SearchHit sd : docs) {
 	          //to get explanation you'll need to enable this when querying:

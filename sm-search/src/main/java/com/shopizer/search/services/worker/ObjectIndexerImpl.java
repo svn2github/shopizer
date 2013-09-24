@@ -38,18 +38,17 @@ public class ObjectIndexerImpl implements IndexWorker {
 			
 			SearchServiceImpl service = new SearchServiceImpl(client);
 
-			
-				
-
 				for(Object o : indexConfigurations) {
 					
 					IndexConfiguration config = (IndexConfiguration)o;
-					
 					if(!StringUtils.isBlank(config.getMappingFileName())) {
 						try {
 							String metadata = FileUtil.readFileAsString(config.getMappingFileName());
 							if(!StringUtils.isBlank(metadata) && !StringUtils.isBlank(config.getIndexName())) {
-								service.createIndice(metadata, config.getCollectionName(), config.getIndexName());
+								
+								if(!service.indexExist(config.getCollectionName())) {
+									service.createIndice(metadata, config.getCollectionName(), config.getIndexName());
+								}
 							}
 						} catch (Exception e) {
 							log.error("*********************************************");
@@ -58,9 +57,7 @@ public class ObjectIndexerImpl implements IndexWorker {
 						}
 					}
 				}
-			
-	
-			
+
 			init = true;
 		}
 	}

@@ -138,6 +138,7 @@ public class KeywordIndexerImpl implements IndexWorker {
 		
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void execute(SearchClient client, String json, String collection, String object, String id, ExecutionContext context)
 			throws Exception {
 		
@@ -298,8 +299,8 @@ public class KeywordIndexerImpl implements IndexWorker {
 									
 								} else if(fieldType.equals("Integer")) {
 									
-									String s = (String)indexData.get(fieldName);
-									Integer ooo = Integer.parseInt(s);
+									//String s = (String)indexData.get(fieldName);
+									Integer ooo = (Integer)indexData.get(fieldName);
 									f = new IntegerField();
 									f.setValue(ooo);
 									f.setName(fieldName);
@@ -307,8 +308,8 @@ public class KeywordIndexerImpl implements IndexWorker {
 									
 								} else if(fieldType.equals("Double")) {
 									
-									String s = (String)indexData.get(fieldName);
-									Double ooo = Double.parseDouble(s);
+									//String s = (String)indexData.get(fieldName);
+									Double ooo = (Double)indexData.get(fieldName);
 									f = new DoubleField();
 									f.setValue(ooo);
 									f.setName(fieldName);
