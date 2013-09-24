@@ -25,6 +25,9 @@ import com.salesmanager.core.business.search.model.IndexProduct;
 @Service("productSearchService")
 public class SearchServiceImpl implements SearchService {
 	
+	private final static String PRODUCT_INDEX_NAME = "product";
+	private final static String UNDERSCORE = "_";
+	
 	@Autowired
 	private com.shopizer.search.services.SearchService searchService;
 	
@@ -32,7 +35,7 @@ public class SearchServiceImpl implements SearchService {
 	private PricingService pricingService;
 
 	@Override
-	public void index(MerchantStore store, Product product, Language language)
+	public void index(MerchantStore store, Product product)
 			throws ServiceException {
 		
 		/**
@@ -66,15 +69,7 @@ public class SearchServiceImpl implements SearchService {
 		 * The next step will be to delegate to com.shopizer.search.SearchService.index
 		 * searchService.index(json, "product_<LANGUAGE_CODE>_<MERCHANT_CODE>", "product");
 		 * 
-		 * example ...index(json,"product_en_1",product)
-		 * 
-		 * Will need to make sure that 
-		 * 
-		 * -product.json is in src/main/resources/reference
-		 * -shopizer-search.xml is in src/main/resources/spring
-		 * 
-		 * Test the indexing process by creating a unit test
-		 * 
+		 * example ...index(json,"product_en_default",product)
 		 * 
 		 */
 		
@@ -84,8 +79,14 @@ public class SearchServiceImpl implements SearchService {
 		Set<ProductDescription> descriptions = product.getDescriptions();
 		for(ProductDescription description : descriptions) {
 			
+			StringBuilder collectionName = new StringBuilder();
+			collectionName.append(PRODUCT_INDEX_NAME).append(UNDERSCORE).append(description.getLanguage().getCode()).append(UNDERSCORE).append(store.getCode().toLowerCase());
+			
 			IndexProduct index = new IndexProduct();
 
+			index.setId(String.valueOf(product.getId()));
+			index.setStore(store.getCode().toLowerCase());
+			index.setLang(description.getLanguage().getCode());
 			index.setAvailable(product.isAvailable());
 			index.setDescription(description.getDescription());
 			index.setName(description.getName());
@@ -106,12 +107,13 @@ public class SearchServiceImpl implements SearchService {
 				index.setCategories(categoryList);
 			}
 			
-			
-			
+			String jsonString = index.toJSONString();
+			try {
+				searchService.index(jsonString, collectionName.toString(), PRODUCT_INDEX_NAME);
+			} catch (Exception e) {
+				throw new ServiceException("Cannot index product id [" + product.getId() + "], " + e.getMessage() ,e);
+			}
 		}
-		
-		//searchService.index(json, collection, object);
-
 	}
 	
 	@Transactional
@@ -123,12 +125,94 @@ public class SearchServiceImpl implements SearchService {
 		 */
 		
 		//searchService.deleteObject(collection, object, id);
+
+
 		
 	}
 	
-	//public SearchResponse searchForKeywords(MerchantStore store, String jsonString, int entriesCount) throws ServiceException {
+	public void searchForKeywords(MerchantStore store, String jsonString, int entriesCount) throws ServiceException {
 		
-	//}
+		/**
+		 * 	$('#search').searchAutocomplete({
+			url: '<%=request.getContextPath()%>/search/autocomplete/keyword_en'
+		  		//filter: function() { 
+				//return '\"filter\" : {\"numeric_range\" : {\"price\" : {\"from\" : \"22\",\"to\" : \"45\",\"include_lower\" : true,\"include_upper\" : true}}}';
+		  		//}
+     		});
+     		
+     		
+     		$('#searchForm').submit(function() {
+
+			$('#profiles').html('');
+			$('#facets').html('');
+
+			$.search.searchTerm({
+				  	field: $('#search'),
+				  	url: '<%=request.getContextPath()%>/search/product_en',
+				  	highlights: '\"highlight\":{\"fields\":{\"description\":{\"pre_tags\" : [\"<strong>\"], \"post_tags\" : [\"</strong>\"]},\"name\":{\"pre_tags\" : [\"<strong>\"], \"post_tags\" : [\"</strong>\"]}}}',
+				  	facets: function() { 
+						return '\"facets\" : { \"category\" : { \"terms\" : {\"field\" : \"category\"}}}';
+				  	}
+				  },
+				  function(suggestions) {//handle responses
+					  var i =1;
+					  searchresults = '';
+					  $.each(suggestions, function() {
+							var s = this.source;
+							var h = this.highlightFields;
+							var description = s.description;
+							var name = s.name;
+							
+							if(h != null) {
+								if(h.description!=null) {
+									//alert(h.description.fragments[0]);
+									description = h.description.fragments[0];
+								}
+								if(h.name!=null) {
+									name = h.name.fragments[0];
+								}
+							} 
+							var c = 'span-5';
+							if(i%4==0) {
+								c = c + ' last';
+							}
+							searchresults = searchresults + '<div class="' + c + '" style="height:250px;"><div>' + s.id + '<br/>' + name + '<br/>' + s.price + '<br/>' + description + '</div></div>';
+							i++;
+				  	  });
+					  $('#profiles').html(searchresults);
+				  },
+				  function(facets) {//handle facets
+					  
+					  var facet = '';
+					  
+					  $.each(facets, function() {
+						  
+						  var name = this.name;
+						  facet = facet + '<ul><strong>' + name + '</strong>';
+						  var entries = this.entries;
+						  $.each(entries, function() {
+							  
+							  facet = facet + '<li>' + this.name + ' (' + this.count + ')</li>';
+							  
+						  });
+						  
+						  facet = facet + '<ul><br/><br/>';
+						  
+						  
+					  });
+					  
+					  $('#facets').html(facet);
+					  
+				  }
+			);
+
+
+			return false; 
+	});
+		 */
+		
+		
+	}
 	
 }
 

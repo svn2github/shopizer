@@ -36,6 +36,7 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.search.service.SearchService;
 import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 import com.salesmanager.core.utils.CoreConfiguration;
 
@@ -62,7 +63,8 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	@Autowired
 	ProductRelationshipService productRelationshipService;
 	
-
+	@Autowired
+	SearchService searchService;
 	
 	@Autowired
 	ProductImageService productImageService;
@@ -88,6 +90,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		product.getDescriptions().add(description);
 		description.setProduct(product);
 		update(product);
+		searchService.index(product.getMerchantStore(), product);
 	}
 	
 	@Override
@@ -243,8 +246,14 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		}
 		
 		super.delete(product);
+		//todo remove index
 		
-		
+	}
+	
+	@Override
+	public void create(Product product) throws ServiceException {
+		super.create(product);
+		searchService.index(product.getMerchantStore(), product);
 	}
 	
 
@@ -397,6 +406,8 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		if(product.getId()!=null && product.getId()>0) {
 			super.update(product);
 		}
+		
+		searchService.index(product.getMerchantStore(), product);
 
 	}
 	

@@ -1,15 +1,10 @@
 package com.salesmanager.core.business.search.model;
 
 import java.util.List;
-import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
-
-import com.salesmanager.core.business.generic.exception.ServiceException;
-import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 
 public class IndexProduct implements JSONAware {
 	
@@ -22,19 +17,41 @@ public class IndexProduct implements JSONAware {
 	private String highlight;
 	private String store;
 	private String lang;
+	private String id;//required by the search framework
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public String toJSONString() {
 		
-		JSONArray categories = new JSONArray();
+		
+		
 		
 		JSONObject obj = new JSONObject();
 		obj.put("name", this.getName());
+		obj.put("price", this.getPrice());
+		obj.put("description", this.getDescription());
+		obj.put("highlight", this.getHighlight());
+		obj.put("store", this.getStore());
+		obj.put("lang", this.getLang());
+		obj.put("id", this.getId());
+		if(categories!=null) {
+			JSONArray categoriesArray = new JSONArray();
+			for(String category : categories) {
+				categoriesArray.add(category);
+			}
+			obj.put("categories", categoriesArray);
+		}
+		
+		if(tags!=null) {
+			JSONArray tagsArray = new JSONArray();
+			for(String tag : tags) {
+				tagsArray.add(tag);
+			}
+			obj.put("tags", tagsArray);
+		}
 		
 		return obj.toJSONString();
 
-		
-		
 	}
 
 	public String getName() {
@@ -108,6 +125,14 @@ public class IndexProduct implements JSONAware {
 
 	public String getLang() {
 		return lang;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getId() {
+		return id;
 	}
 
 }
