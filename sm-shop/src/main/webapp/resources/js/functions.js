@@ -45,8 +45,7 @@
 		
 		$(".addToCart").click(function(){ 
 			
-			alert('begin');
-			
+
 			var cart = $.cookie( 'cart' );
 			//core properties
 			var sku = $(this).attr("productId");
