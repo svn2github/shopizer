@@ -45,6 +45,8 @@
 		
 		$(".addToCart").click(function(){ 
 			
+			alert('begin');
+			
 			var cart = $.cookie( 'cart' );
 			//core properties
 			var sku = $(this).attr("productId");
@@ -89,7 +91,7 @@
 			
 			alert('product ' + sku + ' added to cart');
 			var merchantStore = getMerchantStore();
-			varl cartCode = 'cart_' + merchantStore;
+			var cartCode = 'cart_' + merchantStore;
 			var code = $.cookie(cartCode);
 			
 			/**

@@ -12,7 +12,7 @@ function getContextPath() {
 }
 
 function getMerchantStore() {
-   return "${pageContext.request.MERCHANT_STORE.id}";
+   return "${requestScope.MERCHANT_STORE.id}";
 }
 
 
