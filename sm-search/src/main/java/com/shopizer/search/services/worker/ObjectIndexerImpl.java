@@ -49,7 +49,6 @@ public class ObjectIndexerImpl implements IndexWorker {
 						try {
 							String metadata = FileUtil.readFileAsString(config.getMappingFileName());
 							if(!StringUtils.isBlank(metadata) && !StringUtils.isBlank(config.getIndexName())) {
-							
 								service.createIndice(metadata, config.getCollectionName(), config.getIndexName());
 							}
 						} catch (Exception e) {

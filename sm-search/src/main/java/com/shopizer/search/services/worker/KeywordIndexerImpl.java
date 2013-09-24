@@ -157,7 +157,7 @@ public class KeywordIndexerImpl implements IndexWorker {
 				CustomIndexConfiguration conf = indexConfigurationsMap.get(object);
 				
 				
-				String indexName = DynamicIndexNameUtil.getIndexName(conf.getCollectionName(),indexData);
+				String collectionName = DynamicIndexNameUtil.getIndexName(conf.getCollectionName(),indexData);
 				StringTokenizer t = new StringTokenizer(conf.getCollectionName(),"_");
 				int countToken = t.countTokens();
 				if(countToken>1) {
@@ -173,7 +173,7 @@ public class KeywordIndexerImpl implements IndexWorker {
 						}
 						count++;
 					}
-					indexName = iName.toString();
+					collectionName = iName.toString();
 				} 
 				
 				//get fields to index
@@ -349,7 +349,7 @@ public class KeywordIndexerImpl implements IndexWorker {
 						
 					}
 
-					service.bulkIndexKeywords(bulks, indexName, "keyword");
+					service.bulkIndexKeywords(bulks, collectionName, "keyword");
 					
 				}
 				

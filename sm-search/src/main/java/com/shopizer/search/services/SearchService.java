@@ -109,13 +109,16 @@ public class SearchService {
 	/**
 	 * Index a document
 	 * @param json
-	 * @param collection
+	 * @param collection (name of the collection)
+	 * Might be product_en or product_fr or any name of the index container
 	 * @param object
+	 * That corresponds to the name of the entity to be indexed as defined in the
+	 * indice file (product.json). In this case it will be product
 	 * @param id
 	 */
 	public void index(String json, String collection, String object) throws Exception {
 		
-		String name = new StringBuilder().append("index-").append(object).append("-workflow").toString();
+		//String name = new StringBuilder().append("index-").append(object).append("-workflow").toString();
 		
 		
 		//IndexWorkflow workflow = (IndexWorkflow)BeanUtil.getBean(name);
