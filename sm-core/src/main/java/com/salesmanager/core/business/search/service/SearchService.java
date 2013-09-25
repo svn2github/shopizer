@@ -15,4 +15,13 @@ public interface SearchService {
 	 */
 	void index(MerchantStore store, Product product) throws ServiceException;
 
+	/**
+	 * Deletes an index in the appropriate language. Must be invoked when a product is deleted
+	 * @param store
+	 * @param product
+	 * @throws ServiceException
+	 */
+	void deleteIndex(MerchantStore store, Product product)
+			throws ServiceException;
+
 }

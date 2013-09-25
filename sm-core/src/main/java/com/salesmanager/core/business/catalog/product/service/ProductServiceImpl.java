@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -224,17 +226,16 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 
 	@Override
 	public void delete(Product product) throws ServiceException {
-		
-		
+		LOGGER.debug("Deleting product");
+		Validate.notNull(product, "Product cannot be null");
+		Validate.notNull(product.getMerchantStore(), "MerchantStore cannot be null in product");
 		product = this.getById(product.getId());//Prevents detached entity error
 		product.setCategories(null);
 		
 		Set<ProductImage> images = product.getImages();
 		
 		for(ProductImage image : images) {
-			
 			productImageService.removeProductImage(image);
-			
 		}
 		
 		product.setImages(null);
@@ -246,7 +247,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		}
 		
 		super.delete(product);
-		//todo remove index
+		searchService.deleteIndex(product.getMerchantStore(), product);
 		
 	}
 	
@@ -261,7 +262,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	@Override	
 	public void saveOrUpdate(Product product) throws ServiceException {
 
-		LOGGER.debug("Save or update product");
+		LOGGER.debug("Save or update product ");
 
 		//List of original availabilities
 		Set<ProductAvailability> originalAvailabilities = null;

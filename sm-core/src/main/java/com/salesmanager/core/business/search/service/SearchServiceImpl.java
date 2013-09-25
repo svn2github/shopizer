@@ -7,9 +7,10 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.product.model.Product;
@@ -18,12 +19,15 @@ import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.search.model.IndexProduct;
+import com.shopizer.search.services.SearchResponse;
 
 
 @Service("productSearchService")
 public class SearchServiceImpl implements SearchService {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(SearchServiceImpl.class);
+	
 	
 	private final static String PRODUCT_INDEX_NAME = "product";
 	private final static String UNDERSCORE = "_";
@@ -109,25 +113,31 @@ public class SearchServiceImpl implements SearchService {
 			
 			String jsonString = index.toJSONString();
 			try {
-				searchService.index(jsonString, collectionName.toString(), PRODUCT_INDEX_NAME);
+				searchService.index(jsonString, collectionName.toString(), new StringBuilder().append(PRODUCT_INDEX_NAME).append(UNDERSCORE).append(description.getLanguage().getCode()).toString());
 			} catch (Exception e) {
 				throw new ServiceException("Cannot index product id [" + product.getId() + "], " + e.getMessage() ,e);
 			}
 		}
 	}
+
+	@Override
+	public void deleteIndex(MerchantStore store, Product product) throws ServiceException {
+		
+		Set<ProductDescription> descriptions = product.getDescriptions();
+		for(ProductDescription description : descriptions) {
+			
+			StringBuilder collectionName = new StringBuilder();
+			collectionName.append(PRODUCT_INDEX_NAME).append(UNDERSCORE).append(description.getLanguage().getCode()).append(UNDERSCORE).append(store.getCode().toLowerCase());
+
+			try {
+				searchService.deleteObject(collectionName.toString(), new StringBuilder().append(PRODUCT_INDEX_NAME).append(UNDERSCORE).append(description.getLanguage().getCode()).toString(), String.valueOf(product.getId()));
+			} catch (Exception e) {
+				LOGGER.error("Cannot delete index for product id [" + product.getId() + "], ",e);
+				//do not throw exception ??
+				//throw new ServiceException("Cannot delete index for product id [" + product.getId() + "], " + e.getMessage() ,e);
+			}
+		}
 	
-	@Transactional
-	public void deleteIndex(MerchantStore store, Product product, Language language) throws ServiceException {
-		
-		/**
-		 * When a product is deleted the associated indexes are deleted
-		 * 
-		 */
-		
-		//searchService.deleteObject(collection, object, id);
-
-
-		
 	}
 	
 	public void searchForKeywords(MerchantStore store, String jsonString, int entriesCount) throws ServiceException {
@@ -210,7 +220,15 @@ public class SearchServiceImpl implements SearchService {
 			return false; 
 	});
 		 */
-		
+		try {
+			SearchResponse response = searchService.searchAutoComplete("", "", 25);
+			
+			//transform t SearchResponse specific to sm-core
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
