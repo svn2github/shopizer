@@ -35,11 +35,7 @@ public class SearchService {
 	
 	@Autowired
 	private SearchWorkflow searchWorkflow;
-	
-	//@Autowired
-	//private SearchWorkflow searchAutocompleteWorkflow;
 
-	
 /*	//loads configuration
 	static {
 		try {

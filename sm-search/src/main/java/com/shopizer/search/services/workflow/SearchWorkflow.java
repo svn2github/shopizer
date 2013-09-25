@@ -11,7 +11,9 @@ import com.shopizer.search.services.worker.SearchWorker;
 
 
 @Component
+@SuppressWarnings("rawtypes")
 public class SearchWorkflow extends Workflow{
+	
 	
 	private List searchFlow;
 	private List searchKeywordWorkflow;

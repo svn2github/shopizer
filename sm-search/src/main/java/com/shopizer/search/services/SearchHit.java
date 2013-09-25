@@ -7,42 +7,49 @@ import org.elasticsearch.search.highlight.HighlightField;
 
 public class SearchHit {
 	
-	private org.elasticsearch.search.SearchHit searchit;
+	//private org.elasticsearch.search.SearchHit searchit;
+	private String id;
+	private String index;
+	private float score;
+	private Map<String,Object> metaEntries = new HashMap<String,Object>();
 	
-	private Map metaEntries = new HashMap();
-	
-	public Map getMetaEntries() {
+	public Map<String,Object> getMetaEntries() {
 		return metaEntries;
 	}
 
 	public SearchHit(org.elasticsearch.search.SearchHit searchit) {
 		
-		this.searchit = searchit;
+		this.id = searchit.getId();
+		this.score = searchit.getScore();
+		this.index = searchit.getIndex();
 		metaEntries.put("source", searchit.getSource());
+		
 		if(searchit.getHighlightFields()!=null && searchit.getHighlightFields().size()>0) {
 			metaEntries.put("highlightFields", searchit.getHighlightFields());
 		}
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> getSource() {
-		return searchit.getSource();
+		return (Map<String, Object>)metaEntries.get("source");
 	}
 	
 	public String getId() {
-		return searchit.getId();
+		return id;
 	}
 	
 	public String getIndex() {
-		return searchit.getIndex();
+		return index;
 	}
 	
 	public float getScore() {
-		return searchit.getScore();
+		return score;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Map<String, HighlightField> getHighlightFields() {
-		return searchit.getHighlightFields();
+		return (Map<String, HighlightField>)metaEntries.get("highlightFields");
 	}
 	
 	
