@@ -9,6 +9,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +24,7 @@ import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.utils.CacheUtils;
@@ -31,6 +34,7 @@ import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.utils.CatalogUtils;
 import com.salesmanager.web.utils.LocaleUtils;
+import com.salesmanager.web.utils.PageBuilderUtils;
 
 
 @Controller
@@ -40,6 +44,9 @@ public class ShoppingCategoryController {
 	private LanguageService languageService;
 	
 	@Autowired
+	private MerchantStoreService merchantStoreService;
+	
+	@Autowired
 	private CategoryService categoryService;
 	
 	@Autowired
@@ -47,6 +54,8 @@ public class ShoppingCategoryController {
 	
 	@Autowired
 	private CatalogUtils catalogUtils;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ShoppingCategoryController.class);
 	
 	/**
 	 * 
@@ -86,11 +95,9 @@ public class ShoppingCategoryController {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	private String displayCategory(final String friendlyUrl, final String ref, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
-		
-		
-		
-		
+
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		//get category
 		Category category = categoryService.getBySeUrl(store, friendlyUrl);
@@ -98,7 +105,10 @@ public class ShoppingCategoryController {
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		
 		if(category==null) {
-			//TODO not found object
+			LOGGER.error("No category found for friendlyUrl " + friendlyUrl);
+			//redirect on page not found
+			return PageBuilderUtils.build404(store);
+			
 		}
 		
 		com.salesmanager.web.entity.catalog.Category categoryProxy = catalogUtils.buildProxyCategory(category, store, locale);
@@ -112,8 +122,7 @@ public class ShoppingCategoryController {
 		pageInformation.setPageUrl(categoryProxy.getFriendlyUrl());
 		
 		request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
-		
-		//TODO Cache
+
 		StringBuilder subCategoriesCacheKey = new StringBuilder();
 		subCategoriesCacheKey
 		.append(store.getId())
@@ -168,11 +177,41 @@ public class ShoppingCategoryController {
 	 */
 	@RequestMapping("/shop/services/category/{store}/{language}")
 	@ResponseBody
-	public com.salesmanager.web.entity.catalog.Category[] displayCategory(@PathVariable final String language, @PathVariable final String store, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public List<com.salesmanager.web.entity.catalog.Category> getCategories(@PathVariable final String language, @PathVariable final String store, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		Map<String,Language> langs = languageService.getLanguagesMap();
+		Language l = langs.get(language);
+		if(l==null) {
+			l = languageService.getByCode(Constants.DEFAULT_LANGUAGE);
+		}
 		
-		return null;
+		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+
+		if(merchantStore!=null) {
+			if(!merchantStore.getCode().equals(store)) {
+				merchantStore = null; //reset for the current request
+			}
+		}
+		
+		if(merchantStore== null) {
+			merchantStore = merchantStoreService.getByCode(store);
+		}
+		
+		if(merchantStore==null) {
+			LOGGER.error("Merchant store is null for code " + store);
+			response.sendError(503, "Merchant store is null for code " + store);//TODO localized message
+			return null;
+		}
+		
+		List<Category> categories = categoryService.listByStore(merchantStore, l);
+		
+		List<com.salesmanager.web.entity.catalog.Category> returnCategories = new ArrayList<com.salesmanager.web.entity.catalog.Category>();
+		for(Category category : categories) {
+			com.salesmanager.web.entity.catalog.Category categoryProxy = catalogUtils.buildProxyCategory(category, merchantStore, LocaleUtils.getLocale(l));
+			returnCategories.add(categoryProxy);
+		}
+		
+		return returnCategories;
 	}
 
 	/**
@@ -190,12 +229,10 @@ public class ShoppingCategoryController {
 	 */
 	@RequestMapping("/shop/services/products/{store}/{language}/{category}.html")
 	@ResponseBody
-	public com.salesmanager.web.entity.catalog.Product[] getProducts(@PathVariable final String store, @PathVariable final String language, @PathVariable final String category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public ProductList getProducts(@PathVariable final String store, @PathVariable final String language, @PathVariable final String category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		//http://localhost:8080/sm-shop/shop/services/products/DEFAULT/en/book.html
-		
-		
-	
+
 		try {
 
 		
@@ -206,17 +243,28 @@ public class ShoppingCategoryController {
 			
 			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 			Map<String,Language> langs = languageService.getLanguagesMap();
+
+			if(merchantStore!=null) {
+				if(!merchantStore.getCode().equals(store)) {
+					merchantStore = null; //reset for the current request
+				}
+			}
 			
-			if(merchantStore!= null) {//TODO
-				//store = merchantStore.getCode();
+			if(merchantStore== null) {
+				merchantStore = merchantStoreService.getByCode(store);
+			}
+			
+			if(merchantStore==null) {
+				LOGGER.error("Merchant store is null for code " + store);
+				response.sendError(503, "Merchant store is null for code " + store);//TODO localized message
+				return null;
 			}
 			
 			//get the category by code
 			Category cat = categoryService.getBySeUrl(merchantStore, category);
-			
-			//TODO
+
 			if(cat==null) {
-				//log & return null
+				LOGGER.error("Category with friendly url " + category + " is null");
 				response.sendError(503, "Category is null");//TODO localized message
 			}
 			
@@ -224,16 +272,14 @@ public class ShoppingCategoryController {
 			
 			List<Category> categories = categoryService.listByLineage(store, lineage);
 			
-			//TODO
-			if(categories==null || categories.size()==0) {
-				
-			}
-			
 			List<Long> ids = new ArrayList<Long>();
-			for(Category c : categories) {
-				ids.add(c.getId());
-			}
+			if(categories!=null && categories.size()>0) {
+				for(Category c : categories) {
+					ids.add(c.getId());
+				}
+			} 
 			ids.add(cat.getId());
+			
 			Language lang = langs.get(language);
 			if(lang==null) {
 				lang = langs.get(Constants.DEFAULT_LANGUAGE);
@@ -241,26 +287,22 @@ public class ShoppingCategoryController {
 			
 			List<com.salesmanager.core.business.catalog.product.model.Product> products = productService.getProducts(ids, lang);
 			
-			com.salesmanager.web.entity.catalog.Product[] returnedProducts = new com.salesmanager.web.entity.catalog.Product[products.size()];
-			
-			int i = 0;
+			ProductList productList = new ProductList();
+
 			for(Product product : products) {
-				
-				
 				//create new proxy product
 				com.salesmanager.web.entity.catalog.Product p = catalogUtils.buildProxyProduct(product,merchantStore,LocaleUtils.getLocale(lang));
-				returnedProducts[i] = p;
-				i++;
-				
+				productList.getProducts().add(p);
+	
 			}
 			
-			
-			return returnedProducts;
+			productList.setTotalCount(productList.getProducts().size());
+			return productList;
 			
 		
 		} catch (Exception e) {
-			//TODO log
-			response.sendError(503, "TODO error");
+			LOGGER.error("Error while getting category",e);
+			response.sendError(503, "Error while getting category");
 		}
 		
 		return null;
@@ -280,7 +322,7 @@ public class ShoppingCategoryController {
 	 */
 	@RequestMapping("/shop/services/products/page/{start}/{max}/{store}/{language}/{category}.html")
 	@ResponseBody
-	public ProductList pageProducts(@PathVariable int start, @PathVariable int max, @PathVariable String store, @PathVariable final String language, @PathVariable final String category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public ProductList getProducts(@PathVariable int start, @PathVariable int max, @PathVariable String store, @PathVariable final String language, @PathVariable final String category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		
 		try {
@@ -292,18 +334,31 @@ public class ShoppingCategoryController {
 			 */
 			
 			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+			
+			
 			Map<String,Language> langs = languageService.getLanguagesMap();
 			
-			if(merchantStore!= null) {//TODO
-				//store = merchantStore.getCode();
+			if(merchantStore!=null) {
+				if(!merchantStore.getCode().equals(store)) {
+					merchantStore = null; //reset for the current request
+				}
+			}
+			
+			if(merchantStore== null) {
+				merchantStore = merchantStoreService.getByCode(store);
+			}
+			
+			if(merchantStore==null) {
+				LOGGER.error("Merchant store is null for code " + store);
+				response.sendError(503, "Merchant store is null for code " + store);//TODO localized message
+				return null;
 			}
 			
 			//get the category by code
 			Category cat = categoryService.getBySeUrl(merchantStore, category);
 			
-			//TODO
 			if(cat==null) {
-				//log & return null
+				LOGGER.error("Category " + category + " is null");
 				response.sendError(503, "Category is null");//TODO localized message
 				return null;
 			}
@@ -312,16 +367,15 @@ public class ShoppingCategoryController {
 			
 			List<Category> categories = categoryService.listByLineage(store, lineage);
 			
-			//TODO
-			if(categories==null || categories.size()==0) {
-				
-			}
-			
 			List<Long> ids = new ArrayList<Long>();
-			for(Category c : categories) {
-				ids.add(c.getId());
-			}
+			if(categories!=null && categories.size()>0) {
+				for(Category c : categories) {
+					ids.add(c.getId());
+				}
+			} 
 			ids.add(cat.getId());
+			
+
 			Language lang = langs.get(language);
 			if(lang==null) {
 				lang = langs.get(Constants.DEFAULT_LANGUAGE);
@@ -330,14 +384,13 @@ public class ShoppingCategoryController {
 			ProductCriteria productCriteria = new ProductCriteria();
 			productCriteria.setMaxCount(max);
 			productCriteria.setStartIndex(start);
+			productCriteria.setCategoryIds(ids);
 
-			com.salesmanager.core.business.catalog.product.model.ProductList products = productService.getProductList(productCriteria, ids, lang);
-			
-			//com.salesmanager.web.entity.catalog.Product[] returnedProducts = new com.salesmanager.web.entity.catalog.Product[products.size()];
+			com.salesmanager.core.business.catalog.product.model.ProductList products = productService.listByStore(merchantStore, lang, productCriteria);
+
 			ProductList productList = new ProductList();
 			for(Product product : products.getProducts()) {
-				
-				
+
 				//create new proxy product
 				com.salesmanager.web.entity.catalog.Product p = catalogUtils.buildProxyProduct(product,merchantStore,LocaleUtils.getLocale(lang));
 				productList.getProducts().add(p);
@@ -351,8 +404,8 @@ public class ShoppingCategoryController {
 			
 		
 		} catch (Exception e) {
-			//TODO log
-			response.sendError(503, "TODO error");
+			LOGGER.error("Error while getting products",e);
+			response.sendError(503, "An error occured while retrieving products " + e.getMessage());
 		}
 		
 		return null;
