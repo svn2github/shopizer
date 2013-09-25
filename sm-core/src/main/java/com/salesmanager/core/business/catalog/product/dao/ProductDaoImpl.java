@@ -237,7 +237,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 	}
 	
 	
-	@Override
+/*	@Override
 	public ProductList getProductListByCategories(ProductCriteria criteria, Set<Long> categoryIds, Language language) {
 		
 
@@ -245,34 +245,12 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		//regionList.add("*");
 		//regionList.add(locale.getCountry());
 		
-		ProductList productList = new ProductList();
-		//count
-/*		
-		
-		StringBuilder countBuilderSelect = new StringBuilder();
-		countBuilderSelect.append("select count(p) from Product as p");
-		
-		StringBuilder countBuilderWhere = new StringBuilder();
-		countBuilderWhere.append(" where p.merchantStore.id=:mId");
-		countBuilderWhere.append(" and categs.id in (:cid)");
-		countBuilderWhere.append(" and p.available=true and p.dateAvailable<=:dt");
 
-		Query countQ = super.getEntityManager().createQuery(
-				countBuilderSelect.toString() + countBuilderWhere.toString());
-
-		//countQ.setParameter("mId", store.getId());
-		//countQ.setParameter("cid", criteria.getCategoryIds());
-		countQ.setParameter("dt", new Date());
-
-		Number count = (Number) countQ.getSingleResult ();
-
-		productList.setTotalCount(count.intValue());*/
-		
-		
-		/**
+		//TODO Test performance 
+		*//**
 		 * Testing in debug mode takes a long time with this query
 		 * running in normal mode is fine
-		 */
+		 *//*
 
 		
 		StringBuilder qs = new StringBuilder();
@@ -325,14 +303,14 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
     	@SuppressWarnings("unchecked")
 		List<Product> products =  q.getResultList();
 
-    	
+    	ProductList productList = new ProductList();
     	productList.setProducts(products);
     	
     	
     	return productList;
 
 
-	}
+	}*/
 	
 
 	@Override
@@ -909,15 +887,9 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 
 		return p;
 		
-}
-
-	@Override
-	public ProductList getProductsForLocale(MerchantStore store, Set categoryIds, Language language,
-			Locale locale, int startIndex, int maxCount) {
-		// TODO Auto-generated method stub
-		return this.getProductsListForLocale(store, categoryIds, language, locale, startIndex, maxCount);
 	}
+}
+
 
 	
 	
-}

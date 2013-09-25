@@ -111,14 +111,14 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		
 	}
 	
-	@Override
-	public ProductList getProductList(ProductCriteria criteria, List<Long> categoryIds, Language language) throws ServiceException {
+	//@Override
+/*	public ProductList getProductList(ProductCriteria criteria, List<Long> categoryIds, Language language) throws ServiceException {
 		
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		Set<Long> ids = new HashSet(categoryIds);
 		return productDao.getProductListByCategories(criteria, ids, language);
 		
-	}
+	}*/
 
 	@Override
 	public ProductDescription getProductDescription(Product product, Language language) {
@@ -193,8 +193,8 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	}
 		
 
-	@Override
-	public ProductList getProductsForLocale(Category category,
+	//@Override
+/*	public ProductList getProductsForLocale(Category category,
 			Language language, Locale locale, int startIndex, int maxCount)
 			throws ServiceException {
 
@@ -219,7 +219,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 		
 		return productList;
 		
-	}
+	}*/
 	
 
 	@Override
