@@ -19,7 +19,6 @@ response.setDateHeader ("Expires", -1);
 											<li class="span3">
 												<div class="product-box">                                        
 													<a href="<c:url value="/shop/product/" /><c:out value="${product.friendlyUrl}"/>.html"><h4><c:out value="${product.name}"/></h4></a>
-													<a href="<c:url value="/shop/product/" /><c:out value="${product.friendlyUrl}"/>.html"><img src="<sm:shopProductImage imageName="${product.image}" sku="${product.sku}"/>"/></a>
 													<h3>
 														<c:choose>
 															<c:when test="${product.discounted}">
@@ -30,6 +29,7 @@ response.setDateHeader ("Expires", -1);
 															</c:otherwise>
 														</c:choose>
 													</h3>
+													<a href="<c:url value="/shop/product/" /><c:out value="${product.friendlyUrl}"/>.html"><img src="<sm:shopProductImage imageName="${product.image}" sku="${product.sku}"/>"/></a>
 													<div class="bottom">
 														<a href="<c:url value="/shop/product/" /><c:out value="${product.friendlyUrl}"/>.html">view</a> / <a class="addToCart" href="#" productId="${product.id}">add to cart</a>
 													</div>

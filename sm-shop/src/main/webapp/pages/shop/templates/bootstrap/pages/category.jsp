@@ -21,7 +21,7 @@ response.setDateHeader ("Expires", -1);
  <script>
  
  var START_COUNT_PRODUCTS = 0;
- var MAX_PRODUCTS = 3;
+ var MAX_PRODUCTS = 4;
  
  
 
@@ -63,15 +63,16 @@ response.setDateHeader ("Expires", -1);
 					    var productHtml = '<li class="item span3">';
 					    	productHtml = productHtml + '<div class="product-box"><a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html">';
 					    	productHtml = productHtml + '<h4 class="name">' + productList.products[i].name +'</h4></a>';
-					    	productHtml = productHtml + '<a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html"><img src="<c:url value="/"/>' + productList.products[i].imageUrl +'"></a>';
 					    	productHtml = productHtml + '<h3 class="number">' + productList.products[i].productPrice +'</h3>';
+					    	productHtml = productHtml + '<a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html"><img src="<c:url value="/"/>' + productList.products[i].imageUrl +'"></a>';
 					    	productHtml = productHtml + '<div class="bottom"><a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html" class="view"><s:message code="button.label.view" text="View" /></a> / <a productid="' + productList.products[i].id + '" href="#" class="addToCart"><s:message code="button.label.addToCart" text="Add to cart" /></a></div></div></li>';
 					    	//displayProducts[i] = productHtml;
 					    	$('#productsContainer').append(productHtml);
 
 					}
 
-					
+					//alert('start ' + START_COUNT_PRODUCTS + ' count ' + productList.totalCount);
+					START_COUNT_PRODUCTS = START_COUNT_PRODUCTS + MAX_PRODUCTS;
 					if(START_COUNT_PRODUCTS < productList.totalCount) {
 						$("#button_nav").show();
 						//$("#end_nav").hide();
@@ -79,6 +80,9 @@ response.setDateHeader ("Expires", -1);
 						//$("#end_nav").show();
 						$("#button_nav").hide();
 					}
+					
+					
+					
 					$('#productsContainer').hideLoading();
 
 					
@@ -128,8 +132,8 @@ response.setDateHeader ("Expires", -1);
         	<ul id="productsContainer" class="thumbnails product-list">
 
 			</ul>
-			<nav id="button_nav">
-				<button class="btn btn-large" style="width:400px;" onClick="loadProducts();"><s:message code="label.product.moreitems" text="Display more items" /></button>
+			<nav id="button_nav" style="text-align:center;">
+				<button class="btn btn-large" style="width:400px;" onClick="loadProducts();"><s:message code="label.product.moreitems" text="Display more items" />...</button>
 			</nav>
 			<span id="end_nav" style="display:none;"><s:message code="label.product.nomoreitems" text="No more items to be displayed" /></span>
           
