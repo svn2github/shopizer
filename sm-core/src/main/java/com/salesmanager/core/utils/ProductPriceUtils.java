@@ -476,6 +476,12 @@ public class ProductPriceUtils {
 									finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
 								}
 							}
+						} else {
+							if(price.getProductPriceSpecialAmount()!=null && price.getProductPriceSpecialAmount().doubleValue()>0) {
+								hasDiscount = true;
+								fPrice = price.getProductPriceSpecialAmount();
+								finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
+							}
 						}
 						finalPrice.setDefaultPrice(price);
 						if(hasDiscount) {

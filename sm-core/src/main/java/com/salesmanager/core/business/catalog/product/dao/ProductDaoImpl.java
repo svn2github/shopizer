@@ -453,7 +453,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 
         
 		StringBuilder countBuilderSelect = new StringBuilder();
-		countBuilderSelect.append("select count(p) from Product as p");
+		countBuilderSelect.append("select count(distinct p) from Product as p");
 		
 		StringBuilder countBuilderWhere = new StringBuilder();
 		countBuilderWhere.append(" where p.merchantStore.id=:mId");
@@ -546,7 +546,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 
 		
 		StringBuilder qs = new StringBuilder();
-		qs.append("select p from Product as p ");
+		qs.append("select distinct p from Product as p ");
 		qs.append("join fetch p.merchantStore merch ");
 		qs.append("join fetch p.availabilities pa ");
 		qs.append("left join fetch pa.prices pap ");
@@ -661,11 +661,11 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 	    	q.setFirstResult(criteria.getStartIndex());
 	    	if(criteria.getMaxCount()<count.intValue()) {
 	    		q.setMaxResults(criteria.getMaxCount());
-	    		productList.setTotalCount(criteria.getMaxCount());
+	    		//productList.setTotalCount(criteria.getMaxCount());
 	    	}
 	    	else {
 	    		q.setMaxResults(count.intValue());
-	    		productList.setTotalCount(count.intValue());
+	    		//productList.setTotalCount(count.intValue());
 	    	}
     	}
     	
