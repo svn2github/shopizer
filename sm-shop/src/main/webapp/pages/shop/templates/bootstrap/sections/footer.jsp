@@ -25,7 +25,7 @@ response.setDateHeader ("Expires", -1);
 						</div>
                     </div>
 					 <div class="span3">   
-						<h4>Information</h4>
+						<h4><s:message code="label.store.information.title" text="Informations"/></h4>
 						<!-- Pages -->
                         <ul>
                         	<c:forEach items="${requestScope.CONTENT_PAGE}" var="content">
@@ -34,22 +34,25 @@ response.setDateHeader ("Expires", -1);
 						</ul>
                     </div>
                     <div class="span3">
-                    	<c:if test="${requestScope.CONFIGS!=null && requestScope.CONFIGS.SHOW_CUSTOMER_SECTION=='true'}">
-                        <h4>My Account</h4>
+                    	<c:if test="${request.CONFIGS['displayCustomerSection'] != null && ${request.CONFIGS['displayCustomerSection']==true">
+                        <h4><s:message code="label.customer.myaccount" text="My Account" /></h4>
                         <ul>
-							<li><a href="#">My Account</a></li>
-							<li><a href="#">Order History</a></li>
-							<li><a href="#">Wish List</a></li>
-							<li><a href="#">Newsletter</a></li>
+							<li><a href="#"><s:message code="button.label.login" text="Login" /></a></li>
 						</ul>
 						</c:if>
                     </div>
                     <div class="span3">
                     	<!-- Social links -->
-                        <h4>Connect with us</h4>
-                        <a href="#">Facebook</a>
-                        <br>
-                        <a href="#">Twitter</a>
+                    	<s:if test="${request.CONFIGS['facebook_page_url'] != null || ${request.CONFIGS['twitter_handle'] != null}">
+	                        <h4><s:message code="label.social.connect" text="Connect with us"/></h4>
+	                        <c:if test="${request.CONFIGS['facebook_page_url'] != null}">
+	                        <a href="<c:out value="${request.CONFIGS['facebook_page_url']}"/>"><s:message code="label.social.facebook" text="Facebook"/></a>
+	                        <br>
+	                        </c:if>
+	                        <c:if test="${request.CONFIGS['twitter_handle'] != null}">
+	                        <a href="<c:out value="${request.CONFIGS['twitter_handle']}"/>"><s:message code="label.social.twitter" text="Twitter"/></a>
+	                        </c:if>
+                        </s:if>
                     </div>				
                 </div>
 		    <div id="footer-bottom">

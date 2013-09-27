@@ -22,9 +22,13 @@
 								<h3><s:message code="menu.system-configurations" text="System configurations" /></h3>	
 							<br/>
 							
-							<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>   
-	                        <div id="store.error" class="alert alert-error" style="display:none;"><s:message code="message.error" text="An error occured"/></div>
-								
+							<c:url var="saveSystemConfiguration" value="/admin/configuration/saveSystemConfiguration.html"/>
+							<form:form method="POST" commandName="configuration" action="${saveSystemConfiguration}">
+
+      							
+      								<form:errors path="*" cssClass="alert alert-error" element="div" />
+									<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
+
 		                        	   <div class="control-group">
 	                        				<label><s:message code="label.customer.displaycustomersection" text="Display customer section" /> &nbsp;:&nbsp;</label>
 	                        				<div class="controls">
@@ -32,6 +36,24 @@
 	                                   			<span class="help-inline"></span>
 	                        				</div>
 	                  				   </div>
+	                  				   
+	                  				   
+	                  				  <div class="control-group">
+	                        				<label><s:message code="label.store.displaycontactussection" text="Display contact us page" /> &nbsp;:&nbsp;</label>
+	                        				<div class="controls">
+	                        					<form:checkbox path="displayContactUs" /> 
+	                                   			<span class="help-inline"></span>
+	                        				</div>
+	                  				   </div>
+	                  				   
+	                  				 <div class="form-actions">
+                  						<div class="pull-right">
+                  							<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>
+                  						</div>
+            	 					</div>
+					                  
+
+            	 			</form:form>
 
    					</div>
 

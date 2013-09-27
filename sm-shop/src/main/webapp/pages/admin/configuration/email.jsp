@@ -20,7 +20,7 @@
   					 <div class="tab-content">
   					
   					
-  					<div class="tab-pane active" id="accounts-conf">
+  					<div class="tab-pane active" id="accounts-conf"> 
 
 
 								<div class="sm-ui-component">
