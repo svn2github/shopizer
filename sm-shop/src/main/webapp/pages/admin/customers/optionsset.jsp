@@ -5,6 +5,19 @@
 
 <%@ page session="false"%>
 
+<script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
+
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+	$('#sortOrder').numeric();
+
+});
+	
+</script>
+
 
 
 <div class="tabbable">
@@ -56,7 +69,7 @@
 							<span class="help-inline"> <c:if
 									test="${errorMessageAssociation!=null}">
 									<span id="identifiererrors" class="error"><c:out
-											value="${errorMessage}" />
+											value="${errorMessageAssociation}" />
 									</span>
 								</c:if> </span>
 						</div>
@@ -68,7 +81,7 @@
 							<s:message code="label.entity.order" text="Order" />
 						</label>
 						<div class="controls">
-							<form:input id="sortOrder" cssClass="highlight" path="sortOrder" />
+							<form:input id="sortOrder" path="sortOrder" />
 							<span class="help-inline"><form:errors path="sortOrder"
 									cssClass="error" />
 							</span>

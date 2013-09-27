@@ -77,7 +77,7 @@ $(document).ready(function() {
                   <div class="control-group">
                         <label class="required"><s:message code="label.entity.order" text="Order"/></label>
                         <div class="controls">
-                                    <form:input id="sortOrder" cssClass="highlight" path="sortOrder"/>
+                                    <form:input id="sortOrder"  path="sortOrder"/>
                                     <span class="help-inline"><form:errors path="sortOrder" cssClass="error" /></span>
 
                         </div>
