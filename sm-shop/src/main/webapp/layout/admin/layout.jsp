@@ -325,6 +325,9 @@ response.setDateHeader ("Expires", -1);
 			$("#email-conf-link").click(function() {
   				window.location='<c:url value="/admin/configuration/email.html" />';
 			});
+			$("#system-configurations-link").click(function() {
+  				window.location='<c:url value="/admin/configuration/system.html" />';
+			});
 			$("#taxclass-link").click(function() {
   				window.location='<c:url value="/admin/tax/taxclass/list.html" />';
 			});

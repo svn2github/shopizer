@@ -255,8 +255,10 @@
   		<put-attribute name="body" value="/pages/admin/configuration/email.jsp" /> 
   	</definition>
   	
-  	
-  	
+  	 <definition name="config-system" template="/layout/admin/layout.jsp"> 
+  		<put-attribute name="body" value="/pages/admin/configuration/system.jsp" /> 
+  	</definition>
+
   	 <definition name="admin-content-filebrowser" template="/layout/admin/noSkinLayout.jsp"> 
   		<put-attribute name="body" value="/pages/admin/components/fileBrowser.jsp" /> 
   	</definition>
