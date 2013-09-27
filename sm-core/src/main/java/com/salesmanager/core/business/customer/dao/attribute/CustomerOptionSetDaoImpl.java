@@ -32,6 +32,8 @@ public class CustomerOptionSetDaoImpl extends SalesManagerEntityDaoImpl<Long, Cu
 		query.from(qCustomerOptionSet)
 			.join(qCustomerOptionSet.customerOption,qCustomerOption).fetch()
 			.join(qCustomerOptionSet.customerOptionValue,qCustomerOptionValue).fetch()
+			.join(qCustomerOption.merchantStore).fetch()
+			.join(qCustomerOptionValue.merchantStore).fetch()
 			.leftJoin(qCustomerOption.descriptions).fetch()
 			.leftJoin(qCustomerOptionValue.descriptions).fetch()
 			.where(qCustomerOptionSet.id.eq(customerOptionSetId)
@@ -53,7 +55,9 @@ public class CustomerOptionSetDaoImpl extends SalesManagerEntityDaoImpl<Long, Cu
 		
 		query.from(qCustomerOptionSet)
 			.join(qCustomerOptionSet.customerOption,qCustomerOption).fetch()
+			.join(qCustomerOption.merchantStore).fetch()
 			.join(qCustomerOptionSet.customerOptionValue,qCustomerOptionValue).fetch()
+			.join(qCustomerOptionValue.merchantStore).fetch()
 			.leftJoin(qCustomerOption.descriptions).fetch()
 			.leftJoin(qCustomerOptionValue.descriptions).fetch()
 			.where(qCustomerOption.id.eq(id)

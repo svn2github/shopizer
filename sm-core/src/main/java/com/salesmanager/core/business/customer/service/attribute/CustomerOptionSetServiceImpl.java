@@ -40,6 +40,12 @@ public class CustomerOptionSetServiceImpl extends
 	}
 	
 	@Override
+	public void delete(CustomerOptionSet customerOptionSet) throws ServiceException {
+		customerOptionSet = customerOptionSetDao.getById(customerOptionSet.getId());
+		super.delete(customerOptionSet);
+	}
+	
+	@Override
 	public List<CustomerOptionSet> listByStore(MerchantStore store, Language language) throws ServiceException {
 		Validate.notNull(store,"merchant store cannot be null");
 

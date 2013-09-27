@@ -41,7 +41,7 @@ public class CustomerOptionValue extends SalesManagerEntity<Long, CustomerOption
 	private Long id;
 	
 	@Column(name="SORT_ORDER")
-	private Integer sortOrder;
+	private Integer sortOrder = 0;
 	
 	@Column(name="CUSTOMER_OPT_VAL_IMAGE")
 	private String customerOptionValueImage;

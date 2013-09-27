@@ -49,7 +49,8 @@ public class CustomerOptionSet extends SalesManagerEntity<Long, CustomerOptionSe
 	
 
 
-	private int sortOrder;
+	@Column(name="SORT_ORDER")
+	private Integer sortOrder = 0;
 	
 
 

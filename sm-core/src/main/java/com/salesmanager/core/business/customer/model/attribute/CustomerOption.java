@@ -41,7 +41,7 @@ public class CustomerOption extends SalesManagerEntity<Long, CustomerOption> {
 	private Long id;
 	
 	@Column(name="SORT_ORDER")
-	private Integer sortOrder;
+	private Integer sortOrder = 0;
 	
 	@Column(name="CUSTOMER_OPTION_TYPE", length=10)
 	private String customerOptionType;
