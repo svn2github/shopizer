@@ -153,8 +153,8 @@ public class CustomerOptionsSetController {
 				if(opt.getId().longValue()==optionSet.getCustomerOption().getId().longValue()
 						//&& optValue.getId().longValue() == optionSet.getPk().getCustomerOptionValue().getId().longValue()) {
 						&& optValue.getId().longValue() == optionSet.getCustomerOptionValue().getId().longValue()) {
-						model.addAttribute("errorMessage",messages.getMessage("message.region.null", locale));
-						ObjectError error = new ObjectError("region",messages.getMessage("message.region.exists", locale));
+						model.addAttribute("errorMessageAssociation",messages.getMessage("message.optionset.optionassociationexists", locale));
+						ObjectError error = new ObjectError("customerOptionValue.id",messages.getMessage("message.optionset.optionassociationexists", locale));
 						result.addError(error);
 						break;
 				}
