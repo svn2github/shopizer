@@ -1,4 +1,4 @@
-package com.salesmanager.web.admin.controller.configurations;
+package com.salesmanager.web.admin.entity.web;
 
 import java.util.List;
 

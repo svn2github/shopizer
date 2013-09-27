@@ -91,6 +91,7 @@ public interface ControllerConstants
             final String accounts="config-accounts";
             final String email="config-email";
             final String cache="admin-cache";
+            final String system="config-system";
         }
         
         interface Tax{

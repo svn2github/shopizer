@@ -29,6 +29,7 @@ import com.salesmanager.core.business.system.service.EmailService;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
 import com.salesmanager.core.modules.email.EmailConfig;
 import com.salesmanager.web.admin.controller.ControllerConstants;
+import com.salesmanager.web.admin.entity.web.ConfigListWrapper;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 
