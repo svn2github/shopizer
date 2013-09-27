@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.init.service.InitializationDatabase;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
+import com.salesmanager.core.business.system.model.MerchantConfig;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
 import com.salesmanager.core.business.system.model.MerchantConfigurationType;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
@@ -260,6 +262,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				 * - Facebook page
 				 * - Twitter handle
 				 * - Show customer login
+				 * - ...
 				 */
 				
 				this.getMerchantConfigurations(store,request);
@@ -309,24 +312,16 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 					//get from missed cache
 					missedContent = (Boolean)cache.getFromCache(configKeyMissed.toString());
 				}
-				
 				   if(configs==null && missedContent==null) {
-					
-					   configs = this.getConfigurations(store);
-
-						
+					    configs = this.getConfigurations(store);
 						//put in cache
 						cache.putInCache(configs, configKey.toString());
-						
 					} else {
-						
 						//put in missed cache
 						cache.putInCache(new Boolean(true), configKeyMissed.toString());
 						
 					}
-					
-				
-	
+
 			} else {
 				
 
@@ -741,26 +736,36 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	   
 	   private Map<String,String> getConfigurations(MerchantStore store) {
 		   
+		   Map<String,String> configs = null;
 		   try {
 			   
 			   List<MerchantConfiguration> configurations = merchantConfigurationService.listByType(MerchantConfigurationType.CONFIG, store);
-			   Map<String,String> configs = null;
+			   
 			   for(MerchantConfiguration configuration : configurations) {
 				   
 				   if(configs==null) {
 					   configs = new HashMap<String,String>();
 				   }
 				   configs.put(configuration.getKey(), configuration.getValue());
- 
 			   }
 			   
-			   return configs;
+			   //get MerchantConfig
+			   MerchantConfig merchantConfig = merchantConfigurationService.getMerchantConfig(store);
+			   ObjectMapper m = new ObjectMapper();
+			   @SuppressWarnings("unchecked")
+			   Map<String,String> props = m.convertValue(merchantConfig, Map.class);
+			   
+			   for(String key : props.keySet()) {
+				   configs.put(key, props.get(key));
+			   }
+
+			   
 			
 		   } catch (Exception e) {
 			   LOGGER.error("Exception while getting configurations",e);
 		   }
 		   
-		   return null;
+		   return configs;
 		   
 	   }
 	   
