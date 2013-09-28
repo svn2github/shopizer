@@ -13,6 +13,7 @@ public class MerchantConfig implements Serializable, JSONAware {
 	private static final long serialVersionUID = 1L;
 	private boolean displayCustomerSection =true;
 	private boolean displayContactUs =false;
+	private boolean displayStoreAddress = true;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -20,6 +21,7 @@ public class MerchantConfig implements Serializable, JSONAware {
 		JSONObject data = new JSONObject();
 		data.put("displayCustomerSection", this.isDisplayCustomerSection());
 		data.put("displayContactUs", this.isDisplayContactUs());
+		data.put("displayStoreAddress", this.isDisplayStoreAddress());
 		return data.toJSONString();
 	}
 
@@ -37,6 +39,14 @@ public class MerchantConfig implements Serializable, JSONAware {
 
 	public boolean isDisplayContactUs() {
 		return displayContactUs;
+	}
+
+	public boolean isDisplayStoreAddress() {
+		return displayStoreAddress;
+	}
+
+	public void setDisplayStoreAddress(boolean displayStoreAddress) {
+		this.displayStoreAddress = displayStoreAddress;
 	}
 
 }
