@@ -46,6 +46,14 @@
 	                        				</div>
 	                  				   </div>
 	                  				   
+	                  				   <div class="control-group">
+	                        				<label><s:message code="label.store.displaycontactussection" text="Display contact us page" /> &nbsp;:&nbsp;</label>
+	                        				<div class="controls">
+	                        					<form:checkbox path="displayStoreAddress" /> 
+	                                   			<span class="help-inline"></span>
+	                        				</div>
+	                  				   </div>
+	                  				   
 	                  				 <div class="form-actions">
                   						<div class="pull-right">
                   							<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>

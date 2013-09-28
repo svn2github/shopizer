@@ -19,7 +19,7 @@ response.setDateHeader ("Expires", -1);
                 <div class="row">                   
                     <div class="span3">
 						<div class="company">
-							<p>
+							<p> 
 								<jsp:include page="/pages/shop/common/preBuiltBlocks/storeAddress.jsp"/>
 							</p>
 						</div>
