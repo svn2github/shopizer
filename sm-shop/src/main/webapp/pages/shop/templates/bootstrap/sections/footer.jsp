@@ -34,7 +34,7 @@ response.setDateHeader ("Expires", -1);
 						</ul>
                     </div>
                     <div class="span3">
-                    	<c:if test="${request.CONFIGS['displayCustomerSection'] != null && ${request.CONFIGS['displayCustomerSection']==true">
+                    	<c:if test="${request.CONFIGS['displayCustomerSection'] != null}">
                         <h4><s:message code="label.customer.myaccount" text="My Account" /></h4>
                         <ul>
 							<li><a href="#"><s:message code="button.label.login" text="Login" /></a></li>
@@ -43,7 +43,7 @@ response.setDateHeader ("Expires", -1);
                     </div>
                     <div class="span3">
                     	<!-- Social links -->
-                    	<s:if test="${request.CONFIGS['facebook_page_url'] != null || ${request.CONFIGS['twitter_handle'] != null}">
+                    	<c:if test="${request.CONFIGS['facebook_page_url'] != null}">
 	                        <h4><s:message code="label.social.connect" text="Connect with us"/></h4>
 	                        <c:if test="${request.CONFIGS['facebook_page_url'] != null}">
 	                        <a href="<c:out value="${request.CONFIGS['facebook_page_url']}"/>"><s:message code="label.social.facebook" text="Facebook"/></a>
@@ -52,7 +52,7 @@ response.setDateHeader ("Expires", -1);
 	                        <c:if test="${request.CONFIGS['twitter_handle'] != null}">
 	                        <a href="<c:out value="${request.CONFIGS['twitter_handle']}"/>"><s:message code="label.social.twitter" text="Twitter"/></a>
 	                        </c:if>
-                        </s:if>
+                        </c:if>
                     </div>				
                 </div>
 		    <div id="footer-bottom">
