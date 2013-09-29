@@ -46,6 +46,11 @@ public class SystemConfigurationController {
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		MerchantConfig merchantConfiguration = merchantConfigurationService.getMerchantConfig(store);
 
+		if(merchantConfiguration==null) {
+			merchantConfiguration = new MerchantConfig();
+		}
+		
+		
 		model.addAttribute("configuration",merchantConfiguration);
 		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Configuration.system;
 	}

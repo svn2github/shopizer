@@ -756,7 +756,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			   Map<String,String> props = m.convertValue(merchantConfig, Map.class);
 			   
 			   for(String key : props.keySet()) {
-				   configs.put(key, props.get(key));
+				   configs.put(key, String.valueOf(props.get(key)));
 			   }
 
 			   

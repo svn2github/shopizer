@@ -117,7 +117,12 @@ public class CustomerOptionsSetController {
 		model.addAttribute("options", options);
 		model.addAttribute("optionsValues", optionsValues);
 
-		
+		if(optionSet.getCustomerOption()==null || optionSet.getCustomerOptionValue()==null) {
+			model.addAttribute("errorMessageAssociation",messages.getMessage("message.optionset.noassociation", locale));
+			ObjectError error = new ObjectError("customerOptionValue.id",messages.getMessage("message.optionset.noassociation", locale));
+			result.addError(error);
+			return ControllerConstants.Tiles.Customer.optionsSet;
+		}
 		
 		//see if association already exist
 		CustomerOption option =	null;	
