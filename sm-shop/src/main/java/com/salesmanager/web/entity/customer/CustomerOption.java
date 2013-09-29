@@ -3,7 +3,6 @@ package com.salesmanager.web.entity.customer;
 import java.io.Serializable;
 import java.util.List;
 
-import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
 import com.salesmanager.web.entity.ShopEntity;
 
 public class CustomerOption extends ShopEntity implements Serializable {
@@ -14,7 +13,9 @@ public class CustomerOption extends ShopEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String type;
 	private String name;
-	
+
+
+
 	private CustomerOptionValue defaultValue;
 
 	

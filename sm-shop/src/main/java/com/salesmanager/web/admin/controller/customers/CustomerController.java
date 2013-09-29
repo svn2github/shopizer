@@ -2,6 +2,7 @@ package com.salesmanager.web.admin.controller.customers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -31,6 +32,7 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.CustomerCriteria;
 import com.salesmanager.core.business.customer.model.CustomerList;
 import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
+import com.salesmanager.core.business.customer.model.attribute.CustomerOptionDescription;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
@@ -44,6 +46,7 @@ import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
+import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.customer.CustomerOption;
@@ -89,19 +92,13 @@ public class CustomerController {
 	public String displayCustomer(Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 			
 		//display menu
-		Map<String,String> activeMenus = new HashMap<String,String>();
-		activeMenus.put("customer", "customer");
-		activeMenus.put("customer-create", "customer-create");
-		@SuppressWarnings("unchecked")
-		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
+		this.setMenu(model, request);
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		List<Language> languages = languageService.getLanguages();
 		
-		Menu currentMenu = (Menu)menus.get("customer");
-		model.addAttribute("currentMenu",currentMenu);
-		model.addAttribute("activeMenus",activeMenus);
+
 		model.addAttribute("languages",languages);
 		
 		Customer customer = null;
@@ -185,6 +182,8 @@ public class CustomerController {
 	@RequestMapping(value="/admin/customers/save.html", method=RequestMethod.POST)
 	public String saveCustomer(@Valid @ModelAttribute("customer") Customer customer, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception{
 	
+		this.setMenu(model, request);
+		
 		String email_regEx = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}\\b";
 		Pattern pattern = Pattern.compile(email_regEx);
 		
@@ -363,6 +362,24 @@ public class CustomerController {
 		return "admin-customer";
 		
 	}
+	
+
+	@Secured("CUSTOMER")
+	@RequestMapping(value="/admin/customers/attributes/save.html", method=RequestMethod.POST)
+	public String saveOption(@Valid @ModelAttribute("optionList") List<CustomerOption> optionList, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+		
+
+		//display menu
+		setMenu(model,request);
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+
+		//TODO
+		
+		model.addAttribute("success","success");
+		return ControllerConstants.Tiles.Customer.optionDetails;
+	}
+
 
 	
 	/**
@@ -375,17 +392,7 @@ public class CustomerController {
 	public String displayCustomers(Model model,HttpServletRequest request) throws Exception {
 		
 		
-		//display menu
-		Map<String,String> activeMenus = new HashMap<String,String>();
-		activeMenus.put("customer", "customer");
-		activeMenus.put("customer-list", "customer-list");
-		@SuppressWarnings("unchecked")
-		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
-		
-		Menu currentMenu = (Menu)menus.get("customer");
-		model.addAttribute("currentMenu",currentMenu);
-		model.addAttribute("activeMenus",activeMenus);
-		//
+		this.setMenu(model, request);
 	
 		return "admin-customers";
 		
@@ -472,6 +479,25 @@ public class CustomerController {
 		return returnString;
 		
 	
+	}
+	
+	private void setMenu(Model model, HttpServletRequest request) throws Exception {
+		
+		//display menu
+		Map<String,String> activeMenus = new HashMap<String,String>();
+		activeMenus.put("customer", "customer");
+		activeMenus.put("customer-create", "customer-create");
+		
+		@SuppressWarnings("unchecked")
+		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
+		
+		Menu currentMenu = (Menu)menus.get("customer");
+		model.addAttribute("currentMenu",currentMenu);
+		model.addAttribute("activeMenus",activeMenus);
+
+
+		//
+		
 	}
 	
 		
