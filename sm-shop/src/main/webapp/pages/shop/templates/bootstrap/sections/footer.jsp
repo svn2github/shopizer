@@ -18,11 +18,13 @@ response.setDateHeader ("Expires", -1);
             <footer>
                 <div class="row">                   
                     <div class="span3">
+                    	<c:if test="${request.CONFIGS['displayStoreAddress'] != null}">
 						<div class="company">
 							<p> 
 								<jsp:include page="/pages/shop/common/preBuiltBlocks/storeAddress.jsp"/>
 							</p>
 						</div>
+						</c:if>
                     </div>
 					 <div class="span3">   
 						<h4><s:message code="label.store.information.title" text="Informations"/></h4>

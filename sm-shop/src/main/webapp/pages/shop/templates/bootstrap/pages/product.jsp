@@ -25,9 +25,9 @@ response.setDateHeader ("Expires", -1);
                 <div class="span12" itemscope itemtype="http://data-vocabulary.org/Product">
                     <div class="row">
 						<div class="span4">
-							<c:if test="${product.image!=null}"/>
+							<c:if test="${product.image!=null}">
 							<a href="<c:out value="${product.imageUrl}"/>" class="thumbnail" data-fancybox-group="group1" title="<c:out value="${product.name}"/>"><img itemprop="image" alt="<c:out value="${product.name}"/>" src="<c:out value="${product.imageUrl}"/>"></a>												
-							<c:if test="${product.images!=null}"/>
+							<c:if test="${product.images!=null}">
 							<ul class="thumbnails small">
 								<c:forEach items="${product.images}" var="thumbnail">								
 								<li class="span1">
@@ -45,7 +45,7 @@ response.setDateHeader ("Expires", -1);
 								<strong><s:message code="label.product.code" text="Product code"/></strong> <span itemprop="identifier" content="mpn:${product.sku}">${product.sku}</span><br>								
 							</address>
 							<span itemprop="offerDetails" itemscope itemtype="http://data-vocabulary.org/Offer">
-							<meta itemprop="seller" content="${requestScope.MERCHANT_STORE.name}"/>
+							<meta itemprop="seller" content="${requestScope.MERCHANT_STORE.storename}"/>
 							<meta itemprop="currency" content="<c:out value="${requestScope.MERCHANT_STORE.currency.code}" />" />
 							<h4>
 									<c:choose>
@@ -59,7 +59,7 @@ response.setDateHeader ("Expires", -1);
 									
 							</h4>
 							<address>
-								<strong><s:message code="label.product.available" text="Availability"/></strong> <span><c:choose><c:when test="${product.quantity>0}"/><span itemprop="availability" content="in_stock">${product.quantity}</span></c:when><c:otherwise><span itemprop="availability" content="out_of_stock">TODO - Out Of Stock</c:otherwise></c:choose></span><br>								
+								<strong><s:message code="label.product.available" text="Availability"/></strong> <span><c:choose><c:when test="${product.quantity>0}"><span itemprop="availability" content="in_stock">${product.quantity}</span></c:when><c:otherwise><span itemprop="availability" content="out_of_stock">TODO - Out Of Stock</c:otherwise></c:choose></span><br>								
 							</address>
 							</span>
 						</div>
@@ -101,7 +101,7 @@ response.setDateHeader ("Expires", -1);
 									</c:forEach>
 								</c:if>
 						
-								<c:if test="${product.quantityOrderMaximum==-1 || product.quantityOrderMaximum>1}" />
+								<c:if test="${product.quantityOrderMaximum==-1 || product.quantityOrderMaximum>1}" >
 								<label><s:message code="label.quantity" text="Quantity"/></label>
 								<input quantity-productId-<c:out value="${product.id}" />" class="span1" placeholder="1" type="text">
 								</c:if>
