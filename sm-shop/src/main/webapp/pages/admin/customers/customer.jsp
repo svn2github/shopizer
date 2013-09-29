@@ -501,6 +501,12 @@ function getBillingZones(countryCode){
 										<c:when test="${option.type=='text'}">
 											<input type="text" id="${option.id}" name="options[${status.index}].id" class="input-large">
 										</c:when>
+										<!-- Option
+												id id of the Option
+												name
+												value submited value
+										
+										 -->
 										<c:when test="${option.type=='checkbox'}">
 											<c:forEach items="${option.availableValues}" var="optionValue">
 												<input type="checkbox" id="<c:out value="${optionValue.id}"/>" name="options[${status.index}].id" value="<c:out value="${optionValue.id}"/>"<c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> checked="checked" </c:if>  />
