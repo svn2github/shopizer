@@ -1,7 +1,5 @@
 package com.salesmanager.core.business.customer.dao.attribute;
 
-import java.util.List;
-
 import org.springframework.stereotype.Repository;
 
 import com.mysema.query.jpa.JPQLQuery;
@@ -40,7 +38,7 @@ public class CustomerAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Cu
 	}
 	
 	@Override
-	public List<CustomerAttribute> getByOptionId(MerchantStore store, Long id) {
+	public CustomerAttribute getByOptionId(MerchantStore store, Long id) {
 		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
 		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
 		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
@@ -58,11 +56,11 @@ public class CustomerAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Cu
 				.and(qCustomerOption.id.eq(id)));
 
 		
-		return query.list(qCustomerAttribute);
+		return query.uniqueResult(qCustomerAttribute);
 	}
 	
 	@Override
-	public List<CustomerAttribute> getByOptionValueId(MerchantStore store, Long id) {
+	public CustomerAttribute getByOptionValueId(MerchantStore store, Long id) {
 		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
 		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
 		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
@@ -80,7 +78,7 @@ public class CustomerAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Cu
 				.and(qCustomerOptionValue.id.eq(id)));
 
 		
-		return query.list(qCustomerAttribute);
+		return query.uniqueResult(qCustomerAttribute);
 	}
 
 

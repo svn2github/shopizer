@@ -49,14 +49,21 @@ public class CustomerAttributeServiceImpl extends
 		
 	}
 	
+
+
 	@Override
-	public List<CustomerAttribute> getByCustomerOption(MerchantStore store, CustomerOption customerOption) {
-		return customerAttributeDao.getByOptionId(store, customerOption.getId());
+	public CustomerAttribute getByCustomerOptionId(MerchantStore store, Long id) {
+		return customerAttributeDao.getByOptionId(store, id);
 	}
-	
+
+
+
+
+
 	@Override
-	public List<CustomerAttribute> getByCustomerOptionValue(MerchantStore store, CustomerOptionValue customerOptionValue) {
-		return customerAttributeDao.getByOptionValueId(store, customerOptionValue.getId());
+	public CustomerAttribute getByCustomerOptionValueId(MerchantStore store,
+			Long id) {
+		return customerAttributeDao.getByOptionValueId(store, id);
 	}
 
 }

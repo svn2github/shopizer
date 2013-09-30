@@ -10,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
-import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import com.salesmanager.core.business.customer.model.Customer;
@@ -37,17 +36,6 @@ public class CustomerAttribute extends SalesManagerEntity<Long, CustomerAttribut
 	private Long id;
 
 
-
-	@Column(name="CUSTOMER_ATTRIBUTE_DEFAULT")
-	private boolean attributeDefault=false;
-	
-	@Column(name="CUSTOMER_ATTRIBUTE_REQUIRED")
-	private boolean attributeRequired=false;
-	
-	@Column(name="CUSTOMER_ATTRIBUTE_FOR_DISP")
-	private boolean attributeDisplayOnly=false;
-
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="OPTION_ID", nullable=false)
 	private CustomerOption customerOption;
@@ -56,15 +44,6 @@ public class CustomerAttribute extends SalesManagerEntity<Long, CustomerAttribut
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="OPTION_VALUE_ID", nullable=false)
 	private CustomerOptionValue customerOptionValue;
-	
-	
-
-	/**
-	 * This transient object property
-	 * is a utility used only to submit from a free text
-	 */
-	@Transient
-	private String attributeSortOrder = "0";
 	
 
 
@@ -88,32 +67,6 @@ public class CustomerAttribute extends SalesManagerEntity<Long, CustomerAttribut
 
 
 
-	public boolean getAttributeDefault() {
-		return attributeDefault;
-	}
-
-	public void setAttributeDefault(boolean attributeDefault) {
-		this.attributeDefault = attributeDefault;
-	}
-
-	public boolean getAttributeRequired() {
-		return attributeRequired;
-	}
-
-	public void setAttributeRequired(boolean attributeRequired) {
-		this.attributeRequired = attributeRequired;
-	}
-
-	public boolean getAttributeDisplayOnly() {
-		return attributeDisplayOnly;
-	}
-
-	public void setAttributeDisplayOnly(boolean attributeDisplayOnly) {
-		this.attributeDisplayOnly = attributeDisplayOnly;
-	}
-
-
-
 	public CustomerOption getCustomerOption() {
 		return customerOption;
 	}
@@ -131,18 +84,6 @@ public class CustomerAttribute extends SalesManagerEntity<Long, CustomerAttribut
 	}
 
 
-	
-	
-	public String getAttributeSortOrder() {
-		return attributeSortOrder;
-	}
-
-	public void setAttributeSortOrder(String attributeSortOrder) {
-		this.attributeSortOrder = attributeSortOrder;
-	}
-
-
-
 	public Customer getCustomer() {
 		return customer;
 	}
@@ -150,6 +91,6 @@ public class CustomerAttribute extends SalesManagerEntity<Long, CustomerAttribut
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
-	
+
 
 }
