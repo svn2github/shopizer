@@ -75,6 +75,16 @@ public class CustomerServiceImpl extends SalesManagerEntityServiceImpl<Long, Cus
 		}
 	}
 	
+	@Override
+	public boolean deleteById(Long id) throws ServiceException {
+		Customer customer = getById(id);
+		if(customer != null){
+			customerDAO.delete(customer);
+			return true;
+		}
+		return false;
+	}
+	
 	public void resetCustomerPassword(Customer customer, MerchantStore store) throws ServiceException {
 		
 		
