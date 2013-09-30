@@ -2,7 +2,6 @@ package com.salesmanager.web.admin.controller.customers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -32,9 +31,9 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.CustomerCriteria;
 import com.salesmanager.core.business.customer.model.CustomerList;
 import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
-import com.salesmanager.core.business.customer.model.attribute.CustomerOptionDescription;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
 import com.salesmanager.core.business.customer.service.CustomerService;
+import com.salesmanager.core.business.customer.service.attribute.CustomerAttributeService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionSetService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -59,25 +58,28 @@ public class CustomerController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerController.class);
 	
 	@Autowired
-	LabelUtils messages;
+	private LabelUtils messages;
 	
 	@Autowired
-	CustomerService customerService;
+	private CustomerService customerService;
 	
 	@Autowired
-	CustomerOptionService customerOptionService;
+	private CustomerOptionService customerOptionService;
 	
 	@Autowired
 	private CustomerOptionSetService customerOptionSetService;
 	
 	@Autowired
-	CountryService countryService;
+	private CountryService countryService;
 	
 	@Autowired
-	ZoneService zoneService;
+	private ZoneService zoneService;
 	
 	@Autowired
-	LanguageService languageService;
+	private LanguageService languageService;
+	
+	@Autowired
+	private CustomerAttributeService customerAttributeService;
 	
 	
 	/**
@@ -366,7 +368,7 @@ public class CustomerController {
 
 	@Secured("CUSTOMER")
 	@RequestMapping(value="/admin/customers/attributes/save.html", method=RequestMethod.POST)
-	public String saveOption(@Valid @ModelAttribute("optionList") List<CustomerOption> optionList, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+	public String saveOption(@Valid @ModelAttribute("optionList") List<CustomerOption> optionList, @ModelAttribute("customer") Long customer, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
 
 		//display menu
@@ -374,7 +376,33 @@ public class CustomerController {
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
-		//TODO
+		//get customer
+		Customer cust = customerService.getById(customer);
+		if(cust.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			return "redirect:/admin/customers/list.html";
+		}
+		
+		
+		for(CustomerOption option : optionList) {
+
+			//get the attribute by option id
+			CustomerAttribute attribute = customerAttributeService.getByCustomerOptionId(store,option.getId());
+			//get the option
+			com.salesmanager.core.business.customer.model.attribute.CustomerOption customerOption = customerOption = customerOptionService.getById(option.getId());
+			if(attribute ==null) {
+
+				if(customerOption.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+					return "redirect:/admin/customers/list.html";
+				}
+				
+				attribute = new CustomerAttribute();
+				attribute.setCustomer(cust);
+				attribute.setCustomerOption(customerOption);
+			}
+			
+			//get value(s)
+			
+		}
 		
 		model.addAttribute("success","success");
 		return ControllerConstants.Tiles.Customer.optionDetails;
