@@ -1,5 +1,7 @@
 package com.salesmanager.core.business.customer.dao.attribute;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.mysema.query.jpa.JPQLQuery;
@@ -62,8 +64,8 @@ public class CustomerAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Cu
 		return query.uniqueResult(qCustomerAttribute);
 	}
 	
-/*	@Override
-	public CustomerAttribute getByOptionValueId(MerchantStore store, Long id) {
+	@Override
+	public List<CustomerAttribute> getByOptionValueId(MerchantStore store, Long id) {
 		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
 		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
 		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
@@ -81,8 +83,30 @@ public class CustomerAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Cu
 				.and(qCustomerOptionValue.id.eq(id)));
 
 		
-		return query.uniqueResult(qCustomerAttribute);
-	}*/
+		return query.list(qCustomerAttribute);
+	}
+	
+	@Override
+	public List<CustomerAttribute> getByOptionId(MerchantStore store, Long id) {
+		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
+		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
+		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
+		
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCustomerAttribute)
+		.join(qCustomerAttribute.customer).fetch()
+		.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
+		.leftJoin(qCustomerAttribute.customerOptionValue, qCustomerOptionValue).fetch()
+		.leftJoin(qCustomerOption.descriptions).fetch()
+		.leftJoin(qCustomerOptionValue.descriptions).fetch()
+		.where(qCustomerOptionValue.merchantStore.id.eq(store.getId())
+				.and(qCustomerOption.id.eq(id)));
+
+		
+		return query.list(qCustomerAttribute);
+	}
 
 
 	

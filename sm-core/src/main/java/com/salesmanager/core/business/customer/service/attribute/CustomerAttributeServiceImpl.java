@@ -60,10 +60,16 @@ public class CustomerAttributeServiceImpl extends
 
 
 
-/*	@Override
-	public CustomerAttribute getByCustomerOptionValueId(MerchantStore store,
+	@Override
+	public List<CustomerAttribute> getByCustomerOptionValueId(MerchantStore store,
 			Long id) {
 		return customerAttributeDao.getByOptionValueId(store, id);
-	}*/
+	}
+	
+	@Override
+	public List<CustomerAttribute> getByOptionId(MerchantStore store,
+			Long id) {
+		return customerAttributeDao.getByOptionId(store, id);
+	}
 
 }

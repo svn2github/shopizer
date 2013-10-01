@@ -61,9 +61,9 @@ public class CustomerOptionServiceImpl extends
 	public void delete(CustomerOption customerOption) throws ServiceException {
 		
 		//remove all attributes having this option
-		CustomerAttribute attribute = customerAttributeService.getByCustomerOptionId(customerOption.getMerchantStore(), customerOption.getId());
+		List<CustomerAttribute> attributes = customerAttributeService.getByOptionId(customerOption.getMerchantStore(), customerOption.getId());
 		
-		if(attribute!=null) {
+		for(CustomerAttribute attribute : attributes) {
 			customerAttributeService.delete(attribute);
 		}
 		
