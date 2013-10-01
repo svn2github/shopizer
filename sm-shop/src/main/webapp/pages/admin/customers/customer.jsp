@@ -9,7 +9,31 @@
 
 <script>
 
+
+
+
 $(document).ready(function() {
+	
+	
+
+	$('#attributes').on('submit',function () {
+		
+		var data = $('#attributes').serialize();
+		alert(data);
+		//1=1&2=on&3=eeee&4=on&customer=1
+		
+	    //$.ajax({
+	    //    url: 'submit.php',
+	    //    cache: false,
+	    //    type: 'POST',
+	    //    data : $('#formID').serialize(),
+	    //    success: function(json) {
+	    //        alert('all done');
+	    //    }
+	    //});
+	});
+	
+	
 	
 		if($("#code").val()=="") {
 			$('.btn').addClass('disabled');
@@ -478,15 +502,15 @@ function getBillingZones(countryCode){
 						</span>
 				
 				
-					<c:url var="customerOptions" value="/admin/customers/options/save.html"/>
-					<form:form method="POST" action="${customerOptions}" modelAttribute="optionList">
+					<c:url var="customerOptions" value="/admin/customers/attributes/save.html"/>
+					<form:form id="attributes" method="POST" action="#" modelAttribute="optionList">
 					<c:forEach items="${options}" var="option" varStatus="status">
 						<div class="control-group"> 
 	                        <label><c:out value="${option.name}"/></label>
 	                        <div class="controls">	       							
 									<c:choose>
 										<c:when test="${option.type=='select'}">
-											<select id="${option.id}" name="options[${status.index}].id">
+											<select id="<c:out value="${option.id}"/>" name="<c:out value="${option.id}"/>">
 											<c:forEach items="${option.availableValues}" var="optionValue">
 												<option value="${optionValue.id}" <c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> SELECTED</c:if>>${optionValue.name}</option>
 											</c:forEach>
@@ -494,22 +518,16 @@ function getBillingZones(countryCode){
 										</c:when>
 										<c:when test="${option.type=='radio'}">
 											<c:forEach items="${option.availableValues}" var="optionValue">
-												<input type="radio" id="<c:out value="${optionValue.id}"/>" name="options[${status.index}].id" value="<c:out value="${optionValue.id}"/>"<c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> checked="checked" </c:if> />
+												<input type="radio" id="<c:out value="${option.id}"/>-<c:out value="${optionValue.id}"/>" name="<c:out value="${option.id}"/>-<c:out value="${optionValue.id}"/>" <c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> checked="checked" </c:if> />
 												<c:out value="${optionValue.name}"/>
 											</c:forEach>
 										</c:when>
 										<c:when test="${option.type=='text'}">
-											<input type="text" id="${option.id}" name="options[${status.index}].id" class="input-large">
-										</c:when>
-										<!-- Option
-												id id of the Option
-												name
-												value submited value
-										
-										 -->
+											<input type="text" id="<c:out value="${option.id}"/>" name="<c:out value="${option.id}"/>" class="input-large">
+										</c:when> 
 										<c:when test="${option.type=='checkbox'}">
 											<c:forEach items="${option.availableValues}" var="optionValue">
-												<input type="checkbox" id="<c:out value="${optionValue.id}"/>" name="options[${status.index}].id" value="<c:out value="${optionValue.id}"/>"<c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> checked="checked" </c:if>  />
+												<input type="checkbox" id="<c:out value="${option.id}"/>-<c:out value="${optionValue.id}"/>" name="<c:out value="${option.id}"/>-<c:out value="${optionValue.id}"/>" <c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> checked="checked" </c:if>  />
 												<c:out value="${optionValue.name}"/>
 											</c:forEach>
 										</c:when>										
@@ -522,7 +540,7 @@ function getBillingZones(countryCode){
 
 					
 					</c:forEach>
-					
+					<input id="customer" type="hidden" value="1" name="customer">
 					<div class="form-actions">
                  	  <div class="pull-right">
                  			<button type="submit" class="btn btn-success"><s:message code="button.label.save" text="Save"/></button>
