@@ -45,7 +45,8 @@ public class CustomerAttribute extends SalesManagerEntity<Long, CustomerAttribut
 	@JoinColumn(name="OPTION_VALUE_ID", nullable=false)
 	private CustomerOptionValue customerOptionValue;
 	
-
+	@Column(name="CUSTOMER_ATTR_TXT_VAL")
+	private String textValue;
 
 
 	@ManyToOne(targetEntity = Customer.class)
@@ -90,6 +91,14 @@ public class CustomerAttribute extends SalesManagerEntity<Long, CustomerAttribut
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+
+	public void setTextValue(String textValue) {
+		this.textValue = textValue;
+	}
+
+	public String getTextValue() {
+		return textValue;
 	}
 
 

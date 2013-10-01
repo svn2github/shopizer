@@ -52,18 +52,18 @@ public class CustomerAttributeServiceImpl extends
 
 
 	@Override
-	public CustomerAttribute getByCustomerOptionId(MerchantStore store, Long id) {
-		return customerAttributeDao.getByOptionId(store, id);
+	public CustomerAttribute getByCustomerOptionId(MerchantStore store, Long customerId, Long id) {
+		return customerAttributeDao.getByOptionId(store, customerId, id);
 	}
 
 
 
 
 
-	@Override
+/*	@Override
 	public CustomerAttribute getByCustomerOptionValueId(MerchantStore store,
 			Long id) {
 		return customerAttributeDao.getByOptionValueId(store, id);
-	}
+	}*/
 
 }

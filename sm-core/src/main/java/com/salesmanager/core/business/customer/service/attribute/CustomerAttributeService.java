@@ -12,10 +12,10 @@ public interface CustomerAttributeService extends
 			throws ServiceException;
 
 	CustomerAttribute getByCustomerOptionId(MerchantStore store,
-			Long id);
+			Long customerId, Long id);
 
-	CustomerAttribute getByCustomerOptionValueId(MerchantStore store,
-			Long id);
+	//CustomerAttribute getByCustomerOptionValueId(MerchantStore store,
+	//		Long id);
 	
 
 }

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
+import com.salesmanager.core.business.customer.model.QCustomer;
 import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
 import com.salesmanager.core.business.customer.model.attribute.QCustomerAttribute;
 import com.salesmanager.core.business.customer.model.attribute.QCustomerOption;
@@ -38,28 +39,30 @@ public class CustomerAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Cu
 	}
 	
 	@Override
-	public CustomerAttribute getByOptionId(MerchantStore store, Long id) {
+	public CustomerAttribute getByOptionId(MerchantStore store, Long customerId, Long id) {
 		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
 		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
+		QCustomer qCustomer = QCustomer.customer;
 		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
 		
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qCustomerAttribute)
-		.join(qCustomerAttribute.customer).fetch()
+		.join(qCustomerAttribute.customer,qCustomer).fetch()
 		.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
 		.leftJoin(qCustomerAttribute.customerOptionValue, qCustomerOptionValue).fetch()
 		.leftJoin(qCustomerOption.descriptions).fetch()
 		.leftJoin(qCustomerOptionValue.descriptions).fetch()
 		.where(qCustomerOption.merchantStore.id.eq(store.getId())
-				.and(qCustomerOption.id.eq(id)));
+				.and(qCustomerOption.id.eq(id))
+				.and(qCustomer.id.eq(customerId)));
 
 		
 		return query.uniqueResult(qCustomerAttribute);
 	}
 	
-	@Override
+/*	@Override
 	public CustomerAttribute getByOptionValueId(MerchantStore store, Long id) {
 		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
 		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
@@ -79,7 +82,7 @@ public class CustomerAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Cu
 
 		
 		return query.uniqueResult(qCustomerAttribute);
-	}
+	}*/
 
 
 	

@@ -6,9 +6,9 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 
 public interface CustomerAttributeDao extends SalesManagerEntityDao<Long, CustomerAttribute> {
 
-	CustomerAttribute getByOptionId(MerchantStore store, Long id);
+	CustomerAttribute getByOptionId(MerchantStore store, Long customerId, Long id);
 
-	CustomerAttribute getByOptionValueId(MerchantStore store, Long id);
+	//CustomerAttribute getByOptionValueId(MerchantStore store, Long id);
 
 
 
