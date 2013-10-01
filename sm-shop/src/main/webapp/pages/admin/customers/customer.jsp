@@ -15,22 +15,22 @@
 $(document).ready(function() {
 	
 	
-
+	$('.textAttribute').alphanumeric({ichars:'&=?'});
+	
 	$('#attributes').on('submit',function () {
 		
 		var data = $('#attributes').serialize();
-		alert(data);
 		//1=1&2=on&3=eeee&4=on&customer=1
 		
-	    //$.ajax({
-	    //    url: 'submit.php',
-	    //    cache: false,
-	    //    type: 'POST',
-	    //    data : $('#formID').serialize(),
-	    //    success: function(json) {
-	    //        alert('all done');
-	    //    }
-	    //});
+	    $.ajax({
+	        url: '<c:url value="/admin/customers/attributes/save.html"/>',
+	        cache: false,
+	        type: 'POST',
+	        data : data,
+	        success: function(json) {
+	            alert('all done');
+	        }
+	    });
 	});
 	
 	
@@ -504,6 +504,7 @@ function getBillingZones(countryCode){
 				
 					<c:url var="customerOptions" value="/admin/customers/attributes/save.html"/>
 					<form:form id="attributes" method="POST" action="#" modelAttribute="optionList">
+					<input id="customer" type="hidden" value="1" name="customer">
 					<c:forEach items="${options}" var="option" varStatus="status">
 						<div class="control-group"> 
 	                        <label><c:out value="${option.name}"/></label>
@@ -523,7 +524,7 @@ function getBillingZones(countryCode){
 											</c:forEach>
 										</c:when>
 										<c:when test="${option.type=='text'}">
-											<input type="text" id="<c:out value="${option.id}"/>" name="<c:out value="${option.id}"/>" class="input-large">
+											<input class="textAttribute" type="text" id="<c:out value="${option.id}"/>-<c:out value="${option.availableValues[0].id}"/>" name="<c:out value="${option.id}"/>-<c:out value="${option.availableValues[0].id}"/>" class="input-large" value="<c:if test="${option.defaultValue!=null}"/>${option.defaultValue.name}</c:if>">
 										</c:when> 
 										<c:when test="${option.type=='checkbox'}">
 											<c:forEach items="${option.availableValues}" var="optionValue">
@@ -540,7 +541,7 @@ function getBillingZones(countryCode){
 
 					
 					</c:forEach>
-					<input id="customer" type="hidden" value="1" name="customer">
+					
 					<div class="form-actions">
                  	  <div class="pull-right">
                  			<button type="submit" class="btn btn-success"><s:message code="button.label.save" text="Save"/></button>
