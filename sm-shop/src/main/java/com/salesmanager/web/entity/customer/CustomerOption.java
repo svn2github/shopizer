@@ -14,9 +14,9 @@ public class CustomerOption extends ShopEntity implements Serializable {
 	private String type;
 	private String name;
 	
-	private List<Long> values;
-	private String value;
-	private Long idValue;
+	//private List<long> values;
+	//private String value;
+	//private long idValue;
 
 
 
@@ -60,29 +60,8 @@ public class CustomerOption extends ShopEntity implements Serializable {
 
 
 
-	public void setIdValue(Long idValue) {
-		this.idValue = idValue;
-	}
 
-	public Long getIdValue() {
-		return idValue;
-	}
 
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValues(List<Long> values) {
-		this.values = values;
-	}
-
-	public List<Long> getValues() {
-		return values;
-	}
 
 
 

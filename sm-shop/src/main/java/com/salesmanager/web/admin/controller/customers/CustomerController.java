@@ -368,7 +368,7 @@ public class CustomerController {
 
 	@Secured("CUSTOMER")
 	@RequestMapping(value="/admin/customers/attributes/save.html", method=RequestMethod.POST)
-	public String saveOption(@Valid @ModelAttribute("optionList") List<CustomerOption> optionList, @ModelAttribute("customer") Long customer, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+	public String saveOption(@Valid @ModelAttribute("optionList") ArrayList<String> optionList, @ModelAttribute("customer") long customer, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
 
 		//display menu
@@ -383,7 +383,7 @@ public class CustomerController {
 		}
 		
 		
-		for(CustomerOption option : optionList) {
+/*		for(CustomerOption option : optionList) {
 
 			//get the attribute by option id
 			CustomerAttribute attribute = customerAttributeService.getByCustomerOptionId(store,option.getId());
@@ -402,7 +402,7 @@ public class CustomerController {
 			
 			//get value(s)
 			
-		}
+		}*/
 		
 		model.addAttribute("success","success");
 		return ControllerConstants.Tiles.Customer.optionDetails;
