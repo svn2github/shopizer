@@ -1,6 +1,7 @@
 package com.salesmanager.web.admin.controller.customers;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -32,10 +33,12 @@ import com.salesmanager.core.business.customer.model.CustomerCriteria;
 import com.salesmanager.core.business.customer.model.CustomerList;
 import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
+import com.salesmanager.core.business.customer.model.attribute.CustomerOptionType;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerAttributeService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionSetService;
+import com.salesmanager.core.business.customer.service.attribute.CustomerOptionValueService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
@@ -57,6 +60,8 @@ public class CustomerController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerController.class);
 	
+	private static final String CUSTOMER_ID_PARAMETER = "customer";
+	
 	@Autowired
 	private LabelUtils messages;
 	
@@ -65,6 +70,9 @@ public class CustomerController {
 	
 	@Autowired
 	private CustomerOptionService customerOptionService;
+	
+	@Autowired
+	private CustomerOptionValueService customerOptionValueService;
 	
 	@Autowired
 	private CustomerOptionSetService customerOptionSetService;
@@ -165,6 +173,9 @@ public class CustomerController {
 							selectedValue.setId(attributeValue.getId());
 							selectedValue.setName(attributeValue.getDescriptionsList().get(0).getName());
 							customerOption.setDefaultValue(selectedValue);
+							if(customerOption.getType().equals(CustomerOptionType.Text.name())) {
+								selectedValue.setName(customerAttribute.getTextValue());
+							} 
 						}
 					}
 				}
@@ -368,19 +379,94 @@ public class CustomerController {
 
 	@Secured("CUSTOMER")
 	@RequestMapping(value="/admin/customers/attributes/save.html", method=RequestMethod.POST)
-	public String saveOption(@Valid @ModelAttribute("optionList") ArrayList<String> optionList, @ModelAttribute("customer") long customer, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+	public String saveOption(BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
 
 		//display menu
 		setMenu(model,request);
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		//1=1&2=on&3=eeee&4=on&customer=1
 
-		//get customer
-		Customer cust = customerService.getById(customer);
-		if(cust.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
-			return "redirect:/admin/customers/list.html";
+		@SuppressWarnings("rawtypes")
+		Enumeration parameterNames = request.getParameterNames();
+		
+		Customer customer = null;
+		
+		while(parameterNames.hasMoreElements()) {
+			
+			String parameterName = (String)parameterNames.nextElement();
+			String parameterValue = request.getParameter(parameterName);
+			try {
+				
+				String[] parameterKey = parameterName.split("-");
+				com.salesmanager.core.business.customer.model.attribute.CustomerOption customerOption = null;
+				com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue customerOptionValue = null;
+				if(CUSTOMER_ID_PARAMETER.equals(parameterName)) {
+					customer = customerService.getById(new Long(parameterValue));
+				} else {
+					if(parameterKey.length>1) {
+						//parse key - value
+						String key = parameterKey[0];
+						String value = parameterKey[1];
+						//should be on
+						customerOption = customerOptionService.getById(new Long(key));
+						customerOptionValue = customerOptionValueService.getById(new Long(value));
+						
+
+						
+					} else {
+						customerOption = customerOptionService.getById(new Long(parameterName));
+						customerOptionValue = customerOptionValueService.getById(new Long(parameterValue));
+
+					}
+					
+					//get the attribute
+					CustomerAttribute attribute = customerAttributeService.getByCustomerOptionId(store, customerOption.getId(), customer.getId());
+					if(attribute==null) {
+						attribute = new CustomerAttribute();
+						attribute.setCustomer(customer);
+						attribute.setCustomerOption(customerOption);
+					}
+					
+					if(customerOption.getCustomerOptionType().equals(CustomerOptionType.Text.name())) {
+						if(!StringUtils.isBlank(parameterValue)) {
+							attribute.setCustomerOptionValue(customerOptionValue);
+							attribute.setTextValue(parameterValue);
+						}
+					} else {
+						attribute.setCustomerOptionValue(customerOptionValue);
+					}
+					
+					
+					if(attribute.getId()>0) {
+						if(attribute.getCustomerOptionValue()==null){
+							customerAttributeService.delete(attribute);
+						} else {
+							customerAttributeService.update(attribute);
+						}
+					} else {
+						customerAttributeService.save(attribute);
+					}
+					
+					
+				}
+				
+
+			
+			} catch (Exception e) {
+				LOGGER.error("Cannot get parameter information " + parameterName,e);
+			}
+			
 		}
+		
+		
+		//get customer
+		//Customer cust = customerService.getById(customer);
+		//if(cust.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+		//	return "redirect:/admin/customers/list.html";
+		//}
 		
 		
 /*		for(CustomerOption option : optionList) {
@@ -403,6 +489,8 @@ public class CustomerController {
 			//get value(s)
 			
 		}*/
+		
+		//TODO get customer
 		
 		model.addAttribute("success","success");
 		return ControllerConstants.Tiles.Customer.optionDetails;
