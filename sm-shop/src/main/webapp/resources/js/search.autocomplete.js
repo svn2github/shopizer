@@ -51,6 +51,8 @@
 
 			var search = $('#' + id).val().toLowerCase(); 
 			
+			//todo number of characters tresholds
+			
 			
 			var query = '{\"wildcard\" : {\"keyword\" : \"' + search + '*\" }}';
 			if(filter!=null && filter!='') {
@@ -67,10 +69,10 @@
 			  	data:query,
 			  	contentType:"application/json;charset=UTF-8",
 				success: function(data) {
-			 	if(data!=null && data.inlineSearchList && data.inlineSearchList.length>0) {
+			 	if(data!=null && data.keywords && data.keywords.length>0) {
                  		var suggestions = [];
                  		//process response   
-                 		$.each(data.inlineSearchList, function(i, val){suggestions.push(val);})
+                 		$.each(data.keywords, function(i, val){suggestions.push(val);})
 						add(suggestions);
 			 		}
 				},
