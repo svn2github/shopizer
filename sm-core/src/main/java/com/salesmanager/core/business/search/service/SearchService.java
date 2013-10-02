@@ -3,6 +3,7 @@ package com.salesmanager.core.business.search.service;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.search.model.SearchKeywords;
 
 public interface SearchService {
 	
@@ -23,5 +24,18 @@ public interface SearchService {
 	 */
 	void deleteIndex(MerchantStore store, Product product)
 			throws ServiceException;
+
+	/**
+	 * Similar keywords based on a a series of characters. Used in the auto-complete
+	 * functionality
+	 * @param store
+	 * @param languageCode
+	 * @param jsonString
+	 * @param entriesCount
+	 * @return
+	 * @throws ServiceException
+	 */
+	SearchKeywords searchForKeywords(MerchantStore store, String languageCode,
+			String jsonString, int entriesCount) throws ServiceException;
 
 }

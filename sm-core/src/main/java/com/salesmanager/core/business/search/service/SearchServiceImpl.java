@@ -20,6 +20,7 @@ import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.search.model.IndexProduct;
+import com.salesmanager.core.business.search.model.SearchKeywords;
 import com.shopizer.search.services.SearchResponse;
 
 
@@ -31,6 +32,8 @@ public class SearchServiceImpl implements SearchService {
 	
 	private final static String PRODUCT_INDEX_NAME = "product";
 	private final static String UNDERSCORE = "_";
+	
+	private final static String KEYWORDS_INDEX_NAME = "keyword";
 	
 	@Autowired
 	private com.shopizer.search.services.SearchService searchService;
@@ -140,7 +143,8 @@ public class SearchServiceImpl implements SearchService {
 	
 	}
 	
-	public void searchForKeywords(MerchantStore store, String jsonString, int entriesCount) throws ServiceException {
+	@Override
+	public SearchKeywords searchForKeywords(MerchantStore store, String languageCode, String jsonString, int entriesCount) throws ServiceException {
 		
 		/**
 		 * 	$('#search').searchAutocomplete({
@@ -221,14 +225,23 @@ public class SearchServiceImpl implements SearchService {
 	});
 		 */
 		try {
-			SearchResponse response = searchService.searchAutoComplete("", "", 25);
 			
-			//transform t SearchResponse specific to sm-core
+			StringBuilder collectionName = new StringBuilder();
+			collectionName.append(KEYWORDS_INDEX_NAME).append(UNDERSCORE).append(languageCode).append(UNDERSCORE).append(store.getCode().toLowerCase());
+			
+			
+			SearchResponse response = searchService.searchAutoComplete(collectionName.toString(), jsonString, entriesCount);
+			
+			SearchKeywords keywords = new SearchKeywords();
+			keywords.setKeywords(Arrays.asList(response.getInlineSearchList()));
+			
+			return keywords;
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Error while searching keywords " + jsonString,e);
+			throw new ServiceException(e);
 		}
+
 		
 	}
 	
