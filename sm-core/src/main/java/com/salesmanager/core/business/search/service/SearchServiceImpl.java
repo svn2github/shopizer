@@ -2,11 +2,15 @@ package com.salesmanager.core.business.search.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.common.text.Text;
+import org.elasticsearch.search.highlight.HighlightField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +24,9 @@ import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.search.model.IndexProduct;
+import com.salesmanager.core.business.search.model.SearchEntry;
 import com.salesmanager.core.business.search.model.SearchKeywords;
+import com.shopizer.search.services.SearchHit;
 import com.shopizer.search.services.SearchRequest;
 import com.shopizer.search.services.SearchResponse;
 
@@ -179,7 +185,7 @@ public class SearchServiceImpl implements SearchService {
 	}
 	
 	@Override
-	public void search(MerchantStore store, String languageCode, String jsonString, int entriesCount, int startIndex) throws ServiceException {
+	public com.salesmanager.core.business.search.model.SearchResponse search(MerchantStore store, String languageCode, String jsonString, int entriesCount, int startIndex) throws ServiceException {
 		
 		/**
 		 * 
@@ -280,9 +286,62 @@ public class SearchServiceImpl implements SearchService {
 			request.setSize(entriesCount);
 			request.setStart(startIndex);
 			
-			searchService.search(request);
+			SearchResponse response =searchService.search(request);
+			
+			com.salesmanager.core.business.search.model.SearchResponse resp = new com.salesmanager.core.business.search.model.SearchResponse();
+			
+			
+			resp.setTotalCount(response.getCount());
+			
+			List<SearchEntry> entries = new ArrayList<SearchEntry>();
+			
+			Collection<SearchHit> hits = response.getSearchHits();
+			for(SearchHit hit : hits) {
+				
+				SearchEntry entry = new SearchEntry();
+				
+				Map<String,Object> metaEntries = hit.getMetaEntries();
+				IndexProduct indexProduct = new IndexProduct();
+				indexProduct.setAvailable((Boolean)metaEntries.get("available"));
+				//indexProduct.setCategories(categories);
+				indexProduct.setDescription((String)metaEntries.get("description"));
+				indexProduct.setHighlight((String)metaEntries.get("highlight"));
+				indexProduct.setId((String)metaEntries.get("id"));
+				indexProduct.setLang((String)metaEntries.get("lang"));
+				indexProduct.setName(((String)metaEntries.get("name")));
+				indexProduct.setPrice(((Double)metaEntries.get("price")));
+				indexProduct.setStore(((String)metaEntries.get("store")));
+				//indexProduct.setTags(
+				entry.setIndexProduct(indexProduct);
+				entries.add(entry);
+				
+				Map<String, HighlightField> fields = hit.getHighlightFields();
+				List<String> highlights = new ArrayList<String>();
+				for(HighlightField field : fields.values()) {
+					
+					Text[] text = field.getFragments();
+					//text[0]
+					String f = field.getName();
+					highlights.add(f);
+					
+					
+				}
+				
+				entry.setHighlights(highlights);
+			}
+			
+			resp.setEntries(entries);
+			
+			//TDOD facets
+			
+			
+			
+			return resp;
+			
+			
 		} catch (Exception e) {
-			// TODO: handle exception
+			LOGGER.error("Error while searching keywords " + jsonString,e);
+			throw new ServiceException(e);
 		}
 		
 	}

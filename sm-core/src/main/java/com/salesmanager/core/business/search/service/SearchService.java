@@ -4,6 +4,7 @@ import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.search.model.SearchKeywords;
+import com.salesmanager.core.business.search.model.SearchResponse;
 
 public interface SearchService {
 	
@@ -47,7 +48,7 @@ public interface SearchService {
 	 * @param startIndex
 	 * @throws ServiceException
 	 */
-	void search(MerchantStore store, String languageCode, String jsonString,
+	SearchResponse search(MerchantStore store, String languageCode, String jsonString,
 			int entriesCount, int startIndex) throws ServiceException;
 
 }
