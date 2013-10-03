@@ -378,12 +378,14 @@ public class CustomerController {
 	
 
 	@Secured("CUSTOMER")
-	@RequestMapping(value="/admin/customers/attributes/save.html", method=RequestMethod.POST)
-	public String saveOption(BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+	@RequestMapping(value="/admin/customers/attributes/save.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String saveOption(HttpServletRequest request, Locale locale) throws Exception {
 		
 
 		//display menu
-		setMenu(model,request);
+		//setMenu(model,request);
+		
+		AjaxResponse resp = new AjaxResponse();
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
@@ -395,6 +397,29 @@ public class CustomerController {
 		Customer customer = null;
 		
 		while(parameterNames.hasMoreElements()) {
+
+			String parameterName = (String)parameterNames.nextElement();
+			String parameterValue = request.getParameter(parameterName);
+			if(CUSTOMER_ID_PARAMETER.equals(parameterName)) {
+				customer = customerService.getById(new Long(parameterValue));
+			}
+		}
+		
+		if(customer==null) {
+			LOGGER.error("Customer id [customer] is not defined in the parameters");
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			return resp.toJSONString();
+		}
+		
+		if(customer.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+			LOGGER.error("Customer id does not belong to current store");
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			return resp.toJSONString();
+		}
+		
+		parameterNames = request.getParameterNames();
+		
+		while(parameterNames.hasMoreElements()) {
 			
 			String parameterName = (String)parameterNames.nextElement();
 			String parameterValue = request.getParameter(parameterName);
@@ -403,9 +428,7 @@ public class CustomerController {
 				String[] parameterKey = parameterName.split("-");
 				com.salesmanager.core.business.customer.model.attribute.CustomerOption customerOption = null;
 				com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue customerOptionValue = null;
-				if(CUSTOMER_ID_PARAMETER.equals(parameterName)) {
-					customer = customerService.getById(new Long(parameterValue));
-				} else {
+
 					if(parameterKey.length>1) {
 						//parse key - value
 						String key = parameterKey[0];
@@ -451,7 +474,7 @@ public class CustomerController {
 					}
 					
 					
-				}
+				
 				
 
 			
@@ -492,7 +515,7 @@ public class CustomerController {
 		
 		//TODO get customer
 		
-		model.addAttribute("success","success");
+		//model.addAttribute("success","success");
 		return ControllerConstants.Tiles.Customer.optionDetails;
 	}
 
