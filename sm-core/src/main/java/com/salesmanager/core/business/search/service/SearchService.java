@@ -38,4 +38,16 @@ public interface SearchService {
 	SearchKeywords searchForKeywords(MerchantStore store, String languageCode,
 			String jsonString, int entriesCount) throws ServiceException;
 
+	/**
+	 * Search products based on user entry
+	 * @param store
+	 * @param languageCode
+	 * @param jsonString
+	 * @param entriesCount
+	 * @param startIndex
+	 * @throws ServiceException
+	 */
+	void search(MerchantStore store, String languageCode, String jsonString,
+			int entriesCount, int startIndex) throws ServiceException;
+
 }

@@ -21,6 +21,7 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.search.model.IndexProduct;
 import com.salesmanager.core.business.search.model.SearchKeywords;
+import com.shopizer.search.services.SearchRequest;
 import com.shopizer.search.services.SearchResponse;
 
 
@@ -154,8 +155,35 @@ public class SearchServiceImpl implements SearchService {
 		  		//}
      		});
      		
+     	**/	
      		
-     		$('#searchForm').submit(function() {
+		try {
+			
+			StringBuilder collectionName = new StringBuilder();
+			collectionName.append(KEYWORDS_INDEX_NAME).append(UNDERSCORE).append(languageCode).append(UNDERSCORE).append(store.getCode().toLowerCase());
+			
+			
+			SearchResponse response = searchService.searchAutoComplete(collectionName.toString(), jsonString, entriesCount);
+			
+			SearchKeywords keywords = new SearchKeywords();
+			keywords.setKeywords(Arrays.asList(response.getInlineSearchList()));
+			
+			return keywords;
+			
+		} catch (Exception e) {
+			LOGGER.error("Error while searching keywords " + jsonString,e);
+			throw new ServiceException(e);
+		}
+
+		
+	}
+	
+	@Override
+	public void search(MerchantStore store, String languageCode, String jsonString, int entriesCount, int startIndex) throws ServiceException {
+		
+		/**
+		 * 
+		 * $('#searchForm').submit(function() {
 
 			$('#profiles').html('');
 			$('#facets').html('');
@@ -223,25 +251,39 @@ public class SearchServiceImpl implements SearchService {
 
 			return false; 
 	});
+	
+	
+				ObjectMapper mapper = new ObjectMapper();
+				mapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS,false);
+				String indexData = mapper.writeValueAsString(resp);
+				System.out.println(indexData);
+		 *
+		 *
+		 *
+		 * JSON Query
+		 * 
+				ObjectMapper mapper = new ObjectMapper();
+				mapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS,false);
+				String indexData = mapper.writeValueAsString(resp);
+				System.out.println(indexData);
 		 */
+		
+		
+		
 		try {
 			
 			StringBuilder collectionName = new StringBuilder();
-			collectionName.append(KEYWORDS_INDEX_NAME).append(UNDERSCORE).append(languageCode).append(UNDERSCORE).append(store.getCode().toLowerCase());
+			collectionName.append(PRODUCT_INDEX_NAME).append(UNDERSCORE).append(languageCode).append(UNDERSCORE).append(store.getCode().toLowerCase());
 			
 			
-			SearchResponse response = searchService.searchAutoComplete(collectionName.toString(), jsonString, entriesCount);
+			SearchRequest request = new SearchRequest();
+			request.setSize(entriesCount);
+			request.setStart(startIndex);
 			
-			SearchKeywords keywords = new SearchKeywords();
-			keywords.setKeywords(Arrays.asList(response.getInlineSearchList()));
-			
-			return keywords;
-			
+			searchService.search(request);
 		} catch (Exception e) {
-			LOGGER.error("Error while searching keywords " + jsonString,e);
-			throw new ServiceException(e);
+			// TODO: handle exception
 		}
-
 		
 	}
 	
