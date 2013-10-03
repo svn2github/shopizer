@@ -34,6 +34,7 @@ import com.salesmanager.core.business.customer.model.CustomerList;
 import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionType;
+import com.salesmanager.core.business.customer.model.attribute.CustomerOptionValueDescription;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerAttributeService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
@@ -171,9 +172,10 @@ public class CustomerController {
 							CustomerOptionValue selectedValue = new CustomerOptionValue();
 							com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue attributeValue = customerAttribute.getCustomerOptionValue();
 							selectedValue.setId(attributeValue.getId());
-							selectedValue.setName(attributeValue.getDescriptionsList().get(0).getName());
+							CustomerOptionValueDescription optValue = attributeValue.getDescriptionsSettoList().get(0);
+							selectedValue.setName(optValue.getName());
 							customerOption.setDefaultValue(selectedValue);
-							if(customerOption.getType().equals(CustomerOptionType.Text.name())) {
+							if(customerOption.getType().equalsIgnoreCase(CustomerOptionType.Text.name())) {
 								selectedValue.setName(customerAttribute.getTextValue());
 							} 
 						}
@@ -402,6 +404,7 @@ public class CustomerController {
 			String parameterValue = request.getParameter(parameterName);
 			if(CUSTOMER_ID_PARAMETER.equals(parameterName)) {
 				customer = customerService.getById(new Long(parameterValue));
+				break;
 			}
 		}
 		
@@ -429,6 +432,11 @@ public class CustomerController {
 				com.salesmanager.core.business.customer.model.attribute.CustomerOption customerOption = null;
 				com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue customerOptionValue = null;
 
+				
+				if(CUSTOMER_ID_PARAMETER.equals(parameterName)) {
+					continue;
+				}
+				
 					if(parameterKey.length>1) {
 						//parse key - value
 						String key = parameterKey[0];
@@ -463,7 +471,7 @@ public class CustomerController {
 					}
 					
 					
-					if(attribute.getId()>0) {
+					if(attribute.getId()!=null && attribute.getId().longValue()>0) {
 						if(attribute.getCustomerOptionValue()==null){
 							customerAttributeService.delete(attribute);
 						} else {
@@ -483,6 +491,9 @@ public class CustomerController {
 			}
 			
 		}
+		
+		resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+		return resp.toJSONString();
 		
 		
 		//get customer
@@ -516,7 +527,7 @@ public class CustomerController {
 		//TODO get customer
 		
 		//model.addAttribute("success","success");
-		return ControllerConstants.Tiles.Customer.optionDetails;
+		//return ControllerConstants.Tiles.Customer.optionDetails;
 	}
 
 
