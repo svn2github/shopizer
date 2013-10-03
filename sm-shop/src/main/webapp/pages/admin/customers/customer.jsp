@@ -5,6 +5,8 @@
 
 <%@ page session="false" %>
 
+
+<script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
 <script src="<c:url value="/resources/js/bootstrap/bootstrap-datepicker.js" />"></script>
 
 <script>
@@ -17,10 +19,12 @@ $(document).ready(function() {
 	
 	$('.textAttribute').alphanumeric({ichars:'&=?'});
 	
-	$('#attributes').on('submit',function () {
+	$('#attributes').on('submit',function (event) {
 		
 		var data = $('#attributes').serialize();
 		//1=1&2=on&3=eeee&4=on&customer=1
+		
+		alert(data);
 		
 	    $.ajax({
 	        url: '<c:url value="/admin/customers/attributes/save.html"/>',
@@ -31,6 +35,8 @@ $(document).ready(function() {
 	            alert('all done');
 	        }
 	    });
+	    
+	    event.preventDefault();
 	});
 	
 	
@@ -503,7 +509,7 @@ function getBillingZones(countryCode){
 				
 				
 					<c:url var="customerOptions" value="/admin/customers/attributes/save.html"/>
-					<form:form id="attributes" method="POST" action="#" modelAttribute="optionList">
+					<form id="attributes">
 					<input id="customer" type="hidden" value="1" name="customer">
 					<c:forEach items="${options}" var="option" varStatus="status">
 						<div class="control-group"> 
@@ -524,7 +530,7 @@ function getBillingZones(countryCode){
 											</c:forEach>
 										</c:when>
 										<c:when test="${option.type=='text'}">
-											<input class="textAttribute" type="text" id="<c:out value="${option.id}"/>-<c:out value="${option.availableValues[0].id}"/>" name="<c:out value="${option.id}"/>-<c:out value="${option.availableValues[0].id}"/>" class="input-large" value="<c:if test="${option.defaultValue!=null}"/>${option.defaultValue.name}</c:if>">
+											<input class="textAttribute" type="text" id="<c:out value="${option.id}"/>-<c:out value="${option.availableValues[0].id}"/>" name="<c:out value="${option.id}"/>-<c:out value="${option.availableValues[0].id}"/>" class="input-large" value="<c:if test="${option.defaultValue!=null}">${option.defaultValue.name}</c:if>">
 										</c:when> 
 										<c:when test="${option.type=='checkbox'}">
 											<c:forEach items="${option.availableValues}" var="optionValue">
@@ -550,7 +556,7 @@ function getBillingZones(countryCode){
 
 
       					
-				</form:form>
+				</form>
 				</div>
 				</c:if>
 
