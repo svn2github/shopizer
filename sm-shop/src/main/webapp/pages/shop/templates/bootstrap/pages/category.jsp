@@ -16,7 +16,7 @@ response.setDateHeader ("Expires", -1);
  
 
  <script src="<c:url value="/resources/js/jquery.isotope.min.js" />"></script>
- <script src="<c:url value="/resources/js/jquery.infinitescroll.min.js" />"></script>
+
  
  <script>
  

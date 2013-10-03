@@ -21,6 +21,9 @@
 	<link href="<c:url value="/resources/css/shopizer-admin.css" />" rel="stylesheet">
 
 
+    <script src="<c:url value="/resources/js/jquery.showLoading.min.js" />"></script>
+	<link href="<c:url value="/resources/css/showLoading.css" />" rel="stylesheet">
+
 
     <script>var isomorphicDir="<c:url value="/resources/smart-client/" />";</script>
     <script SRC="<c:url value="/resources/smart-client/system/modules/ISC_Core.js" />"></script>

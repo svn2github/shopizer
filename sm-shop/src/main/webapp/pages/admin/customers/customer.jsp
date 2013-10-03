@@ -20,20 +20,30 @@ $(document).ready(function() {
 	$('.textAttribute').alphanumeric({ichars:'&=?'});
 	
 	$('#attributes').on('submit',function (event) {
-		
+		$('#attributesBox').showLoading();
+		$("#attributesError").hide();
+		$("#attributesSuccess").hide();
 		var data = $('#attributes').serialize();
-		//1=1&2=on&3=eeee&4=on&customer=1
-		
-		alert(data);
-		
+
 	    $.ajax({
 	        url: '<c:url value="/admin/customers/attributes/save.html"/>',
 	        cache: false,
 	        type: 'POST',
 	        data : data,
-	        success: function(json) {
-	            alert('all done');
-	        }
+	        success: function(response) {
+	            $('#attributesBox').hideLoading();
+	               var response = result.response;
+                   if (response.status==0) {
+                        $("#attributesSuccess").show();
+                   } else {
+                        $("#attributesError").html(response.message);
+                        $("#attributesError").show();
+                   }
+	        },
+			error: function(jqXHR,textStatus,errorThrown) { 
+					$('#attributesBox').hideLoading();
+					alert('Error ' + jqXHR + "-" + textStatus + "-" + errorThrown);
+			}
 	    });
 	    
 	    event.preventDefault();
@@ -502,7 +512,9 @@ function getBillingZones(countryCode){
 				
 				<c:if test="${options!=null && fn:length(options)>0}">
 				
-				<div class="box">
+				<div id="attributesSuccess" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>   
+	            <div id="attributesError" class="alert alert-error" style="display:none;"><s:message code="message.error" text="An error occured"/></div>
+				<div id="attributesBox" class="box">
 						<span class="box-title">
 						<p><s:message code="label.customer.attributes" text="Customer attributes" /></p>
 						</span>
