@@ -105,6 +105,7 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 	@Column(name="AVAILABLE")
 	private boolean available = true;
 	
+
 	@ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
 	@JoinColumn(name="MANUFACTURER_ID", nullable=true)
 	private Manufacturer manufacturer;

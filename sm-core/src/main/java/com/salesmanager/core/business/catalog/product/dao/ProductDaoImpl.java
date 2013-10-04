@@ -214,7 +214,8 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		
 		//qs.append("where pa.region in (:lid) ");
 		qs.append("where categs.id in (:cid) ");
-		qs.append("and pd.language.id=:lang and papd.language.id=:lang and manufd.language.id=:lang ");
+		//qs.append("and pd.language.id=:lang and papd.language.id=:lang and manufd.language.id=:lang ");
+		qs.append("and pd.language.id=:lang and papd.language.id=:lang ");
 		qs.append("and p.available=true and p.dateAvailable<=:dt ");
 
 
@@ -586,7 +587,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 
 		qs.append(" where merch.id=:mId");
 		qs.append(" and pd.language.id=:lang");
-		qs.append(" and manufd.language.id=:lang");
+		//qs.append(" and manufd.language.id=:lang");
 		
 		if(criteria.getCategoryIds()!=null && criteria.getCategoryIds().size()>0) {
 			qs.append(" and categs.id in (:cid)");
@@ -754,7 +755,8 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 				
 				//qs.append("where pa.region in (:lid) ");
 				qs.append("where p.merchantStore.id=mId and categs.id in (:cid) and pa.region in (:lid) ");
-				qs.append("and p.available=true and p.dateAvailable<=:dt and pd.language.id=:lang and manufd.language.id=:lang");
+				//qs.append("and p.available=true and p.dateAvailable<=:dt and pd.language.id=:lang and manufd.language.id=:lang");
+				qs.append("and p.available=true and p.dateAvailable<=:dt and pd.language.id=:lang ");
 
 
 		    	String hql = qs.toString();

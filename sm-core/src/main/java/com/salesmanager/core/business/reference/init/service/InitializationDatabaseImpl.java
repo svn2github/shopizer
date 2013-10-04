@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
 import com.salesmanager.core.business.catalog.product.model.type.ProductType;
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -258,7 +259,7 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 		ProductType productType = new ProductType();
 		productType.setCode(ProductType.GENERAL_TYPE);
 		productTypeService.create(productType);
-		
+
 
 		
 		

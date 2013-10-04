@@ -3,15 +3,13 @@ package com.salesmanager.core.business.search.model;
 import java.util.List;
 import java.util.Map;
 
-import com.shopizer.search.services.Facet;
-
 public class SearchResponse {
 	
 	private int totalCount = 0;//total number of entries
 	private int entryCount = 0;//number of entries asked
 	
 	private List<SearchEntry> entries;
-	private Map<String,Facet> facets;//facet key (example : category) & facet description (example : category code)
+	private Map<String,List<SearchFacet>> facets;//facet key (example : category) & facet description (example : category code)
 	
 	public void setTotalCount(int totalCount) {
 		this.totalCount = totalCount;
@@ -31,10 +29,10 @@ public class SearchResponse {
 	public List<SearchEntry> getEntries() {
 		return entries;
 	}
-	public void setFacets(Map<String,Facet> facets) {
+	public void setFacets(Map<String,List<SearchFacet>> facets) {
 		this.facets = facets;
 	}
-	public Map<String,Facet> getFacets() {
+	public Map<String,List<SearchFacet>> getFacets() {
 		return facets;
 	}
 

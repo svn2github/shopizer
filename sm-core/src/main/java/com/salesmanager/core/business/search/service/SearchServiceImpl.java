@@ -3,6 +3,7 @@ package com.salesmanager.core.business.search.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +26,9 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.search.model.IndexProduct;
 import com.salesmanager.core.business.search.model.SearchEntry;
+import com.salesmanager.core.business.search.model.SearchFacet;
 import com.salesmanager.core.business.search.model.SearchKeywords;
+import com.shopizer.search.services.Facet;
 import com.shopizer.search.services.SearchHit;
 import com.shopizer.search.services.SearchRequest;
 import com.shopizer.search.services.SearchResponse;
@@ -332,7 +335,27 @@ public class SearchServiceImpl implements SearchService {
 			
 			resp.setEntries(entries);
 			
-			//TDOD facets
+			Map<String,Facet> facets = response.getFacets();
+			Map<String,List<SearchFacet>> searchFacets = new HashMap<String,List<SearchFacet>>();
+			for(String key : facets.keySet()) {
+				
+				Facet f = facets.get(key);
+				
+				List<SearchFacet> fs = searchFacets.get(key);
+				if(fs==null) {
+					fs = new ArrayList<SearchFacet>();
+					searchFacets.put(key, fs);
+				}
+				
+				SearchFacet searchFacet = new SearchFacet();
+				searchFacet.setKey(key);
+				searchFacet.setName(f.getName());
+				
+				fs.add(searchFacet);
+				
+			}
+			
+			resp.setFacets(searchFacets);
 			
 			
 			
