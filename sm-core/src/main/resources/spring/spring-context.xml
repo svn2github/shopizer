@@ -28,6 +28,7 @@
 		<property name="persistenceUnitName" value="sm-unit" />
 		<property name="dataSource" ref="datasource" />
 		<property name="jpaVendorAdapter" ref="jpaAdapter" />
+		<property name="persistenceXmlLocation" value="classpath:spring/sm-persistence.xml" />
 		<property name="jpaProperties">
 		
 			<util:map>
