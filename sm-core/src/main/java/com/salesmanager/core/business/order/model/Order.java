@@ -29,7 +29,6 @@ import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.order.model.orderaccount.OrderAccount;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
@@ -143,8 +142,8 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@JoinColumn(name="MERCHANTID")
 	private MerchantStore merchant;
 	
-	@OneToMany(mappedBy = "order")
-	private Set<OrderAccount> orderAccounts = new HashSet<OrderAccount>();
+	//@OneToMany(mappedBy = "order")
+	//private Set<OrderAccount> orderAccounts = new HashSet<OrderAccount>();
 	
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
@@ -421,13 +420,6 @@ public class Order extends SalesManagerEntity<Long, Order> {
 		this.orderHistory = orderHistory;
 	}
 
-	public Set<OrderAccount> getOrderAccounts() {
-		return orderAccounts;
-	}
-
-	public void setOrderAccounts(Set<OrderAccount> orderAccounts) {
-		this.orderAccounts = orderAccounts;
-	}
 
 	public void setDelivery(Delivery delivery) {
 		this.delivery = delivery;

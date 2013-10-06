@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -97,6 +96,9 @@ public class TaxServiceImpl
 	public List<TaxItem> calculateTax(OrderSummary orderSummary, Customer customer, MerchantStore store, Language language) throws ServiceException {
 		
 
+		if(customer==null) {
+			return null;
+		}
 
 		List<ShoppingCartItem> items = orderSummary.getProducts();
 		

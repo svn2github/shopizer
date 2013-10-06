@@ -76,6 +76,10 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 		this.shoppingCart = shoppingCart;
 		
 	}
+	
+	public ShoppingCartItem() {
+		
+	}
 
 	@Override
 	public AuditSection getAuditSection() {

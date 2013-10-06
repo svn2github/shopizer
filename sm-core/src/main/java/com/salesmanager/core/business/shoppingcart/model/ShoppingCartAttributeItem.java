@@ -58,6 +58,10 @@ public class ShoppingCartAttributeItem extends SalesManagerEntity<Long, Shopping
 		this.productAttributeId = productAttribute.getId();
 	}
 	
+	public ShoppingCartAttributeItem() {
+
+	}
+	
 	
 
 	public ShoppingCartItem getShoppingCartItem() {
