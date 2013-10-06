@@ -399,7 +399,14 @@ public class ShoppingCartController {
 		item.setPrice(pricingService.getDisplayAmount(finalPrice.getFinalPrice(), store));
 		item.setProductPrice(finalPrice.getFinalPrice());
 		
+		List<ShoppingCartItem> items = cart.getShoppingCartItems();
+		if(items == null) {
+			items = new ArrayList<ShoppingCartItem>();
+			cart.setShoppingCartItems(items);
+		}
 
+		items.add(item);
+	
 		
 	}
 	
@@ -492,7 +499,14 @@ public class ShoppingCartController {
 						}
 					}
 				} else {//create new item
-					//TODO create new item
+					com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem cartItem = createCartItem(cart,item, store);
+					Set<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> lineItems = cart.getLineItems();
+					if(lineItems==null) {
+						lineItems = new HashSet<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem>();
+						cart.setLineItems(lineItems);
+					}
+					lineItems.add(cartItem);
+					shoppingCartService.update(cart);
 				}
 			}//end for
 		}//end if
@@ -517,6 +531,7 @@ public class ShoppingCartController {
 		com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem item = new com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem(cart,product);
 		item.setQuantity(shoppingCartItem.getQuantity());
 		item.setItemPrice(shoppingCartItem.getProductPrice());
+		item.setShoppingCart(cart);
 		
 		//attributes
 		List<ShoppingCartAttribute> cartAttributes = shoppingCartItem.getShoppingCartAttributes();
