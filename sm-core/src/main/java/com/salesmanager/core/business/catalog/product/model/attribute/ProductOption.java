@@ -57,7 +57,7 @@ public class ProductOption extends SalesManagerEntity<Long, ProductOption> {
 	private boolean readOnly;
 	
 	@Column(name="PRODUCT_OPTION_CODE")
-	@Index(name="prd_opt_cd")
+	@Index(name="PRD_OPTION_CODE_IDX")
 	private String code;
 	
 	public ProductOption() {

@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Type;
 
@@ -33,7 +34,8 @@ import com.salesmanager.core.constants.SchemaConstant;
  */
 @Entity
 @EntityListeners(value = AuditListener.class)
-@Table(name = "MERCHANT_CONFIGURATION", schema= SchemaConstant.SALESMANAGER_SCHEMA)
+@Table(name = "MERCHANT_CONFIGURATION", schema= SchemaConstant.SALESMANAGER_SCHEMA, uniqueConstraints=
+	@UniqueConstraint(columnNames = {"MERCHANT_ID", "CONFIG_KEY"}))
 public class MerchantConfiguration extends SalesManagerEntity<Long, MerchantConfiguration> implements Serializable, Auditable {
 
 	/**
@@ -54,7 +56,7 @@ public class MerchantConfiguration extends SalesManagerEntity<Long, MerchantConf
 	@Embedded
 	private AuditSection auditSection = new AuditSection();
 	
-	@Column(name="KEY")
+	@Column(name="CONFIG_KEY")
 	private String key;
 
 	

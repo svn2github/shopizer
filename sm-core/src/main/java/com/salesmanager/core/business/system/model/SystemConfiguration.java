@@ -35,7 +35,7 @@ public class SystemConfiguration extends SalesManagerEntity<Long, SystemConfigur
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
 	
-	@Column(name="KEY")
+	@Column(name="CONFIG_KEY")
 	private String key;
 	
 	@Column(name="VALUE")

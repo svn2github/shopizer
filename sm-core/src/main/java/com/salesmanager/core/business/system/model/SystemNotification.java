@@ -31,7 +31,7 @@ import com.salesmanager.core.constants.SchemaConstant;
 @EntityListeners(value = AuditListener.class)
 
 @Table(name = "SYSTEM_NOTIFICATION", schema= SchemaConstant.SALESMANAGER_SCHEMA,uniqueConstraints=
-    @UniqueConstraint(columnNames = {"MERCHANT_ID", "KEY"}) )
+    @UniqueConstraint(columnNames = {"MERCHANT_ID", "CONFIG_KEY"}) )
 public class SystemNotification extends SalesManagerEntity<Long, SystemNotification> implements Serializable, Auditable {
 
 	/**
@@ -45,7 +45,7 @@ public class SystemNotification extends SalesManagerEntity<Long, SystemNotificat
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "TABLE_GEN")
 	private Long id;
 	
-	@Column(name="KEY")
+	@Column(name="CONFIG_KEY")
 	private String key;
 	
 	@Column(name="VALUE")

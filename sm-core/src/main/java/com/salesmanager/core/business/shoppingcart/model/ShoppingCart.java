@@ -20,7 +20,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Index;
 
@@ -61,7 +60,7 @@ public class ShoppingCart extends SalesManagerEntity<Long, ShoppingCart> impleme
 	 * this is a unique code that should be attributed from the client (UI)
 	 * 
 	 */
-	@Index(name="SHP_CART_CODE")
+	@Index(name="SHP_CART_CODE_IDX")
 	@Column(name = "SHP_CART_CODE", unique=true, nullable=false)
 	private String shoppingCartCode;
 	
@@ -72,7 +71,7 @@ public class ShoppingCart extends SalesManagerEntity<Long, ShoppingCart> impleme
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
 	private MerchantStore merchantStore;
 	
-	@Index(name="SHP_CART_CUSTOMER")
+	@Index(name="SHP_CART_CUSTOMER_IDX")
 	@Column(name = "CUSTOMER_ID", nullable = true)
 	private Long customerId;
     
