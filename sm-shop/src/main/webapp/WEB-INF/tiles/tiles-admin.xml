@@ -125,6 +125,14 @@
   		<put-attribute name="body" value="/pages/admin/products/productImages.jsp" /> 
   	</definition>
   	
+  	<definition name="admin-products-manufacturer" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/products/manufacturers.jsp" /> 
+  	</definition>
+  	
+  	 <definition name="admin-products-manufacturer-details" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/products/manufacturer.jsp" /> 
+  	</definition>
+  	
   	<definition name="catalogue-products-categories" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/products/productsCategories.jsp" /> 
   	</definition>
