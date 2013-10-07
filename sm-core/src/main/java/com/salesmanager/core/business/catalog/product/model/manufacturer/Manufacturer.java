@@ -45,22 +45,9 @@ public class Manufacturer extends SalesManagerEntity<Long, Manufacturer> impleme
 	@Column(name = "MANUFACTURER_IMAGE")
 	private String image;
 	
-/*	@ManyToMany(fetch=FetchType.LAZY, cascade = {CascadeType.REFRESH})
-	@JoinTable(name = "MANUFACTURER_MERCHANT", schema=SchemaConstant.SALESMANAGER_SCHEMA, joinColumns = { 
-			@JoinColumn(name = "MANUFACTURER_ID", nullable = false) }
-			, 
-			inverseJoinColumns = { @JoinColumn(name = "MERCHANT_ID", 
-					nullable = false) }
-	)
-	@Cascade({
-		org.hibernate.annotations.CascadeType.DETACH,
-		org.hibernate.annotations.CascadeType.LOCK,
-		org.hibernate.annotations.CascadeType.REFRESH,
-		org.hibernate.annotations.CascadeType.REPLICATE
-		
-	})
-	private Set<MerchantStore> stores = new HashSet<MerchantStore>();*/
-	
+	@Column(name="SORT_ORDER")
+	private Integer order;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
 	private MerchantStore merchantStore;
@@ -112,6 +99,14 @@ public class Manufacturer extends SalesManagerEntity<Long, Manufacturer> impleme
 
 	public void setMerchantStore(MerchantStore merchantStore) {
 		this.merchantStore = merchantStore;
+	}
+
+	public void setOrder(Integer order) {
+		this.order = order;
+	}
+
+	public Integer getOrder() {
+		return order;
 	}
 
 
