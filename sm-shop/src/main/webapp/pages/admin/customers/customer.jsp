@@ -376,7 +376,7 @@ function getBillingZones(countryCode){
 	                        <label><s:message code="label.defaultlanguage" text="Default language"/></label>
 	                        <div class="controls">
 
-	                        					<form:select items="${languages}" itemValue="id" itemLabel="code" path="defaultLanguage.id"/> 
+	                        					<form:select class="input-large highlight" items="${languages}" itemValue="id" itemLabel="code" path="defaultLanguage.id"/> 
 	                                   			<span class="help-inline"></span>
 	                        </div>
 	                  </div>
