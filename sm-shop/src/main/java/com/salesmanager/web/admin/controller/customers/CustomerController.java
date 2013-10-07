@@ -360,6 +360,8 @@ public class CustomerController {
 		newCustomer.setZone( zone);
 		newCustomer.setCountry(country );
 		
+		newCustomer.setDefaultLanguage(customer.getDefaultLanguage() );
+		
 		customer.getDelivery().setZone(  deliveryZone);
 		customer.getDelivery().setCountry(deliveryCountry );
 		newCustomer.setDelivery( customer.getDelivery() );
