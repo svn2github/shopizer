@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
@@ -36,6 +37,15 @@ public class ManufacturerController {
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/catalogue/manufacturer/create.html", method=RequestMethod.GET)
 	public String createManufacturer(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		this.setMenu(model, request);
+
+		
+		return ControllerConstants.Tiles.Product.manufacturerDetails;
+	}
+	
+	@Secured("PRODUCTS")
+	@RequestMapping(value="/admin/catalogue/manufacturer/edit.html", method=RequestMethod.GET)
+	public String editManufacturer(@RequestParam("id") long manufacturerId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		this.setMenu(model, request);
 
 		
