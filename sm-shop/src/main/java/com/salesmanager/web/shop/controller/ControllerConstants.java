@@ -38,6 +38,10 @@ public interface ControllerConstants
             final String notFound="404";
         }
         
+        interface Merchant{
+            final String contactUs="contactus";
+        }
+        
 
         
     }

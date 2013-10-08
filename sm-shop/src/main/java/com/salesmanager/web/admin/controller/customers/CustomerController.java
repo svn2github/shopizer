@@ -134,6 +134,69 @@ public class CustomerController {
 		//get list of zones
 		List<Zone> zones = zoneService.list();
 		
+		this.getCustomerOptions(model, customer, store, language);
+		
+/*		Map<Long,CustomerOption> options = new HashMap<Long,CustomerOption>();
+		//get options
+		List<CustomerOptionSet> optionSet = customerOptionSetService.listByStore(store, language);
+		if(!CollectionUtils.isEmpty(optionSet)) {
+			
+			Set<CustomerAttribute> customerAttributes = customer.getAttributes();
+			
+			for(CustomerOptionSet optSet : optionSet) {
+				
+				com.salesmanager.core.business.customer.model.attribute.CustomerOption custOption = optSet.getCustomerOption();
+				CustomerOption customerOption = options.get(custOption.getId());
+				if(customerOption==null) {
+					customerOption = new CustomerOption();
+					customerOption.setId(custOption.getId());
+					customerOption.setType(custOption.getCustomerOptionType());
+					customerOption.setName(custOption.getDescriptionsSettoList().get(0).getName());
+					options.put(customerOption.getId(), customerOption);
+				}
+				
+				List<CustomerOptionValue> values = customerOption.getAvailableValues();
+				if(values==null) {
+					values = new ArrayList<CustomerOptionValue>();
+					customerOption.setAvailableValues(values);
+				}
+				
+				com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue optionValue = optSet.getCustomerOptionValue();
+				CustomerOptionValue custOptValue = new CustomerOptionValue();
+				custOptValue.setId(optionValue.getId());
+				custOptValue.setLanguage(language.getCode());
+				custOptValue.setName(optionValue.getDescriptionsSettoList().get(0).getName());
+				values.add(custOptValue);
+				
+				if(!CollectionUtils.isEmpty(customerAttributes)) {
+					for(CustomerAttribute customerAttribute : customerAttributes) {
+						if(customerAttribute.getCustomerOption().getId().longValue()==customerOption.getId()){
+							CustomerOptionValue selectedValue = new CustomerOptionValue();
+							com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue attributeValue = customerAttribute.getCustomerOptionValue();
+							selectedValue.setId(attributeValue.getId());
+							CustomerOptionValueDescription optValue = attributeValue.getDescriptionsSettoList().get(0);
+							selectedValue.setName(optValue.getName());
+							customerOption.setDefaultValue(selectedValue);
+							if(customerOption.getType().equalsIgnoreCase(CustomerOptionType.Text.name())) {
+								selectedValue.setName(customerAttribute.getTextValue());
+							} 
+						}
+					}
+				}
+			}
+		}
+		
+		
+		model.addAttribute("options", options.values());*/
+		model.addAttribute("zones", zones);
+		model.addAttribute("countries", countries);
+		model.addAttribute("customer", customer);
+		return "admin-customer";	
+		
+	}
+	
+	private void getCustomerOptions(Model model, Customer customer, MerchantStore store, Language language) throws Exception {
+
 		Map<Long,CustomerOption> options = new HashMap<Long,CustomerOption>();
 		//get options
 		List<CustomerOptionSet> optionSet = customerOptionSetService.listByStore(store, language);
@@ -186,10 +249,7 @@ public class CustomerController {
 		
 		
 		model.addAttribute("options", options.values());
-		model.addAttribute("zones", zones);
-		model.addAttribute("countries", countries);
-		model.addAttribute("customer", customer);
-		return "admin-customer";	
+
 		
 	}
 	
@@ -207,6 +267,8 @@ public class CustomerController {
 		List<Language> languages = languageService.getLanguages();
 		
 		model.addAttribute("languages",languages);
+		
+		this.getCustomerOptions(model, customer, store, language);
 		
 		//get countries
 		List<Country> countries = countryService.getCountries(language);
@@ -497,39 +559,7 @@ public class CustomerController {
 		resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
 		return resp.toJSONString();
 		
-		
-		//get customer
-		//Customer cust = customerService.getById(customer);
-		//if(cust.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
-		//	return "redirect:/admin/customers/list.html";
-		//}
-		
-		
-/*		for(CustomerOption option : optionList) {
 
-			//get the attribute by option id
-			CustomerAttribute attribute = customerAttributeService.getByCustomerOptionId(store,option.getId());
-			//get the option
-			com.salesmanager.core.business.customer.model.attribute.CustomerOption customerOption = customerOption = customerOptionService.getById(option.getId());
-			if(attribute ==null) {
-
-				if(customerOption.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
-					return "redirect:/admin/customers/list.html";
-				}
-				
-				attribute = new CustomerAttribute();
-				attribute.setCustomer(cust);
-				attribute.setCustomerOption(customerOption);
-			}
-			
-			//get value(s)
-			
-		}*/
-		
-		//TODO get customer
-		
-		//model.addAttribute("success","success");
-		//return ControllerConstants.Tiles.Customer.optionDetails;
 	}
 
 

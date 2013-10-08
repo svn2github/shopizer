@@ -25,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.salesmanager.core.constants.Constants;
-import com.salesmanager.web.admin.controller.content.ContentImageController;
 
 
 
