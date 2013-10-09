@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -49,7 +50,7 @@ import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
-import com.salesmanager.web.admin.controller.ControllerConstants;
+import com.salesmanager.web.admin.entity.userpassword.UserReset;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.customer.CustomerOption;
@@ -89,6 +90,9 @@ public class CustomerController {
 	
 	@Autowired
 	private CustomerAttributeService customerAttributeService;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	
 	/**
@@ -661,6 +665,55 @@ public class CustomerController {
 		return returnString;
 		
 	
+	}
+	
+	
+	@Secured("CUSTOMER")
+	@RequestMapping(value="/admin/customers/resetPassword.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody
+	String resetPassword(HttpServletRequest request,HttpServletResponse response) {
+		
+		String customerId = request.getParameter("customerId");
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		AjaxResponse resp = new AjaxResponse();
+		
+		try {
+			
+			Long id = Long.parseLong(customerId);
+			
+			Customer customer = customerService.getById(id);
+			
+			if(customer==null) {
+				
+			}
+			
+			if(customer.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+				
+			}
+			
+			String password = UserReset.generateRandomString();
+
+			String encodedPassword = passwordEncoder.encodePassword(password, null);
+			
+			customer.setPassword(encodedPassword);
+			
+			customerService.saveOrUpdate(customer);
+			
+			//send email
+			
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+			
+			
+		} catch (Exception e) {
+			LOGGER.error("An exception occured while changing password",e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+		}
+		
+		
+		return resp.toJSONString();
+		
+		
 	}
 	
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {

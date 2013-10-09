@@ -9,7 +9,7 @@ public class UserReset
 
   final int RANDOM_STRING_LENGTH = 10;
 
-  public String generateRandomString()
+  public static String generateRandomString()
   {
     StringBuilder randStr = new StringBuilder();
     for (int i = 0; i < 10; i++) {
@@ -20,7 +20,7 @@ public class UserReset
     return randStr.toString();
   }
 
-  private int getRandomNumber()
+  private static int getRandomNumber()
   {
     int randomInt = 0;
     Random randomGenerator = new Random();
