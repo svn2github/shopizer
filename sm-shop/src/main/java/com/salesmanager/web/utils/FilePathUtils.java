@@ -61,5 +61,29 @@ public class FilePathUtils {
 		
 	}
 	
+	public static String buildAdminUri(MerchantStore store, HttpServletRequest request) {
+		StringBuilder resourcePath = new StringBuilder();
+		HttpSession session= request.getSession();
+		@SuppressWarnings("unchecked")
+		Map<String,String> configurations = (Map<String, String>)session.getAttribute(Constants.STORE_CONFIGURATION);
+		String scheme = Constants.HTTP_SCHEME;
+		if(configurations!=null) {
+			scheme = (String)configurations.get("scheme");
+		}
+		
+		String domainName = store.getDomainName();
+		if(StringUtils.isBlank(domainName)) {
+			domainName = Constants.DEFAULT_DOMAIN_NAME;
+		}
+		
+		resourcePath.append(scheme).append("://")
+		.append(domainName)
+		.append(request.getContextPath())
+		.append("/").append(Constants.ADMIN_URL);
+		
+		return resourcePath.toString();
+		
+	}
+	
 
 }

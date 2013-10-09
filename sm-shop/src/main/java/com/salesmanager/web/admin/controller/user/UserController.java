@@ -48,8 +48,11 @@ import com.salesmanager.web.admin.entity.userpassword.UserReset;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.admin.security.SecurityQuestion;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.constants.EmailConstants;
 import com.salesmanager.web.utils.EmailUtils;
+import com.salesmanager.web.utils.FilePathUtils;
 import com.salesmanager.web.utils.LabelUtils;
+import com.salesmanager.web.utils.LocaleUtils;
 import com.salesmanager.web.utils.UserUtils;
 
 @Controller
@@ -81,9 +84,11 @@ public class UserController {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-	public final static String QUESTION_1 = "1";
-	public final static String QUESTION_2 = "2";
-	public final static String QUESTION_3 = "3";
+	private final static String QUESTION_1 = "1";
+	private final static String QUESTION_2 = "2";
+	private final static String QUESTION_3 = "3";
+	
+	private final static String NEW_USER_TMPL = "email_template_new_user.ftl";
 	
 	@Secured("STORE_ADMIN")
 	@RequestMapping(value="/admin/users/list.html", method=RequestMethod.GET)
@@ -480,6 +485,8 @@ public class UserController {
 		
 		user.setDefaultLanguage(l);
 		
+		Locale userLocale = LocaleUtils.getLocale(l);
+		
 		
 		
 		User dbUser = null;
@@ -566,6 +573,7 @@ public class UserController {
 			return ControllerConstants.Tiles.User.profile;
 		}
 		
+		String decodedPassword = user.getAdminPassword();
 		if(user.getId()!=null && user.getId()>0) {
 			user.setAdminPassword(dbUser.getAdminPassword());
 		} else {
@@ -576,30 +584,42 @@ public class UserController {
 		
 		if(user.getId().longValue()==0) {
 			
-			Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(store, messages, locale);
-			templateTokens.put("EMAIL_NEW_USER_TEXT", "Hi Tapas,");
-			templateTokens.put("EMAIL_CUSTOMER_FIRSTNAME", "Tapas");
-			templateTokens.put("EMAIL_CUSTOMER_LAST", "Jena");
-			templateTokens.put("EMAIL_ADMIN_USERNAME_LABEL", "UserName:");
-			templateTokens.put("EMAIL_ADMIN_NAME", "Admin");
-			templateTokens.put("EMAIL_ADMIN_PASSWORD_LABEL", "Password:");
-			templateTokens.put("EMAIL_ADMIN_PASSWORD", "12345");
-			templateTokens.put("EMAIL_ADMIN_URL_LABEL", "URL:");
-			templateTokens.put("EMAIL_ADMIN_URL", "http://www.shopizer.com");
-
-			
-			Email email = new Email();
-			email.setFrom("Shopizer");//store name
-			email.setFromEmail("admin@shopizer.com");//store email
-			email.setSubject("HTML Test Mail");
-			email.setTo("carl@csticonsulting.com");
-			email.setTemplateName("email_template_new_user.ftl");
-			email.setTemplateTokens(templateTokens);
-
 			//save or update user
 			userService.saveOrUpdate(user);
 			
-			emailService.sendHtmlEmail(store, email);
+			try {
+
+				//creation of a user, send an email
+				String[] userNameArg = {user.getFirstName()};
+				
+				
+				Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(store, messages, userLocale);
+				templateTokens.put(EmailConstants.EMAIL_NEW_USER_TEXT, messages.getMessage("email.greeting", userNameArg, userLocale));
+				templateTokens.put(EmailConstants.EMAIL_USER_FIRSTNAME, user.getFirstName());
+				templateTokens.put(EmailConstants.EMAIL_USER_LASTNAME, user.getLastName());
+				templateTokens.put(EmailConstants.EMAIL_ADMIN_USERNAME_LABEL, messages.getMessage("label.user.name",userLocale));
+				templateTokens.put(EmailConstants.EMAIL_ADMIN_NAME, user.getAdminName());
+				templateTokens.put(EmailConstants.EMAIL_ADMIN_PASSWORD_LABEL, messages.getMessage("label.generic.password",userLocale));
+				templateTokens.put(EmailConstants.EMAIL_ADMIN_PASSWORD, decodedPassword);
+				templateTokens.put(EmailConstants.EMAIL_ADMIN_URL_LABEL, messages.getMessage("label.adminurl",userLocale));
+				templateTokens.put(EmailConstants.EMAIL_ADMIN_URL, FilePathUtils.buildAdminUri(store, request));
+	
+				
+				Email email = new Email();
+				email.setFrom(store.getStorename());
+				email.setFromEmail(store.getStoreEmailAddress());
+				email.setSubject(messages.getMessage("email.newuer.title",userLocale));
+				email.setTo(user.getAdminEmail());
+				email.setTemplateName(NEW_USER_TMPL);
+				email.setTemplateTokens(templateTokens);
+	
+	
+				
+				emailService.sendHtmlEmail(store, email);
+			
+			} catch (Exception e) {
+				LOGGER.error("Cannot send email to user",e);
+			}
 			
 		} else {
 			//save or update user
@@ -698,7 +718,6 @@ public class UserController {
 	}
 	
 	//password reset functionality  ---  Sajid Shajahan  
-	@SuppressWarnings("unchecked")
 	@RequestMapping(value="/admin/users/resetPassword.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String resetPassword(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		

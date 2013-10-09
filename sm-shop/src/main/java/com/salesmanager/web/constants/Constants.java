@@ -8,6 +8,7 @@ public class Constants {
 	
 	public final static String HOME_MENU_KEY = "menu.home";
 	public final static String HOME_URL = "/shop";
+	public final static String ADMIN_URL = "/admin";
 	
 	public final static String DEFAULT_DOMAIN_NAME = "localhost:8080";
 	
