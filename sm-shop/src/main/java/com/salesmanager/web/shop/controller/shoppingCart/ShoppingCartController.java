@@ -1,6 +1,7 @@
 package com.salesmanager.web.shop.controller.shoppingCart;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -12,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +38,7 @@ import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
+import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCart;
@@ -97,7 +101,7 @@ import com.salesmanager.web.utils.ImageFilePathUtils;
 @Controller
 public class ShoppingCartController {
 	
-	
+	protected final Logger LOG= Logger.getLogger( getClass());
 	@Autowired
 	private ProductService productService;
 	
@@ -113,6 +117,9 @@ public class ShoppingCartController {
 	@Autowired
 	private ShoppingCartService shoppingCartService;
 	
+	@Autowired
+	private ProductPriceUtils productPriceUtils;
+	
 	
 	/**
 	 * Retrieves a Shopping cart from the database (regular shopping cart)
@@ -125,7 +132,37 @@ public class ShoppingCartController {
 	@RequestMapping(value={"/shop/shoppingCart.html"}, method=RequestMethod.GET)
 	public String displayShoppingCart(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		//Looks in the HttpSession to see if a customer is logged in
+	    LOG.info( "Starting to calculate shopping cart...");
+	    Customer customer = (Customer)request.getSession().getAttribute(Constants.CUSTOMER);
+	    com.salesmanager.core.business.shoppingcart.model.ShoppingCart cart=null;
+	    MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+	    if(customer != null){
+	        LOG.info( "Customer found in HTTP request.");
+	        cart=shoppingCartService.getByCustomer(customer);
+	    }
+	    else{
+	    	 
+	    	  
+	    	  ShoppingCart shoppingCart =getShoppingCartFromSession(request);
+	    	  cart = shoppingCartService.getByCode(shoppingCart.getCode(), store);
+	    	
+	    	  
+	    }
+	    
+	    if(cart !=null){
+	       	ShoppingCart shoppingCart=convertFromEntity(cart, store);
+	        recalculateCart(shoppingCart);
+	        cart=this.getCartModel(shoppingCart, store, customer);
+	        shoppingCart=convertFromEntity(cart, store);
+	        shoppingCartService.saveOrUpdate(cart);
+	        //request.getSession().setAttribute(Constants.SHOPPING_CART, shoppingCart);
+	    	 model.addAttribute("cart", shoppingCart);
+	    	
+	     
+	    }
+	    
+	    
+	    //Looks in the HttpSession to see if a customer is logged in
 		
 		//shoppingCartService.getByCustomer(customerId);
 		
@@ -139,6 +176,28 @@ public class ShoppingCartController {
 		
 		
 	}
+	
+	
+	private void recalculateCart( ShoppingCart shoppingCart){
+		List<ShoppingCartItem> shoppingCartItems=Collections.emptyList();
+		if(CollectionUtils.isNotEmpty(shoppingCart.getShoppingCartItems())){
+			 shoppingCartItems=new ArrayList<ShoppingCartItem>();
+			 List<ProductAttribute> productAttributes=new ArrayList<ProductAttribute>();
+			LOG.info("Calculating final price for cart items.");
+			for(ShoppingCartItem shoppingCartItem :shoppingCart.getShoppingCartItems()){
+				Product product = productService.getById(shoppingCartItem.getProductId());
+				productAttributes.addAll(product.getAttributes());
+                final FinalPrice finalPrice=productPriceUtils.getFinalProductPrice(product, productAttributes);
+                shoppingCartItem.setProductPrice(finalPrice.getFinalPrice());
+                shoppingCartItems.add(shoppingCartItem);
+            }
+		}
+		
+		if(CollectionUtils.isNotEmpty(shoppingCartItems)){
+			shoppingCart.setShoppingCartItems(shoppingCartItems);
+		}
+		
+}
 	
 	/**
 	 * Add an item to the ShoppingCart (AJAX exposed method)
@@ -255,10 +314,10 @@ public class ShoppingCartController {
 		//return the JSON structure in AjaxResponse
 		
 		//store the shopping cart in the http session
-		
+		request.getSession().setAttribute(Constants.SHOPPING_CART, shoppingCart);
 		AjaxResponse resp = new AjaxResponse();
-		
 		resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+		
 		
 		return resp.toJSONString();
 		
@@ -415,12 +474,15 @@ public class ShoppingCartController {
 		ShoppingCart cart = new ShoppingCart();
 		cart.setCode(shoppingCart.getShoppingCartCode());
 		Set<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> items = shoppingCart.getLineItems();
+		List<ShoppingCartItem> shoppingCartItemsList=Collections.emptyList();
 		if(items!=null) {
+			shoppingCartItemsList=new ArrayList<ShoppingCartItem>();
 			for(com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem item : items) {
 				
 				ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
 				shoppingCartItem.setCode(cart.getCode());
 				shoppingCartItem.setProductCode(item.getProduct().getSku());
+				shoppingCartItem.setProductId(item.getProductId());
 				shoppingCartItem.setId(item.getId());
 				shoppingCartItem.setName(item.getProduct().getProductDescription().getName());
 				shoppingCartItem.setPrice(pricingService.getDisplayAmount(item.getItemPrice(),store));
@@ -445,11 +507,60 @@ public class ShoppingCartController {
 					}
 					shoppingCartItem.setShoppingCartAttributes(cartAttributes);
 				}
+				shoppingCartItemsList.add(shoppingCartItem);
 			}
 		}
-		
+		if(CollectionUtils.isNotEmpty(shoppingCartItemsList)){
+			cart.setShoppingCartItems(shoppingCartItemsList);
+		}
 		return cart;
 		
+	}
+	
+	
+	private com.salesmanager.core.business.shoppingcart.model.ShoppingCart getCartModel(ShoppingCart shoppingCart, MerchantStore store, Customer customer) throws Exception {
+		com.salesmanager.core.business.shoppingcart.model.ShoppingCart cart = null;
+		  cart = shoppingCartService.getByCode(shoppingCart.getCode(), store);
+		 List<ShoppingCartItem> items = shoppingCart.getShoppingCartItems();
+		Set<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> newItems = new HashSet<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem>();
+		if(items!=null && items.size()>0) {
+			for(ShoppingCartItem item : items) {
+				
+				Set<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> cartItems = cart.getLineItems();
+				if(cartItems!=null && cartItems.size()>0) {
+					
+					for(com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem dbItem : cartItems) {
+						if(dbItem.getId().longValue()==item.getId()) {
+							dbItem.setQuantity(item.getQuantity());
+							//compare attributes
+							Set<com.salesmanager.core.business.shoppingcart.model.ShoppingCartAttributeItem> attributes = dbItem.getAttributes();
+							Set<com.salesmanager.core.business.shoppingcart.model.ShoppingCartAttributeItem> newAttributes = new HashSet<com.salesmanager.core.business.shoppingcart.model.ShoppingCartAttributeItem>();
+							List<ShoppingCartAttribute> cartAttributes = item.getShoppingCartAttributes();
+							if(!CollectionUtils.isEmpty(cartAttributes)) {
+								for(ShoppingCartAttribute attribute : cartAttributes) {
+									for(com.salesmanager.core.business.shoppingcart.model.ShoppingCartAttributeItem dbAttribute : attributes) {
+										if(dbAttribute.getId().longValue()==attribute.getId()) {
+											newAttributes.add(dbAttribute);
+											
+											
+										}
+									}
+								}
+								
+								//dbItem.setAttributes(newAttributes);
+								
+							} else {
+								dbItem.removeAllAttributes();
+								//dbItem.setAttributes(null);
+							}
+							newItems.add(dbItem);
+						}
+					}
+				} 
+			}//end for
+		}//end if
+		
+		return cart;
 	}
 	
 	private com.salesmanager.core.business.shoppingcart.model.ShoppingCart convertToEntity(ShoppingCart shoppingCart, MerchantStore store, Customer customer) throws Exception {
@@ -618,5 +729,8 @@ public class ShoppingCartController {
 		
 	}
 		
-
+    private ShoppingCart getShoppingCartFromSession( final HttpServletRequest request){
+    	return (ShoppingCart)request.getSession().getAttribute(Constants.SHOPPING_CART);  
+    }
+	
 }

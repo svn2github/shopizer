@@ -23,7 +23,6 @@ public class ShoppingCartItem extends ShopEntity implements Serializable {
 	
 	private List<ShoppingCartAttribute> shoppingCartAttributes;
 	
-	
 	public String getName() {
 		return name;
 	}

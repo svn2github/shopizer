@@ -6,11 +6,21 @@
  
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
-
-           		 			    <span id="cartinfo">
+  		 			    <span id="cartinfo">
            		 			    	<c:choose>
 	           		 			    	<c:when test="${requestScope.SHOPPING_CART != null}">
-	                  						<span id="cartqty">(<c:out value="${requestScope.SHOPPING_CART.quantity}"/>&nbsp;<c:choose><c:when test="${fn:length(requestScope.SHOPPING_CART.quantity)>1}" ><s:message code="label.generic.items" text="items" /></c:when><c:otherwise><s:message code="label.generic.item" text="item" /></c:otherwise></c:choose>)</span>&nbsp;<span id="cartprice"><c:out value="${requestScope.SHOPPING_CART.total}"/></span>
+	                  						<span id="cartqty">
+	                  						 (<c:out value="${requestScope.SHOPPING_CART.quantity}"/>&nbsp;
+	                  						  <%--  <c:choose>
+	                  						      <c:when test="${fn:length(requestScope.SHOPPING_CART.quantity)>1}" >
+	                  						     		<s:message code="label.generic.items" text="items" />
+	                  						       </c:when>
+	                  						      <c:otherwise>
+	                  						         <s:message code="label.generic.item" text="item" />
+	                  						        </c:otherwise>
+	                  						     </c:choose> --%>)
+	                  						      </span>&nbsp;
+	                  						    <span id="cartprice"><c:out value="${requestScope.SHOPPING_CART.total}"/></span>
 	                  					</c:when>
 	                  					<c:otherwise>
 	                  						<span id="cartqty">(0 <s:message code="label.generic.item" text="item" />)</span>
