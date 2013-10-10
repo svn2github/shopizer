@@ -133,7 +133,9 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		BigDecimal subTotal = new BigDecimal(0);
 		for(ShoppingCartItem item : summary.getProducts()) {
 			
-			subTotal = subTotal.add(item.getItemPrice().multiply(new BigDecimal(item.getQuantity())));
+			BigDecimal st = item.getItemPrice().multiply(new BigDecimal(item.getQuantity()));
+			item.setSubTotal(st);
+			subTotal = subTotal.add(st);
 			
 		}
 		

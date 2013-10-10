@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.shoppingcart.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -240,7 +241,7 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	private void populateItem(ShoppingCartItem item) throws Exception {
 		
 		Long productId = item.getProductId();
-		
+
 		Product product = productService.getById(productId);
 		
 		if(product==null) {
@@ -280,8 +281,8 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		item.setItemPrice(price.getFinalPrice());
 		
 
-		
-		
+		BigDecimal subTotal = item.getItemPrice().multiply(new BigDecimal(item.getQuantity().intValue()));
+		item.setSubTotal(subTotal);
 		
 	}
 	

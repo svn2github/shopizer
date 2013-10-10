@@ -65,6 +65,9 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	@Transient
 	private BigDecimal itemPrice;
 	
+	@Transient
+	private BigDecimal subTotal;
+	
 
 	@Transient
 	private Product product;
@@ -168,5 +171,13 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 
 	public void removeAllAttributes(){
 		this.attributes.removeAll(Collections.EMPTY_SET);
+	}
+
+	public void setSubTotal(BigDecimal subTotal) {
+		this.subTotal = subTotal;
+	}
+
+	public BigDecimal getSubTotal() {
+		return subTotal;
 	}
 }
