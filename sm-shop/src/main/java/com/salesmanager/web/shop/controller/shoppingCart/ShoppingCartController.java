@@ -1,5 +1,6 @@
 package com.salesmanager.web.shop.controller.shoppingCart;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -14,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -336,6 +336,7 @@ public class ShoppingCartController {
 							&& CollectionUtils.isEmpty(item.getShoppingCartAttributes())) {
 						int qty = shoppingCartItem.getQuantity();
 						qty = qty + item.getQuantity();
+						shoppingCartItem.setQuantity(qty);
 						break;
 					} else {
 						List<ShoppingCartAttribute> itemAttributes = item.getShoppingCartAttributes();
@@ -361,13 +362,12 @@ public class ShoppingCartController {
 									if(attributesMatch) {
 										int qty = shoppingCartItem.getQuantity();
 										qty = qty + item.getQuantity();
+										shoppingCartItem.setQuantity(qty);
 										break;
 									}
 									
 								} else {
-									
 									createItemInShoppingCart(cart,item,store);
-									
 								}
 						}//end if
 					}//end else
@@ -378,6 +378,10 @@ public class ShoppingCartController {
 		if(!itemFound) {
 			createItemInShoppingCart(cart,item,store);
 		}
+		
+		//set subtotal
+		BigDecimal subTotal = item.getProductPrice().multiply(new BigDecimal(item.getQuantity()));
+		item.setSubTotal(pricingService.getDisplayAmount(subTotal, store));
 	}
 	
 	private void createItemInShoppingCart(ShoppingCart cart, ShoppingCartItem item, MerchantStore store) throws Exception {
@@ -487,6 +491,7 @@ public class ShoppingCartController {
 				shoppingCartItem.setName(item.getProduct().getProductDescription().getName());
 				shoppingCartItem.setPrice(pricingService.getDisplayAmount(item.getItemPrice(),store));
 				shoppingCartItem.setQuantity(item.getQuantity());
+				shoppingCartItem.setProductPrice(item.getItemPrice());
 				shoppingCartItem.setSubTotal(pricingService.getDisplayAmount(item.getSubTotal(), store));
 				ProductImage image = item.getProduct().getProductImage();
 				if(image!=null) {
