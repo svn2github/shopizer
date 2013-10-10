@@ -487,6 +487,7 @@ public class ShoppingCartController {
 				shoppingCartItem.setName(item.getProduct().getProductDescription().getName());
 				shoppingCartItem.setPrice(pricingService.getDisplayAmount(item.getItemPrice(),store));
 				shoppingCartItem.setQuantity(item.getQuantity());
+				shoppingCartItem.setSubTotal(pricingService.getDisplayAmount(item.getSubTotal(), store));
 				ProductImage image = item.getProduct().getProductImage();
 				if(image!=null) {
 					String imagePath = ImageFilePathUtils.buildProductImageFilePath(store, item.getProduct().getSku(), image.getProductImage());

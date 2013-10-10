@@ -21,6 +21,8 @@ public class ShoppingCartItem extends ShopEntity implements Serializable {
 	private String productCode;
 	private String code;//shopping cart code
 	
+	private String subTotal;
+	
 	private List<ShoppingCartAttribute> shoppingCartAttributes;
 	
 	public String getName() {
@@ -78,6 +80,12 @@ public class ShoppingCartItem extends ShopEntity implements Serializable {
 	}
 	public String getImage() {
 		return image;
+	}
+	public void setSubTotal(String subTotal) {
+		this.subTotal = subTotal;
+	}
+	public String getSubTotal() {
+		return subTotal;
 	}
 
 
