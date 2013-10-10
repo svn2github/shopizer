@@ -1,6 +1,7 @@
 package com.salesmanager.core.business.shoppingcart.model;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -154,5 +155,18 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	public Product getProduct() {
 		return product;
 	}
+	
+	public void addAttributes(ShoppingCartAttributeItem shoppingCartAttributeItem)
+	{
+	    this.attributes.add(shoppingCartAttributeItem);
+	}
+	
+	public void removeAttributes(ShoppingCartAttributeItem shoppingCartAttributeItem)
+	{
+	    this.attributes.remove(shoppingCartAttributeItem);
+	}
 
+	public void removeAllAttributes(){
+		this.attributes.removeAll(Collections.EMPTY_SET);
+	}
 }
