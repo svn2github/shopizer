@@ -48,14 +48,20 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
+import com.salesmanager.core.business.system.service.EmailService;
+import com.salesmanager.core.modules.email.Email;
 import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.userpassword.UserReset;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.constants.EmailConstants;
 import com.salesmanager.web.entity.customer.CustomerOption;
 import com.salesmanager.web.entity.customer.CustomerOptionValue;
+import com.salesmanager.web.utils.EmailUtils;
+import com.salesmanager.web.utils.FilePathUtils;
 import com.salesmanager.web.utils.LabelUtils;
+import com.salesmanager.web.utils.LocaleUtils;
 
 @Controller
 public class CustomerController {
@@ -63,6 +69,8 @@ public class CustomerController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerController.class);
 	
 	private static final String CUSTOMER_ID_PARAMETER = "customer";
+	
+	private final static String RESET_PASSWORD_TPL = "email_template_password_reset_customer.ftl";
 	
 	@Autowired
 	private LabelUtils messages;
@@ -93,6 +101,9 @@ public class CustomerController {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	EmailService emailService;
 	
 	
 	/**
@@ -678,6 +689,8 @@ public class CustomerController {
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		AjaxResponse resp = new AjaxResponse();
 		
+		
+		
 		try {
 			
 			Long id = Long.parseLong(customerId);
@@ -685,12 +698,20 @@ public class CustomerController {
 			Customer customer = customerService.getById(id);
 			
 			if(customer==null) {
-				
+				resp.setErrorString("Customer does not exist");
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
 			}
 			
 			if(customer.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
-				
+				resp.setErrorString("Invalid customer id");
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
 			}
+			
+			Language userLanguage = customer.getDefaultLanguage();
+			
+			Locale customerLocale = LocaleUtils.getLocale(userLanguage);
 			
 			String password = UserReset.generateRandomString();
 
@@ -701,6 +722,35 @@ public class CustomerController {
 			customerService.saveOrUpdate(customer);
 			
 			//send email
+			
+			try {
+
+				//creation of a user, send an email
+				String[] storeEmail = {store.getStoreEmailAddress()};
+				
+				
+				Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(store, messages, customerLocale);
+				templateTokens.put(EmailConstants.EMAIL_RESET_PASSWORD_TXT, messages.getMessage("email.customer.resetpassword.text", customerLocale));
+				templateTokens.put(EmailConstants.EMAIL_CONTACT_OWNER, messages.getMessage("email.contactowner", storeEmail, customerLocale));
+				templateTokens.put(EmailConstants.EMAIL_PASSWORD_LABEL, messages.getMessage("label.generic.password",customerLocale));
+				templateTokens.put(EmailConstants.EMAIL_CUSTOMER_PASSWORD, password);
+
+
+				Email email = new Email();
+				email.setFrom(store.getStorename());
+				email.setFromEmail(store.getStoreEmailAddress());
+				email.setSubject(messages.getMessage("label.generic.changepassword",customerLocale));
+				email.setTo(customer.getEmailAddress());
+				email.setTemplateName(RESET_PASSWORD_TPL);
+				email.setTemplateTokens(templateTokens);
+	
+	
+				
+				emailService.sendHtmlEmail(store, email);
+			
+			} catch (Exception e) {
+				LOGGER.error("Cannot send email to user",e);
+			}
 			
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
 			

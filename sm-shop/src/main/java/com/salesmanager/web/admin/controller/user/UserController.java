@@ -608,7 +608,7 @@ public class UserController {
 				Email email = new Email();
 				email.setFrom(store.getStorename());
 				email.setFromEmail(store.getStoreEmailAddress());
-				email.setSubject(messages.getMessage("email.newuer.title",userLocale));
+				email.setSubject(messages.getMessage("email.newuser.title",userLocale));
 				email.setTo(user.getAdminEmail());
 				email.setTemplateName(NEW_USER_TMPL);
 				email.setTemplateTokens(templateTokens);

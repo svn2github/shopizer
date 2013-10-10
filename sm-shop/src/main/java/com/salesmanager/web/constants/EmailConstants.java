@@ -11,8 +11,12 @@ public class EmailConstants {
 	public static final String EMAIL_ADMIN_PASSWORD = "EMAIL_ADMIN_PASSWORD";
 	
 	
+	public static final String EMAIL_PASSWORD_LABEL = "EMAIL_PASSWORD_LABEL";
+	public static final String EMAIL_CUSTOMER_PASSWORD = "EMAIL_CUSTOMER_PASSWORD";
+	public static final String EMAIL_RESET_PASSWORD_TXT = "EMAIL_RESET_PASSWORD_TXT";
 	
-	
+
+	public static final String EMAIL_CONTACT_OWNER = "EMAIL_CONTACT_OWNER";
 	public static final String EMAIL_ADMIN_URL_LABEL = "EMAIL_ADMIN_URL_LABEL";
 	public static final String EMAIL_ADMIN_URL = "EMAIL_ADMIN_URL";
 
