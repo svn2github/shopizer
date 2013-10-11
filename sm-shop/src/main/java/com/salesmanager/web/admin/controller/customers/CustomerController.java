@@ -59,7 +59,6 @@ import com.salesmanager.web.constants.EmailConstants;
 import com.salesmanager.web.entity.customer.CustomerOption;
 import com.salesmanager.web.entity.customer.CustomerOptionValue;
 import com.salesmanager.web.utils.EmailUtils;
-import com.salesmanager.web.utils.FilePathUtils;
 import com.salesmanager.web.utils.LabelUtils;
 import com.salesmanager.web.utils.LocaleUtils;
 
