@@ -13,7 +13,14 @@ public class EmailConstants {
 	
 	public static final String EMAIL_PASSWORD_LABEL = "EMAIL_PASSWORD_LABEL";
 	public static final String EMAIL_CUSTOMER_PASSWORD = "EMAIL_CUSTOMER_PASSWORD";
+	public static final String EMAIL_CUSTOMER_NAME = "EMAIL_CUSTOMER_NAME";
 	public static final String EMAIL_RESET_PASSWORD_TXT = "EMAIL_RESET_PASSWORD_TXT";
+	
+	public static final String EMAIL_TEXT_ORDER_NUMBER = "EMAIL_TEXT_ORDER_NUMBER";
+	public static final String EMAIL_TEXT_DATE_ORDERED = "EMAIL_TEXT_DATE_ORDERED";
+	public static final String EMAIL_TEXT_STATUS_COMMENTS = "EMAIL_TEXT_STATUS_COMMENTS";
+	public static final String EMAIL_TEXT_STATUS_UPDATED = "EMAIL_TEXT_STATUS_UPDATED";
+	public static final String EMAIL_TEXT_STATUS_LABEL = "EMAIL_TEXT_STATUS_LABEL";
 	
 
 	public static final String EMAIL_CONTACT_OWNER = "EMAIL_CONTACT_OWNER";

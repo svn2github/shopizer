@@ -44,4 +44,14 @@ public class ImageFilePathUtils {
 				.append(sku).append("/").append(imageName).toString();
 	}
 
+	/**
+	 * Builds a merchant store logo path
+	 * @param store
+	 * @return
+	 */
+	public static String buildStoreLogoFilePath(MerchantStore store) {
+		return new StringBuilder().append(Constants.STATIC_URI).append("/").append(store.getCode()).append("/").append(Constants.LOGO_TYPE).append("/")
+				.append(store.getStoreLogo()).toString();
+	}
+	
 }

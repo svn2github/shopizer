@@ -4,7 +4,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.web.constants.Constants;
 
 
 public class EmailUtils {
@@ -14,6 +17,7 @@ public class EmailUtils {
 	private final static String EMAIL_DISCLAIMER = "EMAIL_DISCLAIMER";
 	private final static String EMAIL_SPAM_DISCLAIMER = "EMAIL_SPAM_DISCLAIMER";
 	private final static String EMAIL_ADMIN_LABEL = "EMAIL_ADMIN_LABEL";
+	private final static String LOGOPATH = "LOGOPATH";
 	
 	/**
 	 * Builds generic html email information
@@ -22,7 +26,7 @@ public class EmailUtils {
 	 * @param locale
 	 * @return
 	 */
-	public static Map<String, String> createEmailObjectsMap(MerchantStore store, LabelUtils messages, Locale locale){
+	public static Map<String, String> createEmailObjectsMap(HttpServletRequest request, MerchantStore store, LabelUtils messages, Locale locale){
 		
 		Map<String, String> templateTokens = new HashMap<String, String>();
 		
@@ -36,7 +40,15 @@ public class EmailUtils {
 		templateTokens.put(EMAIL_DISCLAIMER, messages.getMessage("email.disclaimer", adminEmailArg, locale));
 		templateTokens.put(EMAIL_SPAM_DISCLAIMER, messages.getMessage("email.spam.disclaimer", locale));
 		
-		
+		if(store.getStoreLogo()!=null) {
+			StringBuilder logoPath = new StringBuilder();
+			String scheme = Constants.HTTP_SCHEME;
+			logoPath.append("<img src='").append(scheme).append("://").append(store.getDomainName()).append(request.getContextPath()).append("/").append(ImageFilePathUtils.buildStoreLogoFilePath(store)).append("'>");
+			templateTokens.put(LOGOPATH, logoPath.toString());
+		} else {
+			templateTokens.put(LOGOPATH, store.getStorename());
+		}
+
 		return templateTokens;
 	}
 

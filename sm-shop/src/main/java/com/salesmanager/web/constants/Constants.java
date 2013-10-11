@@ -61,5 +61,7 @@ public class Constants {
 	public final static String KEY_FACEBOOK_PAGE_URL = "facebook_page_url";
 	public final static String KEY_GOOGLE_ANALYTICS_URL = "google_analytics_url";
 	public final static String KEY_TWITTER_HANDLE = "twitter_handle";
+	
+	public static final String LOGO_TYPE = "LOGO";
 
 }

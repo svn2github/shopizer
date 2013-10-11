@@ -593,7 +593,7 @@ public class UserController {
 				String[] userNameArg = {user.getFirstName()};
 				
 				
-				Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(store, messages, userLocale);
+				Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, store, messages, userLocale);
 				templateTokens.put(EmailConstants.EMAIL_NEW_USER_TEXT, messages.getMessage("email.greeting", userNameArg, userLocale));
 				templateTokens.put(EmailConstants.EMAIL_USER_FIRSTNAME, user.getFirstName());
 				templateTokens.put(EmailConstants.EMAIL_USER_LASTNAME, user.getLastName());

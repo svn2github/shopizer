@@ -43,13 +43,18 @@ import com.salesmanager.core.business.payments.service.PaymentService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.modules.email.Email;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.orders.Refund;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.constants.EmailConstants;
 import com.salesmanager.web.utils.DateUtil;
+import com.salesmanager.web.utils.EmailUtils;
+import com.salesmanager.web.utils.FilePathUtils;
 import com.salesmanager.web.utils.LabelUtils;
+import com.salesmanager.web.utils.LocaleUtils;
 
 /**
  * Manage order details
@@ -150,6 +155,8 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		List<Country> countries = countryService.getCountries(language);
 		model.addAttribute("countries", countries);
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		//set the id if fails
 		entityOrder.setId(entityOrder.getOrder().getId());
@@ -296,7 +303,52 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		orderService.saveOrUpdate(newOrder);
 		entityOrder.setOrder(newOrder);
 		
+		/** send email **/
 		
+		try {
+			
+			Customer customer = customerService.getById(newOrder.getCustomerId());
+			Language lang = store.getDefaultLanguage();
+			if(customer!=null) {
+				lang = customer.getDefaultLanguage();
+			}
+			
+			Locale customerLocale = LocaleUtils.getLocale(lang);
+
+			//creation of a user, send an email
+			//String[] userNameArg = {user.getFirstName()};
+			
+			StringBuilder customerName = new StringBuilder();
+			customerName.append(newOrder.getCustomerFirstName()).append(" ").append(newOrder.getCustomerLastName());
+			
+			
+			Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, store, messages, customerLocale);
+			//templateTokens.put(EmailConstants.EMAIL_NEW_USER_TEXT, messages.getMessage("email.greeting", userNameArg, userLocale));
+			templateTokens.put(EmailConstants.EMAIL_CUSTOMER_NAME, customerName.toString());
+			templateTokens.put(EmailConstants.EMAIL_TEXT_ORDER_NUMBER, String.valueOf(newOrder.getId()));
+			//templateTokens.put(EmailConstants.EMAIL_ADMIN_USERNAME_LABEL, messages.getMessage("label.user.name",userLocale));
+			//templateTokens.put(EmailConstants.EMAIL_ADMIN_NAME, user.getAdminName());
+			//templateTokens.put(EmailConstants.EMAIL_ADMIN_PASSWORD_LABEL, messages.getMessage("label.generic.password",userLocale));
+			//templateTokens.put(EmailConstants.EMAIL_ADMIN_PASSWORD, decodedPassword);
+			//templateTokens.put(EmailConstants.EMAIL_ADMIN_URL_LABEL, messages.getMessage("label.adminurl",userLocale));
+			//templateTokens.put(EmailConstants.EMAIL_ADMIN_URL, FilePathUtils.buildAdminUri(store, request));
+
+			
+			Email email = new Email();
+			email.setFrom(store.getStorename());
+			email.setFromEmail(store.getStoreEmailAddress());
+			//email.setSubject(messages.getMessage("email.newuser.title",userLocale));
+			//email.setTo(user.getAdminEmail());
+			//email.setTemplateName(NEW_USER_TMPL);
+			email.setTemplateTokens(templateTokens);
+
+
+			
+			//emailService.sendHtmlEmail(store, email);
+		
+		} catch (Exception e) {
+			LOGGER.error("Cannot send email to user",e);
+		}
 		
 		model.addAttribute("success","success");
 

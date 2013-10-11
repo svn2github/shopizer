@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.utils.ImageFilePathUtils;
 
 public class StoreLogoUrlTag extends TagSupport {
 	
@@ -22,7 +23,6 @@ public class StoreLogoUrlTag extends TagSupport {
 	 */
 	private static final long serialVersionUID = 6319855234657139862L;
 	private static final Logger LOGGER = LoggerFactory.getLogger(StoreLogoUrlTag.class);
-	private static final String LOGO_TYPE = "LOGO";
 	private static final String RESOURCES = "resources";
 	private static final String IMG = "img";
 	private static final String SHOPIZER_LOGO = "shopizer_small.png";
@@ -80,9 +80,7 @@ public class StoreLogoUrlTag extends TagSupport {
 			} else {
 				
 				imagePath
-					.append(Constants.STATIC_URI).append("/")
-					.append(merchantStore.getCode()).append("/").append(LOGO_TYPE)
-					.append("/").append(merchantStore.getStoreLogo());
+					.append(ImageFilePathUtils.buildStoreLogoFilePath(merchantStore));
 				
 			}
 			
