@@ -8,6 +8,7 @@
 
 <script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
 <script src="<c:url value="/resources/js/bootstrap/bootstrap-datepicker.js" />"></script>
+<script src="<c:url value="/resources/js/bootstrap/bootbox.min.js" />"></script>
 
 <script>
 
@@ -108,6 +109,40 @@ $(document).ready(function() {
 	    $(".delivery-country-list").change(function() {
 	    	getDeliveryZones($(this).val());
 	    })
+	    
+	    
+	    //reset password link
+	    $('a[href="#resetPassword"]').click(function(){
+  			var customerId = $this.id;
+  			
+  			bootbox.confirm({
+				message: "<s:message code="label.customer.resetpasswor.confirm" text="Are you sure you want to reset the customer password?" />",
+				title: "<s:message code="label.generic.confirm" text="Please confirm!" />",
+				buttons: {
+					cancel: {
+						label: "<s:message code="button.label.cancel" text="Cancel" />",
+						className: "btn-default",
+						callback: function() {
+						}
+					},
+					main: {
+						label: "<s:message code="button.label.ok" text="Ok" />",
+						className: "btn-primary",
+						callback: function() {
+							resetCustomerPassword(customerId);
+						}
+					}
+				}			
+			 });
+  			
+  			
+  			//bootbox.confirm("Are you sure?", function(result) {
+			//	if(result==true) {
+					
+			//	}
+			//}); 
+		});
+	    
 });
 
 $.fn.addItems = function(data) {
@@ -267,6 +302,41 @@ function getBillingZones(countryCode){
 		  
 		});
 }
+
+
+function resetCustomerPassword(customerId){
+		$('.alert-error').hide();
+		$('.alert-success').hide();
+		$('#tabbable').showLoading();
+		$.ajax({
+		  type: 'POST',
+		  url: '<c:url value="/admin/customers/resetPassword.html"/>',
+		  data: 'customerId=' + customerId,
+		  dataType: 'json',
+		  success: function(response){
+				$('#tabbable').hideLoading();
+				var status = isc.XMLTools.selectObjects(response, "/response/status");
+				if(status==0 || status ==9999) {
+					$('.alert-success').html('<s:message code="message.password.reset" text="Password has been reset" />');
+					$('.alert-success').show();
+				} else {
+					$('.alert-error').html('<s:message code="message.error" text="An error occured" />');
+					$('.alert-error').show();
+				}
+
+		  
+		  },
+		  error: function(xhr, textStatus, errorThrown) {
+		  	$('#tabbable').hideLoading();
+		  	//alert('error ' + errorThrown);
+		  	$('.alert-error').html('<s:message code="message.error" text="An error occured" />');
+			$('.alert-error').show();
+		  }
+		  
+		});
+}
+
+
 </script>
 
 
@@ -288,6 +358,15 @@ function getBillingZones(countryCode){
 				</h3>	
 				<br/>
 				
+				<c:if test="${customer.id!=null && customer.id>0}">
+				<div class="btn-group" style="z-index:400000;">
+                    <button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><s:message code="label.product.configure" text="Product definition"/> ... <span class="caret"></span></button>
+                     <ul class="dropdown-menu">
+				    	<li><a id="${customer.id}" href="#resetPassword"><s:message code="button.label.resetpassword" text="Reset Password" /></a></li>
+                     </ul>
+                </div><!-- /btn-group -->
+			    <br/>
+				</c:if>
 
 
 				<c:url var="customer" value="/admin/customers/save.html"/>

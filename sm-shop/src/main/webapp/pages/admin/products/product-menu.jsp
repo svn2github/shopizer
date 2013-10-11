@@ -19,4 +19,4 @@
 				    	<li><a href="<c:url value="/admin/products/displayProductToCategories.html" />?id=<c:out value="${productId}"/>"><s:message code="menu.product.category" text="Associate to categories" /></a></li>
                      </ul>
               </div><!-- /btn-group -->
-			<br/>
+			  <br/>

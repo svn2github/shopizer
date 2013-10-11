@@ -21,7 +21,7 @@ response.setDateHeader ("Expires", -1);
  <script>
  
  var START_COUNT_PRODUCTS = 0;
- var MAX_PRODUCTS = 4;
+ var MAX_PRODUCTS = 12;
  
  
 
