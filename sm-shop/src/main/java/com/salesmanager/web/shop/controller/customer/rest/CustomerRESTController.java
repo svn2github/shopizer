@@ -1,8 +1,7 @@
-package com.salesmanager.web.shop.controller.customer;
+package com.salesmanager.web.shop.controller.customer.rest;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,13 +27,11 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
-import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.shop.controller.category.ShoppingCategoryController;
-import com.salesmanager.web.utils.CatalogUtils;
-import com.salesmanager.web.utils.LocaleUtils;
+import com.salesmanager.web.shop.controller.category.rest.ShoppingCategoryController;
+import com.salesmanager.web.utils.CustomerUtils;
 
 @Controller
 @RequestMapping("/shop/services/customers")
@@ -50,7 +47,7 @@ public class CustomerRESTController {
 	private LanguageService languageService;
 	
 	@Autowired
-	private CatalogUtils catalogUtils;
+	private CustomerUtils customerUtils;
 	
 	@Autowired
 	private CountryService countryService;
@@ -64,15 +61,9 @@ public class CustomerRESTController {
 	/**
 	 * Returns a single customer for a given MerchantStore
 	 */
-	@RequestMapping( value="/{store}/{language}/{id}", method=RequestMethod.GET)
+	@RequestMapping( value="/{store}/{id}", method=RequestMethod.GET)
 	@ResponseBody
-	public com.salesmanager.web.entity.customer.Customer getCustomer(@PathVariable final String store, @PathVariable final String language, @PathVariable Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Map<String,Language> langs = languageService.getLanguagesMap();
-		Language lang = langs.get(language);
-		if(lang==null) {
-			lang = languageService.getByCode(Constants.DEFAULT_LANGUAGE);
-		}
-		
+	public com.salesmanager.web.entity.customer.Customer getCustomer(@PathVariable final String store, @PathVariable Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		if(merchantStore!=null) {
 			if(!merchantStore.getCode().equals(store)) {
@@ -93,7 +84,7 @@ public class CustomerRESTController {
 		Customer customer = customerService.getById(id);
 		com.salesmanager.web.entity.customer.Customer customerProxy;
 		if(customer != null){
-			customerProxy = catalogUtils.buildProxyCustomer(customer, merchantStore, LocaleUtils.getLocale(lang));
+			customerProxy = customerUtils.buildProxyCustomer(customer, merchantStore);
 		}else{
 			response.sendError(404, "No Customer found with id : " + id);
 			return null;
@@ -107,16 +98,9 @@ public class CustomerRESTController {
 	/**
 	 * Returns all customers for a given MerchantStore
 	 */
-	@RequestMapping( value="/{store}/{language}", method=RequestMethod.GET)
+	@RequestMapping( value="/{store}", method=RequestMethod.GET)
 	@ResponseBody
-	public List<com.salesmanager.web.entity.customer.Customer> getCustomers(@PathVariable final String store, @PathVariable final String language, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-		Map<String,Language> langs = languageService.getLanguagesMap();
-		Language lang = langs.get(language);
-		if(lang==null) {
-			lang = languageService.getByCode(Constants.DEFAULT_LANGUAGE);
-		}
-		
+	public List<com.salesmanager.web.entity.customer.Customer> getCustomers(@PathVariable final String store, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		if(merchantStore!=null) {
 			if(!merchantStore.getCode().equals(store)) {
@@ -137,7 +121,7 @@ public class CustomerRESTController {
 		List<Customer> customers = customerService.listByStore(merchantStore);
 		List<com.salesmanager.web.entity.customer.Customer> returnCustomers = new ArrayList<com.salesmanager.web.entity.customer.Customer>();
 		for(Customer customer : customers) {
-			com.salesmanager.web.entity.customer.Customer customerProxy = catalogUtils.buildProxyCustomer(customer, merchantStore, LocaleUtils.getLocale(lang));
+			com.salesmanager.web.entity.customer.Customer customerProxy = customerUtils.buildProxyCustomer(customer, merchantStore);
 			returnCustomers.add(customerProxy);
 		}
 		
@@ -148,16 +132,10 @@ public class CustomerRESTController {
 	/**
 	 * Updates a customer for a given MerchantStore
 	 */
-	@RequestMapping( value="/{store}/{language}/{id}", method=RequestMethod.PUT)
+	@RequestMapping( value="/{store}/{id}", method=RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@Secured("CUSTOMER")
-	public void updateCustomer(@PathVariable final String store, @PathVariable final String language, @PathVariable Long id, @Valid @RequestBody Customer customer, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Map<String,Language> langs = languageService.getLanguagesMap();
-		Language lang = langs.get(language);
-		if(lang==null) {
-			lang = languageService.getByCode(Constants.DEFAULT_LANGUAGE);
-		}
-		
+	public void updateCustomer(@PathVariable final String store, @PathVariable Long id, @Valid @RequestBody Customer customer, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		if(merchantStore!=null) {
 			if(!merchantStore.getCode().equals(store)) {
@@ -201,7 +179,7 @@ public class CustomerRESTController {
 			}
 			
 			customer.setMerchantStore(merchantStore);
-			customer.setDefaultLanguage(lang);
+			customer.setDefaultLanguage(languageService.getByCode(Constants.DEFAULT_LANGUAGE));
 			
 			customerService.saveOrUpdate(customer);
 		}else{
@@ -213,10 +191,10 @@ public class CustomerRESTController {
 	/**
 	 * Deletes a customer for a given MerchantStore
 	 */
-	@RequestMapping( value="/{store}/{language}/{id}", method=RequestMethod.DELETE)
+	@RequestMapping( value="/{store}/{id}", method=RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@Secured("CUSTOMER")
-	public void deleteCustomer(@PathVariable final String store, @PathVariable final String language, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public void deleteCustomer(@PathVariable final String store, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		boolean isDeleted = customerService.deleteById(id);
 	    if(!isDeleted){
 	        response.sendError(404, "No Customer found for ID : " + id);
@@ -235,17 +213,11 @@ public class CustomerRESTController {
 	/**
 	 * Create new customer for a given MerchantStore
 	 */
-	@RequestMapping( value="/{store}/{language}", method=RequestMethod.POST)
+	@RequestMapping( value="/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@Secured("CUSTOMER")
 	@ResponseBody
-	public com.salesmanager.web.entity.customer.Customer createCustomer(@PathVariable final String store, @PathVariable final String language, @Valid @RequestBody Customer customer, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Map<String,Language> langs = languageService.getLanguagesMap();
-		Language lang = langs.get(language);
-		if(lang==null) {
-			lang = languageService.getByCode(Constants.DEFAULT_LANGUAGE);
-		}
-		
+	public com.salesmanager.web.entity.customer.Customer createCustomer(@PathVariable final String store, @Valid @RequestBody Customer customer, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		if(merchantStore!=null) {
 			if(!merchantStore.getCode().equals(store)) {
@@ -264,7 +236,7 @@ public class CustomerRESTController {
 		}
 		
 		customer.setMerchantStore(merchantStore);
-		customer.setDefaultLanguage(lang);
+		customer.setDefaultLanguage(languageService.getByCode(Constants.DEFAULT_LANGUAGE));
 		
 		Country country = (customer.getCountry() != null)?countryService.getByCode(customer.getCountry().getIsoCode().toUpperCase()):null;
 		if(country != null){
@@ -300,7 +272,7 @@ public class CustomerRESTController {
 		
 		customerService.saveOrUpdate(customer);
 		
-		com.salesmanager.web.entity.customer.Customer customerProxy = catalogUtils.buildProxyCustomer(customer, merchantStore, LocaleUtils.getLocale(lang));
+		com.salesmanager.web.entity.customer.Customer customerProxy = customerUtils.buildProxyCustomer(customer, merchantStore);
 		return customerProxy;
 	}
 	

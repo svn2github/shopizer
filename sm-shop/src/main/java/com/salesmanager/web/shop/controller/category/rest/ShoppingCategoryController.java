@@ -1,4 +1,4 @@
-package com.salesmanager.web.shop.controller.category;
+package com.salesmanager.web.shop.controller.category.rest;
 
 
 import java.util.ArrayList;

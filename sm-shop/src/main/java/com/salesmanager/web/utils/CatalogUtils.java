@@ -16,7 +16,6 @@ import com.salesmanager.core.business.catalog.product.model.description.ProductD
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
-import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.constants.Constants;
 import com.salesmanager.core.utils.ProductPriceUtils;
@@ -130,15 +129,4 @@ public class CatalogUtils {
 		return categoryProxy;
 	}
 	
-	public com.salesmanager.web.entity.customer.Customer buildProxyCustomer(Customer customer, MerchantStore store, Locale locale) {
-		com.salesmanager.web.entity.customer.Customer customerProxy = new com.salesmanager.web.entity.customer.Customer();
-		customerProxy.setUserName(customer.getFirstname() +" "+ customer.getLastname());
-		customerProxy.setPassword(customer.getPassword());
-		customerProxy.setStoreCode(store.getCode());
-		customerProxy.setId(customer.getId());
-		customerProxy.setLanguage(locale.getLanguage());
-		
-		return customerProxy;
-	}
-
 }
