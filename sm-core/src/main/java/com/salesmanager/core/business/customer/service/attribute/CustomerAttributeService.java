@@ -22,6 +22,7 @@ public interface CustomerAttributeService extends
 
 	List<CustomerAttribute> getByOptionId(MerchantStore store, Long id);
 
+
 	List<CustomerAttribute> getByCustomer(MerchantStore store, Customer customer);
 	
 

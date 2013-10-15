@@ -56,6 +56,7 @@ public class CustomerAttributeServiceImpl extends
 	}
 
 
+
 	@Override
 	public List<CustomerAttribute> getByCustomer(MerchantStore store, Customer customer) {
 		return customerAttributeDao.getByCustomerId(store, customer.getId());

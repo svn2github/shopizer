@@ -4,7 +4,7 @@ import java.util.List;
 
 public class SearchEntry {
 	
-	private IndexProduct indexProduct;//productas saved in the index
+	private IndexProduct indexProduct;//product as saved in the index
 	private List<String> highlights;
 	public void setHighlights(List<String> highlights) {
 		this.highlights = highlights;
