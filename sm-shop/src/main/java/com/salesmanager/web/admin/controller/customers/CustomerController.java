@@ -152,59 +152,7 @@ public class CustomerController {
 		List<Zone> zones = zoneService.list();
 		
 		this.getCustomerOptions(model, customer, store, language);
-		
-/*		Map<Long,CustomerOption> options = new HashMap<Long,CustomerOption>();
-		//get options
-		List<CustomerOptionSet> optionSet = customerOptionSetService.listByStore(store, language);
-		if(!CollectionUtils.isEmpty(optionSet)) {
-			
-			Set<CustomerAttribute> customerAttributes = customer.getAttributes();
-			
-			for(CustomerOptionSet optSet : optionSet) {
-				
-				com.salesmanager.core.business.customer.model.attribute.CustomerOption custOption = optSet.getCustomerOption();
-				CustomerOption customerOption = options.get(custOption.getId());
-				if(customerOption==null) {
-					customerOption = new CustomerOption();
-					customerOption.setId(custOption.getId());
-					customerOption.setType(custOption.getCustomerOptionType());
-					customerOption.setName(custOption.getDescriptionsSettoList().get(0).getName());
-					options.put(customerOption.getId(), customerOption);
-				}
-				
-				List<CustomerOptionValue> values = customerOption.getAvailableValues();
-				if(values==null) {
-					values = new ArrayList<CustomerOptionValue>();
-					customerOption.setAvailableValues(values);
-				}
-				
-				com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue optionValue = optSet.getCustomerOptionValue();
-				CustomerOptionValue custOptValue = new CustomerOptionValue();
-				custOptValue.setId(optionValue.getId());
-				custOptValue.setLanguage(language.getCode());
-				custOptValue.setName(optionValue.getDescriptionsSettoList().get(0).getName());
-				values.add(custOptValue);
-				
-				if(!CollectionUtils.isEmpty(customerAttributes)) {
-					for(CustomerAttribute customerAttribute : customerAttributes) {
-						if(customerAttribute.getCustomerOption().getId().longValue()==customerOption.getId()){
-							CustomerOptionValue selectedValue = new CustomerOptionValue();
-							com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue attributeValue = customerAttribute.getCustomerOptionValue();
-							selectedValue.setId(attributeValue.getId());
-							CustomerOptionValueDescription optValue = attributeValue.getDescriptionsSettoList().get(0);
-							selectedValue.setName(optValue.getName());
-							customerOption.setDefaultValue(selectedValue);
-							if(customerOption.getType().equalsIgnoreCase(CustomerOptionType.Text.name())) {
-								selectedValue.setName(customerAttribute.getTextValue());
-							} 
-						}
-					}
-				}
-			}
-		}
-		
-		
-		model.addAttribute("options", options.values());*/
+
 		model.addAttribute("zones", zones);
 		model.addAttribute("countries", countries);
 		model.addAttribute("customer", customer);
@@ -405,7 +353,6 @@ public class CustomerController {
 		Country deliveryCountry = countryService.getByCode( customer.getDelivery().getCountry().getIsoCode()); 
 		Country billingCountry  = countryService.getByCode( customer.getBilling().getCountry().getIsoCode()) ;
 
-//		System.out.println( "************deliveryCountry.getIsoCode() = " + deliveryCountry.getIsoCode() );
 		Zone zone = customer.getZone();
 		Zone deliveryZone = customer.getDelivery().getZone();
 		Zone billingZone  = customer.getBilling().getZone();
@@ -465,9 +412,6 @@ public class CustomerController {
 	public @ResponseBody String saveOption(HttpServletRequest request, Locale locale) throws Exception {
 		
 
-		//display menu
-		//setMenu(model,request);
-		
 		AjaxResponse resp = new AjaxResponse();
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
@@ -501,6 +445,13 @@ public class CustomerController {
 			return resp.toJSONString();
 		}
 		
+		List<CustomerAttribute> customerAttributes = customerAttributeService.getByCustomerId(store, customer.getId());
+		Map<Long,CustomerAttribute> customerAttributesMap = new HashMap<Long,CustomerAttribute>();
+		
+		for(CustomerAttribute attr : customerAttributes) {
+			customerAttributesMap.put(attr.getId(), attr);
+		}
+
 		parameterNames = request.getParameterNames();
 		
 		while(parameterNames.hasMoreElements()) {
@@ -535,11 +486,14 @@ public class CustomerController {
 					}
 					
 					//get the attribute
-					CustomerAttribute attribute = customerAttributeService.getByCustomerOptionId(store, customer.getId(), customerOption.getId());
+					//CustomerAttribute attribute = customerAttributeService.getByCustomerOptionId(store, customer.getId(), customerOption.getId());
+					CustomerAttribute attribute = customerAttributesMap.get(customerOption.getId());
 					if(attribute==null) {
 						attribute = new CustomerAttribute();
 						attribute.setCustomer(customer);
 						attribute.setCustomerOption(customerOption);
+					} else {
+						customerAttributes.remove(attribute);
 					}
 					
 					if(customerOption.getCustomerOptionType().equals(CustomerOptionType.Text.name())) {
@@ -562,11 +516,11 @@ public class CustomerController {
 						customerAttributeService.save(attribute);
 					}
 					
-					
-				
-				
+					//and now the remaining to be removed
+					for(CustomerAttribute attr : customerAttributes) {
+						customerAttributeService.delete(attr);
+					}
 
-			
 			} catch (Exception e) {
 				LOGGER.error("Cannot get parameter information " + parameterName,e);
 			}
