@@ -14,6 +14,8 @@ public interface CustomerAttributeDao extends SalesManagerEntityDao<Long, Custom
 
 	List<CustomerAttribute> getByOptionId(MerchantStore store, Long id);
 
+	List<CustomerAttribute> getByCustomerId(MerchantStore store, Long customerId);
+
 
 
 }

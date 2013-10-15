@@ -21,6 +21,5 @@ public interface CustomerService  extends SalesManagerEntityService<Long, Custom
 
 	CustomerList listByStore(MerchantStore store, CustomerCriteria criteria);
 
-	boolean deleteById(Long id) throws ServiceException;
-	
+
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.salesmanager.core.business.customer.dao.attribute.CustomerOptionSetDao;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOption;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
+import com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -64,6 +65,14 @@ public class CustomerOptionSetServiceImpl extends
 			super.create(entity);
 		}
 		
+	}
+
+
+	@Override
+	public List<CustomerOptionSet> listByOptionValue(
+			CustomerOptionValue optionValue, MerchantStore store)
+			throws ServiceException {
+		return customerOptionSetDao.getByOptionValueId(store, optionValue.getId());
 	}
 
 

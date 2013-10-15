@@ -15,6 +15,8 @@ public interface CustomerOptionSetDao extends SalesManagerEntityDao<Long, Custom
 
 	CustomerOptionSet getById(Long customerOptionSetId);
 
+	List<CustomerOptionSet> getByOptionValueId(MerchantStore store, Long id);
+
 
 
 

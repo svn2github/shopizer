@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.customer.dao.attribute.CustomerOptionDao;
-import com.salesmanager.core.business.customer.dao.attribute.CustomerOptionSetDao;
 import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOption;
+import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -25,7 +25,7 @@ public class CustomerOptionServiceImpl extends
 	private CustomerAttributeService customerAttributeService;
 	
 	@Autowired
-	private CustomerOptionSetDao customerOptionSetDao;
+	private CustomerOptionSetService customerOptionSetService;
 	
 
 	@Autowired
@@ -68,6 +68,12 @@ public class CustomerOptionServiceImpl extends
 		}
 		
 		CustomerOption option = this.getById(customerOption.getId());
+		
+		List<CustomerOptionSet> optionSets = customerOptionSetService.listByOption(customerOption, customerOption.getMerchantStore());
+		
+		for(CustomerOptionSet optionSet : optionSets) {
+			customerOptionSetService.delete(optionSet);
+		}
 		
 		//remove option
 		super.delete(option);

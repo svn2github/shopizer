@@ -65,6 +65,29 @@ public class CustomerAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Cu
 	}
 	
 	@Override
+	public List<CustomerAttribute> getByCustomerId(MerchantStore store, Long customerId) {
+		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
+		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
+		QCustomer qCustomer = QCustomer.customer;
+		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
+		
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCustomerAttribute)
+		.join(qCustomerAttribute.customer,qCustomer).fetch()
+		.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
+		.leftJoin(qCustomerAttribute.customerOptionValue, qCustomerOptionValue).fetch()
+		.leftJoin(qCustomerOption.descriptions).fetch()
+		.leftJoin(qCustomerOptionValue.descriptions).fetch()
+		.where(qCustomerOption.merchantStore.id.eq(store.getId())
+				.and(qCustomer.id.eq(customerId)));
+
+		
+		return query.list(qCustomerAttribute);
+	}
+	
+	@Override
 	public List<CustomerAttribute> getByOptionValueId(MerchantStore store, Long id) {
 		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
 		QCustomerOption qCustomerOption = QCustomerOption.customerOption;

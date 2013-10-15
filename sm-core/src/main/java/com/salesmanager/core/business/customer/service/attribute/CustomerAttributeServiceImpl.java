@@ -6,9 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.customer.dao.attribute.CustomerAttributeDao;
+import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
-import com.salesmanager.core.business.customer.model.attribute.CustomerOption;
-import com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -57,7 +56,10 @@ public class CustomerAttributeServiceImpl extends
 	}
 
 
-
+	@Override
+	public List<CustomerAttribute> getByCustomer(MerchantStore store, Customer customer) {
+		return customerAttributeDao.getByCustomerId(store, customer.getId());
+	}
 
 
 	@Override

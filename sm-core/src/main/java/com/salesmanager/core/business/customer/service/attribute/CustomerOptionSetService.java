@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.salesmanager.core.business.customer.model.attribute.CustomerOption;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
+import com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -28,6 +29,7 @@ public interface CustomerOptionSetService extends SalesManagerEntityService<Long
 			MerchantStore store) throws ServiceException;
 	
 
-
+	List<CustomerOptionSet> listByOptionValue(CustomerOptionValue optionValue,
+			MerchantStore store) throws ServiceException;
 
 }

@@ -21,7 +21,6 @@ import com.salesmanager.core.constants.SchemaConstant;
 	uniqueConstraints={
 		@UniqueConstraint(columnNames={
 				"OPTION_ID",
-				"OPTION_VALUE_ID",
 				"CUSTOMER_ID"
 			})
 	}

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.customer.dao.attribute.CustomerOptionValueDao;
 import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
+import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
@@ -22,6 +23,9 @@ public class CustomerOptionValueServiceImpl extends
 	private CustomerAttributeService customerAttributeService;
 	
 	private CustomerOptionValueDao customerOptionValueDao;
+	
+	@Autowired
+	private CustomerOptionSetService customerOptionSetService;
 	
 	@Autowired
 	public CustomerOptionValueServiceImpl(
@@ -65,6 +69,12 @@ public class CustomerOptionValueServiceImpl extends
 		
 		for(CustomerAttribute attribute : attributes) {
 			customerAttributeService.delete(attribute);
+		}
+		
+		List<CustomerOptionSet> optionSets = customerOptionSetService.listByOptionValue(customerOptionValue, customerOptionValue.getMerchantStore());
+		
+		for(CustomerOptionSet optionSet : optionSets) {
+			customerOptionSetService.delete(optionSet);
 		}
 		
 		CustomerOptionValue option = super.getById(customerOptionValue.getId());
