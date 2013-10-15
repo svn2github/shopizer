@@ -149,13 +149,13 @@ public class InitStoreData implements InitData {
 		    bookEnglishDescription.setName("Book");
 		    bookEnglishDescription.setCategory(book);
 		    bookEnglishDescription.setLanguage(en);
-		    bookEnglishDescription.setSeUrl("livre");
+		    bookEnglishDescription.setSeUrl("book");
 
 		    CategoryDescription bookFrenchDescription = new CategoryDescription();
 		    bookFrenchDescription.setName("Livre");
 		    bookFrenchDescription.setCategory(book);
 		    bookFrenchDescription.setLanguage(fr);
-		    bookFrenchDescription.setSeUrl("book");
+		    bookFrenchDescription.setSeUrl("livre");
 
 		    List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
 		    descriptions.add(bookEnglishDescription);

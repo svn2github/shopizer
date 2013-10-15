@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
+import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.country.model.Country;
@@ -195,18 +196,39 @@ public class CustomerRESTController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@Secured("CUSTOMER")
 	public void deleteCustomer(@PathVariable final String store, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		boolean isDeleted = customerService.deleteById(id);
-	    if(!isDeleted){
-	        response.sendError(404, "No Customer found for ID : " + id);
-	    }
-	    
-	    // Due to some transaction issue below code is not working, hence moved retrieve and delete logic to a single service method
-		/*Customer customer = customerService.getById(id);
-		if(customer != null && customer.getMerchantStore().getCode().equalsIgnoreCase(store)){
-			customerService.delete(customer);
-		}else{
-			response.sendError(404, "No Customer found for ID : " + id);
-		}*/
+		
+		
+		try {
+			
+			Customer customer = customerService.getById(id);
+			
+			if(customer==null) {
+				response.sendError(404, "No Customer found for ID : " + id);
+				return;
+			} 
+				
+				MerchantStore merchantStore = merchantStoreService.getByCode(store);
+				if(merchantStore == null) {
+					response.sendError(404, "Invalid merchant store : " + store);
+					return;
+				}
+				
+				if(merchantStore.getId().intValue()!= customer.getMerchantStore().getId().intValue()){
+					response.sendError(404, "Customer id: " + id + " is not part of store " + store);
+					return;
+				}			
+				
+				customerService.delete(customer);
+			
+			
+		} catch (ServiceException se) {
+			LOGGER.error("Cannot delete customer",se);
+			response.sendError(404, "An exception occured while removing the customer");
+			return;
+		}
+		
+   
+
 	}
 	
 	

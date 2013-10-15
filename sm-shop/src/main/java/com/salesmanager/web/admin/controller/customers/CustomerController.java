@@ -133,6 +133,9 @@ public class CustomerController {
 			
 			//get from DB
 			customer = customerService.getById(id);
+			if(customer==null) {
+				return "redirect:/admin/customers/list.html";
+			}
 			if(customer.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 				return "redirect:/admin/customers/list.html";
 			}
@@ -532,7 +535,7 @@ public class CustomerController {
 					}
 					
 					//get the attribute
-					CustomerAttribute attribute = customerAttributeService.getByCustomerOptionId(store, customerOption.getId(), customer.getId());
+					CustomerAttribute attribute = customerAttributeService.getByCustomerOptionId(store, customer.getId(), customerOption.getId());
 					if(attribute==null) {
 						attribute = new CustomerAttribute();
 						attribute.setCustomer(customer);

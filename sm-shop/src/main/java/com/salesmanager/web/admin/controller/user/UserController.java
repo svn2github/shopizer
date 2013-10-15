@@ -582,7 +582,7 @@ public class UserController {
 		}
 		
 		
-		if(user.getId().longValue()==0) {
+		if(user.getId()==null || user.getId().longValue()==0) {
 			
 			//save or update user
 			userService.saveOrUpdate(user);
@@ -597,7 +597,7 @@ public class UserController {
 				templateTokens.put(EmailConstants.EMAIL_NEW_USER_TEXT, messages.getMessage("email.greeting", userNameArg, userLocale));
 				templateTokens.put(EmailConstants.EMAIL_USER_FIRSTNAME, user.getFirstName());
 				templateTokens.put(EmailConstants.EMAIL_USER_LASTNAME, user.getLastName());
-				templateTokens.put(EmailConstants.EMAIL_ADMIN_USERNAME_LABEL, messages.getMessage("label.user.name",userLocale));
+				templateTokens.put(EmailConstants.EMAIL_ADMIN_USERNAME_LABEL, messages.getMessage("label.genetic.username",userLocale));
 				templateTokens.put(EmailConstants.EMAIL_ADMIN_NAME, user.getAdminName());
 				templateTokens.put(EmailConstants.EMAIL_ADMIN_PASSWORD_LABEL, messages.getMessage("label.generic.password",userLocale));
 				templateTokens.put(EmailConstants.EMAIL_ADMIN_PASSWORD, decodedPassword);
