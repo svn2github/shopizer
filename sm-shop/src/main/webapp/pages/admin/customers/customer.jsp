@@ -8,7 +8,7 @@
 
 <script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
 <script src="<c:url value="/resources/js/bootstrap/bootstrap-datepicker.js" />"></script>
-<script src="<c:url value="/resources/js/bootstrap/bootbox.js" />"></script>
+
 
 <script>
 
@@ -113,39 +113,13 @@ $(document).ready(function() {
 	    
 	    //reset password link
 	    $('a[href="#resetPassword"]').click(function(){
-  			alert('click');
-	    	var customerId = this.id;
   			
-	    	 //bootbox.alert("Hello world!", function() {
-	    	 //	 console.log("Alert Callback");
-	    	 //	 });
+	    	var customerId = this.id;
 	    	
 	    	
-  			bootbox.confirm({
-				message: "<s:message code="label.customer.resetpasswor.confirm" text="Are you sure you want to reset the customer password?" />",
-				title: "<s:message code="label.generic.confirm" text="Please confirm!" />",
-				buttons: {
-					cancel: {
-						label: "<s:message code="button.label.cancel" text="Cancel" />",
-						className: "btn-default",
-						callback: function() {
-							alert('callback 0');
-						}
-					},
-					confirm: {
-						label: "<s:message code="button.label.ok" text="Ok" />",
-						className: "btn-primary",
-						callback: function() {
-							alert('callback 1');
-							resetCustomerPassword(customerId);
-						}
-					}
-				},
-				callback: function() {
-					alert('callback 2');
-					resetCustomerPassword(customerId);
-				}
-			 });
+	    	$("body").append('<div class="modalOverlay">');
+			$('#confirmModal').show();
+
   			
   			
   			//bootbox.confirm("Are you sure?", function(result) {
@@ -672,3 +646,26 @@ function resetCustomerPassword(customerId){
 				</c:if>
 				</c:if>
 </div>
+
+
+
+
+<div id="confirmModal"  class="modal hide" style="z-index:600000" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+          <button type="button" class="close close-modal" data-dismiss="modal" aria-hidden="true">X</button>
+          <h3 id="modalTitle"><s:message code="label.generic.confirm" text="Please confirm!" /></h3>
+  </div>
+  <div class="modal-body">
+           <p id="modalMessage">
+				<s:message code="label.customer.resetpasswor.confirm" text="Are you sure you want to reset the customer password?" />
+           </p>
+  </div>  
+  <div class="modal-footer">
+  			<button class="btn-primary" aria-hidden="true"><s:message code="button.label.ok" text="-" /></button>
+           <button class="btn cancel-modal" data-dismiss="modal" aria-hidden="true"><s:message code="button.label.cancel" text="Cancel" /></button>
+           <button class="btn btn-success close-modal" id="closeModal" data-dismiss="modal" aria-hidden="true" style="display:none;"><s:message code="button.label.close" text="Close" /></button>
+  </div>
+</div>
+
+
+
