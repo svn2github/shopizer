@@ -8,7 +8,7 @@
 
 <script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
 <script src="<c:url value="/resources/js/bootstrap/bootstrap-datepicker.js" />"></script>
-<script src="<c:url value="/resources/js/bootstrap/bootbox.min.js" />"></script>
+<script src="<c:url value="/resources/js/bootstrap/bootbox.js" />"></script>
 
 <script>
 
@@ -31,7 +31,7 @@ $(document).ready(function() {
 	        cache: false,
 	        type: 'POST',
 	        data : data,
-	        success: function(response) {
+	        success: function(result) {
 	            $('#attributesBox').hideLoading();
 	               var response = result.response;
                    if (response.status==0) {
@@ -113,8 +113,14 @@ $(document).ready(function() {
 	    
 	    //reset password link
 	    $('a[href="#resetPassword"]').click(function(){
-  			var customerId = $this.id;
+  			alert('click');
+	    	var customerId = this.id;
   			
+	    	 //bootbox.alert("Hello world!", function() {
+	    	 //	 console.log("Alert Callback");
+	    	 //	 });
+	    	
+	    	
   			bootbox.confirm({
 				message: "<s:message code="label.customer.resetpasswor.confirm" text="Are you sure you want to reset the customer password?" />",
 				title: "<s:message code="label.generic.confirm" text="Please confirm!" />",
@@ -123,16 +129,22 @@ $(document).ready(function() {
 						label: "<s:message code="button.label.cancel" text="Cancel" />",
 						className: "btn-default",
 						callback: function() {
+							alert('callback 0');
 						}
 					},
-					main: {
+					confirm: {
 						label: "<s:message code="button.label.ok" text="Ok" />",
 						className: "btn-primary",
 						callback: function() {
+							alert('callback 1');
 							resetCustomerPassword(customerId);
 						}
 					}
-				}			
+				},
+				callback: function() {
+					alert('callback 2');
+					resetCustomerPassword(customerId);
+				}
 			 });
   			
   			
@@ -346,6 +358,11 @@ function resetCustomerPassword(customerId){
 				<jsp:include page="/common/adminTabs.jsp" />
 				
 				<h3>
+				
+				
+
+				
+				
 					<c:choose>
 						<c:when test="${customer.id!=null && customer.id>0}">
 								<s:message code="label.customer.editcustomer" text="Edit Customer" /> <c:out value="${category.code}"/>
@@ -360,13 +377,15 @@ function resetCustomerPassword(customerId){
 				
 				<c:if test="${customer.id!=null && customer.id>0}">
 				<div class="btn-group" style="z-index:400000;">
-                    <button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><s:message code="label.product.configure" text="Product definition"/> ... <span class="caret"></span></button>
+                    <button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><s:message code="label.generic.moreoptions" text="More options"/> ... <span class="caret"></span></button>
                      <ul class="dropdown-menu">
 				    	<li><a id="${customer.id}" href="#resetPassword"><s:message code="button.label.resetpassword" text="Reset Password" /></a></li>
                      </ul>
                 </div><!-- /btn-group -->
 			    <br/>
 				</c:if>
+				
+				<c:set var="customerAttr" value="${customer}"/>
 
 
 				<c:url var="customer" value="/admin/customers/save.html"/>
@@ -583,12 +602,13 @@ function resetCustomerPassword(customerId){
 
       					
 				</form:form>
-				
+
+				<c:if test="${customerAttr.id!=null && customerAttr.id>0}">
 				
 				
 				<!-- properties -->
 				<!--  @ModelAttribute("optionList") List<Option> options  -->
-				
+
 				<c:if test="${options!=null && fn:length(options)>0}">
 				
 				<div id="attributesSuccess" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>   
@@ -601,29 +621,29 @@ function resetCustomerPassword(customerId){
 				
 					<c:url var="customerOptions" value="/admin/customers/attributes/save.html"/>
 					<form id="attributes">
-					<input id="customer" type="hidden" value="1" name="customer">
+					<input id="customer" type="hidden" value="<c:out value="${customerAttr.id}"/>" name="customer">
 					<c:forEach items="${options}" var="option" varStatus="status">
 						<div class="control-group"> 
 	                        <label><c:out value="${option.name}"/></label>
 	                        <div class="controls">	       							
 									<c:choose>
-										<c:when test="${option.type=='select'}">
+										<c:when test="${option.type=='Select'}">
 											<select id="<c:out value="${option.id}"/>" name="<c:out value="${option.id}"/>">
 											<c:forEach items="${option.availableValues}" var="optionValue">
 												<option value="${optionValue.id}" <c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> SELECTED</c:if>>${optionValue.name}</option>
 											</c:forEach>
 											</select>
 										</c:when>
-										<c:when test="${option.type=='radio'}">
+										<c:when test="${option.type=='Radio'}">
 											<c:forEach items="${option.availableValues}" var="optionValue">
-												<input type="radio" id="<c:out value="${option.id}"/>-<c:out value="${optionValue.id}"/>" name="<c:out value="${option.id}"/>-<c:out value="${optionValue.id}"/>" <c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> checked="checked" </c:if> />
+												<input type="radio" id="<c:out value="${option.id}"/>" name="<c:out value="${option.id}"/>" value="<c:out value="${optionValue.id}"/>" <c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> checked="checked" </c:if> />
 												<c:out value="${optionValue.name}"/>
 											</c:forEach>
 										</c:when>
-										<c:when test="${option.type=='text'}">
+										<c:when test="${option.type=='Text'}">
 											<input class="textAttribute" type="text" id="<c:out value="${option.id}"/>-<c:out value="${option.availableValues[0].id}"/>" name="<c:out value="${option.id}"/>-<c:out value="${option.availableValues[0].id}"/>" class="input-large" value="<c:if test="${option.defaultValue!=null}">${option.defaultValue.name}</c:if>">
 										</c:when> 
-										<c:when test="${option.type=='checkbox'}">
+										<c:when test="${option.type=='Checkbox'}">
 											<c:forEach items="${option.availableValues}" var="optionValue">
 												<input type="checkbox" id="<c:out value="${option.id}"/>-<c:out value="${optionValue.id}"/>" name="<c:out value="${option.id}"/>-<c:out value="${optionValue.id}"/>" <c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> checked="checked" </c:if>  />
 												<c:out value="${optionValue.name}"/>
@@ -650,5 +670,5 @@ function resetCustomerPassword(customerId){
 				</form>
 				</div>
 				</c:if>
-
+				</c:if>
 </div>

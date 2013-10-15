@@ -94,10 +94,10 @@ $(document).ready(function() {
 	                        			<s:message code="label.product.productoption.type.select" text="Select" var="vSelect"/>
 	                        			<s:message code="label.product.productoption.type.radio" text="Radio" var="vRadio"/>
 	                        			<s:message code="label.product.productoption.type.checkbox" text="Checkbox" var="vCheckbox"/>
-	                        			<form:option value="text" label="${vText}" />
-	                        			<form:option value="select" label="${vSelect}" />
-	                        			<form:option value="radio" label="${vRadio}" />
-	                        			<form:option value="checkbox" label="${vCheckbox}" />
+	                        			<form:option value="Text" label="${vText}" />
+	                        			<form:option value="Select" label="${vSelect}" />
+	                        			<form:option value="Radio" label="${vRadio}" />
+	                        			<form:option value="Checkbox" label="${vCheckbox}" />
 				       				</form:select>
 	                                <span class="help-inline"><form:errors path="customerOptionType" cssClass="error" /></span>
 	                        </div>
