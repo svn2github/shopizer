@@ -140,7 +140,7 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		}
 		
 		totalSummary.setSubTotal(subTotal);
-		grandTotal.add(subTotal);
+		grandTotal=grandTotal.add(subTotal);
 		
 		OrderTotal orderTotalSubTotal = new OrderTotal();
 		orderTotalSubTotal.setModule("subtotal");
@@ -167,10 +167,10 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 			
 			if(!summary.getShippingSummary().isFreeShipping()) {
 				shippingSubTotal.setValue(summary.getShippingSummary().getShipping());
-				grandTotal.add(summary.getShippingSummary().getShipping());
+				grandTotal=grandTotal.add(summary.getShippingSummary().getShipping());
 			} else {
 				shippingSubTotal.setValue(new BigDecimal(0));
-				grandTotal.add(new BigDecimal(0));
+				grandTotal=grandTotal.add(new BigDecimal(0));
 			}
 			
 			//check handling fees
@@ -183,7 +183,7 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 					handlingubTotal.setSortOrder(12);
 					handlingubTotal.setValue(summary.getShippingSummary().getHandling());
 					orderTotals.add(handlingubTotal);
-					grandTotal.add(summary.getShippingSummary().getHandling());
+					grandTotal=grandTotal.add(summary.getShippingSummary().getHandling());
 				}
 			}
 		}
@@ -203,7 +203,7 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 				taxLine.setValue(tax.getItemPrice());
 				
 				orderTotals.add(taxLine);
-				grandTotal.add(tax.getItemPrice());
+				grandTotal=grandTotal.add(tax.getItemPrice());
 				
 				taxCount ++;
 				
