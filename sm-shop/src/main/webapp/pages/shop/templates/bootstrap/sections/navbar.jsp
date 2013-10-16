@@ -12,6 +12,19 @@ response.setDateHeader ("Expires", -1);
 <%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %>
 <%@ taglib uri="/WEB-INF/shopizer-functions.tld" prefix="display" %>  
 
+<script type="text/javascript">
+
+$(document).ready(function() { 
+
+	var autoCompleteUrl = '/shop/services/search/' + getMerchantStoreCode() + '/' + getLanguageCode() + '/autocomplete.html';
+	$('#search').searchAutocomplete({
+		url: '<c:url value="/shop/services/search/{store}/{language}/autocomplete.html"/>';
+     });
+
+});
+
+</script>
+
 <c:set var="req" value="${request}" />
  
 <%@page contentType="text/html"%>
@@ -64,9 +77,8 @@ response.setDateHeader ("Expires", -1);
             		
 			<div class="row-fluid">
 					<div style="padding-top: 4px;margin-right:8px;" class="btn-group pull-right">
-						<form class="form-inline">
- 							<input type="text" placeholder="" class="input-medium">
-
+						<form id="searchForm" class="form-inline">
+ 							<input id="search" type="text" placeholder="" class="input-medium">
 							<button class="btn" type="submit">Search</button>
 						</form>
 					</div>

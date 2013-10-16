@@ -41,6 +41,12 @@
 
 	obj = $(this); 
 	var id = obj.attr('id');
+	
+	var search = $('#' + id).val().toLowerCase(); 
+	
+	if(search.length<minlength) {
+		return;
+	}
 
 	return this.autocomplete({
 
@@ -49,10 +55,8 @@
 		source: function(req, add){
 
 
-			var search = $('#' + id).val().toLowerCase(); 
-			
-			//todo number of characters tresholds
-			
+			//var search = $('#' + id).val().toLowerCase(); 
+
 			
 			var query = '{\"wildcard\" : {\"keyword\" : \"' + search + '*\" }}';
 			if(filter!=null && filter!='') {

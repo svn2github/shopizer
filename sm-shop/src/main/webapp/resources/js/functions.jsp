@@ -15,5 +15,13 @@ function getMerchantStore() {
    return "${requestScope.MERCHANT_STORE.id}";
 }
 
+function getMerchantStoreCode() {
+   return "${requestScope.MERCHANT_STORE.code}";
+}
+
+function getLanguageCode() {
+   return "${requestScope.LANGUAGE.code}";
+}
+
 
 </script>
