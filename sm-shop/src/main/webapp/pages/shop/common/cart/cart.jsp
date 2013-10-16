@@ -26,11 +26,12 @@
 				<tr> 
 					<td width="10%">image</td>
 			
-					<td>Vertical (default)</td> 
+					<td>${shoppingCartItem.name}</td> 
 					<td ><input type="text" class="input-small" placeholder="qty" value="${shoppingCartItem.quantity}"></td> 
 					<td ><button class="close">&times;</button></td>
-					<td><strong>$${productPrice.doubleValue}</strong></td> 
-					<td><strong>$${productPrice.doubleValue}</strong></td> 
+					<td><strong>${shoppingCartItem.subTotal}</strong></td> 
+					<td><strong>${shoppingCartItem.price}</strong></td>
+					
 				</tr> 
 			</c:forEach>
 		  
@@ -38,7 +39,7 @@
 		  <tr class="subt">
 		<td colspan="2">&nbsp;</td>
 		<td colspan="3"><strong>Sub-total</strong></td>
-		<td><strong>$${cart.total}</strong></td>
+		<td><strong>$${cart.subTotal}</strong></td>
 	</tr>
 
 	<tr class="subt">

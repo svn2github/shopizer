@@ -136,6 +136,7 @@ public class ShoppingCartController {
 	    Customer customer = (Customer)request.getSession().getAttribute(Constants.CUSTOMER);
 	    com.salesmanager.core.business.shoppingcart.model.ShoppingCart cart=null;
 	    MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+	    Language language = (Language)request.getAttribute("LANGUAGE");
 	    if(customer != null){
 	        LOG.info( "Customer found in HTTP request.");
 	        cart=shoppingCartService.getByCustomer(customer);
@@ -150,10 +151,10 @@ public class ShoppingCartController {
 	    }
 	    
 	    if(cart !=null){
-	       	ShoppingCart shoppingCart=convertFromEntity(cart, store);
+	       	ShoppingCart shoppingCart=convertFromEntity(cart, store,language);
 	        recalculateCart(shoppingCart);
 	        cart=this.getCartModel(shoppingCart, store, customer);
-	        shoppingCart=convertFromEntity(cart, store);
+	        shoppingCart=convertFromEntity(cart, store,language);
 	        shoppingCartService.saveOrUpdate(cart);
 	        //request.getSession().setAttribute(Constants.SHOPPING_CART, shoppingCart);
 	    	 model.addAttribute("cart", shoppingCart);
@@ -231,7 +232,7 @@ public class ShoppingCartController {
 		if(customer != null) {
 			com.salesmanager.core.business.shoppingcart.model.ShoppingCart customerCart = shoppingCartService.getByCustomer(customer);
 			if(customerCart!=null) {
-				shoppingCart = convertFromEntity(customerCart,store);
+				shoppingCart = convertFromEntity(customerCart,store,language);
 				//TODO if ahoppingCart != null ?? merge
 				//TODO maybe they have the same code
 				//TODO what if codes are different (-- merge carts, keep the latest one, delete the oldest, switch codes --)
@@ -242,7 +243,7 @@ public class ShoppingCartController {
 			//get it from the db
 			com.salesmanager.core.business.shoppingcart.model.ShoppingCart dbCart = shoppingCartService.getByCode(item.getCode(), store);
 			if(dbCart!=null) {
-				shoppingCart = convertFromEntity(dbCart,store);
+				shoppingCart = convertFromEntity(dbCart,store,language);
 			}
 		}
 		
@@ -267,9 +268,7 @@ public class ShoppingCartController {
 		List<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> productsList = new ArrayList<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem>();
 		productsList.addAll(entity.getLineItems());
 		summary.setProducts(productsList);
-		
 		OrderTotalSummary orderSummary = orderService.calculateShoppingCart(summary, store, language);
-		
 		shoppingCart.setTotal(pricingService.getDisplayAmount(orderSummary.getTotal(), store));
 		shoppingCart.setQuantity(shoppingCart.getShoppingCartItems().size());
 
@@ -473,7 +472,7 @@ public class ShoppingCartController {
 		
 	}
 	
-	private ShoppingCart convertFromEntity(com.salesmanager.core.business.shoppingcart.model.ShoppingCart shoppingCart, MerchantStore store) throws Exception {
+	private ShoppingCart convertFromEntity(com.salesmanager.core.business.shoppingcart.model.ShoppingCart shoppingCart, MerchantStore store,Language language) throws Exception {
 		
 		ShoppingCart cart = new ShoppingCart();
 		cart.setCode(shoppingCart.getShoppingCartCode());
@@ -519,6 +518,15 @@ public class ShoppingCartController {
 		if(CollectionUtils.isNotEmpty(shoppingCartItemsList)){
 			cart.setShoppingCartItems(shoppingCartItemsList);
 		}
+		
+		OrderSummary summary = new OrderSummary();
+		List<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> productsList = new ArrayList<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem>();
+		productsList.addAll(shoppingCart.getLineItems());
+		summary.setProducts(productsList);
+		OrderTotalSummary orderSummary = orderService.calculateShoppingCart(summary, store, language);
+		cart.setSubTotal(pricingService.getDisplayAmount(orderSummary.getSubTotal(), store));
+		cart.setTotal(pricingService.getDisplayAmount(orderSummary.getTotal(), store));
+		//cart.setQuantity(shoppingCart..size());
 		return cart;
 		
 	}

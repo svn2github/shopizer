@@ -15,6 +15,8 @@ public class ShoppingCart extends ShopEntity implements Serializable {
 	private String code;
 	private int quantity;
 	private String total;
+	private String subTotal;
+	
 	
 	private List<ShoppingCartItem> shoppingCartItems;
 	
@@ -48,6 +50,12 @@ public class ShoppingCart extends ShopEntity implements Serializable {
 	}
 	public void setShoppingCartItems(List<ShoppingCartItem> shoppingCartItems) {
 		this.shoppingCartItems = shoppingCartItems;
+	}
+	public String getSubTotal() {
+		return subTotal;
+	}
+	public void setSubTotal(String subTotal) {
+		this.subTotal = subTotal;
 	}
 
 
