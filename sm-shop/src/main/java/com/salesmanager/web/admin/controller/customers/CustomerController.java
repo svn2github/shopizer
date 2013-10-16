@@ -445,11 +445,11 @@ public class CustomerController {
 			return resp.toJSONString();
 		}
 		
-		List<CustomerAttribute> customerAttributes = customerAttributeService.getByCustomerId(store, customer.getId());
+		List<CustomerAttribute> customerAttributes = customerAttributeService.getByCustomer(store, customer);
 		Map<Long,CustomerAttribute> customerAttributesMap = new HashMap<Long,CustomerAttribute>();
 		
 		for(CustomerAttribute attr : customerAttributes) {
-			customerAttributesMap.put(attr.getId(), attr);
+			customerAttributesMap.put(attr.getCustomerOption().getId(), attr);
 		}
 
 		parameterNames = request.getParameterNames();
@@ -516,15 +516,17 @@ public class CustomerController {
 						customerAttributeService.save(attribute);
 					}
 					
-					//and now the remaining to be removed
-					for(CustomerAttribute attr : customerAttributes) {
-						customerAttributeService.delete(attr);
-					}
+
 
 			} catch (Exception e) {
 				LOGGER.error("Cannot get parameter information " + parameterName,e);
 			}
 			
+		}
+		
+		//and now the remaining to be removed
+		for(CustomerAttribute attr : customerAttributes) {
+			customerAttributeService.delete(attr);
 		}
 		
 		resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
