@@ -74,6 +74,7 @@ public class CustomerAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Cu
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
+		
 		query.from(qCustomerAttribute)
 		.join(qCustomerAttribute.customer,qCustomer).fetch()
 		.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
@@ -83,8 +84,9 @@ public class CustomerAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Cu
 		.where(qCustomerOption.merchantStore.id.eq(store.getId())
 				.and(qCustomer.id.eq(customerId)));
 
+		System.out.println("done");
 		
-		return query.list(qCustomerAttribute);
+		return query.listDistinct(qCustomerAttribute);
 	}
 	
 	@Override

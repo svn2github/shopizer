@@ -34,6 +34,8 @@ public class HtmlEmailSenderImpl implements HtmlEmailSender {
 	private JavaMailSender mailSender;
 	private EmailConfig emailConfig;
 	
+	private final static String TEMPLATE_PATH = "templates/email";
+	
 	@Override
 	public void send(Email email)
 			throws Exception {
@@ -78,7 +80,8 @@ public class HtmlEmailSenderImpl implements HtmlEmailSender {
 
 				// Create a "text" Multipart message
 				BodyPart textPart = new MimeBodyPart();
-				Template textTemplate = freemarkerMailConfiguration.getTemplate(tmpl);
+				freemarkerMailConfiguration.setClassForTemplateLoading(HtmlEmailSenderImpl.class, "/");
+				Template textTemplate = freemarkerMailConfiguration.getTemplate(new StringBuilder(TEMPLATE_PATH).append("").append("/").append(tmpl).toString());
 				final StringWriter textWriter = new StringWriter();
 				try {
 					textTemplate.process(templateTokens, textWriter);
@@ -114,7 +117,8 @@ public class HtmlEmailSenderImpl implements HtmlEmailSender {
 				// Create a "HTML" Multipart message
 				Multipart htmlContent = new MimeMultipart("related");
 				BodyPart htmlPage = new MimeBodyPart();
-				Template htmlTemplate = freemarkerMailConfiguration.getTemplate(tmpl);
+				freemarkerMailConfiguration.setClassForTemplateLoading(HtmlEmailSenderImpl.class, "/");
+				Template htmlTemplate = freemarkerMailConfiguration.getTemplate(new StringBuilder(TEMPLATE_PATH).append("").append("/").append(tmpl).toString());
 				final StringWriter htmlWriter = new StringWriter();
 				try {
 					htmlTemplate.process(templateTokens, htmlWriter);
