@@ -430,7 +430,12 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 	                   		</div>
 
                    </form:form>
-                   </c:if>	    
+                   </c:if>
+                   
+                   
+                   
+                   
+                   	    
                         
       				</div>
       					
