@@ -117,11 +117,9 @@ $(document).ready(function() {
 	    	var customerId = this.id;
 	    	
 	    	
-	    	$("body").append('<div class="modalOverlay">');
-			$('#confirmModal').show();
+	    	//$("body").append('<div class="modalOverlay">');
+			$('#confirmModal').modal();
 
-  			
-  			
   			//bootbox.confirm("Are you sure?", function(result) {
 			//	if(result==true) {
 					
@@ -661,7 +659,7 @@ function resetCustomerPassword(customerId){
            </p>
   </div>  
   <div class="modal-footer">
-  			<button class="btn-primary" aria-hidden="true"><s:message code="button.label.ok" text="-" /></button>
+  		   <button class="btn btn-primary" aria-hidden="true"><s:message code="button.label.ok" text="-" /></button>
            <button class="btn cancel-modal" data-dismiss="modal" aria-hidden="true"><s:message code="button.label.cancel" text="Cancel" /></button>
            <button class="btn btn-success close-modal" id="closeModal" data-dismiss="modal" aria-hidden="true" style="display:none;"><s:message code="button.label.close" text="Close" /></button>
   </div>
