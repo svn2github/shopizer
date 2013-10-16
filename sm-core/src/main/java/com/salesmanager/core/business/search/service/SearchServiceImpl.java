@@ -56,7 +56,7 @@ public class SearchServiceImpl implements SearchService {
 			throws ServiceException {
 		
 		/**
-		 * When a product is saved or updated the indexing will occur
+		 * When a product is saved or updated the indexing process occurs
 		 * 
 		 * A product entity will have to be transformed to a bean ProductIndex
 		 * which contains the indices as described in product.json
@@ -65,10 +65,8 @@ public class SearchServiceImpl implements SearchService {
 						"properties" :  {
 							"name" : {"type":"string","index":"analyzed"},
 							"price" : {"type":"string","index":"not_analyzed"},
-							"price" : {"type":"string","index":"not_analyzed"},
 							"category" : {"type":"string","index":"not_analyzed"},
 							"lang" : {"type":"string","index":"not_analyzed"},
-							"availability" : {"type":"string","index":"not_analyzed"},
 							"available" : {"type":"string","index":"not_analyzed"},
 							"description" : {"type":"string","index":"analyzed","index_analyzer":"english"}, 
 							"tags" : {"type":"string","index":"not_analyzed"} 
@@ -80,10 +78,10 @@ public class SearchServiceImpl implements SearchService {
 		 * productSearchService.index	
 		 * 
 		 * A copy of properies between Product to IndexProduct
-		 * Then IndexProduct will be transfomed to a json representation by the invocation
+		 * Then IndexProduct will be transformed to a json representation by the invocation
 		 * of .toJSONString on IndexProduct
 		 * 
-		 * The next step will be to delegate to com.shopizer.search.SearchService.index
+		 * Then index product
 		 * searchService.index(json, "product_<LANGUAGE_CODE>_<MERCHANT_CODE>", "product");
 		 * 
 		 * example ...index(json,"product_en_default",product)
@@ -113,6 +111,10 @@ public class SearchServiceImpl implements SearchService {
 				String[] tags = description.getMetatagKeywords().split(",");
 				List<String> tagsList = Arrays.asList(tags);
 				index.setTags(tagsList);
+			}
+			
+			if(index.getTags()!=null) {
+				index.getTags().add(description.getName());
 			}
 			
 			Set<Category> categories = product.getCategories();
@@ -146,7 +148,7 @@ public class SearchServiceImpl implements SearchService {
 				searchService.deleteObject(collectionName.toString(), new StringBuilder().append(PRODUCT_INDEX_NAME).append(UNDERSCORE).append(description.getLanguage().getCode()).toString(), String.valueOf(product.getId()));
 			} catch (Exception e) {
 				LOGGER.error("Cannot delete index for product id [" + product.getId() + "], ",e);
-				//do not throw exception ??
+				//TODO do not throw exception ??
 				//throw new ServiceException("Cannot delete index for product id [" + product.getId() + "], " + e.getMessage() ,e);
 			}
 		}
@@ -170,7 +172,6 @@ public class SearchServiceImpl implements SearchService {
 			
 			StringBuilder collectionName = new StringBuilder();
 			collectionName.append(KEYWORDS_INDEX_NAME).append(UNDERSCORE).append(languageCode).append(UNDERSCORE).append(store.getCode().toLowerCase());
-			
 			
 			SearchResponse response = searchService.searchAutoComplete(collectionName.toString(), jsonString, entriesCount);
 			
