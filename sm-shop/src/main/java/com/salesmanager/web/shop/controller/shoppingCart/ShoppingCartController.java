@@ -211,7 +211,7 @@ public class ShoppingCartController {
 	 */
 	@RequestMapping(value={"/shop/addShoppingCartItem.html"}, method=RequestMethod.POST)
 	public @ResponseBody
-	String addShoppingCartItem(@RequestBody ShoppingCartItem item, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	ShoppingCart addShoppingCartItem(@RequestBody ShoppingCartItem item, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		Language language = (Language)request.getAttribute("LANGUAGE");
@@ -221,7 +221,7 @@ public class ShoppingCartController {
 		if(shoppingCart!=null) {
 			String shoppingCartCode = shoppingCart.getCode();
 			if(!StringUtils.isBlank(shoppingCartCode)) {
-				if(!item.getCode().equals(shoppingCartCode)) {
+				if(!item.getCode().equals(shoppingCartCode)) {//TODO item code pls
 					//TODO if different
 				}
 			}
@@ -314,11 +314,11 @@ public class ShoppingCartController {
 		
 		//store the shopping cart in the http session
 		request.getSession().setAttribute(Constants.SHOPPING_CART, shoppingCart);
-		AjaxResponse resp = new AjaxResponse();
-		resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+		//AjaxResponse resp = new AjaxResponse();
+		//resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+		return shoppingCart;
 		
-		
-		return resp.toJSONString();
+		//return resp.toJSONString();
 		
 		
 	}
