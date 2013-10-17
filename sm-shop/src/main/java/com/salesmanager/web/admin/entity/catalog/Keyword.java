@@ -2,6 +2,9 @@ package com.salesmanager.web.admin.entity.catalog;
 
 import java.io.Serializable;
 
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 /**
  * Post keyword from the admin
  * @author Carl Samson
@@ -15,6 +18,7 @@ public class Keyword implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private long productId;
 	private String languageCode;
+	@NotEmpty
 	private String keyword;
 	public void setProductId(long productId) {
 		this.productId = productId;
