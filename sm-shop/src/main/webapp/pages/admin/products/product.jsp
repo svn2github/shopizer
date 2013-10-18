@@ -323,6 +323,13 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                                     <span class="help-inline"><form:errors path="availability.productQuantityOrderMax" cssClass="error" /></span>
                         </div>
                   </div>
+                  
+                 <div class="control-group">
+                        	<label><s:message code="label.product.shipeable" text="Product will be shipped"/></label>
+                        	<div class="controls">
+                                    <form:checkbox path="product.shipeable" />
+                        	</div>
+                 </div>
 
 
                  <form:hidden path="availability.region" />
