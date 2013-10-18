@@ -319,11 +319,13 @@ public class InitStoreData implements InitData {
 		    product.setManufacturer(oreilley);
 		    product.setType(generalType);
 		    product.setMerchantStore(store);
+		    product.setProductShipeable(true);
 
 		    // Product description
 		    ProductDescription description = new ProductDescription();
 		    description.setName("Spring in Action");
 		    description.setLanguage(en);
+		    description.setSeUrl("Spring-in-Action");
 		    description.setProduct(product);
 
 		    product.getDescriptions().add(description);
@@ -367,12 +369,14 @@ public class InitStoreData implements InitData {
 		    product2.setManufacturer(packed);
 		    product2.setType(generalType);
 		    product2.setMerchantStore(store);
+		    product2.setProductShipeable(true);
 
 		    // Product description
 		    description = new ProductDescription();
 		    description.setName("This is Node.js");
 		    description.setLanguage(en);
 		    description.setProduct(product2);
+		    description.setSeUrl("This-is-Node-js");
 
 		    product2.getDescriptions().add(description);
 
@@ -412,12 +416,14 @@ public class InitStoreData implements InitData {
 		    product3.setManufacturer(packed);
 		    product3.setType(generalType);
 		    product3.setMerchantStore(store);
+		    product3.setProductShipeable(true);
 
 		    // Product description
 		    description = new ProductDescription();
 		    description.setName("A nice book for you");
 		    description.setLanguage(en);
 		    description.setProduct(product3);
+		    description.setSeUrl("A-nice-book-for-you");
 
 		    product3.getDescriptions().add(description);
 
@@ -457,12 +463,14 @@ public class InitStoreData implements InitData {
 		    product4.setManufacturer(packed);
 		    product4.setType(generalType);
 		    product4.setMerchantStore(store);
+		    product4.setProductShipeable(true);
 
 		    // Product description
 		    description = new ProductDescription();
 		    description.setName("Battle of the worlds");
 		    description.setLanguage(en);
 		    description.setProduct(product4);
+		    description.setSeUrl("Battle-of-the-worlds");
 
 		    product4.getDescriptions().add(description);
 
@@ -502,12 +510,14 @@ public class InitStoreData implements InitData {
 		    product5.setManufacturer(packed);
 		    product5.setType(generalType);
 		    product5.setMerchantStore(store);
+		    product5.setProductShipeable(true);
 
 		    // Product description
 		    description = new ProductDescription();
 		    description.setName("Battle of the worlds 2");
 		    description.setLanguage(en);
 		    description.setProduct(product5);
+		    description.setSeUrl("Battle-of-the-worlds-2");
 
 		    product5.getDescriptions().add(description);
 
@@ -547,12 +557,14 @@ public class InitStoreData implements InitData {
 		    product6.setManufacturer(packed);
 		    product6.setType(generalType);
 		    product6.setMerchantStore(store);
+		    product6.setProductShipeable(true);
 
 		    // Product description
 		    description = new ProductDescription();
 		    description.setName("Life book");
 		    description.setLanguage(en);
 		    description.setProduct(product6);
+		    description.setSeUrl("Life-book");
 
 		    product6.getDescriptions().add(description);
 
