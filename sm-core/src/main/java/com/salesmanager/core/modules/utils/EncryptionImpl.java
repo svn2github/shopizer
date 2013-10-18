@@ -18,15 +18,6 @@ public final class EncryptionImpl implements Encryption {
 
 
 
-
-
-	@Override
-	public String generateKey(String key) throws Exception {
-		String paddedKey = StringUtils.rightPad(key, 16, "0");
-		return paddedKey;
-	}
-
-
 	@Override
 	public String encrypt(String value) throws Exception {
 

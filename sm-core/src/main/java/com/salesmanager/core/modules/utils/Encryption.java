@@ -8,14 +8,6 @@ package com.salesmanager.core.modules.utils;
  */
 public interface Encryption {
 	
-	/**
-	 * Generates a compatible key with
-	 * padding. Validate the length
-	 * @param key
-	 * @return
-	 */
-	public String generateKey(String key) throws Exception;
-	
 
 	/**
 	 * Encrypts a string value
