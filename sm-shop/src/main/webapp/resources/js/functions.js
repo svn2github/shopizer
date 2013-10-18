@@ -46,7 +46,7 @@
 		$(".addToCart").click(function(){ 
 			
 
-			var cart = $.cookie( 'cart' );
+			//var cart = $.cookie( 'cart' );
 			//core properties
 			var sku = $(this).attr("productId");
 			var qty = '#qty-productId-'+ sku;
@@ -90,8 +90,14 @@
 			
 			//alert('product ' + sku + ' added to cart');
 			var merchantStore = getMerchantStore();
-			var cartCode = 'cart_' + merchantStore;
-			var code = $.cookie(cartCode);
+			//var cartCode = 'cart_' + merchantStore;
+			var cart = $.cookie('cart'); //should be [storecode_cartid]
+			
+			var code = new Array();
+			
+			if(cart!=null) {
+				code = cart.split('_');
+			}
 			
 			/**
 			 * shopping cart code identifier is <cart>_<storeId>
@@ -101,7 +107,7 @@
 			//cart item
 			var prefix = "{";
 			var suffix = "}";
-			var shoppingCartItem = '"code":' + code + ',';
+			var shoppingCartItem = '"code":' + code[1] + ',';
 			var shoppingCartItem = shoppingCartItem + '"quantity":' + quantity + ',';
 			var shoppingCartItem = shoppingCartItem + '"productId":' + sku;
 			
@@ -143,13 +149,15 @@
 				 },
 				 success: function(cart) {  
 				     //alert("Success: " + cart);
-				     $.cookie(code,cart.code, { expires: 360 ,path: '/'});
+				     cart = merchantStore + '_' + cart.code;
+				     $.cookie('cart',cart, { expires: 360 ,path: '/'});
 				     if(cart.message!=null) { 
 				    	 //TODO error message
 				     } else { 
+				    	 
 				    	 var labelItem = '<s:message code="label.generic.item" text="item" />';
 				    	 if(cart.quantity>1) { 
-				    		 labelItem = '<s:message code="label.generic.items" text="item"s />';
+				    		 labelItem = '<s:message code="label.generic.items" text="items" />';
 				    	 }
 				    	 $("#cartinfo").html('<span id="cartqty">(' + cart.quantity + ' ' + labelItem + ')</span><span id="cartprice">' + cart.total + '</span>');
 				     }
