@@ -6,7 +6,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class EncryptionImpl implements Encryption {
+public final class EncryptionImpl implements Encryption {
 	
 	private final static String IV_P = "fedcba9876543210";
 	private final static String KEY_SPEC = "AES";
