@@ -88,7 +88,7 @@
 				});
 			}
 			
-			alert('product ' + sku + ' added to cart');
+			//alert('product ' + sku + ' added to cart');
 			var merchantStore = getMerchantStore();
 			var cartCode = 'cart_' + merchantStore;
 			var code = $.cookie(cartCode);
@@ -142,7 +142,7 @@
 				    alert('failure'); 
 				 },
 				 success: function(cart) {  
-				     alert("Success: " + cart);
+				     //alert("Success: " + cart);
 				     $.cookie(code,cart.code, { expires: 360 ,path: '/'});
 				     if(cart.message!=null) { 
 				    	 //TODO error message
@@ -167,6 +167,7 @@
 							item = item + '<td>' + shoppingCartItem.price + '</td>';
 							item = item + '<td><button productid="' + shoppingCartItem.productId + '" class="close removeProductIcon">x</button></td>';
 							item = item + '</tr>';
+							alert(item);
 							$('#shoppingcartProducts').append(item);
 					 }
 				 } 

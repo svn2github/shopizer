@@ -31,6 +31,7 @@
 	var mode = options.mode;
 	var filter = null;
 	var select = null;
+	var minlength = options.minlength;
 	
 
 	if ($.isFunction(options.filter)) {
@@ -43,7 +44,7 @@
 	var id = obj.attr('id');
 	
 	var search = $('#' + id).val().toLowerCase(); 
-	
+	alert(search.length);
 	if(search.length<minlength) {
 		return;
 	}
