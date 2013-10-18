@@ -120,6 +120,10 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 
 	@Column(name = "PRODUCT_VIRTUAL")
 	private boolean productVirtual = false;
+	
+	@Column(name = "PRODUCT_SHIP")
+	private boolean productShipeable = false;
+
 
 	@Column(name = "PRODUCT_FREE")
 	private boolean productIsFree;
@@ -380,6 +384,15 @@ public class Product extends SalesManagerEntity<Long, Product> implements Audita
 	public boolean isAvailable() {
 		return available;
 	}
+	
+	public boolean isProductShipeable() {
+		return productShipeable;
+	}
+
+	public void setProductShipeable(boolean productShipeable) {
+		this.productShipeable = productShipeable;
+	}
+
 	
 	public ProductDescription getProductDescription() {
 		if(this.getDescriptions()!=null && this.getDescriptions().size()>0) {

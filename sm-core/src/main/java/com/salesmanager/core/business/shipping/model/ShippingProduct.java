@@ -6,6 +6,7 @@ public class ShippingProduct {
 	
 	public ShippingProduct(Product product) {
 		this.product = product;
+
 	}
 	
 	private int quantity = 1;
