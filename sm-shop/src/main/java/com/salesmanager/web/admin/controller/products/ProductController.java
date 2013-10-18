@@ -377,7 +377,7 @@ public class ProductController {
 				return "redirect:/admin/products/products.html";
 			}
 			
-
+			//copy properties
 			newProduct.setSku(product.getProduct().getSku());
 			newProduct.setAvailable(product.getProduct().isAvailable());
 			newProduct.setDateAvailable(date);
@@ -387,6 +387,8 @@ public class ProductController {
 			newProduct.setProductLength(product.getProduct().getProductLength());
 			newProduct.setProductWeight(product.getProduct().getProductWeight());
 			newProduct.setProductWidth(product.getProduct().getProductWidth());
+			newProduct.setProductVirtual(product.getProduct().isProductVirtual());
+			newProduct.setProductShipeable(product.getProduct().isProductShipeable());
 
 			Set<ProductAvailability> avails = newProduct.getAvailabilities();
 			if(avails !=null && avails.size()>0) {
@@ -692,8 +694,7 @@ public class ProductController {
 		
 		
 
-		
-		
+		//copy
 		newProduct.setCategories(dbProduct.getCategories());
 		newProduct.setDateAvailable(dbProduct.getDateAvailable());
 		newProduct.setManufacturer(dbProduct.getManufacturer());
@@ -708,6 +709,8 @@ public class ProductController {
 		newProduct.setTaxClass(dbProduct.getTaxClass());
 		newProduct.setType(dbProduct.getType());
 		newProduct.setSku(dbProduct.getSku());
+		newProduct.setProductVirtual(dbProduct.isProductVirtual());
+		newProduct.setProductShipeable(dbProduct.isProductShipeable());
 		
 		productService.saveOrUpdate(newProduct);
 		
@@ -718,8 +721,6 @@ public class ProductController {
 		}
 		
 		product.setProduct(newProduct);
-		
-
 		model.addAttribute("product", product);
 		model.addAttribute("success","success");
 		

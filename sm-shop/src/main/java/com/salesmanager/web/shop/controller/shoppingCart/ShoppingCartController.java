@@ -142,12 +142,10 @@ public class ShoppingCartController {
 	        cart=shoppingCartService.getByCustomer(customer);
 	    }
 	    else{
-	    	 
-	    	  
+
 	    	  ShoppingCart shoppingCart =getShoppingCartFromSession(request);
 	    	  cart = shoppingCartService.getByCode(shoppingCart.getCode(), store);
-	    	
-	    	  
+ 
 	    }
 	    
 	    if(cart !=null){
