@@ -31,6 +31,8 @@ import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.catalog.Keyword;
@@ -135,7 +137,7 @@ public class ProductKeywordsController {
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/product/removeKeyword.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String removeKeyword(@RequestParam("fileId") long fileId, HttpServletRequest request, HttpServletResponse response, Locale locale) {
+	public @ResponseBody String removeKeyword(@RequestParam("id") long productId, HttpServletRequest request, HttpServletResponse response, Locale locale) {
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
@@ -156,6 +158,95 @@ public class ProductKeywordsController {
 		
 		return returnString;
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Secured("PRODUCTS")
+	@RequestMapping(value="/admin/products/product/keywords/paging.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String pageKeywords(HttpServletRequest request, HttpServletResponse response) {
+		
+		String sProductId = request.getParameter("productId");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		Language language = (Language)request.getAttribute("LANGUAGE");
+		
+		
+		AjaxResponse resp = new AjaxResponse();
+		
+		Long productId;
+		Product product = null;
+		
+		try {
+			productId = Long.parseLong(sProductId);
+		} catch (Exception e) {
+			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorString("Product id is not valid");
+			String returnString = resp.toJSONString();
+			return returnString;
+		}
+
+		
+		try {
+
+			product = productService.getById(productId);
+
+			
+			if(product==null) {
+				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+				resp.setErrorString("Product id is not valid");
+				String returnString = resp.toJSONString();
+				return returnString;
+			}
+			
+			if(product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+				resp.setErrorString("Product id is not valid");
+				String returnString = resp.toJSONString();
+				return returnString;
+			}
+			
+			
+			@SuppressWarnings("rawtypes")
+			Map entry = new HashMap();
+
+			Set<ProductDescription> descriptions = product.getDescriptions();
+			for(ProductDescription description : descriptions) {
+				
+				
+				Language lang = description.getLanguage();
+				entry.put("language", lang.getCode());
+				
+				String keywords = description.getMetatagKeywords();
+				if(!StringUtils.isBlank(keywords)) {
+					
+					String splitKeywords[] = keywords.split(",");
+					for(int i = 0; i < splitKeywords.length; i++) {
+						
+						String keyword = splitKeywords[i];
+						StringBuilder code = new StringBuilder();
+						code.append(i).append(",").append(lang);
+						
+						entry.put("code", code.toString());
+						entry.put("keyword", keyword);
+						
+					}
+				}
+			}
+
+			resp.addDataEntry(entry);
+
+			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_SUCCESS);
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while paging products", e);
+			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		return returnString;
+	}
+
 	
 	
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {
