@@ -7,7 +7,7 @@
 
 
     <jsp:include page="/resources/js/functions.jsp" />
-    <script src="<c:url value="/resources/js/bootstrap/jquery.js" />"></script>
+    <script src="<c:url value="/resources/templates/bootstrap/jquery/jquery-1.10.2.min.js" />"></script>
     <script src="<c:url value="/resources/js/functions.js" />"></script>
     <script src="<c:url value="/resources/js/jquery-cookie.js" />"></script>
     

@@ -10,16 +10,38 @@ response.setDateHeader ("Expires", -1);
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %>
-<%@ taglib uri="/WEB-INF/shopizer-functions.tld" prefix="display" %>  
+<%@ taglib uri="/WEB-INF/shopizer-functions.tld" prefix="display" %> 
+
+ <script src="<c:url value="/resources/js/search.autocomplete.js" />"></script> 
 
 <script type="text/javascript">
 
 $(document).ready(function() { 
 
-	var autoCompleteUrl = '/shop/services/search/' + getMerchantStoreCode() + '/' + getLanguageCode() + '/autocomplete.html';
-	$('#search').searchAutocomplete({
-		url: '<c:url value="/shop/services/search/{store}/{language}/autocomplete.html"/>';
-     });
+	//var autoCompleteUrl = '/shop/services/search/' + getMerchantStoreCode() + '/' + getLanguageCode() + '/autocomplete.html';
+	//$('#search').searchAutocomplete({
+	//	url: '<c:url value="/shop/services/search/${requestScope.MERCHANT_STORE.code}/${requestScope.LANGUAGE.code}/autocomplete.html"/>'
+    // });
+	
+	//jQuery('#search').typeahead({
+	    //source : function(query, process) {
+	    	//alert(query);
+	    	//alert(response);
+	        //jQuery.ajax({
+	        //    url : "urltobefetched",
+	        //    type : 'GET',
+	        //    data : {
+	        //        "query" : query
+	        //    },
+	        //    dataType : 'json',
+	        //    success : function(json) {
+	        //        process(json);
+	        //    }
+	        //});
+	    //},
+	    //minLength : 1,
+	//});
+	
 
 });
 
