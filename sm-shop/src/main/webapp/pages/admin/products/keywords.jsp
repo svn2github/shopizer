@@ -66,7 +66,7 @@
 				 <br/>
 				 <!-- Listing grid include -->
 				 
-				 <c:set value="/admin/products/keywords/paging.html" var="pagingUrl" scope="request"/>
+				 <c:set value="/admin/products/keywords/paging.html?id=${product.id}" var="pagingUrl" scope="request"/>
 				 <c:set value="/admin/products/keywords/remove.html?id=${product.id}" var="removeUrl" scope="request"/>
 				 <c:set value="/admin/products/keywords/list.html" var="afterRemoveUrl" scope="request"/>
 				 <c:set var="entityId" value="code" scope="request"/>

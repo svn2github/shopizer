@@ -15,6 +15,7 @@
 				    	<li><a href="<c:url value="/admin/products/images/list.html" />?id=<c:out value="${productId}"/>"><s:message code="menu.catalogue-products-images" text="Product images" /></a></li>
 				    	<li><a href="<c:url value="/admin/products/reviews.html" />?id=<c:out value="${productId}"/>"><s:message code="label.product.customer.reviews" text="Reviews" /></a></li>
 				    	<li><a href="<c:url value="/admin/catalogue/related/list.html" />?id=<c:out value="${productId}"/>"><s:message code="label.product.related.title" text="Related items" /></a></li>
+				    	<li><a href="<c:url value="/admin/products/product/keywords.html" />?id=<c:out value="${productId}"/>"><s:message code="label.product.searchkeywords" text="Search keywords" /></a></li>
 				    	<li><a href="<c:url value="/admin/products/digitalProduct.html" />?id=<c:out value="${productId}"/>"><s:message code="label.product.digitalproduct" text="Digital product" /></a></li>
 				    	<li><a href="<c:url value="/admin/products/displayProductToCategories.html" />?id=<c:out value="${productId}"/>"><s:message code="menu.product.category" text="Associate to categories" /></a></li>
                      </ul>
