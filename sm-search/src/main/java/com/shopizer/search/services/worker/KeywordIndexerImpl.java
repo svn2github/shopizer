@@ -11,12 +11,14 @@ import java.util.StringTokenizer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+
 import com.shopizer.search.services.IndexKeywordRequest;
 import com.shopizer.search.services.field.BooleanField;
 import com.shopizer.search.services.field.DoubleField;
 import com.shopizer.search.services.field.Field;
 import com.shopizer.search.services.field.IntegerField;
 import com.shopizer.search.services.field.ListField;
+import com.shopizer.search.services.field.LongField;
 import com.shopizer.search.services.field.StringField;
 import com.shopizer.search.services.impl.SearchServiceImpl;
 import com.shopizer.search.utils.CustomIndexConfiguration;
@@ -306,6 +308,15 @@ public class KeywordIndexerImpl implements IndexWorker {
 									f.setName(fieldName);
 									kr.getFilters().add(f);
 									
+								} else if(fieldType.equals("Long")) {
+									
+									//String s = (String)indexData.get(fieldName);
+									Long ooo = (Long)indexData.get(fieldName);
+									f = new LongField();
+									f.setValue(ooo);
+									f.setName(fieldName);
+									kr.getFilters().add(f);
+	
 								} else if(fieldType.equals("Double")) {
 									
 									//String s = (String)indexData.get(fieldName);
