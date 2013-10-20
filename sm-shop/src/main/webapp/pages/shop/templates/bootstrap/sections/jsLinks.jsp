@@ -16,7 +16,6 @@
     <script src="<c:url value="/resources/templates/bootstrap/js/bootstrap-popover.js" />"></script>
     <script src="<c:url value="/resources/templates/bootstrap/js/bootstrap-collapse.js" />"></script>
     <script src="<c:url value="/resources/templates/bootstrap/js/bootstrap-carousel.js" />"></script>
-    <script src="<c:url value="/resources/templates/bootstrap/js/bootstrap-typeahead.js" />"></script>
 
 
         <script type="text/javascript">

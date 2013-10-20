@@ -121,6 +121,10 @@
   		<put-attribute name="body" value="/pages/admin/products/digitalProduct.jsp" /> 
   	</definition>
   	
+  	<definition name="admin-products-keywords" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/products/keywords.jsp" /> 
+  	</definition>
+  	
   	<definition name="admin-products-images" template="/layout/admin/layout.jsp">
   		<put-attribute name="body" value="/pages/admin/products/productImages.jsp" /> 
   	</definition>

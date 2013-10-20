@@ -53,9 +53,7 @@
     								showFilterEditor: true,
     								filterOnKeypress: true,
 									dataFetchMode:"paged",
-									
-									
-									canEdit:true,
+									canEdit:<c:choose><c:when test="${canEdit!=null}"><c:out value="${canEdit}" /></c:when><c:otherwise>true</c:otherwise></c:choose>,
 									editByCell: true,
 									editEvent: "click",
 

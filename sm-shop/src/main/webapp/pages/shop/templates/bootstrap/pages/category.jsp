@@ -64,7 +64,9 @@ response.setDateHeader ("Expires", -1);
 					    	productHtml = productHtml + '<div class="product-box"><a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html">';
 					    	productHtml = productHtml + '<h4 class="name">' + productList.products[i].name +'</h4></a>';
 					    	productHtml = productHtml + '<h3 class="number">' + productList.products[i].productPrice +'</h3>';
-					    	productHtml = productHtml + '<a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html"><img src="<c:url value="/"/>' + productList.products[i].imageUrl +'"></a>';
+					    	if(productList.products[i].imageUrl!=null) {
+					    		productHtml = productHtml + '<a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html"><img src="<c:url value="/"/>' + productList.products[i].imageUrl +'"></a>';
+					    	}
 					    	productHtml = productHtml + '<div class="bottom"><a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html" class="view"><s:message code="button.label.view" text="View" /></a> / <a productid="' + productList.products[i].id + '" href="#" class="addToCart"><s:message code="button.label.addToCart" text="Add to cart" /></a></div></div></li>';
 					    	//displayProducts[i] = productHtml;
 					    	$('#productsContainer').append(productHtml);
@@ -132,7 +134,7 @@ response.setDateHeader ("Expires", -1);
         	<ul id="productsContainer" class="thumbnails product-list">
 
 			</ul>
-			<nav id="button_nav" style="text-align:center;">
+			<nav id="button_nav" style="text-align:center;display:none;">
 				<button class="btn btn-large" style="width:400px;" onClick="loadProducts();"><s:message code="label.product.moreitems" text="Display more items" />...</button>
 			</nav>
 			<span id="end_nav" style="display:none;"><s:message code="label.product.nomoreitems" text="No more items to be displayed" /></span>

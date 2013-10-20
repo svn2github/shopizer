@@ -275,6 +275,8 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                          <form:hidden path="descriptions[${counter.index}].language.id" />
                          <form:hidden path="descriptions[${counter.index}].language.code" />
 						 <form:hidden path="descriptions[${counter.index}].id" />
+						 <form:hidden path="descriptions[${counter.index}].metatagKeywords" />
+						 <form:hidden path="descriptions[${counter.index}].productExternalDl" />
 
                  
 
@@ -327,7 +329,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                  <div class="control-group">
                         	<label><s:message code="label.product.shipeable" text="Product will be shipped"/></label>
                         	<div class="controls">
-                                    <form:checkbox path="product.shipeable" />
+                                    <form:checkbox path="product.productShipeable" />
                         	</div>
                  </div>
 
