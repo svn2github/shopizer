@@ -6,10 +6,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -18,7 +20,8 @@ import com.salesmanager.core.business.search.model.SearchKeywords;
 import com.salesmanager.core.business.search.model.SearchResponse;
 import com.salesmanager.core.business.search.service.SearchService;
 import com.salesmanager.web.constants.Constants;
-
+import com.salesmanager.web.shop.model.search.AutoCompleteRequest;
+@Controller
 public class SearchController {
 	
 	@Autowired
@@ -46,7 +49,7 @@ public class SearchController {
 	 */
 	@RequestMapping("/shop/services/search/{store}/{language}/autocomplete.html")
 	@ResponseBody
-	public SearchKeywords autocomplete(@RequestBody String json, @PathVariable String store, @PathVariable final String language, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public SearchKeywords autocomplete(@RequestParam("q") String query, @PathVariable String store, @PathVariable final String language, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 	
 		
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
@@ -67,7 +70,9 @@ public class SearchController {
 			return null;
 		}
 		
-		SearchKeywords keywords = searchService.searchForKeywords(merchantStore, language, json, AUTOCOMPLETE_ENTRIES_COUNT);
+		AutoCompleteRequest req = new AutoCompleteRequest(store,language);
+		
+		SearchKeywords keywords = searchService.searchForKeywords(req.getCollectionName(), req.toJSONString(query), AUTOCOMPLETE_ENTRIES_COUNT);
 		return keywords;
 		
 	}

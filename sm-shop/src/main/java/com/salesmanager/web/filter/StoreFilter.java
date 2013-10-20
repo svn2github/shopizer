@@ -117,6 +117,12 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 
 			request.setCharacterEncoding("UTF-8");
 			
+			/*****
+			 * where is my stuff
+			 */
+			String currentPath = System.getProperty("user.dir");
+			System.out.println(currentPath);
+			
 			//Language
 			//TODO Locale to language
 			Language language = (Language) request.getSession().getAttribute(Constants.LANGUAGE);
@@ -241,10 +247,16 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				if(contents!=null) {
 					for(Content content : contents) {
 						if(content.getCode().equals(Constants.CONTENT_LANDING_PAGE)) {
-							pageInformation.setPageTitle(content.getDescriptions().get(0).getMetatagTitle());
-							pageInformation.setPageDescription(content.getDescriptions().get(0).getMetatagDescription());
-							pageInformation.setPageKeywords(content.getDescriptions().get(0).getMetatagKeywords());
-							break;
+							
+							List<ContentDescription> descriptions = content.getDescriptions();
+							for(ContentDescription contentDescription : descriptions) {
+								if(contentDescription.getLanguage().getCode().equals(language.getCode())) {
+									pageInformation.setPageTitle(contentDescription.getName());
+									pageInformation.setPageDescription(contentDescription.getMetatagDescription());
+									pageInformation.setPageKeywords(contentDescription.getMetatagKeywords());
+									break;
+								}
+							}
 						}
 					}
 				}

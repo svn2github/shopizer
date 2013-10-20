@@ -94,7 +94,7 @@ public class ShoppingCategoryController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/shop/category/{friendlyUrl}.html")
-	public String displayCategoryNoReference(@PathVariable final String friendlyUrl, @PathVariable final String ref, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	public String displayCategoryNoReference(@PathVariable final String friendlyUrl, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		
 		

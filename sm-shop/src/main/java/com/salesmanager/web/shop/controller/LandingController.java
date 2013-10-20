@@ -87,7 +87,7 @@ public class LandingController {
 			
 			
 			PageInformation pageInformation = new PageInformation();
-			pageInformation.setPageTitle(description.getMetatagTitle());
+			pageInformation.setPageTitle(description.getName());
 			pageInformation.setPageDescription(description.getMetatagDescription());
 			pageInformation.setPageKeywords(description.getMetatagKeywords());
 			

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -54,7 +55,7 @@ public class ProductKeywordsController {
 
 	@Secured("PRODUCTS")
 	@RequestMapping(value={"/admin/products/product/keywords.html"}, method=RequestMethod.GET)
-	public String getDigitalProduct(@RequestParam("id") long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String displayKeywords(@RequestParam("id") long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		this.setMenu(model, request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
@@ -66,6 +67,8 @@ public class ProductKeywordsController {
 		}
 		
 		model.addAttribute("store", store);
+		model.addAttribute("product", product);
+		model.addAttribute("productKeyword", new Keyword());
 
 		return ControllerConstants.Tiles.Product.productKeywords;
 		
@@ -73,12 +76,16 @@ public class ProductKeywordsController {
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/product/addKeyword.html", method=RequestMethod.POST)
-	public String addKeyword(@Valid @RequestParam("productKeyword") Keyword keyword, final BindingResult bindingResult,final Model model, final HttpServletRequest request, Locale locale) throws Exception{
+	public String addKeyword(@Valid @ModelAttribute("productKeyword") Keyword keyword, final BindingResult bindingResult,final Model model, final HttpServletRequest request, Locale locale) throws Exception{
 		this.setMenu(model, request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
 		
 		Product product = productService.getById(keyword.getProductId());
+		
+		model.addAttribute("store", store);
+		model.addAttribute("product", product);
+		model.addAttribute("productKeyword", new Keyword());
 		
 		if(product==null || product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 			return "redirect:/admin/products/products.html";
@@ -90,6 +97,7 @@ public class ProductKeywordsController {
 			
 			if(description.getLanguage().getCode().equals(keyword.getLanguageCode())) {
 				productDescription = description;
+				break;
 			}
 			
 		}
@@ -105,7 +113,7 @@ public class ProductKeywordsController {
 		List<String> keyWordsList = null;
 		if(!StringUtils.isBlank(keywords)) {
 			String[] splits = keywords.split(",");
-			keyWordsList = Arrays.asList(splits);
+			keyWordsList = new ArrayList(Arrays.asList(splits));
 		}
 		
 		if(keyWordsList==null) {
@@ -131,6 +139,8 @@ public class ProductKeywordsController {
 		product.setDescriptions(updatedDescriptions);
 		
 		productService.saveOrUpdate(product);
+		model.addAttribute("success","success");
+
 		
         return ControllerConstants.Tiles.Product.productKeywords;
 	}
@@ -139,6 +149,8 @@ public class ProductKeywordsController {
 	@RequestMapping(value="/admin/products/product/removeKeyword.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeKeyword(@RequestParam("id") long productId, HttpServletRequest request, HttpServletResponse response, Locale locale) {
 
+		
+		String code = request.getParameter("code");
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		AjaxResponse resp = new AjaxResponse();
@@ -165,7 +177,7 @@ public class ProductKeywordsController {
 	@RequestMapping(value="/admin/products/product/keywords/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageKeywords(HttpServletRequest request, HttpServletResponse response) {
 		
-		String sProductId = request.getParameter("productId");
+		String sProductId = request.getParameter("id");
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		Language language = (Language)request.getAttribute("LANGUAGE");
@@ -207,33 +219,39 @@ public class ProductKeywordsController {
 			
 			
 			@SuppressWarnings("rawtypes")
-			Map entry = new HashMap();
+			
 
 			Set<ProductDescription> descriptions = product.getDescriptions();
+			int i = 0;
 			for(ProductDescription description : descriptions) {
 				
 				
 				Language lang = description.getLanguage();
-				entry.put("language", lang.getCode());
+				
 				
 				String keywords = description.getMetatagKeywords();
 				if(!StringUtils.isBlank(keywords)) {
 					
 					String splitKeywords[] = keywords.split(",");
-					for(int i = 0; i < splitKeywords.length; i++) {
-						
-						String keyword = splitKeywords[i];
+					for(int j = 0; j < splitKeywords.length; j++) {
+						Map entry = new HashMap();
+						entry.put("language", lang.getCode());
+						String keyword = splitKeywords[j];
 						StringBuilder code = new StringBuilder();
-						code.append(i).append(",").append(lang);
+						code.append(j).append(",").append(lang.getCode());
 						
 						entry.put("code", code.toString());
 						entry.put("keyword", keyword);
+						resp.addDataEntry(entry);
+						i++;
 						
 					}
+					
 				}
+				
 			}
 
-			resp.addDataEntry(entry);
+			
 
 			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_SUCCESS);
 		
