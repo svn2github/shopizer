@@ -109,13 +109,10 @@ public class SearchServiceImpl implements SearchService {
 			index.setHighlight(description.getProductHighlight());
 			if(!StringUtils.isBlank(description.getMetatagKeywords())){
 				String[] tags = description.getMetatagKeywords().split(",");
-				List<String> tagsList = Arrays.asList(tags);
+				List<String> tagsList = new ArrayList(Arrays.asList(tags));
 				index.setTags(tagsList);
 			}
-			
-			if(index.getTags()!=null) {
-				index.getTags().add(description.getName());
-			}
+
 			
 			Set<Category> categories = product.getCategories();
 			if(!CollectionUtils.isEmpty(categories)) {
@@ -156,7 +153,7 @@ public class SearchServiceImpl implements SearchService {
 	}
 	
 	@Override
-	public SearchKeywords searchForKeywords(MerchantStore store, String languageCode, String jsonString, int entriesCount) throws ServiceException {
+	public SearchKeywords searchForKeywords(String collectionName, String jsonString, int entriesCount) throws ServiceException {
 		
 		/**
 		 * 	$('#search').searchAutocomplete({
@@ -170,10 +167,10 @@ public class SearchServiceImpl implements SearchService {
      		
 		try {
 			
-			StringBuilder collectionName = new StringBuilder();
-			collectionName.append(KEYWORDS_INDEX_NAME).append(UNDERSCORE).append(languageCode).append(UNDERSCORE).append(store.getCode().toLowerCase());
+			//StringBuilder collectionName = new StringBuilder();
+			//collectionName.append(KEYWORDS_INDEX_NAME).append(UNDERSCORE).append(languageCode).append(UNDERSCORE).append(store.getCode().toLowerCase());
 			
-			SearchResponse response = searchService.searchAutoComplete(collectionName.toString(), jsonString, entriesCount);
+			SearchResponse response = searchService.searchAutoComplete(collectionName, jsonString, entriesCount);
 			
 			SearchKeywords keywords = new SearchKeywords();
 			keywords.setKeywords(Arrays.asList(response.getInlineSearchList()));

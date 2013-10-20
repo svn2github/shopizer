@@ -24,7 +24,7 @@ public class ProductRelationshipDaoImpl extends SalesManagerEntityDaoImpl<Long, 
 		//QDSL cannot interpret the following query, that is why it is in native format
 		
 		StringBuilder qs = new StringBuilder();
-		qs.append("select pr from ProductRelationship as pr ");
+		qs.append("select distinct pr from ProductRelationship as pr ");
 		qs.append("left join fetch pr.product p ");
 		qs.append("join fetch pr.relatedProduct rp ");
 		qs.append("left join fetch rp.descriptions rpd ");
@@ -58,7 +58,7 @@ public class ProductRelationshipDaoImpl extends SalesManagerEntityDaoImpl<Long, 
 		//QDSL cannot interpret the following query, that is why it is in native format
 		
 		StringBuilder qs = new StringBuilder();
-		qs.append("select pr from ProductRelationship as pr ");
+		qs.append("select distinct pr from ProductRelationship as pr ");
 		qs.append("left join fetch pr.product p ");
 		qs.append("join fetch pr.relatedProduct rp ");
 		
@@ -100,7 +100,7 @@ public class ProductRelationshipDaoImpl extends SalesManagerEntityDaoImpl<Long, 
 		//QDSL cannot interpret the following query, that is why it is in native format
 		
 		StringBuilder qs = new StringBuilder();
-		qs.append("select pr from ProductRelationship as pr ");
+		qs.append("select distinct pr from ProductRelationship as pr ");
 		qs.append("left join fetch pr.product p ");
 		qs.append("left join fetch pr.relatedProduct rp ");
 		
@@ -177,7 +177,7 @@ public class ProductRelationshipDaoImpl extends SalesManagerEntityDaoImpl<Long, 
 		//QDSL cannot interpret the following query, that is why it is in native format
 		
 		StringBuilder qs = new StringBuilder();
-		qs.append("select pr from ProductRelationship as pr ");
+		qs.append("select distinct pr from ProductRelationship as pr ");
 		qs.append("left join fetch pr.product p ");
 		qs.append("join fetch pr.relatedProduct rp ");
 		qs.append("left join fetch rp.descriptions rpd ");

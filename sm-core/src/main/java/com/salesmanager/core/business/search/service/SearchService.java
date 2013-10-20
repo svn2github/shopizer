@@ -29,14 +29,13 @@ public interface SearchService {
 	/**
 	 * Similar keywords based on a a series of characters. Used in the auto-complete
 	 * functionality
-	 * @param store
-	 * @param languageCode
+	 * @param collectionName
 	 * @param jsonString
 	 * @param entriesCount
 	 * @return
 	 * @throws ServiceException
 	 */
-	SearchKeywords searchForKeywords(MerchantStore store, String languageCode,
+	SearchKeywords searchForKeywords(String collectionName,
 			String jsonString, int entriesCount) throws ServiceException;
 
 	/**
