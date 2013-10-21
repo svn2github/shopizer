@@ -32,7 +32,7 @@ public class TestSearchKeywords {
 	@Test
 	public void testSearchKeywords() throws Exception {
 		
-		String json="{\"wildcard\":{\"keyword\":\"S*\"}}";
+		String json="{\"wildcard\":{\"keyword\":\"s*\"}}";
 		
 		//String json ="{\"query\":{\"filtered\":{\"query\":{\"text\":{\"_all\":\"beach\"}},\"filter\":{\"numeric_range\":{\"age\":{\"from\":\"22\",\"to\":\"45\",\"include_lower\":true,\"include_upper\":true}}}}},\"highlight\":{\"fields\":{\"description\":{}}},\"facets\":{\"tags\":{\"terms\":{\"field\":\"tags\"}}}}";
 
