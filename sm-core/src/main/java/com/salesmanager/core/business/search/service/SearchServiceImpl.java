@@ -284,6 +284,7 @@ public class SearchServiceImpl implements SearchService {
 			
 			
 			SearchRequest request = new SearchRequest();
+			request.setCollection(collectionName.toString());
 			request.setSize(entriesCount);
 			request.setStart(startIndex);
 			
