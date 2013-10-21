@@ -139,11 +139,13 @@
 				<ref bean="field2" />
 			</list>
 		</property>
+		<!-- NO FILTERS
 		<property name="filters">
 			<list>
 				<ref bean="filter1" />
 			</list>
 		</property>
+		 -->
 	</bean>
 
 
@@ -156,13 +158,13 @@
 				<ref bean="field2" />
 			</list>
 		</property>
+		<!-- NO FILTERS
 		<property name="filters">
-			<!--
 			<list>
 				<ref bean="filter1" />
 			</list>
-			-->
 		</property>
+		-->
 	</bean>	
 	
 	
