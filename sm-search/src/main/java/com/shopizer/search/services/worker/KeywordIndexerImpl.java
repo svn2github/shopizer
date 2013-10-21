@@ -89,54 +89,7 @@ public class KeywordIndexerImpl implements IndexWorker {
 		}
 		
 		
-		
-/*		try {
-			//PropertiesConfiguration config = new PropertiesConfiguration("personalization.properties");
-			//config.setReloadingStrategy(new FileChangedReloadingStrategy());
-			Config config = Config.getInstance();
-			Configuration configuration = config.getConfiguration();
-			
-			//indexes
-			List kw = configuration.getList("index.keywords.field");
-			if(kw!=null && kw.size()>0) {
-				
-				for(Object o : kw) {
-					
-					String fieldName = (String)o;
-					
-					String fieldType = configuration.getString("index.keywords.type." + fieldName);
-					if(fieldType==null) {
-						fieldType = "String";
-					}
-					keyWordsToIndex = new HashMap();
-					keyWordsToIndex.put(fieldName, fieldType);
-				}
-				
-			}
-			
-			//fields
-			List fields = configuration.getList("filter.keywords.field");
-			if(fields!=null && fields.size()>0) {
-				
-				for(Object o : fields) {
-					
-					String fieldName = (String)o;
-					
-					String fieldType = configuration.getString("filter.keywords.type." + fieldName);
-					if(fieldType==null) {
-						fieldType = "String";
-					}
-					fieldsToAdd = new HashMap();
-					fieldsToAdd.put(fieldName, fieldType);
-				}
-				
-			}
-			
-			collectionName = configuration.getString("index.keywords.collection.name");
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}*/
 		
 	}
 

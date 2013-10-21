@@ -36,70 +36,17 @@ public class SearchService {
 	@Autowired
 	private SearchWorkflow searchWorkflow;
 
-/*	//loads configuration
-	static {
-		try {
-			//PropertiesConfiguration config = new PropertiesConfiguration("personalization.properties");
-			//config.setReloadingStrategy(new FileChangedReloadingStrategy());
-			Config config = Config.getInstance();
-			indexWorkflow = config.getConfiguration().getList("search.indexer.flow");
-			//indexWorkflow = config.getList("search.indexer.flow");
-			
-			//insert metadata for Object index
-			List metadataList = config.getConfiguration().getList("index.collection.name");
-			if(metadataList!=null) {
-				SearchServiceImpl service = new SearchServiceImpl();
-				for(Object o : metadataList) {
-					
-					String coll = (String)o;
-					//get metadata (will be taken from file)
-					//String metadata = config.getConfiguration().getString("index.collection.indice." + coll);
-					
-					
-					String metadata = FileUtil.readFileAsString(coll + ".json");
-					String object = config.getConfiguration().getString("index.collection." + coll+ ".object");
-					if(!StringUtils.isBlank(metadata) && !StringUtils.isBlank(object)) {
-						
-						service.createIndice(metadata, coll, object);
-						
-					}
-				}
-			}
-			searchWorkflow = config.getConfiguration().getList("search.flow");
 
-			
-		} catch (Exception e) {
-			log.error("****************************************");
-			log.error(e);
-			log.error("****************************************");
-		}
-		
-	}*/
 	
-	
-	public void deleteObject(String collection, String object, String id) throws Exception {
-		
-		String name = new StringBuilder().append("delete-").append(object).append("-workflow").toString();
-		
-
-		
+	public void deleteObject(String collection, String object, String id) throws Exception {	
 		deleteWorkflow.deleteObject(collection, object, id);
-		
 		
 	}
 	
 	
 	public com.shopizer.search.services.GetResponse getObject(String collection, String object, String id) throws Exception {
 		
-
-		//GetWorkflow workflow = (GetWorkflow)BeanUtil.getBean("get-worflow");
-		
-		//if(workflow==null) {
-		//	throw new Exception("No bean defined with name get-workflow");
-		//}
-		
 		return getWorkflow.getObject(collection,object,id);
-
 	}
 	
 	/**
@@ -161,33 +108,7 @@ public class SearchService {
 		
 	}
 	
-	/**
-	 * This method will use autocomplete search
-	 * @param collection
-	 * @param field
-	 * @param term
-	 * @param size
-	 * @return
-	 */
-/*	public ShortSearchResponse searchAutoComplete(String collection,String field,String term,int size) throws Exception {
 
-		
-		SearchServiceImpl service = new SearchServiceImpl();
-		//Collection<String> hits = service.searchInlineTerm("keywords", "value", term, size);
-		Collection<String> hits = service.searchInlineTerm(collection, field, term, size);
-		ShortSearchResponse resp = new ShortSearchResponse();
-		
-		//Object[] objectArray = hits.toArray();
-		String[] array = (String[])hits.toArray(new String[hits.size()]);
-		
-		
-		resp.setInlineSearchList(array);
-		resp.setInputSearch(term);
-	    return resp;  
-		
-		
-	}*/
-	
 	public SearchResponse searchAutoComplete(String collection,String json,int size) throws Exception {
 
 		

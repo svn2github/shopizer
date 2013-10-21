@@ -97,6 +97,10 @@ public class SearchClient {
 						//Node node = nodeBuilder().clusterName(serverConfiguration.getClusterName()).client(true).node();
 						client = node.client();
 					}
+					/** wait for ready status **/
+					client.admin().cluster().prepareHealth().setWaitForGreenStatus();
+					
+					System.out.println("****** ES client ready ********");
 					
 				} catch (Exception e) {
 					e.printStackTrace();

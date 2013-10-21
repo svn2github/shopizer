@@ -42,6 +42,7 @@ import com.shopizer.search.services.field.DoubleField;
 import com.shopizer.search.services.field.Field;
 import com.shopizer.search.services.field.IntegerField;
 import com.shopizer.search.services.field.ListField;
+import com.shopizer.search.services.field.LongField;
 import com.shopizer.search.services.field.StringField;
 import com.shopizer.search.utils.SearchClient;
 
@@ -208,6 +209,12 @@ public class SearchServiceImpl {
                     			
                     			Integer val = ((IntegerField)o).getValue();
                     			b.field(((Field)o).getName(), val.intValue());
+                    			
+                    			
+                    		} else if(o instanceof LongField) {
+                    			
+                    			Long val = ((LongField)o).getValue();
+                    			b.field(((Field)o).getName(), val.longValue());
                     			
                     			
                     		} else if(o instanceof ListField) {
@@ -488,8 +495,6 @@ public class SearchServiceImpl {
 	       
 
 			//SearchResponse searchResponse = client.prepareSearch().setQuery("{ \"term\" : { \"field1\" : \"value1_1\" }}").execute().actionGet();
-
-			
 			SearchRequestBuilder builder = searchClient.getClient().prepareSearch(collection)
 	        //.setQuery("{ \"term\" : { \"keyword\" : \"dynamic\" }}")
 			.setQuery(json)
@@ -509,7 +514,7 @@ public class SearchServiceImpl {
 	        
 	        //SearchResponse searchResponse = client.prepareSearch().setQuery("{ \"term\" : { \"field1\" : \"value1_1\" }}").execute().actionGet();
 
-	        
+
 	
 	        org.elasticsearch.action.search.SearchResponse rsp = builder.execute().actionGet();
 	        SearchHit[] docs = rsp.getHits().getHits();
@@ -609,7 +614,7 @@ public class SearchServiceImpl {
         IndexResponse response = client.prepareIndex("twitter", "tweet", "1") 
         .setSource(jsonBuilder() 
                     .startObject() 
-                        .field("user", "kimchy") 
+                        .field("user", "testuser") 
                         .field("postDate", new Date()) 
                         .field("message", "trying out Elastic Search") 
                     .endObject() 
@@ -644,7 +649,7 @@ public class SearchServiceImpl {
         .should(termQuery("content", "test3")); 
 
         QueryBuilder qb3 = filteredQuery( 
-        		termQuery("name.first", "shay"),  
+        		termQuery("name.first", "john"),  
         		rangeFilter("age") 
         		.from(23) 
         		.to(54) 
