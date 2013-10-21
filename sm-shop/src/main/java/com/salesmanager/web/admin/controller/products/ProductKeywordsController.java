@@ -158,7 +158,72 @@ public class ProductKeywordsController {
 		
 		try {
 			
+			//parse code i,lang (0,en)
+			String ids[] = code.split(",");
+			
+			String languageCode = ids[1];
+			
+			int index = Integer.parseInt(ids[0]);
+			
+			Product product = productService.getById(productId);
 
+			
+			if(product==null) {
+				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+				resp.setErrorString("Product id is not valid");
+				String returnString = resp.toJSONString();
+				return returnString;
+			}
+			
+			if(product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+				resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_FAIURE);
+				resp.setErrorString("Product id is not valid");
+				String returnString = resp.toJSONString();
+				return returnString;
+			}
+			
+			Set<ProductDescription> descriptions = product.getDescriptions();
+			Set<ProductDescription> editedDescriptions = new HashSet<ProductDescription>();
+			for(ProductDescription description : descriptions) {
+
+				Language lang = description.getLanguage();
+				if(!lang.equals(languageCode)){
+					editedDescriptions.add(description);
+					continue;
+				}
+
+				List<String> keyWordsList = new ArrayList<String>();
+	
+				
+				String keywords = description.getMetatagKeywords();
+				if(!StringUtils.isBlank(keywords)) {
+					String splitKeywords[] = keywords.split(",");
+					for(int i = 0; i < splitKeywords.length; i++) {
+						
+						if(i!=index) {
+							keyWordsList.add(splitKeywords[i]);
+						}
+						
+						
+					}
+				}
+				
+
+				
+				
+				StringBuilder kwString = new StringBuilder();
+				for(String s : keyWordsList) {
+					kwString.append(s).append(",");
+				}
+				
+				description.setMetatagKeywords(kwString.toString());
+				editedDescriptions.add(description);
+				
+			}
+			
+			product.setDescriptions(editedDescriptions);
+			productService.saveOrUpdate(product);
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 		
 		} catch (Exception e) {
 			LOGGER.error("Error while deleting product", e);
@@ -222,7 +287,7 @@ public class ProductKeywordsController {
 			
 
 			Set<ProductDescription> descriptions = product.getDescriptions();
-			int i = 0;
+
 			for(ProductDescription description : descriptions) {
 				
 				
@@ -233,17 +298,17 @@ public class ProductKeywordsController {
 				if(!StringUtils.isBlank(keywords)) {
 					
 					String splitKeywords[] = keywords.split(",");
-					for(int j = 0; j < splitKeywords.length; j++) {
+					for(int i = 0; i < splitKeywords.length; i++) {
 						Map entry = new HashMap();
 						entry.put("language", lang.getCode());
-						String keyword = splitKeywords[j];
+						String keyword = splitKeywords[i];
 						StringBuilder code = new StringBuilder();
-						code.append(j).append(",").append(lang.getCode());
+						code.append(i).append(",").append(lang.getCode());
 						
 						entry.put("code", code.toString());
 						entry.put("keyword", keyword);
 						resp.addDataEntry(entry);
-						i++;
+	
 						
 					}
 					
