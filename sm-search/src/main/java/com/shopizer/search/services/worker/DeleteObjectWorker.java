@@ -11,4 +11,7 @@ public interface DeleteObjectWorker {
 	
 	public void deleteObject(SearchClient client,String collection, String object, String id, ExecutionContext context) throws Exception;
 
+	void deleteObject(SearchClient client, String collection, String id)
+			throws Exception;
+
 }

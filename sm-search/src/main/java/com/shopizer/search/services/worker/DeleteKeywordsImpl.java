@@ -78,15 +78,40 @@ public class DeleteKeywordsImpl implements DeleteObjectWorker {
 					
 					SearchServiceImpl s = new SearchServiceImpl(client);
 					SearchResponse r = s.search(sr);
-					Collection<String> ids = r.getIds();
-					
-					s.bulkDeleteIndex(ids, indexName);
+					if(r!=null) {
+						Collection<String> ids = r.getIds();
+						
+						s.bulkDeleteIndex(ids, indexName);
+					}
 		
 				}
 				
 			}
 			
 		}
+	}
+	
+	@Override
+	public void deleteObject(SearchClient client,String collection, String id) throws Exception {
+		
+		String query = new StringBuilder()
+		.append("{\"query\":{\"term\" : {\"_id_\" : \"")
+		.append(id)
+		.append("\" }}}").toString();
+	
+		SearchRequest sr = new SearchRequest();
+		sr.setCollection(collection);
+		sr.setJson(query);
+		
+		SearchServiceImpl s = new SearchServiceImpl(client);
+		SearchResponse r = s.search(sr);
+		if(r!=null) {
+			Collection<String> ids = r.getIds();
+		
+			s.bulkDeleteIndex(ids, collection);
+		}
+		
+		
 	}
 
 	public List<CustomIndexConfiguration> getIndexConfigurations() {

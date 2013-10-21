@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.inject.Inject;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -29,6 +31,9 @@ import com.shopizer.search.utils.SearchClient;
 
 
 public class KeywordIndexerImpl implements IndexWorker {
+	
+	@Inject
+	DeleteKeywordsImpl deleteKeywordsImpl;
 	
 	
 	private static Logger log = Logger.getLogger(KeywordIndexerImpl.class);
@@ -313,6 +318,10 @@ public class KeywordIndexerImpl implements IndexWorker {
 						bulks.add(kr);
 						
 					}
+					
+					
+					//delete previous keywords for the same id
+					deleteKeywordsImpl.deleteObject(client, collectionName, id);
 
 					service.bulkIndexKeywords(bulks, collectionName, "keyword");
 					
