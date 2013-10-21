@@ -30,7 +30,7 @@ public class AutoCompleteRequest {
 
 		
 		StringBuilder qValueBuilder = new StringBuilder();
-		qValueBuilder.append(query).append(ALL);
+		qValueBuilder.append(query.toLowerCase()).append(ALL);
 		
 		q.put(KEYWORD, qValueBuilder.toString());
 		wildcard.put(WILDCARD_QUERY, q);
