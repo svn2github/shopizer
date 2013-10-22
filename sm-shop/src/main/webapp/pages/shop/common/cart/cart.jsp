@@ -10,8 +10,8 @@
 		<c:if test="${not empty cart}">
 		  <c:if test="${not empty cart.shoppingCartItems}">
 		  
-		   <c:forEach items="${cart.shoppingCartItems}" var="shoppingCartItem" varStatus="itemStaus">
-				<c:if test="${itemStaus.index eq 0}">
+		   <c:forEach items="${cart.shoppingCartItems}" var="shoppingCartItem" varStatus="itemStatus">
+				<c:if test="${itemStatus.index eq 0}">
 					<thead>
 						<tr>
 							<th colspan="2" width="55%">Item</th>
