@@ -32,7 +32,7 @@ import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCart;
 
 @Controller
-public class ShopOrderController {
+public class ShoppingOrderController {
 	
 	@Autowired
 	private ShoppingCartService shoppingCartService;
