@@ -86,6 +86,14 @@
   		<put-attribute name="footer" value="/pages/shop/templates/{1}/sections/footer.jsp" />
   	</definition>
   	
+  	<!-- One page checkout -->
+  	<definition name="checkout.*" template="/pages/shop/common/layout/commonLayout.jsp">
+  	  	<put-attribute name="header" value="/pages/shop/templates/{1}/sections/header.jsp" />
+  		<put-attribute name="navbar" value="/pages/shop/templates/{1}/sections/navbar.jsp" />
+  		<put-attribute name="body" value="/pages/shop/common/checkout/checkout.jsp" />
+  		<put-attribute name="footer" value="/pages/shop/templates/{1}/sections/footer.jsp" />
+  	</definition>
+  	
   	
   	<!--  page not found -->
   	<definition name="404.*" template="/pages/shop/templates/{1}/catalogLayout.jsp">

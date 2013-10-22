@@ -1,4 +1,20 @@
-			<div class="row-fluid" id="checkout">
+<%
+response.setCharacterEncoding("UTF-8");
+response.setHeader("Cache-Control","no-cache");
+response.setHeader("Pragma","no-cache");
+response.setDateHeader ("Expires", -1);
+%>
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %> 
+ 
+<%@page contentType="text/html"%>
+<%@page pageEncoding="UTF-8"%>
+
+	<div class="row-fluid" id="checkout">
 				<div class="span12">
 
 
@@ -8,7 +24,7 @@
 
 					<div class="box">
 						<span class="box-title">
-							<p><font color="#FF8C00">Billing information</font></p>
+							<p class="p-title"><font color="#FF8C00"><s:message code="label.customer.billinginformation" text="Billing information"/></font></p>
 						</span>
 
 						
@@ -16,9 +32,9 @@
 
 				<div class="span4">
   				   <div class="control-group"> 
-					<label>First</label>
+					<label><s:message code="label.customer.firstname" text="First Name"/></label>
     					<div class="controls"> 
-      					<input type="text" class="input-medium" id="first"> 
+      					<input type="text" class="input-medium" id="firstname"> 
     					</div> 
   				   </div> 
 				</div>
@@ -26,9 +42,9 @@
 
 				<div class="span4">
   				   <div class="control-group"> 
-					<label>Last</label>
+					<label><s:message code="label.customer.lastname" text="Last Name"/></label>
     					<div class="controls"> 
-      					<input type="text" class="input-medium" id="last"> 
+      					<input type="text" class="input-medium" id="lastname"> 
     					</div> 
   				   </div> 
 				</div>
@@ -41,7 +57,7 @@
 
 				<div class="span4">
   				   <div class="control-group"> 
-					<label>Email</label>
+					<label><s:message code="label.customer.email" text="Email"/></label>
     					<div class="controls"> 
       					<input type="text" class="input-medium" id="email"> 
     					</div> 
@@ -51,7 +67,7 @@
 
 				<div class="span4">
   				   <div class="control-group"> 
-					<label>Company</label>
+					<label><s:message code="label.customer.shipping.company" text="Company"/></label>
     					<div class="controls"> 
       					<input type="text" class="input-medium" id="company"> 
     					</div> 
@@ -66,9 +82,9 @@
 
 
   			<div class="control-group"> 
-				<label>Address</label>
+				<label><s:message code="label.customer.streetaddress" text="StreetAddress"/></label>
     				<div class="controls"> 
-      					<input type="text" class="input-xlarge" id="address1">
+      					<input type="text" class="input-xlarge" id="address">
     				</div> 
   			</div> 
 
@@ -79,7 +95,7 @@
 
 			<div class="span4">
   			<div class="control-group"> 
-				<label>City</label>
+				<label><s:message code="label.customer.city" text="City"/></label>
     				<div class="controls"> 
       					<input type="text" class="input-medium" id="city">
     				</div> 
@@ -90,8 +106,9 @@
 
 			<div class="span4">
   			<div class="control-group"> 
-				<label>State / Province</label>
+				<label><s:message code="label.customer.zone" text="State / Province"/></label>
     				<div class="controls"> 
+    					<input type="select" class="zone-list highlight" id="state">
       					<input type="text" class="input-medium" id="state">
     				</div> 
   			</div>
@@ -100,7 +117,7 @@
 
 			<div class="span4">
   			<div class="control-group"> 
-				<label>Postal code</label>
+				<label><s:message code="label.customer.postalcode" text="Postalcode"/></label>
     				<div class="controls"> 
       					<input type="text" class="input-small" id="postalcode">
     				</div> 
@@ -111,14 +128,14 @@
 			<div class="row-fluid">
 
 	  			<div class="control-group"> 
-					<label>Country</label>
+					<label><s:message code="label.customer.country" text="Country"/></label>
 	    				<div class="controls"> 
 	      					<input type="text" class="input-large" id="country">
 	    				</div> 
 	  			</div>
 	
 	  			<div class="control-group"> 
-					<label>Phone</label>
+					<label><s:message code="label.customer.telephone" text="Phone"/></label>
 	    				<div class="controls"> 
 	      					<input type="text" class="input-large" id="phone">
 	    				</div> 
