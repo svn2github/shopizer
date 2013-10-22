@@ -103,20 +103,35 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 	}
 	
 	@Override
-	public OrderTotalSummary calculateShoppingCart(OrderSummary orderSummary, MerchantStore store, Language language) throws ServiceException {
+	public OrderTotalSummary caculateOrderTotal(OrderSummary orderSummary, MerchantStore store, Language language) throws ServiceException {
 		Validate.notNull(orderSummary,"Order summary cannot be null");
 		Validate.notNull(orderSummary.getProducts(),"Order summary.products cannot be null");
 		Validate.notNull(store,"MerchantStore cannot be null");
 		
 		try {
-			return caculateOrderTotal(orderSummary, null, store, language);
+			return caculateOrder(orderSummary, null, store, language);
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}
 		
 	}
 	
-	private OrderTotalSummary caculateOrderTotal(OrderSummary summary, Customer customer, MerchantStore store, Language language) throws Exception {
+	@Override
+	public OrderTotalSummary caculateOrderTotal(OrderSummary orderSummary, Customer customer, MerchantStore store, Language language) throws ServiceException {
+		Validate.notNull(orderSummary,"Order summary cannot be null");
+		Validate.notNull(orderSummary.getProducts(),"Order summary.products cannot be null");
+		Validate.notNull(store,"MerchantStore cannot be null");
+		Validate.notNull(customer,"Customer cannot be null");
+		
+		try {
+			return caculateOrder(orderSummary, customer, store, language);
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		
+	}
+	
+	private OrderTotalSummary caculateOrder(OrderSummary summary, Customer customer, MerchantStore store, Language language) throws Exception {
 		
 		OrderTotalSummary totalSummary = new OrderTotalSummary();
 		List<OrderTotal> orderTotals = new ArrayList<OrderTotal>();
