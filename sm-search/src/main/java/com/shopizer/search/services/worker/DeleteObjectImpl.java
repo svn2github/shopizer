@@ -72,7 +72,7 @@ public class DeleteObjectImpl implements DeleteObjectWorker {
 
 	}
 
-	@Override
+
 	public void deleteObject(SearchClient client, String collection, String id)
 			throws Exception {
 		throw new Exception("Not implemented");

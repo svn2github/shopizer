@@ -91,7 +91,7 @@ public class DeleteKeywordsImpl implements DeleteObjectWorker {
 		}
 	}
 	
-	@Override
+
 	public void deleteObject(SearchClient client,String collection, String id) throws Exception {
 		
 		String query = new StringBuilder()
