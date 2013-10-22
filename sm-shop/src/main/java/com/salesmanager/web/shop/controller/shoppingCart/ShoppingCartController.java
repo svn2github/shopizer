@@ -49,11 +49,10 @@ import com.salesmanager.web.utils.ImageFilePathUtils;
 
 
 /**
- * LATEST NOTES
- * 
  * A mini shopping cart is available on the public shopping section from the upper menu
  * Landing page, Category page (list of products) and Product details page contains a form
- * that let the user to add an item to the cart
+ * that let the user add an item to the cart, see the quantity of items, total price of items
+ * in the cart and remove items
  * 
  * Add To Cart
  * ---------------
@@ -65,16 +64,11 @@ import com.salesmanager.web.utils.ImageFilePathUtils;
  * 	<a href="#" class="addToCart" productId="${id}">Add to cart</a>
  * </form>
  * 
- * The javascript function creates com.salesmanager.web.entity.shoppingcart.ShoppingCartItem and ShoppingCartAttribute (example to come)
+ * The javascript function creates com.salesmanager.web.entity.shoppingcart.ShoppingCartItem and ShoppingCartAttribute based on user selection
  * The javascript looks in the cookie if a shopping cart code exists ex $.cookie( 'cart' ); // requires jQuery-cookie
- * The javascript posts the ShoppingCartItem and the shopping cart code if present
+ * The javascript posts the ShoppingCartItem and the shopping cart code if present to /shop/addShoppingCartItem.html
  * 
- * The ShoppingCartController get the ShoppingCartItem and shopping cart code
- * The ShoppingCartController check if the shoppingcart code belongs to the current merchant store (instructions to come on how to create and understand a cart code)
- * The ShoppingCartController if a cart code is present lookup the cart from the database (Shopping cart services have to be created in sm-core) determines if the merchant store are the same
- * The ShoppingCartController if a cart code is not present creates a new ShoppingCart and save it in the database
- * The ShoppingCartController calculates the total (a new PricingService has to be created in sm-core)
- * The ShoppingCartController returns a JSON representation of the ShoppingCart
+ * @see 
  * 
  * The javascript re-creates the shopping cart div item (div id shoppingcart) (see webapp\pages\shop\templates\bootstrap\sections\header.jsp)
  * The javascript set the shopping cart code in the cookie
@@ -95,7 +89,7 @@ import com.salesmanager.web.utils.ImageFilePathUtils;
  * 4) No cart in the session but the customer logs in, the system looks in the DB if a shopping cart exists, if so it is putted in the session so the StoreFilter can manage it and putted in the request
  * 
  * @author Carl Samson
- *
+ * @author Umesh
  */
 
 @Controller
@@ -156,9 +150,7 @@ public class ShoppingCartController {
 	        shoppingCartService.saveOrUpdate(cart);
 	        //request.getSession().setAttribute(Constants.SHOPPING_CART, shoppingCart);
 	    	 model.addAttribute("cart", shoppingCart);
-	    	
-	     
-	    }
+	    } 
 	    
 	    
 	    //Looks in the HttpSession to see if a customer is logged in
@@ -170,9 +162,11 @@ public class ShoppingCartController {
 		//calculate the price of each item by using ProductPriceUtils in sm-core
 		//set each item price in ShoppingCartItem.price
 		//return the ShoppingCartItem entity list in the model
-		
-		return ControllerConstants.Tiles.ShoppingCart.shoppingCart + ".bootstrap";
-		
+	    
+		/** template **/
+		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.ShoppingCart.shoppingCart).append(".").append(store.getStoreTemplate());
+		return template.toString();
+
 		
 	}
 	
@@ -262,13 +256,13 @@ public class ShoppingCartController {
 		com.salesmanager.core.business.shoppingcart.model.ShoppingCart entity = this.convertToEntity(shoppingCart, store, customer);
 		
 		//calculate total
-		OrderSummary summary = new OrderSummary();
-		List<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> productsList = new ArrayList<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem>();
-		productsList.addAll(entity.getLineItems());
-		summary.setProducts(productsList);
-		OrderTotalSummary orderSummary = orderService.calculateShoppingCart(summary, store, language);
-		shoppingCart.setTotal(pricingService.getDisplayAmount(orderSummary.getTotal(), store));
-		shoppingCart.setQuantity(shoppingCart.getShoppingCartItems().size());
+		//OrderSummary summary = new OrderSummary();
+		//List<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> productsList = new ArrayList<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem>();
+		//productsList.addAll(entity.getLineItems());
+		//summary.setProducts(productsList);
+		//OrderTotalSummary orderSummary = orderService.calculateOrderTotal(summary, store, language);
+		//shoppingCart.setTotal(pricingService.getDisplayAmount(orderSummary.getTotal(), store));
+		//shoppingCart.setQuantity(shoppingCart.getShoppingCartItems().size());
 
 		//save or update shopping cart
 		shoppingCartService.saveOrUpdate(entity);
@@ -315,10 +309,7 @@ public class ShoppingCartController {
 		//AjaxResponse resp = new AjaxResponse();
 		//resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
 		return shoppingCart;
-		
-		//return resp.toJSONString();
-		
-		
+
 	}
 
 	private void addShoppingCartItem(ShoppingCart cart, ShoppingCartItem item, MerchantStore store) throws Exception{
@@ -521,10 +512,10 @@ public class ShoppingCartController {
 		List<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> productsList = new ArrayList<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem>();
 		productsList.addAll(shoppingCart.getLineItems());
 		summary.setProducts(productsList);
-		OrderTotalSummary orderSummary = orderService.calculateShoppingCart(summary, store, language);
+		OrderTotalSummary orderSummary = orderService.caculateOrderTotal(summary, store, language);
 		cart.setSubTotal(pricingService.getDisplayAmount(orderSummary.getSubTotal(), store));
 		cart.setTotal(pricingService.getDisplayAmount(orderSummary.getTotal(), store));
-		//cart.setQuantity(shoppingCart..size());
+		cart.setQuantity(shoppingCart.getLineItems().size());
 		return cart;
 		
 	}

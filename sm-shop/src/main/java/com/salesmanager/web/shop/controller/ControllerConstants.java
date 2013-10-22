@@ -42,6 +42,10 @@ public interface ControllerConstants
             final String contactUs="contactus";
         }
         
+        interface Checkout{
+            final String checkout="checkout";
+        }
+        
 
         
     }
