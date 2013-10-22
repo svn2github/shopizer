@@ -3,6 +3,7 @@ package com.shopizer.test;
 import javax.inject.Inject;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -30,6 +31,7 @@ public class TestSearch {
 	private SearchService searchService;
 	
 	@Test
+	@Ignore
 	public void testSearch() throws Exception {
 		
 		//String json="{\"wildcard\":{\"keyword\":\"Spr*\"}}";
