@@ -39,13 +39,13 @@
 		  <tr class="subt">
 		<td colspan="2">&nbsp;</td>
 		<td colspan="3"><strong>Sub-total</strong></td>
-		<td><strong>$${cart.subTotal}</strong></td>
+		<td><strong>${cart.subTotal}</strong></td>
 	</tr>
 
 	<tr class="subt">
 		<td colspan="2">&nbsp;</td>
 		<td colspan="3"><strong>Grand total</strong></td>
-		<td><strong>$${cart.total}</strong></td>
+		<td><strong>${cart.total}</strong></td>
 	</tr>
 		</c:if>
 	
