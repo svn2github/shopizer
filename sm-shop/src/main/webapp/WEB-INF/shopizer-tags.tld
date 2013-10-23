@@ -29,6 +29,29 @@
          </attribute>
 </tag>
 
+<tag>
+ 		 <!-- Builds the manufacturer image URL -->
+         <name>manufacturerImage</name>
+         <tag-class>com.salesmanager.web.tags.ManufacturerImageUrlTag</tag-class>
+         <body-content>scriptless</body-content>
+
+ 
+         <attribute>
+                 <name>imageName</name>
+                 <required>true</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>java.lang.String</type>
+         </attribute>
+         
+         <attribute>
+                 <name>manufacturer</name>
+                 <required>true</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer</type>
+         </attribute>         
+
+</tag>
+
 
 <tag>
  		 <!-- Builds the product image URL -->
