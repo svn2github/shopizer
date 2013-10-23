@@ -1,7 +1,10 @@
 package com.salesmanager.core.business.system.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
@@ -14,6 +17,10 @@ public class MerchantConfig implements Serializable, JSONAware {
 	private boolean displayCustomerSection =true;
 	private boolean displayContactUs =false;
 	private boolean displayStoreAddress = true;
+	
+	/** Store default search json config **/
+	private Map<String,Boolean> useDefaultSearchConfig= new HashMap<String,Boolean>();//language code | true or false
+	private Map<String,String> defaultSearchConfigPath= new HashMap<String,String>();//language code | file path
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -22,6 +29,30 @@ public class MerchantConfig implements Serializable, JSONAware {
 		data.put("displayCustomerSection", this.isDisplayCustomerSection());
 		data.put("displayContactUs", this.isDisplayContactUs());
 		data.put("displayStoreAddress", this.isDisplayStoreAddress());
+		
+		if(useDefaultSearchConfig!=null) {
+			JSONArray arr = new JSONArray();
+			for(String key : useDefaultSearchConfig.keySet()) {
+				
+				JSONObject obj = new JSONObject();
+				obj.put(key, useDefaultSearchConfig.get(key));
+				arr.add(obj);
+			}
+			data.put("useDefaultSearchConfig", arr);
+		}
+		
+		if(defaultSearchConfigPath!=null) {
+			JSONArray arr = new JSONArray();
+			for(String key : defaultSearchConfigPath.keySet()) {
+				
+				JSONObject obj = new JSONObject();
+				obj.put(key, defaultSearchConfigPath.get(key));
+				arr.add(obj);
+			}
+			data.put("defaultSearchConfigPath", arr);
+		}
+		
+		
 		return data.toJSONString();
 	}
 
@@ -47,6 +78,22 @@ public class MerchantConfig implements Serializable, JSONAware {
 
 	public void setDisplayStoreAddress(boolean displayStoreAddress) {
 		this.displayStoreAddress = displayStoreAddress;
+	}
+
+	public void setUseDefaultSearchConfig(Map<String,Boolean> useDefaultSearchConfig) {
+		this.useDefaultSearchConfig = useDefaultSearchConfig;
+	}
+
+	public Map<String,Boolean> getUseDefaultSearchConfig() {
+		return useDefaultSearchConfig;
+	}
+
+	public void setDefaultSearchConfigPath(Map<String,String> defaultSearchConfigPath) {
+		this.defaultSearchConfigPath = defaultSearchConfigPath;
+	}
+
+	public Map<String,String> getDefaultSearchConfigPath() {
+		return defaultSearchConfigPath;
 	}
 
 }
