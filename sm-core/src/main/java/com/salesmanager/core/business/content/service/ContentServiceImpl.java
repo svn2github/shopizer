@@ -137,7 +137,7 @@ public class ContentServiceImpl
     /**
      * Method responsible for adding content file for given merchant store in underlying Infinispan tree
      * cache. It will take  {@link InputContentFile} and will store file for given merchant store according to its type.
-     * 
+     * it can save an image or any type of file (pdf, css, js ...)
      * @param merchantStoreCode Merchant store
      * @param contentFile {@link InputContentFile} being stored
      * @throws ServiceException service exception
@@ -237,19 +237,6 @@ public class ContentServiceImpl
 
     }
 
-    
-
-    
-    
-
-
-
-
-
-
-    
-
-    
 
 
     /**
@@ -279,7 +266,7 @@ public class ContentServiceImpl
 				}
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			throw new ServiceException(e);
 		}
 		
 	}
