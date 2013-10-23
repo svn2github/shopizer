@@ -48,8 +48,7 @@ public class SearchController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/shop/services/search/{store}/{language}/autocomplete.html")
-	@ResponseBody
-	public SearchKeywords autocomplete(@RequestParam("q") String query, @PathVariable String store, @PathVariable final String language, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String autocomplete(@RequestParam("q") String query, @PathVariable String store, @PathVariable final String language, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 	
 		
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
@@ -73,7 +72,7 @@ public class SearchController {
 		AutoCompleteRequest req = new AutoCompleteRequest(store,language);
 		
 		SearchKeywords keywords = searchService.searchForKeywords(req.getCollectionName(), req.toJSONString(query), AUTOCOMPLETE_ENTRIES_COUNT);
-		return keywords;
+		return keywords.toJSONString();
 		
 	}
 
