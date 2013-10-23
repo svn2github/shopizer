@@ -70,11 +70,11 @@ public class ManufacturerImageUrlTag extends TagSupport {
 			.append("/")
 			.append(request.getContextPath());
 			
-			imagePath
+			//imagePath
 			
 			//.append(scheme).append("://").append(merchantStore.getDomainName())
 				//.append(Constants.STATIC_URI)
-				.append("/").append(ImageFilePathUtils.buildManufacturerImageFilePath(merchantStore, manufacturer, this.getImageName())).toString();
+				//.append("/").append(ImageFilePathUtils.buildManufacturerImageFilePath(merchantStore, manufacturer, this.getImageName())).toString();
 
 			
 
