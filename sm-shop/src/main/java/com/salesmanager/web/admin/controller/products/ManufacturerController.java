@@ -30,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.category.model.Category;
+import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImageDescription;
@@ -78,6 +80,67 @@ public class ManufacturerController {
 		return ControllerConstants.Tiles.Product.manufacturerList;
 	}
 	
+//	@SuppressWarnings({ "unchecked"})
+//	@Secured("PRODUCTS")
+//	@RequestMapping(value="/admin/manufacturers/paging.html", method=RequestMethod.POST, produces="application/json")
+//	public @ResponseBody String pageManufacturers(HttpServletRequest request, HttpServletResponse response) {
+//		String categoryName = request.getParameter("name");
+//
+//
+//		AjaxResponse resp = new AjaxResponse();
+//
+//		
+//		try {
+//			
+//			Language language = (Language)request.getAttribute("LANGUAGE");
+//				
+//		
+//			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+//			
+//			List<Manufacturer> manufacturers = null;
+//					
+//			if(!StringUtils.isBlank(categoryName)) {
+//				
+//				
+////				categories = categoryService.getByName(store, categoryName, language);
+//				
+//			} else {
+//				
+//				manufacturers = manufacturerService.listByStore(store, language);
+//				
+//			}
+//					
+//					
+//			
+//			for(Manufacturer manufacturer : manufacturers) {
+//				
+//				@SuppressWarnings("rawtypes")
+//				Map entry = new HashMap();
+//				entry.put("manufacturerId", manufacturer.getId());
+//				
+//				ManufacturerDescription description = manufacturer.getDescriptions().get(0);
+//				
+//				entry.put("name", description.getName());
+//				entry.put("order", manufacturer.getOrder());
+//				resp.addDataEntry(entry);
+//				
+//				
+//			}
+//			
+//			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+//			
+//
+//		
+//		} catch (Exception e) {
+//			LOGGER.error("Error while paging Manufacturers", e);
+//			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+//		}
+//		
+//		String returnString = resp.toJSONString();
+//		
+//		return returnString;
+//	}
+	
 	@Secured("MANUFACTURER")
 	@RequestMapping(value="/admin/catalogue/manufacturer/create.html", method=RequestMethod.GET)
 	public String createManufacturer(  Model model,  HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -105,10 +168,12 @@ public class ManufacturerController {
 		
 		if( manufacturerId!=0) {//edit mode
 
-//			System.out.println("\n\n *************  ManufacturerController Edit  **************\n\n");
+			Manufacturer dBmanufacturer = new Manufacturer();
+			dBmanufacturer = manufacturerService.getById( manufacturerId );
+			
+			System.out.println("\n\n *************  ManufacturerController Edit  **************\n\n manufacturerId =" + manufacturerId );
 			
 		} else {	// Create mode
-//			System.out.println("\n\n *************  ManufacturerController Create  **************\n\n");
 
 			Manufacturer manufacturerTmp = new Manufacturer();
 			manufacturer.setManufacturer( manufacturerTmp );
@@ -287,9 +352,36 @@ public class ManufacturerController {
 	@Secured("MANUFACTURER")
 	@RequestMapping(value="/admin/catalogue/manufacturer/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageManufacturers(HttpServletRequest request, HttpServletResponse response) {
-
 		
 		AjaxResponse resp = new AjaxResponse();
+		try {
+			
+			Language language = (Language)request.getAttribute("LANGUAGE");	
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+			
+			List<Manufacturer> manufacturers = null;				
+			manufacturers = manufacturerService.listByStore(store, language);
+				
+			for(Manufacturer manufacturer : manufacturers) {
+				
+				@SuppressWarnings("rawtypes")
+				Map entry = new HashMap();
+				entry.put("id", manufacturer.getId());
+				
+				ManufacturerDescription description = manufacturer.getDescriptions().iterator().next();
+				
+				entry.put("attribute", description.getName());
+				entry.put("order", manufacturer.getOrder());
+				resp.addDataEntry(entry);
+				
+			}
+			
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);	
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while paging Manufacturers", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+		}
 		
 		resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_SUCCESS);
 		
