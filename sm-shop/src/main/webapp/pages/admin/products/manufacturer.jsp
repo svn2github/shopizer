@@ -2,58 +2,43 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@ page session="false" %>				
-<script type="text/javascript">
-var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong format" />';
-</script>				
+<%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %>			
 
+
+<%@ page session="false" %>			
+
+<link href="<c:url value="/resources/css/bootstrap/css/datepicker.css" />" rel="stylesheet"></link>
+<script src="<c:url value="/resources/js/bootstrap/bootstrap-datepicker.js" />"></script>
+<script src="<c:url value="/resources/js/ckeditor/ckeditor.js" />"></script>
 <script src="<c:url value="/resources/js/jquery.formatCurrency-1.4.0.js" />"></script>
 <script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
 <script src="<c:url value="/resources/js/functions.js" />"></script>
 
 <script type="text/javascript">
 
-$(document).ready(function() {
-
-	$('#productPriceAmount').numeric({allow:"."});
-	$('#order').numeric();
-	$('#weight').numeric({allow:"."});
-	$("#productOption").change(function() {
-		if($('#attributeDisplayOnly').attr('checked')) {
-			checkReadOnlyAttribute($(this).val());
-		}
-	})
-
-	$("#attributeDisplayOnly").click(function() {
-		if($('#attributeDisplayOnly').attr('checked')) {
-			checkReadOnlyAttribute($("#productOption").val());
-		}
-	})
-});
 	
-function checkReadOnlyAttribute(optionId){
-	
+	$(function(){		
+		$('#order').numeric();
+	});
 
-		$.ajax({
+	
+	function removeImage(imageId){
+			$("#store.error").show();
+			$.ajax({
 			  type: 'POST',
-			  url: '<c:url value="/admin/products/attributes/getAttributeType.html"/>',
-			  data: 'optionId=' + optionId,
+			  url: '<c:url value="/admin/manufacturers/manufacturer/removeImage.html"/>',
+			  data: 'imageId=' + imageId,
 			  dataType: 'json',
 			  success: function(response){
 		
 					var status = isc.XMLTools.selectObjects(response, "/response/status");
 					if(status==0 || status ==9999) {
 						
-						
-						var type = isc.XMLTools.selectObjects(response, "/response/data/type");
-
-						if(type=='text') {
-							$("#attributeValueText").show();
-							$("#optionValue").hide();
-						} else {
-							$("#attributeValueText").hide();
-							$("#optionValue").show();
-						}
+						//remove delete
+						$("#imageControlRemove").html('');
+						//add field
+						$("#imageControl").html('<input class=\"input-file\" id=\"image\" name=\"image\" type=\"file\">');
+						$(".alert-success").show();
 						
 					} else {
 						
@@ -67,204 +52,158 @@ function checkReadOnlyAttribute(optionId){
 			  	alert('error ' + errorThrown);
 			  }
 			  
-		});
-}
+			});
+	}
 	
 	
 </script>
 
-
-
 <div class="tabbable">
 
-					<jsp:include page="/common/adminTabs.jsp" />
+		 <jsp:include page="/common/adminTabs.jsp" />
   					
-  					 <div class="tab-content">
+		 <div class="tab-content">
 
-    					<div class="tab-pane active" id="catalogue-section">
-
-
-
-								<div class="sm-ui-component">	
-								<c:if test="${product.id!=null && product.id>0}">
-									<c:set value="${product.id}" var="productId" scope="request"/>
-									<jsp:include page="/pages/admin/products/product-menu.jsp" />
-								</c:if>		
-								
-								
-				<h3>
-						<s:message code="label.product.attribute" text="Attribute" />
-				</h3>
-				<br/>
-				<strong><c:out value="${product.sku}"/></strong>		
+			<div class="tab-pane active" id="catalogue-section">
 				
-
+				<h3>
+					<c:choose>
+						<c:when test="${manufacturer.manufacturer.id!=null && manufacturer.manufacturer.id>0}">
+							<s:message code="label.manufacturer.edit" text="Edit Manufacturer" /> <c:out value="${product.product.sku}"/>
+						</c:when>
+						<c:otherwise>
+							<s:message code="label.manufacturer.create" text="Create a Manufacturer" />
+						</c:otherwise>
+					</c:choose>
+				</h3>
 				<br/><br/>
 								
-
-
-
-				<c:url var="attributeSave" value="/admin/attributes/attribute/save.html"/>
-
-
-				<form:form method="POST" commandName="attribute" action="${attributeSave}">
-
-      							
-      				<form:errors path="*" cssClass="alert alert-error" element="div" />
-					<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
-						
-						
-						
-			    <div class="control-group">
-                        <label><s:message code="label.product.productoptions.name" text="Option name"/></label>
-                        <div class="controls">    
-	                        <div class="controls">		
-	                        		<form:select cssClass="highlight" id="productOption" path="productOption.id">
-					  					<form:options items="${options}" itemValue="id" itemLabel="descriptionsSettoList[0].name"/>
-				       				</form:select>
-	                                <span class="help-inline"><form:errors path="productOption.id" cssClass="error" /></span>
-	                        </div>
-                        </div>
-                 </div>	
-
-                 <div class="control-group">
-                        <label><s:message code="label.product.attribute.display" text="Display only"/></label>
-                        <div class="controls">
-                                    <form:checkbox id="attributeDisplayOnly" path="attributeDisplayOnly"/>	
-                                    <span class="help-inline"><form:errors path="attributeDisplayOnly" cssClass="error" /></span>
-                        </div>
-                  </div>
-                  
-                  <div class="control-group">
-                        <label><s:message code="label.product.productoptions.price" text="Attribute code"/></label>
-                        <div class="controls">
-                                    <form:input id="attributeCode" path="attributeCode"/>
-                                    <span class="help-inline"><form:errors path="attributeCode" cssClass="error" /></span>
-                        </div>
-                  </div>
-                  
-                 <div class="control-group" id="optionValue" style="display:<c:choose><c:when test="${attribute.productOption.productOptionType=='text'}">none;</c:when><c:otherwise>block;</c:otherwise></c:choose>">
-                        <label><s:message code="label.product.productoptiosvalue.title" text="Option value name"/></label>
-                        <div class="controls">    
-	                        <div class="controls">		
-	                        		<form:select cssClass="highlight" path="productOptionValue.id">
-					  					<form:options items="${optionsValues}" itemValue="id" itemLabel="descriptionsSettoList[0].name"/>
-				       				</form:select>
-	                                <span class="help-inline"><form:errors path="productOptionValue.id" cssClass="error" /></span>
-	                        </div>
-                        </div>
-                 </div>		
-                 
-                 
-                 <div class="control-group" id="attributeValueText" style="display:<c:choose><c:when test="${attribute.productOption.productOptionType=='text'}">block;</c:when><c:otherwise>none;</c:otherwise></c:choose>">
-                 <c:forEach items="${attribute.productOptionValue.descriptionsSettoList}" var="description" varStatus="counter">
-	                  
-		                 
-		                        <label class="required"><s:message code="label.product.productoptions.name" text="Option name"/> (<c:out value="${description.language.code}"/>)</label>
-		                        <div class="controls">
-		                        			<form:input cssClass="" id="name${counter.index}" path="productOptionValue.descriptionsList[${counter.index}].description"/>
-		                        			<span class="help-inline"><form:errors path="productOptionValue.descriptionsList[${counter.index}].description" cssClass="error" /></span>
-		                        </div>
-		
-		                  
-		
-		                  
-		                  		<form:hidden path="productOptionValue.descriptionsList[${counter.index}].language.code" />
-		                  		<form:hidden path="productOptionValue.descriptionsList[${counter.index}].language.id" />
-		                  		<form:hidden path="productOptionValue.descriptionsList[${counter.index}].id" />
-	                  
-	               </c:forEach>
-                   </div>
-
-						
-				 <div class="control-group">
-                        <label><s:message code="label.product.productoptions.price" text="Price"/></label>
-                        <div class="controls">
-                                    <form:input id="productPriceAmount" cssClass="highlight" path="attributePrice"/>
-                                    <span id="help-price" class="help-inline"><form:errors path="attributePrice" cssClass="error" /></span>
-                        </div>
-                  </div>
-                  
-                  
-                  <div class="control-group">
-                        <label class="required"><s:message code="label.entity.order" text="Order"/></label>
-                        <div class="controls">
-                                    <form:input id="order" cssClass="highlight" path="attributeSortOrder"/>
-                                    <span class="help-inline"><form:errors path="attributeSortOrder" cssClass="error" /></span>
-
-                        </div>
-                  </div>	
-
-
-
-                  
-                  <div class="control-group">
-                        <label><s:message code="label.product.attribute.default" text="Default"/></label>
-                        <div class="controls">
-                                    <form:checkbox path="attributeDefault"/>	
-                                    <span class="help-inline"><form:errors path="attributeDefault" cssClass="error" /></span>
-                        </div>
-                  </div>
-                  
-                 <div class="control-group">
-                        <label><s:message code="label.product.attribute.required" text="Required"/></label>
-                        <div class="controls">
-                                   	<form:checkbox path="attributeRequired"/>
-                                    <span class="help-inline"><form:errors path="attributeRequired" cssClass="error" /></span>
-                        </div>
-                  </div>
-                  
-
-                  
-                  <div class="control-group">
-                        <label class="required"><s:message code="label.product.attribute.otherweight" text="Additional weight"/></label>
-                        <div class="controls">
-                                    <form:input id="weight" cssClass="highlight" path="attributeAdditionalWeight"/>
-                                    <span class="help-inline"><form:errors path="attributeAdditionalWeight" cssClass="error" /></span>
-
-                        </div>
-                  </div>                 
-
-
-
-                  <form:hidden path="id" />
-                  <form:hidden path="product.id" />
-			
-			      <div class="form-actions">
-
-                  		<div class="pull-right">
-
-                  			<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>
-                  			
-
-                  		</div>
-
-            	 </div>
+				<c:url var="manufacturerSave" value="/admin/catalogue/manufacturer/save.html"/>
  
-            	 </form:form>
+				<form:form method="POST" commandName="manufacturer" action="${manufacturerSave}">
+
+      				<form:hidden path="manufacturer.id" /> 			
+      				
+
+                    <form:errors path="*" cssClass="alert alert-error" element="div" />
+                    <div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>   
+                    <div id="store.error" class="alert alert-error" style="display:none;"><s:message code="message.error" text="An error occured"/></div>
+	
+					
+					<c:forEach items="${manufacturer.descriptions}" var="description" varStatus="counter">
+					
+						<div class="control-group">
+	                        <label class="required"><s:message code="label.manufactureredit.manufacturername" text="Manufacturer Name"/></label>
+	                        <div class="controls">
+	                                  <form:input cssClass="input-large highlight" id="name${counter.index}" path="descriptions[${counter.index}].name"/>
+	                                  <span  class="help-inline"><form:errors path="descriptions[${counter.index}].name" cssClass="error" /></span>
+	                        </div>
+	                  	</div> 
+
+						<div class="control-group">
+	                        <label><s:message code="label.manufactureredit.manufacturertitle" text="Manufacturer Title"/></label>
+	                        <div class="controls">
+	                                  <form:input cssClass="input-large" id="title${counter.index}" path="descriptions[${counter.index}].title"/>
+	                                  <span  class="help-inline"><form:errors path="descriptions[${counter.index}].title" cssClass="error" /></span>
+	                        </div>
+	                  	</div> 
+	                  	
+	                  	<div class="control-group">
+	                        <label><s:message code="label.defaultlanguage" text="language"/></label>
+	                        <div class="controls">
+                					<form:select class="input-large highlight" items="${languages}" itemValue="id" itemLabel="code" path="descriptions[${counter.index}].language.id"/> 
+                           			<span class="help-inline"></span>
+	                        </div>
+	                   </div>
+	                  
+ 	                  	<div class="control-group">
+	                        <label><s:message code="label.manufactureredit.manufacturerurl" text="URL"/></label>
+	                        <div class="controls">
+	                                  <form:input cssClass="input-large" id="url${counter.index}" path="descriptions[${counter.index}].url"/>
+	                                  <span  class="help-inline"><form:errors path="descriptions[${counter.index}].url" cssClass="error" /></span>
+	                        </div>
+	                  	</div>	
+	                  	
+	                  	 <div class="control-group">
+	                        <label><s:message code="label.manufactureredit.manufacturerurlclicked" text="URL Clicked"/></label>
+	                        <div class="controls">
+	                                  <form:input cssClass="input-large" id="urlClicked${counter.index}" path="descriptions[${counter.index}].urlClicked"/>
+	                                  <span  class="help-inline"><form:errors path="descriptions[${counter.index}].urlClicked" cssClass="error" /></span>
+	                        </div>
+	                  	</div>	
+	                        
+	                    <div class="control-group">
+	                            <label class="required"><s:message code="label.manufactureredit.manufacturerdescription" text="Manufacturer Description"/> </label>
+	                            <div class="controls">
+	                     	 
+	                        			 <textarea cols="30" id="descriptions${counter.index}.description" name="descriptions[${counter.index}].description">
+	                        				<c:out value="${manufacturer.descriptions[counter.index].description}"/>
+	                        			 </textarea>
+	                            </div>	                  	
+	                            <script type="text/javascript">
+						//<![CDATA[
+
+									CKEDITOR.replace('descriptions[${counter.index}].description',
+									{
+										skin : 'office2003',
+										toolbar : 
+										[
+											['Source','-','Save','NewPage','Preview'], 
+											['Cut','Copy','Paste','PasteText','-','Print'], 
+											['Undo','Redo','-','Find','-','SelectAll','RemoveFormat'], '/', 
+											['Bold','Italic','Underline','Strike','-','Subscript','Superscript'], 
+											['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'], 
+											['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'], 
+											['Link','Unlink','Anchor'], 
+											['Image','Flash','Table','HorizontalRule','SpecialChar','PageBreak'], '/', 
+											['Styles','Format','Font','FontSize'], ['TextColor','BGColor'], 
+											['Maximize', 'ShowBlocks'] 
+										],
+										
+										filebrowserWindowWidth : '720',
+		        						filebrowserWindowHeight : '740',
+										filebrowserImageBrowseUrl :    '<c:url value="/admin/content/fileBrowser.html"/>'
+										
+		
+									});
+
+						//]]>
+								</script>  
+	                              
+						</div>
+	                  	                 		                  		                  	 
+                	</c:forEach>
+    <%--                              
+                 <div class="control-group">
+                        <label><s:message code="label.manufacturer.image" text="Image"/>&nbsp;<c:if test="${manufacturer.productImage.productImage!=null && manufacturer.productImage.productImage!=''}"><span id="imageControlRemove"> - <a href="#" onClick="removeImage('${manufacturer.productImage.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if></label>
+                        <div class="controls" id="imageControl">
+                        		<c:choose>
+	                        		<c:when test="${manufacturer.productImage.productImage==null || manufacturer.productImage.productImage==''}">
+	                                    <input class="input-file" id="image" name="image" type="file">
+	                                </c:when>
+	                                <c:otherwise>
+	                                	<img src="<sm:manufacturerImage imageName="${manufacturer.productImage.productImage}" manufacturer="${manufacturer.manufacturer}"/>" width="200"/>
+	                                </c:otherwise>
+                                </c:choose>
+                        </div>
+                  </div>
+  --%>                                                 	      
+                 	<div class="control-group">
+                        <label><s:message code="label.manufactureredit.manufacturerorder" text="Order"/></label>
+                        <div class="controls">
+                                  <form:input id="order" cssClass="input-large" path="order"/>
+                                  <span  class="help-inline"><form:errors path="order" cssClass="error" /></span>
+                        </div>
+                  	</div> 	        
             	 
-            	 
-            	 <br/>
-            	 
-
-            	 
-            	 
-	      			     
-      					</div>
-      					
-
-      			     
-      			     
-
-
-      			     
-      			     
-    
-
-
-   					</div>
-
-
-  					</div>
-
-				</div>		      			     
+            	    <div class="form-actions">
+                            <div class="pull-right">
+                                    <button type="submit" class="btn btn-success"><s:message code="button.label.submit2" text="Submit"/></button>
+                            </div>
+                    </div>
+                   
+            	</form:form>
+          
+            </div>
+         </div>
+                    
