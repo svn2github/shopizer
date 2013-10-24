@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequestBuilder;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
@@ -44,12 +45,14 @@ import com.shopizer.search.services.field.IntegerField;
 import com.shopizer.search.services.field.ListField;
 import com.shopizer.search.services.field.LongField;
 import com.shopizer.search.services.field.StringField;
+import com.shopizer.search.services.worker.KeywordIndexerImpl;
 import com.shopizer.search.utils.SearchClient;
 
 public class SearchServiceImpl {
 	
 	
 	private SearchClient searchClient = null;
+	private static Logger log = Logger.getLogger(SearchServiceImpl.class);
 	
 	public SearchServiceImpl(SearchClient searchClient) {
 		this.searchClient = searchClient;
@@ -248,7 +251,7 @@ public class SearchServiceImpl {
 				bulkRequest.add(client.prepareIndex(collection, object).setSource(b));
 			}
 			 
-	
+			log.debug("Adding to collection " + collection);
 			         
 			BulkResponse bulkResponse = bulkRequest.execute().actionGet(); 
 			if (bulkResponse.hasFailures()) { 
