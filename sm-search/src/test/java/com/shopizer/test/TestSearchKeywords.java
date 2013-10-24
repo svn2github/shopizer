@@ -31,7 +31,7 @@ public class TestSearchKeywords {
 	private SearchService searchService;
 	
 	@Test
-	//@Ignore
+	@Ignore
 	public void testSearchKeywords() throws Exception {
 		
 		//String json="{\"wildcard\":{\"keyword\":\"s*\"}}";
