@@ -166,12 +166,30 @@ public class ManufacturerController {
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		
-		if( manufacturerId!=0) {//edit mode
+		if( manufacturerId!=0) {	//edit mode
 
-			Manufacturer dBmanufacturer = new Manufacturer();
-			dBmanufacturer = manufacturerService.getById( manufacturerId );
+			Manufacturer dbManufacturer = new Manufacturer();
+			dbManufacturer = manufacturerService.getById( manufacturerId );
 			
-			System.out.println("\n\n *************  ManufacturerController Edit  **************\n\n manufacturerId =" + manufacturerId );
+			if(dbManufacturer==null) {
+				return ControllerConstants.Tiles.Product.manufacturerList;
+			}
+			
+//			if(dbManufacturer.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+//				return ControllerConstants.Tiles.Product.manufacturerList;
+//			}
+			
+			manufacturer.setManufacturer( dbManufacturer );
+			Set<ManufacturerDescription> manufacturerDescriptions = dbManufacturer.getDescriptions();
+			
+			ManufacturerDescription manufacturerDesc = null;
+			for(ManufacturerDescription desc : manufacturerDescriptions) {
+				
+					manufacturerDesc = desc;
+					descriptions.add(desc);
+			}
+
+			manufacturer.setDescriptions(descriptions );
 			
 		} else {	// Create mode
 
