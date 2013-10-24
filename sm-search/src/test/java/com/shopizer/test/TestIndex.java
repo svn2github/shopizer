@@ -2,9 +2,8 @@ package com.shopizer.test;
 
 import javax.inject.Inject;
 
-import org.junit.runner.RunWith;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -28,7 +27,7 @@ public class TestIndex {
 	private SearchService searchService;
 	
 	@Test
-	@Ignore
+	//@Ignore
 	public void testIndex() throws Exception {
 		
 		String jsonData = "{\"id\":\"3\",\"name\":\"Spring in action\",\"price\":\"23.99\",\"categories\":[\"book\",\"technology\"],\"store\":\"default\",\"availability\":\"*\",\"available\":\"true\",\"lang\":\"en\",\"description\":\"Best spring book, covers Spring MVC and Spring security\", \"tags\":[\"Spring\",\"Security\",\"Spring MVC\",\"Web\"]}";

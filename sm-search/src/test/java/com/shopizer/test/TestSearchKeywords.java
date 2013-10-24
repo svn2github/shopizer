@@ -31,10 +31,13 @@ public class TestSearchKeywords {
 	private SearchService searchService;
 	
 	@Test
-	@Ignore
+	//@Ignore
 	public void testSearchKeywords() throws Exception {
 		
-		String json="{\"wildcard\":{\"keyword\":\"s*\"}}";
+		//String json="{\"wildcard\":{\"keyword\":\"s*\"}}";
+		//String json="{\"term\":{\"keyword\":\"s\"}}";
+		
+		String json="{\"match\" : {\"keyword\" : {\"query\" : \"spring m\",\"type\" : \"phrase_prefix\"}}}";
 		
 		//String json ="{\"query\":{\"filtered\":{\"query\":{\"text\":{\"_all\":\"beach\"}},\"filter\":{\"numeric_range\":{\"age\":{\"from\":\"22\",\"to\":\"45\",\"include_lower\":true,\"include_upper\":true}}}}},\"highlight\":{\"fields\":{\"description\":{}}},\"facets\":{\"tags\":{\"terms\":{\"field\":\"tags\"}}}}";
 
