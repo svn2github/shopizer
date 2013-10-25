@@ -68,7 +68,7 @@
 				 
 				 <c:set value="/admin/products/product/keywords/paging.html?id=${product.id}" var="pagingUrl" scope="request"/>
 				 <c:set value="/admin/products/product/removeKeyword.html?id=${product.id}" var="removeUrl" scope="request"/>
-				 <c:set value="/admin/products/keywords/list.html" var="afterRemoveUrl" scope="request"/>
+				 <c:set value="/admin/products/product/keywords.html?id=${product.id}" var="afterRemoveUrl" scope="request"/>
 				 <c:set var="entityId" value="code" scope="request"/>
 				 <c:set var="componentTitleKey" value="label.product.searchkeywords" scope="request"/>
 				 <c:set var="groupByEntity" value="language" scope="request" />
