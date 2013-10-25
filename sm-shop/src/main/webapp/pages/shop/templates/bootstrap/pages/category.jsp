@@ -42,11 +42,11 @@ response.setDateHeader ("Expires", -1);
 		// return false;
 	 //});
 	 
-	loadProducts();
+	loadCategoryProducts();
 
  });
  
- 	function loadProducts() {
+ 	function loadCategoryProducts() {
  		var url = '<%=request.getContextPath()%>/shop/services/products/page/' + START_COUNT_PRODUCTS + '/' + MAX_PRODUCTS + '/<c:out value="${requestScope.MERCHANT_STORE.code}"/>/<c:out value="${requestScope.LANGUAGE.code}"/>/<c:out value="${category.friendlyUrl}"/>.html';
 	 	loadProducts(url,'#productsContainer');
  	}
@@ -146,7 +146,7 @@ response.setDateHeader ("Expires", -1);
 
 			</ul>
 			<nav id="button_nav" style="text-align:center;display:none;">
-				<button class="btn btn-large" style="width:400px;" onClick="loadProducts();"><s:message code="label.product.moreitems" text="Display more items" />...</button>
+				<button class="btn btn-large" style="width:400px;" onClick="loadCategoryProducts();"><s:message code="label.product.moreitems" text="Display more items" />...</button>
 			</nav>
 			<span id="end_nav" style="display:none;"><s:message code="label.product.nomoreitems" text="No more items to be displayed" /></span>
           
