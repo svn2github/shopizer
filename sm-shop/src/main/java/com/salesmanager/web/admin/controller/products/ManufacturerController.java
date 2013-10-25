@@ -80,66 +80,6 @@ public class ManufacturerController {
 		return ControllerConstants.Tiles.Product.manufacturerList;
 	}
 	
-//	@SuppressWarnings({ "unchecked"})
-//	@Secured("PRODUCTS")
-//	@RequestMapping(value="/admin/manufacturers/paging.html", method=RequestMethod.POST, produces="application/json")
-//	public @ResponseBody String pageManufacturers(HttpServletRequest request, HttpServletResponse response) {
-//		String categoryName = request.getParameter("name");
-//
-//
-//		AjaxResponse resp = new AjaxResponse();
-//
-//		
-//		try {
-//			
-//			Language language = (Language)request.getAttribute("LANGUAGE");
-//				
-//		
-//			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-//			
-//			List<Manufacturer> manufacturers = null;
-//					
-//			if(!StringUtils.isBlank(categoryName)) {
-//				
-//				
-////				categories = categoryService.getByName(store, categoryName, language);
-//				
-//			} else {
-//				
-//				manufacturers = manufacturerService.listByStore(store, language);
-//				
-//			}
-//					
-//					
-//			
-//			for(Manufacturer manufacturer : manufacturers) {
-//				
-//				@SuppressWarnings("rawtypes")
-//				Map entry = new HashMap();
-//				entry.put("manufacturerId", manufacturer.getId());
-//				
-//				ManufacturerDescription description = manufacturer.getDescriptions().get(0);
-//				
-//				entry.put("name", description.getName());
-//				entry.put("order", manufacturer.getOrder());
-//				resp.addDataEntry(entry);
-//				
-//				
-//			}
-//			
-//			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
-//			
-//
-//		
-//		} catch (Exception e) {
-//			LOGGER.error("Error while paging Manufacturers", e);
-//			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-//		}
-//		
-//		String returnString = resp.toJSONString();
-//		
-//		return returnString;
-//	}
 	
 	@Secured("MANUFACTURER")
 	@RequestMapping(value="/admin/catalogue/manufacturer/create.html", method=RequestMethod.GET)
@@ -175,20 +115,18 @@ public class ManufacturerController {
 				return ControllerConstants.Tiles.Product.manufacturerList;
 			}
 			
-//			if(dbManufacturer.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
-//				return ControllerConstants.Tiles.Product.manufacturerList;
-//			}
+			if(dbManufacturer.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+				return ControllerConstants.Tiles.Product.manufacturerList;
+			}
 			
 			manufacturer.setManufacturer( dbManufacturer );
 			Set<ManufacturerDescription> manufacturerDescriptions = dbManufacturer.getDescriptions();
 			
-			ManufacturerDescription manufacturerDesc = null;
-			for(ManufacturerDescription desc : manufacturerDescriptions) {
-				
-					manufacturerDesc = desc;
+			for(ManufacturerDescription desc : manufacturerDescriptions) {				
 					descriptions.add(desc);
 			}
-
+			
+			manufacturer.setOrder( dbManufacturer.getOrder() );
 			manufacturer.setDescriptions(descriptions );
 			
 		} else {	// Create mode
@@ -206,166 +144,393 @@ public class ManufacturerController {
 		return ControllerConstants.Tiles.Product.manufacturerDetails;
 	}
 		
-	@Secured("MANUFACTURER")   //  @Valid
+	@Secured("MANUFACTURER")  
 	@RequestMapping(value="/admin/catalogue/manufacturer/save.html", method=RequestMethod.POST)
 	public String saveManufacturer( @Valid @ModelAttribute("manufacturer") com.salesmanager.web.admin.entity.catalog.Manufacturer manufacturer, BindingResult result, Model model,  HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
-		
+
 		this.setMenu(model, request);
 		//save or edit a manufacturer
-		
+
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		List<Language> languages = languageService.getLanguages();
-		
+
 		if(manufacturer.getDescriptions()!=null && manufacturer.getDescriptions().size()>0) {
-			
+
 			for(ManufacturerDescription description : manufacturer.getDescriptions()) {
-				
+
 				//validate Url Clicked
 				if ( description.getUrlClicked() != null && !description.getUrlClicked().toString().isEmpty()) {
 					try{
 						Integer.parseInt( description.getUrlClicked().toString() );
-						
+
 					} catch (Exception e) {
-						
+
 						ObjectError error = new ObjectError("descriptions[${counter.index}].urlClicked","URL Clicked must be a number");
 						result.addError(error);
 					}
 				}
 			}
 		}
-		
-		//validate image
-//		if(manufacturer.getImage()!=null && !manufacturer.getImage().isEmpty()) {
-//			
-//			try {
-//				
-//				String maxHeight = configuration.getProperty("PRODUCT_IMAGE_MAX_HEIGHT_SIZE");
-//				String maxWidth = configuration.getProperty("PRODUCT_IMAGE_MAX_WIDTH_SIZE");
-//				String maxSize = configuration.getProperty("PRODUCT_IMAGE_MAX_SIZE");
-//				
-//				
-//				BufferedImage image = ImageIO.read(manufacturer.getImage().getInputStream());
-//				
-//				
-//				if(!StringUtils.isBlank(maxHeight)) {
-//					
-//					int maxImageHeight = Integer.parseInt(maxHeight);
-//					if(image.getHeight()>maxImageHeight) {
-//						ObjectError error = new ObjectError("image",messages.getMessage("message.image.height", locale) + " {"+maxHeight+"}");
-//						result.addError(error);
-//					}
-//					
-//				}
-//				
-//				if(!StringUtils.isBlank(maxWidth)) {
-//					
-//					int maxImageWidth = Integer.parseInt(maxWidth);
-//					if(image.getWidth()>maxImageWidth) {
-//						ObjectError error = new ObjectError("image",messages.getMessage("message.image.width", locale) + " {"+maxWidth+"}");
-//						result.addError(error);
-//					}
-//					
-//				}
-//				
-//				if(!StringUtils.isBlank(maxSize)) {
-//					
-//					int maxImageSize = Integer.parseInt(maxSize);
-//					if(manufacturer.getImage().getSize()>maxImageSize) {
-//						ObjectError error = new ObjectError("image",messages.getMessage("message.image.size", locale) + " {"+maxSize+"}");
-//						result.addError(error);
-//					}
-//					
-//				}
-//				
-//			} catch (Exception e) {
-//				LOGGER.error("Cannot validate product image", e);
-//			}
-//
-//		}
-		
- 		if (result.hasErrors()) {
+
+
+	//validate image
+		if(manufacturer.getImage()!=null && !manufacturer.getImage().isEmpty()) {
+
+			try {
+
+				String maxHeight = configuration.getProperty("PRODUCT_IMAGE_MAX_HEIGHT_SIZE");
+				String maxWidth = configuration.getProperty("PRODUCT_IMAGE_MAX_WIDTH_SIZE");
+				String maxSize = configuration.getProperty("PRODUCT_IMAGE_MAX_SIZE");
+
+				BufferedImage image = ImageIO.read(manufacturer.getImage().getInputStream());
+
+				if(!StringUtils.isBlank(maxHeight)) {
+
+					int maxImageHeight = Integer.parseInt(maxHeight);
+					if(image.getHeight()>maxImageHeight) {
+						ObjectError error = new ObjectError("image",messages.getMessage("message.image.height", locale) + " {"+maxHeight+"}");
+						result.addError(error);
+					}
+				}
+
+				if(!StringUtils.isBlank(maxWidth)) {
+
+					int maxImageWidth = Integer.parseInt(maxWidth);
+					if(image.getWidth()>maxImageWidth) {
+						ObjectError error = new ObjectError("image",messages.getMessage("message.image.width", locale) + " {"+maxWidth+"}");
+						result.addError(error);
+					}
+				}
+
+				if(!StringUtils.isBlank(maxSize)) {
+
+					int maxImageSize = Integer.parseInt(maxSize);
+					if(manufacturer.getImage().getSize()>maxImageSize) {
+						ObjectError error = new ObjectError("image",messages.getMessage("message.image.size", locale) + " {"+maxSize+"}");
+						result.addError(error);
+					}
+				}
+
+			} catch (Exception e) {
+				LOGGER.error("Cannot validate manufacturer image", e);
+			}
+
+		}
+
+		if (result.hasErrors()) {
 			model.addAttribute("languages",languages);
 			return ControllerConstants.Tiles.Product.manufacturerDetails;
-		}		
-		
-		
+		}
+
+		Manufacturer newManufacturer = manufacturer.getManufacturer();
+
 		if ( manufacturer.getManufacturer().getId() !=null && manufacturer.getManufacturer().getId()  > 0 ){
-			
-			Manufacturer dbManufacturer = new Manufacturer();
-			
-			return ControllerConstants.Tiles.Product.manufacturerDetails;
-			
-		} else {			
-		
-	
-			Set<ManufacturerDescription> descriptions = new HashSet<ManufacturerDescription>();	 
-			
-			Manufacturer newManufacturer = new Manufacturer();
-			newManufacturer.setMerchantStore(manufacturer.getManufacturer().getMerchantStore() );
-			newManufacturer.setOrder( manufacturer.getOrder() );
-			
-			if(manufacturer.getDescriptions()!=null && manufacturer.getDescriptions().size()>0) {
-			
-				for(ManufacturerDescription description : manufacturer.getDescriptions()) {
-					description.setManufacturer(newManufacturer);
-					descriptions.add(description);
-				}
-			}	
-	
-			newManufacturer.setDescriptions(descriptions);
-			newManufacturer.setMerchantStore(store);
-			manufacturerService.saveOrUpdate(newManufacturer);
-			manufacturer.setManufacturer( newManufacturer );  
-		}
-		
-		/*
-		 if(product.getImage()!=null && !product.getImage().isEmpty()) {			
 
-			
-			String imageName = product.getImage().getOriginalFilename();		
+			newManufacturer = manufacturerService.getById( manufacturer.getManufacturer().getId() );
 
-			ProductImage productImage = new ProductImage();
-			productImage.setDefaultImage(true);
-			productImage.setImage(product.getImage().getInputStream());
-			productImage.setProductImage(imageName);
-			
-			
-			List<ProductImageDescription> imagesDescriptions = new ArrayList<ProductImageDescription>();
-
-			for(Language l : languages) {
-				
-				ProductImageDescription imageDescription = new ProductImageDescription();
-				imageDescription.setName(imageName);
-				imageDescription.setLanguage(l);
-				imageDescription.setProductImage(productImage);
-				imagesDescriptions.add(imageDescription);
-				
+			if(newManufacturer.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+				return ControllerConstants.Tiles.Product.manufacturerList;
 			}
-			
-			productImage.setDescriptions(imagesDescriptions);
-			productImage.setProduct(newProduct);
-			
-			newProduct.getImages().add(productImage);
-			
-			productService.saveOrUpdate(newProduct);
-			
-			//product displayed
-			product.setProductImage(productImage);
-			
-			
-		} else {
-			
-			productService.saveOrUpdate(newProduct);
-			
+
 		}
-		 */
-		
-		model.addAttribute("manufacturer", manufacturer);		
+
+//		for(ManufacturerImage image : manufacturer.getImages()) {
+//			if(image.isDefaultImage()) {
+//				manufacturer.setProductImage(image);
+//			}
+//		}
+
+		Set<ManufacturerDescription> descriptions = new HashSet<ManufacturerDescription>();
+		if(manufacturer.getDescriptions()!=null && manufacturer.getDescriptions().size()>0) {
+			
+			for(ManufacturerDescription desc : manufacturer.getDescriptions()) {
+				
+				desc.setManufacturer(newManufacturer);
+				descriptions.add(desc);
+			}
+		}
+		newManufacturer.setDescriptions(descriptions );
+		newManufacturer.setOrder( manufacturer.getOrder() );
+		newManufacturer.setMerchantStore(store);
+
+
+
+//		if(manufacturer.getManufacturerImage()!=null && manufacturer.getManufacturerImage().getId() == null) {
+//			newManufacturer.setProductImage(null);
+//		}
+
+
+
+		if(manufacturer.getImage()!=null && !manufacturer.getImage().isEmpty()) {
+//
+//			String imageName = manufacturer.getImage().getOriginalFilename();
+//
+//			ManufacturerImage manufacturerImage = new ManufacturerImage();
+//			manufacturerImage.setDefaultImage(true);
+//			manufacturerImage.setImage(manufacturer.getImage().getInputStream());
+//			manufacturerImage.setManufacturerImage(imageName);
+//
+//			List<ManufacturerImageDescription> imagesDescriptions = new ArrayList<ManufacturerImageDescription>();
+//
+//			for(Language l : languages) {
+//
+//				ManufacturerImageDescription imageDescription = new ManufacturerImageDescription();
+//				imageDescription.setName(imageName);
+//				imageDescription.setLanguage(l);
+//				imageDescription.setManufacturerImage(productImage);
+//				imagesDescriptions.add(imageDescription);
+//
+//			}
+//
+//			manufacturerImage.setDescriptions(imagesDescriptions);
+//			manufacturerImage.setProduct(newManufacturer);
+//
+//			newManufacturer.getImages().add(manufacturerImage);
+//
+//			manufacturerService.saveOrUpdate(newManufacturer);
+//
+//			//manufacturer displayed
+//			manufacturer.setProductImage(manufacturerImage);
+
+
+		} else {
+
+			manufacturerService.saveOrUpdate(newManufacturer);
+		}
+
+		model.addAttribute("manufacturer", manufacturer);
 		model.addAttribute("languages",languages);
 		model.addAttribute("success","success");
-		
-		return ControllerConstants.Tiles.Product.manufacturerDetails;
+
+	return ControllerConstants.Tiles.Product.manufacturerDetails;
+
+
+	/*  OLD
+	Set<ManufacturerDescription> descriptions = new HashSet<ManufacturerDescription>();
+
+	Manufacturer newManufacturer = new Manufacturer();
+	newManufacturer.setMerchantStore(manufacturer.getManufacturer().getMerchantStore() );
+	newManufacturer.setOrder( manufacturer.getOrder() );
+
+	if(manufacturer.getDescriptions()!=null && manufacturer.getDescriptions().size()>0) {
+
+	for(ManufacturerDescription description : manufacturer.getDescriptions()) {
+	description.setManufacturer(newManufacturer);
+	descriptions.add(description);
 	}
+	}
+
+	newManufacturer.setDescriptions(descriptions);
+	newManufacturer.setMerchantStore(store);
+	manufacturerService.saveOrUpdate(newManufacturer);
+	manufacturer.setManufacturer( newManufacturer );  
+	}
+
+	if(product.getImage()!=null && !product.getImage().isEmpty()) {
+
+
+	String imageName = product.getImage().getOriginalFilename();
+
+	ProductImage productImage = new ProductImage();
+	productImage.setDefaultImage(true);
+	productImage.setImage(product.getImage().getInputStream());
+	productImage.setProductImage(imageName);
+
+
+	List<ProductImageDescription> imagesDescriptions = new ArrayList<ProductImageDescription>();
+
+	for(Language l : languages) {
+
+	ProductImageDescription imageDescription = new ProductImageDescription();
+	imageDescription.setName(imageName);
+	imageDescription.setLanguage(l);
+	imageDescription.setProductImage(productImage);
+	imagesDescriptions.add(imageDescription);
+
+	}
+
+	productImage.setDescriptions(imagesDescriptions);
+	productImage.setProduct(newProduct);
+
+	newProduct.getImages().add(productImage);
+
+	productService.saveOrUpdate(newProduct);
+
+	//product displayed
+	product.setProductImage(productImage);
+
+
+	} else {
+
+	productService.saveOrUpdate(newProduct);
+
+	}
+	*/
+
+
+	}
+	
+//	@Secured("MANUFACTURER")   
+//	@RequestMapping(value="/admin/catalogue/manufacturer/saveOLD.html", method=RequestMethod.POST)
+//	public String saveManufacturerOLD( @Valid @ModelAttribute("manufacturer") com.salesmanager.web.admin.entity.catalog.Manufacturer manufacturer, 
+//				BindingResult result, Model model,  HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+//		
+//		this.setMenu(model, request);
+//		//save or edit a manufacturer
+//		
+//		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+//		List<Language> languages = languageService.getLanguages();
+//		
+//		if(manufacturer.getDescriptions()!=null && manufacturer.getDescriptions().size()>0) {
+//			
+//			for(ManufacturerDescription description : manufacturer.getDescriptions()) {
+//				
+//				//validate Url Clicked
+//				if ( description.getUrlClicked() != null && !description.getUrlClicked().toString().isEmpty()) {
+//					try{
+//						Integer.parseInt( description.getUrlClicked().toString() );
+//						
+//					} catch (Exception e) {
+//						
+//						ObjectError error = new ObjectError("descriptions[${counter.index}].urlClicked","URL Clicked must be a number");
+//						result.addError(error);
+//					}
+//				}
+//			}
+//		}
+//		
+//		//validate image
+////		if(manufacturer.getImage()!=null && !manufacturer.getImage().isEmpty()) {
+////			
+////			try {
+////				
+////				String maxHeight = configuration.getProperty("PRODUCT_IMAGE_MAX_HEIGHT_SIZE");
+////				String maxWidth = configuration.getProperty("PRODUCT_IMAGE_MAX_WIDTH_SIZE");
+////				String maxSize = configuration.getProperty("PRODUCT_IMAGE_MAX_SIZE");
+////				
+////				
+////				BufferedImage image = ImageIO.read(manufacturer.getImage().getInputStream());
+////				
+////				
+////				if(!StringUtils.isBlank(maxHeight)) {
+////					
+////					int maxImageHeight = Integer.parseInt(maxHeight);
+////					if(image.getHeight()>maxImageHeight) {
+////						ObjectError error = new ObjectError("image",messages.getMessage("message.image.height", locale) + " {"+maxHeight+"}");
+////						result.addError(error);
+////					}
+////					
+////				}
+////				
+////				if(!StringUtils.isBlank(maxWidth)) {
+////					
+////					int maxImageWidth = Integer.parseInt(maxWidth);
+////					if(image.getWidth()>maxImageWidth) {
+////						ObjectError error = new ObjectError("image",messages.getMessage("message.image.width", locale) + " {"+maxWidth+"}");
+////						result.addError(error);
+////					}
+////					
+////				}
+////				
+////				if(!StringUtils.isBlank(maxSize)) {
+////					
+////					int maxImageSize = Integer.parseInt(maxSize);
+////					if(manufacturer.getImage().getSize()>maxImageSize) {
+////						ObjectError error = new ObjectError("image",messages.getMessage("message.image.size", locale) + " {"+maxSize+"}");
+////						result.addError(error);
+////					}
+////					
+////				}
+////				
+////			} catch (Exception e) {
+////				LOGGER.error("Cannot validate product image", e);
+////			}
+////
+////		}
+//		
+// 		if (result.hasErrors()) {
+//			model.addAttribute("languages",languages);
+//			return ControllerConstants.Tiles.Product.manufacturerDetails;
+//		}		
+//		
+//		
+//		if ( manufacturer.getManufacturer().getId() !=null && manufacturer.getManufacturer().getId()  > 0 ){
+//			
+//			Manufacturer dbManufacturer = new Manufacturer();
+//			
+//			return ControllerConstants.Tiles.Product.manufacturerDetails;
+//			
+//		} else {			
+//		
+//	
+//			Set<ManufacturerDescription> descriptions = new HashSet<ManufacturerDescription>();	 
+//			
+//			Manufacturer newManufacturer = new Manufacturer();
+//			newManufacturer.setMerchantStore(manufacturer.getManufacturer().getMerchantStore() );
+//			newManufacturer.setOrder( manufacturer.getOrder() );
+//			
+//			if(manufacturer.getDescriptions()!=null && manufacturer.getDescriptions().size()>0) {
+//			
+//				for(ManufacturerDescription description : manufacturer.getDescriptions()) {
+//					description.setManufacturer(newManufacturer);
+//					descriptions.add(description);
+//				}
+//			}	
+//	
+//			newManufacturer.setDescriptions(descriptions);
+//			newManufacturer.setMerchantStore(store);
+//			manufacturerService.saveOrUpdate(newManufacturer);
+//			manufacturer.setManufacturer( newManufacturer );  
+//		}
+//		
+//		/*
+//		 if(product.getImage()!=null && !product.getImage().isEmpty()) {			
+//
+//			
+//			String imageName = product.getImage().getOriginalFilename();		
+//
+//			ProductImage productImage = new ProductImage();
+//			productImage.setDefaultImage(true);
+//			productImage.setImage(product.getImage().getInputStream());
+//			productImage.setProductImage(imageName);
+//			
+//			
+//			List<ProductImageDescription> imagesDescriptions = new ArrayList<ProductImageDescription>();
+//
+//			for(Language l : languages) {
+//				
+//				ProductImageDescription imageDescription = new ProductImageDescription();
+//				imageDescription.setName(imageName);
+//				imageDescription.setLanguage(l);
+//				imageDescription.setProductImage(productImage);
+//				imagesDescriptions.add(imageDescription);
+//				
+//			}
+//			
+//			productImage.setDescriptions(imagesDescriptions);
+//			productImage.setProduct(newProduct);
+//			
+//			newProduct.getImages().add(productImage);
+//			
+//			productService.saveOrUpdate(newProduct);
+//			
+//			//product displayed
+//			product.setProductImage(productImage);
+//			
+//			
+//		} else {
+//			
+//			productService.saveOrUpdate(newProduct);
+//			
+//		}
+//		 */
+//		
+//		model.addAttribute("manufacturer", manufacturer);		
+//		model.addAttribute("languages",languages);
+//		model.addAttribute("success","success");
+//		
+//		return ControllerConstants.Tiles.Product.manufacturerDetails;
+//	}
 	
 	@Secured("MANUFACTURER")
 	@RequestMapping(value="/admin/catalogue/manufacturer/paging.html", method=RequestMethod.POST, produces="application/json")
@@ -426,8 +591,7 @@ public class ManufacturerController {
 		
 	}
 	
-	private void setMenu(Model model, HttpServletRequest request) throws Exception {
-		
+	private void setMenu(Model model, HttpServletRequest request) throws Exception {		
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("catalogue", "catalogue");
@@ -439,7 +603,6 @@ public class ManufacturerController {
 		Menu currentMenu = (Menu)menus.get("catalogue");
 		model.addAttribute("currentMenu",currentMenu);
 		model.addAttribute("activeMenus",activeMenus);
-		//
-		
 	}
+
 }
