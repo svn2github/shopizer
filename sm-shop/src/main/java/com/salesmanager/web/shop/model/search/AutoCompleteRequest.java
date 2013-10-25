@@ -15,6 +15,10 @@ public class AutoCompleteRequest {
 	private final static String KEYWORD = "keyword";
 	private final static String UNDERSCORE = "_";
 	private final static String ALL = "*";
+	private final static String TYPE = "type";
+	private final static String TYPE_PHRASE = "phrase_prefix";
+	private final static String QUERY = "query";
+	private final static String MATCH = "match";
 	
 	public AutoCompleteRequest(String merchantCode, String languageCode) {
 		this.merchantCode = merchantCode;
@@ -24,19 +28,25 @@ public class AutoCompleteRequest {
 	@SuppressWarnings("unchecked")
 	public String toJSONString(String query) {
 
-		JSONObject wildcard = new JSONObject();
+		JSONObject keyword = new JSONObject();
 		JSONObject q = new JSONObject();
+		JSONObject match = new JSONObject();
 		
-
+		q.put(QUERY, query);
+		q.put(TYPE, TYPE_PHRASE);
 		
-		StringBuilder qValueBuilder = new StringBuilder();
-		qValueBuilder.append(query.toLowerCase()).append(ALL);
+		keyword.put(KEYWORD, q);
 		
-		q.put(KEYWORD, qValueBuilder.toString());
-		wildcard.put(WILDCARD_QUERY, q);
+		match.put(MATCH, keyword);
+		
+		//StringBuilder qValueBuilder = new StringBuilder();
+		//qValueBuilder.append(query.toLowerCase()).append(ALL);
+		
+		//q.put(KEYWORD, qValueBuilder.toString());
+		//wildcard.put(WILDCARD_QUERY, q);
 		
 		
-		return wildcard.toJSONString();
+		return match.toJSONString();
 	}
 	
 	/** keyword_en_default **/

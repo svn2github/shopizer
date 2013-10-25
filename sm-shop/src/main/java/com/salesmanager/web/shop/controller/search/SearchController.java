@@ -48,6 +48,7 @@ public class SearchController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/shop/services/search/{store}/{language}/autocomplete.html")
+	@ResponseBody
 	public String autocomplete(@RequestParam("q") String query, @PathVariable String store, @PathVariable final String language, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 	
 		
