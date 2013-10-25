@@ -46,6 +46,10 @@ public interface ControllerConstants
             final String checkout="checkout";
         }
         
+        interface Search{
+            final String search="search";
+        }
+        
 
         
     }
