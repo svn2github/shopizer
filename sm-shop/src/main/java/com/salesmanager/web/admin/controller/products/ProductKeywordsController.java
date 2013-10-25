@@ -187,7 +187,7 @@ public class ProductKeywordsController {
 			for(ProductDescription description : descriptions) {
 
 				Language lang = description.getLanguage();
-				if(!lang.equals(languageCode)){
+				if(!lang.getCode().equals(languageCode)){
 					editedDescriptions.add(description);
 					continue;
 				}
