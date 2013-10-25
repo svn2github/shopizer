@@ -50,7 +50,7 @@ public class SystemConfigurationController {
 			merchantConfiguration = new MerchantConfig();
 		}
 		
-		
+		model.addAttribute("store", store);
 		model.addAttribute("configuration",merchantConfiguration);
 		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Configuration.system;
 	}
