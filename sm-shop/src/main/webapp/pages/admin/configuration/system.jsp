@@ -54,6 +54,20 @@
 	                        				</div>
 	                  				   </div>
 	                  				   
+	                  				   <c:forEach items="${store.languages}" var="language">
+	                  				   
+	                  				   <div class="control-group">
+	                        				<label><s:message code="label.configuration.useglobalsearch_suggestions" text="Use global pre-defined search suggestions" /> (${language.code})</label>
+	                        				<div class="controls">
+	                        					<form:checkbox path="useDefaultSearchConfig['${language.code}']" /> 
+	                        					<br/>
+	                        					<form:input cssClass="input-large" path="defaultSearchConfigPath['${language.code}']" />
+	                                   			<span class="help-inline"><s:message code="label.configuration.globalsearch_suggestions_path" text="Global pre-defined search suggestions file path" /></span>
+	                        				</div>
+	                  				   </div>
+	                  				   
+	                  				   </c:forEach>
+	                  				   
 	                  				 <div class="form-actions">
                   						<div class="pull-right">
                   							<button type="submit" class="btn btn-success"><s:message code="button.label.submit" text="Submit"/></button>
