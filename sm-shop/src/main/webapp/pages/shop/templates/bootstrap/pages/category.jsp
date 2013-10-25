@@ -42,17 +42,19 @@ response.setDateHeader ("Expires", -1);
 		// return false;
 	 //});
 	 
- 
-	 loadProducts();
+	loadProducts();
 
  });
  
+ 	function loadProducts() {
+ 		var url = '<%=request.getContextPath()%>/shop/services/products/page/' + START_COUNT_PRODUCTS + '/' + MAX_PRODUCTS + '/<c:out value="${requestScope.MERCHANT_STORE.code}"/>/<c:out value="${requestScope.LANGUAGE.code}"/>/<c:out value="${category.friendlyUrl}"/>.html';
+	 	loadProducts(url,'#productsContainer');
+ 	}
  
- 
-	function loadProducts() {
-		$('#productsContainer').showLoading();
-		var url = '<%=request.getContextPath()%>/shop/services/products/page/' + START_COUNT_PRODUCTS + '/' + MAX_PRODUCTS + '/<c:out value="${requestScope.MERCHANT_STORE.code}"/>/<c:out value="${requestScope.LANGUAGE.code}"/>/<c:out value="${category.friendlyUrl}"/>.html';
-		
+	function callBackLoadProducts(totalCount) {
+		//$('#productsContainer').showLoading();
+		//var url = '<%=request.getContextPath()%>/shop/services/products/page/' + START_COUNT_PRODUCTS + '/' + MAX_PRODUCTS + '/<c:out value="${requestScope.MERCHANT_STORE.code}"/>/<c:out value="${requestScope.LANGUAGE.code}"/>/<c:out value="${category.friendlyUrl}"/>.html';
+		/**
 		$.ajax({
 				type: 'POST',
 				dataType: "json",
@@ -63,7 +65,11 @@ response.setDateHeader ("Expires", -1);
 					    var productHtml = '<li class="item span3">';
 					    	productHtml = productHtml + '<div class="product-box"><a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html">';
 					    	productHtml = productHtml + '<h4 class="name">' + productList.products[i].name +'</h4></a>';
-					    	productHtml = productHtml + '<h3 class="number">' + productList.products[i].productPrice +'</h3>';
+					    	if(productList.products[i].discounted) {
+					    		productHtml = productHtml + '<h3 class="number"><del>' + productList.products[i].originalProductPrice +'</del>&nbsp;<span class="specialPrice">' + productList.products[i].productPrice + '</span></h3>';
+					    	} else {
+					    		productHtml = productHtml + '<h3 class="number">' + productList.products[i].productPrice +'</h3>';
+					    	}
 					    	if(productList.products[i].imageUrl!=null) {
 					    		productHtml = productHtml + '<a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html"><img src="<c:url value="/"/>' + productList.products[i].imageUrl +'"></a>';
 					    	}
@@ -77,24 +83,29 @@ response.setDateHeader ("Expires", -1);
 					START_COUNT_PRODUCTS = START_COUNT_PRODUCTS + MAX_PRODUCTS;
 					if(START_COUNT_PRODUCTS < productList.totalCount) {
 						$("#button_nav").show();
-						//$("#end_nav").hide();
 					} else {
-						//$("#end_nav").show();
 						$("#button_nav").hide();
 					}
-					
-					
-					
+
 					$('#productsContainer').hideLoading();
 
-					
 				},
 				error: function(jqXHR,textStatus,errorThrown) { 
 					$('#productsContainer').hideLoading();
 					alert('Error ' + jqXHR + "-" + textStatus + "-" + errorThrown);
 				}
 				
+				
 		});
+		**/
+		
+			START_COUNT_PRODUCTS = START_COUNT_PRODUCTS + MAX_PRODUCTS;
+			if(START_COUNT_PRODUCTS < totalCount) {
+					$("#button_nav").show();
+			} else {
+					$("#button_nav").hide();
+			}
+			$('#productsContainer').hideLoading();
 		
 		
 		
