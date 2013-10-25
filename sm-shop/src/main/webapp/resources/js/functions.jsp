@@ -28,6 +28,7 @@ function getLanguageCode() {
  
 function loadProducts(url,divProductsContainer) {
 		$(divProductsContainer).showLoading();
+		
 		//var url = '<%=request.getContextPath()%>/shop/services/products/page/' + START_COUNT_PRODUCTS + '/' + MAX_PRODUCTS + '/<c:out value="${requestScope.MERCHANT_STORE.code}"/>/<c:out value="${requestScope.LANGUAGE.code}"/>/<c:out value="${category.friendlyUrl}"/>.html';
 		
 		$.ajax({
