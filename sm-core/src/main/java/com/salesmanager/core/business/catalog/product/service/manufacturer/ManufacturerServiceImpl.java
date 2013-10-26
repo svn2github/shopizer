@@ -47,7 +47,7 @@ public class ManufacturerServiceImpl extends
 		LOGGER.debug("Creating Manufacturer");
 		
 		if(manufacturer.getId()!=null && manufacturer.getId()>0) {
-			super.update(manufacturer);
+//			super.update(manufacturer);   // commented for now, get constraint error( update manuf_description code missing)  
 		} else {			
 		
 			super.create(manufacturer);
