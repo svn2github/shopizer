@@ -312,12 +312,12 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			configKeyMissed
 			.append(configKey.toString());
 			
-			Map<String, String> configs = null;
+			Map<String, Object> configs = null;
 			
 			if(store.isUseCache()) {
 			
 				//get from the cache
-				configs = (Map<String, String>) cache.getFromCache(configKey.toString());
+				configs = (Map<String, Object>) cache.getFromCache(configKey.toString());
 				
 				Boolean missedContent = null;
 				if(configs==null) {
@@ -746,9 +746,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			return objects;
 	   }
 	   
-	   private Map<String,String> getConfigurations(MerchantStore store) {
+	   private Map<String,Object> getConfigurations(MerchantStore store) {
 		   
-		   Map<String,String> configs = null;
+		   Map<String,Object> configs = null;
 		   try {
 			   
 			   List<MerchantConfiguration> configurations = merchantConfigurationService.listByType(MerchantConfigurationType.CONFIG, store);
@@ -756,7 +756,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			   for(MerchantConfiguration configuration : configurations) {
 				   
 				   if(configs==null) {
-					   configs = new HashMap<String,String>();
+					   configs = new HashMap<String,Object>();
 				   }
 				   configs.put(configuration.getKey(), configuration.getValue());
 			   }
@@ -765,10 +765,10 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			   MerchantConfig merchantConfig = merchantConfigurationService.getMerchantConfig(store);
 			   ObjectMapper m = new ObjectMapper();
 			   @SuppressWarnings("unchecked")
-			   Map<String,String> props = m.convertValue(merchantConfig, Map.class);
+			   Map<String,Object> props = m.convertValue(merchantConfig, Map.class);
 			   
 			   for(String key : props.keySet()) {
-				   configs.put(key, String.valueOf(props.get(key)));
+				   configs.put(key, props.get(key));
 			   }
 
 			   
