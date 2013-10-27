@@ -13,5 +13,6 @@ public interface ManufacturerDao extends SalesManagerEntityDao<Long, Manufacture
 
 	List<Manufacturer> listByStore(MerchantStore store);
 	
+	int getCountManufAttachedProducts(  Manufacturer manufacturer  );
 
 }

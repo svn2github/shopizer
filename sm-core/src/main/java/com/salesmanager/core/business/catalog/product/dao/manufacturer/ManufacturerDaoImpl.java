@@ -2,6 +2,8 @@ package com.salesmanager.core.business.catalog.product.dao.manufacturer;
 
 import java.util.List;
 
+import javax.persistence.Query;
+
 import org.springframework.stereotype.Repository;
 
 import com.mysema.query.jpa.JPQLQuery;
@@ -16,6 +18,24 @@ import com.salesmanager.core.business.reference.language.model.Language;
 @Repository("manufacturerDao")
 public class ManufacturerDaoImpl extends SalesManagerEntityDaoImpl<Long, Manufacturer>
 		implements ManufacturerDao {
+	
+	@Override
+	public int getCountManufAttachedProducts(  Manufacturer manufacturer  ){
+		StringBuilder countBuilderSelect = new StringBuilder();
+		countBuilderSelect.append("select count(distinct p) from Product as p");
+		
+		StringBuilder countBuilderWhere = new StringBuilder();
+		countBuilderWhere.append(" where p.manufacturer.id=:mId");
+		
+		Query countQ = super.getEntityManager().createQuery(
+				countBuilderSelect.toString() + countBuilderWhere.toString());
+
+		countQ.setParameter("mId", manufacturer.getId() );
+		
+		Number count = (Number) countQ.getSingleResult ();
+
+		return count.intValue();
+	}
 	
 	@Override
 	public List<Manufacturer> listByStore(MerchantStore store, Language language) {
