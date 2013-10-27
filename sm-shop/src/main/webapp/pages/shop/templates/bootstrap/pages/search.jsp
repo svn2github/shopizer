@@ -42,16 +42,17 @@ response.setDateHeader ("Expires", -1);
 		// return false;
 	 //});
 	 
-
+	 search();
 
  });
  
- 	function loadProducts() {
- 		//var url = '<%=request.getContextPath()%>/shop/services/products/page/' + START_COUNT_PRODUCTS + '/' + MAX_PRODUCTS + '/<c:out value="${requestScope.MERCHANT_STORE.code}"/>/<c:out value="${requestScope.LANGUAGE.code}"/>/<c:out value="${category.friendlyUrl}"/>.html';
-	 	//loadProducts(url,'#productsContainer');
+ 	function search() {
+ 		///shop/services/search/{store}/{language}/{start}/{max}/term.html
+ 		var url = '<%=request.getContextPath()%>/shop/services/search/<c:out value="${requestScope.MERCHANT_STORE.code}"/>/<c:out value="${requestScope.LANGUAGE.code}"/>/' + START_COUNT_PRODUCTS + '/' + MAX_PRODUCTS + '/term.html';
+	 	searchProducts(url,'#productsContainer','<c:out value="${q}"/>',null);
  	}
  
-	function callBackLoadProducts(totalCount) {
+	function callBackSearchProducts(totalCount) {
 
 			START_COUNT_PRODUCTS = START_COUNT_PRODUCTS + MAX_PRODUCTS;
 			if(START_COUNT_PRODUCTS < totalCount) {

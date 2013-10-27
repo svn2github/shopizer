@@ -13,6 +13,9 @@
     
     <link href="<c:url value="/resources/templates/bootstrap/css/bootstrap.min.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/templates/bootstrap/css/bootstrap-responsive.min.css" />" rel="stylesheet">
+    <!-- generic css file -->
+    <link href="<c:url value="/resources/css/sm.css" />" rel="stylesheet">
+    <!-- template css file -->
     <link href="<c:url value="/resources/templates/bootstrap/css/theme.css" />" rel="stylesheet">
  
     <script src="<c:url value="/resources/js/jquery.showLoading.min.js" />"></script>

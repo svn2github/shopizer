@@ -78,8 +78,9 @@ response.setDateHeader ("Expires", -1);
     								</a>
     							</li>
 						</c:forEach>
-						<!-- TODO configuration for displaying or not contact link -->
+						<c:if test="${requestScope.CONFIGS['displayContactUs']==true}">
 						<li><a href="#contactformlink"><s:message code="label.customer.contactus" text="Contact us"/></a></li>
+						</c:if>
 					</ul>
 
  					<div style="padding-top: 8px;padding-bottom:10px;" class="btn-group pull-right">
@@ -105,9 +106,9 @@ response.setDateHeader ("Expires", -1);
 					</div>
 					
 					<!-- TODO display if not logged in -->
-					<ul class="nav pull-right" style="padding-top: 8px;z-index:500000;">
+					<ul class="pull-right" style="list-style-type: none;padding-top: 8px;z-index:500000;">
 					  <li id="fat-menu" class="dropdown">
-					    <a href="#" id="signinDrop" role="button" class="dropdown-toggle" data-toggle="dropdown"><s:message code="button.label.signin" text="Signin" /><b class="caret"></b></a>
+					    <a href="#" id="signinDrop" role="button" class="dropdown-toggle noboxshadow" data-toggle="dropdown"><s:message code="button.label.signin" text="Signin" /><b class="caret"></b></a>
 					
 					
 							<div id="signinPane" class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
