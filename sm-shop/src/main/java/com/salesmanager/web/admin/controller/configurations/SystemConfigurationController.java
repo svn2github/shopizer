@@ -63,6 +63,7 @@ public class SystemConfigurationController {
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		merchantConfigurationService.saveMerchantConfig(merchantConfiguration, store);
 		model.addAttribute("success","success");
+		model.addAttribute("store", store);
 		model.addAttribute("configuration",merchantConfiguration);
 		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Configuration.system;
 		
