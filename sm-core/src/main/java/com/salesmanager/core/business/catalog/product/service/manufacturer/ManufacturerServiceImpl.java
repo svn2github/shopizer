@@ -31,16 +31,27 @@ public class ManufacturerServiceImpl extends
 	@Autowired
 	SearchService searchService;
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerServiceImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ManufacturerServiceImpl.class);
 	private ManufacturerDao manufacturerDao;
 	
 	@Autowired
 	public ManufacturerServiceImpl(
 		ManufacturerDao manufacturerDao) {
 		super(manufacturerDao);
-		this.manufacturerDao = manufacturerDao;
-		
+		this.manufacturerDao = manufacturerDao;		
 	}
+	
+	@Override 
+	public void delete(Manufacturer manufacturer) throws ServiceException{
+		manufacturer =  this.getById(manufacturer.getId() );
+		super.delete( manufacturer );
+	}
+	
+	@Override
+	public int getCountManufAttachedProducts( Manufacturer manufacturer ) throws ServiceException {
+		return manufacturerDao.getCountManufAttachedProducts( manufacturer );
+	}
+	
 	
 	@Override
 	public List<Manufacturer> listByStore(MerchantStore store, Language language) throws ServiceException {
@@ -64,7 +75,6 @@ public class ManufacturerServiceImpl extends
 		manufacturer.getDescriptions().add(description);
 		description.setManufacturer(manufacturer);
 		update(manufacturer);
-//		searchService.index(manufacturer.getMerchantStore(), manufacturer);
 	}
 	
 	@Override	
@@ -73,17 +83,11 @@ public class ManufacturerServiceImpl extends
 		LOGGER.debug("Creating Manufacturer");
 		
 		if(manufacturer.getId()!=null && manufacturer.getId()>0) {
-			super.update(manufacturer);   // commented for now, get constraint error( update manuf_description code missing)  
-		} else {			
-		
-			Set<ManufacturerDescription> manufacturerDescriptions = manufacturer.getDescriptions();
-			manufacturer.setDescriptions(null);
+		   super.update(manufacturer);  
 			
-			super.create(manufacturer);
+		} else {						
+		   super.create(manufacturer);
 
-			for(ManufacturerDescription manufacturerDescription : manufacturerDescriptions) {
-				addManufacturerDescription(manufacturer,manufacturerDescription);
-			}
 		}
 	}
 }

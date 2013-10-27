@@ -21,4 +21,8 @@ public interface ManufacturerService extends SalesManagerEntityService<Long, Man
 	
 	void addManufacturerDescription(Manufacturer manufacturer, ManufacturerDescription description) throws ServiceException;
 	
+	int getCountManufAttachedProducts( Manufacturer manufacturer )  throws ServiceException;
+	
+	void delete(Manufacturer manufacturer) throws ServiceException;
+	
 }
