@@ -91,10 +91,7 @@
 	
 					
 					<c:forEach items="${manufacturer.descriptions}" var="description" varStatus="counter">
-					
-					     <form:hidden path="descriptions[${counter.index}].language.id" />
-                         <form:hidden path="descriptions[${counter.index}].language.code" />
-                         
+					           
 						<div class="control-group">
 	                        <label class="required"><s:message code="label.manufactureredit.manufacturername" text="Manufacturer Name"/></label>
 	                        <div class="controls">
