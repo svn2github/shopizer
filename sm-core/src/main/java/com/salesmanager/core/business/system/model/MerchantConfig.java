@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.simple.JSONArray;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
@@ -31,25 +31,25 @@ public class MerchantConfig implements Serializable, JSONAware {
 		data.put("displayStoreAddress", this.isDisplayStoreAddress());
 		
 		if(useDefaultSearchConfig!=null) {
-			JSONArray arr = new JSONArray();
+			JSONObject obj = new JSONObject();
 			for(String key : useDefaultSearchConfig.keySet()) {
-				
-				JSONObject obj = new JSONObject();
-				obj.put(key, useDefaultSearchConfig.get(key));
-				arr.add(obj);
+				Boolean val = (Boolean)useDefaultSearchConfig.get(key);
+				if(val!=null) {
+					obj.put(key,val);
+				}
 			}
-			data.put("useDefaultSearchConfig", arr);
+			data.put("useDefaultSearchConfig", obj);
 		}
 		
 		if(defaultSearchConfigPath!=null) {
-			JSONArray arr = new JSONArray();
+			JSONObject obj = new JSONObject();
 			for(String key : defaultSearchConfigPath.keySet()) {
-				
-				JSONObject obj = new JSONObject();
-				obj.put(key, defaultSearchConfigPath.get(key));
-				arr.add(obj);
+				String val = (String)defaultSearchConfigPath.get(key);
+				if(!StringUtils.isBlank(val)) {
+					obj.put(key, val);
+				}
 			}
-			data.put("defaultSearchConfigPath", arr);
+			data.put("defaultSearchConfigPath", obj);
 		}
 		
 		
