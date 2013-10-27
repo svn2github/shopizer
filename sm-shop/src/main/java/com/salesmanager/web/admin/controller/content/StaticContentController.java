@@ -103,7 +103,8 @@ public class StaticContentController {
 					
 					@SuppressWarnings("rawtypes")
 					Map entry = new HashMap();
-					entry.put("name", filePath.toString());
+					entry.put("name", name);
+					entry.put("path", filePath.toString());
 					entry.put("mimeType", mimeType);
 					resp.addDataEntry(entry);
 
@@ -189,7 +190,7 @@ public class StaticContentController {
 	@Secured("CONTENT")
 	@RequestMapping(value="/admin/content/static/removeFile.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeFile(HttpServletRequest request, HttpServletResponse response, Locale locale) {
-		String imageName = request.getParameter("name");
+		String fileName = request.getParameter("name");
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
@@ -200,7 +201,7 @@ public class StaticContentController {
 			
 
 			
-			contentService.removeFile(store.getCode(), FileContentType.STATIC_FILE, imageName);
+			contentService.removeFile(store.getCode(), FileContentType.STATIC_FILE, fileName);
 
 			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 		
