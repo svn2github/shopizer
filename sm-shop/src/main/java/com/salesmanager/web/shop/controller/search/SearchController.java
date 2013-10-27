@@ -1,7 +1,5 @@
 package com.salesmanager.web.shop.controller.search;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,22 +17,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationship;
-import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationshipType;
-import com.salesmanager.core.business.content.model.Content;
-import com.salesmanager.core.business.content.model.ContentDescription;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
-import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.search.model.SearchKeywords;
 import com.salesmanager.core.business.search.model.SearchResponse;
 import com.salesmanager.core.business.search.service.SearchService;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.entity.shop.Breadcrumb;
-import com.salesmanager.web.entity.shop.BreadcrumbItem;
-import com.salesmanager.web.entity.shop.BreadcrumbItemType;
-import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.model.search.AutoCompleteRequest;
 @Controller
@@ -87,7 +75,7 @@ public class SearchController {
 		}
 		
 		AutoCompleteRequest req = new AutoCompleteRequest(store,language);
-		
+		/** formatted toJSONString because of te specific field names required in the UI **/
 		SearchKeywords keywords = searchService.searchForKeywords(req.getCollectionName(), req.toJSONString(query), AUTOCOMPLETE_ENTRIES_COUNT);
 		return keywords.toJSONString();
 		
@@ -109,7 +97,7 @@ public class SearchController {
 	 */
 	@RequestMapping("/shop/services/search/{store}/{language}/{start}/{max}/term.html")
 	@ResponseBody
-	public String search(@RequestBody String json, @PathVariable String store, @PathVariable final String language, @PathVariable int start, @PathVariable int max, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public SearchResponse search(@RequestBody String json, @PathVariable String store, @PathVariable final String language, @PathVariable int start, @PathVariable int max, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 	
 		
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
@@ -131,21 +119,19 @@ public class SearchController {
 		}
 		
 		SearchResponse resp = searchService.search(merchantStore, language, json, max, start);
-		return null;
+		return resp;
 		
 	}
 	
 	@RequestMapping(value={"/shop/search/search.html"}, method=RequestMethod.POST)
 	public String displaySearch(@RequestParam("q") String query, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
-		
-		Language language = (Language)request.getAttribute(Constants.LANGUAGE);
-		
+
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 
+		model.addAttribute("q",query);
 		
 		/** template **/
 		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Search.search).append(".").append(store.getStoreTemplate());
-
 		return template.toString();
 	}
 	
