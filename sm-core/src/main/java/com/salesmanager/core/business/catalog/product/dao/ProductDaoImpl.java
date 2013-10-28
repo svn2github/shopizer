@@ -459,6 +459,10 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		StringBuilder countBuilderWhere = new StringBuilder();
 		countBuilderWhere.append(" where p.merchantStore.id=:mId");
 		
+		if(!CollectionUtils.isEmpty(criteria.getProductIds())) {
+			countBuilderWhere.append(" and p.id in (:pId)");
+		}
+		
 		//"select count(p) from Product as p INNER JOIN p.availabilities pa INNER JOIN p.categories categs where p.merchantStore.id=:mId and categs.id in (:cid) and pa.region in (:lid) and p.available=1 and p.dateAvailable<=:dt");
 
 		if(!StringUtils.isBlank(criteria.getProductName())) {
@@ -467,7 +471,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		}
 		
 		
-		if(criteria.getCategoryIds()!=null && criteria.getCategoryIds().size()>0) {
+		if(!CollectionUtils.isEmpty(criteria.getCategoryIds())) {
 			countBuilderSelect.append(" INNER JOIN p.categories categs");
 			countBuilderWhere.append(" and categs.id in (:cid)");
 		}
@@ -503,14 +507,14 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 				countBuilderWhere.append(" and p.available=false or p.dateAvailable>:dt");
 			}
 		}
-	
+
 		Query countQ = super.getEntityManager().createQuery(
 				countBuilderSelect.toString() + countBuilderWhere.toString());
 
 		countQ.setParameter("mId", store.getId());
 		
 		
-		if(criteria.getCategoryIds()!=null && criteria.getCategoryIds().size()>0) {
+		if(!CollectionUtils.isEmpty(criteria.getCategoryIds())) {
 			countQ.setParameter("cid", criteria.getCategoryIds());
 		}
 		
@@ -536,6 +540,10 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		if(!StringUtils.isBlank(criteria.getProductName())) {
 			countQ.setParameter("nm", "%" + criteria.getProductName() + "%");
 			countQ.setParameter("lang", language.getId());
+		}
+		
+		if(!CollectionUtils.isEmpty(criteria.getProductIds())) {
+			countQ.setParameter("pId", criteria.getProductIds());
 		}
 
 		Number count = (Number) countQ.getSingleResult ();
@@ -589,7 +597,11 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		qs.append(" and pd.language.id=:lang");
 		//qs.append(" and manufd.language.id=:lang");
 		
-		if(criteria.getCategoryIds()!=null && criteria.getCategoryIds().size()>0) {
+		if(!CollectionUtils.isEmpty(criteria.getProductIds())) {
+			qs.append(" and p.id in (:pId)");
+		}
+		
+		if(!CollectionUtils.isEmpty(criteria.getCategoryIds())) {
 			qs.append(" and categs.id in (:cid)");
 		}
 		
@@ -629,11 +641,13 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
     	q.setParameter("lang", language.getId());
     	q.setParameter("mId", store.getId());
     	
-    	if(criteria.getCategoryIds()!=null && criteria.getCategoryIds().size()>0) {
+    	if(!CollectionUtils.isEmpty(criteria.getCategoryIds())) {
     		q.setParameter("cid", criteria.getCategoryIds());
     	}
     	
-
+		if(!CollectionUtils.isEmpty(criteria.getProductIds())) {
+			q.setParameter("pId", criteria.getProductIds());
+		}
 		
 		if(criteria.getAvailable()!=null) {
 			q.setParameter("dt", new Date());

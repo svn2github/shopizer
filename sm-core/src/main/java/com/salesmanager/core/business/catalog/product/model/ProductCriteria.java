@@ -15,8 +15,9 @@ public class ProductCriteria extends Criteria {
 	private Boolean available = null;
 	
 	private List<Long> categoryIds;
-	
 	private List<String> availabilities;
+	
+	private List<Long> productIds;
 
 	public String getProductName() {
 		return productName;
@@ -57,6 +58,14 @@ public class ProductCriteria extends Criteria {
 
 	public List<AttributeCriteria> getAttributeCriteria() {
 		return attributeCriteria;
+	}
+
+	public void setProductIds(List<Long> productIds) {
+		this.productIds = productIds;
+	}
+
+	public List<Long> getProductIds() {
+		return productIds;
 	}
 
 
