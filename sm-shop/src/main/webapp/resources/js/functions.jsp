@@ -37,24 +37,8 @@ function loadProducts(url,divProductsContainer) {
 				url: url,
 				success: function(productList) {
 
-					for (var i = 0; i < productList.products.length; i++) {
-					    var productHtml = '<li class="item span3">';
-					    	productHtml = productHtml + '<div class="product-box"><a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html">';
-					    	productHtml = productHtml + '<h4 class="name">' + productList.products[i].name +'</h4></a>';
-					    	if(productList.products[i].discounted) {
-					    		productHtml = productHtml + '<h3 class="number"><del>' + productList.products[i].originalProductPrice +'</del>&nbsp;<span class="specialPrice">' + productList.products[i].productPrice + '</span></h3>';
-					    	} else {
-					    		productHtml = productHtml + '<h3 class="number">' + productList.products[i].productPrice +'</h3>';
-					    	}
-					    	if(productList.products[i].imageUrl!=null) {
-					    		productHtml = productHtml + '<a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html"><img src="<c:url value="/"/>' + productList.products[i].imageUrl +'"></a>';
-					    	}
-					    	productHtml = productHtml + '<div class="bottom"><a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html" class="view"><s:message code="button.label.view" text="View" /></a> / <a productid="' + productList.products[i].id + '" href="#" class="addToCart"><s:message code="button.label.addToCart" text="Add to cart" /></a></div></div></li>';
-					    	//displayProducts[i] = productHtml;
-					    	$(divProductsContainer).append(productHtml);
-
-					}
 					
+					buildProductsList(productList,divProductsContainer);
 					callBackLoadProducts(productList.totalCount);
 
 
@@ -115,25 +99,10 @@ function searchProducts(url,divProductsContainer,q,filter) {
 	  			contentType:"application/json;charset=UTF-8",
 				success: function(productList) {
 
-					for (var i = 0; i < productList.products.length; i++) {
-					    var productHtml = '<li class="item span3">';
-					    	productHtml = productHtml + '<div class="product-box"><a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html">';
-					    	productHtml = productHtml + '<h4 class="name">' + productList.products[i].name +'</h4></a>';
-					    	if(productList.products[i].discounted) {
-					    		productHtml = productHtml + '<h3 class="number"><del>' + productList.products[i].originalProductPrice +'</del>&nbsp;<span class="specialPrice">' + productList.products[i].productPrice + '</span></h3>';
-					    	} else {
-					    		productHtml = productHtml + '<h3 class="number">' + productList.products[i].productPrice +'</h3>';
-					    	}
-					    	if(productList.products[i].imageUrl!=null) {
-					    		productHtml = productHtml + '<a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html"><img src="<c:url value="/"/>' + productList.products[i].imageUrl +'"></a>';
-					    	}
-					    	productHtml = productHtml + '<div class="bottom"><a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html" class="view"><s:message code="button.label.view" text="View" /></a> / <a productid="' + productList.products[i].id + '" href="#" class="addToCart"><s:message code="button.label.addToCart" text="Add to cart" /></a></div></div></li>';
-					    	//displayProducts[i] = productHtml;
-					    	$(divProductsContainer).append(productHtml);
-
-					}
-					
-					callBackSearchProducts(productList.totalCount);
+					buildProductsList(productList,divProductsContainer);
+					//TODO manage facets
+					//TODO manage total entries found
+					callBackLoadProducts(productList.totalCount);
 
 
 				},
@@ -146,6 +115,32 @@ function searchProducts(url,divProductsContainer,q,filter) {
 		
 		
 		
+}
+
+/**
+*
+* Builds the product container div from the product list
+**/
+function buildProductsList(productList, divProductsContainer) {
+
+
+		for (var i = 0; i < productList.products.length; i++) {
+			var productHtml = '<li class="item span3">';
+			productHtml = productHtml + '<div class="product-box"><a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html">';
+			productHtml = productHtml + '<h4 class="name">' + productList.products[i].name +'</h4></a>';
+			if(productList.products[i].discounted) {
+					   productHtml = productHtml + '<h3 class="number"><del>' + productList.products[i].originalProductPrice +'</del>&nbsp;<span class="specialPrice">' + productList.products[i].productPrice + '</span></h3>';
+			} else {
+					    productHtml = productHtml + '<h3 class="number">' + productList.products[i].productPrice +'</h3>';
+			}
+			if(productList.products[i].imageUrl!=null) {
+					    productHtml = productHtml + '<a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html"><img src="<c:url value="/"/>' + productList.products[i].imageUrl +'"></a>';
+			}
+			productHtml = productHtml + '<div class="bottom"><a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html" class="view"><s:message code="button.label.view" text="View" /></a> / <a productid="' + productList.products[i].id + '" href="#" class="addToCart"><s:message code="button.label.addToCart" text="Add to cart" /></a></div></div></li>';
+			$(divProductsContainer).append(productHtml);
+
+		}
+
 }
 
 </script>
