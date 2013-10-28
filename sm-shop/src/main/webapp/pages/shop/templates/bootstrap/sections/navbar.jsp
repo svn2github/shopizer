@@ -23,12 +23,12 @@ $(document).ready(function() {
 
 	$('#searchField').typeahead({
 		name: 'shopizer-search',
-		
 		<c:if test="${requestScope.CONFIGS['useDefaultSearchConfig'][requestScope.LANGUAGE.code]==true}">
 		  <c:if test="${requestScope.CONFIGS['defaultSearchConfigPath'][requestScope.LANGUAGE.code]!=null}">
 		prefetch: '<c:out value="${requestScope.CONFIGS['defaultSearchConfigPath'][requestScope.LANGUAGE.code]}"/>',
 		  </c:if>
 	    </c:if>
+
 
 	    remote: {
     		url: '<c:url value="/shop/services/search/${requestScope.MERCHANT_STORE.code}/${requestScope.LANGUAGE.code}/autocomplete.html"/>?q=%QUERY',
