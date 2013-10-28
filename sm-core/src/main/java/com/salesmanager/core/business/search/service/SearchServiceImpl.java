@@ -51,6 +51,7 @@ public class SearchServiceImpl implements SearchService {
 	@Autowired
 	private PricingService pricingService;
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void index(MerchantStore store, Product product)
 			throws ServiceException {
@@ -105,10 +106,14 @@ public class SearchServiceImpl implements SearchService {
 			index.setAvailable(product.isAvailable());
 			index.setDescription(description.getDescription());
 			index.setName(description.getName());
+			if(product.getManufacturer()!=null) {
+				index.setManufacturer(String.valueOf(product.getManufacturer().getId()));
+			}
 			index.setPrice(price.getFinalPrice().doubleValue());
 			index.setHighlight(description.getProductHighlight());
 			if(!StringUtils.isBlank(description.getMetatagKeywords())){
 				String[] tags = description.getMetatagKeywords().split(",");
+				@SuppressWarnings("unchecked")
 				List<String> tagsList = new ArrayList(Arrays.asList(tags));
 				index.setTags(tagsList);
 			}
@@ -312,6 +317,7 @@ public class SearchServiceImpl implements SearchService {
 				indexProduct.setId((String)metaEntries.get("id"));
 				indexProduct.setLang((String)metaEntries.get("lang"));
 				indexProduct.setName(((String)metaEntries.get("name")));
+				indexProduct.setManufacturer(((String)metaEntries.get("manufacturer")));
 				indexProduct.setPrice(((Double)metaEntries.get("price")));
 				indexProduct.setStore(((String)metaEntries.get("store")));
 				//indexProduct.setTags(

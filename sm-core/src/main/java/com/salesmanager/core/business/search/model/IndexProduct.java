@@ -11,6 +11,7 @@ public class IndexProduct implements JSONAware {
 	private String name;
 	private Double price;
 	private List<String> categories;//category code
+	private String manufacturer;//id of the manufacturer
 	private boolean available;
 	private String description;
 	private List<String> tags;//keywords ?
@@ -32,6 +33,7 @@ public class IndexProduct implements JSONAware {
 		obj.put("description", this.getDescription());
 		obj.put("highlight", this.getHighlight());
 		obj.put("store", this.getStore());
+		obj.put("manufacturer", this.getManufacturer());
 		obj.put("lang", this.getLang());
 		obj.put("id", this.getId());
 		if(categories!=null) {
@@ -133,6 +135,14 @@ public class IndexProduct implements JSONAware {
 
 	public String getId() {
 		return id;
+	}
+
+	public void setManufacturer(String manufacturer) {
+		this.manufacturer = manufacturer;
+	}
+
+	public String getManufacturer() {
+		return manufacturer;
 	}
 
 }
