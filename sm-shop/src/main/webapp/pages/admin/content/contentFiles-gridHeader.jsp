@@ -9,6 +9,6 @@
 			
 	
 			 {title:"<s:message code="label.entity.name" text="Name"/>", name:"name", canFilter:true},
-			 {title:"<s:message code="label.entity.name" text="Path"/>", name:"path", type: "link", canFilter:true},
+			 {title:"<s:message code="label.generic.url" text="URL"/>", name:"path", type: "link", canFilter:true},
 			 {title:"<s:message code="label.entity.type" text="Type"/>", name:"mimeType", canFilter:false},
 			  

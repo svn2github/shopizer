@@ -55,6 +55,7 @@
 				<c:set value="/admin/content/static/contentFiles.html" var="refreshUrl" scope="request" />
 				<c:set var="componentTitleKey" value="menu.content-files" scope="request" />
 				<c:set var="canRemoveEntry" value="true" scope="request" />
+				<c:set var="canEdit" value="false" scope="request"/>
 				<c:set var="gridHeader" value="/pages/admin/content/contentFiles-gridHeader.jsp" scope="request"/>
 				<jsp:include page="/pages/admin/components/list.jsp"></jsp:include>
 				<!-- End listing grid include -->
