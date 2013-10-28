@@ -1,10 +1,14 @@
 package com.salesmanager.web.shop.controller.search;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +21,25 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
+import com.salesmanager.core.business.catalog.product.model.ProductList;
+import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
+import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.language.service.LanguageService;
+import com.salesmanager.core.business.search.model.IndexProduct;
+import com.salesmanager.core.business.search.model.SearchEntry;
 import com.salesmanager.core.business.search.model.SearchKeywords;
 import com.salesmanager.core.business.search.model.SearchResponse;
 import com.salesmanager.core.business.search.service.SearchService;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.catalog.SearchProductList;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.model.search.AutoCompleteRequest;
+import com.salesmanager.web.utils.CatalogUtils;
+import com.salesmanager.web.utils.LocaleUtils;
 @Controller
 public class SearchController {
 	
@@ -32,7 +47,17 @@ public class SearchController {
 	private MerchantStoreService merchantStoreService;
 	
 	@Autowired
+	private LanguageService languageService;
+	
+	@Autowired
 	private SearchService searchService;
+	
+	@Autowired
+	private ProductService productService;
+	
+	
+	@Autowired
+	private CatalogUtils catalogUtils;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(SearchController.class);
 	
@@ -97,29 +122,78 @@ public class SearchController {
 	 */
 	@RequestMapping("/shop/services/search/{store}/{language}/{start}/{max}/term.html")
 	@ResponseBody
-	public SearchResponse search(@RequestBody String json, @PathVariable String store, @PathVariable final String language, @PathVariable int start, @PathVariable int max, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public SearchProductList search(@RequestBody String json, @PathVariable String store, @PathVariable final String language, @PathVariable int start, @PathVariable int max, Model model, HttpServletRequest request, HttpServletResponse response) {
 	
-		
+		SearchProductList returnList = new SearchProductList();
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-
-		if(merchantStore!=null) {
-			if(!merchantStore.getCode().equals(store)) {
-				merchantStore = null; //reset for the current request
+		
+		try {
+			
+			Map<String,Language> langs = languageService.getLanguagesMap();
+			
+			if(merchantStore!=null) {
+				if(!merchantStore.getCode().equals(store)) {
+					merchantStore = null; //reset for the current request
+				}
 			}
+			
+			if(merchantStore== null) {
+				merchantStore = merchantStoreService.getByCode(store);
+			}
+			
+			if(merchantStore==null) {
+				LOGGER.error("Merchant store is null for code " + store);
+				response.sendError(503, "Merchant store is null for code " + store);//TODO localized message
+				return null;
+			}
+			
+			Language l = langs.get(language);
+			if(l==null) {
+				l = languageService.getByCode(Constants.DEFAULT_LANGUAGE);
+			}
+
+			SearchResponse resp = searchService.search(merchantStore, language, json, max, start);
+			
+			List<SearchEntry> entries = resp.getEntries();
+			
+			if(!CollectionUtils.isEmpty(entries)) {
+				List<Long> ids = new ArrayList<Long>();
+				for(SearchEntry entry : entries) {
+					IndexProduct indexedProduct = entry.getIndexProduct();
+					Long id = Long.parseLong(indexedProduct.getId());
+					
+					//TODO highlight
+					
+					//TODO facets
+					
+					
+					ids.add(id);
+				}
+				
+				ProductCriteria searchCriteria = new ProductCriteria();
+				searchCriteria.setMaxCount(max);
+				searchCriteria.setStartIndex(start);
+				searchCriteria.setProductIds(ids);
+				
+				ProductList productList = productService.listByStore(merchantStore, l, searchCriteria);
+				
+				
+				for(Product product : productList.getProducts()) {
+					//create new proxy product
+					com.salesmanager.web.entity.catalog.Product p = catalogUtils.buildProxyProduct(product,merchantStore,LocaleUtils.getLocale(l));
+					returnList.getProducts().add(p);
+		
+				}
+				returnList.setTotalCount(productList.getProducts().size());
+			}
+			
+		} catch (Exception e) {
+			LOGGER.error("Exception occured while querying " + json,e);
 		}
 		
-		if(merchantStore== null) {
-			merchantStore = merchantStoreService.getByCode(store);
-		}
+
 		
-		if(merchantStore==null) {
-			LOGGER.error("Merchant store is null for code " + store);
-			response.sendError(503, "Merchant store is null for code " + store);//TODO localized message
-			return null;
-		}
-		
-		SearchResponse resp = searchService.search(merchantStore, language, json, max, start);
-		return resp;
+		return returnList;
 		
 	}
 	
