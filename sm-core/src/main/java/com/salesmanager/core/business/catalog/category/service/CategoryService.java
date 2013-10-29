@@ -70,6 +70,21 @@ public interface CategoryService extends SalesManagerEntityService<Long, Categor
 
 	Category getByLanguage(long categoryId, Language language);
 
+	/**
+	 * Returns a list by category containing the category code and the number of products
+	 * 1->obj[0] = book
+	 *    obj[1] = 150
+	 * 2->obj[0] = novell
+	 *    obj[1] = 35
+	 *   ...
+	 * @param store
+	 * @param categoryIds
+	 * @return
+	 * @throws ServiceException
+	 */
+	List<Object[]> countProductsByCategories(MerchantStore store,
+			List<Long> categoryIds) throws ServiceException;
+
 
 	
 	

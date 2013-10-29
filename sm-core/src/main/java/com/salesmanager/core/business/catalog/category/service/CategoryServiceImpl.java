@@ -57,6 +57,14 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	}
 	
 	@Override
+	public List<Object[]> countProductsByCategories(MerchantStore store,
+			List<Long> categoryIds) throws ServiceException {
+		
+		return categoryDao.countProductsByCategories(store, categoryIds);
+		
+	}
+	
+	@Override
 	public Category getByLanguage(long categoryId, Language language) {
 		return categoryDao.getByLanguage(categoryId, language);
 	}

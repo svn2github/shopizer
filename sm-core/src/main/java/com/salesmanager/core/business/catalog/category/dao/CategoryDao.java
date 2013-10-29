@@ -39,4 +39,7 @@ public interface CategoryDao extends SalesManagerEntityDao<Long, Category> {
 
 	Category getByLanguage(long categoryId, Language language);
 
+	List<Object[]> countProductsByCategories(MerchantStore store,
+			List<Long> categoryIds);
+
 }

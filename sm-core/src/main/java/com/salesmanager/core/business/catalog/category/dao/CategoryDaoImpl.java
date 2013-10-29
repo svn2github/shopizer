@@ -2,6 +2,8 @@ package com.salesmanager.core.business.catalog.category.dao;
 
 import java.util.List;
 
+import javax.persistence.Query;
+
 import org.springframework.stereotype.Repository;
 
 import com.mysema.query.jpa.JPQLQuery;
@@ -9,6 +11,7 @@ import com.mysema.query.jpa.impl.JPAQuery;
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.QCategory;
 import com.salesmanager.core.business.catalog.category.model.QCategoryDescription;
+import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -287,6 +290,32 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 			.orderBy(qCategory.sortOrder.asc(),qCategory.id.asc());
 		
 		return query.listDistinct(qCategory);
+	}
+	
+	@Override
+	public List<Object[]> countProductsByCategories(MerchantStore store, List<Long> categoryIds) {
+
+		
+		StringBuilder qs = new StringBuilder();
+		qs.append("select categories.code, count(product.id) from Product product ");
+		qs.append("inner join product.categories categories ");
+		qs.append("where categories.id in (:cid) ");
+		qs.append("group by categories.id");
+		
+    	String hql = qs.toString();
+		Query q = super.getEntityManager().createQuery(hql);
+
+    	q.setParameter("cid", categoryIds);
+
+
+    	
+    	@SuppressWarnings("unchecked")
+		List<Object[]> counts =  q.getResultList();
+
+    	
+    	return counts;
+		
+		
 	}
 	
 	@Override
