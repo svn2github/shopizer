@@ -310,58 +310,66 @@ public class SearchServiceImpl implements SearchService {
 				
 				Map<String,Object> metaEntries = hit.getMetaEntries();
 				IndexProduct indexProduct = new IndexProduct();
-				indexProduct.setAvailable((Boolean)metaEntries.get("available"));
+				//indexProduct.setAvailable((Boolean)metaEntries.get("available"));
 				//indexProduct.setCategories(categories);
-				indexProduct.setDescription((String)metaEntries.get("description"));
-				indexProduct.setHighlight((String)metaEntries.get("highlight"));
-				indexProduct.setId((String)metaEntries.get("id"));
-				indexProduct.setLang((String)metaEntries.get("lang"));
-				indexProduct.setName(((String)metaEntries.get("name")));
-				indexProduct.setManufacturer(((String)metaEntries.get("manufacturer")));
-				indexProduct.setPrice(((Double)metaEntries.get("price")));
-				indexProduct.setStore(((String)metaEntries.get("store")));
+				Map sourceEntries = (Map)metaEntries.get("source");
+				
+				indexProduct.setDescription((String)sourceEntries.get("description"));
+				indexProduct.setHighlight((String)sourceEntries.get("highlight"));
+				indexProduct.setId((String)sourceEntries.get("id"));
+				indexProduct.setLang((String)sourceEntries.get("lang"));
+				indexProduct.setName(((String)sourceEntries.get("name")));
+				indexProduct.setManufacturer(((String)sourceEntries.get("manufacturer")));
+				indexProduct.setPrice(((Double)sourceEntries.get("price")));
+				indexProduct.setStore(((String)sourceEntries.get("store")));
 				//indexProduct.setTags(
 				entry.setIndexProduct(indexProduct);
 				entries.add(entry);
 				
 				Map<String, HighlightField> fields = hit.getHighlightFields();
-				List<String> highlights = new ArrayList<String>();
-				for(HighlightField field : fields.values()) {
+				if(fields!=null) {
+					List<String> highlights = new ArrayList<String>();
+					for(HighlightField field : fields.values()) {
+						
+						Text[] text = field.getFragments();
+						//text[0]
+						String f = field.getName();
+						highlights.add(f);
+						
+						
+					}
 					
-					Text[] text = field.getFragments();
-					//text[0]
-					String f = field.getName();
-					highlights.add(f);
-					
-					
-				}
+					entry.setHighlights(highlights);
 				
-				entry.setHighlights(highlights);
+				}
 			}
 			
 			resp.setEntries(entries);
 			
 			Map<String,Facet> facets = response.getFacets();
-			Map<String,List<SearchFacet>> searchFacets = new HashMap<String,List<SearchFacet>>();
-			for(String key : facets.keySet()) {
-				
-				Facet f = facets.get(key);
-				
-				List<SearchFacet> fs = searchFacets.get(key);
-				if(fs==null) {
-					fs = new ArrayList<SearchFacet>();
-					searchFacets.put(key, fs);
+			if(facets!=null) {
+				Map<String,List<SearchFacet>> searchFacets = new HashMap<String,List<SearchFacet>>();
+				for(String key : facets.keySet()) {
+					
+					Facet f = facets.get(key);
+					
+					List<SearchFacet> fs = searchFacets.get(key);
+					if(fs==null) {
+						fs = new ArrayList<SearchFacet>();
+						searchFacets.put(key, fs);
+					}
+					
+					SearchFacet searchFacet = new SearchFacet();
+					searchFacet.setKey(key);
+					searchFacet.setName(f.getName());
+					
+					fs.add(searchFacet);
+					
 				}
 				
-				SearchFacet searchFacet = new SearchFacet();
-				searchFacet.setKey(key);
-				searchFacet.setName(f.getName());
-				
-				fs.add(searchFacet);
-				
-			}
+				resp.setFacets(searchFacets);
 			
-			resp.setFacets(searchFacets);
+			}
 			
 			
 			
