@@ -32,7 +32,7 @@
 
 <appender name="WEB" class="org.apache.log4j.rolling.RollingFileAppender">
 		<param name="File" value="/sm-shop.log" />
-		<param name="Fppend" value="true" />
+		<param name="Append" value="true" />
 		<param name="Encoding" value="UTF-8" />
 		<param name="Threshold" value="debug" />
 
@@ -46,7 +46,7 @@
 		<appender-ref ref="WEB" />
 </logger>
 
-<appender name="WEB_FRONT" class="org.apache.log4j.rolling.RollingFileAppender">
+<!--<appender name="WEB_FRONT" class="org.apache.log4j.rolling.RollingFileAppender">
 		<param name="File" value="/sm-shop-front.log" />
 		<param name="Append" value="true" />
 		<param name="Encoding" value="UTF-8" />
@@ -61,7 +61,9 @@
 		<appender-ref ref="WEB_FRONT" />
 </logger>
 
-<appender name="WEB_ADMIN" class="org.apache.log4j.rolling.RollingFileAppender">
+-->
+
+<!--<appender name="WEB_ADMIN" class="org.apache.log4j.rolling.RollingFileAppender">
 		<param name="File" value="/sm-shop-admin.log" />
 		<param name="Append" value="true" />
 		<param name="Encoding" value="UTF-8" />
@@ -75,6 +77,8 @@
 		<level value="debug"/>
 		<appender-ref ref="WEB_ADMIN" />
 </logger>
+
+-->
 
 <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
 	<param name="Target" value="System.out"/>
