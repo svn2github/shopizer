@@ -2,6 +2,7 @@ package com.salesmanager.web.shop.controller.category.rest;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -166,7 +167,24 @@ public class ShoppingCategoryController {
 			subCategories = getSubCategories(store,category,language,locale);
 		}
 
-		//TODO number of items by category
+		//TODO CACHE number of items by category
+		
+		String lineage = new StringBuilder().append(category.getLineage()).append(category.getId()).append("/").toString();
+		List<Category> categories = categoryService.listByLineage(store, lineage);
+		
+		List<Long> ids = new ArrayList<Long>();
+		if(categories!=null && categories.size()>0) {
+			for(Category c : categories) {
+				ids.add(c.getId());
+			}
+		} 
+
+		List<Object[]> countProductsByCategories = categoryService.countProductsByCategories(store, ids);
+		Map<String, Integer> countByCategories = new HashMap<String,Integer>();
+		for(Object[] counts : countProductsByCategories) {
+			countByCategories.put((String)counts[0], (Integer)counts[1]);
+		}
+		model.addAttribute("counts", countByCategories);
 		
 		//Parent category
 		Category parent = null;

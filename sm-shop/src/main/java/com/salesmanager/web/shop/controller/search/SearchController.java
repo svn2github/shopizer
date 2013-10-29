@@ -174,6 +174,7 @@ public class SearchController {
 				searchCriteria.setMaxCount(max);
 				searchCriteria.setStartIndex(start);
 				searchCriteria.setProductIds(ids);
+				searchCriteria.setAvailable(true);
 				
 				ProductList productList = productService.listByStore(merchantStore, l, searchCriteria);
 				
