@@ -68,9 +68,12 @@ function searchProducts(url,divProductsContainer,q,filter) {
 		var queryStart = '{';
 	
 		//var query = '{\"text\" : {\"_all\" : \"' + search + '\" }}';
-		var query = '\"query\":{\"text\" : {\"_all\" : "' + q + '\" }}';
+		//"{\"query\":{\"query_string\":{\"fields\" : [\"name^5\", \"description\", \"tags\"], \"query\" : \"Sp*\", \"use_dis_max\" : true }}}";
+		//var query = '\"query\":{\"text\" : {\"_all\" : "' + q + '\" }}';
+		var query = '\"query\":{\"query_string\" : {\"fields\" : [\"name^3\", \"description\", \"tags\"], \"query\" : \"' + q + '*", \"use_dis_max\" : true }}';
 		if(filter!=null && filter!='') {
-			query = '\"query\":{\"filtered\":{\"query\":{\"text\":{\"_all\":\"' + q + '\"}},' + filter + '}}';
+			//query = '\"query\":{\"filtered\":{\"query\":{\"text\":{\"_all\":\"' + q + '\"}},' + filter + '}}';
+			query = query + ',' + filter + '}}';
 		}
 		if(highlights!=null && highlights!='') {
 			query = query + ',' + highlights;
