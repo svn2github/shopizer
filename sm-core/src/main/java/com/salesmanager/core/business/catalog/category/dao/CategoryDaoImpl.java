@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.catalog.category.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -11,7 +12,6 @@ import com.mysema.query.jpa.impl.JPAQuery;
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.QCategory;
 import com.salesmanager.core.business.catalog.category.model.QCategoryDescription;
-import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -300,12 +300,14 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		qs.append("select categories.code, count(product.id) from Product product ");
 		qs.append("inner join product.categories categories ");
 		qs.append("where categories.id in (:cid) ");
+		qs.append("and p.available=true and p.dateAvailable<=:dt ");
 		qs.append("group by categories.id");
 		
     	String hql = qs.toString();
 		Query q = super.getEntityManager().createQuery(hql);
 
     	q.setParameter("cid", categoryIds);
+    	q.setParameter("dt", new Date());
 
 
     	
