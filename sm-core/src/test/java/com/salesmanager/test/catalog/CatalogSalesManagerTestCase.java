@@ -495,6 +495,22 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 
 	    productPriceService.create(dprice6);
 	    
+	    //count products by category
+		String lineage = new StringBuilder().append(book.getLineage()).toString();
+		
+		List<Category> categories = categoryService.listByLineage(store, lineage);
+		
+		List<Long> ids = new ArrayList<Long>();
+		if(categories!=null && categories.size()>0) {
+			for(Category c : categories) {
+				ids.add(c.getId());
+			}
+		} 
+		
+		List<Object[]> objs = categoryService.countProductsByCategories(store, ids);
+		
+		System.out.println("Done");
+	    
 
 	    
 	}
