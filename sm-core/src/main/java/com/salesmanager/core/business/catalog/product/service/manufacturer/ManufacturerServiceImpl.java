@@ -62,6 +62,11 @@ public class ManufacturerServiceImpl extends
 	public List<Manufacturer> listByStore(MerchantStore store) throws ServiceException {
 		return manufacturerDao.listByStore(store);
 	}
+	
+	@Override
+	public List<Manufacturer> listByProductsByCategoriesId(MerchantStore store, List<Long> ids, Language language) throws ServiceException {
+		return manufacturerDao.listByProductsByCategoriesId(store, ids, language);
+	}
 
 	@Override
 	public void addManufacturerDescription(Manufacturer manufacturer, ManufacturerDescription description)

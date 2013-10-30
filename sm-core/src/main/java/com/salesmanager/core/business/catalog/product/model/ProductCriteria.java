@@ -16,8 +16,9 @@ public class ProductCriteria extends Criteria {
 	
 	private List<Long> categoryIds;
 	private List<String> availabilities;
-	
 	private List<Long> productIds;
+	
+	private Long manufacturerId = null;
 
 	public String getProductName() {
 		return productName;
@@ -66,6 +67,14 @@ public class ProductCriteria extends Criteria {
 
 	public List<Long> getProductIds() {
 		return productIds;
+	}
+
+	public void setManufacturerId(Long manufacturerId) {
+		this.manufacturerId = manufacturerId;
+	}
+
+	public Long getManufacturerId() {
+		return manufacturerId;
 	}
 
 

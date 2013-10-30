@@ -65,6 +65,12 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	}
 	
 	@Override
+	public List<Category> listByCodes(MerchantStore store, List<String> codes,
+			Language language) {
+		return categoryDao.getByCodes(store, codes, language);
+	}
+	
+	@Override
 	public Category getByLanguage(long categoryId, Language language) {
 		return categoryDao.getByLanguage(categoryId, language);
 	}

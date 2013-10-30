@@ -441,7 +441,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 	
 	
 	/**
-	 * Used in the admin section
+	 * Used for all purpose !
 	 * @param store
 	 * @param first
 	 * @param max
@@ -462,8 +462,6 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		if(!CollectionUtils.isEmpty(criteria.getProductIds())) {
 			countBuilderWhere.append(" and p.id in (:pId)");
 		}
-		
-		//"select count(p) from Product as p INNER JOIN p.availabilities pa INNER JOIN p.categories categs where p.merchantStore.id=:mId and categs.id in (:cid) and pa.region in (:lid) and p.available=1 and p.dateAvailable<=:dt");
 
 		if(!StringUtils.isBlank(criteria.getProductName())) {
 			countBuilderSelect.append(" INNER JOIN p.descriptions pd");
@@ -474,6 +472,11 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		if(!CollectionUtils.isEmpty(criteria.getCategoryIds())) {
 			countBuilderSelect.append(" INNER JOIN p.categories categs");
 			countBuilderWhere.append(" and categs.id in (:cid)");
+		}
+		
+		if(criteria.getManufacturerId()!=null) {
+			countBuilderSelect.append(" LEFT JOIN fetch p.manufacturer manuf");
+			countBuilderWhere.append(" and manuf.id = :manufid");
 		}
 		
 		if(!StringUtils.isBlank(criteria.getCode())) {
@@ -525,6 +528,10 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		
 		if(!StringUtils.isBlank(criteria.getCode())) {
 			countQ.setParameter("sku", "%" + criteria.getCode() + "%");
+		}
+		
+		if(criteria.getManufacturerId()!=null) {
+			countQ.setParameter("manufid", criteria.getManufacturerId());
 		}
 		
 		if(!CollectionUtils.isEmpty(criteria.getAttributeCriteria())) {
@@ -605,6 +612,10 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 			qs.append(" and categs.id in (:cid)");
 		}
 		
+		if(criteria.getManufacturerId()!=null) {
+			qs.append(" and manuf.id = :manufid");
+		}
+		
 
 		if(criteria.getAvailable()!=null) {
 			if(criteria.getAvailable().booleanValue()) {
@@ -651,6 +662,10 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		
 		if(criteria.getAvailable()!=null) {
 			q.setParameter("dt", new Date());
+		}
+		
+		if(criteria.getManufacturerId()!=null) {
+			q.setParameter("manufid", criteria.getManufacturerId());
 		}
 		
 		if(!StringUtils.isBlank(criteria.getCode())) {

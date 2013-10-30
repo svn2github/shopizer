@@ -73,6 +73,27 @@ public class ManufacturerDaoImpl extends SalesManagerEntityDaoImpl<Long, Manufac
 		List<Manufacturer> manufacturers = query.list(qManufacturer);
 		return manufacturers;
 	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Manufacturer> listByProductsByCategoriesId(MerchantStore store, List<Long> ids, Language language) {
+		StringBuilder builderSelect = new StringBuilder();
+		builderSelect.append("select Manufacturer m from Product as p ");
+		builderSelect.append("join fetch m.descriptions md ");
+		builderSelect.append("join fetch p.categories categs ");
+		builderSelect.append("where categs.id in (:cid) ");
+		builderSelect.append("and md.language.id=:lang");
+
+		Query query = super.getEntityManager().createQuery(
+				builderSelect.toString());
+
+		query.setParameter("cid", ids);
+		query.setParameter("lang", language.getId());
+		
+		return query.getResultList();
+		
+	}
 
 
 

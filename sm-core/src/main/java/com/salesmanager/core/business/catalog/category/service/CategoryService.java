@@ -16,14 +16,6 @@ public interface CategoryService extends SalesManagerEntityService<Long, Categor
 	List<Category> listBySeUrl(MerchantStore store, String seUrl) throws ServiceException;
 	
 	CategoryDescription getDescription(Category category, Language language) throws ServiceException;
-	
-	//void addProduct(Category category, Product product) throws ServiceException;
-	
-	//void removeProduct(Category category, Product product) throws ServiceException;
-	
-	//void addProducts(Category category, List<Product> products) throws ServiceException;
-	
-	//void removeProducts(Category category, List<Product> products) throws ServiceException;
 
 	void addCategoryDescription(Category category, CategoryDescription description) throws ServiceException;
 
@@ -43,8 +35,6 @@ public interface CategoryService extends SalesManagerEntityService<Long, Categor
 
 	List<Category> listByStore(MerchantStore store, Language language)
 			throws ServiceException;
-
-	//Category getById(Long id);
 
 	void saveOrUpdate(Category category) throws ServiceException;
 
@@ -84,6 +74,16 @@ public interface CategoryService extends SalesManagerEntityService<Long, Categor
 	 */
 	List<Object[]> countProductsByCategories(MerchantStore store,
 			List<Long> categoryIds) throws ServiceException;
+
+	/**
+	 * Returns a list of Category by category code for a given language
+	 * @param store
+	 * @param codes
+	 * @param language
+	 * @return
+	 */
+	List<Category> listByCodes(MerchantStore store, List<String> codes,
+			Language language);
 
 
 	

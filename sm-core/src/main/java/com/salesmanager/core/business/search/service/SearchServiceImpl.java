@@ -42,9 +42,7 @@ public class SearchServiceImpl implements SearchService {
 	
 	private final static String PRODUCT_INDEX_NAME = "product";
 	private final static String UNDERSCORE = "_";
-	
-	private final static String KEYWORDS_INDEX_NAME = "keyword";
-	
+
 	@Autowired
 	private com.shopizer.search.services.SearchService searchService;
 	
@@ -171,10 +169,7 @@ public class SearchServiceImpl implements SearchService {
      	**/	
      		
 		try {
-			
-			//StringBuilder collectionName = new StringBuilder();
-			//collectionName.append(KEYWORDS_INDEX_NAME).append(UNDERSCORE).append(languageCode).append(UNDERSCORE).append(store.getCode().toLowerCase());
-			
+
 			SearchResponse response = searchService.searchAutoComplete(collectionName, jsonString, entriesCount);
 			
 			SearchKeywords keywords = new SearchKeywords();
@@ -310,8 +305,6 @@ public class SearchServiceImpl implements SearchService {
 				
 				Map<String,Object> metaEntries = hit.getMetaEntries();
 				IndexProduct indexProduct = new IndexProduct();
-				//indexProduct.setAvailable((Boolean)metaEntries.get("available"));
-				//indexProduct.setCategories(categories);
 				Map sourceEntries = (Map)metaEntries.get("source");
 				
 				indexProduct.setDescription((String)sourceEntries.get("description"));
@@ -322,7 +315,6 @@ public class SearchServiceImpl implements SearchService {
 				indexProduct.setManufacturer(((String)sourceEntries.get("manufacturer")));
 				indexProduct.setPrice(((Double)sourceEntries.get("price")));
 				indexProduct.setStore(((String)sourceEntries.get("store")));
-				//indexProduct.setTags(
 				entry.setIndexProduct(indexProduct);
 				entries.add(entry);
 				
@@ -362,6 +354,7 @@ public class SearchServiceImpl implements SearchService {
 					SearchFacet searchFacet = new SearchFacet();
 					searchFacet.setKey(key);
 					searchFacet.setName(f.getName());
+					searchFacet.setCount(f.getEntries().size());
 					
 					fs.add(searchFacet);
 					
