@@ -27,5 +27,6 @@ public interface ShoppingCartFacade {
 	 * either session or from underlying DB.
 	 */
 	public ShoppingCartData getShoppingCartData(final Customer customer,final  MerchantStore store,final Language language,final String shoppingCartId) throws Exception;
+	public ShoppingCartData recalculateCart( ShoppingCartData shoppingCart);
 
 }

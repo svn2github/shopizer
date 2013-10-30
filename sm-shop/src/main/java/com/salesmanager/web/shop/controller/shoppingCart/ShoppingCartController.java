@@ -128,76 +128,33 @@ public class ShoppingCartController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value={"/shop/shoppingCart.html"}, method=RequestMethod.GET)
-	public String displayShoppingCart(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-	    LOG.info( "Starting to calculate shopping cart...");
-	    Customer customer = (Customer)request.getSession().getAttribute(Constants.CUSTOMER);
-	    com.salesmanager.core.business.shoppingcart.model.ShoppingCart cart=null;
-	    MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-	    Language language = (Language)request.getAttribute("LANGUAGE");
-	    if(customer != null){
-	        LOG.info( "Customer found in HTTP request.");
-	        cart=shoppingCartService.getByCustomer(customer);
-	    }
-	    else{
+    @RequestMapping( value = { "/shop/shoppingCart.html" }, method = RequestMethod.GET )
+    public String displayShoppingCart( Model model, HttpServletRequest request, HttpServletResponse response )
+        throws Exception
+    {
 
-	    	  ShoppingCartData shoppingCart =getShoppingCartFromSession(request);
-	    	  cart = shoppingCartService.getByCode(shoppingCart.getCode(), store);
- 
-	    }
-	    
-	    if(cart !=null){
-	       	ShoppingCartData shoppingCart=convertFromEntity(cart, store,language);
-	        recalculateCart(shoppingCart);
-	        cart=this.getCartModel(shoppingCart, store, customer);
-	        shoppingCart=convertFromEntity(cart, store,language);
-	        shoppingCartService.saveOrUpdate(cart);
-	        //request.getSession().setAttribute(Constants.SHOPPING_CART, shoppingCart);
-	    	 model.addAttribute("cart", shoppingCart);
-	    	 shoppingCartFacade.getShoppingCartData( customer, store, language, shoppingCart.getCode() );
-	    } 
-	    
-	   
-	    //Looks in the HttpSession to see if a customer is logged in
-		
-		//shoppingCartService.getByCustomer(customerId);
-		
-		//set the cart in the HttpSession
-		
-		//calculate the price of each item by using ProductPriceUtils in sm-core
-		//set each item price in ShoppingCartItem.price
-		//return the ShoppingCartItem entity list in the model
-	    
-		/** template **/
-		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.ShoppingCart.shoppingCart).append(".").append(store.getStoreTemplate());
-		return template.toString();
+        LOG.info( "Starting to calculate shopping cart..." );
+        Customer customer = (Customer) request.getSession().getAttribute( Constants.CUSTOMER );
 
-		
-	}
+        MerchantStore store = (MerchantStore) request.getAttribute( Constants.MERCHANT_STORE );
+        Language language = (Language) request.getAttribute( "LANGUAGE" );
+        ShoppingCartData shoppingCart = getShoppingCartFromSession( request );
+        final String shoppingCartId = shoppingCart != null ? shoppingCart.getCode() : null;
+
+        // ShoppingCartData shoppingCart=convertFromEntity(cart, store,language);
+        shoppingCart = shoppingCartFacade.getShoppingCartData( customer, store, language, shoppingCartId );
+        shoppingCart = shoppingCartFacade.recalculateCart( shoppingCart );
+        model.addAttribute( "cart", shoppingCart );
+
+        /** template **/
+        StringBuilder template =
+            new StringBuilder().append( ControllerConstants.Tiles.ShoppingCart.shoppingCart ).append( "." ).append( store.getStoreTemplate() );
+        return template.toString();
+
+    }
 	
 	
-	private void recalculateCart( ShoppingCartData shoppingCart){
-		List<ShoppingCartItem> shoppingCartItems=Collections.emptyList();
-		if(CollectionUtils.isNotEmpty(shoppingCart.getShoppingCartItems())){
-			 shoppingCartItems=new ArrayList<ShoppingCartItem>();
-			 List<ProductAttribute> productAttributes=new ArrayList<ProductAttribute>();
-			LOG.info("Calculating final price for cart items.");
-			for(ShoppingCartItem shoppingCartItem :shoppingCart.getShoppingCartItems()){
-				Product product = productService.getById(shoppingCartItem.getProductId());
-				productAttributes.addAll(product.getAttributes());
-                final FinalPrice finalPrice=productPriceUtils.getFinalProductPrice(product, productAttributes);
-                shoppingCartItem.setProductPrice(finalPrice.getFinalPrice());
-                shoppingCartItems.add(shoppingCartItem);
-            }
-		}
-		
-		if(CollectionUtils.isNotEmpty(shoppingCartItems)){
-			shoppingCart.setShoppingCartItems(shoppingCartItems);
-		}
-		
-}
-	
+
 	/**
 	 * Add an item to the ShoppingCart (AJAX exposed method)
 	 * @param id
