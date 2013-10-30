@@ -299,7 +299,6 @@ public class SearchServiceImpl {
 	 * @param field
 	 * @return
 	 */
-	//public Collection<SearchHit> searchTerm(String collection,String field,String term) {
 	public SearchResponse search(SearchRequest request) throws Exception {
 
 		SearchResponse response = new SearchResponse();
@@ -360,8 +359,7 @@ public class SearchServiceImpl {
 	
 	        org.elasticsearch.action.search.SearchResponse rsp = builder.execute().actionGet();
 	        SearchHit[] docs = rsp.getHits().getHits();
-	        @SuppressWarnings("unchecked")
-			List<com.shopizer.search.services.SearchHit> hits = new ArrayList();
+			List<com.shopizer.search.services.SearchHit> hits = new ArrayList<com.shopizer.search.services.SearchHit>();
 	        @SuppressWarnings("rawtypes")
 			List ids = new ArrayList();
 	        response.setCount(docs.length);
@@ -372,14 +370,9 @@ public class SearchServiceImpl {
 	          // if we use in mapping: "_source" : {"enabled" : false}
 	          // we need to include all necessary fields in query and then to use doc.getFields()
 	          // instead of doc.getSource()
-	        	//com.personalization.services.search.SearchHit hit = new com.personalization.services.search.SearchHit();
-	        	//hit.setSource(sd.sourceAsString());
-	        	//hit.setScore(sd.getScore());
-	        	//hit.setHighligts(sd.highlightFields());
-	        	//hits.add(hit);
-	        	
 
-	            System.out.println(sd.sourceAsString());
+
+	        	log.debug("Found entry " + sd.sourceAsString());
 	            //System.out.println(sd.getScore());
 	        	com.shopizer.search.services.SearchHit hit = new com.shopizer.search.services.SearchHit(sd);
 	        	hits.add(hit);
@@ -395,18 +388,18 @@ public class SearchServiceImpl {
 	        
 	        Facets facets = rsp.getFacets();
 	        if(facets!=null) {
-	        	Map facetsMap = new HashMap();
+	        	Map<String,com.shopizer.search.services.Facet> facetsMap = new HashMap<String,com.shopizer.search.services.Facet>();
 	        	for (Facet facet : facets.facets()) {
 	        		 
 	        	     if (facet instanceof TermsFacet) {
 	        	         TermsFacet ff = (TermsFacet) facet;
 	        	         com.shopizer.search.services.Facet f = new com.shopizer.search.services.Facet();
 	        	         f.setName(ff.getName());
-	        	         List entries = new ArrayList();
+	        	         List<com.shopizer.search.services.Entry> entries = new ArrayList<com.shopizer.search.services.Entry>();
 	        	         for(Object o : ff) {
 	        	        	 com.shopizer.search.services.Entry entry = new com.shopizer.search.services.Entry();
 	        	        	 Entry e = (Entry)o;
-	        	        	 entry.setName(e.getTerm().string());//TODO
+	        	        	 entry.setName(e.getTerm().string());
 	        	        	 entry.setCount(e.getCount());
 	        	        	 entries.add(entry);
 	        	         }
@@ -417,11 +410,11 @@ public class SearchServiceImpl {
 	        	    	 RangeFacet ff = (RangeFacet) facet;
 	        	         com.shopizer.search.services.Facet f = new com.shopizer.search.services.Facet();
 	        	         f.setName(ff.getName());
-	        	         List entries = new ArrayList();
+	        	         List<com.shopizer.search.services.Entry> entries = new ArrayList<com.shopizer.search.services.Entry>();
 	        	         for(Object o : ff) {
 	        	        	 com.shopizer.search.services.Entry entry = new com.shopizer.search.services.Entry();
 	        	        	 Entry e = (Entry)o;
-	        	        	 entry.setName(e.getTerm().string());//TODO
+	        	        	 entry.setName(e.getTerm().string());
 	        	        	 entry.setCount(e.getCount());
 	        	        	 entries.add(entry);
 	        	         }
@@ -432,7 +425,7 @@ public class SearchServiceImpl {
 	        	    	 HistogramFacet ff = (HistogramFacet) facet;
 	        	         com.shopizer.search.services.Facet f = new com.shopizer.search.services.Facet();
 	        	         f.setName(ff.getName());
-	        	         List entries = new ArrayList();
+	        	         List<com.shopizer.search.services.Entry> entries = new ArrayList<com.shopizer.search.services.Entry>();
 	        	         for(Object o : ff) {
 	        	        	 com.shopizer.search.services.Entry entry = new com.shopizer.search.services.Entry();
 	        	        	 Entry e = (Entry)o;
@@ -447,7 +440,7 @@ public class SearchServiceImpl {
 	        	    	 DateHistogramFacet ff = (DateHistogramFacet) facet;
 	        	         com.shopizer.search.services.Facet f = new com.shopizer.search.services.Facet();
 	        	         f.setName(ff.getName());
-	        	         List entries = new ArrayList();
+	        	         List<com.shopizer.search.services.Entry> entries = new ArrayList<com.shopizer.search.services.Entry>();
 	        	         for(Object o : ff) {
 	        	        	 com.shopizer.search.services.Entry entry = new com.shopizer.search.services.Entry();
 	        	        	 Entry e = (Entry)o;
@@ -462,7 +455,7 @@ public class SearchServiceImpl {
 	        	    	 GeoDistanceFacet ff = (GeoDistanceFacet) facet;
 	        	         com.shopizer.search.services.Facet f = new com.shopizer.search.services.Facet();
 	        	         f.setName(ff.getName());
-	        	         List entries = new ArrayList();
+	        	         List<com.shopizer.search.services.Entry> entries = new ArrayList<com.shopizer.search.services.Entry>();
 	        	         for(Object o : ff) {
 	        	        	 com.shopizer.search.services.Entry entry = new com.shopizer.search.services.Entry();
 	        	        	 Entry e = (Entry)o;
