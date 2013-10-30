@@ -19,6 +19,7 @@ public class Category extends CatalogEntity implements Serializable {
 	private String code;
 	private int order;
 	private int depth;
+	private long totalCount;
 	
 
 	public String getCode() {
@@ -38,6 +39,12 @@ public class Category extends CatalogEntity implements Serializable {
 	}
 	public void setDepth(int depth) {
 		this.depth = depth;
+	}
+	public void setTotalCount(long totalCount) {
+		this.totalCount = totalCount;
+	}
+	public long getTotalCount() {
+		return totalCount;
 	}
 
 	

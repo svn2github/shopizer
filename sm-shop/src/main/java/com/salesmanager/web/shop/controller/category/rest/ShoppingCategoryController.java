@@ -131,6 +131,8 @@ public class ShoppingCategoryController {
 		
 		request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
 
+		String lineage = new StringBuilder().append(category.getLineage()).append(category.getId()).append("/").toString();
+
 		StringBuilder subCategoriesCacheKey = new StringBuilder();
 		subCategoriesCacheKey
 		.append(store.getId())
@@ -144,7 +146,10 @@ public class ShoppingCategoryController {
 		.append(subCategoriesCacheKey.toString())
 		.append(Constants.MISSED_CACHE_KEY);
 		
+
+		
 		List<com.salesmanager.web.entity.catalog.Category> subCategories = null;
+		Map<String,Long> countProductsByCategories = null;
 		
 		if(store.isUseCache()) {
 			
@@ -158,34 +163,21 @@ public class ShoppingCategoryController {
 				//get from missed cache
 				missedContent = (Boolean)cache.getFromCache(subCategoriesMissed.toString());
 			}
+
 			
 			if(subCategories==null && missedContent==null) {
-				subCategories = getSubCategories(store,category,language,locale);
+				countProductsByCategories = getProductsByCategory(store, lineage);
+				subCategories = getSubCategories(store,category,countProductsByCategories,language,locale);
 			}
-		
+			
+
+			
 		} else {
-			subCategories = getSubCategories(store,category,language,locale);
+			countProductsByCategories = getProductsByCategory(store, lineage);
+			subCategories = getSubCategories(store,category,countProductsByCategories,language,locale);
+			
 		}
 
-		//TODO CACHE number of items by category
-		
-		String lineage = new StringBuilder().append(category.getLineage()).append(category.getId()).append("/").toString();
-		List<Category> categories = categoryService.listByLineage(store, lineage);
-		
-		List<Long> ids = new ArrayList<Long>();
-		if(categories!=null && categories.size()>0) {
-			for(Category c : categories) {
-				ids.add(c.getId());
-			}
-		} 
-
-		List<Object[]> countProductsByCategories = categoryService.countProductsByCategories(store, ids);
-		Map<String, Integer> countByCategories = new HashMap<String,Integer>();
-		for(Object[] counts : countProductsByCategories) {
-			countByCategories.put((String)counts[0], (Integer)counts[1]);
-		}
-		model.addAttribute("counts", countByCategories);
-		
 		//Parent category
 		Category parent = null;
 		if(!StringUtils.isBlank(ref)) {
@@ -448,7 +440,7 @@ public class ShoppingCategoryController {
 		return null;
 	}
 	
-	private List<com.salesmanager.web.entity.catalog.Category> getSubCategories(MerchantStore store, Category category, Language language, Locale locale) {
+	private List<com.salesmanager.web.entity.catalog.Category> getSubCategories(MerchantStore store, Category category, Map<String,Long> productCount, Language language, Locale locale) {
 		
 		
 		//sub categories
@@ -457,10 +449,38 @@ public class ShoppingCategoryController {
 		for(Category sub : subCategories) {
 			
 			com.salesmanager.web.entity.catalog.Category cProxy =  catalogUtils.buildProxyCategory(sub, store, locale);
+			if(productCount!=null) {
+				Long total = productCount.get(cProxy.getCode());
+				if(total!=null) {
+					cProxy.setTotalCount(total);
+				}
+			}
 			subCategoryProxies.add(cProxy);
 		}
 		
 		return subCategoryProxies;
+		
+	}
+	
+	private Map<String,Long> getProductsByCategory(MerchantStore store, String lineage) throws Exception {
+		
+		
+		List<Category> categories = categoryService.listByLineage(store, lineage);
+		
+		List<Long> ids = new ArrayList<Long>();
+		if(categories!=null && categories.size()>0) {
+			for(Category c : categories) {
+				ids.add(c.getId());
+			}
+		} 
+
+		List<Object[]> countProductsByCategories = categoryService.countProductsByCategories(store, ids);
+		Map<String, Long> countByCategories = new HashMap<String,Long>();
+		for(Object[] counts : countProductsByCategories) {
+			countByCategories.put((String)counts[0], (Long)counts[1]);
+		}
+		
+		return countByCategories;
 		
 	}
 	

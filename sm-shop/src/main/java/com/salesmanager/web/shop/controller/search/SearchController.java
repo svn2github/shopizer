@@ -1,6 +1,7 @@
 package com.salesmanager.web.shop.controller.search;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.category.model.Category;
+import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
 import com.salesmanager.core.business.catalog.product.model.ProductList;
@@ -31,6 +34,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.search.model.IndexProduct;
 import com.salesmanager.core.business.search.model.SearchEntry;
+import com.salesmanager.core.business.search.model.SearchFacet;
 import com.salesmanager.core.business.search.model.SearchKeywords;
 import com.salesmanager.core.business.search.model.SearchResponse;
 import com.salesmanager.core.business.search.service.SearchService;
@@ -55,6 +59,9 @@ public class SearchController {
 	@Autowired
 	private ProductService productService;
 	
+	@Autowired
+	private CategoryService categoryService;
+	
 	
 	@Autowired
 	private CatalogUtils catalogUtils;
@@ -62,6 +69,8 @@ public class SearchController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SearchController.class);
 	
 	private final static int AUTOCOMPLETE_ENTRIES_COUNT = 15;
+	private final static String CATEGORY_FACET_NAME = "category";
+	private final static String MANUFACTURER_FACET_NAME = "manufacturer";
 	
 	
 	/**
@@ -162,11 +171,7 @@ public class SearchController {
 					IndexProduct indexedProduct = entry.getIndexProduct();
 					Long id = Long.parseLong(indexedProduct.getId());
 					
-					//TODO highlight
-					
-					//TODO facets
-					
-					
+					//No highlights	
 					ids.add(id);
 				}
 				
@@ -188,6 +193,49 @@ public class SearchController {
 				returnList.setTotalCount(productList.getProducts().size());
 			}
 			
+			//Facets
+			Map<String,List<SearchFacet>> facets = resp.getFacets();
+			List<SearchFacet> categoriesFacets = null;
+			List<SearchFacet> manufacturersFacets = null;
+			if(facets!=null) {
+				for(String key : facets.keySet()) {
+					//supports category and manufacturer
+					if(CATEGORY_FACET_NAME.equals(key)) {
+						categoriesFacets = facets.get(key);
+					}
+					
+					if(MANUFACTURER_FACET_NAME.equals(key)) {
+						manufacturersFacets = facets.get(key);
+					}
+				}
+				
+				
+				if(categoriesFacets!=null) {
+					List<String> categoryCodes = new ArrayList<String>();
+					Map<String,Long> productCategoryCount = new HashMap<String,Long>();
+					for(SearchFacet facet : categoriesFacets) {
+						categoryCodes.add(facet.getName());
+						productCategoryCount.put(facet.getKey(), facet.getCount());
+					}
+					
+					List<Category> categories = categoryService.listByCodes(merchantStore, categoryCodes, l);
+					List<com.salesmanager.web.entity.catalog.Category> categoryProxies = new ArrayList<com.salesmanager.web.entity.catalog.Category>();
+					for(Category category : categories) {
+						com.salesmanager.web.entity.catalog.Category categoryProxy = catalogUtils.buildProxyCategory(category, merchantStore, LocaleUtils.getLocale(l));
+						Long total = productCategoryCount.get(categoryProxy.getCode());
+						if(total!=null) {
+							categoryProxy.setTotalCount(total);
+						}
+						categoryProxies.add(categoryProxy);
+					}
+				}
+				
+				if(manufacturersFacets!=null) {
+					
+				}
+				
+				
+			}
 		} catch (Exception e) {
 			LOGGER.error("Exception occured while querying " + json,e);
 		}
@@ -198,6 +246,16 @@ public class SearchController {
 		
 	}
 	
+	/**
+	 * Displays the search page after a search query post
+	 * @param query
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @param locale
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value={"/shop/search/search.html"}, method=RequestMethod.POST)
 	public String displaySearch(@RequestParam("q") String query, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
