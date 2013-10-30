@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -41,10 +42,11 @@ import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.entity.shoppingcart.ShoppingCart;
+import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartAttribute;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartItem;
 import com.salesmanager.web.shop.controller.ControllerConstants;
+import com.salesmanager.web.shop.facade.shoppingCart.ShoppingCartFacade;
 import com.salesmanager.web.utils.ImageFilePathUtils;
 
 
@@ -114,6 +116,9 @@ public class ShoppingCartController {
 	@Autowired
 	private ProductPriceUtils productPriceUtils;
 	
+	@Autowired
+	private ShoppingCartFacade shoppingCartFacade;
+	
 	
 	/**
 	 * Retrieves a Shopping cart from the database (regular shopping cart)
@@ -137,22 +142,23 @@ public class ShoppingCartController {
 	    }
 	    else{
 
-	    	  ShoppingCart shoppingCart =getShoppingCartFromSession(request);
+	    	  ShoppingCartData shoppingCart =getShoppingCartFromSession(request);
 	    	  cart = shoppingCartService.getByCode(shoppingCart.getCode(), store);
  
 	    }
 	    
 	    if(cart !=null){
-	       	ShoppingCart shoppingCart=convertFromEntity(cart, store,language);
+	       	ShoppingCartData shoppingCart=convertFromEntity(cart, store,language);
 	        recalculateCart(shoppingCart);
 	        cart=this.getCartModel(shoppingCart, store, customer);
 	        shoppingCart=convertFromEntity(cart, store,language);
 	        shoppingCartService.saveOrUpdate(cart);
 	        //request.getSession().setAttribute(Constants.SHOPPING_CART, shoppingCart);
 	    	 model.addAttribute("cart", shoppingCart);
+	    	 shoppingCartFacade.getShoppingCartData( customer, store, language, shoppingCart.getCode() );
 	    } 
 	    
-	    
+	   
 	    //Looks in the HttpSession to see if a customer is logged in
 		
 		//shoppingCartService.getByCustomer(customerId);
@@ -171,7 +177,7 @@ public class ShoppingCartController {
 	}
 	
 	
-	private void recalculateCart( ShoppingCart shoppingCart){
+	private void recalculateCart( ShoppingCartData shoppingCart){
 		List<ShoppingCartItem> shoppingCartItems=Collections.emptyList();
 		if(CollectionUtils.isNotEmpty(shoppingCart.getShoppingCartItems())){
 			 shoppingCartItems=new ArrayList<ShoppingCartItem>();
@@ -203,12 +209,12 @@ public class ShoppingCartController {
 	 */
 	@RequestMapping(value={"/shop/addShoppingCartItem.html"}, method=RequestMethod.POST)
 	public @ResponseBody
-	ShoppingCart addShoppingCartItem(@RequestBody ShoppingCartItem item, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	ShoppingCartData addShoppingCartItem(@RequestBody ShoppingCartItem item, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		Language language = (Language)request.getAttribute("LANGUAGE");
 
-		ShoppingCart shoppingCart = (ShoppingCart)request.getSession().getAttribute(Constants.SHOPPING_CART);
+		ShoppingCartData shoppingCart = (ShoppingCartData)request.getSession().getAttribute(Constants.SHOPPING_CART);
 		//cart exist in http session
 		if(shoppingCart!=null) {
 			String shoppingCartCode = shoppingCart.getCode();
@@ -242,7 +248,7 @@ public class ShoppingCartController {
 		
 		//if shoppingCart is null create a new one
 		if(shoppingCart==null)  {
-			shoppingCart = new ShoppingCart();
+			shoppingCart = new ShoppingCartData();
 			String code = UUID.randomUUID().toString().replaceAll("-", "");
 			shoppingCart.setCode(code);
 	
@@ -312,7 +318,7 @@ public class ShoppingCartController {
 
 	}
 
-	private void addShoppingCartItem(ShoppingCart cart, ShoppingCartItem item, MerchantStore store) throws Exception{
+	private void addShoppingCartItem(ShoppingCartData cart, ShoppingCartItem item, MerchantStore store) throws Exception{
 		
 		List<ShoppingCartItem> items = cart.getShoppingCartItems();
 		boolean itemFound = false;
@@ -372,7 +378,7 @@ public class ShoppingCartController {
 		item.setSubTotal(pricingService.getDisplayAmount(subTotal, store));
 	}
 	
-	private void createItemInShoppingCart(ShoppingCart cart, ShoppingCartItem item, MerchantStore store) throws Exception {
+	private void createItemInShoppingCart(ShoppingCartData cart, ShoppingCartItem item, MerchantStore store) throws Exception {
 		
 		Product product = productService.getById(item.getProductId());
 		
@@ -461,9 +467,9 @@ public class ShoppingCartController {
 		
 	}
 	
-	private ShoppingCart convertFromEntity(com.salesmanager.core.business.shoppingcart.model.ShoppingCart shoppingCart, MerchantStore store,Language language) throws Exception {
+	private ShoppingCartData convertFromEntity(com.salesmanager.core.business.shoppingcart.model.ShoppingCart shoppingCart, MerchantStore store,Language language) throws Exception {
 		
-		ShoppingCart cart = new ShoppingCart();
+		ShoppingCartData cart = new ShoppingCartData();
 		cart.setCode(shoppingCart.getShoppingCartCode());
 		Set<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> items = shoppingCart.getLineItems();
 		List<ShoppingCartItem> shoppingCartItemsList=Collections.emptyList();
@@ -474,6 +480,7 @@ public class ShoppingCartController {
 				ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
 				shoppingCartItem.setCode(cart.getCode());
 				shoppingCartItem.setProductCode(item.getProduct().getSku());
+				
 				shoppingCartItem.setProductId(item.getProductId());
 				shoppingCartItem.setId(item.getId());
 				shoppingCartItem.setName(item.getProduct().getProductDescription().getName());
@@ -521,7 +528,7 @@ public class ShoppingCartController {
 	}
 	
 	
-	private com.salesmanager.core.business.shoppingcart.model.ShoppingCart getCartModel(ShoppingCart shoppingCart, MerchantStore store, Customer customer) throws Exception {
+	private com.salesmanager.core.business.shoppingcart.model.ShoppingCart getCartModel(ShoppingCartData shoppingCart, MerchantStore store, Customer customer) throws Exception {
 		com.salesmanager.core.business.shoppingcart.model.ShoppingCart cart = null;
 		  cart = shoppingCartService.getByCode(shoppingCart.getCode(), store);
 		 List<ShoppingCartItem> items = shoppingCart.getShoppingCartItems();
@@ -566,7 +573,7 @@ public class ShoppingCartController {
 		return cart;
 	}
 	
-	private com.salesmanager.core.business.shoppingcart.model.ShoppingCart convertToEntity(ShoppingCart shoppingCart, MerchantStore store, Customer customer) throws Exception {
+	private com.salesmanager.core.business.shoppingcart.model.ShoppingCart convertToEntity(ShoppingCartData shoppingCart, MerchantStore store, Customer customer) throws Exception {
 	
 		com.salesmanager.core.business.shoppingcart.model.ShoppingCart cart = null;
 		//if id >0 get the original from the database, override products
@@ -732,8 +739,18 @@ public class ShoppingCartController {
 		
 	}
 		
-    private ShoppingCart getShoppingCartFromSession( final HttpServletRequest request){
-    	return (ShoppingCart)request.getSession().getAttribute(Constants.SHOPPING_CART);  
+    private ShoppingCartData getShoppingCartFromSession( final HttpServletRequest request){
+    	return (ShoppingCartData)request.getSession().getAttribute(Constants.SHOPPING_CART);  
+    }
+    
+    
+    
+    private void setCartDataToSession(final HttpServletRequest request){
+    	
+    	HttpSession session=request.getSession();
+    	synchronized (session) {
+    		session.setAttribute(Constants.SHOPPING_CART, null);
+		}
     }
 	
 }
