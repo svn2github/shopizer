@@ -407,6 +407,26 @@
 	</repositories>
 
 	<build>
+		<!-- 
+			Annotation processor to be generated in target/generated-sources
+			The build will generate the required annotated classes in generated-sources
+			Then will jump to the regular build in pluginManagement
+			
+			mvn clean
+			mvn install
+			
+			** if the install phase complains on missing Qxyz classes then
+			
+			mvn clean
+			mvn generate-sources
+			mvn install
+			
+			*** Want to have the schema generated
+			
+			** hbm2ddl not working 
+			mvn hibernate3:hbm2ddl
+			 
+		-->
 		<plugins>
 			<plugin>
 				<groupId>org.bsc.maven</groupId>
@@ -552,7 +572,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>hibernate3-maven-plugin</artifactId>
-					<version>2.2</version>
+					<version>2.2</version><!-- 2.2 -->
 					<executions>
 						<execution>
 							<phase>process-classes</phase>
@@ -569,7 +589,8 @@
 							</component>
 						</components>
 						<componentProperties>
-							<persistenceunit>jpa</persistenceunit>
+							<persistenceunit>sm-unit</persistenceunit>
+							<!--<propertyfile>src/test/resources/hbm2ddl.properties</propertyfile>-->
 							<outputfilename>schema.ddl</outputfilename>
 							<drop>false</drop>
 							<create>true</create>
