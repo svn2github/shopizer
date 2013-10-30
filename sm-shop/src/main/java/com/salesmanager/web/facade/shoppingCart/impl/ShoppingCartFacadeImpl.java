@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -38,7 +39,7 @@ public class ShoppingCartFacadeImpl implements ShoppingCartFacade {
 
 	@Override
 	public ShoppingCartData getShoppingCartData(final Customer customer, final MerchantStore store,
-			final Language language, final String shoppingCartId) {
+			final Language language, final String shoppingCartId) throws Exception {
 
 		ShoppingCart cart = null;
 		try {
