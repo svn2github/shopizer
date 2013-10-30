@@ -318,7 +318,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 		qs.append("select categories.code, count(product.id) from Product product ");
 		qs.append("inner join product.categories categories ");
 		qs.append("where categories.id in (:cid) ");
-		qs.append("and p.available=true and p.dateAvailable<=:dt ");
+		qs.append("and product.available=true and product.dateAvailable<=:dt ");
 		qs.append("group by categories.id");
 		
     	String hql = qs.toString();
