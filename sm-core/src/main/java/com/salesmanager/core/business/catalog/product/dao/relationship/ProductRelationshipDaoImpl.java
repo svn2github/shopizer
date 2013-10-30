@@ -74,7 +74,7 @@ public class ProductRelationshipDaoImpl extends SalesManagerEntityDaoImpl<Long, 
 		qs.append("left join fetch pap.descriptions papd ");
 
 		qs.append("where pr.code=:code ");
-		qs.append("and rpd.language.id=:langId and md.language.id=:langId");
+		qs.append("and rpd.language.id=:langId");
 
 
 
