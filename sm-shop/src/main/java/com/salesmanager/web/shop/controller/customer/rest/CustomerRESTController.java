@@ -31,7 +31,7 @@ import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.shop.controller.category.rest.ShoppingCategoryController;
+import com.salesmanager.web.shop.controller.category.rest.ShoppingCategoryRESTController;
 import com.salesmanager.web.utils.CustomerUtils;
 
 @Controller
@@ -56,7 +56,7 @@ public class CustomerRESTController {
 	@Autowired
 	private ZoneService zoneService;
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ShoppingCategoryController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ShoppingCategoryRESTController.class);
 	
 	
 	/**
