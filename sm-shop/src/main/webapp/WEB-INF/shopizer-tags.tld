@@ -123,6 +123,30 @@
 </tag>
 
 <tag>
+ 		 <!-- Product price utility -->
+         <name>monetary</name>
+         <tag-class>com.salesmanager.web.tags.ShopProductPriceFormatTag</tag-class>
+         <body-content>scriptless</body-content>
+
+ 
+         <attribute>
+                 <name>value</name>
+                 <required>true</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>java.math.BigDecimal</type>
+         </attribute>
+         
+         <attribute>
+                 <name>currency</name>
+                 <required>false</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>com.salesmanager.core.business.reference.currency.model.Currency</type>
+         </attribute>
+         
+
+</tag>
+
+<tag>
  		 <!-- Builds the admin product download URL -->
          <name>adminProductDownload</name>
          <tag-class>com.salesmanager.web.tags.AdminProductDownloadUrlTag</tag-class>

@@ -3,6 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %> 
 <%@ page session="false" %>				
 				
 
@@ -303,12 +304,8 @@
 							<tr> 
 								<td colspan="2"> <c:out value="${orderProducts.productName}" /></td> 
 								<td ><c:out value="${orderProducts.productQuantity}" /></td> 
-								<%-- <td><strong>$<fmt:formatNumber type="number" 
-			            						value="${orderProducts.finalPrice}" />
-			            			</strong>       		</td>  --%>
-			            		
-			            		<td><strong>$<fmt:formatNumber type="number" maxFractionDigits="2" value="${orderProducts.finalPrice}" />  </strong> </td>
-								<td><strong>$<fmt:formatNumber type="number" maxFractionDigits="2" value="${total}" />  </strong> </td> 
+			            		<td><strong><sm:monetary value="${orderProducts.finalPrice}" currency="${currency}"/></strong> </td>
+								<td><strong><sm:monetary value="${total}" currency="${currency}"/></strong></td> 
 							</tr> 
 			
 						</c:forEach> 
@@ -317,8 +314,7 @@
 							<tr class="subt"> 
 								<td colspan="2">&nbsp;</td> 
 								<td colspan="2" ><c:out value="${orderTotal.title}"  /></td> 
-								<td ><strong>$<fmt:formatNumber type="number"  minFractionDigits="2"
-			            						  value="${orderTotal.value}" /></strong></td> 
+								<td ><strong><sm:monetary value="${total}" currency="${currency}"/></strong></td> 
 							</tr> 
 						</c:forEach> 	 
 					</tbody>    
