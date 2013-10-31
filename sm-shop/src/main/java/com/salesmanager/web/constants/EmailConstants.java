@@ -19,8 +19,8 @@ public class EmailConstants {
 	public static final String EMAIL_TEXT_ORDER_NUMBER = "EMAIL_TEXT_ORDER_NUMBER";
 	public static final String EMAIL_TEXT_DATE_ORDERED = "EMAIL_TEXT_DATE_ORDERED";
 	public static final String EMAIL_TEXT_STATUS_COMMENTS = "EMAIL_TEXT_STATUS_COMMENTS";
-	public static final String EMAIL_TEXT_STATUS_UPDATED = "EMAIL_TEXT_STATUS_UPDATED";
-	public static final String EMAIL_TEXT_STATUS_LABEL = "EMAIL_TEXT_STATUS_LABEL";
+	public static final String EMAIL_TEXT_DATE_UPDATED = "EMAIL_TEXT_DATE_UPDATED";
+
 	
 
 	public static final String EMAIL_CONTACT_OWNER = "EMAIL_CONTACT_OWNER";
