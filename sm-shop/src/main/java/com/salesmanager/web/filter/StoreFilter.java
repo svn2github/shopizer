@@ -43,7 +43,7 @@ import com.salesmanager.web.entity.shop.Breadcrumb;
 import com.salesmanager.web.entity.shop.BreadcrumbItem;
 import com.salesmanager.web.entity.shop.BreadcrumbItemType;
 import com.salesmanager.web.entity.shop.PageInformation;
-import com.salesmanager.web.entity.shoppingcart.ShoppingCart;
+import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.utils.AppConfiguration;
 import com.salesmanager.web.utils.LabelUtils;
 
@@ -281,7 +281,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				
 				/******* Shopping Cart *********/
 				
-				ShoppingCart shoppingCart = (ShoppingCart)request.getSession().getAttribute(Constants.SHOPPING_CART);
+				ShoppingCartData shoppingCart = (ShoppingCartData)request.getSession().getAttribute(Constants.SHOPPING_CART);
 				if(shoppingCart!=null) {
 					request.setAttribute(Constants.REQUEST_SHOPPING_CART, shoppingCart);
 				}

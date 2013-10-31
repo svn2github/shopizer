@@ -38,7 +38,7 @@ import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.entity.shoppingcart.ShoppingCart;
+import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 
 @Controller
@@ -86,7 +86,7 @@ public class ShoppingOrderController {
 		
 		String shoppingCartCode = null;
 		
-		ShoppingCart shoppingCart = (ShoppingCart)request.getSession().getAttribute(Constants.SHOPPING_CART);
+		ShoppingCartData shoppingCart = (ShoppingCartData)request.getSession().getAttribute(Constants.SHOPPING_CART);
 		com.salesmanager.core.business.shoppingcart.model.ShoppingCart cart = null;
 		if(shoppingCart==null) {//cookie
 			if(!StringUtils.isBlank(cookie)) {
