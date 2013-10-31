@@ -30,13 +30,12 @@ a:visited {color:#0066cc;}
 
   <!-- Content Section -->
   <div class="content">
-    ${EMAIL_CUSTOMERS_NAME},<br/>
+    ${EMAIL_CUSTOMER_NAME},<br/>
     ${EMAIL_STORE_NAME}<br/>
     ${EMAIL_TEXT_ORDER_NUMBER}<br/>
     ${EMAIL_TEXT_DATE_ORDERED}<br/>
     ${EMAIL_TEXT_STATUS_COMMENTS}<br/>
-    ${EMAIL_TEXT_STATUS_UPDATED}<br/>
-    ${EMAIL_TEXT_STATUS_LABEL}
+    ${EMAIL_TEXT_DATE_UPDATED}<br/>
   </div>
 
 </div>
