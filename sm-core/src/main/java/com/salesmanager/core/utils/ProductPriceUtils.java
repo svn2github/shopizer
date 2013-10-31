@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.BigDecimalValidator;
 import org.apache.commons.validator.routines.CurrencyValidator;
@@ -212,6 +213,8 @@ public class ProductPriceUtils {
 			return "";
 		}
 		
+		
+		
 		Currency currency = DEFAULT_CURRENCY;
 		Locale locale = DEFAULT_LOCALE; 
 		
@@ -258,6 +261,7 @@ public class ProductPriceUtils {
 		
 		
 		
+		
 		NumberFormat nf = null;
 
 		
@@ -265,13 +269,35 @@ public class ProductPriceUtils {
 		nf = NumberFormat.getInstance(DEFAULT_LOCALE);
 		nf.setCurrency(currency);
 
-/*		nf.setMaximumFractionDigits(Integer.parseInt(Character
-				.toString(DECIMALCOUNT)));
-		nf.setMinimumFractionDigits(Integer.parseInt(Character
-				.toString(DECIMALCOUNT)));*/
 
 		return nf.format(amount);
-}
+	}
+	
+	/**
+	 * Returns a formatted amount using Shopizer Currency
+	 * requires internal java.util.Currency populated
+	 * @param currency
+	 * @param amount
+	 * @return
+	 * @throws Exception
+	 */
+	public String getFormatedAmountWithCurrency(com.salesmanager.core.business.reference.currency.model.Currency currency, BigDecimal amount) throws Exception {
+		if(amount==null) {
+			return "";
+		}
+		
+		Validate.notNull(currency.getCurrency(),"Currency must be populated with java.util.Currency");
+		
+		NumberFormat nf = null;
+
+		
+		Currency curr = currency.getCurrency();
+		nf = NumberFormat.getInstance(DEFAULT_LOCALE);
+		nf.setCurrency(curr);
+
+
+		return nf.format(amount);
+	}
 
 	/**
 	 * This amount will be displayed to the end user
@@ -288,7 +314,7 @@ public class ProductPriceUtils {
 
 			Currency currency = store.getCurrency().getCurrency();
 			
-			nf = NumberFormat.getInstance(DEFAULT_LOCALE);
+			nf = NumberFormat.getInstance(DEFAULT_LOCALE);//TODO use locale
 			nf.setCurrency(currency);
 	
 
