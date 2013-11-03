@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -135,7 +134,6 @@ public class CustomerRESTController {
 	 */
 	@RequestMapping( value="/{store}/{id}", method=RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@Secured("CUSTOMER")
 	public void updateCustomer(@PathVariable final String store, @PathVariable Long id, @Valid @RequestBody Customer customer, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		if(merchantStore!=null) {
@@ -194,7 +192,6 @@ public class CustomerRESTController {
 	 */
 	@RequestMapping( value="/{store}/{id}", method=RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@Secured("CUSTOMER")
 	public void deleteCustomer(@PathVariable final String store, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		
@@ -237,7 +234,6 @@ public class CustomerRESTController {
 	 */
 	@RequestMapping( value="/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	@Secured("CUSTOMER")
 	@ResponseBody
 	public com.salesmanager.web.entity.customer.Customer createCustomer(@PathVariable final String store, @Valid @RequestBody Customer customer, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);

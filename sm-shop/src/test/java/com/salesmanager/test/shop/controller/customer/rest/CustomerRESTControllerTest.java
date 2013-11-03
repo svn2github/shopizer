@@ -3,10 +3,13 @@ package com.salesmanager.test.shop.controller.customer.rest;
 import org.junit.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.client.RestTemplate;
+
 import com.salesmanager.web.entity.customer.Customer;
 
 
@@ -36,10 +39,18 @@ public class CustomerRESTControllerTest {
 		
 	}
 	
-	public void postCustomer() throws Exception {
-		restTemplate = new RestTemplate();
+	public HttpHeaders getHeader(){
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
+		//Basic Authentication
+		String authorisation = "admin" + ":" + "password";
+		byte[] encodedAuthorisation = Base64.encode(authorisation.getBytes());
+		headers.add("Authorization", "Basic " + new String(encodedAuthorisation));
+		return headers;
+	}
+	
+	public void postCustomer() throws Exception {
+		restTemplate = new RestTemplate();
 
 		String jsonString = ("{"+
 			   " \"password\": \"5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8\","+
@@ -63,7 +74,7 @@ public class CustomerRESTControllerTest {
 			   " }"+
 			"}");
 
-		HttpEntity<String> entity = new HttpEntity<String>(jsonString, headers);
+		HttpEntity<String> entity = new HttpEntity<String>(jsonString, getHeader());
 
 		ResponseEntity response = restTemplate.postForEntity("http://localhost:8080/sm-shop/shop/services/customers/DEFAULT", entity, Customer.class);
 
@@ -74,7 +85,10 @@ public class CustomerRESTControllerTest {
 	
 	public void getCustomers() throws Exception {
 		restTemplate = new RestTemplate();
-		ResponseEntity<Customer[]> response = restTemplate.getForEntity("http://localhost:8080/sm-shop/shop/services/customers/DEFAULT", Customer[].class);
+		
+		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
+		
+		ResponseEntity<Customer[]> response = restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/customers/DEFAULT", HttpMethod.GET, httpEntity, Customer[].class);
 		
 		if(response.getStatusCode() != HttpStatus.OK){
 			throw new Exception();
@@ -85,7 +99,10 @@ public class CustomerRESTControllerTest {
 	
 	public void getCustomer() throws Exception {
 		restTemplate = new RestTemplate();
-		ResponseEntity<Customer> response = restTemplate.getForEntity("http://localhost:8080/sm-shop/shop/services/customers/DEFAULT/"+testCustmerID, Customer.class);
+		
+		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
+		
+		ResponseEntity<Customer> response = restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/customers/DEFAULT/"+testCustmerID, HttpMethod.GET, httpEntity, Customer.class);
 		
 		if(response.getStatusCode() != HttpStatus.OK){
 			throw new Exception();
@@ -96,8 +113,6 @@ public class CustomerRESTControllerTest {
 	
 	public void putCustomer() throws Exception {
 		restTemplate = new RestTemplate();
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
 		
 		String jsonString = ("{"+
 				   " \"password\": \"5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8\","+
@@ -121,14 +136,18 @@ public class CustomerRESTControllerTest {
 				   " }"+
 				"}");
 		
-		HttpEntity<String> entity = new HttpEntity<String>(jsonString, headers);
+		HttpEntity<String> entity = new HttpEntity<String>(jsonString, getHeader());
+		
 		restTemplate.put("http://localhost:8080/sm-shop/shop/services/customers/DEFAULT/"+testCustmerID, entity);
 		System.out.println("Customer "+testCustmerID+" Updated.");
 	}
 	
 	public void deleteCustomer() throws Exception {
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.delete("http://localhost:8080/sm-shop/shop/services/customers/DEFAULT/"+testCustmerID);
+		restTemplate = new RestTemplate();
+		
+		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
+		
+		restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/customers/DEFAULT/"+testCustmerID, HttpMethod.DELETE, httpEntity, Customer.class);
 		System.out.println("Customer "+testCustmerID+" Deleted.");
 	}
 	

@@ -4,9 +4,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.client.RestTemplate;
 
 import com.salesmanager.web.entity.catalog.Category;
@@ -37,9 +39,22 @@ public class ShoppingCategoryControllerTest {
 		
 	}
 	
+	public HttpHeaders getHeader(){
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		//Basic Authentication
+		String authorisation = "admin" + ":" + "password";
+		byte[] encodedAuthorisation = Base64.encode(authorisation.getBytes());
+		headers.add("Authorization", "Basic " + new String(encodedAuthorisation));
+		return headers;
+	}
+	
 	public void getCategories() throws Exception {
 		restTemplate = new RestTemplate();
-		ResponseEntity<Category[]> response = restTemplate.getForEntity("http://localhost:8080/sm-shop/shop/services/category/DEFAULT/en", Category[].class);
+		
+		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
+		
+		ResponseEntity<Category[]> response = restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/category/DEFAULT/en", HttpMethod.GET, httpEntity, Category[].class);
 		
 		if(response.getStatusCode() != HttpStatus.OK){
 			throw new Exception();
@@ -50,8 +65,6 @@ public class ShoppingCategoryControllerTest {
 	
 	public void putCategory() throws Exception {
 		restTemplate = new RestTemplate();
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
 	
 		String jsonString = ("{"+
 				   " \"sortOrder\": \"0\","+
@@ -72,15 +85,14 @@ public class ShoppingCategoryControllerTest {
 				   " \"categoryImage\": \"image.jpg\""+
 				"}");
 		
-		HttpEntity<String> entity = new HttpEntity<String>(jsonString, headers);
+		HttpEntity<String> entity = new HttpEntity<String>(jsonString, getHeader());
+		
 		restTemplate.put("http://localhost:8080/sm-shop/shop/services/category/DEFAULT/en/"+testCategoryID, entity);
 		System.out.println("Category "+testCategoryID+" Updated.");
 	}
 	
 	public void postCategory() throws Exception {
 		restTemplate = new RestTemplate();
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
 		
 		String jsonString = ("{"+
 				   " \"sortOrder\": \"0\","+
@@ -101,7 +113,7 @@ public class ShoppingCategoryControllerTest {
 				   " \"categoryImage\": \"image.jpg\""+
 				"}");
 		
-		HttpEntity<String> entity = new HttpEntity<String>(jsonString, headers);
+		HttpEntity<String> entity = new HttpEntity<String>(jsonString, getHeader());
 
 		ResponseEntity response = restTemplate.postForEntity("http://localhost:8080/sm-shop/shop/services/category/DEFAULT/en", entity, Category.class);
 
@@ -112,7 +124,10 @@ public class ShoppingCategoryControllerTest {
 	
 	public void deleteCategory() throws Exception {
 		restTemplate = new RestTemplate();
-		restTemplate.delete("http://localhost:8080/sm-shop/shop/services/category/DEFAULT/en/"+testCategoryID);
+		
+		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
+		
+		restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/category/DEFAULT/en/"+testCategoryID, HttpMethod.DELETE, httpEntity, Category.class);
 		System.out.println("Category "+testCategoryID+" Deleted.");
 	}
 	
@@ -120,7 +135,10 @@ public class ShoppingCategoryControllerTest {
 	@Ignore
 	public void getProducts() throws Exception {
 		restTemplate = new RestTemplate();
-		ResponseEntity<Product[]> response = restTemplate.getForEntity("http://localhost:8080/sm-shop/shop/services/products/DEFAULT/en/movie", Product[].class);
+		
+		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
+		
+		ResponseEntity<Product[]> response = restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/products/DEFAULT/en/"+testCategoryID, HttpMethod.GET, httpEntity, Product[].class);
 		
 		if(response.getStatusCode() != HttpStatus.OK){
 			throw new Exception();
@@ -134,8 +152,7 @@ public class ShoppingCategoryControllerTest {
 	public void putProduct() throws Exception {
 		restTemplate = new RestTemplate();
 		
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
+		//TODO: Put Product
 		
 	}
 	
@@ -144,8 +161,7 @@ public class ShoppingCategoryControllerTest {
 	public void postProduct() throws Exception {
 		restTemplate = new RestTemplate();
 		
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
+		//TODO: Post Product
 
 		
 	}
@@ -154,7 +170,11 @@ public class ShoppingCategoryControllerTest {
 	@Ignore
 	public void deleteProduct() throws Exception {
 		restTemplate = new RestTemplate();
-		restTemplate.delete("http://localhost:8080/sm-shop/shop/services/products/DEFAULT/en/movie/1");
+		
+		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
+		
+		restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/products/DEFAULT/en/"+testCategoryID+"/"+testProductID, HttpMethod.DELETE, httpEntity, Product.class);
+		System.out.println("Product "+testProductID+" Deleted.");
 	}
 	
 }
