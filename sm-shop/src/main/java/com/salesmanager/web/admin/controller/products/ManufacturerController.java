@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
@@ -75,7 +76,7 @@ public class ManufacturerController {
 	@RequestMapping(value="/admin/catalogue/manufacturer/create.html", method=RequestMethod.GET)
 	public String createManufacturer(  Model model,  HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		return displayManufacturer(0l,model,request,response);		
+		return displayManufacturer(null,model,request,response);		
 	}
 	
 	@Secured("MANUFACTURER")
@@ -90,13 +91,16 @@ public class ManufacturerController {
 		//display menu
 		setMenu(model,request);
 		
-		List<Language> languages = languageService.getLanguages();
+		//List<Language> languages = languageService.getLanguages();
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		List<Language> languages = store.getLanguages();
+		
+		
 		com.salesmanager.web.admin.entity.catalog.Manufacturer manufacturer = new com.salesmanager.web.admin.entity.catalog.Manufacturer();		
 		List<ManufacturerDescription> descriptions = new ArrayList<ManufacturerDescription>();
-		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+
 		
-		
-		if( manufacturerId!=0) {	//edit mode
+		if( manufacturer!=null && manufacturerId!=0) {	//edit mode
 
 			Manufacturer dbManufacturer = new Manufacturer();
 			dbManufacturer = manufacturerService.getById( manufacturerId );
@@ -123,9 +127,14 @@ public class ManufacturerController {
 
 			Manufacturer manufacturerTmp = new Manufacturer();
 			manufacturer.setManufacturer( manufacturerTmp );
-			ManufacturerDescription manufacturerDesc = new ManufacturerDescription();
-			descriptions.add(  manufacturerDesc );
-			manufacturer.setDescriptions(descriptions);
+			
+			for(Language l : languages) {// for each store language
+				
+				ManufacturerDescription manufacturerDesc = new ManufacturerDescription();
+				descriptions.add(  manufacturerDesc );
+				manufacturer.setDescriptions(descriptions);
+				
+			}
 		}
 
 		model.addAttribute("languages",languages);
@@ -149,7 +158,7 @@ public class ManufacturerController {
 			for(ManufacturerDescription description : manufacturer.getDescriptions()) {
 
 				//validate Url Clicked
-				if ( description.getUrlClicked() != null && !description.getUrlClicked().toString().isEmpty()) {
+/*				if ( description.getUrlClicked() != null && !description.getUrlClicked().toString().isEmpty()) {
 					try{
 						Integer.parseInt( description.getUrlClicked().toString() );
 
@@ -158,7 +167,7 @@ public class ManufacturerController {
 						ObjectError error = new ObjectError("descriptions[${counter.index}].urlClicked","URL Clicked must be a number");
 						result.addError(error);
 					}
-				}
+				}*/
 			}
 		}
 
@@ -297,6 +306,7 @@ public class ManufacturerController {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Secured("MANUFACTURER")
 	@RequestMapping(value="/admin/catalogue/manufacturer/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageManufacturers(HttpServletRequest request, HttpServletResponse response) {
