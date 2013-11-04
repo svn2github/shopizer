@@ -1,5 +1,6 @@
 package com.salesmanager.test.shop.controller.customer.rest;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +21,7 @@ public class CustomerRESTControllerTest {
 	private Long testCustmerID;
 	
 	@Test
+	@Ignore
 	public void customerRESTTest() throws Exception {
 		
 		//create customer
@@ -76,7 +78,7 @@ public class CustomerRESTControllerTest {
 
 		HttpEntity<String> entity = new HttpEntity<String>(jsonString, getHeader());
 
-		ResponseEntity response = restTemplate.postForEntity("http://localhost:8080/sm-shop/shop/services/customers/DEFAULT", entity, Customer.class);
+		ResponseEntity response = restTemplate.postForEntity("http://localhost:8080/sm-shop/shop/services/rest/customers/DEFAULT", entity, Customer.class);
 
 		Customer cust = (Customer) response.getBody();
 		System.out.println("New Customer ID : " + cust.getId());
@@ -88,7 +90,7 @@ public class CustomerRESTControllerTest {
 		
 		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
 		
-		ResponseEntity<Customer[]> response = restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/customers/DEFAULT", HttpMethod.GET, httpEntity, Customer[].class);
+		ResponseEntity<Customer[]> response = restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/rest/customers/DEFAULT", HttpMethod.GET, httpEntity, Customer[].class);
 		
 		if(response.getStatusCode() != HttpStatus.OK){
 			throw new Exception();
@@ -102,7 +104,7 @@ public class CustomerRESTControllerTest {
 		
 		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
 		
-		ResponseEntity<Customer> response = restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/customers/DEFAULT/"+testCustmerID, HttpMethod.GET, httpEntity, Customer.class);
+		ResponseEntity<Customer> response = restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/rest/customers/DEFAULT/"+testCustmerID, HttpMethod.GET, httpEntity, Customer.class);
 		
 		if(response.getStatusCode() != HttpStatus.OK){
 			throw new Exception();
@@ -138,7 +140,7 @@ public class CustomerRESTControllerTest {
 		
 		HttpEntity<String> entity = new HttpEntity<String>(jsonString, getHeader());
 		
-		restTemplate.put("http://localhost:8080/sm-shop/shop/services/customers/DEFAULT/"+testCustmerID, entity);
+		restTemplate.put("http://localhost:8080/sm-shop/shop/services/rest/customers/DEFAULT/"+testCustmerID, entity);
 		System.out.println("Customer "+testCustmerID+" Updated.");
 	}
 	
@@ -147,7 +149,7 @@ public class CustomerRESTControllerTest {
 		
 		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
 		
-		restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/customers/DEFAULT/"+testCustmerID, HttpMethod.DELETE, httpEntity, Customer.class);
+		restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/rest/customers/DEFAULT/"+testCustmerID, HttpMethod.DELETE, httpEntity, Customer.class);
 		System.out.println("Customer "+testCustmerID+" Deleted.");
 	}
 	

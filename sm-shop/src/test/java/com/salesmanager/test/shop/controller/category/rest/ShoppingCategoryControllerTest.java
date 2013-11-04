@@ -23,6 +23,7 @@ public class ShoppingCategoryControllerTest {
 	private Long testProductID;
 
 	@Test
+	@Ignore
 	public void categoryRESTTest() throws Exception {
 		
 		//create customer
@@ -54,7 +55,7 @@ public class ShoppingCategoryControllerTest {
 		
 		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
 		
-		ResponseEntity<Category[]> response = restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/category/DEFAULT/en", HttpMethod.GET, httpEntity, Category[].class);
+		ResponseEntity<Category[]> response = restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/rest/category/DEFAULT/en", HttpMethod.GET, httpEntity, Category[].class);
 		
 		if(response.getStatusCode() != HttpStatus.OK){
 			throw new Exception();
@@ -87,7 +88,7 @@ public class ShoppingCategoryControllerTest {
 		
 		HttpEntity<String> entity = new HttpEntity<String>(jsonString, getHeader());
 		
-		restTemplate.put("http://localhost:8080/sm-shop/shop/services/category/DEFAULT/en/"+testCategoryID, entity);
+		restTemplate.put("http://localhost:8080/sm-shop/shop/services/rest/category/DEFAULT/en/"+testCategoryID, entity);
 		System.out.println("Category "+testCategoryID+" Updated.");
 	}
 	
@@ -115,7 +116,7 @@ public class ShoppingCategoryControllerTest {
 		
 		HttpEntity<String> entity = new HttpEntity<String>(jsonString, getHeader());
 
-		ResponseEntity response = restTemplate.postForEntity("http://localhost:8080/sm-shop/shop/services/category/DEFAULT/en", entity, Category.class);
+		ResponseEntity response = restTemplate.postForEntity("http://localhost:8080/sm-shop/shop/services/rest/category/DEFAULT/en", entity, Category.class);
 
 		Category cat = (Category) response.getBody();
 		System.out.println("New Category ID : " + cat.getId());
@@ -138,7 +139,7 @@ public class ShoppingCategoryControllerTest {
 		
 		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
 		
-		ResponseEntity<Product[]> response = restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/products/DEFAULT/en/"+testCategoryID, HttpMethod.GET, httpEntity, Product[].class);
+		ResponseEntity<Product[]> response = restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/rest/products/DEFAULT/en/"+testCategoryID, HttpMethod.GET, httpEntity, Product[].class);
 		
 		if(response.getStatusCode() != HttpStatus.OK){
 			throw new Exception();
@@ -173,7 +174,7 @@ public class ShoppingCategoryControllerTest {
 		
 		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
 		
-		restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/products/DEFAULT/en/"+testCategoryID+"/"+testProductID, HttpMethod.DELETE, httpEntity, Product.class);
+		restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/rest/products/DEFAULT/en/"+testCategoryID+"/"+testProductID, HttpMethod.DELETE, httpEntity, Product.class);
 		System.out.println("Product "+testProductID+" Deleted.");
 	}
 	
