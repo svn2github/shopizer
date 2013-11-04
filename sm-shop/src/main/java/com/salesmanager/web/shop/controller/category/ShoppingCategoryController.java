@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,17 +175,19 @@ public class ShoppingCategoryController {
 		}
 
 		//Parent category
-		Category parent = null;
+		com.salesmanager.web.entity.catalog.Category parentProxy = null;
 		if(!StringUtils.isBlank(ref)) {
 			try {
 				Long parentId = Long.parseLong(ref);
-				parent = categoryService.getById(parentId);//TODO language
+				Category parent = categoryService.getById(parentId);
+				parentProxy = catalogUtils.buildProxyCategory(parent, store, locale);
+				
 			} catch(Exception e) {
 				LOGGER.error("Cannot parse category id to Long ",ref );
 			}
 		}
 
-		model.addAttribute("parent", parent);
+		model.addAttribute("parent", parentProxy);
 		model.addAttribute("category", categoryProxy);
 		model.addAttribute("subCategories", subCategories);
 		
@@ -200,6 +203,9 @@ public class ShoppingCategoryController {
 		
 		List<Category> categories = categoryService.listByLineage(store, lineage);
 		
+		if(CollectionUtils.isEmpty(categories)) {
+			return null;
+		}
 		List<Long> ids = new ArrayList<Long>();
 		if(categories!=null && categories.size()>0) {
 			for(Category c : categories) {

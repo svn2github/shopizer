@@ -69,7 +69,7 @@ public class SearchController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SearchController.class);
 	
 	private final static int AUTOCOMPLETE_ENTRIES_COUNT = 15;
-	private final static String CATEGORY_FACET_NAME = "category";
+	private final static String CATEGORY_FACET_NAME = "categories";
 	private final static String MANUFACTURER_FACET_NAME = "manufacturer";
 	
 	
@@ -228,6 +228,7 @@ public class SearchController {
 						}
 						categoryProxies.add(categoryProxy);
 					}
+					returnList.setCategoryFacets(categoryProxies);
 				}
 				
 				if(manufacturersFacets!=null) {

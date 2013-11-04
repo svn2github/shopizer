@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -753,22 +754,30 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			   
 			   List<MerchantConfiguration> configurations = merchantConfigurationService.listByType(MerchantConfigurationType.CONFIG, store);
 			   
+			   if(!CollectionUtils.isEmpty(configurations) && configs==null) {
+				   configs = new HashMap<String,Object>();
+			   }
+			   
+			   
 			   for(MerchantConfiguration configuration : configurations) {
-				   
-				   if(configs==null) {
-					   configs = new HashMap<String,Object>();
-				   }
 				   configs.put(configuration.getKey(), configuration.getValue());
 			   }
 			   
 			   //get MerchantConfig
 			   MerchantConfig merchantConfig = merchantConfigurationService.getMerchantConfig(store);
-			   ObjectMapper m = new ObjectMapper();
-			   @SuppressWarnings("unchecked")
-			   Map<String,Object> props = m.convertValue(merchantConfig, Map.class);
+			   if(merchantConfig!=null) {
+				   if(configs==null) {
+					   configs = new HashMap<String,Object>();
+				   }
+				   
+				   ObjectMapper m = new ObjectMapper();
+				   @SuppressWarnings("unchecked")
+				   Map<String,Object> props = m.convertValue(merchantConfig, Map.class);
+				   
+				   for(String key : props.keySet()) {
+					   configs.put(key, props.get(key));
+				   }
 			   
-			   for(String key : props.keySet()) {
-				   configs.put(key, props.get(key));
 			   }
 
 			   
