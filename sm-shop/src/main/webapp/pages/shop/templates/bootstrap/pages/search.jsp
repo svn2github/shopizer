@@ -23,11 +23,7 @@ response.setDateHeader ("Expires", -1);
  var START_COUNT_PRODUCTS = 0;
  var MAX_PRODUCTS = 12;
  
- 
 
- 
- 
- 
  $(function(){
 	 
 	 //var $container = $('#productsContainer');
@@ -47,19 +43,29 @@ response.setDateHeader ("Expires", -1);
  });
  
  	function search() {
- 		///shop/services/search/{store}/{language}/{start}/{max}/term.html
  		var url = '<%=request.getContextPath()%>/shop/services/search/<c:out value="${requestScope.MERCHANT_STORE.code}"/>/<c:out value="${requestScope.LANGUAGE.code}"/>/' + START_COUNT_PRODUCTS + '/' + MAX_PRODUCTS + '/term.html';
 	 	searchProducts(url,'#productsContainer','<c:out value="${q}"/>',null);
  	}
  
-	function callBackSearchProducts(totalCount) {
-
+	function callBackSearchProducts(productList) {
+			totalCount = productList.totalCount;
 			START_COUNT_PRODUCTS = START_COUNT_PRODUCTS + MAX_PRODUCTS;
 			if(START_COUNT_PRODUCTS < totalCount) {
 					$("#button_nav").show();
 			} else {
 					$("#button_nav").hide();
 			}
+			
+			//facets
+			if(productList.categoryFacets!=null) {
+				for (var i = 0; i < productList.categoryFacets.length; i++) {
+					var categoryFacets = '<li class="nav-header">';
+					categoryFacets = categoryFacets + '<a href="<c:url value="/shop"/>/category/' + productList.categoryFacets[i].friendlyUrl + '.html">' + productList.categoryFacets[i].name + '</a>';
+					categoryFacets = categoryFacets + '</li>';
+					$(categoriesFacets).append(categoryFacets);
+				}
+			}
+			
 			$('#productsContainer').hideLoading();
 
 	}
@@ -82,8 +88,8 @@ response.setDateHeader ("Expires", -1);
       	<!--Search facets-->
         <div class="span3">
           <div class="sidebar-nav">
-            <ul class="nav nav-list">
-              <li class="nav-header"></li>
+            <ul id="categoriesFacets" class="nav nav-list">
+              <!--<li class="nav-header"></li>-->
             </ul>
           </div>
         </div><!--/span-->

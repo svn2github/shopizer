@@ -28,18 +28,15 @@ function getLanguageCode() {
  
 function loadProducts(url,divProductsContainer) {
 		$(divProductsContainer).showLoading();
-		
-		//var url = '<%=request.getContextPath()%>/shop/services/products/page/' + START_COUNT_PRODUCTS + '/' + MAX_PRODUCTS + '/<c:out value="${requestScope.MERCHANT_STORE.code}"/>/<c:out value="${requestScope.LANGUAGE.code}"/>/<c:out value="${category.friendlyUrl}"/>.html';
-		
+
 		$.ajax({
 				type: 'POST',
 				dataType: "json",
 				url: url,
 				success: function(productList) {
 
-					
 					buildProductsList(productList,divProductsContainer);
-					callBackLoadProducts(productList.totalCount);
+					callBackLoadProducts(productList);
 
 
 				},
@@ -57,41 +54,32 @@ function loadProducts(url,divProductsContainer) {
 
 function searchProducts(url,divProductsContainer,q,filter) {
 		
+		$(divProductsContainer).showLoading();
+		
 		if(q==null || q=='') {
 			return;
 		}
 	
+	    //category facets
 		var facets = '\"facets\" : { \"categories\" : { \"terms\" : {\"field\" : \"categories\"}}}';
-	    //var facets = null;
 	    var highlights = null;
-		//var highlights = '\"highlight\":{\"fields\":{\"description\":{\"pre_tags\" : [\"<strong>\"], \"post_tags\" : [\"</strong>\"]},\"name\":{\"pre_tags\" : [\"<strong>\"], \"post_tags\" : [\"</strong>\"]}}}';
 		var queryStart = '{';
-	
-		//var query = '{\"text\" : {\"_all\" : \"' + search + '\" }}';
-		//"{\"query\":{\"query_string\":{\"fields\" : [\"name^5\", \"description\", \"tags\"], \"query\" : \"Sp*\", \"use_dis_max\" : true }}}";
-		//var query = '\"query\":{\"text\" : {\"_all\" : "' + q + '\" }}';
+
 		var query = '\"query\":{\"query_string\" : {\"fields\" : [\"name^3\", \"description\", \"tags\"], \"query\" : \"' + q + '*", \"use_dis_max\" : true }}';
 		if(filter!=null && filter!='') {
 			//query = '\"query\":{\"filtered\":{\"query\":{\"text\":{\"_all\":\"' + q + '\"}},' + filter + '}}';
 			query = query + ',' + filter + '}}';
 		}
-		if(highlights!=null && highlights!='') {
-			query = query + ',' + highlights;
-		}
+
 		if(facets!=null && facets!='') {
 			query = query + ',' + facets;
 		}
-	
-		//query = query + ',' + '\"facets\" : { \"tags\" : { \"terms\" : {\"field\" : \"tags\"}}}'; 
-		
+
 		var queryEnd = '}';
 		
 		query = queryStart + query + queryEnd;
 	
 		//alert(query);
-	
-	
-	    $(divProductsContainer).showLoading();
 
 		$.ajax({
 	  			cache: false,
