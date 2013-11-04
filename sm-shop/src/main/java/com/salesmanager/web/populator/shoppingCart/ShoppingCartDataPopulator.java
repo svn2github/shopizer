@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.salesmanager.web.populator;
+package com.salesmanager.web.populator.shoppingCart;
 
 import java.util.ArrayList;
 import java.util.Collections;

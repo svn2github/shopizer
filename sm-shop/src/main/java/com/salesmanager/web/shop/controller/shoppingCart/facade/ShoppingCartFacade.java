@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.salesmanager.web.facade.shoppingCart;
+package com.salesmanager.web.shop.controller.shoppingCart.facade;
 
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;

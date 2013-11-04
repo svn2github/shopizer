@@ -45,8 +45,8 @@ import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartAttribute;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartItem;
-import com.salesmanager.web.facade.shoppingCart.ShoppingCartFacade;
 import com.salesmanager.web.shop.controller.ControllerConstants;
+import com.salesmanager.web.shop.controller.shoppingCart.facade.ShoppingCartFacade;
 import com.salesmanager.web.utils.ImageFilePathUtils;
 
 
