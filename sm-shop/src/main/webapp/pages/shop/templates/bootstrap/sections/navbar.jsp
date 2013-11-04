@@ -20,7 +20,7 @@ response.setDateHeader ("Expires", -1);
 
 $(document).ready(function() { 
 
-
+	//alert('<c:out value="${requestScope.CONFIGS['useDefaultSearchConfig'][requestScope.LANGUAGE.code]}"/>');
 	$('#searchField').typeahead({
 		name: 'shopizer-search',
 		<c:if test="${requestScope.CONFIGS['useDefaultSearchConfig'][requestScope.LANGUAGE.code]==true}">

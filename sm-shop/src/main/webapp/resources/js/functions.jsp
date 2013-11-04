@@ -61,8 +61,8 @@ function searchProducts(url,divProductsContainer,q,filter) {
 			return;
 		}
 	
-		//var facets = '\"facets\" : { \"category\" : { \"terms\" : {\"field\" : \"category\"}}}';
-	    var facets = null;
+		var facets = '\"facets\" : { \"categories\" : { \"terms\" : {\"field\" : \"categories\"}}}';
+	    //var facets = null;
 	    var highlights = null;
 		//var highlights = '\"highlight\":{\"fields\":{\"description\":{\"pre_tags\" : [\"<strong>\"], \"post_tags\" : [\"</strong>\"]},\"name\":{\"pre_tags\" : [\"<strong>\"], \"post_tags\" : [\"</strong>\"]}}}';
 		var queryStart = '{';
