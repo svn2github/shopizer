@@ -351,12 +351,17 @@ public class SearchServiceImpl implements SearchService {
 						searchFacets.put(key, fs);
 					}
 					
-					SearchFacet searchFacet = new SearchFacet();
-					searchFacet.setKey(key);
-					searchFacet.setName(f.getName());
-					searchFacet.setCount(f.getEntries().size());
+					List<com.shopizer.search.services.Entry> facetEntries = f.getEntries();
+					for(com.shopizer.search.services.Entry facetEntry : facetEntries) {
 					
-					fs.add(searchFacet);
+						SearchFacet searchFacet = new SearchFacet();
+						searchFacet.setKey(facetEntry.getName());
+						searchFacet.setName(facetEntry.getName());
+						searchFacet.setCount(f.getEntries().size());
+						
+						fs.add(searchFacet);
+					
+					}
 					
 				}
 				
