@@ -34,7 +34,7 @@ import com.salesmanager.web.shop.controller.category.rest.ShoppingCategoryRESTCo
 import com.salesmanager.web.utils.CustomerUtils;
 
 @Controller
-@RequestMapping("/shop/services/customers")
+@RequestMapping("/shop/services/rest/customers")
 public class CustomerRESTController {
 
 	@Autowired

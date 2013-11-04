@@ -309,7 +309,7 @@ public class ShoppingCategoryRESTController {
 	/**
 	 * Updates a category for a given MerchantStore
 	 */
-	@RequestMapping( value="/shop/services/category/{store}/{language}/{id}", method=RequestMethod.PUT)
+	@RequestMapping( value="/shop/services/rest/category/{store}/{language}/{id}", method=RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void updateCategory(@PathVariable final String store, @PathVariable final String language, @PathVariable Long id, @Valid @RequestBody Category category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map<String,Language> langs = languageService.getLanguagesMap();
@@ -357,7 +357,7 @@ public class ShoppingCategoryRESTController {
 	/**
 	 * Deletes a category for a given MerchantStore
 	 */
-	@RequestMapping( value="/shop/services/category/{store}/{language}/{id}", method=RequestMethod.DELETE)
+	@RequestMapping( value="/shop/services/rest/category/{store}/{language}/{id}", method=RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteCategory(@PathVariable final String store, @PathVariable final String language, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Category category = categoryService.getById(id);
@@ -372,7 +372,7 @@ public class ShoppingCategoryRESTController {
 	/**
 	 * Create new category for a given MerchantStore
 	 */
-	@RequestMapping( value="/shop/services/category/{store}/{language}", method=RequestMethod.POST)
+	@RequestMapping( value="/shop/services/rest/category/{store}/{language}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public com.salesmanager.web.entity.catalog.Category createCategory(@PathVariable final String store, @PathVariable final String language, @Valid @RequestBody Category category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -434,7 +434,7 @@ public class ShoppingCategoryRESTController {
 	/**
 	 * Updates a product for a given MerchantStore
 	 */
-	@RequestMapping( value="/shop/services/products/{store}/{language}/{category}/{id}", method=RequestMethod.PUT)
+	@RequestMapping( value="/shop/services/rest/products/{store}/{language}/{category}/{id}", method=RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void updateProduct(@PathVariable final String store, @PathVariable final String language, @PathVariable final String category, @PathVariable Long id, @Valid @RequestBody Product product, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Map<String,Language> langs = languageService.getLanguagesMap();
@@ -476,7 +476,7 @@ public class ShoppingCategoryRESTController {
 	/**
 	 * Deletes a product for a given MerchantStore
 	 */
-	@RequestMapping( value="/shop/services/products/{store}/{language}/{category}/{id}", method=RequestMethod.DELETE)
+	@RequestMapping( value="/shop/services/rest/products/{store}/{language}/{category}/{id}", method=RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteProduct(@PathVariable final String store, @PathVariable final String language, @PathVariable final String category, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Product product = productService.getById(id);
@@ -491,7 +491,7 @@ public class ShoppingCategoryRESTController {
 	/**
 	 * Create new product for a given MerchantStore
 	 */
-	@RequestMapping( value="/shop/services/products/{store}/{language}/{category}", method=RequestMethod.POST)
+	@RequestMapping( value="/shop/services/rest/products/{store}/{language}/{category}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public com.salesmanager.web.entity.catalog.Product createProduct(@PathVariable final String store, @PathVariable final String language, @PathVariable final String category, @Valid @RequestBody Product product, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
