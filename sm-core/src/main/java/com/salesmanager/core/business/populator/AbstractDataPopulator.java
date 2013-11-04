@@ -4,10 +4,13 @@
 package com.salesmanager.core.business.populator;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Provider;
 
 import org.springframework.beans.factory.annotation.Autowired;
+
+import com.salesmanager.core.business.merchant.model.MerchantStore;
 
 
 /**
@@ -17,7 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractDataPopulator<Source,Target> implements DataPopulator<Source, Target>
 {
 
-    
+    private MerchantStore store;
+    private Locale locale;
     @Autowired
     private Provider<Target> targetBean;
     
@@ -75,5 +79,29 @@ public abstract class AbstractDataPopulator<Source,Target> implements DataPopula
        
         return populate(source,createTarget());
     }
+
+
+
+	public void setStore(MerchantStore store) {
+		this.store = store;
+	}
+
+
+
+	public MerchantStore getStore() {
+		return store;
+	}
+
+
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
+
+
+
+	public Locale getLocale() {
+		return locale;
+	}
 
 }
