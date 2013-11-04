@@ -26,10 +26,10 @@
 	<beans:bean id="userAuthenticationSuccessHandler" class="com.salesmanager.web.admin.security.UserAuthenticationSuccessHandler">
 	</beans:bean>
 	
-	<beans:bean id="restAuthenticationSuccessHandler" class="com.salesmanager.web.admin.security.RESTAuthenticationSuccessHandler">
+	<beans:bean id="restAuthenticationSuccessHandler" class="com.salesmanager.web.shop.security.RESTAuthenticationSuccessHandler">
 	</beans:bean>
 	
-	<beans:bean id="restAuthenticationEntryPoint" class="com.salesmanager.web.admin.security.RestAuthenticationEntryPoint">
+	<beans:bean id="restAuthenticationEntryPoint" class="com.salesmanager.web.shop.security.RestAuthenticationEntryPoint">
 	</beans:bean>
 	
 	
@@ -77,8 +77,8 @@
 		<access-denied-handler error-page="/customer/denied.html"/>
 	</http>
 	
-	<http pattern="/shop/services/**" create-session="stateless" use-expressions="true" authentication-manager-ref="userAuthenticationManager" entry-point-ref="restAuthenticationEntryPoint">
-      <intercept-url pattern="/shop/services/**" access="hasRole('AUTH')"/>
+	<http pattern="/rest/**" create-session="stateless" use-expressions="true" authentication-manager-ref="userAuthenticationManager" entry-point-ref="restAuthenticationEntryPoint">
+      <intercept-url pattern="/rest/**" access="hasRole('AUTH')"/>
       <form-login authentication-success-handler-ref="restAuthenticationSuccessHandler" />
       <http-basic />
    </http>
