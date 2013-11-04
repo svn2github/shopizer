@@ -93,7 +93,7 @@
 					<c:forEach items="${manufacturer.descriptions}" var="description" varStatus="counter">
 					           
 						<div class="control-group">
-	                        <label class="required"><s:message code="label.manufactureredit.manufacturername" text="Manufacturer Name"/></label>
+	                        <label class="required"><s:message code="label.manufactureredit.manufacturername" text="Manufacturer Name"/> (<c:out value="${description.language.code}"/>)</label>
 	                        <div class="controls">
 	                                  <form:input cssClass="input-large highlight" id="name${counter.index}" path="descriptions[${counter.index}].name"/>
 	                                  <span  class="help-inline"><form:errors path="descriptions[${counter.index}].name" cssClass="error" /></span>
@@ -101,39 +101,23 @@
 	                  	</div> 
 
 						<div class="control-group">
-	                        <label><s:message code="label.manufactureredit.manufacturertitle" text="Manufacturer Title"/></label>
+	                        <label><s:message code="label.manufactureredit.manufacturertitle" text="Manufacturer Title"/> (<c:out value="${description.language.code}"/>)</label>
 	                        <div class="controls">
 	                                  <form:input cssClass="input-large" id="title${counter.index}" path="descriptions[${counter.index}].title"/>
 	                                  <span  class="help-inline"><form:errors path="descriptions[${counter.index}].title" cssClass="error" /></span>
 	                        </div>
 	                  	</div> 
-	                  	
-	                  	<div class="control-group">
-	                        <label><s:message code="label.defaultlanguage" text="language"/></label>
-	                        <div class="controls">
-                					<form:select class="input-large highlight" items="${languages}" itemValue="id" itemLabel="code" path="descriptions[${counter.index}].language.id"/> 
-                           			<span class="help-inline"></span>
-	                        </div>
-	                   </div>
-	                  
+
  	                  	<div class="control-group">
-	                        <label><s:message code="label.manufactureredit.manufacturerurl" text="URL"/></label>
+	                        <label><s:message code="label.manufactureredit.manufacturerurl" text="URL"/> (<c:out value="${description.language.code}"/>)</label>
 	                        <div class="controls">
 	                                  <form:input cssClass="input-large" id="url${counter.index}" path="descriptions[${counter.index}].url"/>
 	                                  <span  class="help-inline"><form:errors path="descriptions[${counter.index}].url" cssClass="error" /></span>
 	                        </div>
 	                  	</div>	
-	                  	
-	                  	 <div class="control-group">
-	                        <label><s:message code="label.manufactureredit.manufacturerurlclicked" text="URL Clicked"/></label>
-	                        <div class="controls">
-	                                  <form:input cssClass="input-large" id="urlClicked${counter.index}" path="descriptions[${counter.index}].urlClicked"/>
-	                                  <span  class="help-inline"><form:errors path="descriptions[${counter.index}].urlClicked" cssClass="error" /></span>
-	                        </div>
-	                  	</div>	
-	                        
+
 	                    <div class="control-group">
-	                            <label class="required"><s:message code="label.manufactureredit.manufacturerdescription" text="Manufacturer Description"/> </label>
+	                            <label class="required"><s:message code="label.manufactureredit.manufacturerdescription" text="Manufacturer Description"/> (<c:out value="${description.language.code}"/>)</label>
 	                            <div class="controls">
 	                     	 
 	                        			 <textarea cols="30" id="descriptions${counter.index}.description" name="descriptions[${counter.index}].description">
@@ -171,6 +155,9 @@
 								</script>  
 	                              
 						</div>
+						 <form:hidden path="descriptions[${counter.index}].language.id" />
+                         <form:hidden path="descriptions[${counter.index}].language.code" />
+						 <form:hidden path="descriptions[${counter.index}].id" />
 	                  	                 		                  		                  	 
                 	</c:forEach>
     <%--                              
