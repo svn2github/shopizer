@@ -51,7 +51,8 @@ response.setDateHeader ("Expires", -1);
 	 	loadProducts(url,'#productsContainer');
  	}
  
-	function callBackLoadProducts(totalCount) {
+	function callBackLoadProducts(productList) {
+			totalCount = productList.totalCount;
 			START_COUNT_PRODUCTS = START_COUNT_PRODUCTS + MAX_PRODUCTS;
 			if(START_COUNT_PRODUCTS < totalCount) {
 					$("#button_nav").show();
