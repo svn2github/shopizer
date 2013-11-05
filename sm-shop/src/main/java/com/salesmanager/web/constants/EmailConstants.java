@@ -21,6 +21,12 @@ public class EmailConstants {
 	public static final String EMAIL_TEXT_STATUS_COMMENTS = "EMAIL_TEXT_STATUS_COMMENTS";
 	public static final String EMAIL_TEXT_DATE_UPDATED = "EMAIL_TEXT_DATE_UPDATED";
 
+	public static final String EMAIL_NEW_STORE_TEXT = "EMAIL_NEW_STORE_TEXT";
+	public static final String EMAIL_STORE_NAME = "EMAIL_STORE_NAME";
+	public static final String EMAIL_ADMIN_STORE_INFO_LABEL = "EMAIL_ADMIN_STORE_INFO_LABEL";
+	public static final String EMAIL_ADMIN_USERNAME_TEXT = "EMAIL_ADMIN_USERNAME_TEXT";
+	public static final String EMAIL_ADMIN_PASSWORD_TEXT = "EMAIL_ADMIN_PASSWORD_TEXT";
+
 	
 
 	public static final String EMAIL_CONTACT_OWNER = "EMAIL_CONTACT_OWNER";
