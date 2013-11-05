@@ -30,10 +30,8 @@ a:visited {color:#0066cc;}
     <div class="content-line">
     	${EMAIL_NEW_STORE_TEXT}<br /><br /><br />
     	${EMAIL_STORE_NAME}<br /><br />
-    	${EMAIL_ADMIN_LABEL} ${EMAIL_CUSTOMER_FIRSTNAME} ${EMAIL_CUSTOMER_LAST}<br/>
-    	${EMAIL_ADMIN_USERNAME_LABEL} ${EMAIL_ADMIN_NAME}<br /><br />
-    	${EMAIL_ADMIN_PASSWORD_LABEL} ${EMAIL_ADMIN_PASSWORD}</br>
-    	${EMAIL_ADMIN_URL_LABEL} ${EMAIL_ADMIN_URL}<br /><br />
+    	${EMAIL_ADMIN_STORE_INFO_LABEL}<br/>
+    	${EMAIL_ADMIN_URL_LABEL}<br /><br />
     </div>
 </div>
 
