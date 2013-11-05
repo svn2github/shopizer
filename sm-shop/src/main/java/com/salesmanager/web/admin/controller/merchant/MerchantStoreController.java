@@ -36,16 +36,22 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
+import com.salesmanager.core.business.system.service.EmailService;
 import com.salesmanager.core.business.user.model.User;
 import com.salesmanager.core.business.user.service.UserService;
+import com.salesmanager.core.modules.email.Email;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
 import com.salesmanager.web.admin.entity.reference.Size;
 import com.salesmanager.web.admin.entity.reference.Weight;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.constants.EmailConstants;
 import com.salesmanager.web.utils.DateUtil;
+import com.salesmanager.web.utils.EmailUtils;
+import com.salesmanager.web.utils.FilePathUtils;
 import com.salesmanager.web.utils.LabelUtils;
+import com.salesmanager.web.utils.LocaleUtils;
 import com.salesmanager.web.utils.UserUtils;
 
 @Controller
@@ -73,6 +79,11 @@ public class MerchantStoreController {
 	
 	@Autowired
 	LabelUtils messages;
+	
+	@Autowired
+	EmailService emailService;
+	
+	private final static String NEW_STORE_TMPL = "email_template_new_store.ftl";
 	
 	@Secured("SUPERADMIN")
 	@RequestMapping(value="/admin/store/list.html", method=RequestMethod.GET)
@@ -148,13 +159,7 @@ public class MerchantStoreController {
 	public String displayMerchantStore(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		setMenu(model,request);
-
-
-
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		
-		
-		
 		return displayMerchantStore(store, model, request, response, locale);
 	}
 		
@@ -164,9 +169,7 @@ public class MerchantStoreController {
 	public String displayMerchantStore(@ModelAttribute("id") Integer id, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		setMenu(model,request);
-
 		MerchantStore store = merchantStoreService.getById(id);
-
 		return displayMerchantStore(store, model, request, response, locale);
 	}
 	
@@ -174,13 +177,9 @@ public class MerchantStoreController {
 		
 		
 		setMenu(model,request);
-		
 		Language language = (Language)request.getAttribute("LANGUAGE");
-		
 		List<Language> languages = languageService.getLanguages();
-		
 		List<Currency> currencies = currencyService.list();
-		
 		Date dt = store.getInBusinessSince();
 		if(dt!=null) {
 			store.setDateBusinessSince(DateUtil.formatDate(dt));
@@ -221,8 +220,6 @@ public class MerchantStoreController {
 	public String saveMerchantStore(@Valid @ModelAttribute("store") MerchantStore store, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		setMenu(model,request);
-		
-		
 		MerchantStore sessionStore = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
 		if(store.getId()!=null) {
@@ -298,9 +295,7 @@ public class MerchantStoreController {
 			
 			Language l = languagesMap.get(lang.getCode());
 			if(l!=null) {
-				
 				supportedLanguagesList.add(l);
-				
 			}
 			
 		}
@@ -310,6 +305,8 @@ public class MerchantStoreController {
 		if(defaultLanguage!=null) {
 			store.setDefaultLanguage(defaultLanguage);
 		}
+		
+		Locale storeLocale = LocaleUtils.getLocale(defaultLanguage);
 		
 		store.setStoreTemplate(sessionStore.getStoreTemplate());
 		store.setCountry(country);
@@ -322,6 +319,39 @@ public class MerchantStoreController {
 		
 		merchantStoreService.saveOrUpdate(store);
 		
+		if(!store.getCode().equals(sessionStore.getCode())) {//create store
+			//send email
+			
+			try {
+
+
+				Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, store, messages, storeLocale);
+				templateTokens.put(EmailConstants.EMAIL_NEW_STORE_TEXT, messages.getMessage("email.newstore.text", new String[]{store.getStorename()}, storeLocale));
+				templateTokens.put(EmailConstants.EMAIL_STORE_NAME, messages.getMessage("email.newstore.name",new String[]{store.getStorename()},storeLocale));
+				templateTokens.put(EmailConstants.EMAIL_ADMIN_STORE_INFO_LABEL, messages.getMessage("email.newstore.info",storeLocale));
+
+				templateTokens.put(EmailConstants.EMAIL_ADMIN_URL_LABEL, messages.getMessage("label.adminurl",storeLocale));
+				templateTokens.put(EmailConstants.EMAIL_ADMIN_URL, FilePathUtils.buildAdminUri(store, request));
+	
+				
+				Email email = new Email();
+				email.setFrom(store.getStorename());
+				email.setFromEmail(store.getStoreEmailAddress());
+				email.setSubject(messages.getMessage("email.newstore.title",storeLocale));
+				email.setTo(store.getStoreEmailAddress());
+				email.setTemplateName(NEW_STORE_TMPL);
+				email.setTemplateTokens(templateTokens);
+	
+	
+				
+				emailService.sendHtmlEmail(store, email);
+			
+			} catch (Exception e) {
+				LOGGER.error("Cannot send email to user",e);
+			}
+			
+		}
+
 		sessionStore = merchantStoreService.getMerchantStore(sessionStore.getCode());
 		
 		

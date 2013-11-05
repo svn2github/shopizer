@@ -735,7 +735,7 @@ public class UserController {
 		session.setAttribute("username_reset", userName);
 		
 		try {
-				if(!userName.equals("")){
+				if(!StringUtils.isBlank(userName)){
 					
 						User dbUser = userService.getByUserName(userName);
 						
