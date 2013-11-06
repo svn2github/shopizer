@@ -100,7 +100,7 @@ public class ManufacturerController {
 		List<ManufacturerDescription> descriptions = new ArrayList<ManufacturerDescription>();
 
 		
-		if( manufacturer!=null && manufacturerId!=0) {	//edit mode
+		if( manufacturer!=null && manufacturerId!=null && manufacturerId.longValue()!=0) {	//edit mode
 
 			Manufacturer dbManufacturer = new Manufacturer();
 			dbManufacturer = manufacturerService.getById( manufacturerId );
