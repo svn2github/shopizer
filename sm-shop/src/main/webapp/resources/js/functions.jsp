@@ -93,7 +93,7 @@ function searchProducts(url,divProductsContainer,q,filter) {
 					buildProductsList(productList,divProductsContainer);
 					//TODO manage facets
 					//TODO manage total entries found
-					callBackSearchProducts(productList.totalCount);
+					callBackSearchProducts(productList);
 
 
 				},

@@ -59,7 +59,7 @@ response.setDateHeader ("Expires", -1);
 			//facets
 			if(productList.categoryFacets!=null) {
 				for (var i = 0; i < productList.categoryFacets.length; i++) {
-					var categoryFacets = '<li class="nav-header">';
+					var categoryFacets = '<li>';
 					categoryFacets = categoryFacets + '<a href="<c:url value="/shop"/>/category/' + productList.categoryFacets[i].friendlyUrl + '.html">' + productList.categoryFacets[i].name + '</a>';
 					categoryFacets = categoryFacets + '</li>';
 					$(categoriesFacets).append(categoryFacets);

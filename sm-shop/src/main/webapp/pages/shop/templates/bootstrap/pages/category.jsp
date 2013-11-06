@@ -81,10 +81,10 @@ response.setDateHeader ("Expires", -1);
           <div class="sidebar-nav">
             <ul class="nav nav-list">
               <c:if test="${parent!=null}">
-              	<li class="nav-header"><a href="<c:url value="/shop"/>/category/${parent.friendlyUrl}.html/ref=${parent.id}"><c:out value="${parent.name}" /></a></li>
+              	<li class="nav-header"><c:out value="${parent.name}" /></li>
               </c:if>
               <c:forEach items="${subCategories}" var="subCategory">
-              	<li><a href="<c:url value="/shop/category/${subCategory.friendlyUrl}.html/ref=${subCategory.id}"/>"><c:out value="${subCategory.name}" /></a></li>
+              	<li><a href="<c:url value="/shop/category/${subCategory.friendlyUrl}.html/ref=${subCategory.id}"/>"><c:out value="${subCategory.name}" /><c:if test="${subCategory.totalCount>0}"> <span class="countItems">(<c:out value="${subCategory.totalCount}" />)</span></</c:if></a></li>
               </c:forEach>
             </ul>
           </div>

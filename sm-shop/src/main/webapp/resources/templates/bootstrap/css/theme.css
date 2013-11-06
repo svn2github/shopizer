@@ -196,7 +196,8 @@ a:hover{
 
 
 
-.logo-title,#nav,#product-tab.home a,h2.title,.nav-header{
+.logo-title,#nav,#product-tab.home a,h2.title,.
+{
 	text-transform: uppercase;
 	font-weight:bold;
 	font-size: 11px;
@@ -206,7 +207,7 @@ a:hover{
 	text-shadow: 0 1px 0 #fff;
 }
 .nav-header{
-	color:#000;border-bottom:2px solid #000
+	color:#000;
 }
 .nav-list > .active > a, .nav-list > .active > a:hover{
 	background-color:#999
@@ -214,6 +215,11 @@ a:hover{
 .nav-list.below{
 	margin-top:15px;
 }
+
+.countItems{
+	color:#CCC;
+}
+
 .logo-title{
 	color:#8B8B8B;
 }
