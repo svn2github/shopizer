@@ -83,6 +83,11 @@ public class ObjectIndexerImpl implements IndexWorker {
 		context.setObject("indexData", indexData);
 		
 		SearchServiceImpl service = new SearchServiceImpl(client);
+		com.shopizer.search.services.GetResponse r = service.getObject(collection, object, id);
+		if(r!=null) {
+			service.delete(collection, object, id);
+		}
+		
 		service.index(json, collection, object, id);
 		
 

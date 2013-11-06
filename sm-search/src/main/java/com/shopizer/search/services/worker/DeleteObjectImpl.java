@@ -67,8 +67,8 @@ public class DeleteObjectImpl implements DeleteObjectWorker {
 		
 		//}
 		
-		SearchServiceImpl search = new SearchServiceImpl(client);
-		search.delete(collection, object, id);
+		//SearchServiceImpl search = new SearchServiceImpl(client);
+		s.delete(collection, object, id);
 
 	}
 
