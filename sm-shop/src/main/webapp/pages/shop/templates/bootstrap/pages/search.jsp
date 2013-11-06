@@ -60,7 +60,11 @@ response.setDateHeader ("Expires", -1);
 			if(productList.categoryFacets!=null) {
 				for (var i = 0; i < productList.categoryFacets.length; i++) {
 					var categoryFacets = '<li>';
-					categoryFacets = categoryFacets + '<a href="<c:url value="/shop"/>/category/' + productList.categoryFacets[i].friendlyUrl + '.html">' + productList.categoryFacets[i].name + '</a>';
+					categoryFacets = categoryFacets + '<a href="<c:url value="/shop"/>/category/' + productList.categoryFacets[i].friendlyUrl + '.html">' + productList.categoryFacets[i].name;
+					if(productList.categoryFacets[i].totalCount>0) {
+					   categoryFacets = categoryFacets + '<span class="countItems">(' + productList.categoryFacets[i].totalCount + ')</span>'
+					}
+					categoryFacets = categoryFacets + '</a>';
 					categoryFacets = categoryFacets + '</li>';
 					$(categoriesFacets).append(categoryFacets);
 				}
