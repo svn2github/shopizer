@@ -12,6 +12,7 @@ public class Breadcrumb implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private BreadcrumbItemType itemType;
 	private Language language;
 	private List<BreadcrumbItem> breadCrumbs = new ArrayList<BreadcrumbItem>();
 	public Language getLanguage() {
@@ -25,6 +26,12 @@ public class Breadcrumb implements Serializable {
 	}
 	public void setBreadCrumbs(List<BreadcrumbItem> breadCrumbs) {
 		this.breadCrumbs = breadCrumbs;
+	}
+	public void setItemType(BreadcrumbItemType itemType) {
+		this.itemType = itemType;
+	}
+	public BreadcrumbItemType getItemType() {
+		return itemType;
 	}
 
 }

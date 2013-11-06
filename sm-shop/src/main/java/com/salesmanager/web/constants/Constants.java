@@ -64,5 +64,7 @@ public class Constants {
 	public final static String KEY_TWITTER_HANDLE = "twitter_handle";
 	
 	public static final String LOGO_TYPE = "LOGO";
+	
+	public final static String CATEGORY_LINEAGE_DELIMITER = "/";
 
 }

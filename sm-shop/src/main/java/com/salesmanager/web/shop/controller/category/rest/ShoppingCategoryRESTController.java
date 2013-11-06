@@ -1,7 +1,6 @@
 package com.salesmanager.web.shop.controller.category.rest;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,18 +25,20 @@ import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.entity.catalog.ProductList;
 import com.salesmanager.web.utils.CatalogUtils;
 import com.salesmanager.web.utils.LocaleUtils;
 
-
+/**
+ * Rest services for category management
+ * @author Carl Samson
+ *
+ */
 @Controller
 public class ShoppingCategoryRESTController {
 	
@@ -61,249 +62,6 @@ public class ShoppingCategoryRESTController {
 
 
 
-	/**
-	 * Returns all categories for a given MerchantStore
-	 */
-	@RequestMapping("/shop/services/category/{store}/{language}")
-	@ResponseBody
-	public List<com.salesmanager.web.entity.catalog.Category> getCategories(@PathVariable final String language, @PathVariable final String store, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-		Map<String,Language> langs = languageService.getLanguagesMap();
-		Language l = langs.get(language);
-		if(l==null) {
-			l = languageService.getByCode(Constants.DEFAULT_LANGUAGE);
-		}
-		
-		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-
-		if(merchantStore!=null) {
-			if(!merchantStore.getCode().equals(store)) {
-				merchantStore = null; //reset for the current request
-			}
-		}
-		
-		if(merchantStore== null) {
-			merchantStore = merchantStoreService.getByCode(store);
-		}
-		
-		if(merchantStore==null) {
-			LOGGER.error("Merchant store is null for code " + store);
-			response.sendError(503, "Merchant store is null for code " + store);//TODO localized message
-			return null;
-		}
-		
-		List<Category> categories = categoryService.listByStore(merchantStore, l);
-		
-		List<com.salesmanager.web.entity.catalog.Category> returnCategories = new ArrayList<com.salesmanager.web.entity.catalog.Category>();
-		for(Category category : categories) {
-			com.salesmanager.web.entity.catalog.Category categoryProxy = catalogUtils.buildProxyCategory(category, merchantStore, LocaleUtils.getLocale(l));
-			returnCategories.add(categoryProxy);
-		}
-		
-		return returnCategories;
-	}
-
-	/**
-	 * Returns an array of products belonging to a given category
-	 * in a given language for a given store
-	 * url example :  http://<host>/sm-shop/shop/services/products/DEFAULT/BOOKS
-	 * @param store
-	 * @param language
-	 * @param category
-	 * @param model
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/shop/services/products/{store}/{language}/{category}")
-	@ResponseBody
-	public ProductList getProducts(@PathVariable final String store, @PathVariable final String language, @PathVariable final String category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-		//http://localhost:8080/sm-shop/shop/services/products/DEFAULT/en/book.html
-
-		try {
-
-		
-			/**
-			 * How to Spring MVC Rest web service - ajax / jquery
-			 * http://codetutr.com/2013/04/09/spring-mvc-easy-rest-based-json-services-with-responsebody/
-			 */
-			
-			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-			Map<String,Language> langs = languageService.getLanguagesMap();
-
-			if(merchantStore!=null) {
-				if(!merchantStore.getCode().equals(store)) {
-					merchantStore = null; //reset for the current request
-				}
-			}
-			
-			if(merchantStore== null) {
-				merchantStore = merchantStoreService.getByCode(store);
-			}
-			
-			if(merchantStore==null) {
-				LOGGER.error("Merchant store is null for code " + store);
-				response.sendError(503, "Merchant store is null for code " + store);//TODO localized message
-				return null;
-			}
-			
-			//get the category by code
-			Category cat = categoryService.getBySeUrl(merchantStore, category);
-
-			if(cat==null) {
-				LOGGER.error("Category with friendly url " + category + " is null");
-				response.sendError(503, "Category is null");//TODO localized message
-			}
-			
-			String lineage = new StringBuilder().append(cat.getLineage()).append(cat.getId()).append("/").toString();
-			
-			List<Category> categories = categoryService.listByLineage(store, lineage);
-			
-			List<Long> ids = new ArrayList<Long>();
-			if(categories!=null && categories.size()>0) {
-				for(Category c : categories) {
-					ids.add(c.getId());
-				}
-			} 
-			ids.add(cat.getId());
-			
-			Language lang = langs.get(language);
-			if(lang==null) {
-				lang = langs.get(Constants.DEFAULT_LANGUAGE);
-			}
-			
-			List<com.salesmanager.core.business.catalog.product.model.Product> products = productService.getProducts(ids, lang);
-			
-			ProductList productList = new ProductList();
-
-			for(Product product : products) {
-				//create new proxy product
-				com.salesmanager.web.entity.catalog.Product p = catalogUtils.buildProxyProduct(product,merchantStore,LocaleUtils.getLocale(lang));
-				productList.getProducts().add(p);
-	
-			}
-			
-			productList.setTotalCount(productList.getProducts().size());
-			return productList;
-			
-		
-		} catch (Exception e) {
-			LOGGER.error("Error while getting category",e);
-			response.sendError(503, "Error while getting category");
-		}
-		
-		return null;
-	}
-	
-	
-	/**
-	 * Will page products of a given category
-	 * @param store
-	 * @param language
-	 * @param category
-	 * @param model
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/shop/services/products/page/{start}/{max}/{store}/{language}/{category}.html")
-	@ResponseBody
-	public ProductList getProducts(@PathVariable int start, @PathVariable int max, @PathVariable String store, @PathVariable final String language, @PathVariable final String category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
-		
-		try {
-
-			
-			/**
-			 * How to Spring MVC Rest web service - ajax / jquery
-			 * http://codetutr.com/2013/04/09/spring-mvc-easy-rest-based-json-services-with-responsebody/
-			 */
-			
-			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-			
-			
-			Map<String,Language> langs = languageService.getLanguagesMap();
-			
-			if(merchantStore!=null) {
-				if(!merchantStore.getCode().equals(store)) {
-					merchantStore = null; //reset for the current request
-				}
-			}
-			
-			if(merchantStore== null) {
-				merchantStore = merchantStoreService.getByCode(store);
-			}
-			
-			if(merchantStore==null) {
-				LOGGER.error("Merchant store is null for code " + store);
-				response.sendError(503, "Merchant store is null for code " + store);//TODO localized message
-				return null;
-			}
-			
-			//get the category by code
-			Category cat = categoryService.getBySeUrl(merchantStore, category);
-			
-			if(cat==null) {
-				LOGGER.error("Category " + category + " is null");
-				response.sendError(503, "Category is null");//TODO localized message
-				return null;
-			}
-			
-			String lineage = new StringBuilder().append(cat.getLineage()).append(cat.getId()).append("/").toString();
-			
-			List<Category> categories = categoryService.listByLineage(store, lineage);
-			
-			List<Long> ids = new ArrayList<Long>();
-			if(categories!=null && categories.size()>0) {
-				for(Category c : categories) {
-					ids.add(c.getId());
-				}
-			} 
-			ids.add(cat.getId());
-			
-
-			Language lang = langs.get(language);
-			if(lang==null) {
-				lang = langs.get(Constants.DEFAULT_LANGUAGE);
-			}
-			
-			ProductCriteria productCriteria = new ProductCriteria();
-			productCriteria.setMaxCount(max);
-			productCriteria.setStartIndex(start);
-			productCriteria.setCategoryIds(ids);
-
-			com.salesmanager.core.business.catalog.product.model.ProductList products = productService.listByStore(merchantStore, lang, productCriteria);
-
-			ProductList productList = new ProductList();
-			for(Product product : products.getProducts()) {
-
-				//create new proxy product
-				com.salesmanager.web.entity.catalog.Product p = catalogUtils.buildProxyProduct(product,merchantStore,LocaleUtils.getLocale(lang));
-				productList.getProducts().add(p);
-				
-			}
-			
-			productList.setTotalCount(products.getTotalCount());
-			
-			
-			return productList;
-			
-		
-		} catch (Exception e) {
-			LOGGER.error("Error while getting products",e);
-			response.sendError(503, "An error occured while retrieving products " + e.getMessage());
-		}
-		
-		return null;
-	}
-	
-
-	
-
-	
 	
 	
 	/**

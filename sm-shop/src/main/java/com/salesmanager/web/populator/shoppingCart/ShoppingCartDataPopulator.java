@@ -49,6 +49,7 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
     
     @Autowired
     private PricingService pricingService;
+
     
 
     @Autowired

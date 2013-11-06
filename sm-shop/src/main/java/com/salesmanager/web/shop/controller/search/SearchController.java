@@ -231,6 +231,7 @@ public class SearchController {
 					returnList.setCategoryFacets(categoryProxies);
 				}
 				
+				//todo manufacturer facets
 				if(manufacturersFacets!=null) {
 					
 				}
