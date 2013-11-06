@@ -117,6 +117,24 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 	}
 	
 	@Override
+	public List<Category> getByIds(MerchantStore store, List<Long> ids, Language language) {
+		QCategory qCategory = QCategory.category;
+		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCategory)
+			.leftJoin(qCategory.descriptions, qDescription).fetch()
+			.leftJoin(qCategory.merchantStore).fetch()
+			.where(qCategory.id.in(ids)
+			.and(qCategory.merchantStore.id.eq(store.getId()))
+			.and(qDescription.language.id.eq(language.getId())))
+			.orderBy(qCategory.sortOrder.asc(), qCategory.lineage.asc(), qCategory.lineage.asc(), qCategory.depth.asc(), qDescription.language.id.desc());
+		
+		return query.list(qCategory);
+	}
+	
+	@Override
 	public Category getByLanguage(long categoryId, Language language) {
 		QCategory qCategory = QCategory.category;
 		QCategoryDescription qDescription = QCategoryDescription.categoryDescription;

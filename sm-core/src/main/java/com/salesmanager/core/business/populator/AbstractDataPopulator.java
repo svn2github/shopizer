@@ -11,6 +11,7 @@ import javax.inject.Provider;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.reference.language.model.Language;
 
 
 /**
@@ -22,6 +23,7 @@ public abstract class AbstractDataPopulator<Source,Target> implements DataPopula
 
     private MerchantStore store;
     private Locale locale;
+    private Language language;
     @Autowired
     private Provider<Target> targetBean;
     
@@ -102,6 +104,18 @@ public abstract class AbstractDataPopulator<Source,Target> implements DataPopula
 
 	public Locale getLocale() {
 		return locale;
+	}
+
+
+
+	public void setLanguage(Language language) {
+		this.language = language;
+	}
+
+
+
+	public Language getLanguage() {
+		return language;
 	}
 
 }

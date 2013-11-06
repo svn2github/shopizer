@@ -85,6 +85,16 @@ public interface CategoryService extends SalesManagerEntityService<Long, Categor
 	List<Category> listByCodes(MerchantStore store, List<String> codes,
 			Language language);
 
+	/**
+	 * List of Category by id
+	 * @param store
+	 * @param ids
+	 * @param language
+	 * @return
+	 */
+	List<Category> listByIds(MerchantStore store, List<Long> ids,
+			Language language);
+
 
 	
 	
