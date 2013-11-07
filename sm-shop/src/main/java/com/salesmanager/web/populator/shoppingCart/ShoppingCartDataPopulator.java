@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import javax.inject.Provider;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.configuration.ConversionException;
 import org.jfree.util.Log;
@@ -44,9 +42,7 @@ import com.salesmanager.web.utils.ImageFilePathUtils;
 public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCart,ShoppingCartData>
 {
 
-    @Autowired
-    private Provider<ShoppingCartData> targetBean;
-    
+
     @Autowired
     private PricingService pricingService;
 
@@ -122,11 +118,7 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
         
     }
 
-    @Override
-    protected ShoppingCartData createTarget()
-    {
-      return this.targetBean.get();  
-    }
+
     
     private Object getKeyValue(final String key){
        ServletRequestAttributes reqAttr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();

@@ -103,7 +103,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		//display menu
 		setMenu(model,request);
 		   
-		com.salesmanager.web.entity.order.Order order = new com.salesmanager.web.entity.order.Order();
+		com.salesmanager.web.admin.entity.orders.Order order = new com.salesmanager.web.admin.entity.orders.Order();
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		List<Country> countries = countryService.getCountries(language);
 		if(orderId!=null && orderId!=0) {		//edit mode		
@@ -153,7 +153,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 
 	@Secured("ORDER")
 	@RequestMapping(value="/admin/orders/save.html", method=RequestMethod.POST)
-	public String saveOrder(@Valid @ModelAttribute("order") com.salesmanager.web.entity.order.Order entityOrder, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+	public String saveOrder(@Valid @ModelAttribute("order") com.salesmanager.web.admin.entity.orders.Order entityOrder, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
 		String email_regEx = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}\\b";
 		Pattern pattern = Pattern.compile(email_regEx);

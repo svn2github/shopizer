@@ -31,8 +31,8 @@ import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.utils.CacheUtils;
-import com.salesmanager.web.admin.entity.catalog.Manufacturer;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.catalog.Manufacturer;
 import com.salesmanager.web.entity.catalog.ProductList;
 import com.salesmanager.web.entity.shop.Breadcrumb;
 import com.salesmanager.web.entity.shop.BreadcrumbItem;
@@ -257,8 +257,18 @@ public class ShoppingCategoryController {
 			}
 		}
 		
+		/** List of manufacturers **/
 		List<com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer> manufacturers = manufacturerService.listByProductsByCategoriesId(store, ids, language);
-
+		List<Manufacturer> manufacturerList = new ArrayList<Manufacturer>();
+		for(com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer manufacturer : manufacturers) {
+			
+			Manufacturer manuf = manufacturerPopulator.populate(manufacturer, new Manufacturer());
+			manufacturerList.add(manuf);
+			
+		}
+		
+		
+		model.addAttribute("manufacturers", manufacturerList);
 		model.addAttribute("parent", parentProxy);
 		model.addAttribute("category", categoryProxy);
 		model.addAttribute("subCategories", subCategories);

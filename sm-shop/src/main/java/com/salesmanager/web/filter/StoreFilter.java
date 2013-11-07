@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +62,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(StoreFilter.class);
 	
-
+	private final static String STORE_REQUEST_PARAMETER = "store";
 	
 	@Autowired
 	private AppConfiguration appConfiguration;
@@ -122,38 +123,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			 * where is my stuff
 			 */
 			String currentPath = System.getProperty("user.dir");
-			System.out.println(currentPath);
-			
-			//Language
-			//TODO Locale to language
-			Language language = (Language) request.getSession().getAttribute(Constants.LANGUAGE);
-			
-			if(language==null) {
-				
-				//TODO get the Locale from Spring API, is it simply request.getLocale() ???
-				//if so then based on the Locale language locale.getLanguage() get the appropriate Language
-				//object as represented below
-				
-				language = languageService.getByCode(Constants.DEFAULT_LANGUAGE);
-				request.getSession().setAttribute(Constants.LANGUAGE, language);
-				
-				//TODO store default language
-			}
-			
-			//Locale locale = (Locale) request.getSession().getAttribute("LOCALE");
-			
-			//if(language==null) {
-			//	language = languageService.getByCode("en");
-			//	request.getSession().setAttribute("LANGUAGE", language);
-			//}
-			
-			
-			
-			request.setAttribute(Constants.LANGUAGE, language);
-			Locale locale = request.getLocale();
-			
+			System.out.println("*** user.dir ***" + currentPath);
+			LOGGER.debug("*** user.dir ***" + currentPath);
 
-			
 			try {
 				
 				
@@ -166,19 +138,46 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 					loadData();
 	
 				}*/
-	
 				
-				
+				/** merchant store **/
 				MerchantStore store = (MerchantStore)request.getSession().getAttribute(Constants.MERCHANT_STORE);
+	
+				String storeCode = request.getParameter(STORE_REQUEST_PARAMETER);
+				if(!StringUtils.isBlank(storeCode)) {
+					if(store!=null) {
+						if(!store.getCode().equals(storeCode)) {
+							store = merchantService.getByCode(storeCode);
+							if(store!=null) {
+								request.getSession().setAttribute(Constants.MERCHANT_STORE, store);
+							}
+						}
+					}
+				}
+
 				if(store==null) {
-						
-						//TODO get the merchant store code
 						store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
 						request.getSession().setAttribute(Constants.MERCHANT_STORE, store);
-
 				}
 				
 				request.setAttribute(Constants.MERCHANT_STORE, store);
+				
+				/** language & locale **/
+				Language language = (Language) request.getSession().getAttribute(Constants.LANGUAGE);
+				if(language==null) {
+					
+					//TODO get the Locale from Spring API, is it simply request.getLocale() ???
+					//if so then based on the Locale language locale.getLanguage() get the appropriate Language
+					//object as represented below
+					
+					language = languageService.getByCode(Constants.DEFAULT_LANGUAGE);
+					request.getSession().setAttribute(Constants.LANGUAGE, language);
+					
+					//TODO store default language
+				}
+
+				
+				request.setAttribute(Constants.LANGUAGE, language);
+				Locale locale = request.getLocale();
 				
 				/** Breadcrumbs **/
 				setBreadcrumb(request,locale);

@@ -89,7 +89,7 @@ public class ShoppingCartFacadeImpl
         }
 
         LOG.info( "Cart model found." );
-        return this.shoppingCartDataPopulator.populate( cart );
+        return this.shoppingCartDataPopulator.populate( cart, new ShoppingCartData() );
 
     }
 

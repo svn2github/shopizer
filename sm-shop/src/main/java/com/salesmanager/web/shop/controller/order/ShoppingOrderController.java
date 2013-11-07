@@ -17,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.customer.model.Customer;
@@ -54,6 +53,7 @@ public class ShoppingOrderController {
 	@Autowired
 	private PaymentService paymentService;
 	
+
 	@Autowired
 	private OrderService orderService;
 	
@@ -69,9 +69,7 @@ public class ShoppingOrderController {
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		Customer customer = (Customer)request.getSession().getAttribute(Constants.CUSTOMER);
-		
-		
-		
+
 		
 		/**
 		 * Shopping cart
@@ -122,43 +120,35 @@ public class ShoppingOrderController {
 			return "redirect:/shop/shoppingCart.html";
 		}
 		
-		//determine if shipping
-		List<ShippingProduct> shippingProducts = null;
-		boolean freeShipping = false;
-		for(ShoppingCartItem item : items) {
-			Product product = item.getProduct();
-			//TODO determine if free
-			if(!product.isProductVirtual() && product.isProductShipeable()) {
-				if(shippingProducts==null) {
-					shippingProducts = new ArrayList<ShippingProduct>();
-				}
-				ShippingProduct shippingProduct = new ShippingProduct(product);
-				shippingProduct.setQuantity(item.getQuantity());
-			}
-		}
+		//create shipping products
+		List<ShippingProduct> shippingProducts = shoppingCartService.createShippingProduct(cart);
+
 		
 		if(shippingProducts!=null) {//get shipping methods
 			ShippingQuote quote = shippingService.getShippingQuote(store, customer, shippingProducts, language);
 			model.addAttribute("shippingQuote", quote);
 		}
+		
+		//determine if all free items
+		boolean freeShoppingCart = shoppingCartService.isFreeShoppingCart(cart);
 
 		//get payment methods
 		Map<String,IntegrationConfiguration> paymentMethods = paymentService.getPaymentModulesConfigured(store);
-		model.addAttribute("paymentMethods", paymentMethods);
 		
-		
-		//TODO no payments configured
-		
+		//not free and no payment methods
+		if(paymentMethods==null && !freeShoppingCart) {
+			model.addAttribute("errorMessages", "No payments configured");
+		}
+
 		//order total
-		
 		OrderSummary summary = new OrderSummary();
 		List<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> productsList = new ArrayList<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem>();
 		productsList.addAll(cart.getLineItems());
 		summary.setProducts(productsList);
-		//summary.setShippingSummary(shippingSummary)
+		//no default shipping summary
 		
 		OrderTotalSummary orderTotalSummary = orderService.caculateOrderTotal(summary, customer, store, language);
-		model.addAttribute("orderTotalSummary", orderTotalSummary);
+		
 
 		if(customer==null) {
 			customer = new Customer();
@@ -184,6 +174,9 @@ public class ShoppingOrderController {
 		model.addAttribute("zones", zones);
 		model.addAttribute("countries", countries);
 		model.addAttribute("customer",customer);
+		model.addAttribute("orderTotalSummary", orderTotalSummary);
+		model.addAttribute("paymentMethods", paymentMethods);
+		//may have shippingquote
 		
 		/** template **/
 		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Checkout.checkout).append(".").append(store.getStoreTemplate());
