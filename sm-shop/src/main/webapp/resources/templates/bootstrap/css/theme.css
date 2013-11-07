@@ -319,6 +319,10 @@ footer div.company {
       font-size:12px;
 }
 
+/** paragraph title **/
+.p-title {
+	color: #FF8C00;
+}
 
 /*** to be revised **/
 
