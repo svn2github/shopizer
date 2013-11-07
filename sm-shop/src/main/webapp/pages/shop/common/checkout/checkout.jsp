@@ -22,6 +22,11 @@ response.setDateHeader ("Expires", -1);
 
 $(document).ready(function() {
 
+
+		<!-- 
+			can use maked input for phone (USA - CANADA)
+		-->
+
 	
 		//if($("#code").val()=="") {
 		//	$('.btn').addClass('disabled');
