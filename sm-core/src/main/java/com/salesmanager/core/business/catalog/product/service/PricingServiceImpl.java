@@ -18,7 +18,7 @@ import com.salesmanager.core.utils.ProductPriceUtils;
 
 /**
  * Contains all the logic required to calculate product price
- * @author casams1
+ * @author Carl Samson
  *
  */
 @Service("pricingService")

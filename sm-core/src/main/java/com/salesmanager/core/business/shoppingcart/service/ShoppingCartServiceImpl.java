@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
-import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
@@ -23,6 +21,7 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.shipping.model.ShippingProduct;
 import com.salesmanager.core.business.shoppingcart.dao.ShoppingCartDao;
 import com.salesmanager.core.business.shoppingcart.dao.ShoppingCartItemDao;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
@@ -173,13 +172,13 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		
 	}
 	
-	public ShoppingCartItem createShoppingCartItem(Product product, List<ProductAttribute> attributes) throws ServiceException {
+/*	public ShoppingCartItem createShoppingCartItem(Product product, List<ProductAttribute> attributes) throws ServiceException {
 		Validate.notNull(product, "Product should not be null");
 		Validate.notNull(product.getMerchantStore(), "Product.merchantStore should not be null");
 		return null;
-	}
+	}*/
 	
-	private ShoppingCartItem createShoppingCartItem(ShoppingCart shoppingCart, Product product, List<ProductAttribute> attributes, Customer customer) throws ServiceException {
+/*	private ShoppingCartItem createShoppingCartItem(ShoppingCart shoppingCart, Product product, List<ProductAttribute> attributes, Customer customer) throws ServiceException {
 		
 		//TODO validate if product already exist
 		
@@ -193,7 +192,7 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 			
 		}
 		
-/*		Set<ProductAttribute> productAttributes = product.getAttributes();
+		Set<ProductAttribute> productAttributes = product.getAttributes();
 		List<ProductAttribute> attributesList = new ArrayList<ProductAttribute>();
 		if(productAttributes!=null && productAttributes.size()>0 && attributes!=null && attributes.size()>0) {
 			for(ShoppingCartAttributeItem attribute : attributes) {
@@ -217,7 +216,7 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 			}
 			
 		}
-		*/
+		
 		//set item price
 		FinalPrice price = null;
 		
@@ -235,7 +234,7 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		
 		
 		
-	}
+	}*/
 	
 	@Transactional
 	private void populateItem(ShoppingCartItem item) throws Exception {
@@ -286,81 +285,46 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		
 	}
 	
-	
-	
-	
-	public void calculateShoppingCart(List<ShoppingCartItem> items) throws ServiceException {
+	@Override
+	public List<ShippingProduct> createShippingProduct(ShoppingCart cart) throws ServiceException {
+		/**
+		 * Determines if products are virtual
+		 */
+		Set<ShoppingCartItem> items = cart.getLineItems();
+		List<ShippingProduct> shippingProducts = null;
+		for(ShoppingCartItem item : items) {
+			Product product = item.getProduct();
+			if(!product.isProductVirtual() && product.isProductShipeable()) {
+				if(shippingProducts==null) {
+					shippingProducts = new ArrayList<ShippingProduct>();
+				}
+				ShippingProduct shippingProduct = new ShippingProduct(product);
+				shippingProduct.setQuantity(item.getQuantity());
+			}
+		}
 		
-		
-/*		
- 		SHOULD BE IN ORDER PACKAGE
- 		
- 		the model should be completed so that a shopping cart has this structure
-		
-		ShoppingCart
-			List<ShoppingCartItem> items
-				List<ShoppingCartAttributeItem> priceItems
-			
-		only ShoppingCartItem are saved in the database when a customer is logged on
-		
-		
-		This method should return a ShoppingCart entity
-		
-		
-		- price calculation
-		
-		the cart price calculation is based on a workflow. The workflow takes the ShoppingCart as input and populates the ShoppingCartPriceItem
-		based on different calculation steps. The steps are individual item price calculation, sub-total, apply tax (when customer is known), eventually apply
-		custom pricing rules (shopping cart coupons) and other specific rule that can be configured on business rules engine such as drools
-		
-		STEP 1 Unit price item calculation
-		
-		:get the Product from ShoppingCartItem and all ProductAttribute fromShoppingCartAttributeItem
-		
-		:invoke for each product productPriceUtils.getFinalProductPrice
-		
-		:get the final price for each Product
-		
-		:set the price in shoppingCartItem.itemPrice
-		
-		STEP 2 Calculate cart sub total
-		
-		:calculate sub total based on each shoppingCartItem.itemPrice, [create a ShoppingCartPriceItem that will contain this sub total] -- Not sure about that
-		
-		STEP 3 Calculate taxes (if the customer is logged on) taxService + OrderSummary
-		
-		STEP 4 Calculate Cart total
-		
-		
-		WORKFLOW example (package name may not be accurate)
-		
-		<beans:bean id="shoppingCartWorkflow" class="com.salesmanager.core.service.shoppingcart.workflow.WorkflowProcessor">
-			<beans:property name="processes">
-				<beans:list>
-					<beans:ref bean="a" />
-					<beans:ref bean="b" />
-					<beans:ref bean="c" />
-				</beans:list>
-			</beans:property>
-		</beans:bean>
-		
-
-
-		<beans:bean id="a" class="com.salesmanager.core.service.shoppingcart.workflow.CalculateThis"/>
-		<beans:bean id="b" class="com.salesmanager.core.service.shoppingcart.workflow.CalculateThat"/>
-		<beans:bean id="c" class="com.salesmanager.core.service.shoppingcart.workflow..."/>
-
-		In the shopping cart service autowire the workflow processor which implements execute
-		
-		
-		*/
-		
-		
-		
+		return shippingProducts;
 		
 	}
 	
+	@Override
+	public boolean isFreeShoppingCart(ShoppingCart cart) throws ServiceException {
+		/**
+		 * Determines if products are free
+		 */
+		Set<ShoppingCartItem> items = cart.getLineItems();
+		for(ShoppingCartItem item : items) {
+			Product product = item.getProduct();
+			FinalPrice finalPrice = pricingService.calculateProductPrice(product);
+			if(finalPrice.getFinalPrice().longValue()>0) {
+				return false;
+			}
+		}
+		return true;
+		
+	}
 	
+
 
 
 }
