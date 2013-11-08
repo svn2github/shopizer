@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
 import com.salesmanager.core.business.catalog.product.model.type.ProductType;
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -31,7 +30,6 @@ import com.salesmanager.core.business.reference.zone.model.ZoneDescription;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.service.ModuleConfigurationService;
-import com.salesmanager.core.business.system.service.SystemConfigurationService;
 import com.salesmanager.core.business.tax.model.taxclass.TaxClass;
 import com.salesmanager.core.business.tax.service.TaxClassService;
 import com.salesmanager.core.constants.SchemaConstant;
@@ -59,9 +57,6 @@ public class InitializationDatabaseImpl implements InitializationDatabase {
 	
 	@Autowired
 	protected MerchantStoreService merchantService;
-	
-	@Autowired
-	private SystemConfigurationService systemConfigurationService;
 		
 	@Autowired
 	protected ProductTypeService productTypeService;

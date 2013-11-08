@@ -48,6 +48,11 @@ public class SearchServiceImpl implements SearchService {
 	
 	@Autowired
 	private PricingService pricingService;
+	
+	@Override
+	public void initService() {
+		searchService.initService();
+	}
 
 	@SuppressWarnings("rawtypes")
 	@Override

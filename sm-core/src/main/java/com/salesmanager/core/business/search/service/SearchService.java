@@ -50,4 +50,9 @@ public interface SearchService {
 	SearchResponse search(MerchantStore store, String languageCode, String jsonString,
 			int entriesCount, int startIndex) throws ServiceException;
 
+	/**
+	 * Initializes search service in order to avoid lazy initialization
+	 */
+	void initService();
+
 }
