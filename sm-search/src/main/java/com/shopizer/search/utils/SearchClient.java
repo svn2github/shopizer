@@ -4,6 +4,7 @@ package com.shopizer.search.utils;
 
 import static org.elasticsearch.node.NodeBuilder.*;
 
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
@@ -98,8 +99,9 @@ public class SearchClient {
 						client = node.client();
 					}
 					/** wait for ready status **/
-					client.admin().cluster().prepareHealth().setWaitForGreenStatus();
-					
+					//client.admin().cluster().prepareHealth().setWaitForGreenStatus();
+					//System.out.println("****** Before ES health ********");
+					//client.admin().cluster().health(new ClusterHealthRequest("lists").waitForActiveShards(1)).actionGet();
 					System.out.println("****** ES client ready ********");
 					
 				} catch (Exception e) {

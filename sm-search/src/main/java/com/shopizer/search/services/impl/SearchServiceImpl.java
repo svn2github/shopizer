@@ -12,9 +12,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequestBuilder;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
+import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -75,6 +77,7 @@ public class SearchServiceImpl {
 	
 		
 		Client client = searchClient.getClient();
+		
 
 
 		//maintain a list of created index
@@ -120,7 +123,7 @@ public class SearchServiceImpl {
 
 		
 		Client client = searchClient.getClient();
-		
+
 		@SuppressWarnings("unused")
 		DeleteResponse r = client.prepareDelete(collection, object, id) 
         .execute() 

@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-
 import com.shopizer.search.services.IndexKeywordRequest;
 import com.shopizer.search.services.field.BooleanField;
 import com.shopizer.search.services.field.DoubleField;
@@ -37,14 +36,9 @@ public class KeywordIndexerImpl implements IndexWorker {
 	
 	
 	private static Logger log = Logger.getLogger(KeywordIndexerImpl.class);
-	
-	//private static Map keyWordsToIndex = null;
-	//private static Map fieldsToAdd = null;
-	
+
 	private static boolean init = false;
-	
-	//private static String collectionName = null;
-	
+
 	private List<CustomIndexConfiguration> indexConfigurations = null;
 
 
@@ -105,6 +99,10 @@ public class KeywordIndexerImpl implements IndexWorker {
 			if(!init) {
 				init();
 			}
+			
+			try {
+				
+
 		
 			//new logic
 			if(indexConfigurationsMap!=null && indexConfigurationsMap.containsKey(object)) {
@@ -331,6 +329,12 @@ public class KeywordIndexerImpl implements IndexWorker {
 				
 			}
 				
+				
+				
+			}
+			
+			} catch (Exception e) {
+				log.error("Cannot index keywords, maybe a timing ussue for no shards available",e);
 			}
 		
 		
@@ -438,27 +442,15 @@ public class KeywordIndexerImpl implements IndexWorker {
 
 
 	}
-	
 
-	
-
-	
-/*	public static List<IndexConfiguration> getIndexConfigurations() {
-		return indexConfigurations;
-	}
-
-	public static void setIndexConfigurations(
-			List<IndexConfiguration> indexConfigurations) {
-		KeywordIndexerImpl.indexConfigurations = indexConfigurations;
+	@Override
+	public void init(SearchClient client) {
+		if(!init) {
+			init();
+		}
+		
 	}
 	
-	public static List<CustomIndexFieldConfiguration> getIndexFieldConfigurations() {
-		return indexFieldConfigurations;
-	}
 
-	public static void setIndexFieldConfigurations(
-			List<CustomIndexFieldConfiguration> indexFieldConfigurations) {
-		KeywordIndexerImpl.indexFieldConfigurations = indexFieldConfigurations;
-	}*/
 
 }

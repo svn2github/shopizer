@@ -29,11 +29,15 @@ public class ObjectIndexerImpl implements IndexWorker {
 	
 	private static Logger log = Logger.getLogger(ObjectIndexerImpl.class);
 	
-	private synchronized void init(SearchClient client) {
+	public synchronized void init(SearchClient client) {
 		
 		//get the list of configuration
 		//get the collection name and index name
 		//get the mapping file
+		if(init) {
+			return;
+		}
+		
 		if(getIndexConfigurations()!=null && getIndexConfigurations().size()>0) {
 			
 			SearchServiceImpl service = new SearchServiceImpl(client);
@@ -65,30 +69,39 @@ public class ObjectIndexerImpl implements IndexWorker {
 	public void execute(SearchClient client, String json, String collection, String object, String id, ExecutionContext context)
 			throws Exception {
 		// TODO Auto-generated method stub
-		if(init==false) {
-			init(client);
+		
+		
+		try {
+			
+
+			if(!init) {
+				init(client);
+			}
+			
+			//get json object
+			Map<String,Object> indexData = (Map)context.getObject("indexData");
+			if(indexData==null) {
+				ObjectMapper mapper = new ObjectMapper();
+				indexData = mapper.readValue(json, Map.class);
+			}
+			
+			if(context==null) {
+				context = new ExecutionContext();
+			}
+			
+			context.setObject("indexData", indexData);
+			
+			SearchServiceImpl service = new SearchServiceImpl(client);
+			com.shopizer.search.services.GetResponse r = service.getObject(collection, object, id);
+			if(r!=null) {
+				service.delete(collection, object, id);
+			}
+			
+			service.index(json, collection, object, id);
+		
+		} catch (Exception e) {
+			log.error("Exception while indexing a product, maybe a timing ussue for no shards available",e);
 		}
-		
-		//get json object
-		Map<String,Object> indexData = (Map)context.getObject("indexData");
-		if(indexData==null) {
-			ObjectMapper mapper = new ObjectMapper();
-			indexData = mapper.readValue(json, Map.class);
-		}
-		
-		if(context==null) {
-			context = new ExecutionContext();
-		}
-		
-		context.setObject("indexData", indexData);
-		
-		SearchServiceImpl service = new SearchServiceImpl(client);
-		com.shopizer.search.services.GetResponse r = service.getObject(collection, object, id);
-		if(r!=null) {
-			service.delete(collection, object, id);
-		}
-		
-		service.index(json, collection, object, id);
 		
 
 	}
