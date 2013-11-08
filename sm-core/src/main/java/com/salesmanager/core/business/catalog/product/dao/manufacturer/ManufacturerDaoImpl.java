@@ -79,9 +79,10 @@ public class ManufacturerDaoImpl extends SalesManagerEntityDaoImpl<Long, Manufac
 	@Override
 	public List<Manufacturer> listByProductsByCategoriesId(MerchantStore store, List<Long> ids, Language language) {
 		StringBuilder builderSelect = new StringBuilder();
-		builderSelect.append("select Manufacturer m from Product as p ");
-		builderSelect.append("join fetch m.descriptions md ");
-		builderSelect.append("join fetch p.categories categs ");
+		builderSelect.append("select distinct manufacturer from Product as p ");
+		builderSelect.append("join p.manufacturer manufacturer ");
+		builderSelect.append("join manufacturer.descriptions md ");
+		builderSelect.append("join p.categories categs ");
 		builderSelect.append("where categs.id in (:cid) ");
 		builderSelect.append("and md.language.id=:lang");
 
