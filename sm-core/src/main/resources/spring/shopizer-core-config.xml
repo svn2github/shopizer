@@ -25,6 +25,8 @@
   		<constructor-arg value="${secretKey}"/>
 	</bean>
 	
+	<bean id="applicationContextListenerUtils" class="com.salesmanager.core.utils.ApplicationContextListenerUtils" />
+	
 	<!-- Get the secret key from JNDI -->
 	<!--
 	<jee:jndi-lookup id="secretKey"
