@@ -165,9 +165,12 @@ public class ShoppingCategoryController {
 		String[] categoryPath = lineage.split(Constants.CATEGORY_LINEAGE_DELIMITER);
 		List<Long> ids = new ArrayList<Long>();
 		for(int i=0 ; i<categoryPath.length; i++) {
-			ids.add(Long.parseLong(categoryPath[i]));
+			String sId = categoryPath[i];
+			if(!StringUtils.isBlank(sId)) {
+				ids.add(Long.parseLong(sId));
+			}
 		}
-		
+	
 		List<Category> categories = categoryService.listByIds(store, ids, language);
 		
 		/** Rebuild breadcrumb **/
