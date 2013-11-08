@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
@@ -509,9 +510,12 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 		
 		List<Object[]> objs = categoryService.countProductsByCategories(store, ids);
 		
-		System.out.println("Done");
+		System.out.println(objs.size());
+		
+		//get manufacturer for given categories
+		List<Manufacturer> manufacturers = manufacturerService.listByProductsByCategoriesId(store, ids, en);
 	    
-
+		System.out.println(manufacturers.size());
 	    
 	}
 	
@@ -521,6 +525,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 	 * @throws ServiceException
 	 */
 	@Test
+	@Ignore
 	public void testCreateSimpleProduct() throws ServiceException {
 		
 		
