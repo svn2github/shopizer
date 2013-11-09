@@ -12,11 +12,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequestBuilder;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
-import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -47,7 +45,6 @@ import com.shopizer.search.services.field.IntegerField;
 import com.shopizer.search.services.field.ListField;
 import com.shopizer.search.services.field.LongField;
 import com.shopizer.search.services.field.StringField;
-import com.shopizer.search.services.worker.KeywordIndexerImpl;
 import com.shopizer.search.utils.SearchClient;
 
 public class SearchServiceImpl {
@@ -120,14 +117,16 @@ public class SearchServiceImpl {
 	
 	public void delete(String collection, String object, String id) throws Exception {
 		
-
+		if(this.indexExist(collection)) {
 		
-		Client client = searchClient.getClient();
-
-		@SuppressWarnings("unused")
-		DeleteResponse r = client.prepareDelete(collection, object, id) 
-        .execute() 
-        .actionGet();
+			Client client = searchClient.getClient();
+	
+			@SuppressWarnings("unused")
+			DeleteResponse r = client.prepareDelete(collection, object, id) 
+	        .execute() 
+	        .actionGet();
+		
+		}
 		
 
 	}
@@ -135,30 +134,33 @@ public class SearchServiceImpl {
 	public void bulkDeleteIndex(Collection<String> ids, String collection) throws Exception {
 		
 
-		Client client = searchClient.getClient();
+		if(this.indexExist(collection)) {
 		
-		if(ids!=null && ids.size()>0) {
+			Client client = searchClient.getClient();
 			
-			BulkRequestBuilder bulkRequest = client.prepareBulk();
-			
-			for(String s : ids) {
+			if(ids!=null && ids.size()>0) {
 				
+				BulkRequestBuilder bulkRequest = client.prepareBulk();
 				
-				DeleteRequest dr = new DeleteRequest();
-				dr.type("keyword").index(collection).id(s);
+				for(String s : ids) {
+					
+					
+					DeleteRequest dr = new DeleteRequest();
+					dr.type("keyword").index(collection).id(s);
+					
+					//System.out.println(dr.toString());
+					
+					bulkRequest.add(dr);
+					
+				}
 				
-				//System.out.println(dr.toString());
-				
-				bulkRequest.add(dr);
+				BulkResponse bulkResponse = bulkRequest.execute().actionGet(); 
+				if (bulkResponse.hasFailures()) { 
+				    // process failures by iterating through each bulk response item 
+					System.out.println("has failures");
+				}
 				
 			}
-			
-			BulkResponse bulkResponse = bulkRequest.execute().actionGet(); 
-			if (bulkResponse.hasFailures()) { 
-			    // process failures by iterating through each bulk response item 
-				System.out.println("has failures");
-			}
-			
 		}
 		
 

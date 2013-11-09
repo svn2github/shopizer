@@ -2,9 +2,8 @@ package com.shopizer.search.utils;
 
 
 
-import static org.elasticsearch.node.NodeBuilder.*;
+import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
