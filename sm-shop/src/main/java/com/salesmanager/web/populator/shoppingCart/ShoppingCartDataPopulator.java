@@ -12,9 +12,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.configuration.ConversionException;
 import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
@@ -23,10 +20,9 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.OrderSummary;
 import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.order.service.OrderService;
-import com.salesmanager.core.business.populator.AbstractDataPopulator;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
-import com.salesmanager.web.constants.Constants;
+import com.salesmanager.core.utils.AbstractDataPopulator;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartAttribute;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartItem;
@@ -38,7 +34,6 @@ import com.salesmanager.web.utils.ImageFilePathUtils;
  *
  */
 
-@Service(value="shoppingCartDataPopulator")
 public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCart,ShoppingCartData>
 {
 
@@ -51,10 +46,13 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
     @Autowired
     private OrderService orderService;
     
-    @Override
-    public ShoppingCartData populate(final ShoppingCart shoppingCart,final ShoppingCartData cart) {
-        MerchantStore store = (MerchantStore)getKeyValue(Constants.MERCHANT_STORE);
-        Language language = (Language)getKeyValue("LANGUAGE");
+
+
+	@Override
+	public ShoppingCartData populateFromEntity(ShoppingCart shoppingCart,
+			ShoppingCartData cart, MerchantStore store, Language language) {
+
+		
         cart.setCode(shoppingCart.getShoppingCartCode());
         Set<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> items = shoppingCart.getLineItems();
         List<ShoppingCartItem> shoppingCartItemsList=Collections.emptyList();
@@ -115,13 +113,16 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
           throw new ConversionException( "Unable to create cart data", ex );
         }
         return cart;
-        
-    }
+		
+		
+	}
 
 
-    
-    private Object getKeyValue(final String key){
-       ServletRequestAttributes reqAttr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-       return reqAttr.getRequest().getAttribute( key );
-    }
+
+	@Override
+	public ShoppingCart populateToEntity(ShoppingCart source,
+			ShoppingCartData target, MerchantStore store) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

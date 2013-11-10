@@ -1,12 +1,17 @@
 package com.salesmanager.web.admin.entity.web;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
-public class Menu {
+public class Menu implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String code;
 	private String url;
 	private String icon;

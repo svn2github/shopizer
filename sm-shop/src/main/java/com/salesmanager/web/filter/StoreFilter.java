@@ -127,18 +127,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			LOGGER.debug("*** user.dir ***" + currentPath);
 
 			try {
-				
-				
-				//TODO global object
-/*				if (initializationDatabase.isEmpty()) {
-					LOGGER.info(String.format("%s : Shopizer database is empty, populate it....", "sm-shop"));
-			
-					initializationDatabase.populate("sm-shop");
-					userDetailsService.createDefaultAdmin();
-					loadData();
-	
-				}*/
-				
+
 				/** merchant store **/
 				MerchantStore store = (MerchantStore)request.getSession().getAttribute(Constants.MERCHANT_STORE);
 	
@@ -310,7 +299,8 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			
 			StringBuilder configKeyMissed = new StringBuilder();
 			configKeyMissed
-			.append(configKey.toString());
+			.append(configKey.toString())
+			.append(Constants.MISSED_CACHE_KEY);
 			
 			Map<String, Object> configs = null;
 			
@@ -397,20 +387,23 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 						missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
 					}
 					
-					   if(contents==null && missedContent==null) {
+				   if(contents==null && missedContent==null) {
 						
 							contents = this.getContentPagesNames(store, language);
 
+							if(contents!=null) {
+								//put in cache
+								cache.putInCache(contents, contentKey.toString());
 							
-							//put in cache
-							cache.putInCache(contents, contentKey.toString());
+							} else {
+								//put in missed cache
+								cache.putInCache(new Boolean(true), contentKeyMissed.toString());
+							}
 							
-						} else {
-							
+				   } else {
 							//put in missed cache
 							cache.putInCache(new Boolean(true), contentKeyMissed.toString());
-							
-						}
+				   }
 						
 					
 		
@@ -619,7 +612,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	   private Map<String, List<ContentDescription>> getContentPagesNames(MerchantStore store, Language language) throws Exception {
 		   
 		   
-		   Map<String, List<ContentDescription>> contents = new ConcurrentHashMap<String, List<ContentDescription>>();
+		    Map<String, List<ContentDescription>> contents = new ConcurrentHashMap<String, List<ContentDescription>>();
 		   
 			//Get boxes and sections from the database
 			List<ContentType> contentTypes = new ArrayList<ContentType>();

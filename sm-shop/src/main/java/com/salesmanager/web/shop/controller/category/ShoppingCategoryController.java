@@ -40,6 +40,8 @@ import com.salesmanager.web.entity.shop.BreadcrumbItemType;
 import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.populator.manufacturer.ManufacturerPopulator;
 import com.salesmanager.web.shop.controller.ControllerConstants;
+import com.salesmanager.web.shop.model.filter.QueryFilter;
+import com.salesmanager.web.shop.model.filter.QueryFilterType;
 import com.salesmanager.web.utils.CatalogUtils;
 import com.salesmanager.web.utils.LabelUtils;
 import com.salesmanager.web.utils.LocaleUtils;
@@ -75,10 +77,6 @@ public class ShoppingCategoryController {
 	@Autowired
 	private LabelUtils messages;
 	
-    
-    @Autowired
-    private ManufacturerPopulator manufacturerPopulator;
-	
 
 	
 	@Autowired
@@ -106,14 +104,7 @@ public class ShoppingCategoryController {
 		return this.displayCategory(friendlyUrl,ref,model,request,response,locale);
 	}
 	
-	@RequestMapping("/shop/category/{friendlyUrl}.html/ref={ref}/filter={filterType}/filter-value={filterValue}")
-	public String displayCategoryWithReference(@PathVariable final String friendlyUrl, @PathVariable final String ref, @PathVariable final String filterType, @PathVariable final String filterValue, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
-		
-		
-		
-		return this.displayCategory(friendlyUrl,ref,model,request,response,locale);
-	}
-	
+
 	
 	/**
 	 * Category page entry point
@@ -126,13 +117,10 @@ public class ShoppingCategoryController {
 	 */
 	@RequestMapping("/shop/category/{friendlyUrl}.html")
 	public String displayCategoryNoReference(@PathVariable final String friendlyUrl, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
-		
-		
-		
+
 		return this.displayCategory(friendlyUrl,null,model,request,response,locale);
 	}
 	
-	//TODO handle filters
 	@SuppressWarnings("unchecked")
 	private String displayCategory(final String friendlyUrl, final String ref, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
@@ -218,7 +206,17 @@ public class ShoppingCategoryController {
 		.append(Constants.MISSED_CACHE_KEY);
 		
 		List<com.salesmanager.web.entity.catalog.Category> subCategories = null;
-		Map<String,Long> countProductsByCategories = null;
+		Map<Long,Long> countProductsByCategories = null;
+		
+		//TODO add to caching
+		List<Category> subCategs = categoryService.listByLineage(store, lineage);
+		List<Long> subIds = new ArrayList<Long>();
+		if(subCategs!=null && subCategs.size()>0) {
+			for(Category c : subCategs) {
+				subIds.add(c.getId());
+			}
+		}
+		subIds.add(category.getId());
 		
 		if(store.isUseCache()) {
 			
@@ -235,14 +233,14 @@ public class ShoppingCategoryController {
 
 			
 			if(subCategories==null && missedContent==null) {
-				countProductsByCategories = getProductsByCategory(store, lineage);
+				countProductsByCategories = getProductsByCategory(store, category, lineage, subCategs);
 				subCategories = getSubCategories(store,category,countProductsByCategories,language,locale);
 			}
 			
 
 			
 		} else {
-			countProductsByCategories = getProductsByCategory(store, lineage);
+			countProductsByCategories = getProductsByCategory(store, category, lineage, subCategs);
 			subCategories = getSubCategories(store,category,countProductsByCategories,language,locale);
 			
 		}
@@ -260,14 +258,17 @@ public class ShoppingCategoryController {
 			}
 		}
 		
-		/** List of manufacturers **/
-		List<com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer> manufacturers = manufacturerService.listByProductsByCategoriesId(store, ids, language);
+		
+		
 		List<Manufacturer> manufacturerList = new ArrayList<Manufacturer>();
-		for(com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer manufacturer : manufacturers) {
-			
-			Manufacturer manuf = manufacturerPopulator.populate(manufacturer, new Manufacturer());
-			manufacturerList.add(manuf);
-			
+		/** List of manufacturers **/
+		if(subIds!=null && subIds.size()>0) {
+			List<com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer> manufacturers = manufacturerService.listByProductsByCategoriesId(store, subIds, language);
+			for(com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer manufacturer : manufacturers) {
+				Manufacturer manuf = new ManufacturerPopulator().populateFromEntity(manufacturer, new Manufacturer(), store, language);
+				manufacturerList.add(manuf);
+				
+			}
 		}
 		
 		
@@ -283,32 +284,51 @@ public class ShoppingCategoryController {
 		return template.toString();
 	}
 	
-	private Map<String,Long> getProductsByCategory(MerchantStore store, String lineage) throws Exception {
+	private Map<Long,Long> getProductsByCategory(MerchantStore store, Category category, String lineage, List<Category> subCategories) throws Exception {
 		
 		
-		List<Category> categories = categoryService.listByLineage(store, lineage);
 		
-		if(CollectionUtils.isEmpty(categories)) {
+		
+		
+		if(CollectionUtils.isEmpty(subCategories)) {
 			return null;
 		}
 		List<Long> ids = new ArrayList<Long>();
-		if(categories!=null && categories.size()>0) {
-			for(Category c : categories) {
+		if(subCategories!=null && subCategories.size()>0) {
+			for(Category c : subCategories) {
 				ids.add(c.getId());
 			}
 		} 
 
 		List<Object[]> countProductsByCategories = categoryService.countProductsByCategories(store, ids);
-		Map<String, Long> countByCategories = new HashMap<String,Long>();
+		Map<Long, Long> countByCategories = new HashMap<Long,Long>();
+		
 		for(Object[] counts : countProductsByCategories) {
-			countByCategories.put((String)counts[0], (Long)counts[1]);
+			Category c = (Category)counts[0];
+			if(c.getParent().getId()==category.getId()) {
+				countByCategories.put(c.getId(), (Long)counts[1]);
+			} else {
+				//get lineage
+				String lin = c.getLineage();
+				String[] categoryPath = lin.split(Constants.CATEGORY_LINEAGE_DELIMITER);
+				for(int i=0 ; i<categoryPath.length; i++) {
+					String sId = categoryPath[i];
+					if(!StringUtils.isBlank(sId)) {
+							Long count = countByCategories.get(Long.parseLong(sId));
+							if(count!=null) {
+								count = count + (Long)counts[1];
+								countByCategories.put(Long.parseLong(sId), count);
+							}
+					}
+				}
+			}
 		}
 		
 		return countByCategories;
 		
 	}
 	
-	private List<com.salesmanager.web.entity.catalog.Category> getSubCategories(MerchantStore store, Category category, Map<String,Long> productCount, Language language, Locale locale) {
+	private List<com.salesmanager.web.entity.catalog.Category> getSubCategories(MerchantStore store, Category category, Map<Long,Long> productCount, Language language, Locale locale) {
 		
 		
 		//sub categories
@@ -318,7 +338,7 @@ public class ShoppingCategoryController {
 			
 			com.salesmanager.web.entity.catalog.Category cProxy =  catalogUtils.buildProxyCategory(sub, store, locale);
 			if(productCount!=null) {
-				Long total = productCount.get(cProxy.getCode());
+				Long total = productCount.get(cProxy.getId());
 				if(total!=null) {
 					cProxy.setTotalCount(total);
 				}
@@ -485,6 +505,52 @@ public class ShoppingCategoryController {
 	public ProductList getProducts(@PathVariable int start, @PathVariable int max, @PathVariable String store, @PathVariable final String language, @PathVariable final String category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		
+		return this.getProducts(start, max, store, language, category, null, model, request, response);
+	}
+	
+	
+	/**
+	 * An entry point for filtering by another entity such as Manufacturer
+	 * filter=BRAND&filter-value=123
+	 * @param start
+	 * @param max
+	 * @param store
+	 * @param language
+	 * @param category
+	 * @param filterType
+	 * @param filterValue
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/shop/services/products/page/{start}/{max}/{store}/{language}/{category}.html/filter={filterType}/filter-value={filterValue}")
+	@ResponseBody
+	public ProductList getProductsFilteredByType(@PathVariable int start, @PathVariable int max, @PathVariable String store, @PathVariable final String language, @PathVariable final String category, @PathVariable final String filterType, @PathVariable final String filterValue, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		List<QueryFilter> queryFilters = null;
+		try {
+			if(filterType.equals(QueryFilterType.BRAND.name())) {//the only one implemented so far
+				QueryFilter filter = new QueryFilter();
+				filter.setFilterType(QueryFilterType.BRAND);
+				filter.setFilterId(Long.parseLong(filterValue));
+				if(queryFilters==null) {
+					queryFilters = new ArrayList<QueryFilter>();
+				}
+				queryFilters.add(filter);
+			}
+		} catch(Exception e) {
+			LOGGER.error("Invalid filter or filter-value " + filterType + " - " + filterValue,e);
+		}
+		
+		return this.getProducts(start, max, store, language, category, queryFilters, model, request, response);
+	}
+	
+	
+	private ProductList getProducts(final int start, final int max, final String store, final String language, final String category, final List<QueryFilter> filters, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		
 		try {
 
 			
@@ -545,6 +611,14 @@ public class ShoppingCategoryController {
 			productCriteria.setMaxCount(max);
 			productCriteria.setStartIndex(start);
 			productCriteria.setCategoryIds(ids);
+			
+			if(filters!=null) {
+				for(QueryFilter filter : filters) {
+					if(filter.getFilterType().name().equals(QueryFilterType.BRAND.name())) {//the only filter implemented
+						productCriteria.setManufacturerId(filter.getFilterId());
+					}
+				}
+			}
 
 			com.salesmanager.core.business.catalog.product.model.ProductList products = productService.listByStore(merchantStore, lang, productCriteria);
 
@@ -569,6 +643,7 @@ public class ShoppingCategoryController {
 		}
 		
 		return null;
+
 	}
 	
 

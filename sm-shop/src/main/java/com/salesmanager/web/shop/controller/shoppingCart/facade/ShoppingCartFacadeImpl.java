@@ -43,8 +43,6 @@ public class ShoppingCartFacadeImpl
     @Autowired
     private ShoppingCartService shoppingCartService;
 
-    @Autowired
-    private ShoppingCartDataPopulator shoppingCartDataPopulator;
 
     @Autowired
     private ProductPriceUtils productPriceUtils;
@@ -89,7 +87,7 @@ public class ShoppingCartFacadeImpl
         }
 
         LOG.info( "Cart model found." );
-        return this.shoppingCartDataPopulator.populate( cart, new ShoppingCartData() );
+        return new ShoppingCartDataPopulator().populateFromEntity(cart, new ShoppingCartData(), store, language);
 
     }
 

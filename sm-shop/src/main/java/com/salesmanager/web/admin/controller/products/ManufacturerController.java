@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
+
 import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
@@ -100,7 +100,7 @@ public class ManufacturerController {
 		List<ManufacturerDescription> descriptions = new ArrayList<ManufacturerDescription>();
 
 		
-		if( manufacturer!=null && manufacturerId!=null && manufacturerId.longValue()!=0) {	//edit mode
+		if( manufacturerId!=null && manufacturerId.longValue()!=0) {	//edit mode
 
 			Manufacturer dbManufacturer = new Manufacturer();
 			dbManufacturer = manufacturerService.getById( manufacturerId );
@@ -131,6 +131,7 @@ public class ManufacturerController {
 			for(Language l : languages) {// for each store language
 				
 				ManufacturerDescription manufacturerDesc = new ManufacturerDescription();
+				manufacturerDesc.setLanguage(l);
 				descriptions.add(  manufacturerDesc );
 				manufacturer.setDescriptions(descriptions);
 				
