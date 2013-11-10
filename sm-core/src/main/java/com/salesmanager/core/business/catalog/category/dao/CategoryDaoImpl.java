@@ -333,7 +333,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 
 		
 		StringBuilder qs = new StringBuilder();
-		qs.append("select categories.code, count(product.id) from Product product ");
+		qs.append("select categories, count(product.id) from Product product ");
 		qs.append("inner join product.categories categories ");
 		qs.append("where categories.id in (:cid) ");
 		qs.append("and product.available=true and product.dateAvailable<=:dt ");

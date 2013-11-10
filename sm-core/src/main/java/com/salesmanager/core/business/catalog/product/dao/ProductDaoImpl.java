@@ -475,7 +475,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		}
 		
 		if(criteria.getManufacturerId()!=null) {
-			countBuilderSelect.append(" LEFT JOIN fetch p.manufacturer manuf");
+			countBuilderSelect.append(" INNER JOIN p.manufacturer manuf");
 			countBuilderWhere.append(" and manuf.id = :manufid");
 		}
 		
