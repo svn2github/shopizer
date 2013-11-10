@@ -98,7 +98,7 @@ response.setDateHeader ("Expires", -1);
             					</c:when>
             					<c:otherwise>
             							<ul class="dropdown-menu minicart">
-	                  						//NO ITEMS [TODO]
+	                  						<h4 class="cartmessage"><s:message code="label.emptycart" text="No items in your shopping cart" /></h4>
 	                  					</ul>
 	                  			</c:otherwise>
                   			</c:choose>

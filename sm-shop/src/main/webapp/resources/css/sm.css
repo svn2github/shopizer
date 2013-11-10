@@ -44,6 +44,14 @@
 
 }
 
+/** shopping cart **/
+.cartmessage {
+	margin-left:10px;
+	margin-top:10px;
+	margin-bottom:10px;
+	
+}
+
 /** typeahead search **/
 .tt-dropdown-menu,
 .gist {

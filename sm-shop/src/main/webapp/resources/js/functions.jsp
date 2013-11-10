@@ -65,7 +65,7 @@ function searchProducts(url,divProductsContainer,q,filter) {
 	    var highlights = null;
 		var queryStart = '{';
 
-		var query = '\"query\":{\"query_string\" : {\"fields\" : [\"name^3\", \"description\", \"tags\"], \"query\" : \"' + q + '*", \"use_dis_max\" : true }}';
+		var query = '\"query\":{\"query_string\" : {\"fields\" : [\"name^3\", \"description\", \"tags\"], \"query\" : \"*' + q + '*", \"use_dis_max\" : true }}';
 		if(filter!=null && filter!='') {
 			//query = '\"query\":{\"filtered\":{\"query\":{\"text\":{\"_all\":\"' + q + '\"}},' + filter + '}}';
 			query = query + ',' + filter + '}}';
@@ -120,9 +120,9 @@ function buildProductsList(productList, divProductsContainer) {
 			productHtml = productHtml + '<div class="product-box"><a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html">';
 			productHtml = productHtml + '<h4 class="name">' + productList.products[i].name +'</h4></a>';
 			if(productList.products[i].discounted) {
-					   productHtml = productHtml + '<h3 class="number"><del>' + productList.products[i].originalProductPrice +'</del>&nbsp;<span class="specialPrice">' + productList.products[i].productPrice + '</span></h3>';
+					   productHtml = productHtml + '<h3><del>' + productList.products[i].originalProductPrice +'</del>&nbsp;<span class="specialPrice">' + productList.products[i].productPrice + '</span></h3>';
 			} else {
-					    productHtml = productHtml + '<h3 class="number">' + productList.products[i].productPrice +'</h3>';
+					    productHtml = productHtml + '<h3>' + productList.products[i].productPrice +'</h3>';
 			}
 			if(productList.products[i].imageUrl!=null) {
 					    productHtml = productHtml + '<a href="<c:url value="/shop/product/" />' + productList.products[i].friendlyUrl + '.html"><img src="<c:url value="/"/>' + productList.products[i].imageUrl +'"></a>';

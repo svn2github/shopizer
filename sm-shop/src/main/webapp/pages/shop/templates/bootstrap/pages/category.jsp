@@ -22,7 +22,8 @@ response.setDateHeader ("Expires", -1);
  
  var START_COUNT_PRODUCTS = 0;
  var MAX_PRODUCTS = 12;
- 
+ var filter = null;
+ var filterValue = null;
  
 
  
@@ -48,7 +49,21 @@ response.setDateHeader ("Expires", -1);
  
  	function loadCategoryProducts() {
  		var url = '<%=request.getContextPath()%>/shop/services/products/page/' + START_COUNT_PRODUCTS + '/' + MAX_PRODUCTS + '/<c:out value="${requestScope.MERCHANT_STORE.code}"/>/<c:out value="${requestScope.LANGUAGE.code}"/>/<c:out value="${category.friendlyUrl}"/>.html';
-	 	loadProducts(url,'#productsContainer');
+	 	
+ 		if(filter!=null) {
+ 			url = url + '/filter=' + filter + '/filter-value=' + filterValue +'';
+ 		}
+ 		loadProducts(url,'#productsContainer');
+ 	}
+ 	
+ 	
+ 	function loadCategoryByBrand(filterType,filterVal) {
+ 		//reset product section
+ 		$('#productsContainer').html('');
+ 		START_COUNT_PRODUCTS = 0;
+ 		filter = filterType;
+ 		filterValue = filterVal;
+ 		loadCategoryProducts();
  	}
  
 	function callBackLoadProducts(productList) {
@@ -84,10 +99,24 @@ response.setDateHeader ("Expires", -1);
               	<li class="nav-header"><c:out value="${parent.name}" /></li>
               </c:if>
               <c:forEach items="${subCategories}" var="subCategory">
-              	<li><a href="<c:url value="/shop/category/${subCategory.friendlyUrl}.html/ref=${subCategory.id}"/>"><c:out value="${subCategory.name}" /><c:if test="${subCategory.totalCount>0}"> <span class="countItems">(<c:out value="${subCategory.totalCount}" />)</span></</c:if></a></li>
+              	<li>
+              		<a href="<c:url value="/shop/category/${subCategory.friendlyUrl}.html/ref=${subCategory.id}"/>"><c:out value="${subCategory.name}" />
+              			<c:if test="${subCategory.totalCount>0}">&nbsp;<span class="countItems">(<c:out value="${subCategory.totalCount}" />)</span></c:if></a></li>
               </c:forEach>
             </ul>
           </div>
+          
+          <br/>
+          <div class="sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header"><s:message code="label.manufacturer.brand" text="Brands" /></li>
+              <c:forEach items="${manufacturers}" var="manufacturer">
+              	<li>
+              		<a href="javascript:loadCategoryByBrand('BRAND','${manufacturer.id}')"><c:out value="${manufacturer.name}" /></a></li>
+              </c:forEach>
+            </ul>
+          </div>          
+          
         </div><!--/span-->
         
         <!-- right column -->

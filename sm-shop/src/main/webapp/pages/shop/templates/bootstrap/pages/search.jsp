@@ -62,7 +62,7 @@ response.setDateHeader ("Expires", -1);
 					var categoryFacets = '<li>';
 					categoryFacets = categoryFacets + '<a href="<c:url value="/shop"/>/category/' + productList.categoryFacets[i].friendlyUrl + '.html">' + productList.categoryFacets[i].name;
 					if(productList.categoryFacets[i].totalCount>0) {
-					   categoryFacets = categoryFacets + '<span class="countItems">(' + productList.categoryFacets[i].totalCount + ')</span>'
+					   categoryFacets = categoryFacets + '&nbsp;<span class="countItems">(' + productList.categoryFacets[i].totalCount + ')</span>'
 					}
 					categoryFacets = categoryFacets + '</a>';
 					categoryFacets = categoryFacets + '</li>';
@@ -78,9 +78,6 @@ response.setDateHeader ("Expires", -1);
  
  
 </script>
-
-    <jsp:include page="/pages/shop/templates/bootstrap/sections/breadcrumb.jsp" />
- 
 
 
 	<div class="row-fluid">
