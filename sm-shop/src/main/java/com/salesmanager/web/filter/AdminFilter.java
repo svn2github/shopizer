@@ -43,12 +43,14 @@ public class AdminFilter extends HandlerInterceptorAdapter {
 	@Autowired
 	private LanguageService languageService;
 	
+	@Autowired
+	private CacheUtils cache;
+	
 	public boolean preHandle(
             HttpServletRequest request,
             HttpServletResponse response,
             Object handler) throws Exception {
 		
-		CacheUtils cache = CacheUtils.getInstance();
 
 		@SuppressWarnings("unchecked")
 		Map<String,Menu> menus = (Map<String,Menu>) cache.getFromCache("MENUMAP");

@@ -77,6 +77,9 @@ public class ShoppingCategoryController {
 	@Autowired
 	private LabelUtils messages;
 	
+	@Autowired
+	private CacheUtils cache;
+	
 
 	
 	@Autowired
@@ -147,9 +150,9 @@ public class ShoppingCategoryController {
 		pageInformation.setPageTitle(categoryProxy.getTitle());
 		pageInformation.setPageUrl(categoryProxy.getFriendlyUrl());
 		
+		/** retrieves category id drill down**/
 		String lineage = new StringBuilder().append(category.getLineage()).append(category.getId()).append(Constants.CATEGORY_LINEAGE_DELIMITER).toString();
 
-		/** retrieves category id drill down**/
 		String[] categoryPath = lineage.split(Constants.CATEGORY_LINEAGE_DELIMITER);
 		List<Long> ids = new ArrayList<Long>();
 		for(int i=0 ; i<categoryPath.length; i++) {
@@ -158,7 +161,7 @@ public class ShoppingCategoryController {
 				ids.add(Long.parseLong(sId));
 			}
 		}
-	
+		//TODO difference between categories and subCategs
 		List<Category> categories = categoryService.listByIds(store, ids, language);
 		
 		/** Rebuild breadcrumb **/
@@ -190,6 +193,16 @@ public class ShoppingCategoryController {
 		
 		
 		request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
+		
+		//TODO add to caching
+		List<Category> subCategs = categoryService.listByLineage(store, lineage);
+		List<Long> subIds = new ArrayList<Long>();
+		if(subCategs!=null && subCategs.size()>0) {
+			for(Category c : subCategs) {
+				subIds.add(c.getId());
+			}
+		}
+		subIds.add(category.getId());
 
 
 		StringBuilder subCategoriesCacheKey = new StringBuilder();
@@ -208,20 +221,10 @@ public class ShoppingCategoryController {
 		List<com.salesmanager.web.entity.catalog.Category> subCategories = null;
 		Map<Long,Long> countProductsByCategories = null;
 		
-		//TODO add to caching
-		List<Category> subCategs = categoryService.listByLineage(store, lineage);
-		List<Long> subIds = new ArrayList<Long>();
-		if(subCategs!=null && subCategs.size()>0) {
-			for(Category c : subCategs) {
-				subIds.add(c.getId());
-			}
-		}
-		subIds.add(category.getId());
+
 		
 		if(store.isUseCache()) {
-			
-		    CacheUtils cache = CacheUtils.getInstance();
-			
+
 			//get from the cache
 			subCategories = (List<com.salesmanager.web.entity.catalog.Category>) cache.getFromCache(subCategoriesCacheKey.toString());
 			
@@ -259,19 +262,9 @@ public class ShoppingCategoryController {
 		}
 		
 		
-		
-		List<Manufacturer> manufacturerList = new ArrayList<Manufacturer>();
-		/** List of manufacturers **/
-		if(subIds!=null && subIds.size()>0) {
-			List<com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer> manufacturers = manufacturerService.listByProductsByCategoriesId(store, subIds, language);
-			for(com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer manufacturer : manufacturers) {
-				Manufacturer manuf = new ManufacturerPopulator().populateFromEntity(manufacturer, new Manufacturer(), store, language);
-				manufacturerList.add(manuf);
-				
-			}
-		}
-		
-		
+		//** List of manufacturers **//
+		List<Manufacturer> manufacturerList = getManufacturersByProductAndCategory(store,category,subIds,language);
+
 		model.addAttribute("manufacturers", manufacturerList);
 		model.addAttribute("parent", parentProxy);
 		model.addAttribute("category", categoryProxy);
@@ -282,6 +275,71 @@ public class ShoppingCategoryController {
 		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Category.category).append(".").append(store.getStoreTemplate());
 
 		return template.toString();
+	}
+	
+	@SuppressWarnings("unchecked")
+	private List<Manufacturer> getManufacturersByProductAndCategory(MerchantStore store, Category category, List<Long> subCategoryIds, Language language) throws Exception {
+
+		List<Manufacturer> manufacturerList = null;
+		/** List of manufacturers **/
+		if(subCategoryIds!=null && subCategoryIds.size()>0) {
+			
+			StringBuilder manufacturersKey = new StringBuilder();
+			manufacturersKey
+			.append(store.getId())
+			.append("_")
+			.append(Constants.MANUFACTURERS_BY_PRODUCTS_CACHE_KEY)
+			.append("-")
+			.append(language.getCode());
+			
+			StringBuilder manufacturersKeyMissed = new StringBuilder();
+			manufacturersKeyMissed
+			.append(manufacturersKey.toString())
+			.append(Constants.MISSED_CACHE_KEY);
+
+			if(store.isUseCache()) {
+
+				//get from the cache
+				 
+				 manufacturerList = (List<Manufacturer>) cache.getFromCache(manufacturersKey.toString());
+				
+				Boolean missedContent = null;
+				if(manufacturerList==null) {
+					//get from missed cache
+					missedContent = (Boolean)cache.getFromCache(manufacturersKeyMissed.toString());
+				}
+
+				
+				if(manufacturerList==null && missedContent==null) {
+					manufacturerList = this.getManufacturers(store, subCategoryIds, language);
+					if(CollectionUtils.isEmpty(manufacturerList)) {
+						cache.putInCache(new Boolean(true), manufacturersKeyMissed.toString());
+					} else {
+						cache.putInCache(manufacturerList, manufacturersKey.toString());
+					}
+				}
+			} else {
+				manufacturerList  = this.getManufacturers(store, subCategoryIds, language);
+			}
+		}
+		
+		return manufacturerList;
+		
+		
+	}
+		
+	private List<Manufacturer> getManufacturers(MerchantStore store, List<Long> ids, Language language) throws Exception {
+		List<Manufacturer> manufacturerList = null;
+		List<com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer> manufacturers = manufacturerService.listByProductsByCategoriesId(store, ids, language);
+		if(CollectionUtils.isEmpty(manufacturers)) {
+			manufacturerList = new ArrayList<Manufacturer>();
+			for(com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer manufacturer : manufacturers) {
+				Manufacturer manuf = new ManufacturerPopulator().populateFromEntity(manufacturer, new Manufacturer(), store, language);
+				manufacturerList.add(manuf);
+				
+			}
+		}
+		return manufacturerList;
 	}
 	
 	private Map<Long,Long> getProductsByCategory(MerchantStore store, Category category, String lineage, List<Category> subCategories) throws Exception {

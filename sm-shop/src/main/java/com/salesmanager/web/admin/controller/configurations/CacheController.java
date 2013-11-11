@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +29,9 @@ import com.salesmanager.web.constants.Constants;
 public class CacheController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CacheController.class);
+	
+	@Autowired
+	private CacheUtils cache;
 
 
 
@@ -40,8 +44,7 @@ public class CacheController {
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		//get cache keys
-		CacheUtils cacheUtils = CacheUtils.getInstance();
-		List<String> cacheKeysList = cacheUtils.getCacheKeys(store);
+		List<String> cacheKeysList = cache.getCacheKeys(store);
 
 		model.addAttribute("keys", cacheKeysList);
 
@@ -60,12 +63,11 @@ public class CacheController {
 		try {
 
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-			
-			CacheUtils cacheUtils = CacheUtils.getInstance();
+
 			StringBuilder key = new StringBuilder();
 			key.append(store.getId()).append("_").append(cacheKey);
 			
-			cacheUtils.removeFromCache(key.toString());
+			cache.removeFromCache(key.toString());
 
 			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 

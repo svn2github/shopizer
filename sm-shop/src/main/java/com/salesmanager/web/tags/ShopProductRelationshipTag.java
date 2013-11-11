@@ -39,6 +39,9 @@ public class ShopProductRelationshipTag extends RequestContextAwareTag  {
 	@Autowired
 	private CatalogUtils catalogUtils;
 	
+	@Autowired
+	private CacheUtils cache;
+	
 	
 	private String groupName;
 
@@ -91,7 +94,6 @@ public class ShopProductRelationshipTag extends RequestContextAwareTag  {
 		if(store.isUseCache()) {
 		
 			//get from the cache
-			CacheUtils cache = CacheUtils.getInstance();
 			objects = (List<com.salesmanager.web.entity.catalog.Product>) cache.getFromCache(groupKey.toString());
 			Boolean missedContent = null;
 			if(objects==null) {

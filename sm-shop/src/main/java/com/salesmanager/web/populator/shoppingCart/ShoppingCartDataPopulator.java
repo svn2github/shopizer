@@ -11,7 +11,6 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.configuration.ConversionException;
 import org.jfree.util.Log;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
@@ -38,13 +37,35 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
 {
 
 
-    @Autowired
     private PricingService pricingService;
 
     
 
-    @Autowired
-    private OrderService orderService;
+    public PricingService getPricingService() {
+		return pricingService;
+	}
+
+
+
+	public void setPricingService(PricingService pricingService) {
+		this.pricingService = pricingService;
+	}
+
+
+
+	public OrderService getOrderService() {
+		return orderService;
+	}
+
+
+
+	public void setOrderService(OrderService orderService) {
+		this.orderService = orderService;
+	}
+
+
+
+	private OrderService orderService;
     
 
 

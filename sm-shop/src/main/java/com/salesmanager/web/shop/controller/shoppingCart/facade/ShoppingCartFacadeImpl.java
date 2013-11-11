@@ -16,10 +16,12 @@ import org.springframework.stereotype.Service;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
+import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
@@ -49,6 +51,14 @@ public class ShoppingCartFacadeImpl
 
     @Autowired
     private ProductService productService;
+    
+    @Autowired
+    private OrderService orderService;
+    
+    @Autowired
+    private PricingService pricingService;
+    
+
 
     @Override
     public ShoppingCartData getShoppingCartData( final Customer customer, final MerchantStore store,
@@ -87,7 +97,10 @@ public class ShoppingCartFacadeImpl
         }
 
         LOG.info( "Cart model found." );
-        return new ShoppingCartDataPopulator().populateFromEntity(cart, new ShoppingCartData(), store, language);
+        ShoppingCartDataPopulator populator = new ShoppingCartDataPopulator();
+        populator.setOrderService(this.orderService);
+        populator.setPricingService(this.pricingService);
+        return populator.populateFromEntity(cart, new ShoppingCartData(), store, language);
 
     }
 

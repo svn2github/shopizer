@@ -103,6 +103,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	@Autowired
 	private LabelUtils messages;
 	
+	@Autowired
+	private CacheUtils cache;
+	
 
 
     /**
@@ -287,8 +290,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	   
 	   private void getMerchantConfigurations(MerchantStore store, HttpServletRequest request) throws Exception {
 		   
-		   CacheUtils cache = CacheUtils.getInstance();
-
+	
 			
 			StringBuilder configKey = new StringBuilder();
 			configKey
@@ -346,7 +348,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 		@SuppressWarnings("unchecked")
 		private void getContentPageNames(MerchantStore store, Language language, HttpServletRequest request) throws Exception {
 			   
-			   CacheUtils cache = CacheUtils.getInstance();
+
 				/**
 				 * CMS links
 				 * Those links are implemented as pages (Content)
@@ -438,7 +440,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	@SuppressWarnings({ "unchecked"})
 	private void getContentObjects(MerchantStore store, Language language, HttpServletRequest request) throws Exception {
 		   
-		   CacheUtils cache = CacheUtils.getInstance();
+
 			/**
 			 * CMS links
 			 * Those links are implemented as pages (Content)
@@ -524,7 +526,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	@SuppressWarnings("unchecked")
 	private void getTopCategories(MerchantStore store, Language language, HttpServletRequest request) throws Exception {
 		   
-		   CacheUtils cache = CacheUtils.getInstance();
+
 			/**
 			 * Top categories
 			 * Top categories are implemented as Category entity
