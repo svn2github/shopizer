@@ -3,28 +3,19 @@ package com.salesmanager.test.utils;
 
 
 import java.text.NumberFormat;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.currency.service.CurrencyService;
-import com.salesmanager.core.business.system.model.IntegrationConfiguration;
+import com.salesmanager.core.modules.utils.Encryption;
 import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;
-import com.salesmanager.test.core.SalesManagerCoreTestExecutionListener;
 
 public class UtilsTestCase extends AbstractSalesManagerCoreTestCase {
 	
@@ -37,6 +28,12 @@ public class UtilsTestCase extends AbstractSalesManagerCoreTestCase {
 	@Autowired
 	private CurrencyService currencyService;
 	
+	@Autowired
+	private Encryption encryption;
+	
+	@Autowired
+	private CacheUtils cache;
+	
 	
 	@Test
 	public void testCache() throws Exception {
@@ -47,7 +44,7 @@ public class UtilsTestCase extends AbstractSalesManagerCoreTestCase {
 
 
 		
-		CacheUtils cache = CacheUtils.getInstance();
+		//CacheUtils cache = CacheUtils.getInstance();
 		cache.putInCache(countries, "COUNTRIES");
 		
 		@SuppressWarnings("rawtypes")
@@ -74,7 +71,7 @@ public class UtilsTestCase extends AbstractSalesManagerCoreTestCase {
 	@Test
 	public void testEncryption() throws Exception {
 		
-		MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
+/*		MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
 		
 
 		IntegrationConfiguration paymentConfiguration = new IntegrationConfiguration();
@@ -97,7 +94,15 @@ public class UtilsTestCase extends AbstractSalesManagerCoreTestCase {
 		
 		paymentConfiguration = paymentService.getPaymentConfiguration("beanstream", store);
 		
-		System.out.println(paymentConfiguration.toJSONString());
+		System.out.println(paymentConfiguration.toJSONString());*/
+		
+		String encr = encryption.encrypt("test0123456789");
+		
+		String decr = encryption.decrypt("397c67b54ddff878bd0baa9895b40c37");
+		
+		System.out.println(encr);
+		
+		System.out.println(decr);
 		
 	}
 
