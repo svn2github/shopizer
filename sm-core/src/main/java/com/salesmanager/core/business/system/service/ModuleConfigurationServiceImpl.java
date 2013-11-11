@@ -30,6 +30,9 @@ public class ModuleConfigurationServiceImpl extends
 	private ModuleConfigurationDao integrationModuleDao;
 	
 	@Autowired
+	private CacheUtils cache;
+	
+	@Autowired
 	public ModuleConfigurationServiceImpl(
 			ModuleConfigurationDao integrationModuleDao) {
 			super(integrationModuleDao);
@@ -45,8 +48,8 @@ public class ModuleConfigurationServiceImpl extends
 		List<IntegrationModule> modules = null;
 		try {
 			
-			CacheUtils cacheUtils = CacheUtils.getInstance();
-			modules = (List<IntegrationModule>) cacheUtils.getFromCache("INTEGRATION_M)" + module);
+			//CacheUtils cacheUtils = CacheUtils.getInstance();
+			modules = (List<IntegrationModule>) cache.getFromCache("INTEGRATION_M)" + module);
 			if(modules==null) {
 				modules = integrationModuleDao.getModulesConfiguration(module);
 				//set json objects
@@ -132,7 +135,7 @@ public class ModuleConfigurationServiceImpl extends
 
 
 				}
-				cacheUtils.putInCache(modules, "INTEGRATION_M)" + module);
+				cache.putInCache(modules, "INTEGRATION_M)" + module);
 			}
 
 		} catch (Exception e) {

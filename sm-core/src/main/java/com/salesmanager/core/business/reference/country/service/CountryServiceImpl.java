@@ -25,6 +25,9 @@ public class CountryServiceImpl extends SalesManagerEntityServiceImpl<Integer, C
 	private static final Logger LOGGER = LoggerFactory.getLogger(CountryServiceImpl.class);
 	
 	private CountryDao countryDao;
+	
+	@Autowired
+	private CacheUtils cache;
 
 	
 	@Autowired
@@ -65,9 +68,9 @@ public class CountryServiceImpl extends SalesManagerEntityServiceImpl<Integer, C
 		List<Country> countries = null;
 		try {
 			
-			CacheUtils cacheUtils = CacheUtils.getInstance();
+			//CacheUtils cacheUtils = CacheUtils.getInstance();
 			
-			countries = (List<Country>) cacheUtils.getFromCache("COUNTRIES_" + language.getCode());
+			countries = (List<Country>) cache.getFromCache("COUNTRIES_" + language.getCode());
 
 		
 		
@@ -83,7 +86,7 @@ public class CountryServiceImpl extends SalesManagerEntityServiceImpl<Integer, C
 					
 				}
 				
-				cacheUtils.putInCache(countries, "COUNTRIES_" + language.getCode());
+				cache.putInCache(countries, "COUNTRIES_" + language.getCode());
 				
 			}
 			

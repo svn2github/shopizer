@@ -24,6 +24,9 @@ public class LanguageServiceImpl extends SalesManagerEntityServiceImpl<Integer, 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LanguageServiceImpl.class);
 	
 	@Autowired
+	private CacheUtils cache;
+	
+	@Autowired
 	public LanguageServiceImpl(LanguageDao languageDao) {
 		super(languageDao);
 	}
@@ -79,15 +82,15 @@ public class LanguageServiceImpl extends SalesManagerEntityServiceImpl<Integer, 
 		List<Language> langs = null;
 		try {
 			
-			CacheUtils cacheUtils = CacheUtils.getInstance();
+			//CacheUtils cacheUtils = CacheUtils.getInstance();
 			
-			langs = (List<Language>) cacheUtils.getFromCache("LANGUAGES");
+			langs = (List<Language>) cache.getFromCache("LANGUAGES");
 
 		
 		
 			if(langs==null) {
 				langs = this.list();
-				cacheUtils.putInCache(langs, "LANGUAGES");
+				cache.putInCache(langs, "LANGUAGES");
 			}
 			
 			

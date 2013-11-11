@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.reference.country.model.Country;
-import com.salesmanager.core.business.reference.country.model.CountryDescription;
-import com.salesmanager.core.business.reference.country.service.CountryServiceImpl;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.zone.dao.ZoneDao;
 import com.salesmanager.core.business.reference.zone.model.Zone;
@@ -26,6 +24,9 @@ public class ZoneServiceImpl extends SalesManagerEntityServiceImpl<Long, Zone> i
 	
 
 	private ZoneDao zoneDao;
+	
+	@Autowired
+	private CacheUtils cache;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ZoneServiceImpl.class);
 
@@ -62,9 +63,9 @@ public class ZoneServiceImpl extends SalesManagerEntityServiceImpl<Long, Zone> i
 		List<Zone> zones = null;
 		try {
 			
-			CacheUtils cacheUtils = CacheUtils.getInstance();
+			//CacheUtils cacheUtils = CacheUtils.getInstance();
 			
-			zones = (List<Zone>) cacheUtils.getFromCache("ZONES_" + country.getIsoCode() + "_" + language.getCode());
+			zones = (List<Zone>) cache.getFromCache("ZONES_" + country.getIsoCode() + "_" + language.getCode());
 
 		
 		
@@ -78,7 +79,7 @@ public class ZoneServiceImpl extends SalesManagerEntityServiceImpl<Long, Zone> i
 					zone.setName(description.getName());
 					
 				}
-				cacheUtils.putInCache(zones, "ZONES_" + country.getIsoCode() + "_" + language.getCode());
+				cache.putInCache(zones, "ZONES_" + country.getIsoCode() + "_" + language.getCode());
 			}
 
 		} catch (Exception e) {
