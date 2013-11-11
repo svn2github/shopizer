@@ -17,6 +17,8 @@
 
 	<!-- datasource -->
 	<import resource="classpath:/spring/datasource-c3p0.xml" />
+	<!-- cache -->
+	<import resource="classpath:/spring/shopizer-core-ehcache.xml" />
 	<!-- properties -->
 	<import resource="classpath:/spring/shopizer-core-config.xml" />
 	<!-- modules -->
@@ -27,41 +29,32 @@
 	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="persistenceUnitName" value="sm-unit" />
 		<property name="dataSource" ref="datasource" />
-		<property name="jpaVendorAdapter" ref="jpaAdapter" />
 		<property name="persistenceXmlLocation" value="classpath:META-INF/sm-persistence.xml" />
-		<property name="jpaProperties">
 		
+
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="showSql" value="true" />
+				<property name="generateDdl" value="false" />
+				<property name="databasePlatform" value="${hibernate.dialect}" />
+			</bean>
+		</property>
+		<property name="jpaProperties">
 			<util:map>
 				<entry key="hibernate.default_schema" value="${db.schema}" />
 				<entry key="hibernate.hbm2ddl.auto" value="${hibernate.hbm2ddl.auto}" />
-				<entry key="hibernate.dialect" value="${hibernate.dialect}" />
 				<entry key="hibernate.show_sql" value="true" />
-				<entry key="hibernate.format_sql" value="false" />
-				<entry key="hibernate.generate_statistics" value="true" />
-				<entry key="hibernate.bytecode.use_reflection_optimizer" value="true" />
-				
-				
-				<!-- Enable entity caching ; it is also needed that cached entities must be annotated with @Cacheable (jpa2) * cached entities may be declared in ehcache-hibernate.xml -->
-				<entry key="javax.persistence.sharedCache.mode" value="ENABLE_SELECTIVE" />
+				<entry key="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider" />
 				<entry key="hibernate.cache.use_second_level_cache" value="true" />
-				<entry key="hibernate.cache.use_query_cache" value="true" />
-				<entry key="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.EhCacheRegionFactory" />
-				<entry key="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.EhCacheProvider" />
-				<entry key="net.sf.ehcache.configurationResourceName" value="/ehcache/ehcache-hibernate.xml" />
-				<entry key="hibernate.cache.use_structured_entries" value="true" />
 			</util:map>
-
 		</property>
+
 		<property name="loadTimeWeaver">
 			<bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver" />
 		</property>
 	</bean>
 
 	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
-
-	<bean id="jpaAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-		<!-- <property name="database" value="MYSQL" /> -->
-	</bean>
 
 	
 	
