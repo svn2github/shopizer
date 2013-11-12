@@ -12,30 +12,53 @@
     $(function() {
 
         $(".clear-cache").click(function() {
-        	$("#alert-error").hide();
-        	$("#alert-success").hide();
+        	$(".alert-error").hide();
+        	$(".alert-success").hide();
 			$('.tab-content').showLoading();
-            var cacheKey = $(this).id;
-            $.ajax({
-                'type': 'POST',
-                'url': "<c:url value="/admin/cache/clear.html"/>?cacheKey=" + cacheKey,
-                'contentType': 'application/json',
-                'dataType': 'json',
-                'success': function(result) {
-                   $('.tab-content').hideLoading();
-                   var response = result.response;
-                   if (response.status==0) {
-                   		$("#alert-success").show();
-                   } else {
-						$("#alert-error").show();
-                   }
-                }
-            });
- 
+            var cacheKey = $(this).attr('id');
+            clearCache(cacheKey);
             return false;
         });
     });
 
+    
+    function clearCache(cacheKey) {
+
+    	var url = '<c:url value="/admin/cache/clear.html"/>';
+    	if(cacheKey!=null) {
+    		url = url + '?cacheKey=' + cacheKey;
+    	}
+    	
+        $.ajax({
+            'type': 'POST',
+            'url': url,
+            'contentType': 'application/json',
+            'dataType': 'json',
+            'success': function(result) {
+               $('.tab-content').hideLoading();
+               var response = result.response.status;
+               if (response==9999) {
+               		$(".alert-success").show();
+               		window.location='<c:url value="/admin/cache/cacheManagement.html" />';
+               } else {
+					$(".alert-error").show();
+               }
+            }
+        });
+    }
+    
+    $(function() {
+
+        $(".clear-all-cache").click(function() {
+        	$(".alert-error").hide();
+        	$(".alert-success").hide();
+			$('.tab-content').showLoading();
+			clearCache(null);
+            return false;
+        });
+    });
+    
+    
 </script>
 
 
@@ -56,14 +79,23 @@
 							
 							<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>   
 	                        <div id="store.error" class="alert alert-error" style="display:none;"><s:message code="message.error" text="An error occured"/></div>
-								
+							<table>	
 							<c:forEach items="${keys}" var="key">
+								<tr>
+								<td><label>${key}</label></td>
+								<td>
 								<form class="form-inline">
-								      <label>${key}</label>
 								      <button id="${key}" type="submit" class="btn clear-cache"><s:message code="button.label.clear" text="Clear" /></button>
 								      <br/>
 								</form>
+								</td>
+								</tr>
 							</c:forEach>
+								<tr>
+									<td><s:message code="button.label.clear.all" text="Clear all"/></td>
+									<td><button type="submit" class="btn clear-all-cache"><s:message code="button.label.clear" text="Clear" /></button></td>
+								</tr>
+							</table>
 
    					</div>
 
@@ -71,3 +103,4 @@
   					</div>
 
 				</div>
+			</div>
