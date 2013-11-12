@@ -131,15 +131,9 @@
 			transactionManagerLookupClass="org.infinispan.transaction.lookup.DummyTransactionManagerLookup"
 			transactionMode="TRANSACTIONAL" lockingMode="OPTIMISTIC" />
 
-	</namedCache><!--
-	
-	<namedCache name="Cache">
-	     disable jmx in prod 
-	    <jmxStatistics enabled="true"/>
-		<eviction strategy="LRU" maxEntries="2000" />
 	</namedCache>
-
-	--><namedCache name="FilesRepository">
+	
+	<namedCache name="FilesRepository">
 		 <invocationBatching enabled="true"/>
 		 <!-- disable jmx in prod -->
 		 <jmxStatistics enabled="true"/>
