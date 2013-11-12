@@ -1,6 +1,0 @@
-10-04 20:49:14 jdbc[2]: exception
-org.h2.jdbc.JdbcSQLException: Table "ISPN_MIXED_BINARY_TABLE_DATAREPOSITORY" not found; SQL statement:
-SELECT count(*) FROM ISPN_MIXED_BINARY_TABLE_DataRepository [42102-152]
-10-04 20:49:14 jdbc[2]: exception
-org.h2.jdbc.JdbcSQLException: Table "ISPN_MIXED_STR_TABLE_DATAREPOSITORY" not found; SQL statement:
-SELECT count(*) FROM ISPN_MIXED_STR_TABLE_DataRepository [42102-152]
