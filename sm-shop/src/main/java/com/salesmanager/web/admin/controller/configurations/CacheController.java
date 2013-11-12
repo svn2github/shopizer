@@ -67,7 +67,11 @@ public class CacheController {
 			StringBuilder key = new StringBuilder();
 			key.append(store.getId()).append("_").append(cacheKey);
 			
-			cache.removeFromCache(key.toString());
+			if(cacheKey!=null) {
+				cache.removeFromCache(key.toString());
+			} else {
+				cache.removeAllFromCache(store);
+			}
 
 			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 

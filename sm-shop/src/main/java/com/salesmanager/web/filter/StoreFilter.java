@@ -474,26 +474,27 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			
 				//get from the cache
 				contents = (Map<String, List<Content>>) cache.getFromCache(contentKey.toString());
-				Boolean missedContent = null;
-				if(contents==null) {
-					//get from missed cache
-					missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
-				}
-				
-				if(contents==null && missedContent==null) {
-					
-					contents = this.getContent(store, language);
 
-					//put in cache
-					cache.putInCache(contents, contentKey.toString());
-						
-					} else {
-						//put in missed cache
-						cache.putInCache(new Boolean(true), contentKeyMissed.toString());
-				}
-					
 				
-	
+				if(contents==null) {
+
+					//get from missed cache
+					 Boolean missedContent = missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
+					
+					
+					if(missedContent==null) {
+					
+						contents = this.getContent(store, language);
+						if(contents!=null) {
+							//put in cache
+							cache.putInCache(contents, contentKey.toString());
+						} else {
+							//put in missed cache
+							cache.putInCache(new Boolean(true), contentKeyMissed.toString());
+						}
+					}		
+						
+				}
 			} else {
 
 				contents = this.getContent(store, language);	
@@ -503,20 +504,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			
 			
 			if(contents!=null && contents.size()>0) {
-				//only store objects in request
-				String key = new StringBuilder()
-				.append(store.getId())
-				.append("_")
-				.append(Constants.CONTENT_CACHE_KEY)
-				.append("-")
-				.append(language.getCode()).toString();
-				
-				List<Content> c = contents.get(key.toString());
-				
-				if(c!=null) {
-					request.setAttribute(Constants.REQUEST_CONTENT_OBJECTS, c);
-				}
-				
+
+					request.setAttribute(Constants.REQUEST_CONTENT_OBJECTS, contents);
+
 				
 			}
 
