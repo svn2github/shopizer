@@ -220,32 +220,29 @@ public class ShoppingCategoryController {
 		
 		List<com.salesmanager.web.entity.catalog.Category> subCategories = null;
 		Map<Long,Long> countProductsByCategories = null;
-		
 
-		
 		if(store.isUseCache()) {
 
 			//get from the cache
 			subCategories = (List<com.salesmanager.web.entity.catalog.Category>) cache.getFromCache(subCategoriesCacheKey.toString());
-			
-			Boolean missedContent = null;
 			if(subCategories==null) {
 				//get from missed cache
-				missedContent = (Boolean)cache.getFromCache(subCategoriesMissed.toString());
-			}
+				Boolean missedContent = (Boolean)cache.getFromCache(subCategoriesMissed.toString());
 
-			
-			if(subCategories==null && missedContent==null) {
-				countProductsByCategories = getProductsByCategory(store, category, lineage, subCategs);
-				subCategories = getSubCategories(store,category,countProductsByCategories,language,locale);
+				if(missedContent==null) {
+					countProductsByCategories = getProductsByCategory(store, category, lineage, subCategs);
+					subCategories = getSubCategories(store,category,countProductsByCategories,language,locale);
+					
+					if(subCategories!=null) {
+						cache.putInCache(subCategories, subCategoriesCacheKey.toString());
+					} else {
+						cache.putInCache(new Boolean(true), subCategoriesCacheKey.toString());
+					}
+				}
 			}
-			
-
-			
 		} else {
 			countProductsByCategories = getProductsByCategory(store, category, lineage, subCategs);
 			subCategories = getSubCategories(store,category,countProductsByCategories,language,locale);
-			
 		}
 
 		//Parent category
@@ -301,31 +298,26 @@ public class ShoppingCategoryController {
 
 				//get from the cache
 				 
-				 manufacturerList = (List<Manufacturer>) cache.getFromCache(manufacturersKey.toString());
+				manufacturerList = (List<Manufacturer>) cache.getFromCache(manufacturersKey.toString());
 				
-				Boolean missedContent = null;
+
 				if(manufacturerList==null) {
 					//get from missed cache
-					missedContent = (Boolean)cache.getFromCache(manufacturersKeyMissed.toString());
-				}
-
-				
-				if(manufacturerList==null && missedContent==null) {
-					manufacturerList = this.getManufacturers(store, subCategoryIds, language);
-					if(CollectionUtils.isEmpty(manufacturerList)) {
-						cache.putInCache(new Boolean(true), manufacturersKeyMissed.toString());
-					} else {
-						cache.putInCache(manufacturerList, manufacturersKey.toString());
+					Boolean missedContent = (Boolean)cache.getFromCache(manufacturersKeyMissed.toString());
+					if(missedContent==null) {
+						manufacturerList = this.getManufacturers(store, subCategoryIds, language);
+						if(CollectionUtils.isEmpty(manufacturerList)) {
+							cache.putInCache(new Boolean(true), manufacturersKeyMissed.toString());
+						} else {
+							cache.putInCache(manufacturerList, manufacturersKey.toString());
+						}
 					}
 				}
 			} else {
 				manufacturerList  = this.getManufacturers(store, subCategoryIds, language);
 			}
 		}
-		
 		return manufacturerList;
-		
-		
 	}
 		
 	private List<Manufacturer> getManufacturers(MerchantStore store, List<Long> ids, Language language) throws Exception {

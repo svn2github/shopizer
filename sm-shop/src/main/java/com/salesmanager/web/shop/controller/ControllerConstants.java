@@ -28,6 +28,7 @@ public interface ControllerConstants
         
         interface Customer{
             final String customer="customer";
+            final String register="register";
         }
         
         interface Content{

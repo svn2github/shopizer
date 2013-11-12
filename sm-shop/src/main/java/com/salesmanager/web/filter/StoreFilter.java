@@ -106,6 +106,8 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	@Autowired
 	private CacheUtils cache;
 	
+	private final static String SERVICES_URL_PATTERN = "/services";
+	
 
 
     /**
@@ -121,6 +123,15 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	            Object handler) throws Exception {
 
 			request.setCharacterEncoding("UTF-8");
+			
+			/**
+			 * if url contains /services
+			 * exit from here !
+			 */
+			
+			if(request.getRequestURL().toString().toLowerCase().contains(SERVICES_URL_PATTERN)) {
+				return true;
+			}
 			
 			/*****
 			 * where is my stuff
