@@ -322,6 +322,7 @@
     		<version>5.1.6.FINAL</version>
   		</dependency>
 
+  		<!-- TO REMOVE -->
   		<dependency>
     		<groupId>org.infinispan</groupId>
     		<artifactId>infinispan-cachestore-bdbje</artifactId>
