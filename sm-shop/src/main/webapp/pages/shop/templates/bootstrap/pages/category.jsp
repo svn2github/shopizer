@@ -106,6 +106,7 @@ response.setDateHeader ("Expires", -1);
             </ul>
           </div>
           
+          <c:if test="${fn:length(manufacturers) > 0}">
           <br/>
           <div class="sidebar-nav">
             <ul class="nav nav-list">
@@ -116,6 +117,8 @@ response.setDateHeader ("Expires", -1);
               </c:forEach>
             </ul>
           </div>          
+          </c:if>
+          
           
         </div><!--/span-->
         

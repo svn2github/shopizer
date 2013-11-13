@@ -400,7 +400,7 @@ function getBillingZones(countryCode){
 
 					<div class="box">
 						<span class="box-title">
-							<p><font color="#FF8C00">Shipping information</font></p>
+							<p class="p-title"><s:message code="label.customer.shippinginformation" text="Shipping information"/></p>
 						</span>
 
 						
