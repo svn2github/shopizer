@@ -11,7 +11,6 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import com.shopizer.search.services.SearchRequest;
 import com.shopizer.search.services.SearchResponse;
 import com.shopizer.search.services.SearchService;
 
@@ -37,7 +36,7 @@ public class TestSearchKeywords {
 		//String json="{\"wildcard\":{\"keyword\":\"s*\"}}";
 		//String json="{\"term\":{\"keyword\":\"s\"}}";
 		
-		String json="{\"match\" : {\"keyword\" : {\"query\" : \"spring m\",\"type\" : \"phrase_prefix\"}}}";
+		String json="{\"match\" : {\"keyword\" : {\"query\" : \"sp\",\"type\" : \"phrase_prefix\"}}}";
 		
 		//String json ="{\"query\":{\"filtered\":{\"query\":{\"text\":{\"_all\":\"beach\"}},\"filter\":{\"numeric_range\":{\"age\":{\"from\":\"22\",\"to\":\"45\",\"include_lower\":true,\"include_upper\":true}}}}},\"highlight\":{\"fields\":{\"description\":{}}},\"facets\":{\"tags\":{\"terms\":{\"field\":\"tags\"}}}}";
 
