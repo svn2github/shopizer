@@ -29,24 +29,19 @@ import com.salesmanager.core.business.content.model.ContentType;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
-import com.salesmanager.core.business.reference.init.service.InitializationDatabase;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.system.model.MerchantConfig;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
 import com.salesmanager.core.business.system.model.MerchantConfigurationType;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
-import com.salesmanager.core.business.system.service.SystemConfigurationService;
 import com.salesmanager.core.utils.CacheUtils;
-import com.salesmanager.core.utils.CoreConfiguration;
-import com.salesmanager.web.admin.security.UserServicesImpl;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.shop.Breadcrumb;
 import com.salesmanager.web.entity.shop.BreadcrumbItem;
 import com.salesmanager.web.entity.shop.BreadcrumbItemType;
 import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
-import com.salesmanager.web.utils.AppConfiguration;
 import com.salesmanager.web.utils.LabelUtils;
 
 
@@ -63,12 +58,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StoreFilter.class);
 	
 	private final static String STORE_REQUEST_PARAMETER = "store";
-	
-	@Autowired
-	private AppConfiguration appConfiguration;
-	
-	@Autowired
-	private CoreConfiguration configuration;
+
 	
 	@Autowired
 	private ContentService contentService;
@@ -78,10 +68,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	
 	@Autowired
 	private ProductService productService;
-	
-	@Autowired
-	private InitializationDatabase initializationDatabase;
-	
+
 	@Autowired
 	private MerchantStoreService merchantService;
 	
@@ -90,16 +77,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	
 	@Autowired
 	private LanguageService languageService;
-	
-	@Autowired
-	private com.salesmanager.web.init.data.InitStoreData initStoreData;
-	
-	@Autowired
-	private SystemConfigurationService systemConfigurationService;
-	
-	@Autowired
-	private UserServicesImpl userDetailsService;
-	
+
 	@Autowired
 	private LabelUtils messages;
 	
@@ -114,7 +92,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
      * Default constructor. 
      */
     public StoreFilter() {
-        // TODO Auto-generated constructor stub
+
     }
     
 	   public boolean preHandle(
@@ -299,6 +277,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 		   
 	   }
 	   
+	   @SuppressWarnings("unchecked")
 	   private void getMerchantConfigurations(MerchantStore store, HttpServletRequest request) throws Exception {
 		   
 	
@@ -321,35 +300,30 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			
 				//get from the cache
 				configs = (Map<String, Object>) cache.getFromCache(configKey.toString());
-				
-				Boolean missedContent = null;
 				if(configs==null) {
 					//get from missed cache
-					missedContent = (Boolean)cache.getFromCache(configKeyMissed.toString());
-				}
-				   if(configs==null && missedContent==null) {
+					Boolean missedContent = (Boolean)cache.getFromCache(configKeyMissed.toString());
+
+				   if( missedContent==null) {
 					    configs = this.getConfigurations(store);
 						//put in cache
-						cache.putInCache(configs, configKey.toString());
-					} else {
-						//put in missed cache
-						cache.putInCache(new Boolean(true), configKeyMissed.toString());
-						
-					}
+					    
+					    if(configs!=null) {
+					    	cache.putInCache(configs, configKey.toString());
+					    } else {
+					    	//put in missed cache
+					    	cache.putInCache(new Boolean(true), configKeyMissed.toString());
+					    }
+				   }
+				}
 
 			} else {
-				
-
 				 configs = this.getConfigurations(store);
-
-
 			}
 			
 			
 			if(configs!=null && configs.size()>0) {
-
 				request.setAttribute(Constants.REQUEST_CONFIGS, configs);
-
 			}
 		   
 		   
@@ -394,13 +368,13 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 					//get from the cache
 					contents = (Map<String, List<ContentDescription>>) cache.getFromCache(contentKey.toString());
 					
-					Boolean missedContent = null;
+
 					if(contents==null) {
 						//get from missed cache
-						missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
-					}
+						Boolean missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
+
 					
-				   if(contents==null && missedContent==null) {
+						if(missedContent==null) {
 						
 							contents = this.getContentPagesNames(store, language);
 
@@ -412,41 +386,21 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 								//put in missed cache
 								cache.putInCache(new Boolean(true), contentKeyMissed.toString());
 							}
-							
-				   } else {
-							//put in missed cache
-							cache.putInCache(new Boolean(true), contentKeyMissed.toString());
-				   }
-						
-					
-		
+						}		
+				   } 
 				} else {
-					
-
 					contents = this.getContentPagesNames(store, language);	
-
 				}
 				
 				
 				if(contents!=null && contents.size()>0) {
-					//only store objects in request
-					String key = new StringBuilder()
-					.append(store.getId())
-					.append("_")
-					.append(Constants.CONTENT_PAGE_CACHE_KEY)
-					.append("-")
-					.append(language.getCode()).toString();
-					
-					List<ContentDescription> descriptions = contents.get(key.toString());
+					List<ContentDescription> descriptions = contents.get(contentKey.toString());
 					
 					if(descriptions!=null) {
 						request.setAttribute(Constants.REQUEST_CONTENT_PAGE_OBJECTS, descriptions);
 					}
-					
-					
-				}
-				   
-	    }
+				}	   
+	 }
 	   
 	@SuppressWarnings({ "unchecked"})
 	private void getContentObjects(MerchantStore store, Language language, HttpServletRequest request) throws Exception {
@@ -490,7 +444,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				if(contents==null) {
 
 					//get from missed cache
-					 Boolean missedContent = missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
+					 Boolean missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
 					
 					
 					if(missedContent==null) {
@@ -542,17 +496,17 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			 * The value is a List of Category object
 			 */
 			
-			StringBuilder contentKey = new StringBuilder();
-			contentKey
+			StringBuilder categoriesKey = new StringBuilder();
+			categoriesKey
 			.append(store.getId())
 			.append("_")
 			.append(Constants.CATEGORIES_CACHE_KEY)
 			.append("-")
 			.append(language.getCode());
 			
-			StringBuilder contentKeyMissed = new StringBuilder();
-			contentKeyMissed
-			.append(contentKey.toString())
+			StringBuilder categoriesKeyMissed = new StringBuilder();
+			categoriesKeyMissed
+			.append(categoriesKey.toString())
 			.append(Constants.MISSED_CACHE_KEY);
 			
 			Map<String, List<Category>> objects = null;
@@ -560,50 +514,39 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			if(store.isUseCache()) {
 			
 				//get from the cache
-				objects = (Map<String, List<Category>>) cache.getFromCache(contentKey.toString());
+				objects = (Map<String, List<Category>>) cache.getFromCache(categoriesKey.toString());
 			
-				Boolean missedContent = null;
+
 				if(objects==null) {
-					missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
-				}
-				
-				if(objects==null && missedContent==null) {
+					Boolean missedContent = (Boolean)cache.getFromCache(categoriesKeyMissed.toString());
+
+					if(missedContent==null) {
 	
-					//Get top categories from the database
-					
-					objects = this.getCategories(store, language);
+						//Get top categories from the database
+						objects = this.getCategories(store, language);
 	
+						if(objects!=null) {
+							//put in cache
+							cache.putInCache(objects, categoriesKey.toString());
+						} else {
+							//put in missed cache
+							cache.putInCache(new Boolean(true), categoriesKeyMissed.toString());
+						}
 						
-						//put in cache
-						cache.putInCache(objects, contentKey.toString());
-						
-				} else {
-						
-						//put in missed cache
-						cache.putInCache(new Boolean(true), contentKeyMissed.toString());
-						
+					} 
 				}
 				
 			} else {
-				
-				
 				objects = this.getCategories(store, language);
-				
 			}
 			
 			if(objects!=null && objects.size()>0) {
-				//only store objects in request
-				String key = new StringBuilder()
-				.append(store.getId())
-				.append("_")
-				.append(Constants.CATEGORIES_CACHE_KEY)
-				.append("-")
-				.append(language.getCode()).toString();
+
 				
-				List<Category> categories = objects.get(key.toString());
+				List<Category> categories = objects.get(categoriesKey.toString());
 				
 				if(categories!=null) {
-					request.setAttribute(Constants.REQUEST_TOP_CATEGORIES, objects.get(key.toString()));
+					request.setAttribute(Constants.REQUEST_TOP_CATEGORIES, categories);
 				}
 				
 				
@@ -690,11 +633,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 							contentList.add(content);
 						}
 					}
-					
 				}
-				
-				
-		   
 			}
 			return contents;
 	   }
@@ -772,11 +711,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				   for(String key : props.keySet()) {
 					   configs.put(key, props.get(key));
 				   }
-			   
 			   }
-
-			   
-			
 		   } catch (Exception e) {
 			   LOGGER.error("Exception while getting configurations",e);
 		   }
@@ -805,14 +740,16 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 					if(language.getCode().equals(breadCrumb.getLanguage().getCode())) {
 						
 						//rebuild using the appropriate language
-						//breadCrumb = getDefaultBreadcrumb(language,locale);
-						//breadCrumb = new Breadcrumb();
 						List<BreadcrumbItem> items = new ArrayList<BreadcrumbItem>();
 						for(BreadcrumbItem item : breadCrumb.getBreadCrumbs()) {
 							
 							if(item.getItemType().name().equals(BreadcrumbItemType.HOME)) {
 								BreadcrumbItem homeItem = this.getDefaultBreadcrumbItem(language, locale);
-							}else if(item.getItemType().name().equals(BreadcrumbItemType.PRODUCT)) {
+								homeItem.setItemType(BreadcrumbItemType.HOME);
+								homeItem.setLabel(messages.getMessage(Constants.HOME_MENU_KEY, locale));
+								homeItem.setUrl(Constants.HOME_URL);
+								items.add(homeItem);
+							} else if(item.getItemType().name().equals(BreadcrumbItemType.PRODUCT)) {
 								Product product = productService.getProductForLocale(item.getId(), language, locale);
 								if(product!=null) {
 									BreadcrumbItem productItem = new  BreadcrumbItem();

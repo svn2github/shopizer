@@ -39,11 +39,10 @@ import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
-import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartAttribute;
+import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartItem;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.shoppingCart.facade.ShoppingCartFacade;
@@ -113,9 +112,7 @@ public class ShoppingCartController {
 	@Autowired
 	private ShoppingCartService shoppingCartService;
 	
-	@Autowired
-	private ProductPriceUtils productPriceUtils;
-	
+
 	@Autowired
 	private ShoppingCartFacade shoppingCartFacade;
 	

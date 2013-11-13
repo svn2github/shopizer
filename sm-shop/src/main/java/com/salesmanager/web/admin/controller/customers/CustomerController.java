@@ -58,6 +58,7 @@ import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.constants.EmailConstants;
 import com.salesmanager.web.entity.customer.CustomerOption;
 import com.salesmanager.web.entity.customer.CustomerOptionValue;
+import com.salesmanager.web.populator.customer.CustomerOptionPopulator;
 import com.salesmanager.web.utils.EmailUtils;
 import com.salesmanager.web.utils.LabelUtils;
 import com.salesmanager.web.utils.LocaleUtils;
@@ -167,21 +168,32 @@ public class CustomerController {
 		List<CustomerOptionSet> optionSet = customerOptionSetService.listByStore(store, language);
 		if(!CollectionUtils.isEmpty(optionSet)) {
 			
+			
+			CustomerOptionPopulator optionPopulator = new CustomerOptionPopulator();
+			
 			Set<CustomerAttribute> customerAttributes = customer.getAttributes();
 			
 			for(CustomerOptionSet optSet : optionSet) {
 				
 				com.salesmanager.core.business.customer.model.attribute.CustomerOption custOption = optSet.getCustomerOption();
 				CustomerOption customerOption = options.get(custOption.getId());
+				
+				optionPopulator.setOptionSet(optSet);
+				
+				
+				
 				if(customerOption==null) {
 					customerOption = new CustomerOption();
 					customerOption.setId(custOption.getId());
 					customerOption.setType(custOption.getCustomerOptionType());
 					customerOption.setName(custOption.getDescriptionsSettoList().get(0).getName());
-					options.put(customerOption.getId(), customerOption);
-				}
+					
+				} 
 				
-				List<CustomerOptionValue> values = customerOption.getAvailableValues();
+				optionPopulator.populateFromEntity(custOption, customerOption, store, language);
+				options.put(customerOption.getId(), customerOption);
+				
+/*				List<CustomerOptionValue> values = customerOption.getAvailableValues();
 				if(values==null) {
 					values = new ArrayList<CustomerOptionValue>();
 					customerOption.setAvailableValues(values);
@@ -193,7 +205,7 @@ public class CustomerController {
 				custOptValue.setLanguage(language.getCode());
 				custOptValue.setName(optionValue.getDescriptionsSettoList().get(0).getName());
 				values.add(custOptValue);
-				
+				*/
 				if(!CollectionUtils.isEmpty(customerAttributes)) {
 					for(CustomerAttribute customerAttribute : customerAttributes) {
 						if(customerAttribute.getCustomerOption().getId().longValue()==customerOption.getId()){
