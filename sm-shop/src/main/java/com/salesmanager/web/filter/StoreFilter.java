@@ -124,20 +124,19 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				MerchantStore store = (MerchantStore)request.getSession().getAttribute(Constants.MERCHANT_STORE);
 	
 				String storeCode = request.getParameter(STORE_REQUEST_PARAMETER);
+				
 				if(!StringUtils.isBlank(storeCode)) {
 					if(store!=null) {
 						if(!store.getCode().equals(storeCode)) {
-							store = merchantService.getByCode(storeCode);
-							if(store!=null) {
-								request.getSession().setAttribute(Constants.MERCHANT_STORE, store);
-							}
+							store = setMerchantStoreInSession(request, storeCode);
 						}
+					}else{ // when url sm-shop/shop is being loaded for first time store is null
+						store = setMerchantStoreInSession(request, storeCode);
 					}
 				}
 
 				if(store==null) {
-						store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
-						request.getSession().setAttribute(Constants.MERCHANT_STORE, store);
+					store = setMerchantStoreInSession(request, MerchantStore.DEFAULT_STORE);
 				}
 				
 				request.setAttribute(Constants.MERCHANT_STORE, store);
@@ -811,6 +810,21 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 		   
 	   }
 
-	
+	   /**
+	    * Sets a MerchantStore with the given storeCode in the session.
+	    * @param request
+	    * @param storeCode The storeCode of the Merchant.
+	    * @return the MerchantStore inserted in the session.
+	    * @throws Exception
+	    */
+	   private MerchantStore setMerchantStoreInSession(HttpServletRequest request, String storeCode) throws Exception{
+		   if(storeCode == null || request == null)
+			   return null;
+		   MerchantStore store = merchantService.getByCode(storeCode);
+			if(store!=null) {
+				request.getSession().setAttribute(Constants.MERCHANT_STORE, store);
+			}		
+			return store;
+	   }
 
 }
