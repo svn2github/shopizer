@@ -21,6 +21,7 @@ import javax.persistence.Transient;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
+import org.hibernate.annotations.Index;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,6 +50,7 @@ public class CustomerOptionValue extends SalesManagerEntity<Long, CustomerOption
 	@NotEmpty
 	@Pattern(regexp="^[a-zA-Z0-9_]*$")
 	@Column(name="CUSTOMER_OPT_VAL_CODE")
+	@Index(name="CUST_OPT_VAL_CODE_IDX")
 	private String code;
 	
 	@Transient
