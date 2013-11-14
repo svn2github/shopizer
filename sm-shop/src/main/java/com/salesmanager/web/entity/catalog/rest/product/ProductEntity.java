@@ -35,6 +35,7 @@ public class ProductEntity extends Product implements Serializable {
 	private List<ProductAttribute> attributes;
 	private List<Image> images;
 	private List<Category> categories;
+	private List<RelatedProduct> relatedProducts;;
 	
 	
 	
@@ -128,6 +129,12 @@ public class ProductEntity extends Product implements Serializable {
 	}
 	public List<Category> getCategories() {
 		return categories;
+	}
+	public void setRelatedProducts(List<RelatedProduct> relatedProducts) {
+		this.relatedProducts = relatedProducts;
+	}
+	public List<RelatedProduct> getRelatedProducts() {
+		return relatedProducts;
 	}
 
 }

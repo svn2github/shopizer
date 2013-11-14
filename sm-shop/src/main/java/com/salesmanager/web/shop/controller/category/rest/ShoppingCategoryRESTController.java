@@ -120,8 +120,7 @@ public class ShoppingCategoryRESTController {
 		
 		try {
 
-			Language lang = null;
-			
+
 			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 			if(merchantStore!=null) {
 				if(!merchantStore.getCode().equals(store)) {
@@ -138,14 +137,12 @@ public class ShoppingCategoryRESTController {
 				response.sendError(503, "Merchant store is null for code " + store);
 				return null;
 			}
-			
-			lang = merchantStore.getDefaultLanguage();
-			
+
 			CategoryPopulator populator = new CategoryPopulator();
 			populator.setCategoryService(categoryService);
 			populator.setLanguageService(languageService);
 			
-			Category dbCategory = populator.populateFromEntity(category, new Category(), merchantStore, lang);
+			Category dbCategory = populator.populateToEntity(new Category(), category, merchantStore);
 
 			dbCategory.setMerchantStore(merchantStore);
 			

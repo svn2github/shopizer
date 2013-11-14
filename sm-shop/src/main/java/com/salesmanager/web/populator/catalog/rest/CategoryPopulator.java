@@ -17,19 +17,46 @@ import com.salesmanager.web.entity.catalog.rest.category.CategoryDescription;
 import com.salesmanager.web.entity.catalog.rest.category.CategoryEntity;
 
 
-public class CategoryPopulator extends AbstractDataPopulator<CategoryEntity, Category> {
+public class CategoryPopulator extends AbstractDataPopulator<Category, CategoryEntity> {
 	
 	
 	private CategoryService categoryService;
 	private LanguageService languageService;
 
+
+	public void setCategoryService(CategoryService categoryService) {
+		this.categoryService = categoryService;
+	}
+
+	public CategoryService getCategoryService() {
+		return categoryService;
+	}
+
+	public void setLanguageService(LanguageService languageService) {
+		this.languageService = languageService;
+	}
+
+	public LanguageService getLanguageService() {
+		return languageService;
+	}
+
 	/**
-	 * Populates a DB Category entity with a simplified entity
+	 * Populate from DB entity
 	 */
 	@Override
-	public Category populateFromEntity(CategoryEntity source, Category target,
-			MerchantStore store, Language language) throws ServiceException{
+	public CategoryEntity populateFromEntity(Category source,
+			CategoryEntity target, MerchantStore store, Language language)
+			throws ServiceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
+	/**
+	 * Populate DB entity
+	 */
+	@Override
+	public Category populateToEntity(Category target, CategoryEntity source,
+			MerchantStore store) throws ServiceException {
 		Validate.notNull(categoryService, "Requires to set CategoryService");
 		Validate.notNull(languageService, "Requires to set LanguageService");
 		
@@ -90,29 +117,6 @@ public class CategoryPopulator extends AbstractDataPopulator<CategoryEntity, Cat
 	
 		
 		return target;
-	}
-
-	@Override
-	public CategoryEntity populateToEntity(CategoryEntity target,
-			Category source, MerchantStore store) throws ServiceException{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setCategoryService(CategoryService categoryService) {
-		this.categoryService = categoryService;
-	}
-
-	public CategoryService getCategoryService() {
-		return categoryService;
-	}
-
-	public void setLanguageService(LanguageService languageService) {
-		this.languageService = languageService;
-	}
-
-	public LanguageService getLanguageService() {
-		return languageService;
 	}
 
 }
