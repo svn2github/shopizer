@@ -1,7 +1,6 @@
 package com.salesmanager.web.shop.controller.category.rest;
 
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
-import com.salesmanager.core.business.catalog.category.model.CategoryDescription;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
@@ -31,6 +29,8 @@ import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.catalog.rest.category.CategoryEntity;
+import com.salesmanager.web.populator.catalog.rest.CategoryPopulator;
 import com.salesmanager.web.utils.CatalogUtils;
 import com.salesmanager.web.utils.LocaleUtils;
 
@@ -60,13 +60,10 @@ public class ShoppingCategoryRESTController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ShoppingCategoryRESTController.class);
 	
 
-
-
 	
-	
-	/**
+/*	*//**
 	 * Updates a category for a given MerchantStore
-	 */
+	 *//*
 	@RequestMapping( value="/shop/services/rest/category/{store}/{language}/{id}", method=RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void updateCategory(@PathVariable final String store, @PathVariable final String language, @PathVariable Long id, @Valid @RequestBody Category category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -109,15 +106,72 @@ public class ShoppingCategoryRESTController {
 		}else{
 			response.sendError(404, "No Category found for ID : " + id);
 		}
+	}*/
+	
+	
+	/**
+	 * Create new category for a given MerchantStore
+	 */
+	@RequestMapping( value="/shop/services/rest/category/{store}", method=RequestMethod.POST)
+	@ResponseStatus(HttpStatus.CREATED)
+	@ResponseBody
+	public CategoryEntity createCategory(@PathVariable final String store, @Valid @RequestBody CategoryEntity category, Model model, HttpServletRequest request, HttpServletResponse response) {
+		
+		
+		try {
+
+			Language lang = null;
+			
+			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+			if(merchantStore!=null) {
+				if(!merchantStore.getCode().equals(store)) {
+					merchantStore = null;
+				}
+			}
+			
+			if(merchantStore== null) {
+				merchantStore = merchantStoreService.getByCode(store);
+			}
+			
+			if(merchantStore==null) {
+				LOGGER.error("Merchant store is null for code " + store);
+				response.sendError(503, "Merchant store is null for code " + store);
+				return null;
+			}
+			
+			lang = merchantStore.getDefaultLanguage();
+			
+			CategoryPopulator populator = new CategoryPopulator();
+			populator.setCategoryService(categoryService);
+			populator.setLanguageService(languageService);
+			
+			Category dbCategory = populator.populateFromEntity(category, new Category(), merchantStore, lang);
+
+			dbCategory.setMerchantStore(merchantStore);
+			
+			categoryService.saveOrUpdate(dbCategory);
+			category.setId(dbCategory.getId());
+
+			return category;
+		
+		} catch (Exception e) {
+			LOGGER.error("Merchant store is null for code " + store);
+			try {
+				response.sendError(503, "Merchant store is null for code " + store);
+			} catch (Exception ignore) {
+			}
+			
+			return null;
+		}
 	}
 	
 	
 	/**
 	 * Deletes a category for a given MerchantStore
 	 */
-	@RequestMapping( value="/shop/services/rest/category/{store}/{language}/{id}", method=RequestMethod.DELETE)
+	@RequestMapping( value="/shop/services/rest/category/{store}/{id}", method=RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteCategory(@PathVariable final String store, @PathVariable final String language, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public void deleteCategory(@PathVariable final String store, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Category category = categoryService.getById(id);
 		if(category != null && category.getMerchantStore().getCode().equalsIgnoreCase(store)){
 			categoryService.delete(category);
@@ -126,72 +180,11 @@ public class ShoppingCategoryRESTController {
 		}
 	}
 	
+
 	
-	/**
-	 * Create new category for a given MerchantStore
-	 */
-	@RequestMapping( value="/shop/services/rest/category/{store}/{language}", method=RequestMethod.POST)
-	@ResponseStatus(HttpStatus.CREATED)
-	@ResponseBody
-	public com.salesmanager.web.entity.catalog.Category createCategory(@PathVariable final String store, @PathVariable final String language, @Valid @RequestBody Category category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Map<String,Language> langs = languageService.getLanguagesMap();
-		Language lang = langs.get(language);
-		if(lang==null) {
-			lang = languageService.getByCode(Constants.DEFAULT_LANGUAGE);
-		}
-		
-		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-		if(merchantStore!=null) {
-			if(!merchantStore.getCode().equals(store)) {
-				merchantStore = null;
-			}
-		}
-		
-		if(merchantStore== null) {
-			merchantStore = merchantStoreService.getByCode(store);
-		}
-		
-		if(merchantStore==null) {
-			LOGGER.error("Merchant store is null for code " + store);
-			response.sendError(503, "Merchant store is null for code " + store);
-			return null;
-		}
-		
-		List<CategoryDescription> descriptions = category.getDescriptions();
-		if(descriptions != null) {
-			for(CategoryDescription description : descriptions) {
-				description.setLanguage(lang);
-				description.setCategory(category);
-			}
-		}
-		
-		//check parent
-		if(category.getParent() != null) {
-			if(category.getParent().getId()==-1) {//this is a root category
-				category.setParent(null);
-				category.setLineage("/");
-				category.setDepth(0);
-			}
-		}
-		
-		category.setMerchantStore(merchantStore);
-		
-		categoryService.saveOrUpdate(category);
-		
-		if(category.getParent()!=null && category.getParent().getId()!=-1) { 
-			Category parent = new Category();
-			parent.setId(categoryService.getByCode(store, category.getParent().getCode()).getId());
-			parent.setMerchantStore(merchantStore);
-			categoryService.addChild(parent, category);
-		}
-		
-		com.salesmanager.web.entity.catalog.Category categoryProxy = catalogUtils.buildProxyCategory(category, merchantStore, LocaleUtils.getLocale(lang));
-		return categoryProxy;
-	}
-	
-	/**
+/*	*//**
 	 * Updates a product for a given MerchantStore
-	 */
+	 *//*
 	@RequestMapping( value="/shop/services/rest/products/{store}/{language}/{category}/{id}", method=RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void updateProduct(@PathVariable final String store, @PathVariable final String language, @PathVariable final String category, @PathVariable Long id, @Valid @RequestBody Product product, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -228,7 +221,7 @@ public class ShoppingCategoryRESTController {
 		}else{
 			response.sendError(404, "No Product found for ID : " + id);
 		}
-	}
+	}*/
 	
 	
 	/**
