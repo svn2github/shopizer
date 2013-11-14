@@ -26,15 +26,15 @@ public class ShoppingCategoryControllerTest {
 	@Ignore
 	public void categoryRESTTest() throws Exception {
 		
-		//create customer
+
+		//create category
 		postCategory();
 		
-		//get All customers
-		getCategories();
+		//getCategories();
 		
-		//update customer
+
 		//putCategory();
-		
+
 		//delete customer
 		deleteCategory();
 		
@@ -50,7 +50,7 @@ public class ShoppingCategoryControllerTest {
 		return headers;
 	}
 	
-	public void getCategories() throws Exception {
+/*	public void getCategories() throws Exception {
 		restTemplate = new RestTemplate();
 		
 		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
@@ -62,9 +62,9 @@ public class ShoppingCategoryControllerTest {
 		}else{
 			System.out.println(response.getBody().length + " Category records found.");
 		}
-	}
+	}*/
 	
-	public void putCategory() throws Exception {
+/*	public void putCategory() throws Exception {
 		restTemplate = new RestTemplate();
 	
 		String jsonString = ("{"+
@@ -90,28 +90,22 @@ public class ShoppingCategoryControllerTest {
 		
 		restTemplate.put("http://localhost:8080/sm-shop/shop/services/rest/category/DEFAULT/en/"+testCategoryID, entity);
 		System.out.println("Category "+testCategoryID+" Updated.");
-	}
+	}*/
 	
 	public void postCategory() throws Exception {
 		restTemplate = new RestTemplate();
 		
 		String jsonString = ("{"+
-				   " \"sortOrder\": \"0\","+
-				   " \"depth\": \"2\","+
+				   " \"sortOrder\": \"1\","+
 				   " \"code\": \"movie"+Math.random()+"\","+
-				   " \"lineage\": \"/movie\","+
-				   " \"categoryStatus\": \"true\","+
 				   " \"visible\": \"true\","+
-				   " \"categories\": [{"+
-				   "     \"code\":\"music\""+
-				   " },{"+
-				   "     \"code\":\"music123\""+
-				   " }],"+
 				   " \"descriptions\": [{"+
 				   "     \"metatagTitle\": \"Hollywood Movie\","+
-				   "     \"name\":\"Hollywood\""+
-				   " }],"+
-				   " \"categoryImage\": \"image.jpg\""+
+				   "     \"name\":\"Hollywood\","+
+				   "     \"description\":\"Hollywood movie\","+
+				   "     \"friendlyUrl\":\"hollywood-movie\","+
+				   "     \"language\":\"en\""+
+				   " }]"+
 				"}");
 		
 		HttpEntity<String> entity = new HttpEntity<String>(jsonString, getHeader());
@@ -132,7 +126,7 @@ public class ShoppingCategoryControllerTest {
 		System.out.println("Category "+testCategoryID+" Deleted.");
 	}
 	
-	@Test
+/*	@Test
 	@Ignore
 	public void getProducts() throws Exception {
 		restTemplate = new RestTemplate();
@@ -146,18 +140,18 @@ public class ShoppingCategoryControllerTest {
 		}else{
 			System.out.println(response.getBody().length + " Product records found.");
 		}
-	}
+	}*/
 	
-	@Test
+/*	@Test
 	@Ignore
 	public void putProduct() throws Exception {
 		restTemplate = new RestTemplate();
 		
 		//TODO: Put Product
 		
-	}
+	}*/
 	
-	@Test
+/*	@Test
 	@Ignore
 	public void postProduct() throws Exception {
 		restTemplate = new RestTemplate();
@@ -165,9 +159,9 @@ public class ShoppingCategoryControllerTest {
 		//TODO: Post Product
 
 		
-	}
+	}*/
 	
-	@Test
+/*	@Test
 	@Ignore
 	public void deleteProduct() throws Exception {
 		restTemplate = new RestTemplate();
@@ -176,6 +170,6 @@ public class ShoppingCategoryControllerTest {
 		
 		restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/rest/products/DEFAULT/en/"+testCategoryID+"/"+testProductID, HttpMethod.DELETE, httpEntity, Product.class);
 		System.out.println("Product "+testProductID+" Deleted.");
-	}
+	}*/
 	
 }
