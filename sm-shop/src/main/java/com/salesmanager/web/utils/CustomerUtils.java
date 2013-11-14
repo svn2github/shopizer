@@ -8,8 +8,8 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 @Component
 public class CustomerUtils {
 
-	public com.salesmanager.web.entity.customer.Customer buildProxyCustomer(Customer customer, MerchantStore store) {
-		com.salesmanager.web.entity.customer.Customer customerProxy = new com.salesmanager.web.entity.customer.Customer();
+	public com.salesmanager.web.entity.customer.CustomerEntity buildProxyCustomer(Customer customer, MerchantStore store) {
+		com.salesmanager.web.entity.customer.CustomerEntity customerProxy = new com.salesmanager.web.entity.customer.CustomerEntity();
 		customerProxy.setUserName(customer.getFirstname() +" "+ customer.getLastname());
 		customerProxy.setPassword(customer.getPassword());
 		customerProxy.setStoreCode(store.getCode());
