@@ -49,6 +49,7 @@
 			//var cart = $.cookie( 'cart' );
 			//core properties
 			var sku = $(this).attr("productId");
+			
 			var qty = '#qty-productId-'+ sku;
 			var quantity = $(qty).val();
 			if(!quantity || quantity==null || quantity==0) {
@@ -103,11 +104,12 @@
 			 * shopping cart code identifier is <cart>_<storeId>
 			 * need to check if the cookie is for the appropriate store
 			 */
-
+			
 			//cart item
 			var prefix = "{";
 			var suffix = "}";
-			var shoppingCartItem = '"code":' + code[1] + ',';
+			//var shoppingCartItem = '"code":' + "11" + ',';
+			var shoppingCartItem = '"code":' + '"' + code[1] + '"'+',';
 			var shoppingCartItem = shoppingCartItem + '"quantity":' + quantity + ',';
 			var shoppingCartItem = shoppingCartItem + '"productId":' + sku;
 			
@@ -142,10 +144,11 @@
 				 type: 'POST',  
 				 url: getContextPath() + '/shop/addShoppingCartItem.html',  
 				 data: scItem, 
-				 contentType: 'application/json', 
+				 contentType: 'application/json;charset=utf-8',
 				 dataType: 'json', 
-				 error: function() { 
-				    alert('failure'); 
+				 error: function(e) { 
+					alert('failure'); 
+					 
 				 },
 				 success: function(cart) {  
 				     //alert("Success: " + cart);
