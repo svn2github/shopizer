@@ -148,11 +148,13 @@
 		</dependency>
 
 		<!-- Spring -->
+		<!--
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-asm</artifactId>
 			<version>${sm-core.org.springframework-security.version}</version>
 		</dependency>
+		-->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
@@ -193,12 +195,13 @@
 			<artifactId>spring-web</artifactId>
 			<version>${sm-core.org.springframework.version}</version>
 		</dependency>
+		<!--
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
 			<version>${sm-core.org.springframework-security.version}</version>
 		</dependency>
-		
+		-->
 		<!-- JSR 303 with Hibernate Validator -->
 		<dependency>
 			<groupId>javax.validation</groupId>
