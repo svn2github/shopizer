@@ -1,0 +1,338 @@
+package com.salesmanager.web.shop.controller.shoppingCart;
+
+import java.util.Locale;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.salesmanager.core.business.catalog.product.service.PricingService;
+import com.salesmanager.core.business.catalog.product.service.ProductService;
+import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
+import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.order.service.OrderService;
+import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
+import com.salesmanager.core.utils.ProductPriceUtils;
+import com.salesmanager.core.utils.ajax.AjaxResponse;
+import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
+import com.salesmanager.web.entity.shoppingcart.ShoppingCartItem;
+import com.salesmanager.web.shop.controller.ControllerConstants;
+import com.salesmanager.web.shop.controller.shoppingCart.facade.ShoppingCartFacade;
+
+
+/**
+ * A mini shopping cart is available on the public shopping section from the upper menu
+ * Landing page, Category page (list of products) and Product details page contains a form
+ * that let the user add an item to the cart, see the quantity of items, total price of items
+ * in the cart and remove items
+ * 
+ * Add To Cart
+ * ---------------
+ * The add to cart is 100% driven by javascript / ajax. The code is available in webapp\resources\js\functions.js
+ * 
+ * <!-- Simple add to cart html example ${id} is the product id -->
+ * <form id="input-${id}">
+ *  <input type="text" class="input-small" id="quantity-productId-${id}" placeholder="1" value="1">
+ * 	<a href="#" class="addToCart" productId="${id}">Add to cart</a>
+ * </form>
+ * 
+ * The javascript function creates com.salesmanager.web.entity.shoppingcart.ShoppingCartItem and ShoppingCartAttribute based on user selection
+ * The javascript looks in the cookie if a shopping cart code exists ex $.cookie( 'cart' ); // requires jQuery-cookie
+ * The javascript posts the ShoppingCartItem and the shopping cart code if present to /shop/addShoppingCartItem.html
+ * 
+ * @see 
+ * 
+ * The javascript re-creates the shopping cart div item (div id shoppingcart) (see webapp\pages\shop\templates\bootstrap\sections\header.jsp)
+ * The javascript set the shopping cart code in the cookie
+ * 
+ * Display a page
+ * ----------------
+ * 
+ * When a page is displayed from the shopping section, the shopping cart has to be displayed
+ * 4 paths 1) No shopping cart 2) A shopping cart exist in the session 3) A shopping cart code exists in the cookie  4) A customer is logeed in and a shopping cart exists in the database
+ * 
+ * 1) No shopping cart, nothing to do !
+ * 
+ * 2) StoreFilter will tak care of a ShoppingCart present in the HttpSession
+ * 
+ * 3) Once a page is displayed and no cart returned from the controller, a javascript looks on load in the cookie to see if a shopping cart code is present
+ * 	  If a code is present, by ajax the cart is loaded and displayed
+ * 
+ * 4) No cart in the session but the customer logs in, the system looks in the DB if a shopping cart exists, if so it is putted in the session so the StoreFilter can manage it and putted in the request
+ * 
+ * @author Carl Samson
+ * @author Umesh
+ */
+
+@Controller
+public class ShoppingCartController {
+	
+	protected final Logger LOG= Logger.getLogger( getClass());
+	@Autowired
+	private ProductService productService;
+	
+	@Autowired
+	private ProductAttributeService productAttributeService;
+	
+	@Autowired
+	private PricingService pricingService;
+	
+	@Autowired
+	private OrderService orderService;
+	
+	@Autowired
+	private ShoppingCartService shoppingCartService;
+	
+	@Autowired
+	private ProductPriceUtils productPriceUtils;
+	
+	@Autowired
+	private ShoppingCartFacade shoppingCartFacade;
+	
+	
+	/**
+	 * Retrieves a Shopping cart from the database (regular shopping cart)
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+    @RequestMapping( value = { "/shop/shoppingCart.html" }, method = RequestMethod.GET )
+    public String displayShoppingCart( Model model, HttpServletRequest request, HttpServletResponse response )
+        throws Exception
+    {
+
+        LOG.info( "Starting to calculate shopping cart..." );
+        Customer customer = (Customer) request.getSession().getAttribute( Constants.CUSTOMER );
+
+        MerchantStore store = (MerchantStore) request.getAttribute( Constants.MERCHANT_STORE );
+        ShoppingCartData shoppingCart = getShoppingCartFromSession( request );
+        final String shoppingCartId = shoppingCart != null ? shoppingCart.getCode() : null;
+
+        // ShoppingCartData shoppingCart=convertFromEntity(cart, store,language);
+        shoppingCart = shoppingCartFacade.getShoppingCartData( customer, store,shoppingCartId );
+        shoppingCart = shoppingCartFacade.recalculateCart( shoppingCart );
+        model.addAttribute( "cart", shoppingCart );
+
+        /** template **/
+        StringBuilder template =
+            new StringBuilder().append( ControllerConstants.Tiles.ShoppingCart.shoppingCart ).append( "." ).append( store.getStoreTemplate() );
+        return template.toString();
+
+    }
+	
+	
+
+	/**
+	 * Add an item to the ShoppingCart (AJAX exposed method)
+	 * @param id
+	 * @param quantity
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value={"/shop/addShoppingCartItem.html"}, method=RequestMethod.POST)
+	public @ResponseBody
+	ShoppingCartData addShoppingCartItem(@RequestBody ShoppingCartItem item, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+		ShoppingCartData shoppingCart = (ShoppingCartData)request.getSession().getAttribute(Constants.SHOPPING_CART);
+		//cart exist in http session
+		if(shoppingCart!=null) {
+			String shoppingCartCode = shoppingCart.getCode();
+			if(!StringUtils.isBlank(shoppingCartCode)) {
+				if(!item.getCode().equals(shoppingCartCode)) {//TODO item code pls
+					//TODO if different
+				}
+			}
+		}
+		
+		//Look in the HttpSession to see if a customer is logged in
+		Customer customer = (Customer)request.getSession().getAttribute(Constants.CUSTOMER);
+		if(customer != null) {
+			com.salesmanager.core.business.shoppingcart.model.ShoppingCart customerCart = shoppingCartService.getByCustomer(customer);
+			if(customerCart!=null) {
+				shoppingCart = shoppingCartFacade.getShoppingCartData( customerCart);
+				                
+				               
+				//TODO if ahoppingCart != null ?? merge
+				//TODO maybe they have the same code
+				//TODO what if codes are different (-- merge carts, keep the latest one, delete the oldest, switch codes --)
+			}
+		}
+		
+		if(!StringUtils.isBlank(item.getCode()) && !(item.getCode().equalsIgnoreCase( "undefined" )))  {
+			//get it from the db
+			com.salesmanager.core.business.shoppingcart.model.ShoppingCart dbCart = shoppingCartService.getByCode(item.getCode(), store);
+			if(dbCart!=null) {
+				shoppingCart = shoppingCartFacade.getShoppingCartData( dbCart);
+				              
+			}
+		}
+		
+		
+		//if shoppingCart is null create a new one
+		if(shoppingCart==null)  {
+			shoppingCart = new ShoppingCartData();
+			String code = UUID.randomUUID().toString().replaceAll("-", "");
+			shoppingCart.setCode(code);
+	
+		}
+		
+		
+		shoppingCart=shoppingCartFacade.addItemsToShoppingCart( shoppingCart, item, store );
+		
+		              
+		
+		//calculate total
+		//OrderSummary summary = new OrderSummary();
+		//List<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> productsList = new ArrayList<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem>();
+		//productsList.addAll(entity.getLineItems());
+		//summary.setProducts(productsList);
+		//OrderTotalSummary orderSummary = orderService.calculateOrderTotal(summary, store, language);
+		//shoppingCart.setTotal(pricingService.getDisplayAmount(orderSummary.getTotal(), store));
+		//shoppingCart.setQuantity(shoppingCart.getShoppingCartItems().size());
+
+		
+		
+		/******************************************************/
+		//TODO validate all of this
+		
+		//if a customer exists in http session
+			//if a cart does not exist in httpsession
+				//get cart from database
+					//if a cart exist in the database add the item to the cart and put cart in httpsession and save to the database
+					//else a cart does not exist in the database, create a new one, set the customer id, set the cart in the httpsession
+			//else a cart exist in the httpsession, add item to httpsession cart and save to the database
+		//else no customer in httpsession
+			//if a cart does not exist in httpsession
+				//create a new one, set the cart in the httpsession
+			//else a cart exist in the httpsession, add item to httpsession cart and save to the database
+		
+		
+		/**
+		 * my concern is with the following : 
+		 * 	what if you add item in the shopping cart as an anonymous user
+		 *  later on you log in to process with checkout but the system retrieves a previous shopping cart saved in the database for that customer
+		 *  in that case we need to synchronize both carts and the original one (the one with the customer id) supercedes the current cart in session
+		 *  the sustem will have to deal with the original one and remove the latest
+		 */
+		
+		
+		//**more implementation details
+		//calculate the price of each item by using ProductPriceUtils in sm-core
+		//for each product in the shopping cart get the product
+		//invoke productPriceUtils.getFinalProductPrice
+		//from FinalPrice get final price which is the calculated price given attributes and discounts
+		//set each item price in ShoppingCartItem.price
+		
+		//add new item shoppingCartService.create
+		
+		//create JSON representation of the shopping cart
+		
+		//return the JSON structure in AjaxResponse
+		
+		//store the shopping cart in the http session
+		setCartDataToSession(request,shoppingCart);
+		
+		//AjaxResponse resp = new AjaxResponse();
+		//resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+		return shoppingCart;
+
+	}
+
+	
+	/**
+	 * Removes an item from the Shopping Cart (AJAX exposed method)
+	 * @param id
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value={"/shop/removeShoppingCartItem.html"}, method=RequestMethod.GET)
+	public @ResponseBody
+	String removeShoppingCartItem(@ModelAttribute Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+
+		//Looks in the HttpSession to see if a customer is logged in
+		
+		//get any shopping cart for this user
+		
+		//** need to check if the item has property, similar items may exist but with different properties
+		String attributes = request.getParameter("attribute");//attributes id are sent as 1|2|5|
+		//this will help with hte removal of the appropriate item
+		
+		//remove the item shoppingCartService.create
+		
+		//create JSON representation of the shopping cart
+		
+		//return the JSON structure in AjaxResponse
+		
+		//store the shopping cart in the http session
+		
+		AjaxResponse resp = new AjaxResponse();
+		
+		resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+		
+		return resp.toJSONString();
+		
+		
+	}
+	
+	/**
+	 * Update the quantity of an item in the Shopping Cart (AJAX exposed method)
+	 * @param id
+	 * @param quantity
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value={"/shop/updateShoppingCartItem.html"}, method=RequestMethod.GET)
+	public @ResponseBody
+	String updateShoppingCartItem(@ModelAttribute Long id, @ModelAttribute Integer quantity, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+
+
+		
+		AjaxResponse resp = new AjaxResponse();
+		
+		resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+		
+		return resp.toJSONString();
+		
+		
+	}
+		
+    private ShoppingCartData getShoppingCartFromSession( final HttpServletRequest request){
+    	return (ShoppingCartData)request.getSession().getAttribute(Constants.SHOPPING_CART);  
+    }
+    
+    
+    
+    private void setCartDataToSession(final HttpServletRequest request,final ShoppingCartData shoppingCartData){
+    	
+    	HttpSession session=request.getSession();
+    	synchronized (session) {
+    		session.setAttribute(Constants.SHOPPING_CART, shoppingCartData);
+		}
+    }
+	
+}
