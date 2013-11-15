@@ -19,7 +19,7 @@ import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.constants.Constants;
 import com.salesmanager.core.utils.ProductPriceUtils;
-import com.salesmanager.web.entity.catalog.Image;
+import com.salesmanager.web.entity.catalog.ReadableImage;
 
 @Component
 public class CatalogUtils {
@@ -55,10 +55,10 @@ public class CatalogUtils {
 			Set<ProductImage> images = product.getImages();
 			if(images!=null && images.size()>0) {
 				
-				List<Image> imageList = new ArrayList<Image>();
+				List<ReadableImage> imageList = new ArrayList<ReadableImage>();
 				for(ProductImage img : images) {
 					
-					Image prdImage = new Image();
+					ReadableImage prdImage = new ReadableImage();
 					prdImage.setImageName(img.getProductImage());
 					String imgPath = ImageFilePathUtils.buildProductImageFilePath(store, product.getSku(), img.getProductImage());
 					prdImage.setImageUrl(imgPath);

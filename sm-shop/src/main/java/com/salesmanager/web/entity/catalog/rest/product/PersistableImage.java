@@ -1,11 +1,13 @@
 package com.salesmanager.web.entity.catalog.rest.product;
 
-public class Image {
+public class PersistableImage {
 	
 	   private byte[] bytes = null;
 
 
 	   private String contentType = null;
+	   
+	   private String imageName;
 
 
 	public void setBytes(byte[] bytes) {
@@ -25,6 +27,16 @@ public class Image {
 
 	public String getContentType() {
 		return contentType;
+	}
+
+
+	public void setImageName(String imageName) {
+		this.imageName = imageName;
+	}
+
+
+	public String getImageName() {
+		return imageName;
 	}
 
 }

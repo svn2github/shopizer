@@ -38,7 +38,7 @@ public class Product extends CatalogEntity implements Serializable {
 	private String image;
 	private String imageUrl;
 	
-	private List<Image> images;
+	private List<ReadableImage> images;
 
 
 	
@@ -107,10 +107,10 @@ public class Product extends CatalogEntity implements Serializable {
 		return imageUrl;
 	}
 
-	public void setImages(List<Image> images) {
+	public void setImages(List<ReadableImage> images) {
 		this.images = images;
 	}
-	public List<Image> getImages() {
+	public List<ReadableImage> getImages() {
 		return images;
 	}
 	public void setQuantity(int quantity) {

@@ -2,7 +2,7 @@ package com.salesmanager.web.entity.catalog;
 
 import java.io.Serializable;
 
-public class Image implements Serializable {
+public class ReadableImage implements Serializable {
 	
 	/**
 	 * 

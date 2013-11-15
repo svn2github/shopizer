@@ -30,7 +30,8 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.catalog.rest.category.CategoryEntity;
-import com.salesmanager.web.populator.catalog.rest.CategoryPopulator;
+import com.salesmanager.web.entity.catalog.rest.category.PersistableCategory;
+import com.salesmanager.web.populator.catalog.PersistableCategoryPopulator;
 import com.salesmanager.web.utils.CatalogUtils;
 import com.salesmanager.web.utils.LocaleUtils;
 
@@ -54,8 +55,7 @@ public class ShoppingCategoryRESTController {
 	@Autowired
 	private ProductService productService;
 	
-	@Autowired
-	private CatalogUtils catalogUtils;
+
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ShoppingCategoryRESTController.class);
 	
@@ -115,7 +115,7 @@ public class ShoppingCategoryRESTController {
 	@RequestMapping( value="/shop/services/rest/category/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
-	public CategoryEntity createCategory(@PathVariable final String store, @Valid @RequestBody CategoryEntity category, Model model, HttpServletRequest request, HttpServletResponse response) {
+	public CategoryEntity createCategory(@PathVariable final String store, @Valid @RequestBody PersistableCategory category, Model model, HttpServletRequest request, HttpServletResponse response) {
 		
 		
 		try {
@@ -138,7 +138,7 @@ public class ShoppingCategoryRESTController {
 				return null;
 			}
 
-			CategoryPopulator populator = new CategoryPopulator();
+			PersistableCategoryPopulator populator = new PersistableCategoryPopulator();
 			populator.setCategoryService(categoryService);
 			populator.setLanguageService(languageService);
 			
@@ -152,12 +152,11 @@ public class ShoppingCategoryRESTController {
 			return category;
 		
 		} catch (Exception e) {
-			LOGGER.error("Merchant store is null for code " + store);
+			LOGGER.error("Error while saving category",e);
 			try {
-				response.sendError(503, "Merchant store is null for code " + store);
+				response.sendError(503, "Error while saving category " + e.getMessage());
 			} catch (Exception ignore) {
 			}
-			
 			return null;
 		}
 	}
@@ -236,45 +235,6 @@ public class ShoppingCategoryRESTController {
 	}
 	
 	
-	/**
-	 * Create new product for a given MerchantStore
-	 */
-	@RequestMapping( value="/shop/services/rest/products/{store}/{language}/{category}", method=RequestMethod.POST)
-	@ResponseStatus(HttpStatus.CREATED)
-	@ResponseBody
-	public com.salesmanager.web.entity.catalog.Product createProduct(@PathVariable final String store, @PathVariable final String language, @PathVariable final String category, @Valid @RequestBody Product product, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Map<String,Language> langs = languageService.getLanguagesMap();
-		Language lang = langs.get(language);
-		if(lang==null) {
-			lang = languageService.getByCode(Constants.DEFAULT_LANGUAGE);
-		}
-		
-		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-		if(merchantStore!=null) {
-			if(!merchantStore.getCode().equals(store)) {
-				merchantStore = null;
-			}
-		}
-		
-		if(merchantStore== null) {
-			merchantStore = merchantStoreService.getByCode(store);
-		}
-		
-		if(merchantStore==null) {
-			LOGGER.error("Merchant store is null for code " + store);
-			response.sendError(503, "Merchant store is null for code " + store);
-			return null;
-		}
-		
-		//TODO: Implementation goes here
-		
-		
-		
-		product.setMerchantStore(merchantStore);
-		productService.saveOrUpdate(product);
-		
-		com.salesmanager.web.entity.catalog.Product productProxy = catalogUtils.buildProxyProduct(product, merchantStore, LocaleUtils.getLocale(lang));
-		return productProxy;
-	}
+
 	
 }

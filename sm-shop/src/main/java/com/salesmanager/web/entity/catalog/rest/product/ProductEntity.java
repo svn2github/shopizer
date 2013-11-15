@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.salesmanager.web.entity.catalog.rest.category.Category;
-import com.salesmanager.web.entity.catalog.rest.product.attribute.ProductAttribute;
+import com.salesmanager.web.entity.catalog.rest.product.attribute.ProductAttributeEntity;
 
 
 /**
@@ -21,21 +21,20 @@ public class ProductEntity extends Product implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private BigDecimal price;
-	private Long manufacturerId;
 	private int quantity = 0;
 	private String sku;
 	private boolean productShipeable = false;
+	private boolean productVirtual = false;
+	private int quantityOrderMaximum =-1;//default unlimited
 	private boolean productIsFree;
+	private boolean available;
 	private BigDecimal productLength;
 	private BigDecimal productWidth;
 	private BigDecimal productHeight;
 	private BigDecimal productWeight;
 	private int sortOrder;
-	private List<ProductDescription> descriptions;
-	private List<ProductAttribute> attributes;
-	private List<Image> images;
-	private List<Category> categories;
-	private List<RelatedProduct> relatedProducts;;
+	private String dateAvailable;
+
 	
 	
 	
@@ -46,12 +45,7 @@ public class ProductEntity extends Product implements Serializable {
 	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
-	public Long getManufacturerId() {
-		return manufacturerId;
-	}
-	public void setManufacturerId(Long manufacturerId) {
-		this.manufacturerId = manufacturerId;
-	}
+
 	public int getQuantity() {
 		return quantity;
 	}
@@ -106,35 +100,29 @@ public class ProductEntity extends Product implements Serializable {
 	public void setSortOrder(int sortOrder) {
 		this.sortOrder = sortOrder;
 	}
-	public List<ProductDescription> getDescriptions() {
-		return descriptions;
+	public void setQuantityOrderMaximum(int quantityOrderMaximum) {
+		this.quantityOrderMaximum = quantityOrderMaximum;
 	}
-	public void setDescriptions(List<ProductDescription> descriptions) {
-		this.descriptions = descriptions;
+	public int getQuantityOrderMaximum() {
+		return quantityOrderMaximum;
 	}
-	public List<ProductAttribute> getAttributes() {
-		return attributes;
+	public void setProductVirtual(boolean productVirtual) {
+		this.productVirtual = productVirtual;
 	}
-	public void setAttributes(List<ProductAttribute> attributes) {
-		this.attributes = attributes;
+	public boolean isProductVirtual() {
+		return productVirtual;
 	}
-	public List<Image> getImages() {
-		return images;
+	public void setAvailable(boolean available) {
+		this.available = available;
 	}
-	public void setImages(List<Image> images) {
-		this.images = images;
+	public boolean isAvailable() {
+		return available;
 	}
-	public void setCategories(List<Category> categories) {
-		this.categories = categories;
+	public void setDateAvailable(String dateAvailable) {
+		this.dateAvailable = dateAvailable;
 	}
-	public List<Category> getCategories() {
-		return categories;
-	}
-	public void setRelatedProducts(List<RelatedProduct> relatedProducts) {
-		this.relatedProducts = relatedProducts;
-	}
-	public List<RelatedProduct> getRelatedProducts() {
-		return relatedProducts;
+	public String getDateAvailable() {
+		return dateAvailable;
 	}
 
 }
