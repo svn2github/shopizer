@@ -21,14 +21,7 @@ public class ManufacturerPopulator extends AbstractDataPopulator<com.salesmanage
 
 
 
-	@Override
-	public com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer populateToEntity(
-			com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer source,
-			Manufacturer target, MerchantStore store) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	@Override
 	public Manufacturer populateFromEntity(
 			com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer source,
@@ -54,5 +47,12 @@ public class ManufacturerPopulator extends AbstractDataPopulator<com.salesmanage
 		target.setLanguage(language.getCode());
 		return target;
 	}
+
+    @Override
+    protected Manufacturer createTarget()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

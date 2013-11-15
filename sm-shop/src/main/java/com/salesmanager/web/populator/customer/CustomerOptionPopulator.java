@@ -56,14 +56,13 @@ public class CustomerOptionPopulator extends
 
 	}
 
-	@Override
-	public com.salesmanager.core.business.customer.model.attribute.CustomerOption populateToEntity(
-			com.salesmanager.core.business.customer.model.attribute.CustomerOption source,
-			CustomerOption target, MerchantStore store) {
-		
-		
-		return null;
-		
-	}
+    @Override
+    protected CustomerOption createTarget()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+	
 
 }
