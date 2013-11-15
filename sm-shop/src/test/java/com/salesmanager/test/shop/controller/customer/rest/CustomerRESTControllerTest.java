@@ -31,7 +31,7 @@ public class CustomerRESTControllerTest {
 		getCustomers();
 		
 		//get a single customer
-		getCustomer();
+		//getCustomer();
 		
 		//update customer
 		putCustomer();
@@ -99,7 +99,7 @@ public class CustomerRESTControllerTest {
 		}
 	}
 	
-	public void getCustomer() throws Exception {
+/*	public void getCustomer() throws Exception {
 		restTemplate = new RestTemplate();
 		
 		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
@@ -111,7 +111,7 @@ public class CustomerRESTControllerTest {
 		}else{
 			System.out.println("Returned username is : " + response.getBody().getUserName());
 		}
-	}
+	}*/
 	
 	public void putCustomer() throws Exception {
 		restTemplate = new RestTemplate();
