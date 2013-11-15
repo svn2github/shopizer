@@ -1,6 +1,0 @@
-/*  Do not use this file as it creates a bug! */
-/*  http://issues.liferay.com/browse/LPS-27615 */
-
-@import url("bootstrap/bootstrap.min.css");
-@import url("bootstrap/bootstrap-responsive.min.css");
-@import url("shopizer/shopizer.css");
