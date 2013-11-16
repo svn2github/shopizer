@@ -23,7 +23,7 @@ public class CategoryManagementAPITest {
 	private Long testProductID;
 
 	@Test
-	//@Ignore
+	@Ignore
 	public void categoryRESTTest() throws Exception {
 		
 		//create customer
