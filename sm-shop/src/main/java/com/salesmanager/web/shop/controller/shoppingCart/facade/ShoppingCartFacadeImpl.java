@@ -21,6 +21,7 @@ import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
+import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -50,15 +51,11 @@ public class ShoppingCartFacadeImpl
     @Autowired
     private ShoppingCartService shoppingCartService;
 
-    
-    @Autowired
-    private ShoppingCartModelPopulator shoppingCartModelPopulator;
-    
-    @Autowired
-    private ShoppingCartDataPopulator shoppingCartDataPopulator;
-
     @Autowired
     private ProductPriceUtils productPriceUtils;
+    
+    @Autowired
+    private ProductAttributeService productAttributeService;
 
     @Autowired
     private ProductService productService;
@@ -113,13 +110,12 @@ public class ShoppingCartFacadeImpl
         }
 
         LOG.info( "Cart model found." );
+        
+        ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
+        shoppingCartDataPopulator.setOrderService(orderService);
+        shoppingCartDataPopulator.setPricingService(pricingService);
 
-        return this.shoppingCartDataPopulator.populateFromEntity( cart);
-
-       /* ShoppingCartDataPopulator populator = new ShoppingCartDataPopulator();
-        populator.setOrderService(this.orderService);
-        populator.setPricingService(this.pricingService);
-        return populator.populateFromEntity(cart, new ShoppingCartData(), store, language);*/
+        return shoppingCartDataPopulator.populate( cart, new ShoppingCartData(), store, store.getDefaultLanguage());
 
 
     }
@@ -157,18 +153,29 @@ public class ShoppingCartFacadeImpl
         throws Exception
     {
        
-        return this.shoppingCartDataPopulator.populateFromEntity( shoppingCart );
+    	
+        ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
+        shoppingCartDataPopulator.setOrderService(orderService);
+        shoppingCartDataPopulator.setPricingService(pricingService);
+        return shoppingCartDataPopulator.populate(shoppingCart,  new ShoppingCartData(),  null, null );
     }
 
     @Override
-    public ShoppingCart getShoppingCart( ShoppingCartData shoppingCart) throws Exception
+    public ShoppingCart getShoppingCart( ShoppingCartData shoppingCart, Customer customer) throws Exception
     {
-      return this.shoppingCartModelPopulator.populateToEntity( shoppingCart );
+      
+    	ShoppingCartModelPopulator shoppingModelPopulator = new ShoppingCartModelPopulator();
+    	shoppingModelPopulator.setShoppingCartService(shoppingCartService);
+    	shoppingModelPopulator.setProductAttributeService(productAttributeService);
+    	shoppingModelPopulator.setCustomer(customer);
+        return shoppingModelPopulator.populate(shoppingCart,  new ShoppingCart(),  null, null );
+    	
+    	//return this.shoppingCartModelPopulator.populateToEntity( shoppingCart );
     }
 
     @Override
     public ShoppingCartData addItemsToShoppingCart( ShoppingCartData shoppingCart, ShoppingCartItem item,
-                                                    MerchantStore store ) throws Exception
+                                                    MerchantStore store, Customer customer ) throws Exception
     {
         List<ShoppingCartItem> items = shoppingCart.getShoppingCartItems();
         boolean itemFound = false;
@@ -227,9 +234,14 @@ public class ShoppingCartFacadeImpl
         BigDecimal subTotal = item.getProductPrice().multiply(new BigDecimal(item.getQuantity()));
         item.setSubTotal(pricingService.getDisplayAmount(subTotal, store));
         
-        ShoppingCart entity=getShoppingCart( shoppingCart );
+        ShoppingCart entity=getShoppingCart( shoppingCart, customer );
         shoppingCartService.saveOrUpdate(entity);
-        return this.shoppingCartDataPopulator.populateFromEntity( entity );
+        
+        ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
+        shoppingCartDataPopulator.setOrderService(orderService);
+        shoppingCartDataPopulator.setPricingService(pricingService);
+        
+        return shoppingCartDataPopulator.populate( entity, shoppingCart, store, null );
     }
     
    private void createItemInShoppingCart(ShoppingCartData cart, ShoppingCartItem item, MerchantStore store) throws Exception {

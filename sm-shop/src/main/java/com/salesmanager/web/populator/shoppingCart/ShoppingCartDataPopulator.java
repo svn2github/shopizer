@@ -11,10 +11,6 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.configuration.ConversionException;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
@@ -26,7 +22,6 @@ import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.utils.AbstractDataPopulator;
-import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartAttribute;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartItem;
@@ -38,13 +33,13 @@ import com.salesmanager.web.utils.ImageFilePathUtils;
  *
  */
 
-@Service(value="shoppingCartDataPopulator")
+
 public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCart,ShoppingCartData>
 {
 
     protected final Logger LOG= Logger.getLogger( getClass());
     
-    @Autowired
+
     private PricingService pricingService;
 
     public PricingService getPricingService() {
@@ -70,8 +65,6 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
 	}
 
 
-
-	@Autowired
 	private OrderService orderService;
     
 
@@ -79,12 +72,10 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
    
 
 	@Override
-	public ShoppingCartData populateFromEntity(ShoppingCart shoppingCart,
+	public ShoppingCartData populate(ShoppingCart shoppingCart,
 			ShoppingCartData cart, MerchantStore store, Language language) {
 
-		
-	    store = (MerchantStore)getKeyValue(Constants.MERCHANT_STORE);
-	    language=(Language)getKeyValue(Constants.DEFAULT_LANGUAGE);
+
         cart.setCode(shoppingCart.getShoppingCartCode());
         Set<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> items = shoppingCart.getLineItems();
         List<ShoppingCartItem> shoppingCartItemsList=Collections.emptyList();
@@ -161,14 +152,7 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
         return new ShoppingCartData();
     }
 
-    
-    private Object getKeyValue( final String key )
-    {
-        ServletRequestAttributes reqAttr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        return reqAttr.getRequest().getAttribute( key );
-    }
-    
-   
+  
 
    
 }

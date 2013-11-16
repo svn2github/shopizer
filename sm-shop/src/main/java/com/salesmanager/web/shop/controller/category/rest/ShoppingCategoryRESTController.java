@@ -142,7 +142,7 @@ public class ShoppingCategoryRESTController {
 			populator.setCategoryService(categoryService);
 			populator.setLanguageService(languageService);
 			
-			Category dbCategory = populator.populateToEntity(new Category(), category, merchantStore);
+			Category dbCategory = populator.populate(category, new Category(), merchantStore, merchantStore.getDefaultLanguage());
 
 			dbCategory.setMerchantStore(merchantStore);
 			

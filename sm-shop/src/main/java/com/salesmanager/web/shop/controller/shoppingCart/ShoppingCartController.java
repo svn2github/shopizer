@@ -196,7 +196,7 @@ public class ShoppingCartController {
 		}
 		
 		
-		shoppingCart=shoppingCartFacade.addItemsToShoppingCart( shoppingCart, item, store );
+		shoppingCart=shoppingCartFacade.addItemsToShoppingCart( shoppingCart, item, store, customer );
 		
 		              
 		

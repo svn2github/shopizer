@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionSet;
+import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.AbstractDataPopulator;
@@ -25,9 +26,9 @@ public class CustomerOptionPopulator extends
 	}
 
 	@Override
-	public CustomerOption populateFromEntity(
+	public CustomerOption populate(
 			com.salesmanager.core.business.customer.model.attribute.CustomerOption source,
-			CustomerOption target, MerchantStore store, Language language) {
+			CustomerOption target, MerchantStore store, Language language) throws ConversionException {
 		
 		
 		CustomerOption customerOption = target;
@@ -63,6 +64,5 @@ public class CustomerOptionPopulator extends
         return null;
     }
 
-	
 
 }

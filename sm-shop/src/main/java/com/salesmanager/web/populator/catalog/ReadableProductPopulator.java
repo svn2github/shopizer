@@ -12,7 +12,7 @@ import com.salesmanager.core.business.catalog.product.model.description.ProductD
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
-import com.salesmanager.core.business.generic.exception.ServiceException;
+import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.constants.Constants;
@@ -29,9 +29,9 @@ public class ReadableProductPopulator extends
 	private ProductPriceUtils productPriceUtils;
 
 	@Override
-	public ReadableProduct populateFromEntity(Product source,
+	public ReadableProduct populate(Product source,
 			ReadableProduct target, MerchantStore store, Language language)
-			throws ServiceException {
+			throws ConversionException {
 		Validate.notNull(productPriceUtils, "Requires to set CategoryService");
 		
 		try {
@@ -105,16 +105,11 @@ public class ReadableProductPopulator extends
 			return target;
 		
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new ConversionException(e);
 		}
 	}
 
-	@Override
-	public Product populateToEntity(Product target, ReadableProduct source,
-			MerchantStore store) throws ServiceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	public void setProductPriceUtils(ProductPriceUtils productPriceUtils) {
 		this.productPriceUtils = productPriceUtils;
@@ -122,6 +117,14 @@ public class ReadableProductPopulator extends
 
 	public ProductPriceUtils getProductPriceUtils() {
 		return productPriceUtils;
+	}
+
+
+
+	@Override
+	protected ReadableProduct createTarget() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -1,6 +1,5 @@
 package com.salesmanager.web.admin.controller.customers;
 
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -190,7 +189,7 @@ public class CustomerController {
 					
 				} 
 				
-				optionPopulator.populateFromEntity(custOption, customerOption, store, language);
+				optionPopulator.populate(custOption, customerOption, store, language);
 				options.put(customerOption.getId(), customerOption);
 				
 /*				List<CustomerOptionValue> values = customerOption.getAvailableValues();

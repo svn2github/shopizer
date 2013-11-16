@@ -98,7 +98,7 @@ public class ShopProductRESTController {
 			populator.setManufacturerService(manufacturerService);
 			populator.setTaxClassService(taxClassService);
 			
-			populator.populateFromEntity(product, new Product(), merchantStore, merchantStore.getDefaultLanguage());
+			populator.populate(product, new Product(), merchantStore, merchantStore.getDefaultLanguage());
 			
 			return product;
 			

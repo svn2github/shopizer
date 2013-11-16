@@ -22,11 +22,10 @@ import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufac
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDescription;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
-import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionValueService;
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
-import com.salesmanager.core.business.generic.exception.ServiceException;
+import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
@@ -51,9 +50,9 @@ public class PersistableProductPopulator extends
 	
 
 	@Override
-	public Product populateFromEntity(PersistableProduct source,
+	public Product populate(PersistableProduct source,
 			Product target, MerchantStore store, Language language)
-			throws ServiceException {
+			throws ConversionException {
 		
 		try {
 
@@ -67,11 +66,11 @@ public class PersistableProductPopulator extends
 			if(source.getManufacturer()!=null) {
 				Manufacturer manuf = manufacturerService.getById(source.getManufacturer().getId());
 				if(manuf==null) {
-					throw new ServiceException("Invalid manufacturer id");
+					throw new ConversionException("Invalid manufacturer id");
 				}
 				if(manuf!=null) {
 					if(manuf.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
-						throw new ServiceException("Invalid manufacturer id");
+						throw new ConversionException("Invalid manufacturer id");
 					}
 					target.setManufacturer(manuf);
 					
@@ -93,7 +92,7 @@ public class PersistableProductPopulator extends
 					
 					Language lang = languageService.getByCode(description.getLanguage());
 					if(lang==null) {
-						throw new ServiceException("Language code " + description.getLanguage() + " is invalid, use ISO code (en, fr ...)");
+						throw new ConversionException("Language code " + description.getLanguage() + " is invalid, use ISO code (en, fr ...)");
 					}
 					
 					languages.add(lang);
@@ -157,20 +156,20 @@ public class PersistableProductPopulator extends
 					
 					ProductOption productOption = productOptionService.getById(attr.getOption().getId());
 					if(productOption==null) {
-						throw new ServiceException("Product option id " + attr.getOption().getId() + " does not exist");
+						throw new ConversionException("Product option id " + attr.getOption().getId() + " does not exist");
 					}
 					
 					ProductOptionValue productOptionValue = productOptionValueService.getById(attr.getOptionValue().getId());
 					if(productOptionValue==null) {
-						throw new ServiceException("Product option value id " + attr.getOptionValue().getId() + " does not exist");
+						throw new ConversionException("Product option value id " + attr.getOptionValue().getId() + " does not exist");
 					}
 					
 					if(productOption.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
-						throw new ServiceException("Invalid product option id ");
+						throw new ConversionException("Invalid product option id ");
 					}
 					
 					if(productOptionValue.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
-						throw new ServiceException("Invalid product option value id ");
+						throw new ConversionException("Invalid product option value id ");
 					}
 					
 					ProductAttribute attribute = new ProductAttribute();
@@ -190,11 +189,11 @@ public class PersistableProductPopulator extends
 					
 					Category c = categoryService.getById(categ.getId());
 					if(c==null) {
-						throw new ServiceException("Category id " + categ.getId() + " does not exist");
+						throw new ConversionException("Category id " + categ.getId() + " does not exist");
 					}
 					
 					if(c.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
-						throw new ServiceException("Invalid category id");
+						throw new ConversionException("Invalid category id");
 					}
 					
 					target.getCategories().add(c);
@@ -207,16 +206,11 @@ public class PersistableProductPopulator extends
 			return target;
 		
 		} catch (Exception e) {
-			throw new ServiceException(e);
+			throw new ConversionException(e);
 		}
 	}
 
-	@Override
-	public PersistableProduct populateToEntity(PersistableProduct target,
-			Product source, MerchantStore store) throws ServiceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	public void setCategoryService(CategoryService categoryService) {
 		this.categoryService = categoryService;
@@ -273,6 +267,13 @@ public class PersistableProductPopulator extends
 	public void setProductOptionValueService(
 			ProductOptionValueService productOptionValueService) {
 		this.productOptionValueService = productOptionValueService;
+	}
+
+
+	@Override
+	protected Product createTarget() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

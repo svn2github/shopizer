@@ -11,10 +11,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
@@ -23,10 +19,10 @@ import com.salesmanager.core.business.catalog.product.service.attribute.ProductA
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
-import com.salesmanager.core.utils.AbstractEntityPopulator;
-import com.salesmanager.web.constants.Constants;
+import com.salesmanager.core.utils.AbstractDataPopulator;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartAttribute;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartItem;
@@ -35,29 +31,58 @@ import com.salesmanager.web.entity.shoppingcart.ShoppingCartItem;
  * @author Umesh A
  */
 
-@Service( value = "shoppingCartModelPopulator" )
 public class ShoppingCartModelPopulator
-    extends AbstractEntityPopulator<ShoppingCartData,ShoppingCart>
+    extends AbstractDataPopulator<ShoppingCartData,ShoppingCart>
 {
 
     protected final Logger LOG= Logger.getLogger( getClass());
-    
-    @Autowired
+
     private ShoppingCartService shoppingCartService;
+    
+    private Customer customer;
 
-    @Autowired
-    private ProductService productService;
+    public ShoppingCartService getShoppingCartService() {
+		return shoppingCartService;
+	}
 
-    @Autowired
-    private ProductAttributeService productAttributeService;
+
+	public void setShoppingCartService(ShoppingCartService shoppingCartService) {
+		this.shoppingCartService = shoppingCartService;
+	}
+
+
+	private ProductService productService;
+
+
+    public ProductService getProductService() {
+		return productService;
+	}
+
+
+	public void setProductService(ProductService productService) {
+		this.productService = productService;
+	}
+
+
+	private ProductAttributeService productAttributeService;
     
    
-    @Override
-    public ShoppingCart populateToEntity(ShoppingCartData shoppingCart,ShoppingCart cartMdel,final MerchantStore store1)
+    public ProductAttributeService getProductAttributeService() {
+		return productAttributeService;
+	}
+
+
+	public void setProductAttributeService(
+			ProductAttributeService productAttributeService) {
+		this.productAttributeService = productAttributeService;
+	}
+
+
+	@Override
+    public ShoppingCart populate(ShoppingCartData shoppingCart,ShoppingCart cartMdel,final MerchantStore store, Language language)
     {
 
-        MerchantStore store = (MerchantStore) getKeyValue( Constants.MERCHANT_STORE );
-        Customer customer = (Customer)getKeyValue(Constants.CUSTOMER);
+
         // if id >0 get the original from the database, override products
        try{
         if ( shoppingCart.getId() > 0  || StringUtils.isNotBlank( shoppingCart.getCode()))
@@ -217,11 +242,7 @@ public class ShoppingCartModelPopulator
 
     }
 
-    private Object getKeyValue( final String key )
-    {
-        ServletRequestAttributes reqAttr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        return reqAttr.getRequest().getAttribute( key );
-    }
+
 
 
     @Override
@@ -230,6 +251,16 @@ public class ShoppingCartModelPopulator
       
         return new ShoppingCart();
     }
+
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
 
 
    

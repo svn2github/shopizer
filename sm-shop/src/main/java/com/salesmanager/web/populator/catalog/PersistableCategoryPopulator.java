@@ -8,7 +8,7 @@ import org.apache.commons.lang.Validate;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
-import com.salesmanager.core.business.generic.exception.ServiceException;
+import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
@@ -17,7 +17,7 @@ import com.salesmanager.web.entity.catalog.rest.category.CategoryDescription;
 import com.salesmanager.web.entity.catalog.rest.category.PersistableCategory;
 
 public class PersistableCategoryPopulator extends
-		AbstractDataPopulator<Category, PersistableCategory> {
+		AbstractDataPopulator<PersistableCategory, Category> {
 	
 	
 	private CategoryService categoryService;
@@ -40,18 +40,15 @@ public class PersistableCategoryPopulator extends
 		return languageService;
 	}
 
-	@Override
-	public PersistableCategory populateFromEntity(Category source,
-			PersistableCategory target, MerchantStore store, Language language)
-			throws ServiceException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
-	public Category populateToEntity(Category target,
-			PersistableCategory source, MerchantStore store)
-			throws ServiceException {
+	public Category populate(PersistableCategory source, Category target,
+			MerchantStore store, Language language)
+			throws ConversionException {
+		
+		try {
+
+		
 		Validate.notNull(categoryService, "Requires to set CategoryService");
 		Validate.notNull(languageService, "Requires to set LanguageService");
 		
@@ -72,7 +69,7 @@ public class PersistableCategoryPopulator extends
 			
 			Category parent = categoryService.getById(source.getParent().getId());
 			if(parent.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
-				throw new ServiceException("Store id does not belong to specified parent id");
+				throw new ConversionException("Store id does not belong to specified parent id");
 			}
 			
 			target.setParent(parent);
@@ -102,7 +99,7 @@ public class PersistableCategoryPopulator extends
 				desc.setSeUrl(description.getFriendlyUrl());
 				Language lang = languageService.getByCode(description.getLanguage());
 				if(lang==null) {
-					throw new ServiceException("Language is null for code " + description.getLanguage() + " use language ISO code [en, fr ...]");
+					throw new ConversionException("Language is null for code " + description.getLanguage() + " use language ISO code [en, fr ...]");
 				}
 				desc.setLanguage(lang);
 				descriptions.add(desc);
@@ -112,6 +109,19 @@ public class PersistableCategoryPopulator extends
 	
 		
 		return target;
+		
+		
+		} catch(Exception e) {
+			throw new ConversionException(e);
+		}
+
+	}
+
+
+	@Override
+	protected Category createTarget() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -326,7 +326,7 @@ public class ShoppingCategoryController {
 		if(!CollectionUtils.isEmpty(manufacturers)) {
 			manufacturerList = new ArrayList<Manufacturer>();
 			for(com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer manufacturer : manufacturers) {
-				Manufacturer manuf = new ManufacturerPopulator().populateFromEntity(manufacturer, new Manufacturer(), store, language);
+				Manufacturer manuf = new ManufacturerPopulator().populate(manufacturer, new Manufacturer(), store, language);
 				manufacturerList.add(manuf);
 				
 			}

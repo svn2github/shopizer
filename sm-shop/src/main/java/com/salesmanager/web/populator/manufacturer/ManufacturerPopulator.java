@@ -4,6 +4,7 @@ package com.salesmanager.web.populator.manufacturer;
 import java.util.Set;
 
 import com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription;
+import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.AbstractDataPopulator;
@@ -23,9 +24,9 @@ public class ManufacturerPopulator extends AbstractDataPopulator<com.salesmanage
 
 	
 	@Override
-	public Manufacturer populateFromEntity(
+	public Manufacturer populate(
 			com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer source,
-			Manufacturer target, MerchantStore store, Language language) {
+			Manufacturer target, MerchantStore store, Language language) throws ConversionException {
 		target.setId(source.getId());
 		if(source.getDescriptions()!=null && source.getDescriptions().size()>0) {
 			
