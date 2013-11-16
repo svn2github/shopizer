@@ -20,5 +20,12 @@ public class ConversionException extends Exception
   {
       super(msg);
   }
+  
+  public ConversionException(Throwable t)
+  {
+      super(t);
+  }
+  
+  
 
 }

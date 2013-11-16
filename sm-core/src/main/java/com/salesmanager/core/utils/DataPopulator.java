@@ -15,9 +15,7 @@ public interface DataPopulator<Source,Target>
 {
 
 
-    public Target populateFromEntity(Source source,Target target, MerchantStore store, Language language) throws ConversionException;
-    public Target populateFromEntity(Source source) throws ConversionException;
-   
-  
+    public Target populate(Source source,Target target, MerchantStore store, Language language) throws ConversionException;
+
    
 }
