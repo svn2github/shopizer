@@ -51,7 +51,7 @@ public class AdminFilter extends HandlerInterceptorAdapter {
             HttpServletResponse response,
             Object handler) throws Exception {
 		
-
+		request.setCharacterEncoding("UTF-8");
 		@SuppressWarnings("unchecked")
 		Map<String,Menu> menus = (Map<String,Menu>) cache.getFromCache("MENUMAP");
 		
@@ -175,7 +175,7 @@ public class AdminFilter extends HandlerInterceptorAdapter {
 		
 		
 		request.setAttribute("MENUMAP", menus);
-		
+		response.setCharacterEncoding("UTF-8");
 		
 		return true;
 	}
