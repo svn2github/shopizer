@@ -12,12 +12,12 @@ import com.salesmanager.core.business.catalog.product.model.description.ProductD
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
+import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.constants.Constants;
 import com.salesmanager.core.utils.AbstractDataPopulator;
-import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.web.entity.catalog.ReadableImage;
 import com.salesmanager.web.entity.catalog.rest.manufacturer.ManufacturerEntity;
 import com.salesmanager.web.entity.catalog.rest.product.ReadableProduct;
@@ -26,13 +26,27 @@ import com.salesmanager.web.utils.ImageFilePathUtils;
 public class ReadableProductPopulator extends
 		AbstractDataPopulator<Product, ReadableProduct> {
 	
-	private ProductPriceUtils productPriceUtils;
+	private PricingService pricingService;
+
+	public PricingService getPricingService() {
+		return pricingService;
+	}
+
+
+
+
+	public void setPricingService(PricingService pricingService) {
+		this.pricingService = pricingService;
+	}
+
+
+
 
 	@Override
 	public ReadableProduct populate(Product source,
 			ReadableProduct target, MerchantStore store, Language language)
 			throws ConversionException {
-		Validate.notNull(productPriceUtils, "Requires to set CategoryService");
+		Validate.notNull(pricingService, "Requires to set PricingService");
 		
 		try {
 			
@@ -85,12 +99,12 @@ public class ReadableProductPopulator extends
 			target.setSku(source.getSku());
 			//target.setLanguage(language.getCode());
 	
-			FinalPrice price = productPriceUtils.getFinalPrice(source);
-			target.setFinalPrice(productPriceUtils.getStoreFormatedAmountWithCurrency(store,price.getFinalPrice()));
+			FinalPrice price = pricingService.calculateProductPrice(source);
+			target.setFinalPrice(pricingService.getDisplayAmount(price.getFinalPrice(), store));
 	
 			if(price.isDiscounted()) {
 				target.setDiscounted(true);
-				target.setOriginalPrice(productPriceUtils.getStoreFormatedAmountWithCurrency(store,price.getOriginalPrice()));
+				target.setOriginalPrice(pricingService.getDisplayAmount(price.getOriginalPrice(), store));
 			}
 			
 			//availability
@@ -109,15 +123,6 @@ public class ReadableProductPopulator extends
 		}
 	}
 
-
-
-	public void setProductPriceUtils(ProductPriceUtils productPriceUtils) {
-		this.productPriceUtils = productPriceUtils;
-	}
-
-	public ProductPriceUtils getProductPriceUtils() {
-		return productPriceUtils;
-	}
 
 
 

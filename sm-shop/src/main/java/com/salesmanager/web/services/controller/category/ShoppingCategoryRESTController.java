@@ -1,4 +1,4 @@
-package com.salesmanager.web.shop.controller.category.rest;
+package com.salesmanager.web.services.controller.category;
 
 
 import java.util.Map;
@@ -29,11 +29,10 @@ import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.entity.catalog.rest.category.CategoryEntity;
 import com.salesmanager.web.entity.catalog.rest.category.PersistableCategory;
+import com.salesmanager.web.entity.catalog.rest.category.ReadableCategory;
 import com.salesmanager.web.populator.catalog.PersistableCategoryPopulator;
-import com.salesmanager.web.utils.CatalogUtils;
-import com.salesmanager.web.utils.LocaleUtils;
+import com.salesmanager.web.populator.catalog.ReadableCategoryPopulator;
 
 /**
  * Rest services for category management
@@ -60,6 +59,67 @@ public class ShoppingCategoryRESTController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ShoppingCategoryRESTController.class);
 	
 
+	
+	@RequestMapping( value="/shop/services/public/category/{store}/{language}/{id}", method=RequestMethod.GET)
+	@ResponseBody
+	public ReadableCategory getCategory(@PathVariable final String store, @PathVariable final String language, @PathVariable Long id, Model model, HttpServletRequest request, HttpServletResponse response) {
+		
+		
+		try {
+			
+			Map<String,Language> langs = languageService.getLanguagesMap();
+			Language lang = langs.get(language);
+			if(lang==null) {
+				lang = languageService.getByCode(Constants.DEFAULT_LANGUAGE);
+			}
+
+
+			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+			if(merchantStore!=null) {
+				if(!merchantStore.getCode().equals(store)) {
+					merchantStore = null;
+				}
+			}
+			
+			if(merchantStore== null) {
+				merchantStore = merchantStoreService.getByCode(store);
+			}
+			
+			if(merchantStore==null) {
+				LOGGER.error("Merchant store is null for code " + store);
+				response.sendError(503, "Merchant store is null for code " + store);
+				return null;
+			}
+			
+			Category dbCategory = categoryService.getByLanguage(id, lang);
+			
+			if(dbCategory==null) {
+				response.sendError(503,  "Invalid category id");
+				return null;
+			}
+			
+			if(dbCategory.getMerchantStore().getId().intValue()!=merchantStore.getId().intValue()){
+				response.sendError(503, "Invalid category id");
+				return null;
+			}
+			
+
+			ReadableCategoryPopulator populator = new ReadableCategoryPopulator();
+
+			//TODO count products by category
+			ReadableCategory category = populator.populate(dbCategory, new ReadableCategory(), merchantStore, merchantStore.getDefaultLanguage());
+
+			return category;
+		
+		} catch (Exception e) {
+			LOGGER.error("Error while saving category",e);
+			try {
+				response.sendError(503, "Error while saving category " + e.getMessage());
+			} catch (Exception ignore) {
+			}
+			return null;
+		}
+	}
 	
 /*	*//**
 	 * Updates a category for a given MerchantStore
@@ -112,10 +172,10 @@ public class ShoppingCategoryRESTController {
 	/**
 	 * Create new category for a given MerchantStore
 	 */
-	@RequestMapping( value="/shop/services/rest/category/{store}", method=RequestMethod.POST)
+	@RequestMapping( value="/shop/services/private/category/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
-	public CategoryEntity createCategory(@PathVariable final String store, @Valid @RequestBody PersistableCategory category, Model model, HttpServletRequest request, HttpServletResponse response) {
+	public PersistableCategory createCategory(@PathVariable final String store, @Valid @RequestBody PersistableCategory category, Model model, HttpServletRequest request, HttpServletResponse response) {
 		
 		
 		try {
@@ -162,10 +222,11 @@ public class ShoppingCategoryRESTController {
 	}
 	
 	
+	
 	/**
 	 * Deletes a category for a given MerchantStore
 	 */
-	@RequestMapping( value="/shop/services/rest/category/{store}/{id}", method=RequestMethod.DELETE)
+	@RequestMapping( value="/shop/services/private/category/{store}/{id}", method=RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteCategory(@PathVariable final String store, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Category category = categoryService.getById(id);
@@ -223,7 +284,7 @@ public class ShoppingCategoryRESTController {
 	/**
 	 * Deletes a product for a given MerchantStore
 	 */
-	@RequestMapping( value="/shop/services/rest/products/{store}/{language}/{category}/{id}", method=RequestMethod.DELETE)
+	@RequestMapping( value="/shop/services/private/products/{store}/{language}/{category}/{id}", method=RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteProduct(@PathVariable final String store, @PathVariable final String language, @PathVariable final String category, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Product product = productService.getById(id);

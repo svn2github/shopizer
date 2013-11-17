@@ -209,6 +209,8 @@ public class ShoppingCategoryController {
 		subCategoriesCacheKey
 		.append(store.getId())
 		.append("_")
+		.append(category.getId())
+		.append("_")
 		.append(Constants.SUBCATEGORIES_CACHE_KEY)
 		.append("-")
 		.append(language.getCode());

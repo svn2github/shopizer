@@ -10,6 +10,7 @@ public class ReadableCategory extends CategoryEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private CategoryDescription description;
 	private CategoryEntity parent;
+	private int productCount;
 	public void setDescription(CategoryDescription description) {
 		this.description = description;
 	}
@@ -21,6 +22,12 @@ public class ReadableCategory extends CategoryEntity implements Serializable {
 	}
 	public CategoryEntity getParent() {
 		return parent;
+	}
+	public int getProductCount() {
+		return productCount;
+	}
+	public void setProductCount(int productCount) {
+		this.productCount = productCount;
 	}
 
 }

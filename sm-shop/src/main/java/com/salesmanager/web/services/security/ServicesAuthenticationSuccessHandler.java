@@ -1,4 +1,4 @@
-package com.salesmanager.web.shop.security;
+package com.salesmanager.web.services.security;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.util.StringUtils;
 
-public class RESTAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class ServicesAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 	
 	private RequestCache requestCache = new HttpSessionRequestCache();
 

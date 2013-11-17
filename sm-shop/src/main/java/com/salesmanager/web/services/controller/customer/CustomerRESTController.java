@@ -1,4 +1,4 @@
-package com.salesmanager.web.shop.controller.customer.rest;
+package com.salesmanager.web.services.controller.customer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.shop.controller.category.rest.ShoppingCategoryRESTController;
+import com.salesmanager.web.services.controller.category.ShoppingCategoryRESTController;
 import com.salesmanager.web.utils.CustomerUtils;
 
 @Controller

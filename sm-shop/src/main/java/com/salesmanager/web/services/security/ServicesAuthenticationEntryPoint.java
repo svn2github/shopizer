@@ -1,4 +1,4 @@
-package com.salesmanager.web.shop.security;
+package com.salesmanager.web.services.security;
 
 import java.io.IOException;
 
@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
-public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class ServicesAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
 	@Override
 	public void commence( HttpServletRequest request, HttpServletResponse response, 

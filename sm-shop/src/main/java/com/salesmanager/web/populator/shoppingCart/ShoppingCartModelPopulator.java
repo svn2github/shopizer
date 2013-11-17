@@ -85,7 +85,7 @@ public class ShoppingCartModelPopulator
 
         // if id >0 get the original from the database, override products
        try{
-        if ( shoppingCart.getId() > 0  || StringUtils.isNotBlank( shoppingCart.getCode()))
+        if ( shoppingCart.getId() > 0  && StringUtils.isNotBlank( shoppingCart.getCode()))
         {
             cartMdel = shoppingCartService.getByCode( shoppingCart.getCode(), store );
             if(cartMdel==null){
