@@ -84,6 +84,7 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@Column (name ="ORDER_TOTAL")
 	private BigDecimal total;
 	
+	//TODO not required
 	@Column (name ="ORDER_TAX")
 	private BigDecimal orderTax;
 	
