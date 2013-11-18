@@ -78,6 +78,7 @@
   				<beans:value>bundles/payment</beans:value>    
   			</beans:list>
   		</beans:property>
+  		<beans:property name="defaultEncoding" value="UTF-8"/>
   	</beans:bean>
   	
   	<beans:bean id="appConfiguration" class="com.salesmanager.web.utils.AppConfiguration">
