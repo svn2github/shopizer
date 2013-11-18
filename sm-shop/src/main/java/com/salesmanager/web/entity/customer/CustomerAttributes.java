@@ -2,7 +2,7 @@ package com.salesmanager.web.entity.customer;
 
 import java.util.List;
 
-import com.salesmanager.web.entity.customer.option.CustomerOption;
+import com.salesmanager.web.entity.customer.attribute.CustomerOption;
 
 public class CustomerAttributes {
 	
