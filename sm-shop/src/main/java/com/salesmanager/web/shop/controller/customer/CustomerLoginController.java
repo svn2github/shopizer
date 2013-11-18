@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.utils.ajax.AjaxResponse;
-import com.salesmanager.web.entity.customer.CustomerEntity;
+import com.salesmanager.web.entity.customer.SecuredCustomer;
 
 /**
  * Custom Spring Security authentication
@@ -30,7 +30,7 @@ public class CustomerLoginController {
     private AuthenticationManager customerAuthenticationManager;
 	
 	@RequestMapping(value="/customer/logon.html", method=RequestMethod.POST)
-	public @ResponseBody String displayLogin(@RequestBody CustomerEntity customer, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public @ResponseBody String displayLogin(@RequestBody SecuredCustomer customer, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		AjaxResponse resp = new AjaxResponse();
 		

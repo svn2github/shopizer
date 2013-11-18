@@ -1,4 +1,4 @@
-package com.salesmanager.web.entity.customer;
+package com.salesmanager.web.entity.customer.attribute;
 
 import java.io.Serializable;
 

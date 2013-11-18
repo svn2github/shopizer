@@ -8,11 +8,11 @@ import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.AbstractDataPopulator;
-import com.salesmanager.web.entity.customer.CustomerOption;
-import com.salesmanager.web.entity.customer.CustomerOptionValue;
+import com.salesmanager.web.entity.customer.attribute.CustomerOption;
+import com.salesmanager.web.entity.customer.attribute.CustomerOptionValue;
 
 public class CustomerOptionPopulator extends
-		AbstractDataPopulator<com.salesmanager.core.business.customer.model.attribute.CustomerOption, com.salesmanager.web.entity.customer.CustomerOption> {
+		AbstractDataPopulator<com.salesmanager.core.business.customer.model.attribute.CustomerOption, com.salesmanager.web.entity.customer.attribute.CustomerOption> {
 
 	
 	private CustomerOptionSet optionSet;

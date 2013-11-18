@@ -2,46 +2,25 @@ package com.salesmanager.web.entity.customer;
 
 import java.io.Serializable;
 
-import com.salesmanager.core.business.common.model.Billing;
-
 public class CustomerEntity extends Customer implements Serializable {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String userName;
-	private String password;
-	
-	
-	private String storeCode;
-	
+
+	private String firstName;
+	private String lastName;
 	private String emailAddress;
 	private String phone;
-	private Billing billing;
+	private Address billing;
+	private Address delivery;
+	private String gender;
+	
 	
 	private String language;
-	
-	
-	
-	public String getUserName() {
-		return userName;
-	}
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getStoreCode() {
-		return storeCode;
-	}
-	public void setStoreCode(String storeCode) {
-		this.storeCode = storeCode;
-	}
+
+
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
 	}
@@ -54,18 +33,42 @@ public class CustomerEntity extends Customer implements Serializable {
 	public String getPhone() {
 		return phone;
 	}
-	public void setBilling(Billing billing) {
-		this.billing = billing;
-	}
-	public Billing getBilling() {
-		return billing;
-	}
+
 	public void setLanguage(String language) {
 		this.language = language;
 	}
 	public String getLanguage() {
 		return language;
 	}
-
+	public String getFirstName() {
+		return firstName;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	public Address getBilling() {
+		return billing;
+	}
+	public void setBilling(Address billing) {
+		this.billing = billing;
+	}
+	public Address getDelivery() {
+		return delivery;
+	}
+	public void setDelivery(Address delivery) {
+		this.delivery = delivery;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	public String getGender() {
+		return gender;
+	}
 
 }

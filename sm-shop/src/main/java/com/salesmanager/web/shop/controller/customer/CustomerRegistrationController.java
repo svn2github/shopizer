@@ -28,6 +28,7 @@ public class CustomerRegistrationController {
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		
+		//TODO object will change
 		Customer customer = new Customer();
 		
 		model.addAttribute("customer", customer);
