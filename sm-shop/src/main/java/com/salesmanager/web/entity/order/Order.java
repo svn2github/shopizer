@@ -2,7 +2,9 @@ package com.salesmanager.web.entity.order;
 
 import java.io.Serializable;
 
-public class OrderEntity extends Order implements Serializable {
+import com.salesmanager.web.entity.Entity;
+
+public class Order extends Entity implements Serializable {
 
 	/**
 	 * 

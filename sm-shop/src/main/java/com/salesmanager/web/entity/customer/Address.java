@@ -21,7 +21,17 @@ public class Address {
 
 	private String stateProvince;
 	
-	private String country;
+	private String zone;//code
+	
+	private String country;//code
+
+	public void setStateProvince(String stateProvince) {
+		this.stateProvince = stateProvince;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
 
 	public String getName() {
 		return name;
@@ -70,6 +80,14 @@ public class Address {
 	public String getCountry() {
 		return country;
 	}
-	
+
+	public void setZone(String zone) {
+		this.zone = zone;
+	}
+
+	public String getZone() {
+		return zone;
+	}
+
 
 }

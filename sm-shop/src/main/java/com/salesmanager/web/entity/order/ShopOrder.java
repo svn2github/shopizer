@@ -1,6 +1,9 @@
 package com.salesmanager.web.entity.order;
 
 import java.io.Serializable;
+import java.util.List;
+
+import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 
 /**
  * Orders persisted on the website
@@ -13,5 +16,12 @@ public class ShopOrder extends PersistableOrder implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private List<ShoppingCartItem> items;//overrides parent API list of shoppingcartitem
+	public void setItems(List<ShoppingCartItem> items) {
+		this.items = items;
+	}
+	public List<ShoppingCartItem> getItems() {
+		return items;
+	}
 
 }

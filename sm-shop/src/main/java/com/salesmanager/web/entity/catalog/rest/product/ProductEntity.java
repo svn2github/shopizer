@@ -2,10 +2,6 @@ package com.salesmanager.web.entity.catalog.rest.product;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
-
-import com.salesmanager.web.entity.catalog.rest.category.Category;
-import com.salesmanager.web.entity.catalog.rest.product.attribute.ProductAttributeEntity;
 
 
 /**

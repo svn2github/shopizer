@@ -48,20 +48,20 @@ public class CustomerPopulator extends
 				//billing.setCountry(country);
 				billing.setName(sourceBilling.getName());
 				billing.setPostalCode(sourceBilling.getPostalCode());
-				billing.setState(source.getBillingStateProvince());
+				billing.setState(sourceBilling.getStateProvince());
 				Country billingCountry = null;
-				if(!StringUtils.isBlank(source.getBillingCountryCode())) {
-					billingCountry = countries.get(source.getBillingCountryCode());
+				if(!StringUtils.isBlank(sourceBilling.getCountry())) {
+					billingCountry = countries.get(sourceBilling.getCountry());
 					if(billingCountry==null) {
-						throw new ConversionException("Unsuported country code " + source.getBillingCountryCode());
+						throw new ConversionException("Unsuported country code " + sourceBilling.getCountry());
 					}
 					billing.setCountry(billingCountry);
 				}
 				
-				if(billingCountry!=null && !StringUtils.isBlank(source.getBillingZoneCode())) {
-					Zone zone = zoneService.getByCode(source.getBillingZoneCode());
+				if(billingCountry!=null && !StringUtils.isBlank(sourceBilling.getZone())) {
+					Zone zone = zoneService.getByCode(sourceBilling.getZone());
 					if(zone==null) {
-						throw new ConversionException("Unsuported zone code " + source.getBillingZoneCode());
+						throw new ConversionException("Unsuported zone code " + sourceBilling.getZone());
 					}
 					billing.setZone(zone);
 				}
