@@ -387,7 +387,7 @@ function getBillingZones(countryCode){
 	  			</div>
 
 
-				<label class="checkbox" checked> <input type="checkbox" id="useAddress"> Ship to this address</label>
+				<label class="checkbox" checked> <input type="checkbox" id="useAddress"> <s:message code="label.customer.shipping.shipaddress" text="Ship to this address" /></label>
 			</div>
 
 
