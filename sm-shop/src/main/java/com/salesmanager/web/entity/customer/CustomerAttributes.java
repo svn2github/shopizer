@@ -2,6 +2,8 @@ package com.salesmanager.web.entity.customer;
 
 import java.util.List;
 
+import com.salesmanager.web.entity.customer.option.CustomerOption;
+
 public class CustomerAttributes {
 	
 	private List<CustomerOption> customerOptions;
