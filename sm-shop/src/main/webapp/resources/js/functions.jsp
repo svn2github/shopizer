@@ -91,7 +91,6 @@ function searchProducts(url,divProductsContainer,q,filter) {
 				success: function(productList) {
 
 					buildProductsList(productList,divProductsContainer);
-					//TODO manage facets
 					//TODO manage total entries found
 					callBackSearchProducts(productList);
 
@@ -109,7 +108,6 @@ function searchProducts(url,divProductsContainer,q,filter) {
 }
 
 /**
-*
 * Builds the product container div from the product list
 **/
 function buildProductsList(productList, divProductsContainer) {
@@ -131,6 +129,8 @@ function buildProductsList(productList, divProductsContainer) {
 			$(divProductsContainer).append(productHtml);
 
 		}
+		
+		initBindings();
 
 }
 
