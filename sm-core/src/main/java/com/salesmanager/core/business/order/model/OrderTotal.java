@@ -39,7 +39,7 @@ public class OrderTotal extends SalesManagerEntity<Long, OrderTotal> {
 	private Long id;
 	
 	@Column (name ="CODE", nullable=false)
-	private String orderTotalCode;
+	private String orderTotalCode;//SHIPPING, TAX
 	
 	@Column (name ="TITLE", nullable=false)
 	private String title;
@@ -51,7 +51,7 @@ public class OrderTotal extends SalesManagerEntity<Long, OrderTotal> {
 	@Column (name ="VALUE", precision=15, scale=4, nullable=false )
 	private BigDecimal value;
 	
-	@Column (name ="MODULE", length=60 , nullable=false )
+	@Column (name ="MODULE", length=60 , nullable=true )
 	private String module;
 	
 	@Column (name ="SORT_ORDER", nullable=false)

@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,69 +174,39 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		
 	}
 	
-/*	public ShoppingCartItem createShoppingCartItem(Product product, List<ProductAttribute> attributes) throws ServiceException {
+	@Override
+	public ShoppingCartItem populateShoppingCartItem(Product product) throws ServiceException {
 		Validate.notNull(product, "Product should not be null");
 		Validate.notNull(product.getMerchantStore(), "Product.merchantStore should not be null");
-		return null;
-	}*/
-	
-/*	private ShoppingCartItem createShoppingCartItem(ShoppingCart shoppingCart, Product product, List<ProductAttribute> attributes, Customer customer) throws ServiceException {
+
 		
-		//TODO validate if product already exist
-		
-		ShoppingCartItem item = new ShoppingCartItem(shoppingCart, product);
-		
-		if(attributes!=null && attributes.size()>0) {
-			
-			
-			
-			
-			
-		}
-		
+		ShoppingCartItem item = new ShoppingCartItem(product);
+
 		Set<ProductAttribute> productAttributes = product.getAttributes();
-		List<ProductAttribute> attributesList = new ArrayList<ProductAttribute>();
-		if(productAttributes!=null && productAttributes.size()>0 && attributes!=null && attributes.size()>0) {
-			for(ShoppingCartAttributeItem attribute : attributes) {
-				long attributeId = attribute.getProductAttributeId().longValue();
-				for(ProductAttribute productAttribute : productAttributes) {
-					
-					if(productAttribute.getId().longValue()==attributeId) {
-						attribute.setProductAttribute(productAttribute);
-						attributesList.add(productAttribute);
-						break;
-					}
-					
-				}
-				
-			}
-		} else {
-			
-			if(productAttributes!=null && productAttributes.size()>0) {
-				LOGGER.debug("Removing attributes for shopping cart item " + item.getId());
-				item.setAttributes(null);//TODO check should update shopping cart
+		Set<ShoppingCartAttributeItem> attributesList = new HashSet<ShoppingCartAttributeItem>();
+		if(!CollectionUtils.isEmpty(productAttributes)) {
+
+			for(ProductAttribute productAttribute : productAttributes) {
+					ShoppingCartAttributeItem attributeItem = new ShoppingCartAttributeItem();
+					attributeItem.setShoppingCartItem(item);
+					attributeItem.setProductAttribute(productAttribute);
+					attributeItem.setProductAttributeId(productAttribute.getId());
+					attributesList.add(attributeItem);
+
 			}
 			
+			item.setAttributes(attributesList);
 		}
 		
 		//set item price
-		FinalPrice price = null;
-		
-		if(attributes!=null && attributes.size()>0) {
-			price = pricingService.calculateProductPrice(product, attributes);
-		} else {
-			price = pricingService.calculateProductPrice(product);
-		}
-			
-			
-			
+		FinalPrice price = pricingService.calculateProductPrice(product);
 		item.setItemPrice(price.getFinalPrice());
-		
 		return item;
 		
 		
-		
-	}*/
+	}
+	
+
 	
 	@Transactional
 	private void populateItem(ShoppingCartItem item) throws Exception {
@@ -306,6 +278,7 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		return shippingProducts;
 		
 	}
+
 	
 	@Override
 	public boolean isFreeShoppingCart(ShoppingCart cart) throws ServiceException {

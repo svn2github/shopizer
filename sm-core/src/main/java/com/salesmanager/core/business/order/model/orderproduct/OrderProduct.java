@@ -72,7 +72,7 @@ public class OrderProduct extends SalesManagerEntity<Long, OrderProduct> {
 	private Set<OrderProductPrice> prices = new HashSet<OrderProductPrice>();
 
 	@OneToMany(mappedBy = "orderProduct", cascade = CascadeType.ALL)
-	private Set<OrderProductDownload> downloads = new HashSet<OrderProductDownload>();	// all product prices
+	private Set<OrderProductDownload> downloads = new HashSet<OrderProductDownload>();
 	
 	public OrderProduct() {
 	}

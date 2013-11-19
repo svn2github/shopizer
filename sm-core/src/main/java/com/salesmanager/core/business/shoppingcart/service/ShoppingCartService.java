@@ -2,12 +2,14 @@ package com.salesmanager.core.business.shoppingcart.service;
 
 import java.util.List;
 
+import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.shipping.model.ShippingProduct;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
+import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 
 
 public interface ShoppingCartService extends SalesManagerEntityService<Long, ShoppingCart> {
@@ -31,6 +33,8 @@ public interface ShoppingCartService extends SalesManagerEntityService<Long, Sho
 	 */
 	List<ShippingProduct> createShippingProduct(ShoppingCart cart)
 			throws ServiceException;
+	
+
 
 	/**
 	 * Looks if the items in the ShoppingCart are free of charges
@@ -39,6 +43,17 @@ public interface ShoppingCartService extends SalesManagerEntityService<Long, Sho
 	 * @throws ServiceException
 	 */
 	boolean isFreeShoppingCart(ShoppingCart cart) throws ServiceException;
+
+	/**
+	 * Populates a ShoppingCartItem from a Product and attributes if any
+	 * @param product
+	 * @return
+	 * @throws ServiceException
+	 */
+	ShoppingCartItem populateShoppingCartItem(Product product)
+			throws ServiceException;
+
+
 	
 
 
