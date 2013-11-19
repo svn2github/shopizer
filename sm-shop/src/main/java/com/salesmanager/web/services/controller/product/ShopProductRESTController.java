@@ -119,6 +119,7 @@ public class ShopProductRESTController {
 			populator.setProductOptionValueService(productOptionValueService);
 			populator.setManufacturerService(manufacturerService);
 			populator.setTaxClassService(taxClassService);
+			populator.setLanguageService(languageService);
 			
 			populator.populate(product, new Product(), merchantStore, merchantStore.getDefaultLanguage());
 			
