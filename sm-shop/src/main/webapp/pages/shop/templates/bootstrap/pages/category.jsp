@@ -15,7 +15,9 @@ response.setDateHeader ("Expires", -1);
 <%@page pageEncoding="UTF-8"%>
  
 
- <script src="<c:url value="/resources/js/jquery.isotope.min.js" />"></script>
+ <script src="<c:url value="/resources/js/jquery.quicksand.js" />"></script>
+ <script src="<c:url value="/resources/js/jquery-sort-filter-plugin.js" />"></script>
+
 
  
  <script>
@@ -30,6 +32,41 @@ response.setDateHeader ("Expires", -1);
  
  
  $(function(){
+	 
+
+	 // Sorting options
+	 $('.sort-options').on('change', function() {
+	   var $items = $('#productsContainer');
+
+			  // clone applications to get a second collection
+	   var $data = $items.clone();
+	   var $filteredData = $data.find('li');
+	   var sort = this.value,
+	       opts = {};
+
+	   // We're given the element wrapped in jQuery
+	   if ( sort === 'price' ) {
+		  var $sortedData = $filteredData.sorted({
+		          by: function(v) {
+		            return $(v).find('item-price').text().toLowerCase();
+		          }
+		   });
+	   } else if ( sort === 'name' ) {
+			  var $sortedData = $filteredData.sorted({
+		          by: function(v) {
+		            return $(v).find('item-name').text().toLowerCase();
+		          }
+		   });
+	   }
+	   
+
+
+	   // Filter elements
+	    $items.quicksand($sortedData, {
+	        duration: 800
+	        //easing: 'easeInOutQuad'//requires easing x.easing //http://razorjack.net/quicksand/docs-and-demos.html
+	      });
+	 });
 	 
 	 //var $container = $('#productsContainer');
 
@@ -48,7 +85,7 @@ response.setDateHeader ("Expires", -1);
  });
  
  	function loadCategoryProducts() {
- 		var url = '<%=request.getContextPath()%>/shop/services/products/page/' + START_COUNT_PRODUCTS + '/' + MAX_PRODUCTS + '/<c:out value="${requestScope.MERCHANT_STORE.code}"/>/<c:out value="${requestScope.LANGUAGE.code}"/>/<c:out value="${category.friendlyUrl}"/>.html';
+ 		var url = '<%=request.getContextPath()%>/shop/services/products/page/' + START_COUNT_PRODUCTS + '/' + MAX_PRODUCTS + '/<c:out value="${requestScope.MERCHANT_STORE.code}"/>/<c:out value="${requestScope.LANGUAGE.code}"/>/<c:out value="${category.description.friendlyUrl}"/>.html';
 	 	
  		if(filter!=null) {
  			url = url + '/filter=' + filter + '/filter-value=' + filterValue +'';
@@ -75,6 +112,9 @@ response.setDateHeader ("Expires", -1);
 					$("#button_nav").hide();
 			}
 			$('#productsContainer').hideLoading();
+			
+
+
 	}
  
  
@@ -94,14 +134,22 @@ response.setDateHeader ("Expires", -1);
       	<!-- left column -->
         <div class="span3">
           <div class="sidebar-nav">
+          
+          	<select class="sort-options">
+  				<option value="">Default</option>
+  				<option value="name">Name</option>
+  				<option value="price">Price</option>
+			</select>
+            <br/><br/>
+          
             <ul class="nav nav-list">
               <c:if test="${parent!=null}">
-              	<li class="nav-header"><c:out value="${parent.name}" /></li>
+              	<li class="nav-header"><c:out value="${parent.description.name}" /></li>
               </c:if>
               <c:forEach items="${subCategories}" var="subCategory">
               	<li>
-              		<a href="<c:url value="/shop/category/${subCategory.friendlyUrl}.html/ref=${subCategory.id}"/>"><c:out value="${subCategory.name}" />
-              			<c:if test="${subCategory.totalCount>0}">&nbsp;<span class="countItems">(<c:out value="${subCategory.totalCount}" />)</span></c:if></a></li>
+              		<a href="<c:url value="/shop/category/${subCategory.description.friendlyUrl}.html/ref=${subCategory.id}"/>"><c:out value="${subCategory.description.name}" />
+              			<c:if test="${subCategory.productCount>0}">&nbsp;<span class="countItems">(<c:out value="${subCategory.productCount}" />)</span></c:if></a></li>
               </c:forEach>
             </ul>
           </div>
