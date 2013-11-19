@@ -31,7 +31,6 @@ import com.salesmanager.core.business.reference.language.service.LanguageService
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.services.controller.category.ShoppingCategoryRESTController;
-import com.salesmanager.web.utils.CustomerUtils;
 
 @Controller
 @RequestMapping("/shop/services/rest/customers")
@@ -46,9 +45,7 @@ public class CustomerRESTController {
 	@Autowired
 	private LanguageService languageService;
 	
-	@Autowired
-	private CustomerUtils customerUtils;
-	
+
 	@Autowired
 	private CountryService countryService;
 	
@@ -84,14 +81,15 @@ public class CustomerRESTController {
 		Customer customer = customerService.getById(id);
 		com.salesmanager.web.entity.customer.Customer customerProxy;
 		if(customer != null){
-			customerProxy = customerUtils.buildProxyCustomer(customer, merchantStore);
+			//TODO use customer populator
+			//customerProxy = customerUtils.buildProxyCustomer(customer, merchantStore);
 		}else{
 			response.sendError(404, "No Customer found with id : " + id);
 			return null;
 		}
 		
 		
-		return customerProxy;
+		return null;
 	}
 	
 	
@@ -121,8 +119,9 @@ public class CustomerRESTController {
 		List<Customer> customers = customerService.listByStore(merchantStore);
 		List<com.salesmanager.web.entity.customer.Customer> returnCustomers = new ArrayList<com.salesmanager.web.entity.customer.Customer>();
 		for(Customer customer : customers) {
-			com.salesmanager.web.entity.customer.Customer customerProxy = customerUtils.buildProxyCustomer(customer, merchantStore);
-			returnCustomers.add(customerProxy);
+			//TODO use customer populator
+			//com.salesmanager.web.entity.customer.Customer customerProxy = customerUtils.buildProxyCustomer(customer, merchantStore);
+			//returnCustomers.add(customerProxy);
 		}
 		
 		return returnCustomers;
@@ -289,9 +288,10 @@ public class CustomerRESTController {
 		}
 		
 		customerService.saveOrUpdate(customer);
-		
-		com.salesmanager.web.entity.customer.Customer customerProxy = customerUtils.buildProxyCustomer(customer, merchantStore);
-		return customerProxy;
+		//TODO use customer populator
+		//com.salesmanager.web.entity.customer.Customer customerProxy = customerUtils.buildProxyCustomer(customer, merchantStore);
+		//return customerProxy;
+		return null;
 	}
 	
 }

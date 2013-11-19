@@ -34,10 +34,12 @@ import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.catalog.Manufacturer;
 import com.salesmanager.web.entity.catalog.ProductList;
+import com.salesmanager.web.entity.catalog.rest.category.ReadableCategory;
 import com.salesmanager.web.entity.shop.Breadcrumb;
 import com.salesmanager.web.entity.shop.BreadcrumbItem;
 import com.salesmanager.web.entity.shop.BreadcrumbItemType;
 import com.salesmanager.web.entity.shop.PageInformation;
+import com.salesmanager.web.populator.catalog.ReadableCategoryPopulator;
 import com.salesmanager.web.populator.manufacturer.ManufacturerPopulator;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.model.filter.QueryFilter;
@@ -140,15 +142,16 @@ public class ShoppingCategoryController {
 			
 		}
 		
-		com.salesmanager.web.entity.catalog.Category categoryProxy = catalogUtils.buildProxyCategory(category, store, locale);
-		
+		ReadableCategoryPopulator populator = new ReadableCategoryPopulator();
+		ReadableCategory categoryProxy = populator.populate(category, new ReadableCategory(), store, language);
+
 
 		//meta information
 		PageInformation pageInformation = new PageInformation();
-		pageInformation.setPageDescription(categoryProxy.getMetaDescription());
-		pageInformation.setPageKeywords(categoryProxy.getKeyWords());
-		pageInformation.setPageTitle(categoryProxy.getTitle());
-		pageInformation.setPageUrl(categoryProxy.getFriendlyUrl());
+		pageInformation.setPageDescription(categoryProxy.getDescription().getMetaDescription());
+		pageInformation.setPageKeywords(categoryProxy.getDescription().getKeyWords());
+		pageInformation.setPageTitle(categoryProxy.getDescription().getTitle());
+		pageInformation.setPageUrl(categoryProxy.getDescription().getFriendlyUrl());
 		
 		/** retrieves category id drill down**/
 		String lineage = new StringBuilder().append(category.getLineage()).append(category.getId()).append(Constants.CATEGORY_LINEAGE_DELIMITER).toString();
@@ -220,13 +223,13 @@ public class ShoppingCategoryController {
 		.append(subCategoriesCacheKey.toString())
 		.append(Constants.MISSED_CACHE_KEY);
 		
-		List<com.salesmanager.web.entity.catalog.Category> subCategories = null;
+		List<ReadableCategory> subCategories = null;
 		Map<Long,Long> countProductsByCategories = null;
 
 		if(store.isUseCache()) {
 
 			//get from the cache
-			subCategories = (List<com.salesmanager.web.entity.catalog.Category>) cache.getFromCache(subCategoriesCacheKey.toString());
+			subCategories = (List<ReadableCategory>) cache.getFromCache(subCategoriesCacheKey.toString());
 			if(subCategories==null) {
 				//get from missed cache
 				Boolean missedContent = (Boolean)cache.getFromCache(subCategoriesMissed.toString());
@@ -248,13 +251,12 @@ public class ShoppingCategoryController {
 		}
 
 		//Parent category
-		com.salesmanager.web.entity.catalog.Category parentProxy = null;
+		ReadableCategory parentProxy  = null;
 		if(!StringUtils.isBlank(ref)) {
 			try {
 				Long parentId = Long.parseLong(ref);
 				Category parent = categoryService.getById(parentId);
-				parentProxy = catalogUtils.buildProxyCategory(parent, store, locale);
-				
+				parentProxy = populator.populate(parent, new ReadableCategory(), store, language);
 			} catch(Exception e) {
 				LOGGER.error("Cannot parse category id to Long ",ref );
 			}
@@ -380,19 +382,20 @@ public class ShoppingCategoryController {
 		
 	}
 	
-	private List<com.salesmanager.web.entity.catalog.Category> getSubCategories(MerchantStore store, Category category, Map<Long,Long> productCount, Language language, Locale locale) {
+	private List<ReadableCategory> getSubCategories(MerchantStore store, Category category, Map<Long,Long> productCount, Language language, Locale locale) throws Exception {
 		
 		
 		//sub categories
 		List<Category> subCategories = categoryService.listByParent(category, language);
-		List<com.salesmanager.web.entity.catalog.Category> subCategoryProxies = new ArrayList<com.salesmanager.web.entity.catalog.Category>();
+		ReadableCategoryPopulator populator = new ReadableCategoryPopulator();
+		List<ReadableCategory> subCategoryProxies = new ArrayList<ReadableCategory>();
 		for(Category sub : subCategories) {
-			
-			com.salesmanager.web.entity.catalog.Category cProxy =  catalogUtils.buildProxyCategory(sub, store, locale);
+			ReadableCategory cProxy  = populator.populate(sub, new ReadableCategory(), store, language);
+			//com.salesmanager.web.entity.catalog.Category cProxy =  catalogUtils.buildProxyCategory(sub, store, locale);
 			if(productCount!=null) {
 				Long total = productCount.get(cProxy.getId());
 				if(total!=null) {
-					cProxy.setTotalCount(total);
+					cProxy.setProductCount(total.intValue());
 				}
 			}
 			subCategoryProxies.add(cProxy);
@@ -409,7 +412,7 @@ public class ShoppingCategoryController {
 	 */
 	@RequestMapping("/shop/services/category/{store}/{language}")
 	@ResponseBody
-	public List<com.salesmanager.web.entity.catalog.Category> getCategories(@PathVariable final String language, @PathVariable final String store, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public List<ReadableCategory> getCategories(@PathVariable final String language, @PathVariable final String store, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		Map<String,Language> langs = languageService.getLanguagesMap();
 		Language l = langs.get(language);
@@ -437,9 +440,12 @@ public class ShoppingCategoryController {
 		
 		List<Category> categories = categoryService.listByStore(merchantStore, l);
 		
-		List<com.salesmanager.web.entity.catalog.Category> returnCategories = new ArrayList<com.salesmanager.web.entity.catalog.Category>();
+		ReadableCategoryPopulator populator = new ReadableCategoryPopulator();
+		
+		List<ReadableCategory> returnCategories = new ArrayList<ReadableCategory>();
 		for(Category category : categories) {
-			com.salesmanager.web.entity.catalog.Category categoryProxy = catalogUtils.buildProxyCategory(category, merchantStore, LocaleUtils.getLocale(l));
+			ReadableCategory categoryProxy = populator.populate(category, new ReadableCategory(), merchantStore, l);
+					//catalogUtils.buildProxyCategory(category, merchantStore, LocaleUtils.getLocale(l));
 			returnCategories.add(categoryProxy);
 		}
 		

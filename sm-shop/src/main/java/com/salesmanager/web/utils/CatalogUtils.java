@@ -93,40 +93,6 @@ public class CatalogUtils {
 		
 	}
 	
-	public com.salesmanager.web.entity.catalog.Category buildProxyCategory(Category category, MerchantStore store, Locale locale) {
-		
-		com.salesmanager.web.entity.catalog.Category categoryProxy = new com.salesmanager.web.entity.catalog.Category();
-		if(category.getDescriptions()!=null && category.getDescriptions().size()>0) {
-			
-			CategoryDescription description = category.getDescription();
-			if(category.getDescriptions().size()>1) {
-				for(CategoryDescription desc : category.getDescriptions()) {
-					if(desc.getLanguage().getCode().equals(locale.getLanguage())) {
-						description = desc;
-						break;
-					}
-				}
-			}
-		
-		
-		
-			if(description!=null) {
-				categoryProxy.setFriendlyUrl(description.getSeUrl());
-				categoryProxy.setName(description.getName());
-				categoryProxy.setDescription(description.getName());
-				categoryProxy.setKeyWords(description.getMetatagKeywords());
-				categoryProxy.setHighlights(description.getCategoryHighlight());
-				categoryProxy.setTitle(description.getMetatagTitle());
-				categoryProxy.setMetaDescription(description.getMetatagDescription());
-			}
-		
-		}
-		
-		categoryProxy.setCode(category.getCode());
-		categoryProxy.setId(category.getId());
-		categoryProxy.setLanguage(locale.getLanguage());
-		
-		return categoryProxy;
-	}
+
 	
 }

@@ -40,6 +40,8 @@ import com.salesmanager.core.business.search.model.SearchResponse;
 import com.salesmanager.core.business.search.service.SearchService;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.catalog.SearchProductList;
+import com.salesmanager.web.entity.catalog.rest.category.ReadableCategory;
+import com.salesmanager.web.populator.catalog.ReadableCategoryPopulator;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.model.search.AutoCompleteRequest;
 import com.salesmanager.web.utils.CatalogUtils;
@@ -219,12 +221,15 @@ public class SearchController {
 					}
 					
 					List<Category> categories = categoryService.listByCodes(merchantStore, categoryCodes, l);
-					List<com.salesmanager.web.entity.catalog.Category> categoryProxies = new ArrayList<com.salesmanager.web.entity.catalog.Category>();
+					List<ReadableCategory> categoryProxies = new ArrayList<ReadableCategory>();
+					ReadableCategoryPopulator populator = new ReadableCategoryPopulator();
+					
 					for(Category category : categories) {
-						com.salesmanager.web.entity.catalog.Category categoryProxy = catalogUtils.buildProxyCategory(category, merchantStore, LocaleUtils.getLocale(l));
+						//com.salesmanager.web.entity.catalog.Category categoryProxy = catalogUtils.buildProxyCategory(category, merchantStore, LocaleUtils.getLocale(l));
+						ReadableCategory categoryProxy = populator.populate(category, new ReadableCategory(), merchantStore, l);
 						Long total = productCategoryCount.get(categoryProxy.getCode());
 						if(total!=null) {
-							categoryProxy.setTotalCount(total);
+							categoryProxy.setProductCount(total.intValue());
 						}
 						categoryProxies.add(categoryProxy);
 					}

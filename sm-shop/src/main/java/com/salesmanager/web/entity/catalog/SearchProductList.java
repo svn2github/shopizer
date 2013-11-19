@@ -3,6 +3,8 @@ package com.salesmanager.web.entity.catalog;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.salesmanager.web.entity.catalog.rest.category.ReadableCategory;
+
 /**
  * Object representing the results of a search query
  * @author Carl Samson
@@ -12,12 +14,13 @@ public class SearchProductList extends ProductList {
 	
 
 	private static final long serialVersionUID = 1L;
-	private List<Category> categoryFacets = new ArrayList<Category>();
-	public void setCategoryFacets(List<Category> categoryFacets) {
-		this.categoryFacets = categoryFacets;
-	}
-	public List<Category> getCategoryFacets() {
+	private List<ReadableCategory> categoryFacets = new ArrayList<ReadableCategory>();
+	public List<ReadableCategory> getCategoryFacets() {
 		return categoryFacets;
 	}
+	public void setCategoryFacets(List<ReadableCategory> categoryFacets) {
+		this.categoryFacets = categoryFacets;
+	}
+
 
 }
