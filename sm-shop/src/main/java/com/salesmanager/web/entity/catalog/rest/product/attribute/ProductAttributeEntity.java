@@ -13,7 +13,8 @@ public class ProductAttributeEntity extends ProductAttribute implements Serializ
 	private int sortOrder;
 	private BigDecimal productAttributeWeight;
 	private boolean attributeDefault=false;
-	
+
+
 
 	public void setProductAttributePrice(BigDecimal productAttributePrice) {
 		this.productAttributePrice = productAttributePrice;

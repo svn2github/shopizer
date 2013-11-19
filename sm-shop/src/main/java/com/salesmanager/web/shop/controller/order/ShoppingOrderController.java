@@ -119,7 +119,9 @@ public class ShoppingOrderController {
 		if(CollectionUtils.isEmpty(items)) {
 			return "redirect:/shop/shoppingCart.html";
 		}
+
 		
+		//**** -- in facade **/
 		//create shipping products
 		List<ShippingProduct> shippingProducts = shoppingCartService.createShippingProduct(cart);
 
@@ -148,7 +150,7 @@ public class ShoppingOrderController {
 		//no default shipping summary
 		
 		OrderTotalSummary orderTotalSummary = orderService.caculateOrderTotal(summary, customer, store, language);
-		
+		//******//
 
 		if(customer==null) {
 			customer = new Customer();

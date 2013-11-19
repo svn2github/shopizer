@@ -5,8 +5,7 @@ import java.util.List;
 
 import com.salesmanager.web.entity.catalog.rest.category.Category;
 import com.salesmanager.web.entity.catalog.rest.manufacturer.Manufacturer;
-import com.salesmanager.web.entity.catalog.rest.product.attribute.ProductAttribute;
-import com.salesmanager.web.entity.catalog.rest.product.attribute.ProductAttributeEntity;
+import com.salesmanager.web.entity.catalog.rest.product.attribute.PersistableProductAttribute;
 
 public class PersistableProduct extends ProductEntity implements Serializable {
 
@@ -14,11 +13,11 @@ public class PersistableProduct extends ProductEntity implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private List<ProductDescription> descriptions;
-	private List<ProductAttributeEntity> attributes;
-	private List<PersistableImage> images;
-	private List<Category> categories;
-	private List<RelatedProduct> relatedProducts;
+	private List<ProductDescription> descriptions;//always persist descriptions
+	private List<PersistableProductAttribute> attributes;//persist attribute and save reference
+	private List<PersistableImage> images;//persist images and save reference
+	private List<Category> categories;//save reference
+	private List<RelatedProduct> relatedProducts;//save reference
 	private Manufacturer manufacturer;
 	
 	public List<ProductDescription> getDescriptions() {
@@ -52,12 +51,11 @@ public class PersistableProduct extends ProductEntity implements Serializable {
 	public Manufacturer getManufacturer() {
 		return manufacturer;
 	}
-	public void setAttributes(List<ProductAttributeEntity> attributes) {
+	public void setAttributes(List<PersistableProductAttribute> attributes) {
 		this.attributes = attributes;
 	}
-	public List<ProductAttributeEntity> getAttributes() {
+	public List<PersistableProductAttribute> getAttributes() {
 		return attributes;
 	}
-
 
 }

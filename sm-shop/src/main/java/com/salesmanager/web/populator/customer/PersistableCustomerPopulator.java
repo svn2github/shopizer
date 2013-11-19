@@ -18,8 +18,8 @@ public class PersistableCustomerPopulator extends
 
 		
 		try {
-
 			
+
 			if(source.getBilling()!=null) {
 				Address address = new Address();
 				address.setCity(source.getBilling().getCity());
@@ -52,10 +52,15 @@ public class PersistableCustomerPopulator extends
 				target.setDelivery(address);
 			}
 			
+			target.setId(source.getId());
 			target.setEmailAddress(source.getEmailAddress());
 			target.setGender(source.getGender().name());
 			target.setLanguage(source.getDefaultLanguage().getCode());
 			target.setUserName(source.getNick());
+			target.setFirstName(source.getFirstname());
+			target.setLastName(source.getLastname());
+			target.setPhone(source.getTelephone());
+			target.setStoreCode(source.getMerchantStore().getCode());
 			
 			
 			
@@ -63,7 +68,7 @@ public class PersistableCustomerPopulator extends
 			throw new ConversionException(e);
 		}
 			
-		return null;
+		return target;
 		
 	}
 

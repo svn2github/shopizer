@@ -152,7 +152,7 @@ public class PersistableProductPopulator extends
 			
 			//attributes
 			if(source.getAttributes()!=null) {
-				for(com.salesmanager.web.entity.catalog.rest.product.attribute.ProductAttributeEntity attr : source.getAttributes()) {
+				for(com.salesmanager.web.entity.catalog.rest.product.attribute.ProductAttribute attr : source.getAttributes()) {
 					
 					ProductOption productOption = productOptionService.getById(attr.getOption().getId());
 					if(productOption==null) {

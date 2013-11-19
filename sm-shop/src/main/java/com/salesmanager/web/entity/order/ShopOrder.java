@@ -16,12 +16,12 @@ public class ShopOrder extends PersistableOrder implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private List<ShoppingCartItem> items;//overrides parent API list of shoppingcartitem
-	public void setItems(List<ShoppingCartItem> items) {
-		this.items = items;
+	private List<ShoppingCartItem> shoppingCartItems;//overrides parent API list of shoppingcartitem
+	public void setShoppingCartItems(List<ShoppingCartItem> shoppingCartItems) {
+		this.shoppingCartItems = shoppingCartItems;
 	}
-	public List<ShoppingCartItem> getItems() {
-		return items;
+	public List<ShoppingCartItem> getShoppingCartItems() {
+		return shoppingCartItems;
 	}
 
 }

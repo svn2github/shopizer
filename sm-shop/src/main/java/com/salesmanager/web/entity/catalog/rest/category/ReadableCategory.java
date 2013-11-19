@@ -8,7 +8,7 @@ public class ReadableCategory extends CategoryEntity implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private CategoryDescription description;
+	private CategoryDescription description;//one category based on language
 	private CategoryEntity parent;
 	private int productCount;
 	public void setDescription(CategoryDescription description) {

@@ -10,20 +10,18 @@ public class ProductAttribute extends Entity implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private ProductOptionEntity option;
-	private ProductOptionValueEntity optionValue;
-	
-	
-	public void setOptionValue(ProductOptionValueEntity optionValue) {
+	private ProductOption option;
+	private ProductOptionValue optionValue;
+	public void setOptionValue(ProductOptionValue optionValue) {
 		this.optionValue = optionValue;
 	}
-	public ProductOptionValueEntity getOptionValue() {
+	public ProductOptionValue getOptionValue() {
 		return optionValue;
 	}
-	public void setOption(ProductOptionEntity option) {
+	public void setOption(ProductOption option) {
 		this.option = option;
 	}
-	public ProductOptionEntity getOption() {
+	public ProductOption getOption() {
 		return option;
 	}
 
