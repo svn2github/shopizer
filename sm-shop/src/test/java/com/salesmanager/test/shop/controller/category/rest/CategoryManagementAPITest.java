@@ -18,10 +18,10 @@ import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.client.RestTemplate;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.web.entity.catalog.rest.category.Category;
-import com.salesmanager.web.entity.catalog.rest.category.CategoryDescription;
-import com.salesmanager.web.entity.catalog.rest.category.PersistableCategory;
-import com.salesmanager.web.entity.catalog.rest.category.ReadableCategory;
+import com.salesmanager.web.entity.catalog.category.Category;
+import com.salesmanager.web.entity.catalog.category.CategoryDescription;
+import com.salesmanager.web.entity.catalog.category.PersistableCategory;
+import com.salesmanager.web.entity.catalog.category.ReadableCategory;
 
 public class CategoryManagementAPITest {
 	
