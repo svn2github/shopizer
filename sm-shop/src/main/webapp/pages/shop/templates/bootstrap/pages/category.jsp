@@ -33,40 +33,91 @@ response.setDateHeader ("Expires", -1);
  
  $(function(){
 	 
+	 
+	 var $filterType = $('#filter input[name="type"]');
+	 var $filterSort = $('#filter input[name="sort"]');
+
+	  var $productsContainer = $('#productsContainer');
+
+	  // clone applications to get a second collection
+	  var $data = $productsContainer.clone();
+	  
+	  
+	  $filterType.add($filterSort).change(function(e) {
+		    //if ($($filterType+':checked').val() == 'all') {
+		    //  var $filteredData = $data.find('li');
+		    //} else {
+		    //  var $filteredData = $data.find('li[data-type=' + $($filterType+":checked").val() + ']');
+		    //}
+
+		    var $filteredData = $data.find('li');
+		    alert($filteredData)
+		    // if sorted by size
+		    alert($('#filter input[name="sort"]:checked').val());
+		    if ($('#filter input[name="sort"]:checked').val() == "price") {
+		      var $sortedData = $filteredData.sorted({
+		        by: function(v) {
+		          alert('1');
+		          alert($(v).find('span[data-type=price]').text());
+		          return parseFloat($(v).find('span[data-type=price]').text());
+		        }
+		      });
+		    } else {
+		      // if sorted by name
+		      var $sortedData = $filteredData.sorted({
+		        by: function(v) {
+		        	alert('2');
+		           alert($(v).find('span[data-type=name]').text().toLowerCase());
+		          return $(v).find('span[data-type=name]').text().toLowerCase();
+		        }
+		      });
+		    }   
+
+		    // finally, call quicksand
+		    $productsContainer.quicksand($sortedData, {
+		      duration: 800
+		      //easing: 'easeInOutQuad'
+		    });
+
+		  });
+	  
+	  
 
 	 // Sorting options
-	 $('.sort-options').on('change', function() {
-	   var $items = $('#productsContainer');
+	 
+	 //$('.sort-options').on('change', function() {
+	   
+	   //var $items = $('#productsContainer');
 
 			  // clone applications to get a second collection
-	   var $data = $items.clone();
-	   var $filteredData = $data.find('li');
-	   var sort = this.value,
-	       opts = {};
+	   //var $data = $items.clone();
+	   //var $filteredData = $data.find('li');
+	   //var sort = this.value,
+	   //    opts = {};
 
 	   // We're given the element wrapped in jQuery
-	   if ( sort === 'price' ) {
-		  var $sortedData = $filteredData.sorted({
-		          by: function(v) {
-		            return $(v).find('item-price').text().toLowerCase();
-		          }
-		   });
-	   } else if ( sort === 'name' ) {
-			  var $sortedData = $filteredData.sorted({
-		          by: function(v) {
-		            return $(v).find('item-name').text().toLowerCase();
-		          }
-		   });
-	   }
+	   //if ( sort === 'price' ) {
+		 // var $sortedData = $filteredData.sorted({
+		   //       by: function(v) {
+		     //       return $(v).find('item-price').text().toLowerCase();
+		      //    }
+		  // });
+	 //  } else if ( sort === 'name' ) {
+		//	  var $sortedData = $filteredData.sorted({
+		  //        by: function(v) {
+		    //        return $(v).find('item-name').text().toLowerCase();
+		    //      }
+		   //});
+	   //}
 	   
 
 
 	   // Filter elements
-	    $items.quicksand($sortedData, {
-	        duration: 800
+	   // $items.quicksand($sortedData, {
+	     //   duration: 800
 	        //easing: 'easeInOutQuad'//requires easing x.easing //http://razorjack.net/quicksand/docs-and-demos.html
-	      });
-	 });
+	      //});
+	 //});
 	 
 	 //var $container = $('#productsContainer');
 
@@ -135,11 +186,13 @@ response.setDateHeader ("Expires", -1);
         <div class="span3">
           <div class="sidebar-nav">
           
-          	<select class="sort-options">
-  				<option value="">Default</option>
-  				<option value="name">Name</option>
-  				<option value="price">Price</option>
-			</select>
+			<form id="filter">
+			  <fieldset>
+			    <legend>Sort by</legend>
+			    <label><input type="radio" name="sort" value="size" checked="checked">Size</label>
+			    <label><input type="radio" name="sort" value="name">Name</label>      
+			  </fieldset>
+			</form>
             <br/><br/>
           
             <ul class="nav nav-list">

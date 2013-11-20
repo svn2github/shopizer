@@ -18,20 +18,20 @@ response.setDateHeader ("Expires", -1);
 										<c:forEach items="${requestScope.ITEMS}" var="product">
 											<li class="span3">
 												<div class="product-box">                                        
-													<a href="<c:url value="/shop/product/" /><c:out value="${product.friendlyUrl}"/>.html"><h4><c:out value="${product.name}"/></h4></a>
+													<a href="<c:url value="/shop/product/" /><c:out value="${product.description.friendlyUrl}"/>.html"><h4><c:out value="${product.description.name}"/></h4></a>
 													<h3>
 														<c:choose>
 															<c:when test="${product.discounted}">
-																<del><c:out value="${product.originalProductPrice}" /></del>&nbsp;<span class="specialPrice"><c:out value="${product.productPrice}" /></span>
+																<del><c:out value="${product.originalPrice}" /></del>&nbsp;<span class="specialPrice"><c:out value="${product.finalPrice}" /></span>
 															</c:when>
 															<c:otherwise>
-																<c:out value="${product.productPrice}" />
+																<c:out value="${product.finalPrice}" />
 															</c:otherwise>
 														</c:choose>
 													</h3>
-													<c:if test="${product.image!=null}"><a href="<c:url value="/shop/product/" /><c:out value="${product.friendlyUrl}"/>.html"><img src="<sm:shopProductImage imageName="${product.image}" sku="${product.sku}"/>"/></a></c:if>
+													<c:if test="${product.image!=null}"><a href="<c:url value="/shop/product/" /><c:out value="${product.description.friendlyUrl}"/>.html"><img src="<sm:shopProductImage imageName="${product.image}" sku="${product.sku}"/>"/></a></c:if>
 													<div class="bottom">
-														<a href="<c:url value="/shop/product/" /><c:out value="${product.friendlyUrl}"/>.html">view</a> / <a class="addToCart" href="#" productId="${product.id}">add to cart</a>
+														<a href="<c:url value="/shop/product/" /><c:out value="${product.description.friendlyUrl}"/>.html">view</a> / <a class="addToCart" href="#" productId="${product.id}">add to cart</a>
 													</div>
 												</div>
 										    </li>
