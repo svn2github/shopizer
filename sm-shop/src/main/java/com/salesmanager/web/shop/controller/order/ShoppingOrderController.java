@@ -37,8 +37,10 @@ import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.order.ShopOrder;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.shop.controller.ControllerConstants;
+import com.salesmanager.web.shop.controller.order.facade.OrderFacade;
 
 @Controller
 @RequestMapping(Constants.SHOP_URI)
@@ -63,6 +65,9 @@ public class ShoppingOrderController {
 	@Autowired
 	private ZoneService zoneService;
 	
+	@Autowired
+	private OrderFacade orderFacade;
+	
 	@RequestMapping("/order/checkout.html")
 	public String displayCheckout(@CookieValue("cart") String cookie, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
@@ -80,7 +85,7 @@ public class ShoppingOrderController {
 		 * Else -> Nothing to display
 		 */
 		
-		//TODO or should we get the shopping cart id from the database only
+		//Get the cart from the DB
 		
 		String shoppingCartCode = null;
 		
@@ -93,11 +98,9 @@ public class ShoppingOrderController {
 		} else {
 			shoppingCartCode = shoppingCart.getCode();
 		}
-		
-		if(shoppingCart==null) {//customer
-			if(customer!=null) {
-				cart=shoppingCartService.getByCustomer(customer);
-			}
+
+		if(customer!=null) {
+			cart=shoppingCartService.getByCustomer(customer);
 		}
 		
 		if(cart==null && shoppingCartCode!=null) {
@@ -119,9 +122,11 @@ public class ShoppingOrderController {
 		if(CollectionUtils.isEmpty(items)) {
 			return "redirect:/shop/shoppingCart.html";
 		}
+		
+		ShopOrder order = orderFacade.initializeOrder(store, customer, cart, language);
 
 		
-		//**** -- in facade **/
+
 		//create shipping products
 		List<ShippingProduct> shippingProducts = shoppingCartService.createShippingProduct(cart);
 
@@ -143,29 +148,18 @@ public class ShoppingOrderController {
 		}
 
 		//order total
-		OrderSummary summary = new OrderSummary();
-		List<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> productsList = new ArrayList<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem>();
-		productsList.addAll(cart.getLineItems());
-		summary.setProducts(productsList);
+		//OrderSummary summary = new OrderSummary();
+		//List<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> productsList = new ArrayList<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem>();
+		//productsList.addAll(cart.getLineItems());
+		//summary.setProducts(productsList);
 		//no default shipping summary
 		
-		OrderTotalSummary orderTotalSummary = orderService.caculateOrderTotal(summary, customer, store, language);
+		//OrderTotalSummary orderTotalSummary = orderService.caculateOrderTotal(summary, customer, store, language);
 		//******//
+		
+		OrderTotalSummary orderTotalSummary = orderFacade.calculateOrderTotal(store, order, language);
 
-		if(customer==null) {
-			customer = new Customer();
-			Billing billing = new Billing();
-			billing.setCountry(store.getCountry());
-			billing.setZone(store.getZone());
-			billing.setState(store.getStorestateprovince());
-			customer.setBilling(billing);
-			
-			Delivery delivery = new Delivery();
-			delivery.setCountry(store.getCountry());
-			delivery.setZone(store.getZone());
-			delivery.setState(store.getStorestateprovince());
-			customer.setDelivery(delivery);
-		}
+
 		
 		//get countries
 		List<Country> countries = countryService.getCountries(language);
@@ -175,8 +169,7 @@ public class ShoppingOrderController {
 		
 		model.addAttribute("zones", zones);
 		model.addAttribute("countries", countries);
-		model.addAttribute("customer",customer);
-		model.addAttribute("orderTotalSummary", orderTotalSummary);
+		model.addAttribute("shopOrder",order);
 		model.addAttribute("paymentMethods", paymentMethods);
 		//may have shippingquote
 		

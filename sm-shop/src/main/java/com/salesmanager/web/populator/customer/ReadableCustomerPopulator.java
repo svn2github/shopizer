@@ -1,14 +1,9 @@
 package com.salesmanager.web.populator.customer;
 
-import java.util.Map;
-
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.reference.country.model.Country;
-import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.utils.AbstractDataPopulator;
 import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.entity.customer.ReadableCustomer;
@@ -16,8 +11,6 @@ import com.salesmanager.web.entity.customer.ReadableCustomer;
 public class ReadableCustomerPopulator extends
 		AbstractDataPopulator<Customer, ReadableCustomer> {
 
-	private CountryService countryService;
-	private ZoneService zoneService;
 	
 	@Override
 	public ReadableCustomer populate(Customer source, ReadableCustomer target,
@@ -33,6 +26,7 @@ public class ReadableCustomerPopulator extends
 			address.setCompany(source.getBilling().getCompany());
 			address.setName(source.getBilling().getName());
 			address.setPostalCode(source.getBilling().getPostalCode());
+			address.setPhone(source.getBilling().getTelephone());
 			if(source.getBilling().getCountry()!=null) {
 				address.setCountry(source.getBilling().getCountry().getIsoCode());
 			}
@@ -49,6 +43,7 @@ public class ReadableCustomerPopulator extends
 			address.setCompany(source.getDelivery().getCompany());
 			address.setName(source.getDelivery().getName());
 			address.setPostalCode(source.getDelivery().getPostalCode());
+			address.setPhone(source.getDelivery().getTelephone());
 			if(source.getDelivery().getCountry()!=null) {
 				address.setCountry(source.getDelivery().getCountry().getIsoCode());
 			}
@@ -63,7 +58,7 @@ public class ReadableCustomerPopulator extends
 			throw new ConversionException(e);
 		}
 		
-		return null;
+		return target;
 	}
 
 	@Override

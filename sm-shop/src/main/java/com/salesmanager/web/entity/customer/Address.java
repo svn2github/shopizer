@@ -9,6 +9,8 @@ public class Address {
 
 	private String company;
 	
+	private String phone;
+	
 
 	private String address;
 
@@ -87,6 +89,14 @@ public class Address {
 
 	public String getZone() {
 		return zone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getPhone() {
+		return phone;
 	}
 
 

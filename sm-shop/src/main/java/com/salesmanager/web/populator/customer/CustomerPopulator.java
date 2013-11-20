@@ -30,7 +30,7 @@ public class CustomerPopulator extends
 	public Customer populate(PersistableCustomer source, Customer target,
 			MerchantStore store, Language language) throws ConversionException {
 		
-		
+		//TODO complete
 		try {
 			
 			//target.setAnonymous(anonymous)
@@ -47,6 +47,7 @@ public class CustomerPopulator extends
 				billing.setCompany(sourceBilling.getCompany());
 				//billing.setCountry(country);
 				billing.setName(sourceBilling.getName());
+				billing.setTelephone(source.getPhone());
 				billing.setPostalCode(sourceBilling.getPostalCode());
 				billing.setState(sourceBilling.getStateProvince());
 				Country billingCountry = null;

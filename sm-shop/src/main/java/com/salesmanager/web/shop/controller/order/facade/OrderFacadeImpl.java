@@ -7,10 +7,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
+import com.salesmanager.core.business.common.model.Billing;
+import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.OrderSummary;
@@ -21,37 +21,55 @@ import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
+import com.salesmanager.web.entity.order.OrderEntity;
+import com.salesmanager.web.entity.order.OrderTotal;
 import com.salesmanager.web.entity.order.PersistableOrder;
 import com.salesmanager.web.entity.order.PersistableOrderProduct;
 import com.salesmanager.web.entity.order.ShopOrder;
+import com.salesmanager.web.populator.customer.CustomerPopulator;
 import com.salesmanager.web.populator.customer.PersistableCustomerPopulator;
+import com.salesmanager.web.populator.order.ShoppingCartItemPopulator;
 
 @Service("orderFacade")
 public class OrderFacadeImpl implements OrderFacade {
-	
-	@Autowired
-	private ShoppingCartService shoppingCartService;
-	
 
-	@Autowired
-	private ProductService productService;
-	
-	@Autowired
-	private ProductAttributeService productAttributeService;
-	
 
 	@Autowired
 	private OrderService orderService;
+	@Autowired
+	private ProductService productService;
+	@Autowired
+	private ProductAttributeService productAttributeService;
+	@Autowired
+	private ShoppingCartService shoppingCartService;
 
 	@Override
 	public ShopOrder initializeOrder(MerchantStore store, Customer customer,
 			ShoppingCart shoppingCart, Language language) throws Exception {
 
+		//assert not null shopping cart items
+		
 		ShopOrder order = new ShopOrder();
-		if(customer!=null) {
-			PersistableCustomer persistableCustomer = persistableCustomer(customer, store, language);
-			order.setCustomer(persistableCustomer);
+		if(customer==null) {
+
+				customer = new Customer();
+				Billing billing = new Billing();
+				billing.setCountry(store.getCountry());
+				billing.setZone(store.getZone());
+				billing.setState(store.getStorestateprovince());
+				customer.setBilling(billing);
+				
+				Delivery delivery = new Delivery();
+				delivery.setCountry(store.getCountry());
+				delivery.setZone(store.getZone());
+				delivery.setState(store.getStorestateprovince());
+				customer.setDelivery(delivery);
+
 		}
+		
+		PersistableCustomer persistableCustomer = persistableCustomer(customer, store, language);
+		order.setCustomer(persistableCustomer);
+		order.setShoppingCartCustomer(customer);
 		
 		List<ShoppingCartItem> items = new ArrayList<ShoppingCartItem>(shoppingCart.getLineItems());
 		order.setShoppingCartItems(items);
@@ -64,42 +82,35 @@ public class OrderFacadeImpl implements OrderFacade {
 	@Override
 	public OrderTotalSummary calculateOrderTotal(MerchantStore store,
 			ShopOrder order, Language language) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+
+		OrderTotalSummary summary = this.calculateOrderTotal(store, order.getShoppingCartCustomer(), order.getShoppingCartItems(), language);
+		this.setOrderTotals(order, summary);
+		return summary;
 	}
 
 	@Override
 	public OrderTotalSummary calculateOrderTotal(MerchantStore store,
 			PersistableOrder order, Language language) throws Exception {
-		// TODO Auto-generated method stub
-		
+	
 		List<PersistableOrderProduct> orderProducts = order.getOrderProductItems();
 		
+		ShoppingCartItemPopulator populator = new ShoppingCartItemPopulator();
+		populator.setProductAttributeService(productAttributeService);
+		populator.setProductService(productService);
+		populator.setShoppingCartService(shoppingCartService);
+		
+		List<ShoppingCartItem> items = new ArrayList<ShoppingCartItem>();
 		for(PersistableOrderProduct orderProduct : orderProducts) {
-			
-			Product product = productService.getById(orderProduct.getProduct().getId());
-			if(orderProduct.getAttributes()!=null) {
-
-				for(com.salesmanager.web.entity.catalog.rest.product.attribute.ProductAttribute attr : orderProduct.getAttributes()) {
-					ProductAttribute attribute = productAttributeService.getById(attr.getId());
-					if(attribute==null) {
-						throw new Exception("ProductAttribute with id " + attr.getId() + " is null");
-					}
-					if(attribute.getProduct().getId().longValue()!=orderProduct.getProduct().getId().longValue()) {
-						throw new Exception("ProductAttribute with id " + attr.getId() + " is not assigned to Product id " + orderProduct.getProduct().getId());
-					}
-					product.getAttributes().add(attribute);
-				}
-				
-			}
-			
+			ShoppingCartItem item = populator.populate(orderProduct, new ShoppingCartItem(), store, language);
+			items.add(item);
 		}
 		
-			//for each Product get the Product and get ProductAttribute
+
+		Customer customer = customer(order.getCustomer(), store, language);
 		
-			//Create a ShoppingCartItem from shoppingCartService
-		
-		return null;
+		OrderTotalSummary summary = this.calculateOrderTotal(store, customer, items, language);
+
+		return summary;
 	}
 	
 	private OrderTotalSummary calculateOrderTotal(MerchantStore store, Customer customer, List<ShoppingCartItem> items, Language language) throws Exception {
@@ -126,6 +137,30 @@ public class OrderFacadeImpl implements OrderFacade {
 		PersistableCustomerPopulator customerPopulator = new PersistableCustomerPopulator();
 		PersistableCustomer persistableCustomer = customerPopulator.populate(customer, new PersistableCustomer(), store, language);
 		return persistableCustomer;
+		
+	}
+	
+	private Customer customer(PersistableCustomer customer, MerchantStore store, Language language) throws Exception {
+		//TODO populator not completely implemented
+		CustomerPopulator customerPopulator = new CustomerPopulator();
+		Customer cust = customerPopulator.populate(customer, new Customer(), store, language);
+		return cust;
+		
+	}
+	
+	private void setOrderTotals(OrderEntity order, OrderTotalSummary summary) {
+		
+		List<OrderTotal> totals = new ArrayList<OrderTotal>();
+		List<com.salesmanager.core.business.order.model.OrderTotal> orderTotals = summary.getTotals();
+		for(com.salesmanager.core.business.order.model.OrderTotal t : orderTotals) {
+			OrderTotal total = new OrderTotal();
+			total.setCode(t.getOrderTotalCode());
+			total.setTitle(t.getTitle());
+			total.setValue(t.getValue());
+			totals.add(total);
+		}
+		
+		order.setTotals(totals);
 		
 	}
 

@@ -26,6 +26,7 @@ public class PersistableCustomerPopulator extends
 				address.setCompany(source.getBilling().getCompany());
 				address.setName(source.getBilling().getName());
 				address.setPostalCode(source.getBilling().getPostalCode());
+				address.setPhone(source.getBilling().getTelephone());
 				if(source.getBilling().getCountry()!=null) {
 					address.setCountry(source.getBilling().getCountry().getIsoCode());
 				}
@@ -42,6 +43,7 @@ public class PersistableCustomerPopulator extends
 				address.setCompany(source.getDelivery().getCompany());
 				address.setName(source.getDelivery().getName());
 				address.setPostalCode(source.getDelivery().getPostalCode());
+				address.setPhone(source.getDelivery().getTelephone());
 				if(source.getDelivery().getCountry()!=null) {
 					address.setCountry(source.getDelivery().getCountry().getIsoCode());
 				}
