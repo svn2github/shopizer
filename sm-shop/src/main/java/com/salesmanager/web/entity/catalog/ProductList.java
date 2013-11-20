@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.salesmanager.web.entity.catalog.rest.product.ReadableProduct;
+
 public class ProductList implements Serializable {
 	
 
@@ -11,19 +13,20 @@ public class ProductList implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private int totalCount;
-	private List<Product> products = new ArrayList<Product>();
-	public void setProducts(List<Product> products) {
+	private int productCount;
+	private List<ReadableProduct> products = new ArrayList<ReadableProduct>();
+	public void setProducts(List<ReadableProduct> products) {
 		this.products = products;
 	}
-	public List<Product> getProducts() {
+	public List<ReadableProduct> getProducts() {
 		return products;
 	}
-	public void setTotalCount(int totalCount) {
-		this.totalCount = totalCount;
+	public int getProductCount() {
+		return productCount;
 	}
-	public int getTotalCount() {
-		return totalCount;
+	public void setProductCount(int productCount) {
+		this.productCount = productCount;
 	}
+
 
 }

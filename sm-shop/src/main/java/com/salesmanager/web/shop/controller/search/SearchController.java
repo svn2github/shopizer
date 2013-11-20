@@ -27,6 +27,7 @@ import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
 import com.salesmanager.core.business.catalog.product.model.ProductList;
+import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
@@ -41,11 +42,12 @@ import com.salesmanager.core.business.search.service.SearchService;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.catalog.SearchProductList;
 import com.salesmanager.web.entity.catalog.rest.category.ReadableCategory;
+import com.salesmanager.web.entity.catalog.rest.product.ReadableProduct;
 import com.salesmanager.web.populator.catalog.ReadableCategoryPopulator;
+import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.model.search.AutoCompleteRequest;
 import com.salesmanager.web.utils.CatalogUtils;
-import com.salesmanager.web.utils.LocaleUtils;
 @Controller
 public class SearchController {
 	
@@ -63,6 +65,9 @@ public class SearchController {
 	
 	@Autowired
 	private CategoryService categoryService;
+	
+	@Autowired
+	private PricingService pricingService;
 	
 	
 	@Autowired
@@ -185,14 +190,18 @@ public class SearchController {
 				
 				ProductList productList = productService.listByStore(merchantStore, l, searchCriteria);
 				
+				ReadableProductPopulator populator = new ReadableProductPopulator();
+				populator.setPricingService(pricingService);
 				
 				for(Product product : productList.getProducts()) {
 					//create new proxy product
-					com.salesmanager.web.entity.catalog.Product p = catalogUtils.buildProxyProduct(product,merchantStore,LocaleUtils.getLocale(l));
+					ReadableProduct p = populator.populate(product, new ReadableProduct(), merchantStore, l);
+					
+					//com.salesmanager.web.entity.catalog.Product p = catalogUtils.buildProxyProduct(product,merchantStore,LocaleUtils.getLocale(l));
 					returnList.getProducts().add(p);
 		
 				}
-				returnList.setTotalCount(productList.getProducts().size());
+				returnList.setProductCount(productList.getProducts().size());
 			}
 			
 			//Facets

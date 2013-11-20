@@ -23,6 +23,7 @@ import com.salesmanager.core.business.catalog.product.model.attribute.ProductOpt
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationship;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationshipType;
+import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.relationship.ProductRelationshipService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -30,9 +31,10 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.catalog.Attribute;
 import com.salesmanager.web.entity.catalog.AttributeValue;
+import com.salesmanager.web.entity.catalog.rest.product.ReadableProduct;
 import com.salesmanager.web.entity.shop.PageInformation;
+import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.web.shop.controller.ControllerConstants;
-import com.salesmanager.web.utils.CatalogUtils;
 import com.salesmanager.web.utils.PageBuilderUtils;
 
 @Controller
@@ -42,10 +44,10 @@ public class ShopProductController {
 	private ProductService productService;
 	
 	@Autowired
-	private CatalogUtils catalogUtils;
+	private ProductRelationshipService productRelationshipService;
 	
 	@Autowired
-	private ProductRelationshipService productRelationshipService;
+	private PricingService pricingService;
 	
 
 
@@ -63,15 +65,19 @@ public class ShopProductController {
 			return PageBuilderUtils.build404(store);
 		}
 		
-		com.salesmanager.web.entity.catalog.Product productProxy = catalogUtils.buildProxyProduct(product, store, locale);
+		ReadableProductPopulator populator = new ReadableProductPopulator();
+		populator.setPricingService(pricingService);
+		
+		ReadableProduct productProxy = populator.populate(product, new ReadableProduct(), store, language);
+		//com.salesmanager.web.entity.catalog.Product productProxy = catalogUtils.buildProxyProduct(product, store, locale);
 		
 
 		//meta information
 		PageInformation pageInformation = new PageInformation();
-		pageInformation.setPageDescription(productProxy.getMetaDescription());
-		pageInformation.setPageKeywords(productProxy.getKeyWords());
-		pageInformation.setPageTitle(productProxy.getTitle());
-		pageInformation.setPageUrl(productProxy.getFriendlyUrl());
+		pageInformation.setPageDescription(productProxy.getDescription().getMetaDescription());
+		pageInformation.setPageKeywords(productProxy.getDescription().getKeyWords());
+		pageInformation.setPageTitle(productProxy.getDescription().getTitle());
+		pageInformation.setPageUrl(productProxy.getDescription().getFriendlyUrl());
 		
 		request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
 		
@@ -79,10 +85,11 @@ public class ShopProductController {
 		//related items
 		List<ProductRelationship> relatedItems = productRelationshipService.getByType(store, product, ProductRelationshipType.RELATED_ITEM);
 		if(relatedItems!=null && relatedItems.size()>0) {
-			List<com.salesmanager.web.entity.catalog.Product> items = new ArrayList<com.salesmanager.web.entity.catalog.Product>();
+			List<ReadableProduct> items = new ArrayList<ReadableProduct>();
 			for(ProductRelationship relationship : relatedItems) {
 				Product relatedProduct = relationship.getRelatedProduct();
-				com.salesmanager.web.entity.catalog.Product proxyProduct = catalogUtils.buildProxyProduct(relatedProduct, store, locale);
+				//com.salesmanager.web.entity.catalog.Product proxyProduct = catalogUtils.buildProxyProduct(relatedProduct, store, locale);
+				ReadableProduct proxyProduct = populator.populate(relatedProduct, new ReadableProduct(), store, language);
 				items.add(proxyProduct);
 			}
 			model.addAttribute("relatedProducts",items);		

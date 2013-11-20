@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationship;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationshipType;
+import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.relationship.ProductRelationshipService;
 import com.salesmanager.core.business.content.model.Content;
 import com.salesmanager.core.business.content.model.ContentDescription;
@@ -23,11 +24,12 @@ import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.catalog.rest.product.ReadableProduct;
 import com.salesmanager.web.entity.shop.Breadcrumb;
 import com.salesmanager.web.entity.shop.BreadcrumbItem;
 import com.salesmanager.web.entity.shop.BreadcrumbItemType;
 import com.salesmanager.web.entity.shop.PageInformation;
-import com.salesmanager.web.utils.CatalogUtils;
+import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
@@ -39,12 +41,13 @@ public class LandingController {
 	
 	@Autowired
 	private ProductRelationshipService productRelationshipService;
-	
-	@Autowired
-	private CatalogUtils catalogUtils;
+
 	
 	@Autowired
 	private LabelUtils messages;
+	
+	@Autowired
+	private PricingService pricingService;
 
 	
 	//@Autowired
@@ -94,16 +97,18 @@ public class LandingController {
 			request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
 			
 		}
+		
+		ReadableProductPopulator populator = new ReadableProductPopulator();
+		populator.setPricingService(pricingService);
 
 		
 		//featured items
 		List<ProductRelationship> relationships = productRelationshipService.getByType(store, ProductRelationshipType.FEATURED_ITEM, language);
-		List<com.salesmanager.web.entity.catalog.Product> featuredItems = new ArrayList<com.salesmanager.web.entity.catalog.Product>();
+		List<ReadableProduct> featuredItems = new ArrayList<ReadableProduct>();
 		for(ProductRelationship relationship : relationships) {
 			
 			Product product = relationship.getRelatedProduct();
-			com.salesmanager.web.entity.catalog.Product proxyProduct = catalogUtils.buildProxyProduct(product,store,locale);
-			
+			ReadableProduct proxyProduct = populator.populate(product, new ReadableProduct(), store, language);
 
 			featuredItems.add(proxyProduct);
 		}

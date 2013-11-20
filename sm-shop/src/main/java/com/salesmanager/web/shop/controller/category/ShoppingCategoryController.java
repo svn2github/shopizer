@@ -24,6 +24,7 @@ import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
+import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -35,11 +36,13 @@ import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.catalog.Manufacturer;
 import com.salesmanager.web.entity.catalog.ProductList;
 import com.salesmanager.web.entity.catalog.rest.category.ReadableCategory;
+import com.salesmanager.web.entity.catalog.rest.product.ReadableProduct;
 import com.salesmanager.web.entity.shop.Breadcrumb;
 import com.salesmanager.web.entity.shop.BreadcrumbItem;
 import com.salesmanager.web.entity.shop.BreadcrumbItemType;
 import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.populator.catalog.ReadableCategoryPopulator;
+import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.web.populator.manufacturer.ManufacturerPopulator;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.model.filter.QueryFilter;
@@ -81,6 +84,9 @@ public class ShoppingCategoryController {
 	
 	@Autowired
 	private CacheUtils cache;
+	
+	@Autowired
+	private PricingService pricingService;
 	
 
 	
@@ -526,15 +532,19 @@ public class ShoppingCategoryController {
 			List<com.salesmanager.core.business.catalog.product.model.Product> products = productService.getProducts(ids, lang);
 			
 			ProductList productList = new ProductList();
+			
+			ReadableProductPopulator populator = new ReadableProductPopulator();
+			populator.setPricingService(pricingService);
 
 			for(Product product : products) {
 				//create new proxy product
-				com.salesmanager.web.entity.catalog.Product p = catalogUtils.buildProxyProduct(product,merchantStore,LocaleUtils.getLocale(lang));
+				ReadableProduct  p = populator.populate(product, new ReadableProduct(), merchantStore, lang);
+						//catalogUtils.buildProxyProduct(product,merchantStore,LocaleUtils.getLocale(lang));
 				productList.getProducts().add(p);
 	
 			}
 			
-			productList.setTotalCount(productList.getProducts().size());
+			productList.setProductCount(productList.getProducts().size());
 			return productList;
 			
 		
@@ -680,16 +690,21 @@ public class ShoppingCategoryController {
 
 			com.salesmanager.core.business.catalog.product.model.ProductList products = productService.listByStore(merchantStore, lang, productCriteria);
 
+			ReadableProductPopulator populator = new ReadableProductPopulator();
+			populator.setPricingService(pricingService);
+			
+			
 			ProductList productList = new ProductList();
 			for(Product product : products.getProducts()) {
 
 				//create new proxy product
-				com.salesmanager.web.entity.catalog.Product p = catalogUtils.buildProxyProduct(product,merchantStore,LocaleUtils.getLocale(lang));
+				ReadableProduct  p = populator.populate(product, new ReadableProduct(), merchantStore, lang);
+				//com.salesmanager.web.entity.catalog.Product p = catalogUtils.buildProxyProduct(product,merchantStore,LocaleUtils.getLocale(lang));
 				productList.getProducts().add(p);
 				
 			}
 			
-			productList.setTotalCount(products.getTotalCount());
+			productList.setProductCount(products.getTotalCount());
 			
 			
 			return productList;

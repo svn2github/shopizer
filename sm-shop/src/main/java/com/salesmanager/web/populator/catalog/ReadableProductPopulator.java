@@ -60,6 +60,7 @@ public class ReadableProductPopulator extends
 				tragetDescription.setFriendlyUrl(description.getSeUrl());
 				tragetDescription.setName(description.getName());
 				tragetDescription.setDescription(description.getDescription());
+				target.setDescription(tragetDescription);
 			}
 			
 			if(source.getManufacturer()!=null) {
@@ -101,6 +102,7 @@ public class ReadableProductPopulator extends
 	
 			FinalPrice price = pricingService.calculateProductPrice(source);
 			target.setFinalPrice(pricingService.getDisplayAmount(price.getFinalPrice(), store));
+			target.setPrice(price.getFinalPrice());
 	
 			if(price.isDiscounted()) {
 				target.setDiscounted(true);
