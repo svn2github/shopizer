@@ -29,7 +29,7 @@ import com.salesmanager.core.business.catalog.product.service.relationship.Produ
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.entity.catalog.rest.product.ReadableProduct;
+import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.web.shop.controller.ControllerConstants;

@@ -20,7 +20,7 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.entity.catalog.rest.product.ReadableProduct;
+import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 
 public class ShopProductRelationshipTag extends RequestContextAwareTag  {

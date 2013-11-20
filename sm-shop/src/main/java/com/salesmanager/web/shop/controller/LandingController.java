@@ -24,7 +24,7 @@ import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.entity.catalog.rest.product.ReadableProduct;
+import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.entity.shop.Breadcrumb;
 import com.salesmanager.web.entity.shop.BreadcrumbItem;
 import com.salesmanager.web.entity.shop.BreadcrumbItemType;

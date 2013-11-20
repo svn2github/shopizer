@@ -13,8 +13,8 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.utils.AbstractDataPopulator;
-import com.salesmanager.web.entity.catalog.rest.category.CategoryDescription;
-import com.salesmanager.web.entity.catalog.rest.category.PersistableCategory;
+import com.salesmanager.web.entity.catalog.category.CategoryDescription;
+import com.salesmanager.web.entity.catalog.category.PersistableCategory;
 
 public class PersistableCategoryPopulator extends
 		AbstractDataPopulator<PersistableCategory, Category> {

@@ -3,7 +3,7 @@ package com.salesmanager.web.entity.catalog;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.salesmanager.web.entity.catalog.rest.category.ReadableCategory;
+import com.salesmanager.web.entity.catalog.category.ReadableCategory;
 
 /**
  * Object representing the results of a search query

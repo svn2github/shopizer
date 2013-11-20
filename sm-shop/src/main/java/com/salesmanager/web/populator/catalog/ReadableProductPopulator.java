@@ -19,8 +19,8 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.constants.Constants;
 import com.salesmanager.core.utils.AbstractDataPopulator;
 import com.salesmanager.web.entity.catalog.ReadableImage;
-import com.salesmanager.web.entity.catalog.rest.manufacturer.ManufacturerEntity;
-import com.salesmanager.web.entity.catalog.rest.product.ReadableProduct;
+import com.salesmanager.web.entity.catalog.manufacturer.ManufacturerEntity;
+import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.utils.ImageFilePathUtils;
 
 public class ReadableProductPopulator extends
@@ -56,7 +56,7 @@ public class ReadableProductPopulator extends
 			target.setId(source.getId());
 			target.setAvailable(source.isAvailable());
 			if(description!=null) {
-				com.salesmanager.web.entity.catalog.rest.product.ProductDescription tragetDescription = new com.salesmanager.web.entity.catalog.rest.product.ProductDescription();
+				com.salesmanager.web.entity.catalog.product.ProductDescription tragetDescription = new com.salesmanager.web.entity.catalog.product.ProductDescription();
 				tragetDescription.setFriendlyUrl(description.getSeUrl());
 				tragetDescription.setName(description.getName());
 				tragetDescription.setDescription(description.getDescription());

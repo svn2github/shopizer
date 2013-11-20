@@ -31,8 +31,8 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.tax.service.TaxClassService;
 import com.salesmanager.core.utils.AbstractDataPopulator;
-import com.salesmanager.web.entity.catalog.rest.product.PersistableImage;
-import com.salesmanager.web.entity.catalog.rest.product.PersistableProduct;
+import com.salesmanager.web.entity.catalog.product.PersistableImage;
+import com.salesmanager.web.entity.catalog.product.PersistableProduct;
 import com.salesmanager.web.utils.DateUtil;
 
 public class PersistableProductPopulator extends
@@ -80,7 +80,7 @@ public class PersistableProductPopulator extends
 			List<Language> languages = new ArrayList<Language>();
 			Set<ProductDescription> descriptions = new HashSet<ProductDescription>();
 			if(!CollectionUtils.isEmpty(source.getDescriptions())) {
-				for(com.salesmanager.web.entity.catalog.rest.product.ProductDescription description : source.getDescriptions()) {
+				for(com.salesmanager.web.entity.catalog.product.ProductDescription description : source.getDescriptions()) {
 					
 					ProductDescription productDescription = new ProductDescription();
 					productDescription.setProduct(target);
@@ -152,7 +152,7 @@ public class PersistableProductPopulator extends
 			
 			//attributes
 			if(source.getAttributes()!=null) {
-				for(com.salesmanager.web.entity.catalog.rest.product.attribute.ProductAttributeEntity attr : source.getAttributes()) {
+				for(com.salesmanager.web.entity.catalog.product.attribute.ProductAttributeEntity attr : source.getAttributes()) {
 					
 					ProductOption productOption = productOptionService.getById(attr.getOption().getId());
 					if(productOption==null) {
@@ -185,7 +185,7 @@ public class PersistableProductPopulator extends
 			//categories
 			if(!CollectionUtils.isEmpty(source.getCategories())) {
 				
-				for(com.salesmanager.web.entity.catalog.rest.category.Category categ : source.getCategories()) {
+				for(com.salesmanager.web.entity.catalog.category.Category categ : source.getCategories()) {
 					
 					Category c = categoryService.getById(categ.getId());
 					if(c==null) {

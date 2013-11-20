@@ -29,8 +29,8 @@ import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.entity.catalog.rest.category.PersistableCategory;
-import com.salesmanager.web.entity.catalog.rest.category.ReadableCategory;
+import com.salesmanager.web.entity.catalog.category.PersistableCategory;
+import com.salesmanager.web.entity.catalog.category.ReadableCategory;
 import com.salesmanager.web.populator.catalog.PersistableCategoryPopulator;
 import com.salesmanager.web.populator.catalog.ReadableCategoryPopulator;
 

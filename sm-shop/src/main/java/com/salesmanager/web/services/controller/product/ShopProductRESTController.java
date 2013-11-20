@@ -37,9 +37,9 @@ import com.salesmanager.core.business.reference.language.service.LanguageService
 import com.salesmanager.core.business.tax.service.TaxClassService;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.catalog.ProductList;
-import com.salesmanager.web.entity.catalog.rest.product.PersistableProduct;
-import com.salesmanager.web.entity.catalog.rest.product.ReadableProduct;
-import com.salesmanager.web.entity.catalog.rest.product.ReadableProductList;
+import com.salesmanager.web.entity.catalog.product.PersistableProduct;
+import com.salesmanager.web.entity.catalog.product.ReadableProduct;
+import com.salesmanager.web.entity.catalog.product.ReadableProductList;
 import com.salesmanager.web.populator.catalog.PersistableProductPopulator;
 import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.web.shop.model.filter.QueryFilter;

@@ -1,19 +1,17 @@
-package com.salesmanager.web.entity.catalog;
+package com.salesmanager.web.entity.catalog.product;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.salesmanager.web.entity.catalog.product.ReadableProduct;
-
-public class ProductList implements Serializable {
+public class ReadableProductList implements Serializable {
 	
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private int productCount;
+	private int totalCount;
 	private List<ReadableProduct> products = new ArrayList<ReadableProduct>();
 	public void setProducts(List<ReadableProduct> products) {
 		this.products = products;
@@ -21,12 +19,11 @@ public class ProductList implements Serializable {
 	public List<ReadableProduct> getProducts() {
 		return products;
 	}
-	public int getProductCount() {
-		return productCount;
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
 	}
-	public void setProductCount(int productCount) {
-		this.productCount = productCount;
+	public int getTotalCount() {
+		return totalCount;
 	}
-
 
 }

@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.web.entity.catalog.rest.product.attribute.ProductAttribute;
+import com.salesmanager.web.entity.catalog.product.attribute.ProductAttribute;
 
 public class PersistableOrderProduct extends OrderProductEntity implements
 		Serializable {

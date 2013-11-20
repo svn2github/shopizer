@@ -6,7 +6,7 @@ import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.AbstractDataPopulator;
-import com.salesmanager.web.entity.catalog.rest.category.ReadableCategory;
+import com.salesmanager.web.entity.catalog.category.ReadableCategory;
 
 public class ReadableCategoryPopulator extends
 		AbstractDataPopulator<Category, ReadableCategory> {
@@ -32,7 +32,7 @@ public class ReadableCategoryPopulator extends
 		
 		
 			if(description!=null) {
-				com.salesmanager.web.entity.catalog.rest.category.CategoryDescription desc = new com.salesmanager.web.entity.catalog.rest.category.CategoryDescription();
+				com.salesmanager.web.entity.catalog.category.CategoryDescription desc = new com.salesmanager.web.entity.catalog.category.CategoryDescription();
 				desc.setFriendlyUrl(description.getSeUrl());
 				desc.setName(description.getName());
 				desc.setDescription(description.getName());

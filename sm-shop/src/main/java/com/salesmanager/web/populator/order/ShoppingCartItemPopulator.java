@@ -34,7 +34,7 @@ public class ShoppingCartItemPopulator extends
 		Product product = productService.getById(source.getProduct().getId());
 		if(source.getAttributes()!=null) {
 
-			for(com.salesmanager.web.entity.catalog.rest.product.attribute.ProductAttribute attr : source.getAttributes()) {
+			for(com.salesmanager.web.entity.catalog.product.attribute.ProductAttribute attr : source.getAttributes()) {
 				ProductAttribute attribute = productAttributeService.getById(attr.getId());
 				if(attribute==null) {
 					throw new ConversionException("ProductAttribute with id " + attr.getId() + " is null");

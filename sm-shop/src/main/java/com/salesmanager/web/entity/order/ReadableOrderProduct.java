@@ -2,7 +2,7 @@ package com.salesmanager.web.entity.order;
 
 import java.io.Serializable;
 
-import com.salesmanager.web.entity.catalog.rest.product.ReadableProduct;
+import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 
 public class ReadableOrderProduct extends OrderProductEntity implements
 		Serializable {
