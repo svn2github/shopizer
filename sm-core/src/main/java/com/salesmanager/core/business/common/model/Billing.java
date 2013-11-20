@@ -31,6 +31,9 @@ public class Billing {
 	@Column (name ="BILLING_POSTCODE", length=20)
 	private String postalCode;
 	
+	@Column(name="BILLING_TELEPHONE", length=32, nullable=false)
+	private String telephone;
+	
 	@Column (name ="BILLING_STATE", length=100)
 	private String state;
 
@@ -104,6 +107,14 @@ public class Billing {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
+	public String getTelephone() {
+		return telephone;
 	}
 	
 }

@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 import com.salesmanager.core.business.shipping.service.ShippingService;
+import com.salesmanager.core.business.shoppingcart.model.ShoppingCartAttributeItem;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.tax.model.TaxItem;
 import com.salesmanager.core.business.tax.service.TaxService;
@@ -149,6 +151,7 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		for(ShoppingCartItem item : summary.getProducts()) {
 			
 			BigDecimal st = item.getItemPrice().multiply(new BigDecimal(item.getQuantity()));
+			//Set<ShoppingCartAttributeItem> attributes = item.getAttributes();
 			item.setSubTotal(st);
 			subTotal = subTotal.add(st);
 			

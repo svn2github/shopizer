@@ -32,6 +32,9 @@ public class Delivery {
 	@Column (name ="DELIVERY_STATE", length=100)
 	private String state;
 	
+	@Column(name="DELIVERY_TELEPHONE", length=32, nullable=false)
+	private String telephone;
+	
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="DELIVERY_COUNTRY_ID", nullable=false)
 	private Country country;
@@ -103,6 +106,14 @@ public class Delivery {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
+	public String getTelephone() {
+		return telephone;
 	}	
 	
 }
