@@ -8,7 +8,7 @@ import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.AbstractDataPopulator;
-import com.salesmanager.web.entity.catalog.Manufacturer;
+import com.salesmanager.web.entity.catalog.manufacturer.ManufacturerEntity;
 
 
 /**
@@ -17,16 +17,16 @@ import com.salesmanager.web.entity.catalog.Manufacturer;
  */
 
 
-public class ManufacturerPopulator extends AbstractDataPopulator<com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer,com.salesmanager.web.entity.catalog.Manufacturer>
+public class ManufacturerPopulator extends AbstractDataPopulator<com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer,ManufacturerEntity>
 {
 
 
 
 	
 	@Override
-	public Manufacturer populate(
+	public ManufacturerEntity populate(
 			com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer source,
-			Manufacturer target, MerchantStore store, Language language) throws ConversionException {
+			ManufacturerEntity target, MerchantStore store, Language language) throws ConversionException {
 		target.setId(source.getId());
 		if(source.getDescriptions()!=null && source.getDescriptions().size()>0) {
 			
@@ -44,13 +44,12 @@ public class ManufacturerPopulator extends AbstractDataPopulator<com.salesmanage
 				}
 
 		}
-		
-		target.setLanguage(language.getCode());
+
 		return target;
 	}
 
     @Override
-    protected Manufacturer createTarget()
+    protected ManufacturerEntity createTarget()
     {
         // TODO Auto-generated method stub
         return null;
