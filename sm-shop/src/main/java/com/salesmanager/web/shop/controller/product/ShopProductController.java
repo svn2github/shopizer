@@ -29,12 +29,12 @@ import com.salesmanager.core.business.catalog.product.service.relationship.Produ
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.entity.catalog.Attribute;
-import com.salesmanager.web.entity.catalog.AttributeValue;
 import com.salesmanager.web.entity.catalog.rest.product.ReadableProduct;
 import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.web.shop.controller.ControllerConstants;
+import com.salesmanager.web.shop.model.catalog.Attribute;
+import com.salesmanager.web.shop.model.catalog.AttributeValue;
 import com.salesmanager.web.utils.PageBuilderUtils;
 
 @Controller

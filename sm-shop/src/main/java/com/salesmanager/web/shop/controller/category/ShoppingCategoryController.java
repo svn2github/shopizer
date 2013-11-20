@@ -47,7 +47,6 @@ import com.salesmanager.web.populator.manufacturer.ManufacturerPopulator;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.model.filter.QueryFilter;
 import com.salesmanager.web.shop.model.filter.QueryFilterType;
-import com.salesmanager.web.utils.CatalogUtils;
 import com.salesmanager.web.utils.LabelUtils;
 import com.salesmanager.web.utils.LocaleUtils;
 import com.salesmanager.web.utils.PageBuilderUtils;
@@ -89,9 +88,6 @@ public class ShoppingCategoryController {
 	private PricingService pricingService;
 	
 
-	
-	@Autowired
-	private CatalogUtils catalogUtils;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ShoppingCategoryController.class);
 	

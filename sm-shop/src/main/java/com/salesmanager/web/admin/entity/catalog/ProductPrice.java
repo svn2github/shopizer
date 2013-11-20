@@ -1,4 +1,4 @@
-package com.salesmanager.web.entity.catalog;
+package com.salesmanager.web.admin.entity.catalog;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -252,7 +252,7 @@ public class ProductPriceController {
 	
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
-		com.salesmanager.web.entity.catalog.ProductPrice pprice = new com.salesmanager.web.entity.catalog.ProductPrice();
+		com.salesmanager.web.admin.entity.catalog.ProductPrice pprice = new com.salesmanager.web.admin.entity.catalog.ProductPrice();
 		
 		ProductPrice productPrice = null;
 		ProductAvailability productAvailability = null;
@@ -343,7 +343,7 @@ public class ProductPriceController {
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/price/save.html", method=RequestMethod.POST)
-	public String saveProductPrice(@Valid @ModelAttribute("price") com.salesmanager.web.entity.catalog.ProductPrice price, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
+	public String saveProductPrice(@Valid @ModelAttribute("price") com.salesmanager.web.admin.entity.catalog.ProductPrice price, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
 		//dates after save
 		

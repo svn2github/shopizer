@@ -1,5 +1,6 @@
 package com.salesmanager.test.shop.controller.category.rest;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.client.RestTemplate;
 
-import com.salesmanager.web.entity.catalog.Product;
+import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.web.entity.catalog.rest.category.Category;
 import com.salesmanager.web.entity.catalog.rest.category.CategoryDescription;
 import com.salesmanager.web.entity.catalog.rest.category.PersistableCategory;
@@ -52,7 +53,9 @@ public class CategoryManagementAPITest {
 	
 	public HttpHeaders getHeader(){
 		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
+		MediaType mediaType = new MediaType("application", "json", Charset.forName("UTF-8"));
+		//MediaType.APPLICATION_JSON //for application/json
+		headers.setContentType(mediaType);
 		//Basic Authentication
 		String authorisation = "admin" + ":" + "password";
 		byte[] encodedAuthorisation = Base64.encode(authorisation.getBytes());

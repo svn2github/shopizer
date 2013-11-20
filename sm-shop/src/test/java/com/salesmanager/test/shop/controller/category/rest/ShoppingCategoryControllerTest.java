@@ -2,18 +2,16 @@ package com.salesmanager.test.shop.controller.category.rest;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.client.RestTemplate;
 
-import com.salesmanager.web.entity.catalog.Category;
-import com.salesmanager.web.entity.catalog.Product;
-
+/**
+ * ** Slowlow decommisionned for CategoryManagementAPITest **
+ * @author casams1
+ *
+ */
 public class ShoppingCategoryControllerTest {
 	
 	private RestTemplate restTemplate;
@@ -28,7 +26,7 @@ public class ShoppingCategoryControllerTest {
 		
 
 		//create category
-		postCategory();
+		//postCategory();
 		
 		//getCategories();
 		
@@ -36,7 +34,7 @@ public class ShoppingCategoryControllerTest {
 		//putCategory();
 
 		//delete customer
-		deleteCategory();
+		//deleteCategory();
 		
 	}
 	
@@ -92,7 +90,7 @@ public class ShoppingCategoryControllerTest {
 		System.out.println("Category "+testCategoryID+" Updated.");
 	}*/
 	
-	public void postCategory() throws Exception {
+/*	public void postCategory() throws Exception {
 		restTemplate = new RestTemplate();
 		
 		String jsonString = ("{"+
@@ -115,16 +113,16 @@ public class ShoppingCategoryControllerTest {
 		Category cat = (Category) response.getBody();
 		System.out.println("New Category ID : " + cat.getId());
 		testCategoryID = cat.getId();
-	}
+	}*/
 	
-	public void deleteCategory() throws Exception {
+/*	public void deleteCategory() throws Exception {
 		restTemplate = new RestTemplate();
 		
 		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
 		
 		restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/category/DEFAULT/en/"+testCategoryID, HttpMethod.DELETE, httpEntity, Category.class);
 		System.out.println("Category "+testCategoryID+" Deleted.");
-	}
+	}*/
 	
 /*	@Test
 	@Ignore

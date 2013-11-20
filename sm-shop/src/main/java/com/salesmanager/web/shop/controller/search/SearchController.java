@@ -47,7 +47,7 @@ import com.salesmanager.web.populator.catalog.ReadableCategoryPopulator;
 import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.model.search.AutoCompleteRequest;
-import com.salesmanager.web.utils.CatalogUtils;
+
 @Controller
 public class SearchController {
 	
@@ -68,10 +68,7 @@ public class SearchController {
 	
 	@Autowired
 	private PricingService pricingService;
-	
-	
-	@Autowired
-	private CatalogUtils catalogUtils;
+
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(SearchController.class);
 	
