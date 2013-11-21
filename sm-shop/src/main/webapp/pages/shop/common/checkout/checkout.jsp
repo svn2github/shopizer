@@ -75,15 +75,15 @@ $(document).ready(function() {
 	
 		
 	
-		$(".country-list").change(function() {
-			getZones($(this).val());
-	    })
+		//$(".country-list").change(function() {
+		//	getZones($(this).val());
+	    //})
 	
-	    $(".billing-country-list").change(function() {
+	    $("#billing-country-list").change(function() {
 			getBillingZones($(this).val());
 	    })
 	
-	    $(".delivery-country-list").change(function() {
+	    $("#delivery-country-list").change(function() {
 	    	getDeliveryZones($(this).val());
 	    })
     
@@ -289,7 +289,7 @@ function getBillingZones(countryCode){
   				   <div class="control-group"> 
 					<label><s:message code="label.customer.lastname" text="Last Name"/></label>
     					<div class="controls"> 
-    					<form:input id="customer.lastName" cssClass="input-mediumhighlight"  maxlength="32" path="customer.lastName" />
+    					<form:input id="customer.lastName" cssClass="input-medium highlight"  maxlength="32" path="customer.lastName" />
     					</div> 
   				   </div> 
 				</div>
@@ -327,7 +327,7 @@ function getBillingZones(countryCode){
 
 
   			<div class="control-group"> 
-				<label><s:message code="label.customer.streetaddress" text="StreetAddress"/></label>
+				<label><s:message code="label.customer.streetaddress" text="Street address"/></label>
     				<div class="controls"> 
       					<form:input id="customer.billing.address" cssClass="input-medium highlight" path="customer.billing.address"/>
     				</div> 
@@ -362,7 +362,7 @@ function getBillingZones(countryCode){
 
 			<div class="span4">
   			<div class="control-group"> 
-				<label><s:message code="label.customer.postalcode" text="Postalcode"/></label>
+				<label><s:message code="label.customer.postalcode" text="Postal code"/></label>
     				<div class="controls"> 
       					<form:input id="customer.billing.postalCode" cssClass="input-medium highlight" path="customer.billing.postalCode"/>
     				</div> 
@@ -392,10 +392,6 @@ function getBillingZones(countryCode){
 				<label class="checkbox" checked> <input type="checkbox" id="useAddress"> <s:message code="label.customer.shipping.shipaddress" text="Ship to this address" /></label>
 			</div>
 
-
-			
-
-
 		</div>
 
 		<div class="span8">
@@ -410,9 +406,9 @@ function getBillingZones(countryCode){
 
 				<div class="span4">
   				   <div class="control-group"> 
-					<label>First</label>
+					<label><s:message code="label.customer.firstname" text="First Name"/></label>
     					<div class="controls"> 
-      					<input type="text" class="input-medium" id="first"> 
+      					<form:input id="customer.firstName" cssClass="input-medium highlight" path="customer.firstName"/>
     					</div> 
   				   </div> 
 				</div>
@@ -420,9 +416,9 @@ function getBillingZones(countryCode){
 
 				<div class="span4">
   				   <div class="control-group"> 
-					<label>Last</label>
+					<label><s:message code="label.customer.lastname" text="Last Name"/></label>
     					<div class="controls"> 
-      					<input type="text" class="input-medium" id="last"> 
+      					<form:input id="customer.lastName" cssClass="input-medium highlight" path="customer.lastName"/>
     					</div> 
   				   </div> 
 				</div>
@@ -436,9 +432,9 @@ function getBillingZones(countryCode){
 
 
   			<div class="control-group"> 
-				<label>Address</label>
+				<label><s:message code="label.customer.streetaddress" text="Street address"/></label>
     				<div class="controls"> 
-      					<input type="text" class="input-xlarge" id="address1">
+      					<form:input id="customer.delivery.address" cssClass="input-medium highlight" path="customer.delivery.address"/>
     				</div> 
   			</div> 
 
@@ -449,9 +445,9 @@ function getBillingZones(countryCode){
 
 			<div class="span4">
   			<div class="control-group"> 
-				<label>City</label>
+				<label><s:message code="label.customer.city" text="City"/></label>
     				<div class="controls"> 
-      					<input type="text" class="input-medium" id="city">
+      					<form:input id="customer.delivery.city" cssClass="input-medium highlight" path="customer.delivery.city"/>
     				</div> 
   			</div>
 			</div>
@@ -460,9 +456,10 @@ function getBillingZones(countryCode){
 
 			<div class="span4">
   			<div class="control-group"> 
-				<label>State / Province</label>
+				<label><s:message code="label.customer.zone" text="State / Province"/></label>
     				<div class="controls"> 
-      					<input type="text" class="input-medium" id="state">
+	       				<form:select cssClass="zone-list highlight" path="customer.delivery.zone"/>
+                      	<form:input  class="input-large highlight" id="stateOther"  maxlength="100" name="stateOther" path="customer.delivery.stateProvince" /> 
     				</div> 
   			</div>
 			</div>
@@ -470,9 +467,9 @@ function getBillingZones(countryCode){
 
 			<div class="span4">
   			<div class="control-group"> 
-				<label>Postal code</label>
+				<label><s:message code="label.customer.postalcode" text="Postal code"/></label>
     				<div class="controls"> 
-      					<input type="text" class="input-small" id="postalcode">
+      					<form:input id="customer.delivery.postalCode" cssClass="input-medium highlight" path="customer.delivery.postalCode"/>
     				</div> 
   			</div>
 			</div>
@@ -488,9 +485,9 @@ function getBillingZones(countryCode){
 	  			</div>
 	
 	  			<div class="control-group"> 
-					<label>Phone</label>
+					<label><s:message code="label.customer.telephone" text="Phone"/></label>
 	    				<div class="controls"> 
-	      					<input type="text" class="input-large" id="phone">
+	      					<form:input id="customer.delivery.phone" cssClass="input-large highlight" path="customer.delivery.phone"/>
 	    				</div> 
 	  			</div>
 
@@ -532,65 +529,60 @@ function getBillingZones(countryCode){
     		<div class="tab-pane" id="tab2">
 
 
-<div class="control-group">
-	<label class="control-label">Card Holder's Name</label>
-	<div class="controls">
-		<input type="text" class="input-large" pattern="\w+ \w+.*" title="Fill your first and last name" required>
+			<div class="control-group">
+				<label class="control-label">Card Holder's Name</label>
+				<div class="controls">
+					<input type="text" class="input-large" pattern="\w+ \w+.*" title="Fill your first and last name" required>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Card Number</label>
+				<div class="controls">
+					<div class="row-fluid">
+						<input type="text" class="input-large" autocomplete="off"  required>
+					</div>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Card Expiry Date</label>
+				<div class="controls">
+					<div class="row-fluid">
+					<div class="span3">
+						<select class="input-medium">
+							<option>January</option>
+							<option>...</option>
+							<option>December</option>
+						</select>
+					</div>
+					<div class="span3">
+						<select class="input-small">
+							<option>2013</option>
+							<option>...</option>
+							<option>2015</option>
+						</select>
+					</div>
+				</div>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Card CVV</label>
+				<div class="controls">
+				<div class="row-fluid">
+					<div class="span3">
+						<input type="text" class="input-small" autocomplete="off" maxlength="3" pattern="\d{3}" title="Three digits at back of your card" required>
+					</div>
+				<div class="span8">
+				<!-- screenshot may be here -->
+				</div>
+			</div>
 	</div>
 </div>
-<div class="control-group">
-	<label class="control-label">Card Number</label>
-	<div class="controls">
-		<div class="row-fluid">
-			<input type="text" class="input-large" autocomplete="off"  required>
-		</div>
-	</div>
-</div>
-<div class="control-group">
-	<label class="control-label">Card Expiry Date</label>
-	<div class="controls">
-		<div class="row-fluid">
-		<div class="span3">
-			<select class="input-medium">
-				<option>January</option>
-				<option>...</option>
-				<option>December</option>
-			</select>
-		</div>
-		<div class="span3">
-			<select class="input-small">
-				<option>2013</option>
-				<option>...</option>
-				<option>2015</option>
-			</select>
-		</div>
-	</div>
-	</div>
-</div>
-<div class="control-group">
-	<label class="control-label">Card CVV</label>
-	<div class="controls">
-	<div class="row-fluid">
-		<div class="span3">
-			<input type="text" class="input-small" autocomplete="off" maxlength="3" pattern="\d{3}" title="Three digits at back of your card" required>
-		</div>
-	<div class="span8">
-	<!-- screenshot may be here -->
-	</div>
-</div>
-</div>
-</div>
-
-
-
-
-
 
     		</div>
-    		<div class="tab-pane" id="tab3">
-    			<p>Check<p>
-    		</div>
-       </div>
+	    		<div class="tab-pane" id="tab3">
+	    			<p>Check<p>
+	    		</div>
+       		</div>
     </div>
 					</div>
 

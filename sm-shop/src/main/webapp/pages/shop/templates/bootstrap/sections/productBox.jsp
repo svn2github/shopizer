@@ -16,7 +16,7 @@ response.setDateHeader ("Expires", -1);
 
 
 										<c:forEach items="${requestScope.ITEMS}" var="product">
-											<li class="span3">
+											<li class="span3" data-id="${product.id}" item-price="${product.price}" item-name="${product.description.name}">
 												<div class="product-box">                                        
 													<a href="<c:url value="/shop/product/" /><c:out value="${product.description.friendlyUrl}"/>.html"><h4><c:out value="${product.description.name}"/></h4></a>
 													<h3>
@@ -31,7 +31,7 @@ response.setDateHeader ("Expires", -1);
 													</h3>
 													<c:if test="${product.image!=null}"><a href="<c:url value="/shop/product/" /><c:out value="${product.description.friendlyUrl}"/>.html"><img src="<sm:shopProductImage imageName="${product.image}" sku="${product.sku}"/>"/></a></c:if>
 													<div class="bottom">
-														<a href="<c:url value="/shop/product/" /><c:out value="${product.description.friendlyUrl}"/>.html">view</a> / <a class="addToCart" href="#" productId="${product.id}">add to cart</a>
+														<a href="<c:url value="/shop/product/" /><c:out value="${product.description.friendlyUrl}"/>.html"><s:message code="button.label.view" text="Details" /></a> / <a class="addToCart" href="#" productId="${product.id}"><s:message code="button.label.addToCart" text="Add to cart" /></a>
 													</div>
 												</div>
 										    </li>

@@ -19,18 +19,7 @@
 
 
         <script type="text/javascript">
-            $(document).ready(function(){
-                //$('.carousel').carousel({
-                //    interval: 2000
-                //})
-				
-				//$('#product-tab a:first').tab('show');
-				//$('#product-tab a').click(function (e) {
-				//	e.preventDefault();
-				//	$(this).tab('show');
-				//})
-            });
-            
+
             $('#product-tab a:first').tab('show');
             $('#product-tab a').click(function (e) {
             		e.preventDefault();
