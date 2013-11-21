@@ -580,6 +580,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 	     */
 	    ProductOption option = new ProductOption();
 	    option.setMerchantStore(store);
+	    option.setCode("copy");
 	    option.setProductOptionType(ProductOptionType.Radio.name());
 	    
 	    ProductOptionDescription optionDescription = new ProductOptionDescription();
@@ -594,6 +595,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 	    
 	    ProductOptionValue soft = new ProductOptionValue();
 	    soft.setMerchantStore(store);
+	    soft.setCode("soft");
 	    
 	    ProductOptionValueDescription softDescription = new ProductOptionValueDescription();
 	    softDescription.setLanguage(en);
@@ -608,6 +610,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 	    
 	    ProductOptionValue hard = new ProductOptionValue();
 	    hard.setMerchantStore(store);
+	    hard.setCode("hard");
 	    
 	    ProductOptionValueDescription hardDescription = new ProductOptionValueDescription();
 	    hardDescription.setLanguage(en);

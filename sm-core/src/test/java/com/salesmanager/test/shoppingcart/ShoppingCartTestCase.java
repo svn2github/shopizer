@@ -105,6 +105,7 @@ public class ShoppingCartTestCase extends AbstractSalesManagerCoreTestCase {
 	     */
 	    ProductOption option = new ProductOption();
 	    option.setMerchantStore(store);
+	    option.setCode("color");
 	    option.setProductOptionType(ProductOptionType.Radio.name());
 	    
 	    ProductOptionDescription optionDescription = new ProductOptionDescription();
@@ -121,6 +122,7 @@ public class ShoppingCartTestCase extends AbstractSalesManagerCoreTestCase {
 	    /** first option value **/
 	    ProductOptionValue white = new ProductOptionValue();
 	    white.setMerchantStore(store);
+	    white.setCode("white");
 	    
 	    ProductOptionValueDescription whiteDescription = new ProductOptionValueDescription();
 	    whiteDescription.setLanguage(en);
@@ -135,6 +137,7 @@ public class ShoppingCartTestCase extends AbstractSalesManagerCoreTestCase {
 	    
 	    ProductOptionValue black = new ProductOptionValue();
 	    black.setMerchantStore(store);
+	    black.setCode("black");
 	    
 	    /** second option value **/
 	    ProductOptionValueDescription blackDesc = new ProductOptionValueDescription();
@@ -307,6 +310,7 @@ public class ShoppingCartTestCase extends AbstractSalesManagerCoreTestCase {
 	     */
 	    ProductOption option = new ProductOption();
 	    option.setMerchantStore(store);
+	    option.setCode("color");
 	    option.setProductOptionType(ProductOptionType.Radio.name());
 	    
 	    ProductOptionDescription optionDescription = new ProductOptionDescription();
@@ -323,6 +327,7 @@ public class ShoppingCartTestCase extends AbstractSalesManagerCoreTestCase {
 	    /** first option value **/
 	    ProductOptionValue white = new ProductOptionValue();
 	    white.setMerchantStore(store);
+	    white.setCode("white");
 	    
 	    ProductOptionValueDescription whiteDescription = new ProductOptionValueDescription();
 	    whiteDescription.setLanguage(en);
@@ -337,6 +342,7 @@ public class ShoppingCartTestCase extends AbstractSalesManagerCoreTestCase {
 	    
 	    ProductOptionValue black = new ProductOptionValue();
 	    black.setMerchantStore(store);
+	    black.setCode("black");
 	    
 	    /** second option value **/
 	    ProductOptionValueDescription blackDesc = new ProductOptionValueDescription();

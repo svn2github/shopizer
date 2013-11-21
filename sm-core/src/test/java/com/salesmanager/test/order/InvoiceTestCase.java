@@ -92,6 +92,7 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 	    //create an option
 	    ProductOption color = new ProductOption();
 	    color.setMerchantStore(store);
+	    color.setCode("color");
 	    color.setProductOptionType("SELECT");
 	    
 	    ProductOptionDescription colorDescription = new ProductOptionDescription();
@@ -110,6 +111,7 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 	    //create an option value
 	    ProductOptionValue red = new ProductOptionValue();
 	    red.setMerchantStore(store);
+	    red.setCode("red");
 	    
 	    ProductOptionValueDescription redDescription = new ProductOptionValueDescription();
 	    redDescription.setDescription("Red");

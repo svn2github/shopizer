@@ -148,6 +148,7 @@ public class SearchByProductAttributeTestCase extends AbstractSalesManagerCoreTe
 	    //Author name - Jimmy Jones
 	    ProductOptionValue jimmyjones = new ProductOptionValue();
 	    jimmyjones.setMerchantStore(store);
+	    jimmyjones.setCode("jimmyjones");
 	    jimmyjones.setProductOptionDisplayOnly(true);
 	    
 	    ProductOptionValueDescription jimmyjonesd = new ProductOptionValueDescription();
@@ -163,6 +164,7 @@ public class SearchByProductAttributeTestCase extends AbstractSalesManagerCoreTe
 	    //Author name - Lucy Scott
 	    ProductOptionValue lucyscott = new ProductOptionValue();
 	    lucyscott.setMerchantStore(store);
+	    lucyscott.setCode("lucyscott");
 	    lucyscott.setProductOptionDisplayOnly(true);
 	    
 	    ProductOptionValueDescription lucyscottd = new ProductOptionValueDescription();
@@ -177,6 +179,7 @@ public class SearchByProductAttributeTestCase extends AbstractSalesManagerCoreTe
 	    //Author name - Carlos Santana Scott
 	    ProductOptionValue carlossantana = new ProductOptionValue();
 	    carlossantana.setMerchantStore(store);
+	    carlossantana.setCode("carlossantana");
 	    carlossantana.setProductOptionDisplayOnly(true);
 	    
 	    ProductOptionValueDescription carlossantanad = new ProductOptionValueDescription();
