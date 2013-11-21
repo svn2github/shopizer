@@ -50,8 +50,9 @@
 	});
 	
 	function initBindings() {
-		$(".addToCart").click(function(){ 
-			addToCart();
+		$(".addToCart").click(function(){
+			
+			addToCart($(this).attr("productId"));
 	    });
 		
 	}
@@ -59,11 +60,13 @@
 	/**
 	 * Function used for adding a product to the Shopping Cart
 	 */
-	function addToCart() {
+	function addToCart(sku) {
 		
 		//var cart = $.cookie( 'cart' );
 		//core properties
-		var sku = $(this).attr("productId");
+		
+		
+		//var sku = $(this).attr("productId");
 		
 		var qty = '#qty-productId-'+ sku;
 		var quantity = $(qty).val();
@@ -200,3 +203,8 @@
 		});
 		
 	}
+	
+function removeLineItem(lineItemId){
+	$( "#shoppingCartLineitem_"+lineItemId).submit();		
+		
+}
