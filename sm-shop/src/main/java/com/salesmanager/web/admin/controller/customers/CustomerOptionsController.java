@@ -165,6 +165,13 @@ public class CustomerOptionsController {
 				return "redirect:/admin/options/options.html";
 			}
 		}
+		
+		//validate if it contains an existing code
+		CustomerOption byCode = customerOptionService.getByCode(store, option.getCode());
+		if(byCode!=null) {
+			ObjectError error = new ObjectError("code",messages.getMessage("message.code.exist", locale));
+			result.addError(error);
+		}
 
 			
 		Map<String,Language> langs = languageService.getLanguagesMap();

@@ -186,6 +186,13 @@ public class CustomerOptionsValueController {
 				return "redirect:/admin/customers/options/values/list.html";
 			}
 		}
+		
+		//validate if it contains an existing code
+		CustomerOptionValue byCode = customerOptionValueService.getByCode(store, optionValue.getCode());
+		if(byCode!=null) {
+			ObjectError error = new ObjectError("code",messages.getMessage("message.code.exist", locale));
+			result.addError(error);
+		}
 
 			
 		Map<String,Language> langs = languageService.getLanguagesMap();

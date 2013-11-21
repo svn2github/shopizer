@@ -185,6 +185,13 @@ public class OptionsValueController {
 			
 			
 		}
+		
+		//validate if it contains an existing code
+		ProductOptionValue byCode = productOptionValueService.getByCode(store, optionValue.getCode());
+		if(byCode!=null) {
+			ObjectError error = new ObjectError("code",messages.getMessage("message.code.exist", locale));
+			result.addError(error);
+		}
 
 			
 		Map<String,Language> langs = languageService.getLanguagesMap();

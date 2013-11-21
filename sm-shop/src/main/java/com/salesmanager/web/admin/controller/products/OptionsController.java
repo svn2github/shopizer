@@ -19,6 +19,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionDescription;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -153,7 +155,7 @@ public class OptionsController {
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/options/save.html", method=RequestMethod.POST)
-	public String saveOption(@Valid @ModelAttribute("option") ProductOption option, BindingResult result, Model model, HttpServletRequest request) throws Exception {
+	public String saveOption(@Valid @ModelAttribute("option") ProductOption option, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
 
 		//display menu
@@ -163,13 +165,19 @@ public class OptionsController {
 		ProductOption dbEntity =	null;	
 
 		if(option.getId() != null && option.getId() >0) { //edit entry
-			
 			//get from DB
 			dbEntity = productOptionService.getById(option.getId());
 			
 			if(dbEntity==null) {
 				return "redirect:/admin/options/options.html";
 			}
+		}
+		
+		//validate if it contains an existing code
+		ProductOption byCode = productOptionService.getByCode(store, option.getCode());
+		if(byCode!=null) {
+			ObjectError error = new ObjectError("code",messages.getMessage("message.code.exist", locale));
+			result.addError(error);
 		}
 
 			
