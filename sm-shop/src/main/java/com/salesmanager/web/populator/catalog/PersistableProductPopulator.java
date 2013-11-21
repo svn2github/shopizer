@@ -77,6 +77,8 @@ public class PersistableProductPopulator extends
 				}
 			}
 			
+			target.setMerchantStore(store);
+			
 			List<Language> languages = new ArrayList<Language>();
 			Set<ProductDescription> descriptions = new HashSet<ProductDescription>();
 			if(!CollectionUtils.isEmpty(source.getDescriptions())) {
