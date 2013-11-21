@@ -35,6 +35,7 @@ public class Constants {
 	public final static String PRODUCT_ID_URI= "/productid";
 	
 	public final static String URL_EXTENSION= "html";
+	public final static String REDIRECT_PREFIX ="redirect:";
 	
 	
 	public final static String TEST_ENVIRONMENT= "TEST";

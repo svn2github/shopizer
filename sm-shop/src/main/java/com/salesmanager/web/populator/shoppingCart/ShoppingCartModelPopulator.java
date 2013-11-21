@@ -11,6 +11,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
@@ -31,6 +32,7 @@ import com.salesmanager.web.entity.shoppingcart.ShoppingCartItem;
  * @author Umesh A
  */
 
+@Service(value="shoppingCartModelPopulator")
 public class ShoppingCartModelPopulator
     extends AbstractDataPopulator<ShoppingCartData,ShoppingCart>
 {
