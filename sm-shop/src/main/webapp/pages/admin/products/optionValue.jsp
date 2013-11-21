@@ -74,7 +74,16 @@
       							
       				<form:errors path="*" cssClass="alert alert-error" element="div" />
 					<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
-								
+				
+				
+				 <div class="control-group">
+                        <label><s:message code="label.entity.code" text="Option value code"/></label>
+                        <div class="controls">
+                                    <form:input cssClass="highlight" id="code" path="code"/>
+                                    <span class="help-inline"><form:errors path="code" cssClass="error" /></span>
+                        </div>
+                  </div>
+							
                  <c:forEach items="${optionValue.descriptionsSettoList}" var="description" varStatus="counter">
                   
 	                 <div class="control-group">

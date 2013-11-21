@@ -58,7 +58,7 @@
                   <div class="control-group">
                         <label><s:message code="label.product.option.code" text="Option code"/></label>
                         <div class="controls">
-                                    <form:input id="code" path="code"/>
+                                    <form:input cssClass="highlight" id="code" path="code"/>
                                     <span class="help-inline"><s:message code="label.product.option.codehelp" text="Option code is required for querying products by attributes"/>&nbsp;<form:errors path="code" cssClass="error" /></span>
                         </div>
                   </div>
