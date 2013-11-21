@@ -62,6 +62,29 @@ public class CustomerOptionDaoImpl extends SalesManagerEntityDaoImpl<Long, Custo
 
 	}
 	
+	@Override
+	public CustomerOption getByCode(MerchantStore store, String optionCode) {
+		
+		
+		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
+		QCustomerOptionDescription qCustomerOptionDescription = QCustomerOptionDescription.customerOptionDescription;
+		
+		
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCustomerOption)
+			.leftJoin(qCustomerOption.descriptions, qCustomerOptionDescription).fetch()
+			.leftJoin(qCustomerOption.merchantStore).fetch()
+			.where(qCustomerOption.merchantStore.id.eq(store.getId())
+			.and(qCustomerOption.code.eq(optionCode)));
+		
+		return query.uniqueResult(qCustomerOption);
+		
+
+
+	}
+	
 
 	
 	@Override

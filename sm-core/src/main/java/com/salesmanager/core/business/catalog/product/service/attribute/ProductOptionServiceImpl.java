@@ -91,6 +91,11 @@ public class ProductOptionServiceImpl extends
 		
 	}
 	
+	@Override
+	public ProductOption getByCode(MerchantStore store, String optionCode) {
+		return productOptionDao.getByCode(store, optionCode);
+	}
+	
 
 	
 

@@ -19,4 +19,6 @@ public interface ProductOptionValueDao extends SalesManagerEntityDao<Long, Produ
 	List<ProductOptionValue> listByStoreNoReadOnly(MerchantStore store,
 			Language language);
 
+	ProductOptionValue getByCode(MerchantStore store, String optionValueCode);
+
 }

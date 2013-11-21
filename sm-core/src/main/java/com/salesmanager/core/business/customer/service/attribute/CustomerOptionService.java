@@ -19,5 +19,9 @@ public interface CustomerOptionService extends SalesManagerEntityService<Long, C
 
 
 
+	CustomerOption getByCode(MerchantStore store, String optionCode);
+
+
+
 
 }

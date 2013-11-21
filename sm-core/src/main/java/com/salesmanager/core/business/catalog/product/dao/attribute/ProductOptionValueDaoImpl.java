@@ -98,6 +98,22 @@ public class ProductOptionValueDaoImpl extends SalesManagerEntityDaoImpl<Long, P
 		List<ProductOptionValue> options = query.list(qProductOption);
 		return options;
 	}
+	
+	@Override
+	public ProductOptionValue getByCode(MerchantStore store, String optionValueCode) {
+		QProductOptionValue qProductOption = QProductOptionValue.productOptionValue;
+		QProductOptionValueDescription qDescription = QProductOptionValueDescription.productOptionValueDescription;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qProductOption)
+			.leftJoin(qProductOption.descriptions, qDescription).fetch()
+			.leftJoin(qProductOption.merchantStore).fetch()
+			.where(qProductOption.code.eq(optionValueCode)
+			.and(qProductOption.merchantStore.id.eq(store.getId())));
+		
+		return query.uniqueResult(qProductOption);
+	}
 
 
 

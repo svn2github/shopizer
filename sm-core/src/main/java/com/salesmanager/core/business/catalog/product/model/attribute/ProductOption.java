@@ -18,8 +18,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.annotations.Index;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -27,7 +30,8 @@ import com.salesmanager.core.constants.SchemaConstant;
 
 
 @Entity
-@Table(name="PRODUCT_OPTION", schema=SchemaConstant.SALESMANAGER_SCHEMA)
+@Table(name="PRODUCT_OPTION", schema=SchemaConstant.SALESMANAGER_SCHEMA, uniqueConstraints=
+	@UniqueConstraint(columnNames = {"MERCHANT_ID", "PRODUCT_OPTION_CODE"}))
 public class ProductOption extends SalesManagerEntity<Long, ProductOption> {
 	private static final long serialVersionUID = -2019269055342226086L;
 	
@@ -43,6 +47,7 @@ public class ProductOption extends SalesManagerEntity<Long, ProductOption> {
 	@Column(name="PRODUCT_OPTION_TYPE", length=10)
 	private String productOptionType;
 	
+
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "productOption")
 	private Set<ProductOptionDescription> descriptions = new HashSet<ProductOptionDescription>();
 	
@@ -56,6 +61,8 @@ public class ProductOption extends SalesManagerEntity<Long, ProductOption> {
 	@Column(name="PRODUCT_OPTION_READ")
 	private boolean readOnly;
 	
+	@NotEmpty
+	@Pattern(regexp="^[a-zA-Z0-9_]*$")
 	@Column(name="PRODUCT_OPTION_CODE")
 	@Index(name="PRD_OPTION_CODE_IDX")
 	private String code;

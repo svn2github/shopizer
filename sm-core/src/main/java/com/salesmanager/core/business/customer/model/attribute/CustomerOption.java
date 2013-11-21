@@ -18,6 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
@@ -30,7 +31,8 @@ import com.salesmanager.core.constants.SchemaConstant;
 
 
 @Entity
-@Table(name="CUSTOMER_OPTION", schema=SchemaConstant.SALESMANAGER_SCHEMA)
+@Table(name="CUSTOMER_OPTION", schema=SchemaConstant.SALESMANAGER_SCHEMA, uniqueConstraints=
+	@UniqueConstraint(columnNames = {"MERCHANT_ID", "CUSTOMER_OPT_CODE"}))
 public class CustomerOption extends SalesManagerEntity<Long, CustomerOption> {
 	private static final long serialVersionUID = -2019269055342226086L;
 	

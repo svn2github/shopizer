@@ -16,4 +16,13 @@ public interface CustomerOptionDao extends SalesManagerEntityDao<Long, CustomerO
 
 	void saveOrUpdate(CustomerOption entity) throws ServiceException;
 
+
+	/**
+	 * Get a unique CustomerOption by code
+	 * @param store
+	 * @param optionCode
+	 * @return
+	 */
+	CustomerOption getByCode(MerchantStore store, String optionCode);
+
 }

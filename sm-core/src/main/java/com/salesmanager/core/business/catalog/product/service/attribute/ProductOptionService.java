@@ -22,6 +22,9 @@ public interface ProductOptionService extends SalesManagerEntityService<Long, Pr
 
 	List<ProductOption> listReadOnly(MerchantStore store, Language language)
 			throws ServiceException;
+
+
+	ProductOption getByCode(MerchantStore store, String optionCode);
 	
 
 

@@ -80,6 +80,11 @@ public class CustomerOptionServiceImpl extends
 		
 	}
 	
+	@Override
+	public CustomerOption getByCode(MerchantStore store, String optionCode) {
+		return customerOptionDao.getByCode(store, optionCode);
+	}
+	
 
 	
 

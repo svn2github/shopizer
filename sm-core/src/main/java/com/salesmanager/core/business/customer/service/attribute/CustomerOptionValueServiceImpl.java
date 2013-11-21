@@ -83,6 +83,11 @@ public class CustomerOptionValueServiceImpl extends
 		super.delete(option);
 		
 	}
+	
+	@Override
+	public CustomerOptionValue getByCode(MerchantStore store, String optionValueCode) {
+		return customerOptionValueDao.getByCode(store, optionValueCode);
+	}
 
 
 

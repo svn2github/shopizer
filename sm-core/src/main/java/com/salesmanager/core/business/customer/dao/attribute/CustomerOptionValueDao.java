@@ -11,6 +11,8 @@ public interface CustomerOptionValueDao extends SalesManagerEntityDao<Long, Cust
 
 	List<CustomerOptionValue> listByStore(MerchantStore store, Language language);
 
+	CustomerOptionValue getByCode(MerchantStore store, String optionValueCode);
+
 
 
 }

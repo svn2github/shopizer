@@ -18,7 +18,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Pattern;
 
+import org.hibernate.annotations.Index;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
@@ -27,7 +31,8 @@ import com.salesmanager.core.constants.SchemaConstant;
 
 
 @Entity
-@Table(name="PRODUCT_OPTION_VALUE", schema=SchemaConstant.SALESMANAGER_SCHEMA)
+@Table(name="PRODUCT_OPTION_VALUE", schema=SchemaConstant.SALESMANAGER_SCHEMA, uniqueConstraints=
+	@UniqueConstraint(columnNames = {"MERCHANT_ID", "PRODUCT_OPTION_VAL_CODE"}))
 public class ProductOptionValue extends SalesManagerEntity<Long, ProductOptionValue> {
 	private static final long serialVersionUID = 3736085877929910891L;
 
@@ -45,6 +50,12 @@ public class ProductOptionValue extends SalesManagerEntity<Long, ProductOptionVa
 	
 	@Column(name="PRODUCT_OPT_FOR_DISP")
 	private boolean productOptionDisplayOnly=false;
+	
+	@NotEmpty
+	@Pattern(regexp="^[a-zA-Z0-9_]*$")
+	@Column(name="PRODUCT_OPTION_VAL_CODE")
+	@Index(name="PRD_OPTION_VAL_CODE_IDX")
+	private String code;
 	
 	@Transient
 	private MultipartFile image = null;
@@ -133,6 +144,14 @@ public class ProductOptionValue extends SalesManagerEntity<Long, ProductOptionVa
 
 	public void setProductOptionDisplayOnly(boolean productOptionDisplayOnly) {
 		this.productOptionDisplayOnly = productOptionDisplayOnly;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getCode() {
+		return code;
 	}
 
 

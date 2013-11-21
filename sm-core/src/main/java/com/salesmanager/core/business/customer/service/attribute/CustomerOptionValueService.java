@@ -17,6 +17,8 @@ public interface CustomerOptionValueService extends SalesManagerEntityService<Lo
 
 	void saveOrUpdate(CustomerOptionValue entity) throws ServiceException;
 
+	CustomerOptionValue getByCode(MerchantStore store, String optionValueCode);
+
 
 
 }

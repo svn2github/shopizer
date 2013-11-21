@@ -98,15 +98,26 @@ public class ProductOptionDaoImpl extends SalesManagerEntityDaoImpl<Long, Produc
 		
 		//save or update (persist and attach entities
 		if(entity.getId()!=null && entity.getId()>0) {
-
 			super.update(entity);
-			
 		} else {
-			
 			super.save(entity);
-			
 		}
+	}
+	
+	@Override
+	public ProductOption getByCode(MerchantStore store, String optionCode) {
+		QProductOption qProductOption = QProductOption.productOption;
+		QProductOptionDescription qDescription = QProductOptionDescription.productOptionDescription;
 		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qProductOption)
+			.leftJoin(qProductOption.descriptions, qDescription).fetch()
+			.leftJoin(qProductOption.merchantStore).fetch()
+			.where(qProductOption.merchantStore.id.eq(store.getId())
+			.and(qProductOption.code.eq(optionCode)));
+		
+		return query.uniqueResult(qProductOption);
 	}
 
 
