@@ -14,7 +14,7 @@ response.setDateHeader ("Expires", -1);
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
  
-
+ <script src="<c:url value="/resources/js/jquery.easing.1.3.js" />"></script>
  <script src="<c:url value="/resources/js/jquery.quicksand.js" />"></script>
  <script src="<c:url value="/resources/js/jquery-sort-filter-plugin.js" />"></script>
 
@@ -28,112 +28,41 @@ response.setDateHeader ("Expires", -1);
  var filterValue = null;
  
 
- 
+
  
  
  $(function(){
 	 
-	 
-	 var $filterType = $('#filter input[name="type"]');
-	 var $filterSort = $('#filter input[name="sort"]');
-
-	  var $productsContainer = $('#productsContainer');
-
-	  // clone applications to get a second collection
-	  var $data = $productsContainer.clone();
-	  
-	  
-	  $filterType.add($filterSort).change(function(e) {
-		    //if ($($filterType+':checked').val() == 'all') {
-		    //  var $filteredData = $data.find('li');
-		    //} else {
-		    //  var $filteredData = $data.find('li[data-type=' + $($filterType+":checked").val() + ']');
-		    //}
-
-		    var $filteredData = $data.find('li');
-		    alert($filteredData)
-		    // if sorted by size
-		    alert($('#filter input[name="sort"]:checked').val());
-		    if ($('#filter input[name="sort"]:checked').val() == "price") {
-		      var $sortedData = $filteredData.sorted({
-		        by: function(v) {
-		          alert('1');
-		          alert($(v).find('span[data-type=price]').text());
-		          return parseFloat($(v).find('span[data-type=price]').text());
-		        }
-		      });
-		    } else {
-		      // if sorted by name
-		      var $sortedData = $filteredData.sorted({
-		        by: function(v) {
-		        	alert('2');
-		           alert($(v).find('span[data-type=name]').text().toLowerCase());
-		          return $(v).find('span[data-type=name]').text().toLowerCase();
-		        }
-		      });
-		    }   
-
-		    // finally, call quicksand
-		    $productsContainer.quicksand($sortedData, {
-		      duration: 800
-		      //easing: 'easeInOutQuad'
-		    });
-
-		  });
-	  
-	  
-
-	 // Sorting options
-	 
-	 //$('.sort-options').on('change', function() {
-	   
-	   //var $items = $('#productsContainer');
-
-			  // clone applications to get a second collection
-	   //var $data = $items.clone();
-	   //var $filteredData = $data.find('li');
-	   //var sort = this.value,
-	   //    opts = {};
-
-	   // We're given the element wrapped in jQuery
-	   //if ( sort === 'price' ) {
-		 // var $sortedData = $filteredData.sorted({
-		   //       by: function(v) {
-		     //       return $(v).find('item-price').text().toLowerCase();
-		      //    }
-		  // });
-	 //  } else if ( sort === 'name' ) {
-		//	  var $sortedData = $filteredData.sorted({
-		  //        by: function(v) {
-		    //        return $(v).find('item-name').text().toLowerCase();
-		    //      }
-		   //});
-	   //}
-	   
-
-
-	   // Filter elements
-	   // $items.quicksand($sortedData, {
-	     //   duration: 800
-	        //easing: 'easeInOutQuad'//requires easing x.easing //http://razorjack.net/quicksand/docs-and-demos.html
-	      //});
-	 //});
-	 
-	 //var $container = $('#productsContainer');
-
-	 //$container.isotope({
-	 //	 itemSelector : '.item'
-	 // });
-	  
-	 //$('#sort-by a').click(function(){
-	 //	 // get href attribute, minus the '#'
-	 //	 $('#container').isotope({ sortBy : 'name' });
-		// return false;
-	 //});
-	 
+	 //option click orderProducts
+	 	 
 	loadCategoryProducts();
 
  });
+	  
+	function orderProducts(attribute) {
+		
+		  // get the first collection
+		  var $prods = $('#productsContainer');
+
+		  // clone applications to get a second collection
+		  var $data = $prods.clone();
+		  
+		  var $filteredData = $data.find('li');
+		  
+	      var $sortedData = $filteredData.sorted({
+		        by: function(v) {
+		        	return parseFloat($(v).attr(attribute));
+		        }
+		  });
+
+		  // finally, call quicksand
+		  $prods.quicksand($sortedData, {
+		      duration: 800,
+		      easing: 'easeInOutQuad'
+		  });
+		
+		
+	}
  
  	function loadCategoryProducts() {
  		var url = '<%=request.getContextPath()%>/shop/services/products/page/' + START_COUNT_PRODUCTS + '/' + MAX_PRODUCTS + '/<c:out value="${requestScope.MERCHANT_STORE.code}"/>/<c:out value="${requestScope.LANGUAGE.code}"/>/<c:out value="${category.description.friendlyUrl}"/>.html';
@@ -155,7 +84,7 @@ response.setDateHeader ("Expires", -1);
  	}
  
 	function callBackLoadProducts(productList) {
-			totalCount = productList.totalCount;
+			totalCount = productList.productCount;
 			START_COUNT_PRODUCTS = START_COUNT_PRODUCTS + MAX_PRODUCTS;
 			if(START_COUNT_PRODUCTS < totalCount) {
 					$("#button_nav").show();
@@ -164,7 +93,8 @@ response.setDateHeader ("Expires", -1);
 			}
 			$('#productsContainer').hideLoading();
 			
-
+			//check option
+			orderProducts('item-price');
 
 	}
  
@@ -225,11 +155,11 @@ response.setDateHeader ("Expires", -1);
         
         <!-- right column -->
         <div class="span9">
+        
 
           
-        	<ul id="productsContainer" class="thumbnails product-list">
-
-			</ul>
+        	<ul id="productsContainer" class="thumbnails product-list"></ul>
+			
 			<nav id="button_nav" style="text-align:center;display:none;">
 				<button class="btn btn-large" style="width:400px;" onClick="loadCategoryProducts();"><s:message code="label.product.moreitems" text="Display more items" />...</button>
 			</nav>

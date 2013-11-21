@@ -114,8 +114,7 @@ function buildProductsList(productList, divProductsContainer) {
 
 
 		for (var i = 0; i < productList.products.length; i++) {
-			var productHtml = '<li class="item span3">';
-			productHtml = productHtml + '<span data-type="price">' + productList.products[i].price + '</span><span data-type="name">' + productList.products[i].description.name + '</span>'
+			var productHtml = '<li class="item span3" data-id="' + productList.products[i].id  + '" item-price="' +  productList.products[i].price +'" item-name="' +  productList.products[i].description.name +'">';
 			productHtml = productHtml + '<div class="product-box"><a href="<c:url value="/shop/product/" />' + productList.products[i].description.friendlyUrl + '.html">';
 			productHtml = productHtml + '<h4 class="name">' + productList.products[i].description.name +'</h4></a>';
 			if(productList.products[i].discounted) {
