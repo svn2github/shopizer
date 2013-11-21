@@ -26,15 +26,14 @@ response.setDateHeader ("Expires", -1);
  var MAX_PRODUCTS = 12;
  var filter = null;
  var filterValue = null;
- 
 
-
- 
- 
  $(function(){
+	
+	$('filter').on('change', function() {
+	    var orderBy = getOrderBy();
+	    orderProducts(orderBy);
+	});
 	 
-	 //option click orderProducts
-	 	 
 	loadCategoryProducts();
 
  });
@@ -75,12 +74,12 @@ response.setDateHeader ("Expires", -1);
  	
  	
  	function loadCategoryByBrand(filterType,filterVal) {
- 		//reset product section
- 		$('#productsContainer').html('');
- 		START_COUNT_PRODUCTS = 0;
- 		filter = filterType;
- 		filterValue = filterVal;
- 		loadCategoryProducts();
+	 		//reset product section
+	 		$('#productsContainer').html('');
+	 		START_COUNT_PRODUCTS = 0;
+	 		filter = filterType;
+	 		filterValue = filterVal;
+	 		loadCategoryProducts();
  	}
  
 	function callBackLoadProducts(productList) {
@@ -94,8 +93,15 @@ response.setDateHeader ("Expires", -1);
 			$('#productsContainer').hideLoading();
 			
 			//check option
-			orderProducts('item-price');
-
+			var orderBy = getOrderBy();
+			if(orderBy!='default') {
+				orderProducts(orderBy);
+			}
+	}
+	
+	function getOrderBy() {
+		var orderBy = $("#filter").val();
+		return orderBy;
 	}
  
  
@@ -116,14 +122,16 @@ response.setDateHeader ("Expires", -1);
         <div class="span3">
           <div class="sidebar-nav">
           
-			<form id="filter">
-			  <fieldset>
-			    <legend>Sort by</legend>
-			    <label><input type="radio" name="sort" value="size" checked="checked">Size</label>
-			    <label><input type="radio" name="sort" value="name">Name</label>      
-			  </fieldset>
-			</form>
-            <br/><br/>
+           <ul class="nav nav-list">
+            <li class="nav-header"><s:message code="label.generic.sortby" text="Sort by" />:
+			<select id="filter">
+				<option value="default"><s:message code="label.generic.default" text="Default" /></option>
+				<option value="name"><s:message code="label.generic.name" text="Name" /></option>
+				<option value="price"><s:message code="label.generic.price" text="Price" /></option>
+			</select>
+			</li>
+			</ul>
+            <br/>
           
             <ul class="nav nav-list">
               <c:if test="${parent!=null}">
