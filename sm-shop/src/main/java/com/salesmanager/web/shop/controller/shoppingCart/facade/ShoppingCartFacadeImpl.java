@@ -3,9 +3,9 @@
  */
 package com.salesmanager.web.shop.controller.shoppingCart.facade;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -14,10 +14,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
-import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
@@ -26,15 +27,16 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.service.OrderService;
+import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.utils.ProductPriceUtils;
+import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartAttribute;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartItem;
 import com.salesmanager.web.populator.shoppingCart.ShoppingCartDataPopulator;
 import com.salesmanager.web.populator.shoppingCart.ShoppingCartModelPopulator;
-import com.salesmanager.web.utils.ImageFilePathUtils;
 
 /**
  * @author Umesh Awasthi
@@ -51,11 +53,14 @@ public class ShoppingCartFacadeImpl
     @Autowired
     private ShoppingCartService shoppingCartService;
 
-    @Autowired
-    private ProductPriceUtils productPriceUtils;
     
     @Autowired
-    private ProductAttributeService productAttributeService;
+    private ShoppingCartModelPopulator shoppingCartModelPopulator;
+    
+   
+
+    @Autowired
+    private ProductPriceUtils productPriceUtils;
 
     @Autowired
     private ProductService productService;
@@ -67,6 +72,9 @@ public class ShoppingCartFacadeImpl
     
     @Autowired
     private OrderService orderService;
+    
+    @Autowired
+    private ProductAttributeService productAttributeService;
     
    
     
@@ -115,7 +123,11 @@ public class ShoppingCartFacadeImpl
         shoppingCartDataPopulator.setOrderService(orderService);
         shoppingCartDataPopulator.setPricingService(pricingService);
 
-        return shoppingCartDataPopulator.populate( cart, new ShoppingCartData(), store, store.getDefaultLanguage());
+        Language language = (Language)getKeyValue(Constants.LANGUAGE);
+        MerchantStore merchantStore = (MerchantStore)getKeyValue(Constants.MERCHANT_STORE);
+        return shoppingCartDataPopulator.populate( cart,merchantStore,language);
+        
+       
 
 
     }
@@ -134,6 +146,7 @@ public class ShoppingCartFacadeImpl
                 Product product = productService.getById( shoppingCartItem.getProductId() );
                 productAttributes.addAll( product.getAttributes() );
                 final FinalPrice finalPrice = productPriceUtils.getFinalProductPrice( product, productAttributes );
+               
                 shoppingCartItem.setProductPrice( finalPrice.getFinalPrice() );
                 shoppingCartItems.add( shoppingCartItem );
             }
@@ -149,188 +162,160 @@ public class ShoppingCartFacadeImpl
     }
 
     @Override
-    public ShoppingCartData getShoppingCartData( ShoppingCart shoppingCart)
+    public ShoppingCartData getShoppingCartData( ShoppingCart shoppingCartModel)
         throws Exception
     {
        
-    	
         ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
         shoppingCartDataPopulator.setOrderService(orderService);
         shoppingCartDataPopulator.setPricingService(pricingService);
-        return shoppingCartDataPopulator.populate(shoppingCart,  new ShoppingCartData(),  null, null );
+        Language language = (Language)getKeyValue(Constants.LANGUAGE);
+        MerchantStore merchantStore = (MerchantStore)getKeyValue(Constants.MERCHANT_STORE);
+        return shoppingCartDataPopulator.populate( shoppingCartModel,merchantStore,language);
     }
 
     @Override
-    public ShoppingCart getShoppingCart( ShoppingCartData shoppingCart, Customer customer) throws Exception
+    public ShoppingCart getShoppingCart( ShoppingCartData shoppingCartData) throws Exception
     {
+        ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
+        shoppingCartDataPopulator.setOrderService(orderService);
+        shoppingCartDataPopulator.setPricingService(pricingService);
+        
+        return null;
+        //return this.shoppingCartModelPopulator.populateToEntity( shoppingCartData );
+    }
+
+    @Override
+    public ShoppingCartData addItemsToShoppingCart( ShoppingCartData shoppingCartData, ShoppingCartItem item,
+                                                    MerchantStore store ) throws Exception
+    {
+        
+        Customer customer = (Customer)getKeyValue(Constants.CUSTOMER);
+        Language language = (Language)getKeyValue(Constants.LANGUAGE);
+        com.salesmanager.core.business.shoppingcart.model.ShoppingCart cartModel =null;
+        if(!StringUtils.isBlank(item.getCode()) && !(item.getCode().equalsIgnoreCase( "undefined" )))  {
+        //get it from the db
+        cartModel = shoppingCartService.getByCode(item.getCode(), store);
+        if(cartModel==null){
+            cartModel=new ShoppingCart();
+            cartModel.setShoppingCartCode( shoppingCartData.getCode() );
+            cartModel.setMerchantStore( store );
+            if ( customer != null )
+            {
+                cartModel.setCustomerId( customer.getId() );
+            }
+            shoppingCartService.create( cartModel );
+            
+        }
+        
+       
+    }
+        
+       
+        com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem shoppingCartItem= createCartItem(cartModel,item,store);
+        cartModel.getLineItems().add( shoppingCartItem );
+        shoppingCartService.saveOrUpdate(cartModel);
+       
+        ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
+        shoppingCartDataPopulator.setOrderService(orderService);
+        shoppingCartDataPopulator.setPricingService(pricingService);
+       
+        return shoppingCartDataPopulator.populate( cartModel, store, language );
+    }
+    
+    
+    
+    
+    
+   
+   
+   
+   private com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem createCartItem( ShoppingCart cartModel,
+                                                                                              ShoppingCartItem shoppingCartItem,
+                                                                                              MerchantStore store ) throws Exception
+   {
+
+       Product product = productService.getById( shoppingCartItem.getProductId() );
+     
+
+       if ( product == null )
+       {
+           throw new Exception( "Item with id " + shoppingCartItem.getProductId() + " does not exist" );
+       }
+
+       if ( product.getMerchantStore().getId().intValue() != store.getId().intValue() )
+       {
+           throw new Exception( "Item with id " + shoppingCartItem.getProductId() + " does not belong to merchant "
+               + store.getId() );
+       }
+
+       com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem item = new com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem( cartModel, product );
+       item.setQuantity( shoppingCartItem.getQuantity() );
+       
+       List<ProductAttribute> productAttributes = new ArrayList<ProductAttribute>();
+       
+           productAttributes.addAll( product.getAttributes() );
+           final FinalPrice finalPrice = productPriceUtils.getFinalProductPrice( product, productAttributes );
+          
+         
       
-    	ShoppingCartModelPopulator shoppingModelPopulator = new ShoppingCartModelPopulator();
-    	shoppingModelPopulator.setShoppingCartService(shoppingCartService);
-    	shoppingModelPopulator.setProductAttributeService(productAttributeService);
-    	shoppingModelPopulator.setCustomer(customer);
-        return shoppingModelPopulator.populate(shoppingCart,  new ShoppingCart(),  null, null );
-    	
-    	//return this.shoppingCartModelPopulator.populateToEntity( shoppingCart );
-    }
+     
+       
+       item.setItemPrice( finalPrice.getFinalPrice());
+       item.setShoppingCart( cartModel );
+      
+       // attributes
+       List<ShoppingCartAttribute> cartAttributes = shoppingCartItem.getShoppingCartAttributes();
+       if ( !CollectionUtils.isEmpty( cartAttributes ) )
+       {
+          for ( ShoppingCartAttribute attribute : cartAttributes )
+           {
+               ProductAttribute productAttribute = productAttributeService.getById( attribute.getAttributeId() );
+               if ( productAttribute != null
+                   && productAttribute.getProduct().getId().longValue() == product.getId().longValue() )
+               {
+                   com.salesmanager.core.business.shoppingcart.model.ShoppingCartAttributeItem attributeItem =
+                       new com.salesmanager.core.business.shoppingcart.model.ShoppingCartAttributeItem( item,
+                                                                                                        productAttribute );
+                   if ( attribute.getAttributeId() > 0 )
+                   {
+                       attributeItem.setId( attribute.getId() );
+                   }
+                   item.addAttributes( attributeItem );
+             }
+  }
+       }
 
-    @Override
-    public ShoppingCartData addItemsToShoppingCart( ShoppingCartData shoppingCart, ShoppingCartItem item,
-                                                    MerchantStore store, Customer customer ) throws Exception
-    {
-        List<ShoppingCartItem> items = shoppingCart.getShoppingCartItems();
-        boolean itemFound = false;
-        if(items!=null) {
-            for(ShoppingCartItem shoppingCartItem : items) {
-                if(shoppingCartItem.getId()==item.getId()) {
-                    itemFound = true;
-                    if(CollectionUtils.isEmpty(shoppingCartItem.getShoppingCartAttributes()) 
-                            && CollectionUtils.isEmpty(item.getShoppingCartAttributes())) {
-                        int qty = shoppingCartItem.getQuantity();
-                        qty = qty + item.getQuantity();
-                        shoppingCartItem.setQuantity(qty);
-                        break;
-                    } else {
-                        List<ShoppingCartAttribute> itemAttributes = item.getShoppingCartAttributes();
-                        List<ShoppingCartAttribute> originalitemAttributes = shoppingCartItem.getShoppingCartAttributes();
-                        if(!CollectionUtils.isEmpty(itemAttributes) && !CollectionUtils.isEmpty(originalitemAttributes)) {  
-                                if(itemAttributes.size()==originalitemAttributes.size()) {
-                                    boolean attributesMatch = true;
-                                    for(ShoppingCartAttribute itemAttribute : itemAttributes) {
-                                        boolean singleAttributeMatch = false;
-                                        for(ShoppingCartAttribute originalAttribute : originalitemAttributes) {
-                                            if(originalAttribute.getOptionId()==itemAttribute.getOptionId()) {
-                                                singleAttributeMatch = true;
-                                            }
-                                        }
-                                        if(!singleAttributeMatch) {
-                                            //Attributes are not identical
-                                            createItemInShoppingCart(shoppingCart,item,store);
-                                            attributesMatch = false;
-                                            break;
-                                        }
-                                    }
-                                    
-                                    if(attributesMatch) {
-                                        int qty = shoppingCartItem.getQuantity();
-                                        qty = qty + item.getQuantity();
-                                        shoppingCartItem.setQuantity(qty);
-                                        break;
-                                    }
-                                    
-                                } else {
-                                    createItemInShoppingCart(shoppingCart,item,store);
-                                }
-                        }//end if
-                    }//end else
-                    
-                }
-            }//end for
-        }//end if
-        if(!itemFound) {
-            createItemInShoppingCart(shoppingCart,item,store);
-        }
-        
-        
-        BigDecimal subTotal = item.getProductPrice().multiply(new BigDecimal(item.getQuantity()));
-        item.setSubTotal(pricingService.getDisplayAmount(subTotal, store));
-        
-        ShoppingCart entity=getShoppingCart( shoppingCart, customer );
-        shoppingCartService.saveOrUpdate(entity);
-        
-        ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
-        shoppingCartDataPopulator.setOrderService(orderService);
-        shoppingCartDataPopulator.setPricingService(pricingService);
-        
-        return shoppingCartDataPopulator.populate( entity, shoppingCart, store, null );
-    }
-    
-   private void createItemInShoppingCart(ShoppingCartData cart, ShoppingCartItem item, MerchantStore store) throws Exception {
-        
-        Product product = productService.getById(item.getProductId());
-        
-        if(product==null) {
-            throw new Exception("Item with id " + item.getProductId() + " does not exist");
-        }
-        
-        if(product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
-            throw new Exception("Item with id " + item.getProductId() + " does not belong to merchant " + store.getId());
-        }
-        
-        item.setCode(cart.getCode());
-        item.setId(product.getId());
-        item.setName(product.getProductDescription().getName());
-        
-        
-        List<ShoppingCartAttribute> cartAttributes = item.getShoppingCartAttributes();
-        Set<ProductAttribute> attributes = product.getAttributes();
-        List<ProductAttribute> pricingAttributes = null;
-        if(!CollectionUtils.isEmpty(cartAttributes) && !CollectionUtils.isEmpty(attributes)) {
-            List<ShoppingCartAttribute> savedAttributes = new ArrayList<ShoppingCartAttribute>();
-            for(ShoppingCartAttribute cartAttribute : cartAttributes) {
-                boolean attributeFound = false;
-                for(ProductAttribute productAttribute : attributes) {
-                    if(productAttribute.getId().longValue()==cartAttribute.getAttributeId()){
-                        attributeFound = true;
-                        if(pricingAttributes==null) {
-                            pricingAttributes = new ArrayList<ProductAttribute>();
-                        }
-                        pricingAttributes.add(productAttribute);
-                        cartAttribute.setOptionName(productAttribute.getProductOption().getDescriptionsList().get(0).getName());
-                        cartAttribute.setOptionValue(productAttribute.getProductOptionValue().getDescriptionsSettoList().get(0).getName());
-                        cartAttribute.setOptionId(productAttribute.getProductOption().getId());
-                        cartAttribute.setOptionValueId(productAttribute.getProductOptionValue().getId());
-                    }
-                }
-                if(attributeFound) {
-                    savedAttributes.add(cartAttribute);
-                }
-            }
-            
-            item.setShoppingCartAttributes(savedAttributes);
-            
-            
-        } else {//check if product has default attributes
-            item.setShoppingCartAttributes(null);
-            if(!CollectionUtils.isEmpty(attributes)) {
-                
-                for(ProductAttribute productAttribute : attributes) {
-                    
-                        if(productAttribute.getAttributeDefault()) {
-                    
-                            if(pricingAttributes==null) {
-                                pricingAttributes = new ArrayList<ProductAttribute>();
-                            }
-                            pricingAttributes.add(productAttribute);
-                            ShoppingCartAttribute cartAttribute = new ShoppingCartAttribute();
-                            cartAttribute.setOptionName(productAttribute.getProductOption().getDescriptionsList().get(0).getName());
-                            cartAttribute.setOptionValue(productAttribute.getProductOptionValue().getDescriptionsSettoList().get(0).getName());
-                            cartAttribute.setOptionId(productAttribute.getProductOption().getId());
-                            cartAttribute.setOptionValueId(productAttribute.getProductOptionValue().getId());
-                            
-                        }
-                }
-                
-            }
-        }
-        
-        ProductImage image = product.getProductImage();
-        if(image!=null) {
-            String imagePath = ImageFilePathUtils.buildProductImageFilePath(store, product.getSku(), image.getProductImage());
-            item.setImage(imagePath);
-        }
-        FinalPrice finalPrice = pricingService.calculateProductPrice(product, pricingAttributes);
-        item.setPrice(pricingService.getDisplayAmount(finalPrice.getFinalPrice(), store));
-        item.setProductPrice(finalPrice.getFinalPrice());
-        
-        List<ShoppingCartItem> items = cart.getShoppingCartItems();
-        if(items == null) {
-            items = new ArrayList<ShoppingCartItem>();
-            cart.setShoppingCartItems(items);
-        }
+       return item;
 
-        items.add(item);
-    
-        
-    }
+   }
+   
+   
+   @Override
+   public void removeCartItem(final Long itemID, final String cartId) throws Exception {
+   	if(StringUtils.isNotBlank(cartId)){
+   		MerchantStore store = (MerchantStore)getKeyValue(Constants.MERCHANT_STORE);
+   		ShoppingCart cartModel = shoppingCartService.getByCode(cartId, store);
+   		if(CollectionUtils.isNotEmpty(cartModel.getLineItems())){
+   			Set<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> shoppingCartItemSet=new HashSet<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem>();
+   			for(com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem shoppingCartItem :cartModel.getLineItems()){
+   				if(shoppingCartItem.getId().longValue() != itemID.longValue()){
+   					shoppingCartItemSet.add(shoppingCartItem);
+   				}
+   			}
+   			cartModel.setLineItems(shoppingCartItemSet);
+   			shoppingCartService.saveOrUpdate(cartModel);
+   	}
+   	}
+   
+   }
+
+   
+   private Object getKeyValue( final String key )
+   {
+       ServletRequestAttributes reqAttr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+       return reqAttr.getRequest().getAttribute( key );
+   }
+
 
 }

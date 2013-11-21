@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -147,21 +146,22 @@ public class ShoppingCartController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value={"/shop/addShoppingCartItem.html"}, method=RequestMethod.POST)
+    @RequestMapping(value={"/shop/addShoppingCartItem.html"}, method=RequestMethod.POST)
 	public @ResponseBody
 	ShoppingCartData addShoppingCartItem(@RequestBody ShoppingCartItem item, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-		ShoppingCartData shoppingCart = (ShoppingCartData)request.getSession().getAttribute(Constants.SHOPPING_CART);
+		ShoppingCartData shoppingCart=null;
+		//ShoppingCartData shoppingCart = (ShoppingCartData)request.getSession().getAttribute(Constants.SHOPPING_CART);
 		//cart exist in http session
-		if(shoppingCart!=null) {
+		/*if(shoppingCart!=null) {
 			String shoppingCartCode = shoppingCart.getCode();
 			if(!StringUtils.isBlank(shoppingCartCode)) {
 				if(!item.getCode().equals(shoppingCartCode)) {//TODO item code pls
 					//TODO if different
 				}
 			}
-		}
+		}*/
 		
 		//Look in the HttpSession to see if a customer is logged in
 		Customer customer = (Customer)request.getSession().getAttribute(Constants.CUSTOMER);
@@ -177,26 +177,26 @@ public class ShoppingCartController {
 			}
 		}
 		
-		if(!StringUtils.isBlank(item.getCode()) && !(item.getCode().equalsIgnoreCase( "undefined" )))  {
+		/*if(!StringUtils.isBlank(item.getCode()) && !(item.getCode().equalsIgnoreCase( "undefined" )))  {
 			//get it from the db
 			com.salesmanager.core.business.shoppingcart.model.ShoppingCart dbCart = shoppingCartService.getByCode(item.getCode(), store);
 			if(dbCart!=null) {
 				shoppingCart = shoppingCartFacade.getShoppingCartData( dbCart);
 				              
 			}
-		}
+		}*/
 		
 		
 		//if shoppingCart is null create a new one
-		if(shoppingCart==null)  {
-			shoppingCart = new ShoppingCartData();
+		
+		shoppingCart = new ShoppingCartData();
 			String code = UUID.randomUUID().toString().replaceAll("-", "");
 			shoppingCart.setCode(code);
 	
-		}
+	
 		
 		
-		shoppingCart=shoppingCartFacade.addItemsToShoppingCart( shoppingCart, item, store, customer );
+			shoppingCart=shoppingCartFacade.addItemsToShoppingCart( shoppingCart, item, store );
 		
 		              
 		
@@ -266,11 +266,12 @@ public class ShoppingCartController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value={"/shop/removeShoppingCartItem.html"}, method=RequestMethod.GET)
-	public @ResponseBody
-	String removeShoppingCartItem(@ModelAttribute Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value={"/shop/removeShoppingCartItem.html"}, method=RequestMethod.POST)
+	
+	String removeShoppingCartItem(Long lineItemId, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 
+		System.out.println("****************************** "+lineItemId);
 		//Looks in the HttpSession to see if a customer is logged in
 		
 		//get any shopping cart for this user
@@ -287,11 +288,10 @@ public class ShoppingCartController {
 		
 		//store the shopping cart in the http session
 		
-		AjaxResponse resp = new AjaxResponse();
 		
-		resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+		shoppingCartFacade.removeCartItem(lineItemId, getShoppingCartFromSession(request).getCode());
+		return Constants.REDIRECT_PREFIX + "/shop/shoppingCart.html";
 		
-		return resp.toJSONString();
 		
 		
 	}

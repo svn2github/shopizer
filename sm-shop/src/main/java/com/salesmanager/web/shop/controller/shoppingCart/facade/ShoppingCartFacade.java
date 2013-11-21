@@ -27,10 +27,11 @@ public interface ShoppingCartFacade {
 	 * Method responsible for getting shopping cart from
 	 * either session or from underlying DB.
 	 */
-	public ShoppingCartData getShoppingCartData(final Customer customer,final  MerchantStore store,final String shoppingCartId) throws Exception;
-	public ShoppingCartData getShoppingCartData(final ShoppingCart shoppingCart) throws Exception;
-	public ShoppingCartData recalculateCart( ShoppingCartData shoppingCart) throws Exception ;
-	public ShoppingCart getShoppingCart(final ShoppingCartData shoppingCart, final Customer customer) throws Exception;
-	public ShoppingCartData addItemsToShoppingCart(ShoppingCartData shoppingCart,final ShoppingCartItem item, final MerchantStore store, final Customer customer) throws Exception;
+    public ShoppingCartData getShoppingCartData(final Customer customer,final  MerchantStore store,final String shoppingCartId) throws Exception;
+    public ShoppingCartData getShoppingCartData(final ShoppingCart shoppingCart) throws Exception;
+    public ShoppingCartData recalculateCart( ShoppingCartData shoppingCart) throws Exception ;
+    public ShoppingCart getShoppingCart(final ShoppingCartData shoppingCart) throws Exception;
+    public ShoppingCartData addItemsToShoppingCart(ShoppingCartData shoppingCart,final ShoppingCartItem item, final MerchantStore store) throws Exception;
+    public void removeCartItem(final Long itemID, final String cartId) throws Exception;
 
 }
