@@ -48,6 +48,11 @@ public class IntegrationModulesLoader {
             	module.setModule((String)object.get("module"));
             	module.setCode((String)object.get("code"));
             	module.setImage((String)object.get("image"));
+            	
+            	if(object.get("type")!=null) {
+            		module.setType((String)object.get("type"));
+            	}
+            	
             	if(object.get("customModule")!=null) {
             		Object o = object.get("customModule");
             		Boolean b = false;

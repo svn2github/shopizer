@@ -63,7 +63,8 @@ public class IntegrationModule extends SalesManagerEntity<Long, IntegrationModul
 	@Type(type = "org.hibernate.type.StringClobType")
 	private String configDetails;
 	
-
+	@Column(name="TYPE")
+	private String type;
 
 
 	@Column(name="IMAGE")
@@ -235,6 +236,18 @@ public class IntegrationModule extends SalesManagerEntity<Long, IntegrationModul
 
 	public void setConfigDetails(String configDetails) {
 		this.configDetails = configDetails;
+	}
+
+
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+
+
+	public String getType() {
+		return type;
 	}
 
 
