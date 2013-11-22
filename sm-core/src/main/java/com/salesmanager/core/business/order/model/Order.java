@@ -57,9 +57,6 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@Enumerated(value = EnumType.STRING)
 	private OrderStatus status;
 	
-	@Column (name ="COUPON_CODE")
-	private String couponCode;
-	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column (name ="LAST_MODIFIED")
 	private Date lastModified;
@@ -225,14 +222,6 @@ public class Order extends SalesManagerEntity<Long, Order> {
 
 	public void setStatus(OrderStatus status) {
 		this.status = status;
-	}
-
-	public String getCouponCode() {
-		return couponCode;
-	}
-
-	public void setCouponCode(String couponCode) {
-		this.couponCode = couponCode;
 	}
 
 	public Date getLastModified() {
