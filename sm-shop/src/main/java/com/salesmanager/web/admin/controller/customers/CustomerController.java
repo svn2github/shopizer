@@ -623,16 +623,20 @@ public class CustomerController {
 
 			CustomerList customerList = customerService.listByStore(store,criteria);
 			
-			for(Customer customer : customerList.getCustomers()) {
-				@SuppressWarnings("rawtypes")
-				Map entry = new HashMap();
-				entry.put("id", customer.getId());
-				entry.put("firstName", customer.getFirstname());
-				entry.put("lastName", customer.getLastname());
-				entry.put("email", customer.getEmailAddress());
-				entry.put("country", customer.getCountry().getIsoCode());
-				resp.addDataEntry(entry);
-				
+			if(customerList.getCustomers()!=null) {
+			
+				for(Customer customer : customerList.getCustomers()) {
+					@SuppressWarnings("rawtypes")
+					Map entry = new HashMap();
+					entry.put("id", customer.getId());
+					entry.put("firstName", customer.getFirstname());
+					entry.put("lastName", customer.getLastname());
+					entry.put("email", customer.getEmailAddress());
+					entry.put("country", customer.getCountry().getIsoCode());
+					resp.addDataEntry(entry);
+					
+				}
+			
 			}
 			
 		} catch (Exception e) {

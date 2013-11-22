@@ -111,35 +111,36 @@ public class OrdersController {
 			OrderList orderList = orderService.listByStore(store, criteria);
 			//List<Order> orders = orderService.listByStore(store);
 					
-					
+			if(orderList.getOrders()!=null) {	
 			
-			for(Order order : orderList.getOrders()) {
-				
-				@SuppressWarnings("rawtypes")
-				Map entry = new HashMap();
-				entry.put("orderId", order.getId());
-				entry.put("customer", order.getBilling().getName());
-				entry.put("amount", priceUtil.getAdminFormatedAmountWithCurrency(store,order.getTotal()));//todo format total
-				entry.put("date", DateUtil.formatDate(order.getDatePurchased()));
-				entry.put("status", order.getStatus().name());
-				
-				
-				if ( paymentModules!= null && paymentModules.size() > 0 ) 
-				{	
-					for ( int index = 0; index < paymentModules.size(); index++ )
-					{
-						if ( paymentModules.get(index).getCode().equalsIgnoreCase( order.getPaymentModuleCode() ) )
+				for(Order order : orderList.getOrders()) {
+					
+					@SuppressWarnings("rawtypes")
+					Map entry = new HashMap();
+					entry.put("orderId", order.getId());
+					entry.put("customer", order.getBilling().getName());
+					entry.put("amount", priceUtil.getAdminFormatedAmountWithCurrency(store,order.getTotal()));//todo format total
+					entry.put("date", DateUtil.formatDate(order.getDatePurchased()));
+					entry.put("status", order.getStatus().name());
+					
+					
+					if ( paymentModules!= null && paymentModules.size() > 0 ) 
+					{	
+						for ( int index = 0; index < paymentModules.size(); index++ )
 						{
-							 paymentModule = paymentModules.get(index).getCode();
-							 break;
+							if ( paymentModules.get(index).getCode().equalsIgnoreCase( order.getPaymentModuleCode() ) )
+							{
+								 paymentModule = paymentModules.get(index).getCode();
+								 break;
+							}
 						}
+	
 					}
-
+	
+					entry.put("paymentModule", paymentModule );
+					resp.addDataEntry(entry);				
+					
 				}
-
-				entry.put("paymentModule", paymentModule );
-				resp.addDataEntry(entry);				
-				
 			}
 			
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);

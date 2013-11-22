@@ -166,20 +166,24 @@ public class ProductsController {
 			resp.setStartRow(startRow);
 			List<Product> plist = productList.getProducts();
 			
-			for(Product product : plist) {
-				
-				Map entry = new HashMap();
-				entry.put("productId", product.getId());
-				
-				ProductDescription description = product.getDescriptions().iterator().next();
-				
-				entry.put("name", description.getName());
-				entry.put("sku", product.getSku());
-				entry.put("available", product.isAvailable());
-				resp.addDataEntry(entry);
-				
-				
-				
+			if(plist!=null) {
+			
+				for(Product product : plist) {
+					
+					Map entry = new HashMap();
+					entry.put("productId", product.getId());
+					
+					ProductDescription description = product.getDescriptions().iterator().next();
+					
+					entry.put("name", description.getName());
+					entry.put("sku", product.getSku());
+					entry.put("available", product.isAvailable());
+					resp.addDataEntry(entry);
+					
+					
+					
+				}
+			
 			}
 
 			resp.setStatus(AjaxPageableResponse.RESPONSE_STATUS_SUCCESS);
