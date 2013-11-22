@@ -45,6 +45,7 @@
 	{
 		"module": "PAYMENT",
 		"code": "moneyorder",
+		"type":"moneyorder",
 		"version":"",
 		"regions": ["*"],
 		"moduleImage":"moneyorder.png"
@@ -52,6 +53,7 @@
 	{
 		"module": "PAYMENT",
 		"code": "paypal",
+		"type":"paypal",
 		"version":"",
 		"regions": ["*"],
 		"image":"icon-paypal.png",
@@ -61,6 +63,7 @@
 	{
 		"module": "PAYMENT",
 		"code": "authorizenet",
+		"type":"creditcard",
 		"version":"",
 		"regions": ["US"],
 		"image":"authorizenet.gif",
@@ -70,6 +73,7 @@
 	{
 		"module": "PAYMENT",
 		"code": "beanstream",
+		"type":"creditcard",
 		"version":"",
 		"regions": ["US","CA"],
 		"image":"beanstream.gif",
