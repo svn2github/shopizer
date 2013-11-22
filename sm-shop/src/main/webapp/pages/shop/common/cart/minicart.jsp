@@ -23,12 +23,7 @@ response.setDateHeader ("Expires", -1);
 				                  						<div id="shoppingcart">
 				                  						<table style="margin-bottom: 5px" class="table">
 				                  							<tbody id="shoppingcartProducts">
-					                  							<tr id="42" class="cart-product">
-					                  								<td><img width="40" height="40" src="img/products/shirt1.jpg"></td>
-					                  								<td>1 Short sleeves white</td>
-					                  								<td>$29.99</td>
-					                  								<td><button productid="42" class="close removeProductIcon">x</button></td>
-					                  							</tr>
+					                  							
 				                  							</tbody>
 				                  						</table>
 				                  						

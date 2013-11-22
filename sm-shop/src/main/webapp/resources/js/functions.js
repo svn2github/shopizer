@@ -168,10 +168,11 @@
 				alert('failure'); 
 				 
 			 },
-			 success: function(cart) {  
+			 success: function(cart) {
+				
 			     //alert("Success: " + cart);
-			     cart = merchantStore + '_' + cart.code;
-			     $.cookie('cart',cart, { expires: 360 ,path: '/'});
+			     cartDetails = merchantStore + '_' + cart.code;
+			     $.cookie('cart',cartDetails, { expires: 360 ,path: '/'});
 			     if(cart.message!=null) { 
 			    	 //TODO error message
 			     } else { 
@@ -196,7 +197,7 @@
 						item = item + '<td>' + shoppingCartItem.price + '</td>';
 						item = item + '<td><button productid="' + shoppingCartItem.productId + '" class="close removeProductIcon">x</button></td>';
 						item = item + '</tr>';
-						alert(item);
+						
 						$('#shoppingcartProducts').append(item);
 				 }
 			 } 
