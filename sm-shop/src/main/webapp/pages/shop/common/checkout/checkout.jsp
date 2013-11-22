@@ -515,53 +515,51 @@ function getBillingZones(countryCode){
 							<li id="cc-tab"  class="active"><a href="#" id="cc-link" data-toggle="tab">CC</a></li>
 						</ul>-->
 
-
+	<if test="${paymentMethods!=null}">
     <div class="tabbable"> 
     	<ul class="nav nav-tabs">
-    		<li class="active"><a href="#tab1" data-toggle="tab">Pay</a></li>
-    		<li><a href="#tab2" data-toggle="tab">Credit</a></li>
-            <li><a href="#tab3" data-toggle="tab">Check</a></li>
-      </ul>
+    		<c:forEach items="${paymentMethods}" var="paymentMethod">
+    		<li class="active"><a href="#<c:out value="${paymentMethod.type}"/>" data-toggle="tab"><s:message code="payment.type.${paymentMethod.type}" text="Payment method type [${paymentMethod.type}] not defined in payment.properties" /></a></li>
+            </c:forEach>
+        </ul>
     	<div class="tab-content">
     		<div class="tab-pane active" id="tab1">
     			<p>Pay<p>
     		</div>
     		<div class="tab-pane" id="tab2">
-
-
-			<div class="control-group">
-				<label class="control-label">Card Holder's Name</label>
-				<div class="controls">
-					<input type="text" class="input-large" pattern="\w+ \w+.*" title="Fill your first and last name" required>
-				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label">Card Number</label>
-				<div class="controls">
-					<div class="row-fluid">
-						<input type="text" class="input-large" autocomplete="off"  required>
+				<div class="control-group">
+					<label class="control-label">Card Holder's Name</label>
+					<div class="controls">
+						<input type="text" class="input-large" pattern="\w+ \w+.*" title="Fill your first and last name" required>
 					</div>
 				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label">Card Expiry Date</label>
-				<div class="controls">
-					<div class="row-fluid">
-					<div class="span3">
-						<select class="input-medium">
-							<option>January</option>
-							<option>...</option>
-							<option>December</option>
-						</select>
-					</div>
-					<div class="span3">
-						<select class="input-small">
-							<option>2013</option>
-							<option>...</option>
-							<option>2015</option>
-						</select>
+				<div class="control-group">
+					<label class="control-label">Card Number</label>
+					<div class="controls">
+						<div class="row-fluid">
+							<input type="text" class="input-large" autocomplete="off"  required>
+						</div>
 					</div>
 				</div>
+				<div class="control-group">
+					<label class="control-label">Card Expiry Date</label>
+					<div class="controls">
+						<div class="row-fluid">
+						<div class="span3">
+							<select class="input-medium">
+								<option>January</option>
+								<option>...</option>
+								<option>December</option>
+							</select>
+						</div>
+						<div class="span3">
+							<select class="input-small">
+								<option>2013</option>
+								<option>...</option>
+								<option>2015</option>
+							</select>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="control-group">
@@ -571,20 +569,24 @@ function getBillingZones(countryCode){
 					<div class="span3">
 						<input type="text" class="input-small" autocomplete="off" maxlength="3" pattern="\d{3}" title="Three digits at back of your card" required>
 					</div>
-				<div class="span8">
-				<!-- screenshot may be here -->
+					<div class="span8">
+					<!-- screenshot may be here -->
+					</div>
 				</div>
 			</div>
 	</div>
-</div>
 
-    		</div>
+    </div>
 	    		<div class="tab-pane" id="tab3">
 	    			<p>Check<p>
 	    		</div>
-       		</div>
+ </div>
+ 
+ </c:if>
+ 
+ 
     </div>
-					</div>
+</div>
 
 				</div>
 
