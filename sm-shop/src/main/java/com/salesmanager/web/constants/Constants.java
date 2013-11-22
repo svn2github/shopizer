@@ -51,6 +51,7 @@ public class Constants {
 	public final static String CATEGORIES_CACHE_KEY = "CATALOG_CATEGORIES";
 	public final static String PRODUCTS_GROUP_CACHE_KEY = "CATALOG_GROUP";
 	public final static String SUBCATEGORIES_CACHE_KEY = "CATALOG_SUBCATEGORIES";
+	public final static String RELATEDITEMS_CACHE_KEY = "CATALOG_RELATEDITEMS";
 	public final static String MANUFACTURERS_BY_PRODUCTS_CACHE_KEY = "CATALOG_BRANDS_BY_PRODUCTS";
 	public final static String CONFIG_CACHE_KEY = "CONFIG";
 	

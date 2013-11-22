@@ -28,6 +28,7 @@ import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.relationship.ProductRelationshipService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.entity.shop.PageInformation;
@@ -37,6 +38,11 @@ import com.salesmanager.web.shop.model.catalog.Attribute;
 import com.salesmanager.web.shop.model.catalog.AttributeValue;
 import com.salesmanager.web.utils.PageBuilderUtils;
 
+/**
+ * Populates the product details page
+ * @author Carl Samson
+ *
+ */
 @Controller
 public class ShopProductController {
 	
@@ -49,8 +55,12 @@ public class ShopProductController {
 	@Autowired
 	private PricingService pricingService;
 	
+	@Autowired
+	private CacheUtils cache;
+	
 
 
+	@SuppressWarnings("unchecked")
 	@RequestMapping("/shop/product/{friendlyUrl}.html")
 	public String displayProduct(@PathVariable final String friendlyUrl, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
@@ -69,8 +79,6 @@ public class ShopProductController {
 		populator.setPricingService(pricingService);
 		
 		ReadableProduct productProxy = populator.populate(product, new ReadableProduct(), store, language);
-		//com.salesmanager.web.entity.catalog.Product productProxy = catalogUtils.buildProxyProduct(product, store, locale);
-		
 
 		//meta information
 		PageInformation pageInformation = new PageInformation();
@@ -81,20 +89,51 @@ public class ShopProductController {
 		
 		request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
 		
+		//TODO breadcrumbs
+		//build static breadcrumb ?
+		
+		StringBuilder relatedItemsCacheKey = new StringBuilder();
+		relatedItemsCacheKey
+		.append(store.getId())
+		.append("_")
+		.append(Constants.RELATEDITEMS_CACHE_KEY)
+		.append("-")
+		.append(language.getCode());
+		
+		StringBuilder relatedItemsMissed = new StringBuilder();
+		relatedItemsMissed
+		.append(relatedItemsCacheKey.toString())
+		.append(Constants.MISSED_CACHE_KEY);
+		
+		Map<Long,List<ReadableProduct>> relatedItemsMap = null;
+		List<ReadableProduct> relatedItems = null;
+		
+		if(store.isUseCache()) {
 
-		//related items
-		List<ProductRelationship> relatedItems = productRelationshipService.getByType(store, product, ProductRelationshipType.RELATED_ITEM);
-		if(relatedItems!=null && relatedItems.size()>0) {
-			List<ReadableProduct> items = new ArrayList<ReadableProduct>();
-			for(ProductRelationship relationship : relatedItems) {
-				Product relatedProduct = relationship.getRelatedProduct();
-				//com.salesmanager.web.entity.catalog.Product proxyProduct = catalogUtils.buildProxyProduct(relatedProduct, store, locale);
-				ReadableProduct proxyProduct = populator.populate(relatedProduct, new ReadableProduct(), store, language);
-				items.add(proxyProduct);
+			//get from the cache
+			relatedItemsMap = (Map<Long,List<ReadableProduct>>) cache.getFromCache(relatedItemsCacheKey.toString());
+			if(relatedItemsMap==null) {
+				//get from missed cache
+				Boolean missedContent = (Boolean)cache.getFromCache(relatedItemsMissed.toString());
+
+				if(missedContent==null) {
+					relatedItems = relatedItems(store, product, language);
+					if(relatedItems!=null) {
+						relatedItemsMap = new HashMap<Long,List<ReadableProduct>>();
+						relatedItemsMap.put(product.getId(), relatedItems);
+						cache.putInCache(relatedItemsMap, relatedItemsCacheKey.toString());
+					} else {
+						cache.putInCache(new Boolean(true), relatedItemsMissed.toString());
+					}
+				}
+			} else {
+				relatedItems = relatedItemsMap.get(product.getId());
 			}
-			model.addAttribute("relatedProducts",items);		
+		} else {
+			relatedItems = relatedItems(store, product, language);
 		}
 		
+		model.addAttribute("relatedProducts",relatedItems);	
 		Set<ProductAttribute> attributes = product.getAttributes();
 		
 		//split read only and options
@@ -182,6 +221,26 @@ public class ShopProductController {
 		
 		return attribute;
 		
+	}
+	
+	private List<ReadableProduct> relatedItems(MerchantStore store, Product product, Language language) throws Exception {
+		
+		
+		ReadableProductPopulator populator = new ReadableProductPopulator();
+		populator.setPricingService(pricingService);
+		
+		List<ProductRelationship> relatedItems = productRelationshipService.getByType(store, product, ProductRelationshipType.RELATED_ITEM);
+		if(relatedItems!=null && relatedItems.size()>0) {
+			List<ReadableProduct> items = new ArrayList<ReadableProduct>();
+			for(ProductRelationship relationship : relatedItems) {
+				Product relatedProduct = relationship.getRelatedProduct();
+				ReadableProduct proxyProduct = populator.populate(relatedProduct, new ReadableProduct(), store, language);
+				items.add(proxyProduct);
+			}
+			return items;
+		}
+		
+		return null;
 	}
 	
 
