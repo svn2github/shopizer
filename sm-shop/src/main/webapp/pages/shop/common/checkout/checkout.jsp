@@ -324,52 +324,50 @@ function getBillingZones(countryCode){
 
 			<div class="row-fluid">
 
-
-
-  			<div class="control-group"> 
-				<label><s:message code="label.customer.streetaddress" text="Street address"/></label>
-    				<div class="controls"> 
-      					<form:input id="customer.billing.address" cssClass="input-medium highlight" path="customer.billing.address"/>
-    				</div> 
-  			</div> 
+	  			<div class="control-group"> 
+					<label><s:message code="label.customer.streetaddress" text="Street address"/></label>
+	    				<div class="controls"> 
+	      					<form:input id="customer.billing.address" cssClass="input-medium highlight" path="customer.billing.address"/>
+	    				</div> 
+	  			</div> 
 
 			</div>
 
 			<div class="row-fluid">
 
+				<div class="span4">
+		  			<div class="control-group"> 
+						<label><s:message code="label.customer.city" text="City"/></label>
+		    				<div class="controls"> 
+		      					<form:input id="customer.billing.city" cssClass="input-medium highlight" path="customer.billing.city"/>
+		    				</div> 
+		  			</div>
+				</div>
 
-			<div class="span4">
-  			<div class="control-group"> 
-				<label><s:message code="label.customer.city" text="City"/></label>
-    				<div class="controls"> 
-      					<form:input id="customer.billing.city" cssClass="input-medium highlight" path="customer.billing.city"/>
-    				</div> 
-  			</div>
+
+
+				<div class="span4">
+		  			<div class="control-group"> 
+						<label><s:message code="label.customer.zone" text="State / Province"/></label>
+		    				<div class="controls"> 
+			       				<form:select cssClass="zone-list highlight" path="customer.billing.zone"/>
+		                      	<form:input  class="input-large highlight" id="stateOther"  maxlength="100" name="stateOther" path="customer.billing.stateProvince" /> 
+		    				</div> 
+		  			</div>
+				</div>
+
+
+				<div class="span4">
+		  			<div class="control-group"> 
+						<label><s:message code="label.customer.postalcode" text="Postal code"/></label>
+		    				<div class="controls"> 
+		      					<form:input id="customer.billing.postalCode" cssClass="input-medium highlight" path="customer.billing.postalCode"/>
+		    				</div> 
+		  			</div>
+				</div>
 			</div>
-
-
-
-			<div class="span4">
-  			<div class="control-group"> 
-				<label><s:message code="label.customer.zone" text="State / Province"/></label>
-    				<div class="controls"> 
-	       				<form:select cssClass="zone-list highlight" path="customer.billing.zone"/>
-                      	<form:input  class="input-large highlight" id="stateOther"  maxlength="100" name="stateOther" path="customer.billing.stateProvince" /> 
-    				</div> 
-  			</div>
-			</div>
-
-
-			<div class="span4">
-  			<div class="control-group"> 
-				<label><s:message code="label.customer.postalcode" text="Postal code"/></label>
-    				<div class="controls"> 
-      					<form:input id="customer.billing.postalCode" cssClass="input-medium highlight" path="customer.billing.postalCode"/>
-    				</div> 
-  			</div>
-			</div>
-
-			</div>
+			
+			
 			<div class="row-fluid">
 
 	  			<div class="control-group"> 
@@ -388,117 +386,115 @@ function getBillingZones(countryCode){
 	    				</div> 
 	  			</div>
 
-
 				<label class="checkbox" checked> <input type="checkbox" id="useAddress"> <s:message code="label.customer.shipping.shipaddress" text="Ship to this address" /></label>
 			</div>
-
-		</div>
-
-		<div class="span8">
-
+			
+			
+			
+			
+			
+								<!-- Shipping -->
 					<div class="box">
 						<span class="box-title">
 							<p class="p-title"><s:message code="label.customer.shippinginformation" text="Shipping information"/></p>
 						</span>
 
 						
-			<div class="row-fluid">
+					<div class="row-fluid">
+		
+						<div class="span4">
+		  				   <div class="control-group"> 
+							<label><s:message code="label.customer.firstname" text="First Name"/></label>
+		    					<div class="controls"> 
+		      					<form:input id="customer.firstName" cssClass="input-medium highlight" path="customer.firstName"/>
+		    					</div> 
+		  				   </div> 
+						</div>
+		
+		
+						<div class="span4">
+		  				   <div class="control-group"> 
+							<label><s:message code="label.customer.lastname" text="Last Name"/></label>
+		    					<div class="controls"> 
+		      					<form:input id="customer.lastName" cssClass="input-medium highlight" path="customer.lastName"/>
+		    					</div> 
+		  				   </div> 
+						</div>
+		
+					</div>
 
-				<div class="span4">
-  				   <div class="control-group"> 
-					<label><s:message code="label.customer.firstname" text="First Name"/></label>
-    					<div class="controls"> 
-      					<form:input id="customer.firstName" cssClass="input-medium highlight" path="customer.firstName"/>
-    					</div> 
-  				   </div> 
+
+
+					<div class="row-fluid">
+		
+			  			<div class="control-group"> 
+							<label><s:message code="label.customer.streetaddress" text="Street address"/></label>
+			    				<div class="controls"> 
+			      					<form:input id="customer.delivery.address" cssClass="input-medium highlight" path="customer.delivery.address"/>
+			    				</div> 
+			  			</div> 
+		
+					</div>
+
+					<div class="row-fluid">
+		
+						<div class="span4">
+				  			<div class="control-group"> 
+								<label><s:message code="label.customer.city" text="City"/></label>
+				    				<div class="controls"> 
+				      					<form:input id="customer.delivery.city" cssClass="input-medium highlight" path="customer.delivery.city"/>
+				    				</div> 
+				  			</div>
+						</div>
+
+
+
+						<div class="span4">
+				  			<div class="control-group"> 
+								<label><s:message code="label.customer.zone" text="State / Province"/></label>
+				    				<div class="controls"> 
+					       				<form:select cssClass="zone-list highlight" path="customer.delivery.zone"/>
+				                      	<form:input  class="input-large highlight" id="stateOther"  maxlength="100" name="stateOther" path="customer.delivery.stateProvince" /> 
+				    				</div> 
+				  			</div>
+						</div>
+
+
+						<div class="span4">
+				  			<div class="control-group"> 
+								<label><s:message code="label.customer.postalcode" text="Postal code"/></label>
+				    				<div class="controls"> 
+				      					<form:input id="customer.delivery.postalCode" cssClass="input-medium highlight" path="customer.delivery.postalCode"/>
+				    				</div> 
+				  			</div>
+						</div>
+
 				</div>
-
-
-				<div class="span4">
-  				   <div class="control-group"> 
-					<label><s:message code="label.customer.lastname" text="Last Name"/></label>
-    					<div class="controls"> 
-      					<form:input id="customer.lastName" cssClass="input-medium highlight" path="customer.lastName"/>
-    					</div> 
-  				   </div> 
-				</div>
-
-			</div>
-
-
-
-			<div class="row-fluid">
-
-
-
-  			<div class="control-group"> 
-				<label><s:message code="label.customer.streetaddress" text="Street address"/></label>
-    				<div class="controls"> 
-      					<form:input id="customer.delivery.address" cssClass="input-medium highlight" path="customer.delivery.address"/>
-    				</div> 
-  			</div> 
-
-			</div>
-
-			<div class="row-fluid">
-
-
-			<div class="span4">
-  			<div class="control-group"> 
-				<label><s:message code="label.customer.city" text="City"/></label>
-    				<div class="controls"> 
-      					<form:input id="customer.delivery.city" cssClass="input-medium highlight" path="customer.delivery.city"/>
-    				</div> 
-  			</div>
-			</div>
-
-
-
-			<div class="span4">
-  			<div class="control-group"> 
-				<label><s:message code="label.customer.zone" text="State / Province"/></label>
-    				<div class="controls"> 
-	       				<form:select cssClass="zone-list highlight" path="customer.delivery.zone"/>
-                      	<form:input  class="input-large highlight" id="stateOther"  maxlength="100" name="stateOther" path="customer.delivery.stateProvince" /> 
-    				</div> 
-  			</div>
-			</div>
-
-
-			<div class="span4">
-  			<div class="control-group"> 
-				<label><s:message code="label.customer.postalcode" text="Postal code"/></label>
-    				<div class="controls"> 
-      					<form:input id="customer.delivery.postalCode" cssClass="input-medium highlight" path="customer.delivery.postalCode"/>
-    				</div> 
-  			</div>
-			</div>
-
-			</div>
-			<div class="row-fluid">
-
-	  			<div class="control-group"> 
-					<label>Country</label>
-	    				<div class="controls"> 
-	      					<input type="text" class="input-large" id="country">
-	    				</div> 
-	  			</div>
+				
+				<div class="row-fluid">
 	
-	  			<div class="control-group"> 
-					<label><s:message code="label.customer.telephone" text="Phone"/></label>
-	    				<div class="controls"> 
-	      					<form:input id="customer.delivery.phone" cssClass="input-large highlight" path="customer.delivery.phone"/>
-	    				</div> 
-	  			</div>
-
-
-			</div>
-
-
+		  			<div class="control-group"> 
+						<label>Country</label>
+		    				<div class="controls"> 
+		      					<input type="text" class="input-large" id="country">
+		    				</div> 
+		  			</div>
+		
+		  			<div class="control-group"> 
+						<label><s:message code="label.customer.telephone" text="Phone"/></label>
+		    				<div class="controls"> 
+		      					<form:input id="customer.delivery.phone" cssClass="input-large highlight" path="customer.delivery.phone"/>
+		    				</div> 
+		  			</div>
+	
+	
+				</div>
+			
 			
 
-
 		</div>
+
+
 
 
 
@@ -507,7 +503,7 @@ function getBillingZones(countryCode){
 
 					<div class="box">
 						<span class="box-title">
-						<p>Payment</p>
+						<p><s:message code="label.payment.module.title" text="Payment method" /></p>
 						</span>
 
 						<!--<ul class="nav nav-tabs">
@@ -523,10 +519,11 @@ function getBillingZones(countryCode){
             </c:forEach>
         </ul>
     	<div class="tab-content">
-    		<div class="tab-pane active" id="tab1">
+    		<c:forEach items="${paymentMethods}" var="paymentMethod">
+    		<div class="tab-pane active" id="<c:out value="${paymentMethod.type}"/>">
     			<p>Pay<p>
     		</div>
-    		<div class="tab-pane" id="tab2">
+    		<div class="tab-pane" id="<c:out value="${paymentMethod.type}"/>">
 				<div class="control-group">
 					<label class="control-label">Card Holder's Name</label>
 					<div class="controls">
@@ -577,9 +574,10 @@ function getBillingZones(countryCode){
 	</div>
 
     </div>
-	    		<div class="tab-pane" id="tab3">
+	    		<div class="tab-pane" id="<c:out value="${paymentMethod.type}"/>">
 	    			<p>Check<p>
 	    		</div>
+	    		</c:forEach>
  </div>
  
  </c:if>
@@ -588,10 +586,35 @@ function getBillingZones(countryCode){
     </div>
 </div>
 
-				</div>
+
+			<!-- Shipping -->
+			<br/>
+
+			<div class="box">
+						<span class="box-title">
+						<p><s:message code="label.shipping.fees" text="Shipping fees" /> </p>
+						</span>
+
+		         <div class="control-group"> 
+ 				<label class="control-label">Shipping options</label> 
+ 				<div class="controls"> 
+					<label class="radio"> 
+						<input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked> 
+						Shipping fast to Canada - $9.99
+					</label> 
+  					<label class="radio"> 
+						<input type="radio" name="optionsRadios" id="optionsRadios2" value="option2"> 
+						Shipping slow to Canada - $2.99
+					</label> 
+				</div> 
+		       </div> 
+	
+			</div>
+
+</div>
 
 
-
+				<!-- Order summary column -->
 				<div class="span4">
 
 
