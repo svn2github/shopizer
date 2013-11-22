@@ -266,18 +266,18 @@ public class ShoppingCartController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value={"/shop/removeShoppingCartItem.html"}, method=RequestMethod.POST)
+	@RequestMapping(value={"/shop/removeShoppingCartItem.html"},   method = { RequestMethod.GET, RequestMethod.POST })
 	
 	String removeShoppingCartItem(Long lineItemId, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 
-		System.out.println("****************************** "+lineItemId);
+		
 		//Looks in the HttpSession to see if a customer is logged in
 		
 		//get any shopping cart for this user
 		
 		//** need to check if the item has property, similar items may exist but with different properties
-		String attributes = request.getParameter("attribute");//attributes id are sent as 1|2|5|
+		//String attributes = request.getParameter("attribute");//attributes id are sent as 1|2|5|
 		//this will help with hte removal of the appropriate item
 		
 		//remove the item shoppingCartService.create
@@ -305,18 +305,12 @@ public class ShoppingCartController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value={"/shop/updateShoppingCartItem.html"}, method=RequestMethod.GET)
-	public @ResponseBody
-	String updateShoppingCartItem(@ModelAttribute Long id, @ModelAttribute Integer quantity, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value={"/shop/updateShoppingCartItem.html"},  method = { RequestMethod.GET, RequestMethod.POST })
+	public String updateShoppingCartItem( final Long lineItemId, final Integer quantity, final HttpServletRequest request, final  HttpServletResponse response) throws Exception {
 		
-
-
-		
-		AjaxResponse resp = new AjaxResponse();
-		
-		resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
-		
-		return resp.toJSONString();
+		LOG.info("updating cart entry with qunatity: "+quantity);
+		shoppingCartFacade.updateCartItem(lineItemId, getShoppingCartFromSession(request).getCode(), quantity);
+		return Constants.REDIRECT_PREFIX + "/shop/shoppingCart.html";
 		
 		
 	}

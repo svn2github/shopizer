@@ -205,6 +205,11 @@
 	}
 	
 function removeLineItem(lineItemId){
-	$( "#shoppingCartLineitem_"+lineItemId).submit();		
-		
+	alert(this.attr("action"));
+	$( "#shoppingCartRemoveLineitem_"+lineItemId).submit();		
+}
+
+function updateLineItem(lineItemId,actionURL){
+	$("#shoppingCartLineitem_"+lineItemId).attr('action', actionURL);
+	$( "#shoppingCartLineitem_"+lineItemId).submit();	
 }

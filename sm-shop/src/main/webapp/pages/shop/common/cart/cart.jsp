@@ -3,7 +3,9 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %> 
-<c:url value="/shop/removeShoppingCartItem.html" var="removeShoppingCartItemUrl" />	
+<c:url value="/shop/removeShoppingCartItem.html" var="removeShoppingCartItemUrl"/>
+<c:url value="/shop/updateShoppingCartItem.html" var="updateShoppingCartItemUrl"/>
+
 		<br/><br/>
 		<table class="table table-bordered table-striped">
 	
@@ -22,21 +24,28 @@
 					</thead>
 					<tbody>
 				</c:if>
-				
+				<form:form action="${updateShoppingCartItemUrl}" id="shoppingCartLineitem_${shoppingCartItem.id}">
 				<tr> 
 					<td width="10%">image</td>
 			
 					<td>${shoppingCartItem.name}</td> 
 					<input type="hidden" name="lineItem_${itemStatus.index}" id="lineItem_${itemStatus.index}" value="${shoppingCartItem.id}" />
-					<td ><input type="text" class="input-small" placeholder="qty" value="${shoppingCartItem.quantity}"></td> 
-					<td ><button class="close" onclick="javascript:removeLineItem('${shoppingCartItem.id}');">&times;</button></td>
-					<td><strong>${shoppingCartItem.subTotal}</strong></td> 
+					<td ><input type="text" class="input-small" placeholder="qty" value="${shoppingCartItem.quantity}" name="quantity"></td> 
+					<td ><button class="close" onclick="javascript:updateLineItem('${shoppingCartItem.id}','${removeShoppingCartItemUrl}');">&times;</button>&nbsp;&nbsp;
+					<button class="close" onclick="javascript:updateLineItem('${shoppingCartItem.id}','${updateShoppingCartItemUrl}');" title="Update Quantity" >&#10003;</button>
+					</td>
+					
 					<td><strong>${shoppingCartItem.price}</strong></td>
-					<form:form action="${removeShoppingCartItemUrl}" id="shoppingCartLineitem_${shoppingCartItem.id}">
+					<td><strong>${shoppingCartItem.subTotal}</strong></td> 
+					
+					
 					   <input type="hidden" name="lineItemId" id="lineItemId" value="${shoppingCartItem.id}"}"/>
-				  </form:form>
+				 
 					
 				</tr> 
+				 </form:form>
+				 
+				 
 			</c:forEach>
 		  
 		  </c:if>

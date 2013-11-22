@@ -32,6 +32,7 @@ import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.order.CartModificationException;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartAttribute;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartItem;
@@ -174,17 +175,7 @@ public class ShoppingCartFacadeImpl
         return shoppingCartDataPopulator.populate( shoppingCartModel,merchantStore,language);
     }
 
-    @Override
-    public ShoppingCart getShoppingCart( ShoppingCartData shoppingCartData) throws Exception
-    {
-        ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
-        shoppingCartDataPopulator.setOrderService(orderService);
-        shoppingCartDataPopulator.setPricingService(pricingService);
-        
-        return null;
-        //return this.shoppingCartModelPopulator.populateToEntity( shoppingCartData );
-    }
-
+    
     @Override
     public ShoppingCartData addItemsToShoppingCart( ShoppingCartData shoppingCartData, ShoppingCartItem item,
                                                     MerchantStore store ) throws Exception
@@ -252,7 +243,7 @@ public class ShoppingCartFacadeImpl
        com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem item = new com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem( cartModel, product );
        item.setQuantity( shoppingCartItem.getQuantity() );
        
-       List<ProductAttribute> productAttributes = new ArrayList<ProductAttribute>();
+           List<ProductAttribute> productAttributes = new ArrayList<ProductAttribute>();
        
            productAttributes.addAll( product.getAttributes() );
            final FinalPrice finalPrice = productPriceUtils.getFinalProductPrice( product, productAttributes );
@@ -294,8 +285,9 @@ public class ShoppingCartFacadeImpl
    @Override
    public void removeCartItem(final Long itemID, final String cartId) throws Exception {
    	if(StringUtils.isNotBlank(cartId)){
-   		MerchantStore store = (MerchantStore)getKeyValue(Constants.MERCHANT_STORE);
-   		ShoppingCart cartModel = shoppingCartService.getByCode(cartId, store);
+   	
+   		ShoppingCart cartModel = getCartModel(cartId);
+   		if(cartModel != null){
    		if(CollectionUtils.isNotEmpty(cartModel.getLineItems())){
    			Set<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> shoppingCartItemSet=new HashSet<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem>();
    			for(com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem shoppingCartItem :cartModel.getLineItems()){
@@ -306,8 +298,55 @@ public class ShoppingCartFacadeImpl
    			cartModel.setLineItems(shoppingCartItemSet);
    			shoppingCartService.saveOrUpdate(cartModel);
    	}
+   		}
    	}
    
+   }
+
+   
+   @Override
+   public void updateCartItem(final Long itemID, final String cartId, final long newQuantity)
+   		throws Exception {
+	   if(newQuantity < 1){
+		  throw new CartModificationException("Quantity must not be less than one");
+	   }
+		if(StringUtils.isNotBlank(cartId)){
+			ShoppingCart cartModel = getCartModel(cartId);
+			if(cartModel !=null){
+				com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem entryToUpdate=getEntryToUpdate(itemID.longValue(),cartModel);
+				
+				if (entryToUpdate == null)
+				{
+					throw new CartModificationException("Unknown entry number.");
+				}
+			    
+				LOG.info("Updating cart entry quantity to" +newQuantity);
+				entryToUpdate.setQuantity((int)newQuantity);
+				List<ProductAttribute> productAttributes = new ArrayList<ProductAttribute>();
+			    productAttributes.addAll(entryToUpdate.getProduct().getAttributes() );
+		        final FinalPrice finalPrice = productPriceUtils.getFinalProductPrice( entryToUpdate.getProduct(), productAttributes );
+		        entryToUpdate.setItemPrice(finalPrice.getFinalPrice());
+		        shoppingCartService.saveOrUpdate(cartModel);
+		        LOG.info("Cart entry updated with desired quantity");
+		        
+			}
+		}
+   	
+   }
+   
+   
+ private ShoppingCart getCartModel(final String cartId){
+		if(StringUtils.isNotBlank(cartId)){
+			MerchantStore store = (MerchantStore)getKeyValue(Constants.MERCHANT_STORE);
+			try {
+				return shoppingCartService.getByCode(cartId, store);
+			} catch (ServiceException e) {
+				LOG.error("unable to find any cart asscoiated with this Id: "+cartId);
+				LOG.error("error while fetching cart model..." ,e);
+				return null;
+			}
+		}
+		return null;
    }
 
    
@@ -317,5 +356,19 @@ public class ShoppingCartFacadeImpl
        return reqAttr.getRequest().getAttribute( key );
    }
 
+
+  private com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem getEntryToUpdate(final long entryId, final ShoppingCart cartModel){
+	  if(CollectionUtils.isNotEmpty(cartModel.getLineItems())){
+		  for(com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem shoppingCartItem :cartModel.getLineItems()){
+			  if(shoppingCartItem.getId().longValue() == entryId){
+				  LOG.info("Found line item  for given entry id: "+entryId);
+ 					return shoppingCartItem;
+ 					
+ 				} 
+		  }
+	  }
+	  LOG.info("Unable to find any entry for given Id: "+entryId);
+	  return null;
+  }
 
 }
