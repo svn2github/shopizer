@@ -32,7 +32,7 @@ public class Delivery {
 	@Column (name ="DELIVERY_STATE", length=100)
 	private String state;
 	
-	@Column(name="DELIVERY_TELEPHONE", length=32, nullable=false)
+	@Column(name="DELIVERY_TELEPHONE", length=32)
 	private String telephone;
 	
 	@OneToOne(fetch = FetchType.EAGER)
