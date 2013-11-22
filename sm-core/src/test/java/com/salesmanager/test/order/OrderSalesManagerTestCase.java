@@ -333,7 +333,6 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		order.setCcNumber( "123456789");
 		order.setCcOwner("ccOwner" );
 		order.setChannel(1);
-		order.setCouponCode("1");
 		order.setCurrencyValue(new BigDecimal(19.99));
 		order.setCustomerId(new Long(1) );
 		order.setDelivery(delivery);
@@ -479,7 +478,6 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		order.setCcNumber( "123456789");
 		order.setCcOwner("ccOwner" );
 		order.setChannel(1);
-		order.setCouponCode("1");
 		order.setCurrencyValue(new BigDecimal(19.99));
 		order.setCustomerId(new Long(1) );
 		order.setDelivery(delivery);
@@ -536,7 +534,6 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		secondOrder.setCcNumber( "123456789");
 		secondOrder.setCcOwner("ccOwner" );
 		secondOrder.setChannel(1);
-		secondOrder.setCouponCode("1");
 		secondOrder.setCurrencyValue(new BigDecimal(19.99));
 		secondOrder.setCustomerId(secondCustomer.getId() );
 		secondOrder.setDelivery(delivery);
