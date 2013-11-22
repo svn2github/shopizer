@@ -19,19 +19,17 @@ response.setDateHeader ("Expires", -1);
             
             <div class="row-fluid">
 
-
-                
-                
                 <div class="span12" itemscope itemtype="http://data-vocabulary.org/Product">
                     <div class="row">
+                    	<!-- Image column -->
 						<div class="span4">
 							<c:if test="${product.image!=null}">
-							<a href="<c:out value="${product.imageUrl}"/>" class="thumbnail" data-fancybox-group="group1" title="<c:out value="${product.name}"/>"><img itemprop="image" alt="<c:out value="${product.name}"/>" src="<c:out value="${product.imageUrl}"/>"></a>												
+							<a href="<c:out value="${product.image.imageUrl}"/>" class="thumbnail" data-fancybox-group="group1" title="<c:out value="${product.description.name}"/>"><img itemprop="image" alt="<c:out value="${product.description.name}"/>" src="<c:out value="${product.image.imageUrl}"/>"></a>												
 							<c:if test="${product.images!=null}">
 							<ul class="thumbnails small">
 								<c:forEach items="${product.images}" var="thumbnail">								
 								<li class="span1">
-									<a href="<c:out value="${thumbnail.imageUrl}"/>" class="thumbnail" data-fancybox-group="group1" title="<c:out value="${thumbnail.name}"/>"><img src="<c:out value="${thumbnail.imageUrl}"/>" alt="<c:out value="${thumbnail.name}"/>"></a>
+									<a href="<c:out value="${thumbnail.imageUrl}"/>" class="thumbnail" data-fancybox-group="group" title="<c:out value="${thumbnail.imageName}"/>"><img src="<c:out value="${thumbnail.imageUrl}"/>" alt="<c:out value="${thumbnail.imageName}"/>"></a>
 								</li>
 								</c:forEach>								
 							</ul>
@@ -39,9 +37,19 @@ response.setDateHeader ("Expires", -1);
 							</c:if>
 						</div>
 						<!-- TDOD Google rich snippets (http://blog.hubspot.com/power-google-rich-snippets-ecommerce-seo-ht) -->
+						<!-- Product description column -->
 						<div class="span5">
+							<h1>${product.description.name}</h1>
+							<div class="review">
+								<div>
+									<img alt="1 reviews" src="catalog/view/theme/pav_foodstore/image/stars-1.png">
+									<a onclick="$('a[href=\'#tab-review\']').trigger('click');">1 reviews</a>
+  										|  
+									<a onclick="$('a[href=\'#tab-review\']').trigger('click');">Write a review</a>
+								</div>
+							</div>
 							<address>
-								<strong><s:message code="label.product.brand" text="Brand"/></strong> <span itemprop="brand"><c:out value="${product.manufacturer}" /></span><br>
+								<strong><s:message code="label.product.brand" text="Brand"/></strong> <span itemprop="brand"><c:out value="${product.manufacturer.name}" /></span><br>
 								<strong><s:message code="label.product.code" text="Product code"/></strong> <span itemprop="identifier" content="mpn:${product.sku}">${product.sku}</span><br>								
 							</address>
 							<span itemprop="offerDetails" itemscope itemtype="http://data-vocabulary.org/Offer">
@@ -50,16 +58,16 @@ response.setDateHeader ("Expires", -1);
 							<h4>
 									<c:choose>
 										<c:when test="${product.discounted}">
-												<del><c:out value="${product.originalProductPrice}" /></del>&nbsp;<span class="specialPrice"><span itemprop="price"><c:out value="${product.productPrice}" /></span></span>
+												<del><c:out value="${product.originalPrice}" /></del>&nbsp;<span class="specialPrice"><span itemprop="price"><c:out value="${product.finalPrice}" /></span></span>
 										</c:when>
 										<c:otherwise>
-												<span itemprop="price"><c:out value="${product.productPrice}" /></span>
+												<span itemprop="price"><c:out value="${product.finalPrice}" /></span>
 										</c:otherwise>
 									</c:choose>
 									
 							</h4>
 							<address>
-								<strong><s:message code="label.product.available" text="Availability"/></strong> <span><c:choose><c:when test="${product.quantity>0}"><span itemprop="availability" content="in_stock">${product.quantity}</span></c:when><c:otherwise><span itemprop="availability" content="out_of_stock">TODO - Out Of Stock</c:otherwise></c:choose></span><br>								
+								<strong><s:message code="label.product.available" text="Availability"/></strong> <span><c:choose><c:when test="${product.quantity>0}"><span itemprop="availability" content="in_stock">${product.quantity}</span></c:when><c:otherwise><span itemprop="availability" content="out_of_stock"><s:message code="label.product.outofstock" text="Out of stock" /></c:otherwise></c:choose></span><br>								
 							</address>
 							</span>
 						</div>
@@ -126,11 +134,11 @@ response.setDateHeader ("Expires", -1);
                         <div class="span9">
 							<ul class="nav nav-tabs" id="myTab">
 								<li class="active"><a href="#description"><s:message code="label.productedit.productdesc" text="Product description" /></a></li>
-								<li><a href="#reviews"><s:message code="label.product.customer.reviews" text="Customer reviews" /></a></li><!-- TODO read only attributes -->
+								<!--<li><a href="#reviews"><s:message code="label.product.customer.reviews" text="Customer reviews" /></a></li><!-- TODO read only attributes -->
 							</ul>							 
 							<div class="tab-content">
 								<div class="tab-pane active" id="description">
-									<c:out value="${product.description}"/>
+									<c:out value="${product.description.description}"/>
 									<br/>
 									<br/>
 									
@@ -148,45 +156,13 @@ response.setDateHeader ("Expires", -1);
 									
 									
 								</div>
-								<div class="tab-pane" id="reviews">
-									<table class="table table-striped shop_attributes">	
-										<tbody>
-											<tr class="">
-												<th>Size</th>
-												<td>Large, Medium, Small, X-Large</td>
-											</tr>		
-											<tr class="alt">
-												<th>Colour</th>
-												<td>Orange, Yellow</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
+								
 							</div>							
                         </div>	
                         
                         <!-- Related items -->
                         <c:if test="${relatedProducts!=null}">					
-						<div class="span9">	
-							<br>
-							<h2 class="title"><s:message code="label.product.related.title" text="Related items"/></h2>
-							<hr>
-							<div id="relatedItems" class="carousel slide">
-								<div class="carousel-inner">
-									<div class="active item">
-										<ul class="thumbnails listing-products">
-											<!-- Iterate over featuredItems -->
-											<c:set var="ITEMS" value="${relatedProducts}" scope="request" />
-	                         				<jsp:include page="/pages/shop/templates/bootstrap/sections/productBox.jsp" />
-										</ul>
-									</div>
 
-								</div>
-							</div>
-							<a class="carousel-control left" href="#myCarousel" data-slide="prev">Previous</a>
-							<a class="carousel-control right" href="#myCarousel" data-slide="next">Next</a>
-							</div>
-						</div>
 						</c:if>
 						
 						

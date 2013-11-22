@@ -16,7 +16,7 @@ response.setDateHeader ("Expires", -1);
 
 
 										<c:forEach items="${requestScope.ITEMS}" var="product">
-											<li class="span3" data-id="${product.id}" item-price="${product.price}" item-name="${product.description.name}">
+											<li class="span3" data-id="${product.id}" item-price="${product.price}" item-name="${product.description.name}" item-order="${product.description.sortOrder}">
 												<div class="product-box">                                        
 													<a href="<c:url value="/shop/product/" /><c:out value="${product.description.friendlyUrl}"/>.html"><h4><c:out value="${product.description.name}"/></h4></a>
 													<h3>

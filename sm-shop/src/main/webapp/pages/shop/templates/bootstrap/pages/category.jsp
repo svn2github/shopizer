@@ -94,9 +94,8 @@ response.setDateHeader ("Expires", -1);
 			
 			//check option
 			var orderBy = getOrderBy();
-			if(orderBy!='default') {
-				orderProducts(orderBy);
-			}
+			orderProducts(orderBy);
+
 	}
 	
 	function getOrderBy() {
@@ -125,9 +124,9 @@ response.setDateHeader ("Expires", -1);
            <ul class="nav nav-list">
             <li class="nav-header"><s:message code="label.generic.sortby" text="Sort by" />:
 			<select id="filter">
-				<option value="default"><s:message code="label.generic.default" text="Default" /></option>
-				<option value="name"><s:message code="label.generic.name" text="Name" /></option>
-				<option value="price"><s:message code="label.generic.price" text="Price" /></option>
+				<option value="item-order"><s:message code="label.generic.default" text="Default" /></option>
+				<option value="item-name"><s:message code="label.generic.name" text="Name" /></option>
+				<option value="item-price"><s:message code="label.generic.price" text="Price" /></option>
 			</select>
 			</li>
 			</ul>
