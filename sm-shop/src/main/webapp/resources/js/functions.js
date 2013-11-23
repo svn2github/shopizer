@@ -112,6 +112,8 @@
 		//var cartCode = 'cart_' + merchantStore;
 		var cart = $.cookie('cart'); //should be [storecode_cartid]
 		
+		alert(cart);
+		
 		var code = new Array();
 		
 		if(cart!=null) {
@@ -127,7 +129,10 @@
 		var prefix = "{";
 		var suffix = "}";
 		//var shoppingCartItem = '"code":' + "11" + ',';
-		var shoppingCartItem = '"code":' + '"' + code[1] + '"'+',';
+		var shoppingCartItem = '';
+		if(cart!=null && cart != '') {
+			shoppingCartItem = '"code":' + '"' + code[1] + '"'+',';
+		}
 		var shoppingCartItem = shoppingCartItem + '"quantity":' + quantity + ',';
 		var shoppingCartItem = shoppingCartItem + '"productId":' + sku;
 		

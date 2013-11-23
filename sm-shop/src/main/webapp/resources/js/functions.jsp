@@ -114,7 +114,7 @@ function buildProductsList(productList, divProductsContainer) {
 
 
 		for (var i = 0; i < productList.products.length; i++) {
-			var productHtml = '<li class="item span3" data-id="' + productList.products[i].id  + '" item-price="' +  productList.products[i].price +'" item-name="' +  productList.products[i].description.name +'" item-order="' +  productList.products[i].sortOrder +'">';
+			var productHtml = '<li class="item listing-item" data-id="' + productList.products[i].id  + '" item-price="' +  productList.products[i].price +'" item-name="' +  productList.products[i].description.name +'" item-order="' +  productList.products[i].sortOrder +'">';
 			productHtml = productHtml + '<div class="product-box"><a href="<c:url value="/shop/product/" />' + productList.products[i].description.friendlyUrl + '.html">';
 			productHtml = productHtml + '<h4 class="name">' + productList.products[i].description.name +'</h4></a>';
 			if(productList.products[i].discounted) {
@@ -122,10 +122,12 @@ function buildProductsList(productList, divProductsContainer) {
 			} else {
 					    productHtml = productHtml + '<h3>' + productList.products[i].finalPrice +'</h3>';
 			}
-			if(productList.products[i].imageUrl!=null) {
-					    productHtml = productHtml + '<a href="<c:url value="/shop/product/" />' + productList.products[i].description.friendlyUrl + '.html"><img src="<c:url value="/"/>' + productList.products[i].imageUrl +'"></a>';
+			if(productList.products[i].image!=null) {
+					    productHtml = productHtml + '<a href="<c:url value="/shop/product/" />' + productList.products[i].description.friendlyUrl + '.html"><img src="<c:url value="/"/>' + productList.products[i].image.imageUrl +'"></a>';
 			}
-			productHtml = productHtml + '<div class="bottom"><a href="<c:url value="/shop/product/" />' + productList.products[i].description.friendlyUrl + '.html" class="view"><s:message code="button.label.view" text="View" /></a> / <a productid="' + productList.products[i].id + '" href="#" class="addToCart"><s:message code="button.label.addToCart" text="Add to cart" /></a></div></div></li>';
+			productHtml = productHtml + '<div class="bottom"><a href="<c:url value="/shop/product/" />' + productList.products[i].description.friendlyUrl + '.html" class="view"><s:message code="button.label.view" text="View" /></a> / <a productid="' + productList.products[i].id + '" href="#" class="addToCart"><s:message code="button.label.addToCart" text="Add to cart" /></a></div>';
+			productHtml = productHtml + '</div>'
+			productHtml = productHtml + '</li>'
 			$(divProductsContainer).append(productHtml);
 
 		}

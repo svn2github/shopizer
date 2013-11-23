@@ -374,6 +374,10 @@ footer div.company {
       font-size:12px;
 }
 
+.listing-item {
+	width:186px;
+}
+
 /** paragraph title **/
 .p-title {
 	color: #FF8C00;

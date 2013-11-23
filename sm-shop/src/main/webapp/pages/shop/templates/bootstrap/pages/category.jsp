@@ -29,7 +29,7 @@ response.setDateHeader ("Expires", -1);
 
  $(function(){
 	
-	$('filter').on('change', function() {
+	$('#filter').on('change', function() {
 	    var orderBy = getOrderBy();
 	    orderProducts(orderBy);
 	});
@@ -40,6 +40,11 @@ response.setDateHeader ("Expires", -1);
 	  
 	function orderProducts(attribute) {
 		
+		
+		  if(attribute=='item-order') {
+			  //return;
+		  }
+		
 		  // get the first collection
 		  var $prods = $('#productsContainer');
 
@@ -47,10 +52,13 @@ response.setDateHeader ("Expires", -1);
 		  var $data = $prods.clone();
 		  
 		  var $filteredData = $data.find('li');
-		  
 	      var $sortedData = $filteredData.sorted({
 		        by: function(v) {
-		        	return parseFloat($(v).attr(attribute));
+		        	if(attribute=='item-price') {
+		        		return parseFloat($(v).attr(attribute));
+		        	} else {
+		        		return $(v).attr(attribute);
+		        	}
 		        }
 		  });
 
