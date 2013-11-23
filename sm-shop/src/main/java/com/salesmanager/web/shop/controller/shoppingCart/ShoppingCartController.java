@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,7 +24,6 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.utils.ProductPriceUtils;
-import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartItem;
@@ -152,16 +150,8 @@ public class ShoppingCartController {
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		ShoppingCartData shoppingCart=null;
-		//ShoppingCartData shoppingCart = (ShoppingCartData)request.getSession().getAttribute(Constants.SHOPPING_CART);
-		//cart exist in http session
-		/*if(shoppingCart!=null) {
-			String shoppingCartCode = shoppingCart.getCode();
-			if(!StringUtils.isBlank(shoppingCartCode)) {
-				if(!item.getCode().equals(shoppingCartCode)) {//TODO item code pls
-					//TODO if different
-				}
-			}
-		}*/
+
+
 		
 		//Look in the HttpSession to see if a customer is logged in
 		Customer customer = (Customer)request.getSession().getAttribute(Constants.CUSTOMER);
@@ -176,39 +166,19 @@ public class ShoppingCartController {
 				//TODO what if codes are different (-- merge carts, keep the latest one, delete the oldest, switch codes --)
 			}
 		}
-		
-		/*if(!StringUtils.isBlank(item.getCode()) && !(item.getCode().equalsIgnoreCase( "undefined" )))  {
-			//get it from the db
-			com.salesmanager.core.business.shoppingcart.model.ShoppingCart dbCart = shoppingCartService.getByCode(item.getCode(), store);
-			if(dbCart!=null) {
-				shoppingCart = shoppingCartFacade.getShoppingCartData( dbCart);
-				              
-			}
-		}*/
+
 		
 		
 		//if shoppingCart is null create a new one
 		
 		shoppingCart = new ShoppingCartData();
-			String code = UUID.randomUUID().toString().replaceAll("-", "");
-			shoppingCart.setCode(code);
+		String code = UUID.randomUUID().toString().replaceAll("-", "");
+		shoppingCart.setCode(code);
 	
 	
 		
 		
-			shoppingCart=shoppingCartFacade.addItemsToShoppingCart( shoppingCart, item, store );
-		
-		              
-		
-		//calculate total
-		//OrderSummary summary = new OrderSummary();
-		//List<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> productsList = new ArrayList<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem>();
-		//productsList.addAll(entity.getLineItems());
-		//summary.setProducts(productsList);
-		//OrderTotalSummary orderSummary = orderService.calculateOrderTotal(summary, store, language);
-		//shoppingCart.setTotal(pricingService.getDisplayAmount(orderSummary.getTotal(), store));
-		//shoppingCart.setQuantity(shoppingCart.getShoppingCartItems().size());
-
+		shoppingCart=shoppingCartFacade.addItemsToShoppingCart( shoppingCart, item, store );
 		
 		
 		/******************************************************/

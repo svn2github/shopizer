@@ -184,7 +184,7 @@ public class ShoppingCartFacadeImpl
         Customer customer = (Customer)getKeyValue(Constants.CUSTOMER);
         Language language = (Language)getKeyValue(Constants.LANGUAGE);
         com.salesmanager.core.business.shoppingcart.model.ShoppingCart cartModel =null;
-        if(!StringUtils.isBlank(item.getCode()) && !(item.getCode().equalsIgnoreCase( "undefined" )))  {
+        if(!StringUtils.isBlank(item.getCode()))  {
         //get it from the db
         cartModel = shoppingCartService.getByCode(item.getCode(), store);
         if(cartModel==null){
@@ -239,22 +239,12 @@ public class ShoppingCartFacadeImpl
            throw new Exception( "Item with id " + shoppingCartItem.getProductId() + " does not belong to merchant "
                + store.getId() );
        }
+       
+       com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem item = shoppingCartService.populateShoppingCartItem(product);
 
-       com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem item = new com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem( cartModel, product );
        item.setQuantity( shoppingCartItem.getQuantity() );
-       
-           List<ProductAttribute> productAttributes = new ArrayList<ProductAttribute>();
-       
-           productAttributes.addAll( product.getAttributes() );
-           final FinalPrice finalPrice = productPriceUtils.getFinalProductPrice( product, productAttributes );
-          
-         
-      
-     
-       
-       item.setItemPrice( finalPrice.getFinalPrice());
-       item.setShoppingCart( cartModel );
-      
+       item.setShoppingCart(cartModel);
+
        // attributes
        List<ShoppingCartAttribute> cartAttributes = shoppingCartItem.getShoppingCartAttributes();
        if ( !CollectionUtils.isEmpty( cartAttributes ) )
@@ -263,18 +253,16 @@ public class ShoppingCartFacadeImpl
            {
                ProductAttribute productAttribute = productAttributeService.getById( attribute.getAttributeId() );
                if ( productAttribute != null
-                   && productAttribute.getProduct().getId().longValue() == product.getId().longValue() )
-               {
+                   && productAttribute.getProduct().getId().longValue() == product.getId().longValue() ) {
                    com.salesmanager.core.business.shoppingcart.model.ShoppingCartAttributeItem attributeItem =
                        new com.salesmanager.core.business.shoppingcart.model.ShoppingCartAttributeItem( item,
                                                                                                         productAttribute );
-                   if ( attribute.getAttributeId() > 0 )
-                   {
+                   if ( attribute.getAttributeId() > 0 ) {
                        attributeItem.setId( attribute.getId() );
                    }
                    item.addAttributes( attributeItem );
-             }
-  }
+              }
+           }
        }
 
        return item;
