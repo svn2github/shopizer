@@ -222,19 +222,22 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				
 				
 				@SuppressWarnings("unchecked")
-				List<Content> contents = (List<Content>)request.getAttribute(Constants.REQUEST_CONTENT_OBJECTS);
+				Map<String, List<Content>> contents = (Map<String, List<Content>>)request.getAttribute(Constants.REQUEST_CONTENT_OBJECTS);
 				
 				if(contents!=null) {
-					for(Content content : contents) {
-						if(content.getCode().equals(Constants.CONTENT_LANDING_PAGE)) {
-							
-							List<ContentDescription> descriptions = content.getDescriptions();
-							for(ContentDescription contentDescription : descriptions) {
-								if(contentDescription.getLanguage().getCode().equals(language.getCode())) {
-									pageInformation.setPageTitle(contentDescription.getName());
-									pageInformation.setPageDescription(contentDescription.getMetatagDescription());
-									pageInformation.setPageKeywords(contentDescription.getMetatagKeywords());
-									break;
+					for(String key : contents.keySet()) {
+						List<Content> contentsList = contents.get(key);
+						for(Content content : contentsList) {
+							if(content.getCode().equals(Constants.CONTENT_LANDING_PAGE)) {
+								
+								List<ContentDescription> descriptions = content.getDescriptions();
+								for(ContentDescription contentDescription : descriptions) {
+									if(contentDescription.getLanguage().getCode().equals(language.getCode())) {
+										pageInformation.setPageTitle(contentDescription.getName());
+										pageInformation.setPageDescription(contentDescription.getMetatagDescription());
+										pageInformation.setPageKeywords(contentDescription.getMetatagKeywords());
+										break;
+									}
 								}
 							}
 						}
@@ -449,7 +452,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 					if(missedContent==null) {
 					
 						contents = this.getContent(store, language);
-						if(contents!=null) {
+						if(contents!=null && contents.size()>0) {
 							//put in cache
 							cache.putInCache(contents, contentKey.toString());
 						} else {
