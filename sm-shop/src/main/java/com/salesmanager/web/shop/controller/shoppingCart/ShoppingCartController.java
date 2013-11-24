@@ -27,6 +27,7 @@ import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartItem;
+import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.shoppingCart.facade.ShoppingCartFacade;
 
@@ -76,7 +77,7 @@ import com.salesmanager.web.shop.controller.shoppingCart.facade.ShoppingCartFaca
  */
 
 @Controller
-public class ShoppingCartController {
+public class ShoppingCartController extends AbstractController {
 	
 	protected final Logger LOG= Logger.getLogger( getClass());
 	@Autowired
@@ -100,7 +101,7 @@ public class ShoppingCartController {
 	@Autowired
 	private ShoppingCartFacade shoppingCartFacade;
 	
-	
+	private final static String MINICART="shop/common/cart/fragment/minicartFragment";
 	/**
 	 * Retrieves a Shopping cart from the database (regular shopping cart)
 	 * @param model
@@ -259,7 +260,8 @@ public class ShoppingCartController {
 		//store the shopping cart in the http session
 		
 		
-		shoppingCartFacade.removeCartItem(lineItemId, getShoppingCartFromSession(request).getCode());
+		ShoppingCartData shoppingCartData=shoppingCartFacade.removeCartItem(lineItemId, getShoppingCartFromSession(request).getCode());
+		setCartDataToSession(request, shoppingCartData);
 		return Constants.REDIRECT_PREFIX + "/shop/shoppingCart.html";
 		
 		
@@ -279,24 +281,13 @@ public class ShoppingCartController {
 	public String updateShoppingCartItem( final Long lineItemId, final Integer quantity, final HttpServletRequest request, final  HttpServletResponse response) throws Exception {
 		
 		LOG.info("updating cart entry with qunatity: "+quantity);
-		shoppingCartFacade.updateCartItem(lineItemId, getShoppingCartFromSession(request).getCode(), quantity);
+		ShoppingCartData shoppingCartData= shoppingCartFacade.updateCartItem(lineItemId, getShoppingCartFromSession(request).getCode(), quantity);
+		setCartDataToSession(request, shoppingCartData);
 		return Constants.REDIRECT_PREFIX + "/shop/shoppingCart.html";
-		
-		
 	}
+	
+	
 		
-    private ShoppingCartData getShoppingCartFromSession( final HttpServletRequest request){
-    	return (ShoppingCartData)request.getSession().getAttribute(Constants.SHOPPING_CART);  
-    }
-    
-    
-    
-    private void setCartDataToSession(final HttpServletRequest request,final ShoppingCartData shoppingCartData){
-    	
-    	HttpSession session=request.getSession();
-    	synchronized (session) {
-    		session.setAttribute(Constants.SHOPPING_CART, shoppingCartData);
-		}
-    }
+   
 	
 }

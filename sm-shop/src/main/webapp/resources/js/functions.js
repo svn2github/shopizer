@@ -192,7 +192,7 @@
 						var shoppingCartItem = cart.shoppingCartItems[i];
 						var item = '<tr id="' + shoppingCartItem.productId + '" class="cart-product">';
 						item = item + '<td>';
-						if(cart.image!=null){
+						if(shoppingCartItem.image!=null){
 							item = item + '<img width="40" height="40" src="' + shoppingCartItem.image + '">';
 						} else {
 							item = item + '&nbsp;';
@@ -218,4 +218,38 @@ function removeLineItem(lineItemId){
 function updateLineItem(lineItemId,actionURL){
 	$("#shoppingCartLineitem_"+lineItemId).attr('action', actionURL);
 	$( "#shoppingCartLineitem_"+lineItemId).submit();	
+}
+
+function displayMiniCart(){
+	$.ajax({  
+		 type: 'GET',  
+		 url: getContextPath() + '/shop/displayMiniCart.html',  
+		 error: function(e) { 
+			// do nothing
+			 
+		 },
+		 success: function(miniCart) {
+			$("#minicartComponent").html("<li>"+miniCart+"</li>");
+		} 
+	});
+}
+
+
+function removeItemFromMinicart(lineItemId){
+	$.ajax({  
+		 type: 'GET',  
+		 url: getContextPath() + '/shop/miniCart/removeShoppingCartItem.html?lineItemId='+lineItemId,  
+		 error: function(e) { 
+			// do nothing
+			 
+		 },
+		 success: function(miniCart) {
+			 var labelItem = '<s:message code="label.generic.item" text="item" />';
+	    	 if(miniCart.quantity>1) { 
+	    		 labelItem = '<s:message code="label.generic.items" text="items" />';
+	    	 }
+			 $("#cartinfo").html('<span id="cartqty">(' + miniCart.quantity + ' ' + labelItem + ')</span><span id="cartprice">' + miniCart.total + '</span>');
+			$("#minicartComponent").html("<li>"+miniCart+"</li>");
+		} 
+	});
 }

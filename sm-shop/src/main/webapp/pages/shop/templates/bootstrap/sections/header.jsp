@@ -86,22 +86,13 @@ response.setDateHeader ("Expires", -1);
  					<div style="padding-top: 8px;padding-bottom:10px;" class="btn-group pull-right">
             					&nbsp;&nbsp;&nbsp;
             					<i class="icon-shopping-cart icon-black"></i>
-            					<a style="box-shadow:none;color:FF8C00;" href="#" data-toggle="dropdown" class="open noboxshadow dropdown-toggle" id="open-cart">My Cart</a>
+            					<a style="box-shadow:none;color:FF8C00;" href="#" data-toggle="dropdown" onclick="javascript:displayMiniCart();" class="open noboxshadow dropdown-toggle" id="open-cart">My Cart</a>
 								<jsp:include page="/pages/shop/common/cart/minicartinfo.jsp" />
-            				<c:choose>
-	           		 			 <c:when test="${requestScope.SHOPPING_CART != null}">
-		            					<ul class="dropdown-menu minicart">
-		              						<li>
-												<jsp:include page="/pages/shop/common/cart/minicart.jsp" />
-		              						</li>
+            				
+		            					<ul class="dropdown-menu minicart" id="minicartComponent">
+		              						
 		            					</ul>
-            					</c:when>
-            					<c:otherwise>
-            							<ul class="dropdown-menu minicart">
-	                  						<h4 class="cartmessage"><s:message code="label.emptycart" text="No items in your shopping cart" /></h4>
-	                  					</ul>
-	                  			</c:otherwise>
-                  			</c:choose>
+            					
 					
 					</div>
 					
@@ -143,3 +134,8 @@ response.setDateHeader ("Expires", -1);
 
 			</div>
 			<!-- End main menu -->
+			<script>
+			  function clickMe(){
+				  alert("clicked ");
+			  }
+			</script>

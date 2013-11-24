@@ -31,7 +31,7 @@ public interface ShoppingCartFacade {
     public ShoppingCartData getShoppingCartData(final ShoppingCart shoppingCart) throws Exception;
     public ShoppingCartData recalculateCart( ShoppingCartData shoppingCart) throws Exception ;
     public ShoppingCartData addItemsToShoppingCart(ShoppingCartData shoppingCart,final ShoppingCartItem item, final MerchantStore store) throws Exception;
-    public void removeCartItem(final Long itemID, final String cartId) throws Exception;
-    public void updateCartItem(final Long itemID, final String cartId, final long quantity) throws Exception;
+    public ShoppingCartData removeCartItem(final Long itemID, final String cartId) throws Exception;
+    public ShoppingCartData updateCartItem(final Long itemID, final String cartId, final long quantity) throws Exception;
 
 }

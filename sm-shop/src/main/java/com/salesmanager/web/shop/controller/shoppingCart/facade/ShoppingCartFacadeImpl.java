@@ -271,7 +271,7 @@ public class ShoppingCartFacadeImpl
    
    
    @Override
-   public void removeCartItem(final Long itemID, final String cartId) throws Exception {
+   public ShoppingCartData removeCartItem(final Long itemID, final String cartId) throws Exception {
    	if(StringUtils.isNotBlank(cartId)){
    	
    		ShoppingCart cartModel = getCartModel(cartId);
@@ -285,15 +285,23 @@ public class ShoppingCartFacadeImpl
    			}
    			cartModel.setLineItems(shoppingCartItemSet);
    			shoppingCartService.saveOrUpdate(cartModel);
+   			
+   			ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
+   	        shoppingCartDataPopulator.setOrderService(orderService);
+   	        shoppingCartDataPopulator.setPricingService(pricingService);
+   	        
+   	        MerchantStore store = (MerchantStore)getKeyValue(Constants.MERCHANT_STORE);
+	        Language language = (Language)getKeyValue(Constants.LANGUAGE);
+   	        return shoppingCartDataPopulator.populate( cartModel, store, language );
    	}
    		}
    	}
-   
+    return null;
    }
 
    
    @Override
-   public void updateCartItem(final Long itemID, final String cartId, final long newQuantity)
+   public ShoppingCartData updateCartItem(final Long itemID, final String cartId, final long newQuantity)
    		throws Exception {
 	   if(newQuantity < 1){
 		  throw new CartModificationException("Quantity must not be less than one");
@@ -315,11 +323,18 @@ public class ShoppingCartFacadeImpl
 		        final FinalPrice finalPrice = productPriceUtils.getFinalProductPrice( entryToUpdate.getProduct(), productAttributes );
 		        entryToUpdate.setItemPrice(finalPrice.getFinalPrice());
 		        shoppingCartService.saveOrUpdate(cartModel);
+		       
 		        LOG.info("Cart entry updated with desired quantity");
+		        ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
+		        shoppingCartDataPopulator.setOrderService(orderService);
+		        shoppingCartDataPopulator.setPricingService(pricingService);
+		        MerchantStore store = (MerchantStore)getKeyValue(Constants.MERCHANT_STORE);
+		        Language language = (Language)getKeyValue(Constants.LANGUAGE);
+		        return shoppingCartDataPopulator.populate( cartModel, store, language );
 		        
 			}
 		}
-   	
+   	   return null;
    }
    
    
