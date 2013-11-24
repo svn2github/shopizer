@@ -20,16 +20,16 @@ response.setDateHeader ("Expires", -1);
             <div class="row-fluid">
 
                 <div class="span12" itemscope itemtype="http://data-vocabulary.org/Product">
-                    <div class="row">
+                    <!--<div class="row">-->
                     	<!-- Image column -->
 						<div class="span4">
 							<c:if test="${product.image!=null}">
-							<a href="<c:out value="${product.image.imageUrl}"/>" class="thumbnail" data-fancybox-group="group1" title="<c:out value="${product.description.name}"/>"><img itemprop="image" alt="<c:out value="${product.description.name}"/>" src="<c:out value="${product.image.imageUrl}"/>"></a>												
+							<a href="<c:out value="${product.image.imageUrl}"/>" class="" title="<c:out value="${product.description.name}"/>"><img alt="<c:out value="${product.description.name}"/>" src="<c:url value="${product.image.imageUrl}"/>"></a>												
 							<c:if test="${product.images!=null}">
 							<ul class="thumbnails small">
 								<c:forEach items="${product.images}" var="thumbnail">								
 								<li class="span1">
-									<a href="<c:out value="${thumbnail.imageUrl}"/>" class="thumbnail" data-fancybox-group="group" title="<c:out value="${thumbnail.imageName}"/>"><img src="<c:out value="${thumbnail.imageUrl}"/>" alt="<c:out value="${thumbnail.imageName}"/>"></a>
+									<a href="<c:out value="${thumbnail.imageUrl}"/>" class=""  title="<c:out value="${thumbnail.imageName}"/>"><img src="<c:out value="${thumbnail.imageUrl}"/>" alt="<c:url value="${thumbnail.imageName}"/>"></a>
 								</li>
 								</c:forEach>								
 							</ul>
@@ -38,7 +38,7 @@ response.setDateHeader ("Expires", -1);
 						</div>
 						<!-- TDOD Google rich snippets (http://blog.hubspot.com/power-google-rich-snippets-ecommerce-seo-ht) -->
 						<!-- Product description column -->
-						<div class="span5">
+						<div class="span8">
 							<h1>${product.description.name}</h1>
 							<div class="review">
 								<div>
@@ -71,9 +71,9 @@ response.setDateHeader ("Expires", -1);
 							</address>
 							</span>
 						</div>
+						<!--
 						<div class="span5">
 							<form id="input-<c:out value="${product.id}" />" class="form-inline">
-								<!-- Options block -->
 								<c:if test="${options!=null}">
 									<c:forEach items="${options.values}" var="option">
 										<div class="control-group"> 
@@ -117,7 +117,6 @@ response.setDateHeader ("Expires", -1);
 							</form>
 						</div>
 						<div class="span5">
-							<!-- facebook like, twitter, google + and pinterest -->
 							<ul class="social">
 								<li>									
 									<div class="fb-like" send="false" layout="button_count" data-href="example.org"></div>
@@ -129,9 +128,11 @@ response.setDateHeader ("Expires", -1);
 								</li>
 							</ul>
 						</div>
+						-->
 					</div>
-                    <div class="row">
-                        <div class="span9">
+			 </div>
+			 <div class="row-fluid">
+                    <div class="span12">
 							<ul class="nav nav-tabs" id="myTab">
 								<li class="active"><a href="#description"><s:message code="label.productedit.productdesc" text="Product description" /></a></li>
 								<!--<li><a href="#reviews"><s:message code="label.product.customer.reviews" text="Customer reviews" /></a></li><!-- TODO read only attributes -->
@@ -155,9 +156,7 @@ response.setDateHeader ("Expires", -1);
 								  </c:if>
 									
 									
-								</div>
-								
-							</div>							
+								</div>						
                         </div>	
                         
                         <!-- Related items -->
@@ -168,7 +167,7 @@ response.setDateHeader ("Expires", -1);
 						
                     </div>
                 </div>
-            </div>
+
             
 
 		<script>
@@ -179,12 +178,7 @@ response.setDateHeader ("Expires", -1);
 					$(this).tab('show');
 				})
 			})
-			$(document).ready(function() {
-				$('.thumbnail').fancybox({
-					openEffect  : 'none',
-					closeEffect : 'none'
-				});
-				
+			$(document).ready(function() {				
 				$('.carousel').carousel({
                     interval: false
                 });

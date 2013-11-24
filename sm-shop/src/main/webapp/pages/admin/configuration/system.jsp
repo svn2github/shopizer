@@ -47,7 +47,7 @@
 	                  				   </div>
 	                  				   
 	                  				   <div class="control-group">
-	                        				<label><s:message code="label.store.displaycontactussection" text="Display contact us page" /></label>
+	                        				<label><s:message code="label.store.displaystoreaddress" text="Display store address" /></label>
 	                        				<div class="controls">
 	                        					<form:checkbox path="displayStoreAddress" /> 
 	                                   			<span class="help-inline"></span>
