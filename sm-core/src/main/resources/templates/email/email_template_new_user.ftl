@@ -28,10 +28,10 @@ a:visited {color:#0066cc;}
   <!-- Content Section -->
   <div class="content">
     <div class="content-line">
-    	${EMAIL_NEW_USER_TEXT}<br /><br /><br />
+    	${EMAIL_NEW_USER_TEXT}<br /><br />
     	${EMAIL_STORE_NAME}<br /><br />
-    	${EMAIL_ADMIN_LABEL} ${EMAIL_USER_FIRSTNAME} ${EMAIL_USER_LASTNAME}<br/>
-    	${EMAIL_ADMIN_USERNAME_LABEL}: ${EMAIL_ADMIN_NAME}<br /><br />
+    	${EMAIL_TEXT_NEW_USER_CREATED}<br/>
+    	${EMAIL_ADMIN_USERNAME_LABEL}: ${EMAIL_ADMIN_NAME}<br />
     	${EMAIL_ADMIN_PASSWORD_LABEL}: ${EMAIL_ADMIN_PASSWORD}</br>
     	${EMAIL_ADMIN_URL_LABEL}: ${EMAIL_ADMIN_URL}<br /><br />
     </div>
