@@ -12,4 +12,6 @@ public interface ZoneDao extends SalesManagerEntityDao<Long,Zone> {
 
 	List<Zone> listByLanguageAndCountry(Country country, Language language);
 
+	List<Zone> listByLanguage(Language language);
+
 }

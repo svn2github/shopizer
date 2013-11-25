@@ -7,5 +7,7 @@ public class Constants {
 	
 	public final static String EMAIL_CONFIG = "EMAIL_CONFIG";
 	public final static String MERCHANT_CONFIG = "MERCHANT_CONFIG";
+	
+	public final static String UNDERSCORE = "_";
 
 }

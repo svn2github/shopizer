@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.UniqueConstraint;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
@@ -21,7 +22,8 @@ import com.salesmanager.core.constants.SchemaConstant;
  *
  */
 @Entity
-@Table(name = "PRODUCT_DIGITAL", schema=SchemaConstant.SALESMANAGER_SCHEMA)
+@Table(name = "PRODUCT_DIGITAL", schema=SchemaConstant.SALESMANAGER_SCHEMA, uniqueConstraints=
+	@UniqueConstraint(columnNames = {"PRODUCT_ID", "FILE_NAME"}))
 public class DigitalProduct extends SalesManagerEntity<Long, DigitalProduct> {
 
 
@@ -40,7 +42,7 @@ public class DigitalProduct extends SalesManagerEntity<Long, DigitalProduct> {
 	private Product product;
 
 
-	@Column(name="FILE_NAME",nullable=false, unique=true)
+	@Column(name="FILE_NAME",nullable=false)
 	private String productFileName;
 	
 

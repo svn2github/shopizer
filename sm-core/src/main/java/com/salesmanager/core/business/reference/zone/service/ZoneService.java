@@ -1,6 +1,7 @@
 package com.salesmanager.core.business.reference.zone.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
@@ -17,4 +18,8 @@ public interface ZoneService extends SalesManagerEntityService<Long, Zone> {
 
 	List<Zone> getZones(Country country, Language language)
 			throws ServiceException;
+
+	Map<String, Zone> getZones(Language language) throws ServiceException;
+
+
 }

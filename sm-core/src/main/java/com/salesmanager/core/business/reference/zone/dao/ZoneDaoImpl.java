@@ -34,5 +34,21 @@ public class ZoneDaoImpl extends SalesManagerEntityDaoImpl<Long, Zone> implement
 		List<Zone> zones = query.list(qZone);
 		return zones;
 	}
+	
+	@Override
+	public List<Zone> listByLanguage(Language language) {
+		QZone qZone = QZone.zone;
+		QZoneDescription qDescription = QZoneDescription.zoneDescription;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qZone)
+			.leftJoin(qZone.descriptions, qDescription).fetch()
+			.where(qDescription.language.id.eq(language.getId()))
+					.orderBy(qDescription.name.asc());
+
+		List<Zone> zones = query.list(qZone);
+		return zones;
+	}
 
 }
