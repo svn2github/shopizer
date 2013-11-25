@@ -69,7 +69,8 @@ public class FilesController {
 		
 	}
 	
-	/**
+/*	*//**
+ 	 * See order controller
 	 * Serves product download files
 	 * @param storeCode
 	 * @param productId
@@ -77,7 +78,7 @@ public class FilesController {
 	 * @param extension
 	 * @return
 	 * @throws IOException
-	 */
+	 *//*
 	@RequestMapping("/files/{storeCode}/{orderId}/{productId}/{fileName}.{extension}")
 	public void downloadProduct(@PathVariable final String storeCode, @PathVariable final Long orderId, @PathVariable final Long productId, @PathVariable final String fileName, @PathVariable final String extension, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -98,7 +99,7 @@ public class FilesController {
 		//} catch (ServiceException e) {
 			//LOGGER.error("Cannot retrieve image " + imageName, e);
 		//}
-		/*		try {
+				try {
 	      // get your file as InputStream
 	      InputStream is = ...;
 	      // copy it to response's OutputStream
@@ -111,8 +112,8 @@ public class FilesController {
 	      throw new RuntimeException("IOError writing file to output stream");
 	    }
 
-	}*/
-
 	}
+
+	}*/
 
 }

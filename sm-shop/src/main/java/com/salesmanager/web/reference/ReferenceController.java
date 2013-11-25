@@ -13,14 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
+import com.salesmanager.web.utils.LocaleUtils;
 
 
 /**
@@ -38,6 +41,7 @@ public class ReferenceController {
 	
 	@Autowired
 	private CountryService countryService;
+
 	
 	
 	@SuppressWarnings("unchecked")
@@ -45,24 +49,14 @@ public class ReferenceController {
 	public @ResponseBody String getProvinces(HttpServletRequest request, HttpServletResponse response) {
 		
 		String countryCode = request.getParameter("countryCode");
-		
 		LOGGER.debug("Province Country Code " + countryCode);
-		
 		AjaxResponse resp = new AjaxResponse();
 		
-		
 		try {
-			
-
-		
 			Language language = (Language)request.getAttribute("LANGUAGE");
-			
 			Map<String,Country> countriesMap = countryService.getCountriesMap(language);
-			
 			Country country = countriesMap.get(countryCode);
-			
 			List<Zone> zones = zoneService.getZones(country, language);
-			
 			if(zones!=null && zones.size()>0) {
 				
 				
@@ -91,9 +85,52 @@ public class ReferenceController {
 		
 		
 		String returnString = resp.toJSONString();
-		
 		return returnString;
 		
+	}
+	
+	@RequestMapping(value="/shop/reference/countryName")
+	public @ResponseBody String countryName(@RequestParam String countryCode, HttpServletRequest request) {
+		
+		try {
+			Language language = LocaleUtils.getRequestLanguage(request);
+			if(language==null) {
+				return countryCode;
+			}
+			Map<String, Country> countriesMap = countryService.getCountriesMap(language);
+			if(countriesMap!=null) {
+				Country c = countriesMap.get(countryCode);
+				if(c!=null) {
+					return c.getName();
+				}
+			}
+		
+		} catch (ServiceException e) {
+			LOGGER.error("Error while looking up country " + countryCode);
+		}
+		return countryCode;
+	}
+	
+	@RequestMapping(value="/shop/reference/zoneName")
+	public @ResponseBody String zoneName(@RequestParam String zoneCode, HttpServletRequest request) {
+		
+		try {
+			Language language = LocaleUtils.getRequestLanguage(request);
+			if(language==null) {
+				return zoneCode;
+			}
+			Map<String, Zone> zonesMap = zoneService.getZones(language);
+			if(zonesMap!=null) {
+				Zone z = zonesMap.get(zoneCode);
+				if(z!=null) {
+					return z.getName();
+				}
+			}
+		
+		} catch (ServiceException e) {
+			LOGGER.error("Error while looking up zone " + zoneCode);
+		}
+		return zoneCode;
 	}
 
 }

@@ -18,6 +18,7 @@ public class Constants {
 	public final static String MERCHANT_STORE = "MERCHANT_STORE";
 	public final static String SHOPPING_CART = "SHOPPING_CART";
 	public final static String CUSTOMER = "CUSTOMER";
+	public final static String ORDER = "ORDER";
 	
 
 	public final static String GROUP_ADMIN = "ADMIN";

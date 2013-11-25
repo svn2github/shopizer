@@ -1,6 +1,5 @@
 package com.salesmanager.web.shop.controller.order;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -11,17 +10,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.salesmanager.core.business.common.model.Billing;
-import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.order.model.OrderSummary;
 import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.payments.service.PaymentService;
@@ -45,6 +43,9 @@ import com.salesmanager.web.shop.controller.order.facade.OrderFacade;
 @Controller
 @RequestMapping(Constants.SHOP_URI)
 public class ShoppingOrderController {
+	
+	private static final Logger LOGGER = LoggerFactory
+	.getLogger(ShoppingOrderController.class);
 	
 	@Autowired
 	private ShoppingCartService shoppingCartService;
@@ -177,6 +178,35 @@ public class ShoppingOrderController {
 		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Checkout.checkout).append(".").append(store.getStoreTemplate());
 		return template.toString();
 
+		
+	}
+	
+	@RequestMapping("/order/commit.html")
+	public String commitOrder(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+
+		
+		
+		try {
+			
+			Language language = (Language)request.getAttribute("LANGUAGE");
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+			Customer customer = (Customer)request.getSession().getAttribute(Constants.CUSTOMER);
+			ShopOrder order = (ShopOrder)request.getSession().getAttribute(Constants.ORDER);
+			
+			
+			if(order==null) {
+				//redirect
+			}
+			
+			//calculate order total so we get OrderTotal
+			
+			//transform ShoppingCartItem to OrderProduct
+			
+		} catch (Exception e) {
+			LOGGER.error("An error occured while commiting the order",e);
+		}
+		
+		return null;
 		
 	}
 

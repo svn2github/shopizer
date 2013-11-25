@@ -590,15 +590,20 @@ public class UserController {
 			try {
 
 				//creation of a user, send an email
-				String[] userNameArg = {user.getFirstName()};
+				String userName = user.getFirstName();
+				if(StringUtils.isBlank(userName)) {
+					userName = user.getAdminName();
+				}
+				String[] userNameArg = {userName};
 				
 				
 				Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, store, messages, userLocale);
 				templateTokens.put(EmailConstants.EMAIL_NEW_USER_TEXT, messages.getMessage("email.greeting", userNameArg, userLocale));
 				templateTokens.put(EmailConstants.EMAIL_USER_FIRSTNAME, user.getFirstName());
 				templateTokens.put(EmailConstants.EMAIL_USER_LASTNAME, user.getLastName());
-				templateTokens.put(EmailConstants.EMAIL_ADMIN_USERNAME_LABEL, messages.getMessage("label.genetic.username",userLocale));
+				templateTokens.put(EmailConstants.EMAIL_ADMIN_USERNAME_LABEL, messages.getMessage("label.generic.username",userLocale));
 				templateTokens.put(EmailConstants.EMAIL_ADMIN_NAME, user.getAdminName());
+				templateTokens.put(EmailConstants.EMAIL_TEXT_NEW_USER_CREATED, messages.getMessage("email.newuser.text",userLocale));
 				templateTokens.put(EmailConstants.EMAIL_ADMIN_PASSWORD_LABEL, messages.getMessage("label.generic.password",userLocale));
 				templateTokens.put(EmailConstants.EMAIL_ADMIN_PASSWORD, decodedPassword);
 				templateTokens.put(EmailConstants.EMAIL_ADMIN_URL_LABEL, messages.getMessage("label.adminurl",userLocale));

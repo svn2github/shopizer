@@ -85,6 +85,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 	private CacheUtils cache;
 	
 	private final static String SERVICES_URL_PATTERN = "/services";
+	private final static String REFERENCE_URL_PATTERN = "/reference";
 	
 
 
@@ -107,7 +108,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			 * exit from here !
 			 */
 			
-			if(request.getRequestURL().toString().toLowerCase().contains(SERVICES_URL_PATTERN)) {
+			if(request.getRequestURL().toString().toLowerCase().contains(SERVICES_URL_PATTERN)
+				|| request.getRequestURL().toString().toLowerCase().contains(REFERENCE_URL_PATTERN)	
+			) {
 				return true;
 			}
 			

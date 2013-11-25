@@ -79,7 +79,7 @@ public class FilePathUtils {
 		resourcePath.append(scheme).append("://")
 		.append(domainName)
 		.append(request.getContextPath())
-		.append("/").append(Constants.ADMIN_URL);
+		.append(Constants.ADMIN_URL);
 		
 		return resourcePath.toString();
 		

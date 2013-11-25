@@ -36,7 +36,6 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.tax.service.TaxClassService;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.entity.catalog.ProductList;
 import com.salesmanager.web.entity.catalog.product.PersistableProduct;
 import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.entity.catalog.product.ReadableProductList;
@@ -44,7 +43,6 @@ import com.salesmanager.web.populator.catalog.PersistableProductPopulator;
 import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.web.shop.model.filter.QueryFilter;
 import com.salesmanager.web.shop.model.filter.QueryFilterType;
-import com.salesmanager.web.utils.LocaleUtils;
 
 /**
  * API for create, read and delete Product

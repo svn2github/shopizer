@@ -7,6 +7,7 @@ public class EmailConstants {
 	public static final String EMAIL_USER_LASTNAME = "EMAIL_USER_LASTNAME";
 	public static final String EMAIL_ADMIN_USERNAME_LABEL = "EMAIL_ADMIN_USERNAME_LABEL";
 	public static final String EMAIL_ADMIN_NAME = "EMAIL_ADMIN_NAME";
+	public static final String EMAIL_TEXT_NEW_USER_CREATED = "EMAIL_TEXT_NEW_USER_CREATED";
 	public static final String EMAIL_ADMIN_PASSWORD_LABEL = "EMAIL_ADMIN_PASSWORD_LABEL";
 	public static final String EMAIL_ADMIN_PASSWORD = "EMAIL_ADMIN_PASSWORD";
 	
