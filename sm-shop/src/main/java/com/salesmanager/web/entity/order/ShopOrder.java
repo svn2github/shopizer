@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 
 /**
@@ -20,6 +21,8 @@ public class ShopOrder extends PersistableOrder implements Serializable {
 	private List<ShoppingCartItem> shoppingCartItems;//overrides parent API list of shoppingcartitem
 	private Customer shoppingCartCustomer;//overrides parent API PersistableCustomer
 	
+	private OrderTotalSummary orderTotalSummary;//The order total displayed to the end user. That object will be used when committing the order
+	
 	
 	public void setShoppingCartItems(List<ShoppingCartItem> shoppingCartItems) {
 		this.shoppingCartItems = shoppingCartItems;
@@ -32,6 +35,12 @@ public class ShopOrder extends PersistableOrder implements Serializable {
 	}
 	public Customer getShoppingCartCustomer() {
 		return shoppingCartCustomer;
+	}
+	public void setOrderTotalSummary(OrderTotalSummary orderTotalSummary) {
+		this.orderTotalSummary = orderTotalSummary;
+	}
+	public OrderTotalSummary getOrderTotalSummary() {
+		return orderTotalSummary;
 	}
 
 }

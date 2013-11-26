@@ -1,5 +1,7 @@
 package com.salesmanager.web.populator.order;
 
+import java.math.BigDecimal;
+
 import org.apache.commons.lang.Validate;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
@@ -9,7 +11,6 @@ import com.salesmanager.core.business.catalog.product.service.file.DigitalProduc
 import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProductDownload;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -55,9 +56,26 @@ public class OrderProductPopulator extends
 			if(digitalProduct!=null) {
 				OrderProductDownload orderProductDownload = new OrderProductDownload();
 				//orderProductDownload.setMaxdays(31);		
-				orderProductDownload.setOrderProductFilename(source.getProduct().getDescriptions().iterator().next().getName());
+				orderProductDownload.setOrderProductFilename(digitalProduct.getProductFileName());
 				orderProductDownload.setOrderProduct(target);
+				target.getDownloads().add(orderProductDownload);
 			}
+			
+
+			target.setFinalPrice(source.getItemPrice());
+			target.setOnetimeCharge(source.getItemPrice());	
+			target.setProductName(source.getProduct().getDescriptions().iterator().next().getName());
+			target.setProductQuantity(source.getQuantity());
+			target.setSku(source.getProduct().getSku());		
+			
+			
+			//ProductPrice calculation
+			
+			//target.getPrices().add(oproductprice ) ;
+			
+			//oproductprice.setOrderProduct(oproduct);		
+			//orderProductDownload.setOrderProduct(oproduct);
+			//order.getOrderProducts().add(oproduct);
 			
 		} catch (ServiceException e) {
 			// TODO Auto-generated catch block

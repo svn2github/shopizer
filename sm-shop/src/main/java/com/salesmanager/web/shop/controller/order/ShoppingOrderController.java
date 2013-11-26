@@ -149,17 +149,8 @@ public class ShoppingOrderController {
 		}
 
 		//order total
-		//OrderSummary summary = new OrderSummary();
-		//List<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> productsList = new ArrayList<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem>();
-		//productsList.addAll(cart.getLineItems());
-		//summary.setProducts(productsList);
-		//no default shipping summary
-		
-		//OrderTotalSummary orderTotalSummary = orderService.caculateOrderTotal(summary, customer, store, language);
-		//******//
-		
 		OrderTotalSummary orderTotalSummary = orderFacade.calculateOrderTotal(store, order, language);
-
+		order.setOrderTotalSummary(orderTotalSummary);
 
 		
 		//get countries
@@ -181,6 +172,16 @@ public class ShoppingOrderController {
 		
 	}
 	
+	
+	/**
+	 * Method that saves the order to the database
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @param locale
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping("/order/commit.html")
 	public String commitOrder(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
@@ -197,9 +198,7 @@ public class ShoppingOrderController {
 			if(order==null) {
 				//redirect
 			}
-			
-			//calculate order total so we get OrderTotal
-			
+
 			//transform ShoppingCartItem to OrderProduct
 			
 		} catch (Exception e) {
