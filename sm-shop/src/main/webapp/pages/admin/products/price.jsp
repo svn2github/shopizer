@@ -108,6 +108,14 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
                                     <form:checkbox path="price.defaultPrice" />
                         	</div>
                   	</div>
+                  	
+                  	<div class="control-group">
+                        <label><s:message code="label.product.price.code" text="Product price code"/></label>
+                        <div class="controls">
+                                    <form:input cssClass="highlight" path="price.code"/>
+                                    <span class="help-inline"><form:errors path="price.code" cssClass="error" /></span>
+                        </div>
+                    </div>
 					
 					<c:forEach items="${price.descriptions}" var="description" varStatus="counter">
 
@@ -152,7 +160,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 	                        </div>
 	              </div>
 
-
+				  <!-- default one time -->
 				  <form:hidden path="price.productPriceType" />
                   <form:hidden path="price.id" />
                   <form:hidden path="productAvailability.region" />
