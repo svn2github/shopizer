@@ -102,7 +102,7 @@ public class ProductPriceUtils {
 			}
 		}
 		
-		BigDecimal finalProductPrice = finalPrice.getOriginalPrice().add(attributePrice);
+/*		BigDecimal finalProductPrice = finalPrice.getOriginalPrice().add(attributePrice);
 		finalPrice.setOriginalPrice(finalProductPrice);
 		
 		if(finalPrice.isDiscounted()) {
@@ -121,7 +121,7 @@ public class ProductPriceUtils {
 			finalPrice.setDiscountedPrice(price);
 
 			
-		}
+		}*/
 
 		return finalPrice;
 
@@ -143,7 +143,7 @@ public class ProductPriceUtils {
 
 		FinalPrice finalPrice = calculateFinalPrice(product);
 		
-		if(finalPrice.isDiscounted()) {
+/*		if(finalPrice.isDiscounted()) {
 			
 			finalPrice.setDiscounted(true);
 			finalPrice.setDiscountedPrice(finalPrice.getDefaultPrice().getProductPriceSpecialAmount());
@@ -156,7 +156,7 @@ public class ProductPriceUtils {
 		}
 		if(finalPrice.getDefaultPrice()!=null) {
 			finalPrice.setOriginalPrice(finalPrice.getDefaultPrice().getProductPriceAmount());
-		}
+		}*/
 		return finalPrice;
 
 	}
