@@ -32,8 +32,7 @@ a:visited {color:#0066cc;}
   <!-- Content Section -->
   <div class="content">
     <div class="content-line">
-    	${EMAIL_STORE_NAME}<br /><br />
-    	<p>${EMAIL_RESET_PASSWORD_TXT}</p><br/>
+    	${EMAIL_RESET_PASSWORD_TXT}<br/>
     	${EMAIL_PASSWORD_LABEL}: ${EMAIL_CUSTOMER_PASSWORD}<br /><br />
     	${EMAIL_CONTACT_OWNER}
   	</div>
