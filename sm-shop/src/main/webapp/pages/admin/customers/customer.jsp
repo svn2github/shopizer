@@ -308,6 +308,7 @@ function resetCustomerPassword(customerId){
 					$('.alert-error').show();
 				}
 
+
 		  
 		  },
 		  error: function(xhr, textStatus, errorThrown) {
@@ -324,7 +325,7 @@ function resetCustomerPassword(customerId){
 </script>
 
 
-<div class="tabbable">
+<div id="tabbable" class="tabbable">
 
 
 				<jsp:include page="/common/adminTabs.jsp" />
@@ -373,7 +374,7 @@ function resetCustomerPassword(customerId){
 								<s:message code="message.success" text="Request successful"/>
 					</div>    
 					
-					<form:hidden path="id" /> 
+					<form:hidden id="customerId" path="id" /> 
 					<form:hidden path="merchantStore.id" />	
 					<form:hidden path="showCustomerStateList" />
 					<form:hidden path="showBillingStateList" /> 
@@ -659,7 +660,13 @@ function resetCustomerPassword(customerId){
            </p>
   </div>  
   <div class="modal-footer">
-  		   <button class="btn btn-primary" aria-hidden="true"><s:message code="button.label.ok" text="-" /></button>
+  
+  		   <button class="btn btn-primary" aria-hidden="true"
+	  		   	onClick="resetCustomerPassword( $('#customerId').val() );" >
+	  		   	<s:message  code="button.label.ok" text="-" />
+	  	   </button>
+  		   	
+  		   	
            <button class="btn cancel-modal" data-dismiss="modal" aria-hidden="true"><s:message code="button.label.cancel" text="Cancel" /></button>
            <button class="btn btn-success close-modal" id="closeModal" data-dismiss="modal" aria-hidden="true" style="display:none;"><s:message code="button.label.close" text="Close" /></button>
   </div>
