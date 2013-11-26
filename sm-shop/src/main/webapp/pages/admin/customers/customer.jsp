@@ -115,16 +115,9 @@ $(document).ready(function() {
 	    $('a[href="#resetPassword"]').click(function(){
   			
 	    	var customerId = this.id;
-	    	
-	    	
-	    	//$("body").append('<div class="modalOverlay">');
+
 			$('#confirmModal').modal();
 
-  			//bootbox.confirm("Are you sure?", function(result) {
-			//	if(result==true) {
-					
-			//	}
-			//}); 
 		});
 	    
 });
@@ -291,18 +284,24 @@ function getBillingZones(countryCode){
 function resetCustomerPassword(customerId){
 		$('.alert-error').hide();
 		$('.alert-success').hide();
-		$('#tabbable').showLoading();
+		$('#confirmationInnerBox').showLoading({
+                'indicatorZIndex' : 1000001,
+                'overlayZIndex': 1000000
+		})
 		$.ajax({
 		  type: 'POST',
 		  url: '<c:url value="/admin/customers/resetPassword.html"/>',
 		  data: 'customerId=' + customerId,
 		  dataType: 'json',
 		  success: function(response){
-				$('#tabbable').hideLoading();
+			   $('#confirmationInnerBox').hideLoading();
+			   $('#confirmModal').modal('hide');
 				var status = isc.XMLTools.selectObjects(response, "/response/status");
 				if(status==0 || status ==9999) {
+					
 					$('.alert-success').html('<s:message code="message.password.reset" text="Password has been reset" />');
 					$('.alert-success').show();
+					
 				} else {
 					$('.alert-error').html('<s:message code="message.error" text="An error occured" />');
 					$('.alert-error').show();
@@ -312,8 +311,9 @@ function resetCustomerPassword(customerId){
 		  
 		  },
 		  error: function(xhr, textStatus, errorThrown) {
-		  	$('#tabbable').hideLoading();
 		  	//alert('error ' + errorThrown);
+		  	$('#confirmationInnerBox').hideLoading();
+			$('#confirmModal').modal('hide');
 		  	$('.alert-error').html('<s:message code="message.error" text="An error occured" />');
 			$('.alert-error').show();
 		  }
@@ -650,6 +650,7 @@ function resetCustomerPassword(customerId){
 
 
 <div id="confirmModal"  class="modal hide" style="z-index:600000" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <span id="confirmationInnerBox">
   <div class="modal-header">
           <button type="button" class="close close-modal" data-dismiss="modal" aria-hidden="true">X</button>
           <h3 id="modalTitle"><s:message code="label.generic.confirm" text="Please confirm!" /></h3>
@@ -670,6 +671,7 @@ function resetCustomerPassword(customerId){
            <button class="btn cancel-modal" data-dismiss="modal" aria-hidden="true"><s:message code="button.label.cancel" text="Cancel" /></button>
            <button class="btn btn-success close-modal" id="closeModal" data-dismiss="modal" aria-hidden="true" style="display:none;"><s:message code="button.label.close" text="Close" /></button>
   </div>
+  </span>
 </div>
 
 
