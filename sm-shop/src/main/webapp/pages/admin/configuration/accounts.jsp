@@ -27,7 +27,7 @@
 
 		                        		
 		                        	   <div class="control-group">
-	                        				<label><s:message code="label.configuration.${merchantConfig.key}" text="Configuration options" /> &nbsp;:&nbsp;</label>
+	                        				<label><s:message code="label.configuration.${merchantConfig.key}" text="** Label for [label.configuration.${merchantConfig.key}] not found **" /> &nbsp;:&nbsp;</label>
 					                        <div class="controls">
 					                        		<form:input  path="merchantConfigs[${counter.index}].value" />
 											        <form:hidden  path="merchantConfigs[${counter.index}].key" />

@@ -16,16 +16,17 @@ response.setDateHeader ("Expires", -1);
 
 	  <!-- footer -->
             <footer>
-                <div class="row">                   
+                <div class="row">  
+                	<c:if test="${requestScope.CONFIGS['displayStoreAddress'] == true}">                 
                     <div class="span3">
-                    	<c:if test="${requestScope.CONFIGS['displayStoreAddress'] != null}">
 						<div class="company">
 							<p> 
 								<jsp:include page="/pages/shop/common/preBuiltBlocks/storeAddress.jsp"/>
 							</p>
 						</div>
-						</c:if>
                     </div>
+                    </c:if>
+                     <c:if test="${not empty requestScope.CONTENT_PAGE}">
 					 <div class="span3">   
 						<h4><s:message code="label.store.information.title" text="Informations"/></h4>
 						<!-- Pages -->
@@ -33,10 +34,14 @@ response.setDateHeader ("Expires", -1);
                         	<c:forEach items="${requestScope.CONTENT_PAGE}" var="content">
 							   <li><a href="<c:url value="/shop/pages/${content.seUrl}.html"/>" class="current">${content.name}</a></li>
 							</c:forEach>
+							<c:if test="${requestScope.CONFIGS['displayContactUs']==true}">
+								<li><a href="#contactformlink"><s:message code="label.customer.contactus" text="Contact us"/></a></li>
+							</c:if>
 						</ul>
                     </div>
+                    </c:if>
                     <div class="span3">
-                    	<c:if test="${request.CONFIGS['displayCustomerSection'] != null}">
+                    	<c:if test="${requestScope.CONFIGS['displayCustomerSection'] == true}">
                         <h4><s:message code="label.customer.myaccount" text="My Account" /></h4>
                         <ul>
 							<li><a href="#"><s:message code="button.label.login" text="Login" /></a></li>
@@ -45,14 +50,13 @@ response.setDateHeader ("Expires", -1);
                     </div>
                     <div class="span3">
                     	<!-- Social links -->
-                    	<c:if test="${request.CONFIGS['facebook_page_url'] != null}">
+                    	<c:if test="${requestScope.CONFIGS['facebook_page_url'] != null}">
 	                        <h4><s:message code="label.social.connect" text="Connect with us"/></h4>
-	                        <c:if test="${request.CONFIGS['facebook_page_url'] != null}">
-	                        <a href="<c:out value="${request.CONFIGS['facebook_page_url']}"/>"><s:message code="label.social.facebook" text="Facebook"/></a>
-	                        <br>
+	                        <c:if test="${requestScope.CONFIGS['facebook_page_url'] != null}">
+	                        	<a href="<c:out value="${requestScope.CONFIGS['facebook_page_url']}"/>"><img src="<c:url value="/resources/img/facebook-transparent.png" />" width="40"></a>
 	                        </c:if>
-	                        <c:if test="${request.CONFIGS['twitter_handle'] != null}">
-	                        <a href="<c:out value="${request.CONFIGS['twitter_handle']}"/>"><s:message code="label.social.twitter" text="Twitter"/></a>
+	                        <c:if test="${requestScope.CONFIGS['twitter_handle'] != null}">
+	                        	<a href="<c:out value="${requestScope.CONFIGS['twitter_handle']}"/>"><img src="<c:url value="/resources/img/twitter-transparent.png" />" width="50"></a>
 	                        </c:if>
                         </c:if>
                     </div>				
