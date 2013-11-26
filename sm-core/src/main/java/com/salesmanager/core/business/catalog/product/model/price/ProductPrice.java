@@ -19,6 +19,9 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
@@ -29,6 +32,8 @@ import com.salesmanager.core.utils.CloneUtils;
 @Table(name = "PRODUCT_PRICE", schema=SchemaConstant.SALESMANAGER_SCHEMA)
 public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 	private static final long serialVersionUID = -9186473817468772165L;
+	
+	private final static String DEFAULT_PRICE_CODE="other";
 
 	@Id
 	@Column(name = "PRODUCT_PRICE_ID")
@@ -39,6 +44,10 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "productPrice", cascade = CascadeType.ALL)
 	private Set<ProductPriceDescription> descriptions = new HashSet<ProductPriceDescription>();
 
+	@NotEmpty
+	@Pattern(regexp="^[a-zA-Z0-9_]*$")
+	@Column(name = "PRODUCT_PRICE_CODE", nullable=false)
+	private String code = DEFAULT_PRICE_CODE;
 
 	@Column(name = "PRODUCT_PRICE_AMOUNT", nullable=false)
 	private BigDecimal productPriceAmount = new BigDecimal(0);
@@ -162,6 +171,14 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 
 	public ProductAvailability getProductAvailability() {
 		return productAvailability;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getCode() {
+		return code;
 	}
 
 

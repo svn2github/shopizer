@@ -152,6 +152,7 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 			//Set<ShoppingCartAttributeItem> attributes = item.getAttributes();
 			item.setSubTotal(st);
 			subTotal = subTotal.add(st);
+			//TODO other prices
 			
 		}
 		

@@ -2,6 +2,7 @@ package com.salesmanager.core.utils;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Currency;
 import java.util.Date;
 import java.util.List;
@@ -458,22 +459,31 @@ public class ProductPriceUtils {
 	}
 	
 	private FinalPrice calculateFinalPrice(Product product) {
-		
-		FinalPrice finalPrice = new FinalPrice();
 
-		Date today = new Date();
+		FinalPrice finalPrice = null;;
+		List<FinalPrice> otherPrices = null;
 		
-		
-		BigDecimal fPrice = new BigDecimal(0);
-		BigDecimal oPrice = new BigDecimal(0);
+
 		Set<ProductAvailability> availabilities = product.getAvailabilities();
 		for(ProductAvailability availability : availabilities) {
 			if(availability.getRegion().equals(Constants.ALL_REGIONS)) {//TODO REL 2.1 accept a region
 				Set<ProductPrice> prices = availability.getPrices();
 				for(ProductPrice price : prices) {
 					
+					FinalPrice p = finalPrice(price);
 					if(price.isDefaultPrice()) {
-						fPrice = price.getProductPriceAmount();
+						finalPrice = p;
+					} else {
+						if(otherPrices==null) {
+							otherPrices = new ArrayList<FinalPrice>();
+						}
+						otherPrices.add(p);
+					}
+					
+				}
+					
+					//if(price.isDefaultPrice()) {//TODO other non default price
+						/*fPrice = price.getProductPriceAmount();
 						oPrice = price.getProductPriceAmount();
 						//calculate discount price
 						boolean hasDiscount = false;
@@ -514,18 +524,96 @@ public class ProductPriceUtils {
 							finalPrice.setDiscounted(true);
 						}
 					}
-					
-				}
+*/					
+				//}
 			}
 			
 		}
 		
 
-		finalPrice.setFinalPrice(fPrice);
-		finalPrice.setOriginalPrice(oPrice);
+		//finalPrice.setFinalPrice(fPrice);
+		//finalPrice.setOriginalPrice(oPrice);
+		
+		if(finalPrice!=null) {
+			finalPrice.setAdditionalPrices(otherPrices);
+		} else {
+			if(otherPrices!=null) {
+				finalPrice = otherPrices.get(0);
+			}
+		}
+		
 		return finalPrice;
 		
 		
+	}
+	
+	private FinalPrice finalPrice(ProductPrice price) {
+		
+		FinalPrice finalPrice = new FinalPrice();
+		BigDecimal fPrice = price.getProductPriceAmount();
+		BigDecimal oPrice = price.getProductPriceAmount();
+		Date today = new Date();
+		//calculate discount price
+		boolean hasDiscount = false;
+		if(price.getProductPriceSpecialStartDate()!=null
+				|| price.getProductPriceSpecialEndDate()!=null) {
+			
+			
+			if(price.getProductPriceSpecialStartDate()!=null) {
+				if(price.getProductPriceSpecialStartDate().before(today)) {
+					if(price.getProductPriceSpecialEndDate()!=null) {
+							if(price.getProductPriceSpecialEndDate().after(today)) {
+								hasDiscount = true;
+								fPrice = price.getProductPriceSpecialAmount();
+								finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
+							}
+					} 
+						
+				}
+			}
+			
+			
+			if(!hasDiscount && price.getProductPriceSpecialStartDate()==null && price.getProductPriceSpecialEndDate()!=null) {
+				if(price.getProductPriceSpecialEndDate().after(today)) {
+					hasDiscount = true;
+					fPrice = price.getProductPriceSpecialAmount();
+					finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
+				}
+			}
+		} else {
+			if(price.getProductPriceSpecialAmount()!=null && price.getProductPriceSpecialAmount().doubleValue()>0) {
+				hasDiscount = true;
+				fPrice = price.getProductPriceSpecialAmount();
+				finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
+			}
+		}
+		if(price.isDefaultPrice()) {
+			finalPrice.setDefaultPrice(price);
+		}
+		if(hasDiscount) {
+			discountPrice(finalPrice);
+		}
+		
+		finalPrice.setFinalPrice(fPrice);
+		finalPrice.setOriginalPrice(oPrice);
+		
+		return finalPrice;
+	}
+	
+	private void discountPrice(FinalPrice finalPrice) {
+		
+		finalPrice.setDiscounted(true);
+		
+		double arith = finalPrice.getOriginalPrice().doubleValue() / finalPrice.getDefaultPrice().getProductPriceAmount().doubleValue();
+		double fsdiscount = 100 - arith * 100;
+		Float percentagediscount = new Float(fsdiscount);
+		int percent = percentagediscount.intValue();
+		finalPrice.setDiscountPercent(percent);
+		
+		//calculate percent
+		BigDecimal price = finalPrice.getOriginalPrice();
+		price = price.multiply(new BigDecimal(fsdiscount));
+		finalPrice.setDiscountedPrice(price);
 	}
 
 

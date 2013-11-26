@@ -2,6 +2,7 @@ package com.salesmanager.core.business.catalog.product.model.price;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Transient entity used to display
@@ -21,6 +22,15 @@ public class FinalPrice {
 	private ProductPrice defaultPrice;
 
 
+	List<FinalPrice> additionalPrices;
+
+	public List<FinalPrice> getAdditionalPrices() {
+		return additionalPrices;
+	}
+
+	public void setAdditionalPrices(List<FinalPrice> additionalPrices) {
+		this.additionalPrices = additionalPrices;
+	}
 
 	public BigDecimal getOriginalPrice() {
 		return originalPrice;
