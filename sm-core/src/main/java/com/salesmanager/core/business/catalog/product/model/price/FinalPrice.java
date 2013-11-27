@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.catalog.product.model.price;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -7,11 +8,15 @@ import java.util.List;
 /**
  * Transient entity used to display
  * different price information in the catalogue
- * @author casams1
+ * @author Carl Samson
  *
  */
-public class FinalPrice {
+public class FinalPrice implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private BigDecimal discountedPrice = null;//final price if a discount is applied
 	private BigDecimal originalPrice = null;//original price
 	private BigDecimal finalPrice = null;//final price discount or not
@@ -19,9 +24,9 @@ public class FinalPrice {
 	private int discountPercent = 0;
 	
 	private Date discountEndDate = null;
-	private ProductPrice defaultPrice;
-
-
+	
+	private boolean defaultPrice;
+	private ProductPrice productPrice;
 	List<FinalPrice> additionalPrices;
 
 	public List<FinalPrice> getAdditionalPrices() {
@@ -74,13 +79,6 @@ public class FinalPrice {
 		return discountedPrice;
 	}
 
-	public void setDefaultPrice(ProductPrice defaultPrice) {
-		this.defaultPrice = defaultPrice;
-	}
-
-	public ProductPrice getDefaultPrice() {
-		return defaultPrice;
-	}
 
 	public void setFinalPrice(BigDecimal finalPrice) {
 		this.finalPrice = finalPrice;
@@ -88,6 +86,22 @@ public class FinalPrice {
 
 	public BigDecimal getFinalPrice() {
 		return finalPrice;
+	}
+
+	public void setDefaultPrice(boolean defaultPrice) {
+		this.defaultPrice = defaultPrice;
+	}
+
+	public boolean isDefaultPrice() {
+		return defaultPrice;
+	}
+
+	public void setProductPrice(ProductPrice productPrice) {
+		this.productPrice = productPrice;
+	}
+
+	public ProductPrice getProductPrice() {
+		return productPrice;
 	}
 
 }

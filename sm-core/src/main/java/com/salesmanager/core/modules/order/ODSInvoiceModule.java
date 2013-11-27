@@ -285,7 +285,7 @@ public class ODSInvoiceModule implements InvoiceModule {
 				
 				int quantity = orderProduct.getProductQuantity();
 				sheet.setValueAt(quantity, 1, productCell);
-				String amount = priceUtil.getStoreFormatedAmountWithCurrency(store, orderProduct.getFinalPrice());
+				String amount = priceUtil.getStoreFormatedAmountWithCurrency(store, orderProduct.getOneTimeCharge());
 				sheet.setValueAt(amount, 2, productCell);
 				String t = priceUtil.getStoreFormatedAmountWithCurrency(store, priceUtil.getOrderProductTotalPrice(store, orderProduct));
 				sheet.setValueAt(t, 3, productCell);

@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +20,7 @@ import javax.persistence.TableGenerator;
 import org.hibernate.annotations.Type;
 
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
+import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
 import com.salesmanager.core.constants.SchemaConstant;
 
 
@@ -53,6 +56,10 @@ public class OrderTotal extends SalesManagerEntity<Long, OrderTotal> {
 	
 	@Column (name ="MODULE", length=60 , nullable=true )
 	private String module;
+	
+	@Column (name ="ORDER_TOTAL_TYPE")
+	@Enumerated(value = EnumType.STRING)
+	private OrderTotalType orderTotalType = OrderTotalType.ONE_TIME;
 	
 	@Column (name ="SORT_ORDER", nullable=false)
 	private int sortOrder;
@@ -126,5 +133,13 @@ public class OrderTotal extends SalesManagerEntity<Long, OrderTotal> {
 
 	public String getOrderTotalCode() {
 		return orderTotalCode;
+	}
+
+	public void setOrderTotalType(OrderTotalType orderTotalType) {
+		this.orderTotalType = orderTotalType;
+	}
+
+	public OrderTotalType getOrderTotalType() {
+		return orderTotalType;
 	}
 }

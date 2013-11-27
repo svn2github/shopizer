@@ -249,8 +249,9 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		
 		//set item price
 		FinalPrice price = pricingService.calculateProductPrice(product, attributesList);
-		//TODO other prices
 		item.setItemPrice(price.getFinalPrice());
+		item.setFinalPrice(price);
+
 		
 
 		BigDecimal subTotal = item.getItemPrice().multiply(new BigDecimal(item.getQuantity().intValue()));

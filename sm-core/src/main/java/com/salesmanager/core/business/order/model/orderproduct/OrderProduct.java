@@ -1,7 +1,6 @@
 package com.salesmanager.core.business.order.model.orderproduct;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,13 +15,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.constants.SchemaConstant;
-import com.salesmanager.core.utils.CloneUtils;
 
 @Entity
 @Table (name="ORDER_PRODUCT" , schema=SchemaConstant.SALESMANAGER_SCHEMA)
@@ -44,23 +40,10 @@ public class OrderProduct extends SalesManagerEntity<Long, OrderProduct> {
 	@Column (name="PRODUCT_QUANTITY")
 	private int productQuantity;
 
-	@Column (name="ONETIME_CHARGE" , precision=15, scale=4, nullable=false )
-	private BigDecimal onetimeCharge;//
+	@Column (name="ONETIME_CHARGE" , nullable=false )
+	private BigDecimal oneTimeCharge;
 
-	@Column (name="PRODUCT_SPECIAL_PRICE" , precision=15, scale=4 )
-	private BigDecimal productSpecialPrice;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column (name="PRODUCT_SPECIAL_DATE_AVAILABLE" , length=0)
-	private Date productSpecialDateAvailable;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column (name="PRODUCT_SPECIAL_DATE_EXPIRE" , length=0 )
-	private Date productSpecialDateExpire;
-	
-	@Column (name="FINAL_PRICE" , precision=15, scale=4, nullable=false )
-	private BigDecimal finalPrice;
-	
+
 	@ManyToOne(targetEntity = Order.class)
 	@JoinColumn(name = "ORDER_ID", nullable = false)
 	private Order order;
@@ -102,32 +85,6 @@ public class OrderProduct extends SalesManagerEntity<Long, OrderProduct> {
 		this.productQuantity = productQuantity;
 	}
 
-	public BigDecimal getOnetimeCharge() {
-		return onetimeCharge;
-	}
-
-	public void setOnetimeCharge(BigDecimal onetimeCharge) {
-		this.onetimeCharge = onetimeCharge;
-	}
-
-
-
-	public Date getProductSpecialDateAvailable() {
-		return CloneUtils.clone(productSpecialDateAvailable);
-	}
-
-	public void setProductSpecialDateAvailable(Date productSpecialDateAvailable) {
-		this.productSpecialDateAvailable = CloneUtils.clone(productSpecialDateAvailable);
-	}
-
-	public Date getProductSpecialDateExpire() {
-		return CloneUtils.clone(productSpecialDateExpire);
-	}
-
-	public void setProductSpecialDateExpire(Date productSpecialDateExpire) {
-		this.productSpecialDateExpire = CloneUtils.clone(productSpecialDateExpire);
-	}
-
 
 
 	public Order getOrder() {
@@ -163,21 +120,6 @@ public class OrderProduct extends SalesManagerEntity<Long, OrderProduct> {
 		this.downloads = downloads;
 	}
 
-	public void setProductSpecialPrice(BigDecimal productSpecialPrice) {
-		this.productSpecialPrice = productSpecialPrice;
-	}
-
-	public BigDecimal getProductSpecialPrice() {
-		return productSpecialPrice;
-	}
-
-	public void setFinalPrice(BigDecimal finalPrice) {
-		this.finalPrice = finalPrice;
-	}
-
-	public BigDecimal getFinalPrice() {
-		return finalPrice;
-	}
 
 	public void setSku(String sku) {
 		this.sku = sku;
@@ -185,6 +127,14 @@ public class OrderProduct extends SalesManagerEntity<Long, OrderProduct> {
 
 	public String getSku() {
 		return sku;
+	}
+
+	public void setOneTimeCharge(BigDecimal oneTimeCharge) {
+		this.oneTimeCharge = oneTimeCharge;
+	}
+
+	public BigDecimal getOneTimeCharge() {
+		return oneTimeCharge;
 	}
 	
 }

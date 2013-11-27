@@ -19,6 +19,8 @@ import com.salesmanager.core.constants.SchemaConstant;
 public class OrderProductDownload implements Serializable {
 	private static final long serialVersionUID = -8935511990745477240L;
 	
+	public final static int DEFAULT_DOWNLOAD_MAX_DAYS = 31;
+	
 	@Id
 	@Column (name="ORDER_PRODUCT_DOWNLOAD_ID")
 	@TableGenerator(name = "TABLE_GEN", table = "SM_SEQUENCER", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "ORDER_PRODUCT_DL_ID_NEXT_VALUE")
@@ -33,7 +35,7 @@ public class OrderProductDownload implements Serializable {
 	private String orderProductFilename;
 	
 	@Column(name = "DOWNLOAD_MAXDAYS", nullable = false)
-	private Integer maxdays;
+	private Integer maxdays = DEFAULT_DOWNLOAD_MAX_DAYS;
 	
 	@Column(name = "DOWNLOAD_COUNT", nullable = false)
 	private Integer downloadCount;

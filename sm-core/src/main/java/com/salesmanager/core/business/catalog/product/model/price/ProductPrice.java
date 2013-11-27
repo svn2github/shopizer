@@ -8,6 +8,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -52,14 +54,12 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 	@Column(name = "PRODUCT_PRICE_AMOUNT", nullable=false)
 	private BigDecimal productPriceAmount = new BigDecimal(0);
 
-
 	@Column(name = "PRODUCT_PRICE_TYPE", length=20)
-	private String productPriceType = ProductPriceType.ONE_TIME.name();
+	@Enumerated(value = EnumType.STRING)
+	private ProductPriceType productPriceType = ProductPriceType.ONE_TIME;
 
 	@Column(name = "DEFAULT_PRICE")
 	private boolean defaultPrice = false;
-
-
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "PRODUCT_PRICE_SPECIAL_ST_DATE")
@@ -146,17 +146,6 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 
 
 
-
-
-	public void setProductPriceType(String productPriceType) {
-		this.productPriceType = productPriceType;
-	}
-
-	public String getProductPriceType() {
-		return productPriceType;
-	}
-
-
 	public boolean isDefaultPrice() {
 		return defaultPrice;
 	}
@@ -179,6 +168,14 @@ public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 
 	public String getCode() {
 		return code;
+	}
+
+	public void setProductPriceType(ProductPriceType productPriceType) {
+		this.productPriceType = productPriceType;
+	}
+
+	public ProductPriceType getProductPriceType() {
+		return productPriceType;
 	}
 
 

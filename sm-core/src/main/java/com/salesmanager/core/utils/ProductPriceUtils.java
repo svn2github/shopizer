@@ -408,7 +408,7 @@ public class ProductPriceUtils {
 	
 	public BigDecimal getOrderProductTotalPrice(MerchantStore store, OrderProduct orderProduct) {
 		
-		BigDecimal finalPrice = orderProduct.getFinalPrice();
+		BigDecimal finalPrice = orderProduct.getOneTimeCharge();
 		finalPrice = finalPrice.multiply(new BigDecimal(orderProduct.getProductQuantity()));
 		return finalPrice;
 	}
@@ -588,12 +588,12 @@ public class ProductPriceUtils {
 			}
 		}
 		if(price.isDefaultPrice()) {
-			finalPrice.setDefaultPrice(price);
+			finalPrice.setDefaultPrice(true);
 		}
 		if(hasDiscount) {
 			discountPrice(finalPrice);
 		}
-		
+		finalPrice.setProductPrice(price);
 		finalPrice.setFinalPrice(fPrice);
 		finalPrice.setOriginalPrice(oPrice);
 		
@@ -604,7 +604,7 @@ public class ProductPriceUtils {
 		
 		finalPrice.setDiscounted(true);
 		
-		double arith = finalPrice.getOriginalPrice().doubleValue() / finalPrice.getDefaultPrice().getProductPriceAmount().doubleValue();
+		double arith = finalPrice.getOriginalPrice().doubleValue() / finalPrice.getProductPrice().getProductPriceAmount().doubleValue();
 		double fsdiscount = 100 - arith * 100;
 		Float percentagediscount = new Float(fsdiscount);
 		int percent = percentagediscount.intValue();

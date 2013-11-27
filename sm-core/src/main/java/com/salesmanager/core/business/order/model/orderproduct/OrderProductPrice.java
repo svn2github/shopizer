@@ -2,6 +2,7 @@ package com.salesmanager.core.business.order.model.orderproduct;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.salesmanager.core.constants.SchemaConstant;
 
@@ -35,11 +38,20 @@ public class OrderProductPrice implements Serializable {
 	@Column(name = "PRODUCT_PRICE_CODE", nullable = false , length=64 )
 	private String productPriceCode;
 
-	@Column(name = "PRODUCT_PRICE_AMOUNT", nullable = false ,  precision=15 )
-	private BigDecimal productPriceAmount;
+	@Column(name = "PRODUCT_PRICE", nullable = false)
+	private BigDecimal productPrice;
 	
-	@Column(name = "PRODUCT_PRICE_SPECIAL_AMOUNT")
-	private BigDecimal productPriceSpecialAmount;
+	@Column(name = "PRODUCT_PRICE_SPECIAL")
+	private BigDecimal productPriceSpecial;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column (name="PRD_PRICE_SPECIAL_ST_DT" , length=0)
+	private Date productPriceSpecialStartDate;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column (name="PRD_PRICE_SPECIAL_END_DT" , length=0)
+	private Date productPriceSpecialEndDate;
+
 
 	@Column(name = "DEFAULT_PRICE", nullable = false)
 	private Boolean defaultPrice;
@@ -57,14 +69,6 @@ public class OrderProductPrice implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public BigDecimal getProductPriceAmount() {
-		return productPriceAmount;
-	}
-
-	public void setProductPriceAmount(BigDecimal productPriceAmount) {
-		this.productPriceAmount = productPriceAmount;
 	}
 
 	public Boolean getDefaultPrice() {
@@ -99,11 +103,36 @@ public class OrderProductPrice implements Serializable {
 		return productPriceCode;
 	}
 
-	public void setProductPriceSpecialAmount(BigDecimal productPriceSpecialAmount) {
-		this.productPriceSpecialAmount = productPriceSpecialAmount;
+	public void setProductPriceSpecialStartDate(
+			Date productPriceSpecialStartDate) {
+		this.productPriceSpecialStartDate = productPriceSpecialStartDate;
 	}
 
-	public BigDecimal getProductPriceSpecialAmount() {
-		return productPriceSpecialAmount;
+	public Date getProductPriceSpecialStartDate() {
+		return productPriceSpecialStartDate;
+	}
+
+	public void setProductPriceSpecialEndDate(Date productPriceSpecialEndDate) {
+		this.productPriceSpecialEndDate = productPriceSpecialEndDate;
+	}
+
+	public Date getProductPriceSpecialEndDate() {
+		return productPriceSpecialEndDate;
+	}
+
+	public void setProductPriceSpecial(BigDecimal productPriceSpecial) {
+		this.productPriceSpecial = productPriceSpecial;
+	}
+
+	public BigDecimal getProductPriceSpecial() {
+		return productPriceSpecial;
+	}
+
+	public void setProductPrice(BigDecimal productPrice) {
+		this.productPrice = productPrice;
+	}
+
+	public BigDecimal getProductPrice() {
+		return productPrice;
 	}
 }

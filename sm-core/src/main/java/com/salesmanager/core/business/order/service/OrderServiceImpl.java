@@ -3,7 +3,9 @@ package com.salesmanager.core.business.order.service;
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
@@ -11,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
@@ -22,6 +25,7 @@ import com.salesmanager.core.business.order.model.OrderList;
 import com.salesmanager.core.business.order.model.OrderSummary;
 import com.salesmanager.core.business.order.model.OrderTotal;
 import com.salesmanager.core.business.order.model.OrderTotalSummary;
+import com.salesmanager.core.business.order.model.OrderTotalType;
 import com.salesmanager.core.business.order.model.Order_;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -135,6 +139,7 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		
 		OrderTotalSummary totalSummary = new OrderTotalSummary();
 		List<OrderTotal> orderTotals = new ArrayList<OrderTotal>();
+		Map<String,OrderTotal> otherPricesTotals = new HashMap<String,OrderTotal>();
 		
 		ShippingConfiguration shippingConfiguration = null;
 		
@@ -149,12 +154,42 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		for(ShoppingCartItem item : summary.getProducts()) {
 			
 			BigDecimal st = item.getItemPrice().multiply(new BigDecimal(item.getQuantity()));
-			//Set<ShoppingCartAttributeItem> attributes = item.getAttributes();
 			item.setSubTotal(st);
 			subTotal = subTotal.add(st);
-			//TODO other prices
+			//Other prices
+			FinalPrice finalPrice = item.getFinalPrice();
+			if(finalPrice!=null) {
+				List<FinalPrice> otherPrices = finalPrice.getAdditionalPrices();
+				if(otherPrices!=null) {
+					for(FinalPrice price : otherPrices) {
+						if(!price.isDefaultPrice()) {
+							OrderTotal itemSubTotal = otherPricesTotals.get(price.getProductPrice().getCode());
+							
+							if(itemSubTotal==null) {
+								itemSubTotal = new OrderTotal();
+								itemSubTotal.setModule("itemprice");
+								itemSubTotal.setOrderTotalCode(price.getProductPrice().getCode());
+								itemSubTotal.setSortOrder(0);
+								otherPricesTotals.put(price.getProductPrice().getCode(), itemSubTotal);
+							}
+							
+							BigDecimal orderTotalValue = itemSubTotal.getValue();
+							if(orderTotalValue==null) {
+								orderTotalValue = new BigDecimal(0);
+							}
+							
+							orderTotalValue = orderTotalValue.add(price.getFinalPrice());
+							itemSubTotal.setValue(orderTotalValue);
+							if(price.getProductPrice().getProductPriceType().name().equals(OrderTotalType.ONE_TIME)) {
+								subTotal = subTotal.add(price.getFinalPrice());
+							}
+						}
+					}
+				}
+			}
 			
 		}
+
 		
 		totalSummary.setSubTotal(subTotal);
 		grandTotal=grandTotal.add(subTotal);
@@ -162,7 +197,7 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		OrderTotal orderTotalSubTotal = new OrderTotal();
 		orderTotalSubTotal.setModule("subtotal");
 		orderTotalSubTotal.setOrderTotalCode("order.total.subtotal");
-		orderTotalSubTotal.setSortOrder(0);
+		orderTotalSubTotal.setSortOrder(5);
 		orderTotalSubTotal.setValue(subTotal);
 		
 		//TODO autowire a list of post processing modules for price calculation - drools, custom modules

@@ -22,6 +22,7 @@ import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.common.model.audit.AuditListener;
 import com.salesmanager.core.business.common.model.audit.AuditSection;
 import com.salesmanager.core.business.common.model.audit.Auditable;
@@ -66,7 +67,10 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	private BigDecimal itemPrice;
 	
 	@Transient
-	private BigDecimal subTotal;
+	private BigDecimal subTotal;//contains item one time charge
+	
+	@Transient
+	private FinalPrice finalPrice;//contains price details
 	
 
 	@Transient
@@ -188,5 +192,13 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 
 	public BigDecimal getSubTotal() {
 		return subTotal;
+	}
+
+	public void setFinalPrice(FinalPrice finalPrice) {
+		this.finalPrice = finalPrice;
+	}
+
+	public FinalPrice getFinalPrice() {
+		return finalPrice;
 	}
 }
