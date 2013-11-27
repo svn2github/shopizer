@@ -1,11 +1,11 @@
 package com.salesmanager.web.populator.order;
 
-import java.math.BigDecimal;
-
 import org.apache.commons.lang.Validate;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.file.DigitalProduct;
+import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
+import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.file.DigitalProductService;
 import com.salesmanager.core.business.generic.exception.ConversionException;
@@ -13,6 +13,7 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProductDownload;
+import com.salesmanager.core.business.order.model.orderproduct.OrderProductPrice;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.utils.AbstractDataPopulator;
@@ -32,6 +33,10 @@ public class OrderProductPopulator extends
 		this.digitalProductService = digitalProductService;
 	}
 
+	/**
+	 * Converts a ShoppingCartItem carried in the ShoppingCart to an OrderProduct
+	 * that will be saved in the system
+	 */
 	@Override
 	public OrderProduct populate(ShoppingCartItem source, OrderProduct target,
 			MerchantStore store, Language language) throws ConversionException {
@@ -54,23 +59,37 @@ public class OrderProductPopulator extends
 			DigitalProduct digitalProduct = digitalProductService.getByProduct(store, modelProduct);
 			
 			if(digitalProduct!=null) {
-				OrderProductDownload orderProductDownload = new OrderProductDownload();
-				//orderProductDownload.setMaxdays(31);		
+				OrderProductDownload orderProductDownload = new OrderProductDownload();	
 				orderProductDownload.setOrderProductFilename(digitalProduct.getProductFileName());
 				orderProductDownload.setOrderProduct(target);
 				target.getDownloads().add(orderProductDownload);
 			}
 			
 
-			target.setFinalPrice(source.getItemPrice());
-			target.setOnetimeCharge(source.getItemPrice());	
+	
+			target.setOneTimeCharge(source.getItemPrice());	
 			target.setProductName(source.getProduct().getDescriptions().iterator().next().getName());
 			target.setProductQuantity(source.getQuantity());
-			target.setSku(source.getProduct().getSku());		
+			target.setSku(source.getProduct().getSku());
 			
-			
-			//ProductPrice calculation
-			
+			FinalPrice finalPrice = source.getFinalPrice();
+			if(finalPrice==null) {
+				throw new ConversionException("Object final price not populated in shoppingCartItem (source)");
+			}
+			ProductPrice productPrice = finalPrice.getProductPrice();
+			OrderProductPrice orderProductPrice = new OrderProductPrice();
+			orderProductPrice.setDefaultPrice(productPrice.isDefaultPrice());
+			orderProductPrice.setOrderProduct(target);
+			orderProductPrice.setProductPrice(source.getItemPrice());
+			orderProductPrice.setProductPriceCode(productPrice.getCode());
+			orderProductPrice.setProductPriceName(productPrice.getDescriptions().iterator().next().getName());
+			if(finalPrice.isDiscounted()) {
+				orderProductPrice.setProductPriceSpecial(productPrice.getProductPriceSpecialAmount());
+				orderProductPrice.setProductPriceSpecialStartDate(productPrice.getProductPriceSpecialStartDate());
+				orderProductPrice.setProductPriceSpecialEndDate(productPrice.getProductPriceSpecialEndDate());
+			}
+
+
 			//target.getPrices().add(oproductprice ) ;
 			
 			//oproductprice.setOrderProduct(oproduct);		

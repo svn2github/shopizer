@@ -59,7 +59,7 @@ import com.salesmanager.web.utils.LocaleUtils;
 
 /**
  * Manage order details
- * @author csamson
+ * @author Carl Samson
  *
  */
 @Controller
