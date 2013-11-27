@@ -112,7 +112,7 @@
 		//var cartCode = 'cart_' + merchantStore;
 		var cart = $.cookie('cart'); //should be [storecode_cartid]
 		
-		alert(cart);
+	
 		
 		var code = new Array();
 		
@@ -229,12 +229,24 @@ function displayMiniCart(){
 			 
 		 },
 		 success: function(miniCart) {
-			$("#minicartComponent").html("<li>"+miniCart+"</li>");
+			//$("#minicartComponent").html("<li>"+miniCart+"</li>");
+			 $('#shoppingcartProducts').html(prepareMiniCartLineItemsData(miniCart));
+			 showCartTotal(miniCart);
 		} 
 	});
 }
 
 
+
+ /**
+  * JS function responsible for removing give line item from
+  * the Cart.
+  * For more details see MiniCartController.
+  * 
+  * Controller will return JSON as response and it will be parsed to update
+  * mini-cart section.
+  * @param lineItemId
+  */
 function removeItemFromMinicart(lineItemId){
 	$.ajax({  
 		 type: 'GET',  
@@ -244,12 +256,43 @@ function removeItemFromMinicart(lineItemId){
 			 
 		 },
 		 success: function(miniCart) {
-			 var labelItem = '<s:message code="label.generic.item" text="item" />';
-	    	 if(miniCart.quantity>1) { 
-	    		 labelItem = '<s:message code="label.generic.items" text="items" />';
-	    	 }
-			 $("#cartinfo").html('<span id="cartqty">(' + miniCart.quantity + ' ' + labelItem + ')</span><span id="cartprice">' + miniCart.total + '</span>');
-			$("#minicartComponent").html("<li>"+miniCart+"</li>");
+			 $('#shoppingcartProducts').html(prepareMiniCartLineItemsData(miniCart));
+			 showCartTotal(miniCart);
 		} 
 	});
+}
+
+function prepareMiniCartLineItemsData(cart){
+	
+	 var labelItem = '<s:message code="label.generic.item" text="item" />';
+	 if(cart.quantity>1) { 
+		 labelItem = '<s:message code="label.generic.items" text="items" />';
+	 }
+	 $("#cartinfo").html('<span id="cartqty">(' + cart.quantity + ' ' + labelItem + ')</span><span id="cartprice">' + cart.total + '</span>');
+	 var item = "";
+	 for (var i = 0; i < cart.shoppingCartItems.length; i++) {
+		var shoppingCartItem = cart.shoppingCartItems[i];
+		item = item+'<tr id="' + shoppingCartItem.productId + '" class="cart-product">';
+		item = item + '<td>';
+		if(shoppingCartItem.image!=null){
+			item = item + '<img width="40" height="40" src="' + shoppingCartItem.image + '">';
+		} else {
+			item = item + '&nbsp;';
+		}
+		item = item + '</td>';
+		item = item + '<td>' + shoppingCartItem.name + '</td>';
+		item = item + '<td>' + shoppingCartItem.price + '</td>';
+		var onClickEvent="removeItemFromMinicart("+shoppingCartItem.id+");";
+		item = item + '<td><button productid="' + shoppingCartItem.productId + '" class="close removeProductIcon" onclick="' +onClickEvent + '">x</button></td>';
+		item = item + '</tr>';
+		
+		
+}
+return item;
+}
+
+function showCartTotal(cart){
+	$("#mini-cart-total-block").html(cart.total);
+	$("#checkout-total-plus").html(cart.total);
+	
 }

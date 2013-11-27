@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -201,8 +202,18 @@ public class ShoppingCartFacadeImpl
         
        
     }
-        
-       
+      
+       if(cartModel==null){
+    	   cartModel=new ShoppingCart();
+    	   if(StringUtils.isNotBlank(shoppingCartData.getCode())){
+            cartModel.setShoppingCartCode( shoppingCartData.getCode() ); 
+    	   }
+    	   else{
+    		   cartModel.setShoppingCartCode(  UUID.randomUUID().toString().replaceAll("-", "") );  
+    	   }
+    	   cartModel.setMerchantStore( store );
+    	   shoppingCartService.create( cartModel );
+       }
         com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem shoppingCartItem= createCartItem(cartModel,item,store);
         cartModel.getLineItems().add( shoppingCartItem );
         shoppingCartService.saveOrUpdate(cartModel);

@@ -29,7 +29,7 @@ response.setDateHeader ("Expires", -1);
 			</table>
 
 			<div style="padding-right: 4px;" class="row">
-				<div class="pull-right">Shipping costs of $10.00 : $10.00</div>
+				<div class="pull-right" id="shoppingCartCost">Shipping costs of <span id="mini-cart-total-block">$10.00 </span> : $10.00</div>
 			</div>
 
 			<div class="total-box">

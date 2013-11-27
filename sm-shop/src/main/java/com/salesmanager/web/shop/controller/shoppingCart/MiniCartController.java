@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.shop.controller.AbstractController;
@@ -27,25 +28,22 @@ public class MiniCartController extends AbstractController{
 	
 	@Autowired
 	private ShoppingCartFacade shoppingCartFacade;
-	private final static String MINICART="shop/common/cart/fragment/minicartFragment";
+	
 	
 	@RequestMapping(value={"/shop/displayMiniCart.html"},  method = RequestMethod.GET)
-	public String displayMiniCart(HttpServletRequest request, Model model){
-		model.addAttribute("miniCartData", getShoppingCartFromSession(request));
-		return MINICART;
+	public @ResponseBody ShoppingCartData displayMiniCart(HttpServletRequest request, Model model){
+		return getShoppingCartFromSession(request);
+		
 	}
 
 	
 @RequestMapping(value={"/shop/miniCart/removeShoppingCartItem.html"},   method = { RequestMethod.GET, RequestMethod.POST })
 	
-	String removeShoppingCartItem(Long lineItemId, HttpServletRequest request, Model model) throws Exception {
+	public @ResponseBody ShoppingCartData removeShoppingCartItem(Long lineItemId, HttpServletRequest request, Model model) throws Exception {
 		ShoppingCartData shoppingCartData=shoppingCartFacade.removeCartItem(lineItemId, getShoppingCartFromSession(request).getCode());
 		setCartDataToSession(request, shoppingCartData);
-		model.addAttribute("miniCartData", getShoppingCartFromSession(request));
-		return MINICART;
-		
-		
-		
+		LOG.debug("removed item from cart");
+		return getShoppingCartFromSession(request);
 	}
 	
 	

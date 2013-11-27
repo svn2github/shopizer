@@ -90,7 +90,9 @@ response.setDateHeader ("Expires", -1);
 								<jsp:include page="/pages/shop/common/cart/minicartinfo.jsp" />
             				
 		            					<ul class="dropdown-menu minicart" id="minicartComponent">
-		              						
+		              					  <li>
+												<jsp:include page="/pages/shop/common/cart/minicart.jsp" />
+		              						</li>	
 		            					</ul>
             					
 					
@@ -134,8 +136,4 @@ response.setDateHeader ("Expires", -1);
 
 			</div>
 			<!-- End main menu -->
-			<script>
-			  function clickMe(){
-				  alert("clicked ");
-			  }
-			</script>
+			
