@@ -37,12 +37,11 @@ public class MiniCartController extends AbstractController{
 	}
 
 	
-@RequestMapping(value={"/shop/miniCart/removeShoppingCartItem.html"},   method = { RequestMethod.GET, RequestMethod.POST })
-	
+	@RequestMapping(value={"/shop/miniCart/removeShoppingCartItem.html"},   method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody ShoppingCartData removeShoppingCartItem(Long lineItemId, HttpServletRequest request, Model model) throws Exception {
 		ShoppingCartData shoppingCartData=shoppingCartFacade.removeCartItem(lineItemId, getShoppingCartFromSession(request).getCode());
 		setCartDataToSession(request, shoppingCartData);
-		LOG.debug("removed item from cart");
+		LOG.debug("removed item" + lineItemId + "from cart");
 		return getShoppingCartFromSession(request);
 	}
 	
