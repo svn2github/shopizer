@@ -100,7 +100,6 @@ public class ShoppingCartController extends AbstractController {
 	@Autowired
 	private ShoppingCartFacade shoppingCartFacade;
 	
-	private final static String MINICART="shop/common/cart/fragment/minicartFragment";
 	/**
 	 * Retrieves a Shopping cart from the database (regular shopping cart)
 	 * @param model

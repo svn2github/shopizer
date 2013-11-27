@@ -189,30 +189,19 @@ public class ShoppingCartFacadeImpl
         //get it from the db
         cartModel = shoppingCartService.getByCode(item.getCode(), store);
         if(cartModel==null){
-            cartModel=new ShoppingCart();
-            cartModel.setShoppingCartCode( shoppingCartData.getCode() );
-            cartModel.setMerchantStore( store );
-            if ( customer != null )
-            {
-                cartModel.setCustomerId( customer.getId() );
-            }
-            shoppingCartService.create( cartModel );
-            
-        }
+        	
+            final Long CustomerId = customer != null ? customer.getId() : null;
+            cartModel=createCartModel(shoppingCartData.getCode() ,store,CustomerId);
+       }
         
        
     }
       
        if(cartModel==null){
-    	   cartModel=new ShoppingCart();
-    	   if(StringUtils.isNotBlank(shoppingCartData.getCode())){
-            cartModel.setShoppingCartCode( shoppingCartData.getCode() ); 
-    	   }
-    	   else{
-    		   cartModel.setShoppingCartCode(  UUID.randomUUID().toString().replaceAll("-", "") );  
-    	   }
-    	   cartModel.setMerchantStore( store );
-    	   shoppingCartService.create( cartModel );
+    	   final Long CustomerId = customer != null ? customer.getId() : null;
+    	   final String shoppingCartCode=StringUtils.isNotBlank(shoppingCartData.getCode()) ? shoppingCartData.getCode() : null;
+           cartModel=createCartModel(shoppingCartCode,store,CustomerId);
+    	  
        }
         com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem shoppingCartItem= createCartItem(cartModel,item,store);
         cartModel.getLineItems().add( shoppingCartItem );
@@ -349,6 +338,25 @@ public class ShoppingCartFacadeImpl
    }
    
    
+   @Override
+   public ShoppingCart createCartModel(String shoppingCartCode, MerchantStore store, final Long customerID) throws Exception {
+	   ShoppingCart cartModel=new ShoppingCart();
+	   if(StringUtils.isNotBlank(shoppingCartCode)){
+		   cartModel.setShoppingCartCode( shoppingCartCode );  
+	   }
+	   else{
+		   cartModel.setShoppingCartCode( UUID.randomUUID().toString().replaceAll("-", ""));
+	   }
+      
+       cartModel.setMerchantStore( store );
+       if(customerID !=null){
+    	   cartModel.setCustomerId(customerID);;   
+       }
+       shoppingCartService.create( cartModel );
+   	   return cartModel;
+   }
+ 
+   
  private ShoppingCart getCartModel(final String cartId){
 		if(StringUtils.isNotBlank(cartId)){
 			MerchantStore store = (MerchantStore)getKeyValue(Constants.MERCHANT_STORE);
@@ -384,5 +392,6 @@ public class ShoppingCartFacadeImpl
 	  LOG.info("Unable to find any entry for given Id: "+entryId);
 	  return null;
   }
+
 
 }
