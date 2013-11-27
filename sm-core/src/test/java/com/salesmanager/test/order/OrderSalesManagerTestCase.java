@@ -185,15 +185,14 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		//OrderProductPrice
 		OrderProductPrice oproductprice = new OrderProductPrice();
 		oproductprice.setDefaultPrice(true);	
-		oproductprice.setProductPriceAmount(new BigDecimal(19.99) );
+		oproductprice.setProductPrice(new BigDecimal(19.99) );
 		oproductprice.setProductPriceCode("baseprice" );
 		oproductprice.setProductPriceName("Base Price" );
 
 		//OrderProduct
 		OrderProduct oproduct = new OrderProduct();
 		oproduct.getDownloads().add( orderProductDownload);
-		oproduct.setFinalPrice(new BigDecimal(19.99) );
-		oproduct.setOnetimeCharge( new BigDecimal(19.99) );
+		oproduct.setOneTimeCharge( new BigDecimal(19.99) );
 		oproduct.setOrder(order);		
 		oproduct.setProductName( "Product name" );
 		oproduct.setProductQuantity(1);
@@ -353,14 +352,10 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		//OrderProduct
 		OrderProduct oproduct = new OrderProduct();
 		oproduct.setDownloads(null);
-		oproduct.setFinalPrice( new BigDecimal(19.99) );
-		oproduct.setOnetimeCharge( new BigDecimal(6.99) );
+		oproduct.setOneTimeCharge( new BigDecimal(16.99) );
 		oproduct.setOrder(order);		
 		oproduct.setProductName( "Order Product Name" );
 		oproduct.setProductQuantity(5);
-		oproduct.setProductSpecialDateAvailable( new Date() );
-		oproduct.setProductSpecialDateExpire( new Date() );
-		oproduct.setProductSpecialPrice( new BigDecimal(14.99 ) );
 		oproduct.setSku("Order Product sku" );		
 
 
@@ -493,14 +488,13 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		
 		OrderProductPrice oproductprice = new OrderProductPrice();
 		oproductprice.setDefaultPrice(true);	
-		oproductprice.setProductPriceAmount(new BigDecimal(19.99) );
+		oproductprice.setProductPrice(new BigDecimal(19.99) );
 		oproductprice.setProductPriceCode("baseprice" );
 		oproductprice.setProductPriceName("Base Price" );
 
 		//OrderProduct
 		OrderProduct oproduct = new OrderProduct();
-		oproduct.setFinalPrice(new BigDecimal(19.99) );
-		oproduct.setOnetimeCharge( new BigDecimal(19.99) );
+		oproduct.setOneTimeCharge( new BigDecimal(19.99) );
 		oproduct.setOrder(order);		
 		oproduct.setProductName( "Product name" );
 		oproduct.setProductQuantity(1);
@@ -549,14 +543,13 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		
 		oproductprice = new OrderProductPrice();
 		oproductprice.setDefaultPrice(true);	
-		oproductprice.setProductPriceAmount(new BigDecimal(19.99) );
+		oproductprice.setProductPrice(new BigDecimal(19.99) );
 		oproductprice.setProductPriceCode("baseprice" );
 		oproductprice.setProductPriceName("Base Price" );
 		
 		//OrderProduct
 		oproduct = new OrderProduct();
-		oproduct.setFinalPrice(new BigDecimal(19.99) );
-		oproduct.setOnetimeCharge( new BigDecimal(19.99) );
+		oproduct.setOneTimeCharge( new BigDecimal(19.99) );
 		oproduct.setOrder(secondOrder);		
 		oproduct.setProductName( "Product name" );
 		oproduct.setProductQuantity(1);

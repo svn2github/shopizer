@@ -278,15 +278,14 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 		//OrderProductPrice
 		OrderProductPrice oproductprice = new OrderProductPrice();
 		oproductprice.setDefaultPrice(true);	
-		oproductprice.setProductPriceAmount(new BigDecimal(19.99) );
+		oproductprice.setProductPrice(new BigDecimal(19.99) );
 		oproductprice.setProductPriceCode("baseprice" );
 		oproductprice.setProductPriceName("Base Price" );
 
 		//OrderProduct
 		OrderProduct oproduct = new OrderProduct();
 		oproduct.getDownloads().add( orderProductDownload);
-		oproduct.setFinalPrice(new BigDecimal(19.99) );
-		oproduct.setOnetimeCharge( new BigDecimal(19.99) );
+		oproduct.setOneTimeCharge( new BigDecimal(19.99) );
 		oproduct.setOrder(order);		
 		oproduct.setProductName( "Product name" );
 		oproduct.setProductQuantity(2);
@@ -316,14 +315,13 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 		//product #2
 		OrderProductPrice oproductprice2 = new OrderProductPrice();
 		oproductprice2.setDefaultPrice(true);	
-		oproductprice2.setProductPriceAmount(new BigDecimal(9.99) );
+		oproductprice2.setProductPrice(new BigDecimal(9.99) );
 		oproductprice2.setProductPriceCode("baseprice" );
 		oproductprice2.setProductPriceName("Base Price" );
 
 		//OrderProduct
 		OrderProduct oproduct2 = new OrderProduct();
-		oproduct2.setFinalPrice(new BigDecimal(9.99) );
-		oproduct2.setOnetimeCharge( new BigDecimal(9.99) );
+		oproduct2.setOneTimeCharge( new BigDecimal(9.99) );
 		oproduct2.setOrder(order);		
 		oproduct2.setProductName( "Additional item name" );
 		oproduct2.setProductQuantity(1);
@@ -614,7 +612,7 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 				
 				int quantity = orderProduct.getProductQuantity();
 				sheet.setValueAt(quantity, 1, productCell);
-				String amount = priceUtil.getStoreFormatedAmountWithCurrency(store, orderProduct.getFinalPrice());
+				String amount = priceUtil.getStoreFormatedAmountWithCurrency(store, orderProduct.getOneTimeCharge());
 				sheet.setValueAt(amount, 2, productCell);
 				String t = priceUtil.getStoreFormatedAmountWithCurrency(store, priceUtil.getOrderProductTotalPrice(store, orderProduct));
 				sheet.setValueAt(t, 3, productCell);
