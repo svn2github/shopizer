@@ -87,7 +87,7 @@ public class UserController {
 	private final static String QUESTION_1 = "1";
 	private final static String QUESTION_2 = "2";
 	private final static String QUESTION_3 = "3";
-	
+	private final static String RESET_PASSWORD_TPL = "email_template_password_reset_user.ftl";	
 	private final static String NEW_USER_TMPL = "email_template_new_user.ftl";
 	
 	@Secured("STORE_ADMIN")
@@ -779,7 +779,11 @@ public class UserController {
 	@RequestMapping(value="/admin/users/resetPasswordSecurityQtn.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String resetPasswordSecurityQtn(@ModelAttribute(value="userReset") UserReset userReset,HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		Language userLanguage = null; 
+		Locale userLocale =  null; 
 		AjaxResponse resp = new AjaxResponse();
+		
 		//String question1 = request.getParameter("question1");
 		//String question2 = request.getParameter("question2");
 		//String question3 = request.getParameter("question3");
@@ -792,14 +796,44 @@ public class UserController {
 			
 			HttpSession session = request.getSession();
 			User dbUser = userService.getByUserName((String) session.getAttribute("username_reset"));
+			
 			if(dbUser!= null){
-				if(dbUser.getAnswer1().equals(answer1.trim()) && dbUser.getAnswer2().equals(answer2.trim()) && dbUser.getAnswer3().equals(answer3.trim()))
-				{
+				
+				if(dbUser.getAnswer1().equals(answer1.trim()) && dbUser.getAnswer2().equals(answer2.trim()) && dbUser.getAnswer3().equals(answer3.trim())){
+					userLanguage = dbUser.getDefaultLanguage();	
+					userLocale =  LocaleUtils.getLocale(userLanguage);
+					
 					String tempPass = userReset.generateRandomString();
 					String pass = passwordEncoder.encodePassword(tempPass, null);
+					
 					dbUser.setAdminPassword(pass);
 					userService.update(dbUser);
-					//here code to send email
+					
+					//send email
+					
+					try {
+						String[] storeEmail = {store.getStoreEmailAddress()};						
+						
+						Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, store, messages, userLocale);
+						templateTokens.put(EmailConstants.EMAIL_RESET_PASSWORD_TXT, messages.getMessage("email.user.resetpassword.text", userLocale));
+						templateTokens.put(EmailConstants.EMAIL_CONTACT_OWNER, messages.getMessage("email.contactowner", storeEmail, userLocale));
+						templateTokens.put(EmailConstants.EMAIL_PASSWORD_LABEL, messages.getMessage("label.generic.password",userLocale));
+						templateTokens.put(EmailConstants.EMAIL_USER_PASSWORD, tempPass);
+
+						Email email = new Email();
+						email.setFrom(store.getStorename());
+						email.setFromEmail(store.getStoreEmailAddress());
+						email.setSubject(messages.getMessage("label.generic.changepassword",userLocale));
+						email.setTo(dbUser.getAdminEmail() );
+						email.setTemplateName(RESET_PASSWORD_TPL);
+						email.setTemplateTokens(templateTokens);
+						
+						emailService.sendHtmlEmail(store, email);
+					
+					} catch (Exception e) {
+						LOGGER.error("Cannot send email to user",e);
+					}
+					
 					resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 					resp.setStatusMessage(messages.getMessage("User.resetPassword.resetSuccess", locale));
 				}
