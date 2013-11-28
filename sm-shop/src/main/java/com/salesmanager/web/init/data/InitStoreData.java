@@ -32,9 +32,9 @@ import com.salesmanager.core.business.catalog.product.service.manufacturer.Manuf
 import com.salesmanager.core.business.catalog.product.service.price.ProductPriceService;
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
 import com.salesmanager.core.business.common.model.Billing;
+import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.CustomerGender;
-import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -47,6 +47,7 @@ import com.salesmanager.core.business.order.model.orderproduct.OrderProductPrice
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
 import com.salesmanager.core.business.order.service.OrderService;
+import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.currency.model.Currency;
@@ -664,7 +665,6 @@ public class InitStoreData implements InitData {
 			order.setBilling(billing);
 
 
-			order.setChannel(1);//1 is online
 			order.setCurrencyValue(new BigDecimal(0.98));//compared to based currency (not necessary)
 			order.setCustomerId(customer.getId());
 			order.setCustomerFirstName("Leo");
@@ -683,8 +683,8 @@ public class InitStoreData implements InitData {
 			orderStatusHistory.setOrder(order);
 			order.getOrderHistory().add( orderStatusHistory );		
 			
-			order.setOrderTax(new BigDecimal(4.00));
-			order.setPaymentMethod("Paypal");
+
+			order.setPaymentType(PaymentType.PAYPAL);
 			order.setPaymentModuleCode("paypal");
 			order.setStatus( OrderStatus.DELIVERED);
 			order.setTotal(new BigDecimal(23.99));
@@ -699,7 +699,7 @@ public class InitStoreData implements InitData {
 			//OrderProductPrice
 			OrderProductPrice oproductprice = new OrderProductPrice();
 			oproductprice.setDefaultPrice(true);	
-			oproductprice.setProductPriceAmount(new BigDecimal(19.99) );
+			oproductprice.setProductPrice(new BigDecimal(19.99) );
 			oproductprice.setProductPriceCode("baseprice" );
 			oproductprice.setProductPriceName("Base Price" );
 			//oproductprice.setProductPriceSpecialAmount(new BigDecimal(13.99) );	
@@ -708,8 +708,7 @@ public class InitStoreData implements InitData {
 			//OrderProduct
 			OrderProduct oproduct = new OrderProduct();
 			oproduct.getDownloads().add( orderProductDownload);
-			oproduct.setFinalPrice(new BigDecimal(19.99) );
-			oproduct.setOnetimeCharge( new BigDecimal(19.99) );
+			oproduct.setOneTimeCharge( new BigDecimal(19.99) );
 			oproduct.setOrder(order);		
 			oproduct.setProductName( "Product name" );
 			oproduct.setProductQuantity(1);

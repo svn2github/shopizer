@@ -17,4 +17,6 @@ public interface OrderFacade {
 	/** used in the API **/
 	OrderTotalSummary calculateOrderTotal(MerchantStore store, PersistableOrder order, Language language) throws Exception;
 
+	/** saves a valid order **/
+	void saveOrder(ShopOrder order, MerchantStore store, Language language) throws Exception;
 }

@@ -176,9 +176,7 @@ public class InitializationLoader {
 				  Permission gcustomerpermission = new Permission("AUTH_CUSTOMER");
 				  gcustomerpermission.getGroups().add(gcustomer);
 				  permissionService.create(gcustomerpermission);
-				  
-				  //TODO add prebuiltBlocks
-				  
+
 				  loadData();
 
 			}
