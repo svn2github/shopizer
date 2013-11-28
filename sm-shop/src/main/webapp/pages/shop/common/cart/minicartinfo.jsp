@@ -10,20 +10,20 @@
            		 			    	<c:choose>
 	           		 			    	<c:when test="${requestScope.SHOPPING_CART != null}">
 	                  						<span id="cartqty">
-	                  						 (<c:out value="${requestScope.SHOPPING_CART.quantity}"/>&nbsp;
-	                  						  <%--  <c:choose>
-	                  						      <c:when test="${fn:length(requestScope.SHOPPING_CART.quantity)>1}" >
+	                  						 (<c:out value="${requestScope.SHOPPING_CART.quantity}"/>
+	                  						  <c:choose>
+	                  						      <c:when test="${requestScope.SHOPPING_CART.quantity gt 1}" >
 	                  						     		<s:message code="label.generic.items" text="items" />
 	                  						       </c:when>
 	                  						      <c:otherwise>
 	                  						         <s:message code="label.generic.item" text="item" />
 	                  						        </c:otherwise>
-	                  						     </c:choose> --%>)
-	                  						      </span>&nbsp;
+	                  						     </c:choose>
+	                  						    </span>)
 	                  						    <span id="cartprice"><c:out value="${requestScope.SHOPPING_CART.total}"/></span>
 	                  					</c:when>
 	                  					<c:otherwise>
-	                  						<span id="cartqty">(0 <s:message code="label.generic.item" text="item" />)</span>
+	                  						<span id="cartqty">(0&nbsp;<s:message code="label.generic.item" text="item" />)</span>
 	                  					</c:otherwise>
                   					</c:choose>
             					</span>

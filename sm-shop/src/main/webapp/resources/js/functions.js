@@ -268,13 +268,11 @@ function removeItemFromMinicart(lineItemId){
 
 function prepareMiniCartLineItemsData(cart) {
 
-	var labelItem = '<s:message code="label.generic.item" text="item" />';
-	if (cart.quantity > 1) {
-		labelItem = '<s:message code="label.generic.items" text="items" />';
-	}
-	$("#cartinfo").html(
-			'<span id="cartqty">(' + cart.quantity + ' ' + labelItem
-					+ ')</span><span id="cartprice">' + cart.total + '</span>');
+
+	
+	var cartInfo = '<span id="cartqty">(' + cart.quantity + ' ' + getItemLabel(cart.quantity) + ')&nbsp;<span id="cartprice">' + cart.total + '</span></span>';
+	
+	$("#cartinfo").html(cartInfo);
 	
 	if (cart.shoppingCartItems != null) {
 	var item = "";

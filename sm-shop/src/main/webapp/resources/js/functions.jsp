@@ -23,6 +23,14 @@ function getLanguageCode() {
    return "${requestScope.LANGUAGE.code}";
 }
 
+function getItemLabel(quantity) {
+	var labelItem = '<s:message code="label.generic.item" text="item" />';
+	if (quantity > 1) {
+		labelItem = '<s:message code="label.generic.items" text="items" />';
+	}
+	return labelItem;
+}
+
 
 
  
