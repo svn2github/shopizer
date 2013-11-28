@@ -83,7 +83,6 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@Column (name ="ORDER_TOTAL")
 	private BigDecimal total;
 
-	
 	@Column (name ="IP_ADDRESS")
 	private String ipAddress;
 
@@ -91,8 +90,7 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@Enumerated(value = EnumType.STRING)
 	private OrderChannel channel;
 
-	@Column (name ="DISPLAY_INVOICE_PAYMENTS")
-	private boolean displayInvoicePayments;	
+
 	
 	@Column (name ="PAYMENT_TYPE")
 	@Enumerated(value = EnumType.STRING)
@@ -254,16 +252,6 @@ public class Order extends SalesManagerEntity<Long, Order> {
 
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
-	}
-
-
-
-	public boolean isDisplayInvoicePayments() {
-		return displayInvoicePayments;
-	}
-
-	public void setDisplayInvoicePayments(boolean displayInvoicePayments) {
-		this.displayInvoicePayments = displayInvoicePayments;
 	}
 
 

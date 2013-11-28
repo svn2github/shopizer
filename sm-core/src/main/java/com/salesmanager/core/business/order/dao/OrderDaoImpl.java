@@ -133,7 +133,7 @@ public class OrderDaoImpl  extends SalesManagerEntityDaoImpl<Long, Order> implem
 			if(pBuilder==null) {
 				pBuilder = new BooleanBuilder();
 			}
-			pBuilder.and(qOrder.paymentMethod.like(criteria.getPaymentMethod()));
+			pBuilder.and(qOrder.paymentType.stringValue().like(criteria.getPaymentMethod()));
 		}
 		
 		if(criteria.getOrderBy().name().equals(CriteriaOrderBy.ASC)) {
