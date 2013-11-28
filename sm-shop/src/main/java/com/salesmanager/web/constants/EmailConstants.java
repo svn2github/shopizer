@@ -16,6 +16,8 @@ public class EmailConstants {
 	public static final String EMAIL_CUSTOMER_PASSWORD = "EMAIL_CUSTOMER_PASSWORD";
 	public static final String EMAIL_CUSTOMER_NAME = "EMAIL_CUSTOMER_NAME";
 	public static final String EMAIL_RESET_PASSWORD_TXT = "EMAIL_RESET_PASSWORD_TXT";
+	public static final String EMAIL_USER_NAME = "EMAIL_USER_NAME";
+	public static final String EMAIL_USER_PASSWORD = "EMAIL_USER_PASSWORD";
 	
 	public static final String EMAIL_TEXT_ORDER_NUMBER = "EMAIL_TEXT_ORDER_NUMBER";
 	public static final String EMAIL_TEXT_DATE_ORDERED = "EMAIL_TEXT_DATE_ORDERED";
