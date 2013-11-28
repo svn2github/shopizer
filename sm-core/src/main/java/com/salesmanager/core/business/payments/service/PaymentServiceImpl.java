@@ -22,7 +22,7 @@ import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
 import com.salesmanager.core.business.order.service.OrderService;
-import com.salesmanager.core.business.payments.model.CreditCard;
+import com.salesmanager.core.business.payments.model.CreditCardType;
 import com.salesmanager.core.business.payments.model.CreditCardPayment;
 import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.PaypalPayment;
@@ -445,7 +445,7 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 	
 	@Override
-	public void validateCreditCard(String number, CreditCard creditCard, String month, String date)
+	public void validateCreditCard(String number, CreditCardType creditCard, String month, String date)
 	throws ServiceException {
 
 		try {
@@ -491,11 +491,11 @@ public class PaymentServiceImpl implements PaymentService {
 	
 	}
 	
-	private void validateCreditCardNumber(String number, CreditCard creditCard)
+	private void validateCreditCardNumber(String number, CreditCardType creditCard)
 	throws ServiceException {
 
 		//TODO implement
-		if(CreditCard.MASTERCARD.equals(creditCard.name())) {
+		if(CreditCardType.MASTERCARD.equals(creditCard.name())) {
 			if (number.length() != 16
 					|| Integer.parseInt(number.substring(0, 2)) < 51
 					|| Integer.parseInt(number.substring(0, 2)) > 55) {
@@ -504,7 +504,7 @@ public class PaymentServiceImpl implements PaymentService {
 			}
 		}
 		
-		if(CreditCard.VISA.equals(creditCard.name())) {
+		if(CreditCardType.VISA.equals(creditCard.name())) {
 			if ((number.length() != 13 && number.length() != 16)
 					|| Integer.parseInt(number.substring(0, 1)) != 4) {
 				ServiceException ex = new ServiceException(ServiceException.EXCEPTION_VALIDATION,"Invalid card number","messages.error.creditcard.number");
@@ -512,7 +512,7 @@ public class PaymentServiceImpl implements PaymentService {
 			}
 		}
 		
-		if(CreditCard.AMEX.equals(creditCard.name())) {
+		if(CreditCardType.AMEX.equals(creditCard.name())) {
 			if (number.length() != 15
 					|| (Integer.parseInt(number.substring(0, 2)) != 34 && Integer
 							.parseInt(number.substring(0, 2)) != 37)) {
@@ -521,7 +521,7 @@ public class PaymentServiceImpl implements PaymentService {
 			}
 		}
 		
-		if(CreditCard.DINERS.equals(creditCard.name())) {
+		if(CreditCardType.DINERS.equals(creditCard.name())) {
 			if (number.length() != 14
 					|| ((Integer.parseInt(number.substring(0, 2)) != 36 && Integer
 							.parseInt(number.substring(0, 2)) != 38)
@@ -532,7 +532,7 @@ public class PaymentServiceImpl implements PaymentService {
 			}
 		}
 		
-		if(CreditCard.DISCOVERY.equals(creditCard.name())) {
+		if(CreditCardType.DISCOVERY.equals(creditCard.name())) {
 			if (number.length() != 16
 					|| Integer.parseInt(number.substring(0, 5)) != 6011) {
 				ServiceException ex = new ServiceException(ServiceException.EXCEPTION_VALIDATION,"Invalid card number","messages.error.creditcard.number");

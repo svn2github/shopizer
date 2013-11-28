@@ -112,7 +112,9 @@ public class SearchServiceImpl implements SearchService {
 			if(product.getManufacturer()!=null) {
 				index.setManufacturer(String.valueOf(product.getManufacturer().getId()));
 			}
-			index.setPrice(price.getFinalPrice().doubleValue());
+			if(price!=null) {
+				index.setPrice(price.getFinalPrice().doubleValue());
+			}
 			index.setHighlight(description.getProductHighlight());
 			if(!StringUtils.isBlank(description.getMetatagKeywords())){
 				String[] tags = description.getMetatagKeywords().split(",");
@@ -153,8 +155,6 @@ public class SearchServiceImpl implements SearchService {
 				searchService.deleteObject(collectionName.toString(), new StringBuilder().append(PRODUCT_INDEX_NAME).append(UNDERSCORE).append(description.getLanguage().getCode()).toString(), String.valueOf(product.getId()));
 			} catch (Exception e) {
 				LOGGER.error("Cannot delete index for product id [" + product.getId() + "], ",e);
-				//TODO do not throw exception ??
-				//throw new ServiceException("Cannot delete index for product id [" + product.getId() + "], " + e.getMessage() ,e);
 			}
 		}
 	
@@ -193,95 +193,7 @@ public class SearchServiceImpl implements SearchService {
 	@Override
 	public com.salesmanager.core.business.search.model.SearchResponse search(MerchantStore store, String languageCode, String jsonString, int entriesCount, int startIndex) throws ServiceException {
 		
-		/**
-		 * 
-		 * $('#searchForm').submit(function() {
 
-			$('#profiles').html('');
-			$('#facets').html('');
-
-			$.search.searchTerm({
-				  	field: $('#search'),
-				  	url: '<%=request.getContextPath()%>/search/product_en',
-				  	highlights: '\"highlight\":{\"fields\":{\"description\":{\"pre_tags\" : [\"<strong>\"], \"post_tags\" : [\"</strong>\"]},\"name\":{\"pre_tags\" : [\"<strong>\"], \"post_tags\" : [\"</strong>\"]}}}',
-				  	facets: function() { 
-						return '\"facets\" : { \"category\" : { \"terms\" : {\"field\" : \"category\"}}}';
-				  	}
-				  },
-				  function(suggestions) {//handle responses
-					  var i =1;
-					  searchresults = '';
-					  $.each(suggestions, function() {
-							var s = this.source;
-							var h = this.highlightFields;
-							var description = s.description;
-							var name = s.name;
-							
-							if(h != null) {
-								if(h.description!=null) {
-									//alert(h.description.fragments[0]);
-									description = h.description.fragments[0];
-								}
-								if(h.name!=null) {
-									name = h.name.fragments[0];
-								}
-							} 
-							var c = 'span-5';
-							if(i%4==0) {
-								c = c + ' last';
-							}
-							searchresults = searchresults + '<div class="' + c + '" style="height:250px;"><div>' + s.id + '<br/>' + name + '<br/>' + s.price + '<br/>' + description + '</div></div>';
-							i++;
-				  	  });
-					  $('#profiles').html(searchresults);
-				  },
-				  function(facets) {//handle facets
-					  
-					  var facet = '';
-					  
-					  $.each(facets, function() {
-						  
-						  var name = this.name;
-						  facet = facet + '<ul><strong>' + name + '</strong>';
-						  var entries = this.entries;
-						  $.each(entries, function() {
-							  
-							  facet = facet + '<li>' + this.name + ' (' + this.count + ')</li>';
-							  
-						  });
-						  
-						  facet = facet + '<ul><br/><br/>';
-						  
-						  
-					  });
-					  
-					  $('#facets').html(facet);
-					  
-				  }
-			);
-
-
-			return false; 
-	});
-	
-	
-				ObjectMapper mapper = new ObjectMapper();
-				mapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS,false);
-				String indexData = mapper.writeValueAsString(resp);
-				System.out.println(indexData);
-		 *
-		 *
-		 *
-		 * JSON Query
-		 * 
-				ObjectMapper mapper = new ObjectMapper();
-				mapper.configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS,false);
-				String indexData = mapper.writeValueAsString(resp);
-				System.out.println(indexData);
-		 */
-		
-		
-		
 		try {
 			
 			StringBuilder collectionName = new StringBuilder();

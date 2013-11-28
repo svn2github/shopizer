@@ -12,7 +12,7 @@ public class CreditCardPayment extends Payment {
 	private String expirationMonth;
 	private String expirationYear;
 	private String cardOwner;
-	private CreditCard creditCard;
+	private CreditCardType creditCard;
 	public String getCreditCardNumber() {
 		return creditCardNumber;
 	}
@@ -43,10 +43,10 @@ public class CreditCardPayment extends Payment {
 	public void setCardOwner(String cardOwner) {
 		this.cardOwner = cardOwner;
 	}
-	public CreditCard getCreditCard() {
+	public CreditCardType getCreditCard() {
 		return creditCard;
 	}
-	public void setCreditCard(CreditCard creditCard) {
+	public void setCreditCard(CreditCardType creditCard) {
 		this.creditCard = creditCard;
 	}
 

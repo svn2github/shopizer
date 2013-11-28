@@ -1,6 +1,6 @@
 package com.salesmanager.core.business.payments.model;
 
-public enum CreditCard {
+public enum CreditCardType {
 	
 	AMEX, VISA, MASTERCARD, DINERS, DISCOVERY
 

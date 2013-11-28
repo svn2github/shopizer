@@ -32,6 +32,8 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
+import com.salesmanager.core.business.order.model.payment.CreditCard;
+import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.constants.SchemaConstant;
 import com.salesmanager.core.utils.CloneUtils;
@@ -76,51 +78,29 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	
 	//What was the exchange rate
 	@Column (name ="CURRENCY_VALUE")
-	private BigDecimal currencyValue;
+	private BigDecimal currencyValue = new BigDecimal(1);//default 1-1
 	
 	@Column (name ="ORDER_TOTAL")
 	private BigDecimal total;
-	
-	//TODO not required
-	@Column (name ="ORDER_TAX")
-	private BigDecimal orderTax;
+
 	
 	@Column (name ="IP_ADDRESS")
 	private String ipAddress;
-	
-	//TODO should be an object
+
 	@Column (name ="CHANNEL")
-	private int channel;
-	
-	//TODO have an embedded object credit card @Embedded
-	@Column (name ="CARD_TYPE")
-	private String cardType;
-	
-	@Column (name ="CC_OWNER")
-	private String ccOwner;
-	
-	@Column (name ="CC_NUMBER")
-	private String ccNumber;
-	
-	@Column (name ="CC_EXPIRES")
-	private String ccExpires;
-	
-	@Column (name ="CC_CVV")
-	private String ccCvv;
-	
+	@Enumerated(value = EnumType.STRING)
+	private OrderChannel channel;
+
 	@Column (name ="DISPLAY_INVOICE_PAYMENTS")
 	private boolean displayInvoicePayments;	
 	
-	//TODO enum
-	@Column (name ="PAYMENT_METHOD")
-	private String paymentMethod;
+	@Column (name ="PAYMENT_TYPE")
+	@Enumerated(value = EnumType.STRING)
+	private PaymentType paymentType;
 	
 	@Column (name ="PAYMENT_MODULE_CODE")
 	private String paymentModuleCode;
 	
-	//TODO enum
-	@Column (name ="SHIPPING_METHOD")
-	private String shippingMethod; 
 	
 	@Column (name ="SHIPPING_MODULE_CODE")
 	private String shippingModuleCode;
@@ -130,6 +110,9 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	
 	@Embedded
 	private Billing billing = null;
+	
+	@Embedded
+	private CreditCard creditCard = null;
 
 	
 	@ManyToOne(targetEntity = Currency.class)
@@ -170,9 +153,11 @@ public class Order extends SalesManagerEntity<Long, Order> {
 			this.setCustomerState(customer.getState());
 		}
 		this.setCustomerEmailAddress(customer.getEmailAddress());
+		this.setCustomerStreetAddress(customer.getStreetAddress());
 		this.setCustomerFirstName(customer.getFirstname());
 		this.setCustomerLastName(customer.getLastname());
 		this.setCustomerPostCode(customer.getPostalCode());
+		this.setCustomerId(customer.getId());
 	}
 	
 	@Column (name ="CUSTOMER_FIRSTNAME", length=64 , nullable=false)
@@ -202,8 +187,6 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	//@Email
 	@Column (name ="CUSTOMER_EMAIL_ADDRESS", length=50, nullable=false)
 	private String customerEmailAddress;
-	
-	
 
 
 	@Override
@@ -264,13 +247,6 @@ public class Order extends SalesManagerEntity<Long, Order> {
 		this.total = total;
 	}
 
-	public BigDecimal getOrderTax() {
-		return orderTax;
-	}
-
-	public void setOrderTax(BigDecimal orderTax) {
-		this.orderTax = orderTax;
-	}
 
 	public String getIpAddress() {
 		return ipAddress;
@@ -280,53 +256,7 @@ public class Order extends SalesManagerEntity<Long, Order> {
 		this.ipAddress = ipAddress;
 	}
 
-	public int getChannel() {
-		return channel;
-	}
 
-	public void setChannel(int channel) {
-		this.channel = channel;
-	}
-
-	public String getCardType() {
-		return cardType;
-	}
-
-	public void setCardType(String cardType) {
-		this.cardType = cardType;
-	}
-
-	public String getCcOwner() {
-		return ccOwner;
-	}
-
-	public void setCcOwner(String ccOwner) {
-		this.ccOwner = ccOwner;
-	}
-
-	public String getCcNumber() {
-		return ccNumber;
-	}
-
-	public void setCcNumber(String ccNumber) {
-		this.ccNumber = ccNumber;
-	}
-
-	public String getCcExpires() {
-		return ccExpires;
-	}
-
-	public void setCcExpires(String ccExpires) {
-		this.ccExpires = ccExpires;
-	}
-
-	public String getCcCvv() {
-		return ccCvv;
-	}
-
-	public void setCcCvv(String ccCvv) {
-		this.ccCvv = ccCvv;
-	}
 
 	public boolean isDisplayInvoicePayments() {
 		return displayInvoicePayments;
@@ -336,13 +266,6 @@ public class Order extends SalesManagerEntity<Long, Order> {
 		this.displayInvoicePayments = displayInvoicePayments;
 	}
 
-	public String getPaymentMethod() {
-		return paymentMethod;
-	}
-
-	public void setPaymentMethod(String paymentMethod) {
-		this.paymentMethod = paymentMethod;
-	}
 
 	public String getPaymentModuleCode() {
 		return paymentModuleCode;
@@ -352,13 +275,7 @@ public class Order extends SalesManagerEntity<Long, Order> {
 		this.paymentModuleCode = paymentModuleCode;
 	}
 
-	public String getShippingMethod() {
-		return shippingMethod;
-	}
 
-	public void setShippingMethod(String shippingMethod) {
-		this.shippingMethod = shippingMethod;
-	}
 
 	public String getShippingModuleCode() {
 		return shippingModuleCode;
@@ -508,6 +425,36 @@ public class Order extends SalesManagerEntity<Long, Order> {
 
 	public String getCustomerCountry() {
 		return customerCountry;
+	}
+
+
+	public void setChannel(OrderChannel channel) {
+		this.channel = channel;
+	}
+
+
+	public OrderChannel getChannel() {
+		return channel;
+	}
+
+
+	public void setCreditCard(CreditCard creditCard) {
+		this.creditCard = creditCard;
+	}
+
+
+	public CreditCard getCreditCard() {
+		return creditCard;
+	}
+
+
+	public void setPaymentType(PaymentType paymentType) {
+		this.paymentType = paymentType;
+	}
+
+
+	public PaymentType getPaymentType() {
+		return paymentType;
 	}
 
 }

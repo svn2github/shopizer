@@ -15,10 +15,10 @@ public class OrderTotalSummary implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private BigDecimal subTotal;
-	private BigDecimal total;
+	private BigDecimal subTotal;//one time price for items
+	private BigDecimal total;//final price
 	
-	private List<OrderTotal> totals;
+	private List<OrderTotal> totals;//all other fees (tax, shipping ....)
 
 	public BigDecimal getSubTotal() {
 		return subTotal;

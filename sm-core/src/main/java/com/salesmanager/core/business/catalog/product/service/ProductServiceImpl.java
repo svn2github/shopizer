@@ -262,6 +262,9 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	public void saveOrUpdate(Product product) throws ServiceException {
 
 		LOGGER.debug("Save or update product ");
+		Validate.notNull(product,"product cannot be null");
+		Validate.notNull(product.getAvailabilities(),"product must have at least one availability");
+		Validate.notEmpty(product.getAvailabilities(),"product must have at least one availability");
 
 		//List of original availabilities
 		Set<ProductAvailability> originalAvailabilities = null;
