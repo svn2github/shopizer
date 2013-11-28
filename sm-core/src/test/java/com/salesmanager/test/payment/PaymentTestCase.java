@@ -13,7 +13,7 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.CustomerGender;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.payments.model.CreditCard;
+import com.salesmanager.core.business.payments.model.CreditCardType;
 import com.salesmanager.core.business.payments.model.CreditCardPayment;
 import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.payments.model.TransactionType;
@@ -89,7 +89,7 @@ public class PaymentTestCase extends AbstractSalesManagerCoreTestCase {
 		payment.setCreditCardNumber("545412345678");
 		payment.setExpirationMonth("04");
 		payment.setExpirationYear("16");
-		payment.setCreditCard(CreditCard.MASTERCARD);
+		payment.setCreditCard(CreditCardType.MASTERCARD);
 		payment.setTransactionType(TransactionType.AUTHORIZECAPTURE);
 	    
 		

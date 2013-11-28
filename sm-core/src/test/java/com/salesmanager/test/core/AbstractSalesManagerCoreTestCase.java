@@ -158,54 +158,6 @@ public abstract class AbstractSalesManagerCoreTestCase {
 	public void init() throws ServiceException {
 		
 		populate();
-		
-		
-		
-		//create a product
-	    ProductType generalType = productTypeService.getProductType(ProductType.GENERAL_TYPE);
-	    
-	    Language en = languageService.getByCode("en");
-	    MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
-
-
-	    Product product = new Product();
-	    product.setProductHeight(new BigDecimal(4));
-	    product.setProductLength(new BigDecimal(3));
-	    product.setProductWidth(new BigDecimal(5));
-	    product.setProductWeight(new BigDecimal(8));
-	    product.setSku("TESTSKU");
-	    product.setType(generalType);
-	    product.setMerchantStore(store);
-
-	    // Product description
-	    ProductDescription description = new ProductDescription();
-	    description.setName("Product 1");
-	    description.setLanguage(en);
-	    description.setProduct(product);
-
-	    product.getDescriptions().add(description);
-	    
-
-	    // Availability
-	    ProductAvailability availability = new ProductAvailability();
-	    availability.setProductDateAvailable(new Date());
-	    availability.setProductQuantity(100);
-	    availability.setRegion("*");
-	    availability.setProduct(product);// associate with product
-
-	    ProductPrice dprice = new ProductPrice();
-	    dprice.setDefaultPrice(true);
-	    dprice.setProductPriceAmount(new BigDecimal(29.99));
-	    dprice.setProductAvailability(availability);
-
-	    ProductPriceDescription dpd = new ProductPriceDescription();
-	    dpd.setName("Base price");
-	    dpd.setProductPrice(dprice);
-	    dpd.setLanguage(en);
-
-	    dprice.getDescriptions().add(dpd);
-	    
-	    productService.saveOrUpdate(product);
 
 	}
 	

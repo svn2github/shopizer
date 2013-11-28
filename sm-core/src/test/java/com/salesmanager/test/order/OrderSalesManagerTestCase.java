@@ -30,6 +30,9 @@ import com.salesmanager.core.business.order.model.orderproduct.OrderProductDownl
 import com.salesmanager.core.business.order.model.orderproduct.OrderProductPrice;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
+import com.salesmanager.core.business.order.model.payment.CreditCard;
+import com.salesmanager.core.business.payments.model.CreditCardType;
+import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -75,11 +78,15 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 	    availability.setProductQuantity(100);
 	    availability.setRegion("*");
 	    availability.setProduct(product);// associate with product
+	    
+	    product.getAvailabilities().add(availability);
 
 	    ProductPrice dprice = new ProductPrice();
 	    dprice.setDefaultPrice(true);
 	    dprice.setProductPriceAmount(new BigDecimal(29.99));
 	    dprice.setProductAvailability(availability);
+	    
+	    availability.getPrices().add(dprice);
 
 	    ProductPriceDescription dpd = new ProductPriceDescription();
 	    dpd.setName("Base price");
@@ -150,7 +157,6 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		order.setBilling(billing);
 
 
-		order.setChannel(1);//1 is online
 		order.setCurrencyValue(new BigDecimal(0.98));//compared to based currency (not necessary)
 		order.setCustomerId(customer.getId());
 		order.setDelivery(delivery);
@@ -168,9 +174,8 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		orderStatusHistory.setDateAdded(new Date() );
 		orderStatusHistory.setOrder(order);
 		order.getOrderHistory().add( orderStatusHistory );		
-		
-		order.setOrderTax(new BigDecimal(4.00));
-		order.setPaymentMethod("Paypal");
+
+		order.setPaymentType(PaymentType.PAYPAL);
 		order.setPaymentModuleCode("paypal");
 		order.setStatus( OrderStatus.DELIVERED);
 		order.setTotal(new BigDecimal(23.99));
@@ -326,12 +331,16 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		order.setMerchant(merchant);
 		order.setLastModified(new Date());
 		
-		order.setCardType("Visa");
-		order.setCcCvv("123");
-		order.setCcExpires("12/30/2020" );
-		order.setCcNumber( "123456789");
-		order.setCcOwner("ccOwner" );
-		order.setChannel(1);
+		CreditCard creditCard = new CreditCard();
+		creditCard.setCardType(CreditCardType.VISA);
+
+		creditCard.setCcCvv("123");
+		creditCard.setCcExpires("12/30/2020" );
+		creditCard.setCcNumber( "123456789");
+		creditCard.setCcOwner("ccOwner" );
+
+		order.setCreditCard(creditCard);
+		
 		order.setCurrencyValue(new BigDecimal(19.99));
 		order.setCustomerId(new Long(1) );
 		order.setDelivery(delivery);
@@ -341,11 +350,9 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		order.setOrderDateFinished(new Date());		
 		orderStatusHistory.setDateAdded(new Date() );
 		orderStatusHistory.setOrder(order);
-		order.setOrderTax(new BigDecimal(4.00));
-		order.setPaymentMethod("Cash");
+		order.setPaymentType(PaymentType.CREDITCARD);
 		order.setPaymentModuleCode("payment Module Code");
-		order.setShippingMethod("UPS");
-		order.setShippingModuleCode("Shipping Module Code" );
+		order.setShippingModuleCode("UPS" );
 		order.setStatus( OrderStatus.ORDERED);
 		order.setTotal(new BigDecimal(23.99));
 		
@@ -467,21 +474,23 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		order.setMerchant(store);
 		order.setLastModified(new Date());
 		
-		order.setCardType("Visa");
-		order.setCcCvv("123");
-		order.setCcExpires("12/30/2020" );
-		order.setCcNumber( "123456789");
-		order.setCcOwner("ccOwner" );
-		order.setChannel(1);
+		CreditCard creditCard = new CreditCard();
+		creditCard.setCardType(CreditCardType.VISA);
+
+		creditCard.setCcCvv("123");
+		creditCard.setCcExpires("12/30/2020" );
+		creditCard.setCcNumber( "123456789");
+		creditCard.setCcOwner("ccOwner" );
+
+		order.setCreditCard(creditCard);
 		order.setCurrencyValue(new BigDecimal(19.99));
 		order.setCustomerId(new Long(1) );
 		order.setDelivery(delivery);
 		order.setDisplayInvoicePayments(true);
 		order.setIpAddress("ipAddress" );
-		order.setOrderTax(new BigDecimal(4.00));
-		order.setPaymentMethod("Paypal");
-		order.setPaymentModuleCode("paypal");
-		order.setShippingMethod("UPS");
+
+		order.setPaymentType(PaymentType.CREDITCARD);
+		order.setPaymentModuleCode("beanstream");
 		order.setShippingModuleCode("ups" );
 		order.setStatus( OrderStatus.ORDERED);
 		order.setTotal(new BigDecimal(23.99));
@@ -522,21 +531,23 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		secondOrder.setMerchant(store);
 		secondOrder.setLastModified(new Date());
 		
-		secondOrder.setCardType("Visa");
-		secondOrder.setCcCvv("123");
-		secondOrder.setCcExpires("12/30/2020" );
-		secondOrder.setCcNumber( "123456789");
-		secondOrder.setCcOwner("ccOwner" );
-		secondOrder.setChannel(1);
+		creditCard = new CreditCard();
+		creditCard.setCardType(CreditCardType.VISA);
+
+		creditCard.setCcCvv("123");
+		creditCard.setCcExpires("12/30/2020" );
+		creditCard.setCcNumber( "123456789");
+		creditCard.setCcOwner("ccOwner" );
+
+		order.setCreditCard(creditCard);
 		secondOrder.setCurrencyValue(new BigDecimal(19.99));
 		secondOrder.setCustomerId(secondCustomer.getId() );
 		secondOrder.setDelivery(delivery);
 		secondOrder.setDisplayInvoicePayments(true);
 		secondOrder.setIpAddress("ipAddress" );
-		secondOrder.setOrderTax(new BigDecimal(4.00));
-		secondOrder.setPaymentMethod("Paypal");
-		secondOrder.setPaymentModuleCode("paypal");
-		secondOrder.setShippingMethod("UPS");
+		order.setPaymentType(PaymentType.CREDITCARD);
+		order.setPaymentModuleCode("beanstream");
+		order.setShippingModuleCode("ups" );
 		secondOrder.setShippingModuleCode("ups" );
 		secondOrder.setStatus( OrderStatus.ORDERED);
 		secondOrder.setTotal(new BigDecimal(23.99));

@@ -55,6 +55,7 @@ import com.salesmanager.core.business.order.model.orderproduct.OrderProductDownl
 import com.salesmanager.core.business.order.model.orderproduct.OrderProductPrice;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
+import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -243,7 +244,6 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 		order.setBilling(billing);
 
 
-		order.setChannel(1);//1 is online
 		order.setCurrencyValue(new BigDecimal(0.98));//compared to based currency (not necessary)
 		order.setCustomerId(customer.getId());
 		order.setDelivery(delivery);
@@ -262,8 +262,8 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 		orderStatusHistory.setOrder(order);
 		order.getOrderHistory().add( orderStatusHistory );		
 		
-		order.setOrderTax(new BigDecimal(4.00));
-		order.setPaymentMethod("Paypal");
+
+		order.setPaymentType(PaymentType.PAYPAL);
 		order.setPaymentModuleCode("paypal");
 		order.setStatus( OrderStatus.DELIVERED);
 		order.setTotal(new BigDecimal(23.99));
