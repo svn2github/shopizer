@@ -160,7 +160,6 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		order.setCurrencyValue(new BigDecimal(0.98));//compared to based currency (not necessary)
 		order.setCustomerId(customer.getId());
 		order.setDelivery(delivery);
-		order.setDisplayInvoicePayments(true);
 		order.setIpAddress("ipAddress" );
 		order.setMerchant(store);
 		order.setCustomerEmailAddress(customer.getEmailAddress());
@@ -344,7 +343,6 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		order.setCurrencyValue(new BigDecimal(19.99));
 		order.setCustomerId(new Long(1) );
 		order.setDelivery(delivery);
-		order.setDisplayInvoicePayments(true);
 		order.setIpAddress("ipAddress" );
 		order.setMerchant(merchant);
 		order.setOrderDateFinished(new Date());		
@@ -486,7 +484,6 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		order.setCurrencyValue(new BigDecimal(19.99));
 		order.setCustomerId(new Long(1) );
 		order.setDelivery(delivery);
-		order.setDisplayInvoicePayments(true);
 		order.setIpAddress("ipAddress" );
 
 		order.setPaymentType(PaymentType.CREDITCARD);
@@ -543,7 +540,6 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		secondOrder.setCurrencyValue(new BigDecimal(19.99));
 		secondOrder.setCustomerId(secondCustomer.getId() );
 		secondOrder.setDelivery(delivery);
-		secondOrder.setDisplayInvoicePayments(true);
 		secondOrder.setIpAddress("ipAddress" );
 		order.setPaymentType(PaymentType.CREDITCARD);
 		order.setPaymentModuleCode("beanstream");

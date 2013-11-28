@@ -247,7 +247,6 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 		order.setCurrencyValue(new BigDecimal(0.98));//compared to based currency (not necessary)
 		order.setCustomerId(customer.getId());
 		order.setDelivery(delivery);
-		order.setDisplayInvoicePayments(true);
 		order.setIpAddress("ipAddress" );
 		order.setMerchant(store);
 		order.setCustomerEmailAddress(customer.getEmailAddress());
