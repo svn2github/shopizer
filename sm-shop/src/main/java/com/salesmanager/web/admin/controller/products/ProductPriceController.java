@@ -289,7 +289,7 @@ public class ProductPriceController {
 		
 		if(productPrice==null) {
 			productPrice = new ProductPrice();
-			productPrice.setProductPriceType(ProductPriceType.ONE_TIME.name());
+			productPrice.setProductPriceType(ProductPriceType.ONE_TIME);
 		}
 		
 		//descriptions

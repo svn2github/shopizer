@@ -671,7 +671,6 @@ public class InitStoreData implements InitData {
 			order.setCustomerLastName("DiCaprio");
 			order.setCustomerEmailAddress("leo@shopizer.com");
 			order.setDelivery(delivery);
-			order.setDisplayInvoicePayments(true);
 			order.setIpAddress("ipAddress" );
 			order.setMerchant(store);
 			order.setOrderDateFinished(new Date());//committed date

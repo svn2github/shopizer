@@ -208,7 +208,7 @@ public class OrderFacadeImpl implements OrderFacade {
 		
 
 		
-		//populate order with customer
+		
 
 	}
 
