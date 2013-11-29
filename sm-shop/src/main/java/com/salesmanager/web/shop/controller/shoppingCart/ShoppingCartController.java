@@ -122,7 +122,7 @@ public class ShoppingCartController extends AbstractController {
 
         // ShoppingCartData shoppingCart=convertFromEntity(cart, store,language);
         shoppingCart = shoppingCartFacade.getShoppingCartData( customer, store,shoppingCartId );
-        shoppingCart = shoppingCartFacade.recalculateCart( shoppingCart );
+       // shoppingCart = shoppingCartFacade.recalculateCart( shoppingCart );
         model.addAttribute( "cart", shoppingCart );
 
         /** template **/
