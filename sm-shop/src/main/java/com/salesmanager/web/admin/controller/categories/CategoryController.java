@@ -334,7 +334,7 @@ public class CategoryController {
 			
 			Category category = categoryService.getById(id);
 			
-			if(category==null || category.getMerchantStore().getId()!=store.getId()) {
+			if(category==null || category.getMerchantStore().getId().intValue() !=store.getId().intValue() ) {
 
 				resp.setStatusMessage(messages.getMessage("message.unauthorized", locale));
 				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);			
