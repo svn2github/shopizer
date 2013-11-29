@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.salesmanager.core.business.order.service;
+package com.salesmanager.core.business.shoppingcart.service;
 
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;

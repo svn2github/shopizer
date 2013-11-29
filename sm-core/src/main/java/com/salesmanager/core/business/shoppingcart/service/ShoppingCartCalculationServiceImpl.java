@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.salesmanager.core.business.order.service;
+package com.salesmanager.core.business.shoppingcart.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -21,10 +21,10 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.OrderTotalSummary;
+import com.salesmanager.core.business.order.service.OrderServiceImpl;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
-import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 /**
  * <p>Implementation class responsible for calculating state of shopping cart.
  * This class will take care of calculating price of each line items of shopping cart
