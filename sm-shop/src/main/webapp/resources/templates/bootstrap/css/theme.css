@@ -230,6 +230,32 @@ a:hover{
 	margin:25px 0
 }
 
+.products-title {
+    background-color: #FBFBFB;
+    background-image: -moz-linear-gradient(center top , #FFFFFF, #F5F5F5);
+    background-repeat: repeat-x;
+    /**border: 1px solid #DDDDDD;**/
+    border-radius: 3px;
+    box-shadow: 0 1px 0 #FFFFFF inset;
+    list-style: none outside none;
+    margin: 0 0 18px;
+    padding: 7px 14px;
+}
+
+.products-title input, textarea, select {
+	margin-bottom:0px;	
+}
+
+.products-title .widget-label {
+    color: #999999;
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 18px;
+    padding: 3px 15px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
 
 #product-tab.home a,h2.title{	
 	font-size:16px;
