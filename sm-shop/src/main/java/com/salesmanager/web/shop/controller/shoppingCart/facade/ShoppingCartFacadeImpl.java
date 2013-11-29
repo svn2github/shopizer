@@ -26,10 +26,9 @@ import com.salesmanager.core.business.catalog.product.service.attribute.ProductA
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.order.service.OrderService;
-import com.salesmanager.core.business.order.service.ShoppingCartCalculationService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
+import com.salesmanager.core.business.shoppingcart.service.ShoppingCartCalculationService;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.web.constants.Constants;
@@ -63,9 +62,6 @@ public class ShoppingCartFacadeImpl implements ShoppingCartFacade {
 
     @Autowired
     private PricingService pricingService;
-
-    @Autowired
-    private OrderService orderService;
 
     @Autowired
     private ProductAttributeService productAttributeService;
