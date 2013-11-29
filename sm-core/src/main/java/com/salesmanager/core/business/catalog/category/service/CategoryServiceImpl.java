@@ -223,41 +223,41 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	public void delete(Category category) throws ServiceException {
 		
 		//get category with lineage
-		List<Category> categories = this.listByLineage(category.getMerchantStore(), category.getLineage());
+//		List<Category> categories = this.listByLineage(category.getMerchantStore(), category.getLineage());
 		
-		if(categories.size()==0) {
-			categories.add(category);
-		}
+		List<Category> categories = new ArrayList<Category>(); 
+		Category dbCategory = this.getById( category.getId() );
 		
-		Collections.reverse(categories);
 		
-		List<Long> categoryIds = new ArrayList<Long>();
-
+		if(dbCategory != null && dbCategory.getId().longValue() == category.getId().longValue() ) {			
 			
-		for(Category c : categories) {
+			if(categories.size()==0) {
+				categories.add(dbCategory);
+			}
+			
+			Collections.reverse(categories);
+			
+			List<Long> categoryIds = new ArrayList<Long>();
+	
+				
+			for(Category c : categories) {		
+					categoryIds.add(c.getId());
+			}
+			
+			List<Product> products = productService.getProducts(categoryIds);
+			
+			for(Product product : products) {
+				productService.delete(product);
+	
+			}
+			
+			for(Category c : categories) {
 				
 				
-				categoryIds.add(c.getId());
-		}
-			
-			
-		
-		
-		List<Product> products = productService.getProducts(categoryIds);
-		
-		for(Product product : products) {
-			
-			
-			productService.delete(product);
-
+				categoryDao.delete(c);
+			}
 		}
 		
-		for(Category c : categories) {
-			
-			
-			categoryDao.delete(c);
-		}
-
 	}
 
 
