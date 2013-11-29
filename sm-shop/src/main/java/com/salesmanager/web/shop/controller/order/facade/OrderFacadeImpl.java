@@ -188,7 +188,7 @@ public class OrderFacadeImpl implements OrderFacade {
 			customerService.saveOrUpdate(customer);
 		}
 		
-		Order newOrder = new Order(customer);
+		Order modelOrder = new Order(customer);
 
 		List<ShoppingCartItem> shoppingCartItems = order.getShoppingCartItems();
 		Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
@@ -201,13 +201,26 @@ public class OrderFacadeImpl implements OrderFacade {
 		for(ShoppingCartItem item : shoppingCartItems) {
 			OrderProduct orderProduct = new OrderProduct();
 			orderProduct = orderProductPopulator.populate(item, orderProduct , store, language);
-			orderProduct.setOrder(newOrder);
+			orderProduct.setOrder(modelOrder);
 			orderProducts.add(orderProduct);
 			
 		}
 		
-
+		modelOrder.setOrderProducts(orderProducts);
 		
+		OrderTotalSummary summary = order.getOrderTotalSummary();
+		List<com.salesmanager.core.business.order.model.OrderTotal> totals = summary.getTotals();
+		Set<com.salesmanager.core.business.order.model.OrderTotal> modelTotals = new HashSet<com.salesmanager.core.business.order.model.OrderTotal>();
+		for(com.salesmanager.core.business.order.model.OrderTotal total : totals) {
+			total.setOrder(modelOrder);
+			modelTotals.add(total);
+		}
+		
+		modelOrder.setOrderTotal(modelTotals);
+		
+		//populate payment information
+		
+		//populate shipping information
 		
 
 	}
