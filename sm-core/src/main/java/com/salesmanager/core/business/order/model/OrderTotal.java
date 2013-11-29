@@ -57,9 +57,13 @@ public class OrderTotal extends SalesManagerEntity<Long, OrderTotal> {
 	@Column (name ="MODULE", length=60 , nullable=true )
 	private String module;
 	
+	@Column (name ="ORDER_VALUE_TYPE")
+	@Enumerated(value = EnumType.STRING)
+	private OrderValueType orderValueType = OrderValueType.ONE_TIME;
+	
 	@Column (name ="ORDER_TOTAL_TYPE")
 	@Enumerated(value = EnumType.STRING)
-	private OrderTotalType orderTotalType = OrderTotalType.ONE_TIME;
+	private OrderTotalType orderTotalType = null;
 	
 	@Column (name ="SORT_ORDER", nullable=false)
 	private int sortOrder;
@@ -135,6 +139,14 @@ public class OrderTotal extends SalesManagerEntity<Long, OrderTotal> {
 		return orderTotalCode;
 	}
 
+	public void setOrderValueType(OrderValueType orderValueType) {
+		this.orderValueType = orderValueType;
+	}
+
+	public OrderValueType getOrderValueType() {
+		return orderValueType;
+	}
+
 	public void setOrderTotalType(OrderTotalType orderTotalType) {
 		this.orderTotalType = orderTotalType;
 	}
@@ -142,4 +154,6 @@ public class OrderTotal extends SalesManagerEntity<Long, OrderTotal> {
 	public OrderTotalType getOrderTotalType() {
 		return orderTotalType;
 	}
+
+
 }

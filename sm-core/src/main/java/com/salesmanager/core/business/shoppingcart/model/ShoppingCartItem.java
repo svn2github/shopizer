@@ -64,13 +64,13 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	private Set<ShoppingCartAttributeItem> attributes = new HashSet<ShoppingCartAttributeItem>();
 	
 	@Transient
-	private BigDecimal itemPrice;
+	private BigDecimal itemPrice;//item final price including all rebates
 	
 	@Transient
-	private BigDecimal subTotal;//contains item one time charge
+	private BigDecimal subTotal;//item final price * quantity
 	
 	@Transient
-	private FinalPrice finalPrice;//contains price details
+	private FinalPrice finalPrice;//contains price details (raw prices)
 	
 
 	@Transient

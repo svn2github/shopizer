@@ -9,5 +9,11 @@ public class Constants {
 	public final static String MERCHANT_CONFIG = "MERCHANT_CONFIG";
 	
 	public final static String UNDERSCORE = "_";
+	public final static String OT_ITEM_PRICE_MODULE_CODE = "itemprice";
+	public final static String OT_SUBTOTAL_MODULE_CODE = "subtotal";
+	public final static String OT_TOTAL_MODULE_CODE = "total";
+	public final static String OT_SHIPPING_MODULE_CODE = "shipping";
+	public final static String OT_HANDLING_MODULE_CODE = "handling";
+	public final static String OT_TAX_MODULE_CODE = "tax";
 
 }
