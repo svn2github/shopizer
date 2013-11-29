@@ -129,15 +129,7 @@ response.setDateHeader ("Expires", -1);
         <div class="span3">
           <div class="sidebar-nav">
           
-           <ul class="nav nav-list">
-            <li class="nav-header"><s:message code="label.generic.sortby" text="Sort by" />:
-			<select id="filter">
-				<option value="item-order"><s:message code="label.generic.default" text="Default" /></option>
-				<option value="item-name"><s:message code="label.generic.name" text="Name" /></option>
-				<option value="item-price"><s:message code="label.generic.price" text="Price" /></option>
-			</select>
-			</li>
-			</ul>
+
             <br/>
           
             <ul class="nav nav-list">
@@ -171,7 +163,18 @@ response.setDateHeader ("Expires", -1);
         <!-- right column -->
         <div class="span9">
         
-
+			<div class="products-title"><span style="text-align:right;">
+				<ul class="nav nav-list">
+            		<li class="widget-header"><s:message code="label.generic.sortby" text="Sort by" />:
+					<select id="filter">
+						<option value="item-order"><s:message code="label.generic.default" text="Default" /></option>
+						<option value="item-name"><s:message code="label.generic.name" text="Name" /></option>
+						<option value="item-price"><s:message code="label.generic.price" text="Price" /></option>
+					</select>
+					</li>
+				</ul>
+				</span>
+			</div>
           
         	<ul id="productsContainer" class="thumbnails product-list"></ul>
 			
