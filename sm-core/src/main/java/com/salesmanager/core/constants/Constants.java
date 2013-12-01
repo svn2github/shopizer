@@ -9,6 +9,7 @@ public class Constants {
 	public final static String MERCHANT_CONFIG = "MERCHANT_CONFIG";
 	
 	public final static String UNDERSCORE = "_";
+	public final static String SLASH = "/";
 	public final static String OT_ITEM_PRICE_MODULE_CODE = "itemprice";
 	public final static String OT_SUBTOTAL_MODULE_CODE = "subtotal";
 	public final static String OT_TOTAL_MODULE_CODE = "total";

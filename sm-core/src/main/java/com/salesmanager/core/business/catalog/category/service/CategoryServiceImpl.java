@@ -3,6 +3,7 @@ package com.salesmanager.core.business.catalog.category.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.constants.Constants;
 
 @Service("categoryService")
 public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Category> implements CategoryService {
@@ -222,18 +224,19 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 	//@Override
 	public void delete(Category category) throws ServiceException {
 		
-		//get category with lineage
-//		List<Category> categories = this.listByLineage(category.getMerchantStore(), category.getLineage());
+		//get category with lineage (subcategories)
+		StringBuilder lineage = new StringBuilder();
+		lineage.append(category.getLineage()).append(category.getId()).append(Constants.SLASH);
+		List<Category> categories = this.listByLineage(category.getMerchantStore(), lineage.toString());
 		
-		List<Category> categories = new ArrayList<Category>(); 
 		Category dbCategory = this.getById( category.getId() );
 		
 		
 		if(dbCategory != null && dbCategory.getId().longValue() == category.getId().longValue() ) {			
 			
-			if(categories.size()==0) {
-				categories.add(dbCategory);
-			}
+			
+			categories.add(dbCategory);
+			
 			
 			Collections.reverse(categories);
 			
@@ -243,19 +246,35 @@ public class CategoryServiceImpl extends SalesManagerEntityServiceImpl<Long, Cat
 			for(Category c : categories) {		
 					categoryIds.add(c.getId());
 			}
-			
+
 			List<Product> products = productService.getProducts(categoryIds);
+			org.hibernate.Session session = this.categoryDao.getEntityManager().unwrap(org.hibernate.Session.class);//need to refresh the session to update all product categories
+
 			
 			for(Product product : products) {
-				productService.delete(product);
-	
+				session.evict(product);//refresh product so we get all product categories
+				Product dbProduct = productService.getById(product.getId());
+				Set<Category> productCategories = dbProduct.getCategories();
+				if(productCategories.size()>1) {
+					for(Category c : categories) {
+						productCategories.remove(c);
+						productService.update(dbProduct);
+					}
+					
+					if(product.getCategories()==null || product.getCategories().size()==0) {
+						productService.delete(dbProduct);
+					}
+					
+				} else {
+					productService.delete(dbProduct);
+				}
+				
+				
 			}
 			
-			for(Category c : categories) {
-				
-				
-				categoryDao.delete(c);
-			}
+			Category categ = this.getById(category.getId());
+			categoryDao.delete(categ);
+			
 		}
 		
 	}
