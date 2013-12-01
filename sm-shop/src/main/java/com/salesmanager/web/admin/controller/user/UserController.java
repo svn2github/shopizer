@@ -84,9 +84,9 @@ public class UserController {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-	private final static String QUESTION_1 = "1";
-	private final static String QUESTION_2 = "2";
-	private final static String QUESTION_3 = "3";
+	private final static String QUESTION_1 = "question1";
+	private final static String QUESTION_2 = "question2";
+	private final static String QUESTION_3 = "question3";
 	private final static String RESET_PASSWORD_TPL = "email_template_password_reset_user.ftl";	
 	private final static String NEW_USER_TMPL = "email_template_new_user.ftl";
 	
@@ -746,14 +746,14 @@ public class UserController {
 						
 						if(dbUser==null) {
 							resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-							resp.setStatusMessage(messages.getMessage("User.resetPassword.Error", locale));
-							return resp.toString();
+							resp.setStatusMessage(messages.getMessage("message.username.notfound", locale));
+							return resp.toJSONString();
 						}
 					
 						Map<String,String> entry = new HashMap<String,String>();
 						entry.put(QUESTION_1, dbUser.getQuestion1());
-						entry.put(QUESTION_2, dbUser.getQuestion1());
-						entry.put(QUESTION_3, dbUser.getQuestion1());
+						entry.put(QUESTION_2, dbUser.getQuestion2());
+						entry.put(QUESTION_3, dbUser.getQuestion3());
 						resp.addDataEntry(entry);
 						resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 				
@@ -767,6 +767,7 @@ public class UserController {
 						e.printStackTrace();
 						resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 						resp.setStatusMessage(messages.getMessage("User.resetPassword.Error", locale));
+						return resp.toJSONString();
 			}
 	
 		
