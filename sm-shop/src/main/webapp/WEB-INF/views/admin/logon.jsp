@@ -72,10 +72,6 @@
 
 
 
-
-
-
-
 				<link
 					href="<c:url value="/resources/css/bootstrap/css/sm-bootstrap.css" />"
 					rel="stylesheet" />
@@ -121,6 +117,7 @@
 				
 				function getUserInformation() {
 					 // get the form values 
+					alert('getUserInformation');
 					$('#securityQtn1Select').empty();
 					$('#securityQtn2Select').empty();
 					$('#securityQtn3Select').empty();
@@ -148,25 +145,10 @@
     								 var data = isc.XMLTools.selectObjects(response, "/response/data");
     						  	     if(data && data.length>0) {
     						  	     
-    						  	     	//$('#question1').text(data[0].1);
-		    						  	//$('#question2').text(data[0].2);
-		    						  	//$('#question3').text(data[0].3);
-    						  	     
-    								 	//console.log(data[0]);
-    								 	/*$.each(data[0], function(key, value) {   
-    							    	 	$('#securityQtn1Select')
-    							        	 	.append($("<option></option>")
-    							        	 	.attr("value",key)
-    							         	 	.text(value)); 
-    							     		 $('#securityQtn2Select')
-							         	 		 .append($("<option></option>")
-							         	     	 .attr("value",key)
-							        	   	     .text(value)); 
-    							     		  $('#securityQtn3Select')
-							        	 	     .append($("<option></option>")
-							        			 .attr("value",key)
-							        			 .text(value)); 
-    								 	 });*/
+    						  	     	$('#question1').text(data[0].question1);
+		    						  	$('#question2').text(data[0].question2);
+		    						  	$('#question3').text(data[0].question3);
+
     								 } 
 								} else {
 									if(msg!=null && msg !='') {
@@ -174,12 +156,11 @@
 									}
 								}
 								
+							},
+							error: function(jqXHR,textStatus,errorThrown) { 
+								alert('Error ' + jqXHR + "-" + textStatus + "-" + errorThrown);
 							}
-							/* ,
-							 error: function(e){  
-							      alert('Error: ' + e);  
-							      console.log(e);
-							    } */
+
 							}); 
 				}
  		        				}
@@ -192,13 +173,13 @@
 					var answer3 = $('#answer3').val();
 				   		 
 					 if(!answer1){
-					    alert("Please enter an answer to question 1");
+					    alert("<s:message code="security.answer.question1.message" text="Please answer to security question 1"/>");
 					    
 					 }else if(!answer2){
-						alert("Please enter an answer to question 2");
+						 alert("<s:message code="security.answer.question2.message" text="Please answer to security question 2"/>");
 						
 					 }else if(!answer3){
-					    alert("Please enter an answer to question 3");
+						 alert("<s:message code="security.answer.question3.message" text="Please answer to security question 3"/>");
 					   
 					 }else{					 
 
@@ -221,50 +202,19 @@
 											 var div = document.getElementById('finaltext1');
 											 div.innerHTML =  msg;		    						
 		    								 var data = isc.XMLTools.selectObjects(response, "/response/data");
-		    						  	    // if(data && data.length>0) {
-		    						  	     //	$('#question1').text(data[0].1);
-		    						  	    // 	$('#question2').text(data[0].2);
-		    						  	    // 	$('#question3').text(data[0].3);
-		    								 	//console.log(data[0]);
-		    								 	/*$.each(data[0], function(key, value) {   
-		    							    	 	$('#securityQtn1Select')
-		    							        	 	.append($("<option></option>")
-		    							        	 	.attr("value",key)
-		    							         	 	.text(value)); 
-		    							     		 $('#securityQtn2Select')
-									         	 		 .append($("<option></option>")
-									         	     	 .attr("value",key)
-									        	   	     .text(value)); 
-		    							     		  $('#securityQtn3Select')
-									        	 	     .append($("<option></option>")
-									        			 .attr("value",key)
-									        			 .text(value)); 
-		    								 	   	   });
-		    								 } else {
-		
-					    					 }
-		 */								} else {
+										  } else {
 											if(msg!=null && msg !='') {
-												//alert("! " + msg);
 												 $("#getSecurityQtn").modal('hide')
 												  $('#finalWindow').modal({
 			    								 	backdrop: true
 			    						   		 	}) 
 						 						 $("#finaltext").val (msg);
 												var div = document.getElementById('finaltext1');
-												div.innerHTML =  msg;
-
-												 
+												div.innerHTML =  msg;						 
 											}
 										}
 										
-									}  //  $.ajax({
-									
-									//,
-									//error: function(e){  
-									//      alert('Error: ' + e);  
-									//      console.log(e);
-									//    }
+									}  
 								});
 					 
 				 }
@@ -460,7 +410,7 @@
 					</div>
 					<div class="modal-footer">
 									<div class="controls">
-										<input type="button" value="<s:message code="button.label.logon" text="button.label.submit2" />" onclick="getUserInformation()" class="btn" >
+										<input type="button" value="<s:message code="label.generic.next" text="Next" />" onclick="getUserInformation()" class="btn" >
 									</div>
 								</div>
 					</div>

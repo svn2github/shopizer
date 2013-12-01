@@ -30,12 +30,12 @@ response.setDateHeader ("Expires", -1);
 					 <div class="span3">   
 						<h4><s:message code="label.store.information.title" text="Informations"/></h4>
 						<!-- Pages -->
-                        <ul>
+                        <ul class="footerLiks">
                         	<c:forEach items="${requestScope.CONTENT_PAGE}" var="content">
-							   <li><a href="<c:url value="/shop/pages/${content.seUrl}.html"/>" class="current">${content.name}</a></li>
+							   <li><a href="<c:url value="/shop/pages/${content.seUrl}.html"/>" class="current" style="color: #fff;">${content.name}</a></li>
 							</c:forEach>
 							<c:if test="${requestScope.CONFIGS['displayContactUs']==true}">
-								<li><a href="#contactformlink"><s:message code="label.customer.contactus" text="Contact us"/></a></li>
+								<li><a href="<c:url value="/shop/contact/contactus.html"/>" style="color: #fff;"><s:message code="label.customer.contactus" text="Contact us"/></a></li>
 							</c:if>
 						</ul>
                     </div>
@@ -43,8 +43,8 @@ response.setDateHeader ("Expires", -1);
                     <div class="span3">
                     	<c:if test="${requestScope.CONFIGS['displayCustomerSection'] == true}">
                         <h4><s:message code="label.customer.myaccount" text="My Account" /></h4>
-                        <ul>
-							<li><a href="#"><s:message code="button.label.login" text="Login" /></a></li>
+                        <ul class="footerLiks">
+							<li><a href="#" style="color: #fff;"><s:message code="button.label.login" text="Login" /></a></li>
 						</ul>
 						</c:if>
                     </div>

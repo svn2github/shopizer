@@ -79,7 +79,7 @@ response.setDateHeader ("Expires", -1);
     							</li>
 						</c:forEach>
 						<c:if test="${requestScope.CONFIGS['displayContactUs']==true}">
-						<li><a href="#contactformlink"><s:message code="label.customer.contactus" text="Contact us"/></a></li>
+						<li><a href="<c:url value="/shop/contact/contactus.html"/>"><s:message code="label.customer.contactus" text="Contact us"/></a></li>
 						</c:if>
 					</ul>
 
