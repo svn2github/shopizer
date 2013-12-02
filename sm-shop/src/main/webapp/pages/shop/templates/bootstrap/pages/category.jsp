@@ -151,7 +151,7 @@ response.setDateHeader ("Expires", -1);
               <li class="nav-header"><s:message code="label.manufacturer.brand" text="Brands" /></li>
               <c:forEach items="${manufacturers}" var="manufacturer">
               	<li>
-              		<a href="javascript:loadCategoryByBrand('BRAND','${manufacturer.id}')"><c:out value="${manufacturer.name}" /></a></li>
+              		<a href="javascript:loadCategoryByBrand('BRAND','${manufacturer.id}')"><c:out value="${manufacturer.description.name}" /></a></li>
               </c:forEach>
             </ul>
           </div>          
