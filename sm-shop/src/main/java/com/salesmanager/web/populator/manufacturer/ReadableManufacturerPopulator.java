@@ -1,4 +1,3 @@
-
 package com.salesmanager.web.populator.manufacturer;
 
 import java.util.Set;
@@ -8,25 +7,18 @@ import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.AbstractDataPopulator;
-import com.salesmanager.web.entity.catalog.manufacturer.ManufacturerEntity;
+import com.salesmanager.web.entity.catalog.manufacturer.ReadableManufacturer;
 
-
-/**
- * @author Carl Samson
- *
- */
-
-
-public class ManufacturerPopulator extends AbstractDataPopulator<com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer,ManufacturerEntity>
+public class ReadableManufacturerPopulator extends AbstractDataPopulator<com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer,ReadableManufacturer>
 {
 
 
 
 	
 	@Override
-	public ManufacturerEntity populate(
+	public ReadableManufacturer populate(
 			com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer source,
-			ManufacturerEntity target, MerchantStore store, Language language) throws ConversionException {
+			ReadableManufacturer target, MerchantStore store, Language language) throws ConversionException {
 		target.setId(source.getId());
 		if(source.getDescriptions()!=null && source.getDescriptions().size()>0) {
 			
@@ -39,8 +31,14 @@ public class ManufacturerPopulator extends AbstractDataPopulator<com.salesmanage
 					}
 				}
 				
+				target.setOrder(source.getOrder());
+				target.setId(source.getId());
+				
 				if (description != null) {
-					target.setName(description.getName());
+					com.salesmanager.web.entity.catalog.manufacturer.ManufacturerDescription d = new com.salesmanager.web.entity.catalog.manufacturer.ManufacturerDescription();
+					d.setName(description.getName());
+					d.setDescription(description.getDescription());
+					target.setDescription(d);
 				}
 
 		}
@@ -49,10 +47,8 @@ public class ManufacturerPopulator extends AbstractDataPopulator<com.salesmanage
 	}
 
     @Override
-    protected ManufacturerEntity createTarget()
+    protected ReadableManufacturer createTarget()
     {
-        // TODO Auto-generated method stub
         return null;
     }
-
 }

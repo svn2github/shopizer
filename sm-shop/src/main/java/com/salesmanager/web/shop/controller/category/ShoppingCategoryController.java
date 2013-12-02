@@ -35,7 +35,7 @@ import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.catalog.ProductList;
 import com.salesmanager.web.entity.catalog.category.ReadableCategory;
-import com.salesmanager.web.entity.catalog.manufacturer.ManufacturerEntity;
+import com.salesmanager.web.entity.catalog.manufacturer.ReadableManufacturer;
 import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.entity.shop.Breadcrumb;
 import com.salesmanager.web.entity.shop.BreadcrumbItem;
@@ -43,7 +43,7 @@ import com.salesmanager.web.entity.shop.BreadcrumbItemType;
 import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.populator.catalog.ReadableCategoryPopulator;
 import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
-import com.salesmanager.web.populator.manufacturer.ManufacturerPopulator;
+import com.salesmanager.web.populator.manufacturer.ReadableManufacturerPopulator;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.model.filter.QueryFilter;
 import com.salesmanager.web.shop.model.filter.QueryFilterType;
@@ -265,7 +265,7 @@ public class ShoppingCategoryController {
 		
 		
 		//** List of manufacturers **//
-		List<ManufacturerEntity> manufacturerList = getManufacturersByProductAndCategory(store,category,subIds,language);
+		List<ReadableManufacturer> manufacturerList = getManufacturersByProductAndCategory(store,category,subIds,language);
 
 		model.addAttribute("manufacturers", manufacturerList);
 		model.addAttribute("parent", parentProxy);
@@ -280,9 +280,9 @@ public class ShoppingCategoryController {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private List<ManufacturerEntity> getManufacturersByProductAndCategory(MerchantStore store, Category category, List<Long> subCategoryIds, Language language) throws Exception {
+	private List<ReadableManufacturer> getManufacturersByProductAndCategory(MerchantStore store, Category category, List<Long> subCategoryIds, Language language) throws Exception {
 
-		List<ManufacturerEntity> manufacturerList = null;
+		List<ReadableManufacturer> manufacturerList = null;
 		/** List of manufacturers **/
 		if(subCategoryIds!=null && subCategoryIds.size()>0) {
 			
@@ -303,7 +303,7 @@ public class ShoppingCategoryController {
 
 				//get from the cache
 				 
-				manufacturerList = (List<ManufacturerEntity>) cache.getFromCache(manufacturersKey.toString());
+				manufacturerList = (List<ReadableManufacturer>) cache.getFromCache(manufacturersKey.toString());
 				
 
 				if(manufacturerList==null) {
@@ -325,13 +325,13 @@ public class ShoppingCategoryController {
 		return manufacturerList;
 	}
 		
-	private List<ManufacturerEntity> getManufacturers(MerchantStore store, List<Long> ids, Language language) throws Exception {
-		List<ManufacturerEntity> manufacturerList = null;
+	private List<ReadableManufacturer> getManufacturers(MerchantStore store, List<Long> ids, Language language) throws Exception {
+		List<ReadableManufacturer> manufacturerList = null;
 		List<com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer> manufacturers = manufacturerService.listByProductsByCategoriesId(store, ids, language);
 		if(!CollectionUtils.isEmpty(manufacturers)) {
-			manufacturerList = new ArrayList<ManufacturerEntity>();
+			manufacturerList = new ArrayList<ReadableManufacturer>();
 			for(com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer manufacturer : manufacturers) {
-				ManufacturerEntity manuf = new ManufacturerPopulator().populate(manufacturer, new ManufacturerEntity(), store, language);
+				ReadableManufacturer manuf = new ReadableManufacturerPopulator().populate(manufacturer, new ReadableManufacturer(), store, language);
 				manufacturerList.add(manuf);
 				
 			}

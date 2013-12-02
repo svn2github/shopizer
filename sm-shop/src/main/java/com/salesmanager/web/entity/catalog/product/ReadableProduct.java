@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.salesmanager.web.entity.catalog.ReadableImage;
-import com.salesmanager.web.entity.catalog.manufacturer.ManufacturerEntity;
+import com.salesmanager.web.entity.catalog.manufacturer.ReadableManufacturer;
 import com.salesmanager.web.entity.catalog.product.attribute.ReadableProductAttribute;
 
 public class ReadableProduct extends ProductEntity implements Serializable {
@@ -19,7 +19,7 @@ public class ReadableProduct extends ProductEntity implements Serializable {
 	private boolean discounted = false;
 	private ReadableImage image;
 	private List<ReadableImage> images;
-	private ManufacturerEntity manufacturer;
+	private ReadableManufacturer manufacturer;
 	private List<ReadableProductAttribute> attributes;
 	
 	
@@ -49,13 +49,6 @@ public class ReadableProduct extends ProductEntity implements Serializable {
 		this.discounted = discounted;
 	}
 
-	public void setManufacturer(ManufacturerEntity manufacturer) {
-		this.manufacturer = manufacturer;
-	}
-	public ManufacturerEntity getManufacturer() {
-		return manufacturer;
-	}
-
 	public void setImages(List<ReadableImage> images) {
 		this.images = images;
 	}
@@ -73,6 +66,12 @@ public class ReadableProduct extends ProductEntity implements Serializable {
 	}
 	public List<ReadableProductAttribute> getAttributes() {
 		return attributes;
+	}
+	public void setManufacturer(ReadableManufacturer manufacturer) {
+		this.manufacturer = manufacturer;
+	}
+	public ReadableManufacturer getManufacturer() {
+		return manufacturer;
 	}
 
 }

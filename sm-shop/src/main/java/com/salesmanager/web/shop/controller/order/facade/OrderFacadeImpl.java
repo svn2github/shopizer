@@ -3,6 +3,7 @@ package com.salesmanager.web.shop.controller.order.facade;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,11 @@ import com.salesmanager.core.business.order.model.OrderSummary;
 import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
 import com.salesmanager.core.business.order.service.OrderService;
+import com.salesmanager.core.business.reference.country.model.Country;
+import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.zone.model.Zone;
+import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
@@ -52,6 +57,10 @@ public class OrderFacadeImpl implements OrderFacade {
 	private DigitalProductService digitalProductService;
 	@Autowired
 	private CustomerService customerService;
+	@Autowired
+	private CountryService countryService;
+	@Autowired
+	private ZoneService zoneService;
 
 
 	@Override
@@ -152,7 +161,6 @@ public class OrderFacadeImpl implements OrderFacade {
 	}
 	
 	private Customer customer(PersistableCustomer customer, MerchantStore store, Language language) throws Exception {
-		//TODO populator not completely implemented
 		CustomerPopulator customerPopulator = new CustomerPopulator();
 		Customer cust = customerPopulator.populate(customer, new Customer(), store, language);
 		return cust;
@@ -217,12 +225,48 @@ public class OrderFacadeImpl implements OrderFacade {
 		}
 		
 		modelOrder.setOrderTotal(modelTotals);
+		modelOrder.setTotal(order.getOrderTotalSummary().getTotal());
+
+		//order misc objects
+		modelOrder.setCurrency(store.getCurrency());
+		modelOrder.setMerchant(store);
+		
+		
+		//customer object
+		orderCustomer(customer, modelOrder, language);
+
 		
 		//populate payment information
 		
 		//populate shipping information
 		
 
+	}
+	
+	private void orderCustomer(Customer customer, Order order, Language language) throws Exception {
+		
+		Map<String,Country> countriesMap = countryService.getCountriesMap(language);
+		Map<String,Zone> zonesMap = zoneService.getZones(language);
+		//populate customer
+		order.setBilling(customer.getBilling());
+		order.setDelivery(customer.getDelivery());
+		order.setCustomerCity(customer.getCity());
+		order.setCustomerCountry(countriesMap.get(customer.getCountry().getIsoCode()).getName());
+		order.setCustomerEmailAddress(customer.getEmailAddress());
+		order.setCustomerFirstName(customer.getFirstname());
+		order.setCustomerLastName(customer.getLastname());
+		order.setCustomerId(customer.getId());
+		order.setCustomerPostCode(customer.getPostalCode());
+		if(customer.getZone()!=null) {
+			Zone z = zonesMap.get(customer.getZone().getCode());
+			order.setCustomerState(z.getName());
+		} else {
+			order.setCustomerState(customer.getState());
+		}
+		order.setCustomerStreetAddress(customer.getStreetAddress());
+		order.setCustomerTelephone(customer.getTelephone());
+			
+		
 	}
 
 }
