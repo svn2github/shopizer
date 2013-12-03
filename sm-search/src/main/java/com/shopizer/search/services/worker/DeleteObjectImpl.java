@@ -1,17 +1,21 @@
 package com.shopizer.search.services.worker;
 
-import com.shopizer.search.services.impl.SearchServiceImpl;
+import javax.inject.Inject;
+
+import com.shopizer.search.services.impl.SearchDelegate;
 import com.shopizer.search.utils.SearchClient;
 
 
 public class DeleteObjectImpl implements DeleteObjectWorker {
+	
+	@Inject
+	private SearchDelegate searchDelegate;
 
 	public void deleteObject(SearchClient client, String collection, String object, String id, ExecutionContext context) throws Exception {
-		// TODO Auto-generated method stub
+		
 		
 		//need to get the original entry
-		SearchServiceImpl s = new SearchServiceImpl(client);
-		com.shopizer.search.services.GetResponse r = s.getObject(collection, object, id);
+		com.shopizer.search.services.GetResponse r = searchDelegate.getObject(collection, object, id);
 		
 		if(r!=null) {
 			
@@ -68,7 +72,7 @@ public class DeleteObjectImpl implements DeleteObjectWorker {
 		//}
 		
 		//SearchServiceImpl search = new SearchServiceImpl(client);
-		s.delete(collection, object, id);
+		searchDelegate.delete(collection, object, id);
 
 	}
 
@@ -78,5 +82,6 @@ public class DeleteObjectImpl implements DeleteObjectWorker {
 		throw new Exception("Not implemented");
 		
 	}
+
 
 }

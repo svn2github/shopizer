@@ -7,11 +7,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.inject.Inject;
+
 import org.apache.commons.collections.CollectionUtils;
 
 import com.shopizer.search.services.SearchRequest;
 import com.shopizer.search.services.SearchResponse;
-import com.shopizer.search.services.impl.SearchServiceImpl;
+import com.shopizer.search.services.impl.SearchDelegate;
+import com.shopizer.search.services.impl.SearchDelegateImpl;
 import com.shopizer.search.utils.CustomIndexConfiguration;
 import com.shopizer.search.utils.DynamicIndexNameUtil;
 import com.shopizer.search.utils.SearchClient;
@@ -20,18 +23,10 @@ import com.shopizer.search.utils.SearchClient;
 public class DeleteKeywordsImpl implements DeleteObjectWorker {
 	
 	
-	//private CustomIndexConfiguration indexConfiguration = null;
+
 	private List<CustomIndexConfiguration> indexConfigurations = null;
-
-/*	public CustomIndexConfiguration getIndexConfiguration() {
-		return indexConfiguration;
-	}
-
-
-	public void setIndexConfiguration(CustomIndexConfiguration indexConfiguration) {
-		this.indexConfiguration = indexConfiguration;
-	}*/
-
+	@Inject
+	private SearchDelegate searchDelegate;
 
 	public void deleteObject(SearchClient client,String collection, String object, String id, ExecutionContext context) throws Exception {
 		// TODO Auto-generated method stub
@@ -75,13 +70,11 @@ public class DeleteKeywordsImpl implements DeleteObjectWorker {
 					SearchRequest sr = new SearchRequest();
 					sr.setCollection(indexName);
 					sr.setJson(query);
-					
-					SearchServiceImpl s = new SearchServiceImpl(client);
-					SearchResponse r = s.search(sr);
+
+					SearchResponse r = searchDelegate.search(sr);
 					if(r!=null) {
 						Collection<String> ids = r.getIds();
-						
-						s.bulkDeleteIndex(ids, indexName);
+						searchDelegate.bulkDeleteIndex(ids, indexName);
 					}
 		
 				}
@@ -94,10 +87,7 @@ public class DeleteKeywordsImpl implements DeleteObjectWorker {
 
 	public void deleteObject(SearchClient client,String collection, String id) throws Exception {
 
-		
-		SearchServiceImpl s = new SearchServiceImpl(client);
-		
-		if(s.indexExist(collection)) {
+		if(searchDelegate.indexExist(collection)) {
 		
 			String query = new StringBuilder()
 			.append("{\"query\":{\"term\" : {\"_id_\" : \"")
@@ -109,11 +99,11 @@ public class DeleteKeywordsImpl implements DeleteObjectWorker {
 			sr.setJson(query);
 			
 			
-			SearchResponse r = s.search(sr);
+			SearchResponse r = searchDelegate.search(sr);
 			if(r!=null) {
 				Collection<String> ids = r.getIds();
 			
-				s.bulkDeleteIndex(ids, collection);
+				searchDelegate.bulkDeleteIndex(ids, collection);
 			}
 		
 		}
@@ -128,5 +118,7 @@ public class DeleteKeywordsImpl implements DeleteObjectWorker {
 	public void setIndexConfigurations(List<CustomIndexConfiguration> indexConfigurations) {
 		this.indexConfigurations = indexConfigurations;
 	}
+
+
 
 }

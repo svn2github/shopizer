@@ -21,7 +21,7 @@ import com.shopizer.search.services.field.IntegerField;
 import com.shopizer.search.services.field.ListField;
 import com.shopizer.search.services.field.LongField;
 import com.shopizer.search.services.field.StringField;
-import com.shopizer.search.services.impl.SearchServiceImpl;
+import com.shopizer.search.services.impl.SearchDelegate;
 import com.shopizer.search.utils.CustomIndexConfiguration;
 import com.shopizer.search.utils.CustomIndexFieldConfiguration;
 import com.shopizer.search.utils.DateUtil;
@@ -33,6 +33,9 @@ public class KeywordIndexerImpl implements IndexWorker {
 	
 	@Inject
 	DeleteKeywordsImpl deleteKeywordsImpl;
+	
+	@Inject
+	private SearchDelegate searchDelegate;
 	
 	
 	private static Logger log = Logger.getLogger(KeywordIndexerImpl.class);
@@ -111,8 +114,7 @@ public class KeywordIndexerImpl implements IndexWorker {
 				//get json
 				Map indexData = (Map)context.getObject("indexData");
 				
-				SearchServiceImpl service = new SearchServiceImpl(client);
-				
+
 				CustomIndexConfiguration conf = indexConfigurationsMap.get(object);
 				
 				
@@ -321,7 +323,7 @@ public class KeywordIndexerImpl implements IndexWorker {
 					//delete previous keywords for the same id
 					deleteKeywordsImpl.deleteObject(client, collectionName, id);
 
-					service.bulkIndexKeywords(bulks, collectionName, "keyword");
+					searchDelegate.bulkIndexKeywords(bulks, collectionName, "keyword");
 					
 				}
 				

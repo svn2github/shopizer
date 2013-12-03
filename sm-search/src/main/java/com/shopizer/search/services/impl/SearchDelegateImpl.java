@@ -47,16 +47,25 @@ import com.shopizer.search.services.field.LongField;
 import com.shopizer.search.services.field.StringField;
 import com.shopizer.search.utils.SearchClient;
 
-public class SearchServiceImpl {
-	
-	
+public class SearchDelegateImpl implements SearchDelegate {
+
 	private SearchClient searchClient = null;
-	private static Logger log = Logger.getLogger(SearchServiceImpl.class);
-	
-	public SearchServiceImpl(SearchClient searchClient) {
+	public SearchClient getSearchClient() {
+		return searchClient;
+	}
+
+	public void setSearchClient(SearchClient searchClient) {
 		this.searchClient = searchClient;
 	}
+
+	private static Logger log = Logger.getLogger(SearchDelegateImpl.class);
 	
+
+	
+	/* (non-Javadoc)
+	 * @see com.shopizer.search.services.impl.SearchService#indexExist(java.lang.String)
+	 */
+	@Override
 	public boolean indexExist(String indexName) throws Exception {
 		Client client = searchClient.getClient();
 		
@@ -66,9 +75,10 @@ public class SearchServiceImpl {
 		
 	}
 	
-	/**
-	 * Creates a structure that represents the object and the content to be indexed
+	/* (non-Javadoc)
+	 * @see com.shopizer.search.services.impl.SearchService#createIndice(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Override
 	public void createIndice(String json,String collection,String object) throws Exception {
 		
 	
@@ -83,24 +93,13 @@ public class SearchServiceImpl {
 	    create(new CreateIndexRequest(collection).mapping(object, json)).
 	    actionGet();
 
-
-
-		
-/*		client.admin().indices().  
-        create(new CreateIndexRequest(collection).mapping(object, json)).
-        actionGet();
-		*/
-		
 	}
 	
 	
-    /**
-     * Will index an object in json format in a collection
-     * of indexes
-     * @param collection
-     * @param object
-     * @param id
-     */
+    /* (non-Javadoc)
+	 * @see com.shopizer.search.services.impl.SearchService#index(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
 	public void index(String json, String collection, String object, String id) {
 		
 
@@ -115,6 +114,10 @@ public class SearchServiceImpl {
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.shopizer.search.services.impl.SearchService#delete(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
 	public void delete(String collection, String object, String id) throws Exception {
 		
 		if(this.indexExist(collection)) {
@@ -131,6 +134,10 @@ public class SearchServiceImpl {
 
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.shopizer.search.services.impl.SearchService#bulkDeleteIndex(java.util.Collection, java.lang.String)
+	 */
+	@Override
 	public void bulkDeleteIndex(Collection<String> ids, String collection) throws Exception {
 		
 
@@ -168,13 +175,10 @@ public class SearchServiceImpl {
 	
 
 	
-	/**
-	 * Index keywords in bulk
-	 * @param bulks
-	 * @param collection
-	 * @param object
-	 * @param id
+	/* (non-Javadoc)
+	 * @see com.shopizer.search.services.impl.SearchService#bulkIndexKeywords(java.util.Collection, java.lang.String, java.lang.String)
 	 */
+	@Override
 	public void bulkIndexKeywords(Collection<IndexKeywordRequest> bulks, String collection, String object) {
 		
 		
@@ -271,6 +275,10 @@ public class SearchServiceImpl {
 	}
 	
 
+	/* (non-Javadoc)
+	 * @see com.shopizer.search.services.impl.SearchService#getObject(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
 	public com.shopizer.search.services.GetResponse getObject(String collection, String object, String id) throws Exception {
 		
 		
@@ -297,13 +305,10 @@ public class SearchServiceImpl {
 		
 	}
 	
-	/**
-	 * Search for a term
-	 * @param term
-	 * @param collection
-	 * @param field
-	 * @return
+	/* (non-Javadoc)
+	 * @see com.shopizer.search.services.impl.SearchService#search(com.shopizer.search.services.SearchRequest)
 	 */
+	@Override
 	public SearchResponse search(SearchRequest request) throws Exception {
 
 		SearchResponse response = new SearchResponse();
@@ -485,6 +490,10 @@ public class SearchServiceImpl {
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see com.shopizer.search.services.impl.SearchService#searchAutocomplete(java.lang.String, java.lang.String, int)
+	 */
+	@Override
 	public Set<String> searchAutocomplete(String collection,String json,int size) {
 		
 		Set<String> returnList = new HashSet();
@@ -526,7 +535,6 @@ public class SearchServiceImpl {
 	          // if we use in mapping: "_source" : {"enabled" : false}
 	          // we need to include all necessary fields in query and then to use doc.getFields()
 	          // instead of doc.getSource()
-	        	//System.out.println(sd.getIndex());
 	        	Map source = sd.getSource();
 	        	//System.out.println(sd.getType());
 	        	//System.out.println(sd.getExplanation().toString());
@@ -548,184 +556,5 @@ public class SearchServiceImpl {
 		return returnList;
 		
 	}
-	
-/*	private void search() {
-		
-		System.out.println("Started");
-		
-		//Node node = nodeBuilder().node(); 
-		//Client client = node.client();
-		
-		Client client = new TransportClient() 
-        .addTransportAddress(new InetSocketTransportAddress("localhost", 9300)); 
-
-		
-		
-		 ListenableActionFuture laf = client.prepareGet("twitter", "tweet", "1") .execute();
-		
-		 GetResponse response = (GetResponse) laf.actionGet();
-
-		
-		if(response!=null) {
-			System.out.println(response.toString());
-		}
-		
-		
-		client.close();
-		//node.close();
-		
-		System.out.println("Finished");
-		
-		
-		try {
-			
-		System.out.println("Before");
-		
-		*//**
-		 * Connecting to the server. In the configuration files i have set
-		 * a cluster with the name of seniorcarlos
-		 *//*
-        Settings s = ImmutableSettings.settingsBuilder().put("cluster.name", "seniorcarlos").build();
-        Client client = new TransportClient(s).
-        addTransportAddress(new InetSocketTransportAddress("127.0.0.1", 9300));
-        
-        
-        
-        1) Seems to have created an index template called an indice [SCHEMA MAPPING]
-  		String fileAsString = "{" 
-        	+"\"tweet\" : {" 
-        	+"    \"properties\" : {" 
-        	+"         \"longval\" : { \"type\" : \"long\", \"null_value\" : -1}" 
-        	+"}}}";  
-
-        
-        client.admin().indices().  
-        create(new CreateIndexRequest("tweetindex").mapping("tweet", fileAsString)).
-        actionGet(); 
-        
-        *//**
-         * 2) Create an index
-         *//*
-
-
-        //client.admin().indices().create(new CreateIndexRequest(indexName)).actionGet();
-
-        //Index a new document
-        											//index   //doc type //id
-        IndexResponse response = client.prepareIndex("twitter", "tweet", "1") 
-        .setSource(jsonBuilder() 
-                    .startObject() 
-                        .field("user", "testuser") 
-                        .field("postDate", new Date()) 
-                        .field("message", "trying out Elastic Search") 
-                    .endObject() 
-                  ) 
-        .execute() 
-        .actionGet();
-        
-        *//**3)**//*
-
- 		String file = "{\"user\": \"csamson\", \"post_date\": \"2009-11-15T13:12:00\", \"message\": \"Complicated this thing\" }";
-
-        IndexResponse r = client.prepareIndex("twitter", "tweet", "2") 
-        .setSource(file
-                  ) 
-        .execute() 
-        .actionGet();
-        
-        
-        *//** 4) DOES NOT WORK **//*
-        *//**
-        GetResponse response = client.prepareGet("twitter", "tweet", "1") 
-        .execute() 
-        .actionGet();
-        **//*
-        
-        *//** 5) Search**//*
-        
-        QueryBuilder qb2 = boolQuery() 
-        .must(termQuery("content", "test1")) 
-        .must(termQuery("content", "test4")) 
-        .mustNot(termQuery("content", "test2")) 
-        .should(termQuery("content", "test3")); 
-
-        QueryBuilder qb3 = filteredQuery( 
-        		termQuery("name.first", "john"),  
-        		rangeFilter("age") 
-        		.from(23) 
-        		.to(54) 
-        		.includeLower(true) 
-        		.includeUpper(false) 
-        );
-        
-        SearchRequestBuilder builder = client.prepareSearch("twitter");
-        
-        //********************************
-        //XContentQueryBuilder qb = QueryBuilders.queryString(queryString);
-        
-          //.defaultOperator(Operator.AND).
-          // field("tweetText").field("userName", 0).
-          // allowLeadingWildcard(false).useDisMax(true);
-        
-        
-        //builder.addSort("createdAt", SortOrder.DESC);
-        //builder.setFrom(page * hitsPerPage).setSize(hitsPerPage);
-        //builder.setQuery(qb);
-        //********************************
-        
-        builder.setQuery(termQuery("message", "Search"));
-
-        org.elasticsearch.action.search.SearchResponse rsp = builder.execute().actionGet();
-        SearchHit[] docs = rsp.getHits().getHits();
-        for (SearchHit sd : docs) {
-          //to get explanation you'll need to enable this when querying:
-          //System.out.println(sd.getExplanation().toString());
-
-          // if we use in mapping: "_source" : {"enabled" : false}
-          // we need to include all necessary fields in query and then to use doc.getFields()
-          // instead of doc.getSource()
-        	System.out.println(sd.sourceAsString());
-          //MyTweet tw = readDoc(sd.getSource(), sd.getId());
-          //tweets.add(tw);
-        }
-
-        
-        
-        System.out.println("Finish");
-        
-        
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-	}*/
-	
-/*	public static void main(String[] args) {
-		
-		SearchServiceImpl ss = new SearchServiceImpl();
-		//ss.search();
-		//ss.searchTerm("twitter", "user", "kimchy");
-		
-		SearchRequest req = new SearchRequest();
-		req.setCollection("books");//need to specify json
-		//req.setSearchString("Tom");
-		
-		try {
-			
-			ss.search(req);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		
-		//ss.searchTerm("books", "author", "Tom");
-		//ss.searchTerm("keywords", "keywords", "book");
-		//ss.searchInlineTerm("keywords", "value", "Bo",3);
-		
-		//ss.index("{\"book\": {\"id\":\"123\",\"author\":\"Tom Jones\",\"description\":\"Musical biography of Tom Jones\"}}", "books", "book", "111");
-		
-		
-	}*/
 
 }
