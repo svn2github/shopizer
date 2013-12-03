@@ -340,11 +340,7 @@ public class ShoppingCategoryController {
 	}
 	
 	private Map<Long,Long> getProductsByCategory(MerchantStore store, Category category, String lineage, List<Category> subCategories) throws Exception {
-		
-		
-		
-		
-		
+
 		if(CollectionUtils.isEmpty(subCategories)) {
 			return null;
 		}
@@ -446,7 +442,6 @@ public class ShoppingCategoryController {
 		List<ReadableCategory> returnCategories = new ArrayList<ReadableCategory>();
 		for(Category category : categories) {
 			ReadableCategory categoryProxy = populator.populate(category, new ReadableCategory(), merchantStore, l);
-					//catalogUtils.buildProxyCategory(category, merchantStore, LocaleUtils.getLocale(l));
 			returnCategories.add(categoryProxy);
 		}
 		
@@ -534,7 +529,6 @@ public class ShoppingCategoryController {
 			for(Product product : products) {
 				//create new proxy product
 				ReadableProduct  p = populator.populate(product, new ReadableProduct(), merchantStore, lang);
-						//catalogUtils.buildProxyProduct(product,merchantStore,LocaleUtils.getLocale(lang));
 				productList.getProducts().add(p);
 	
 			}
@@ -694,14 +688,11 @@ public class ShoppingCategoryController {
 
 				//create new proxy product
 				ReadableProduct  p = populator.populate(product, new ReadableProduct(), merchantStore, lang);
-				//com.salesmanager.web.entity.catalog.Product p = catalogUtils.buildProxyProduct(product,merchantStore,LocaleUtils.getLocale(lang));
 				productList.getProducts().add(p);
 				
 			}
 			
 			productList.setProductCount(products.getTotalCount());
-			
-			
 			return productList;
 			
 		
