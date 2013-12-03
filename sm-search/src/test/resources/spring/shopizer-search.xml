@@ -20,14 +20,22 @@
 		<property name="clusterHost" value="127.0.0.1"/>
 		<property name="clusterPort" value="9300"/>
 	</bean>
+	
+	
+	
+	<bean id="searchDelegate" class="com.shopizer.search.services.impl.SearchDelegateImpl">
+		<property name="searchClient">
+				<ref bean="searchClient" />
+		</property>
+	</bean>
+	
+	<!-- Main service -->
+	<bean id="searchService" class="com.shopizer.search.services.SearchService"></bean>
 
 
 	<!--
-	This file contains flow definitions for indexing and searching
+	Flow definitions for indexing and searching
 	-->
-	
-	<bean id="searchService" class="com.shopizer.search.services.SearchService"/>
-
 
 	
 	<bean id="searchWorkflow" class="com.shopizer.search.services.workflow.SearchWorkflow">
