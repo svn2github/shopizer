@@ -23,7 +23,7 @@ response.setDateHeader ("Expires", -1);
  <script>
  
  var START_COUNT_PRODUCTS = 0;
- var MAX_PRODUCTS = 12;
+ var MAX_PRODUCTS = 16;
  var filter = null;
  var filterValue = null;
 
@@ -42,7 +42,7 @@ response.setDateHeader ("Expires", -1);
 		
 		
 		  if(attribute=='item-order') {
-			  //return;
+			  return;
 		  }
 		
 		  // get the first collection
@@ -103,6 +103,9 @@ response.setDateHeader ("Expires", -1);
 			//check option
 			var orderBy = getOrderBy();
 			orderProducts(orderBy);
+			
+			var productQty = productList.productCount + ' ' + <s:message code="label.search.items.found" text="item(s) found" />
+			$('#products-qty').html(productQty);
 
 	}
 	
@@ -162,7 +165,7 @@ response.setDateHeader ("Expires", -1);
         
         <!-- right column -->
         <div class="span9">
-        
+        	<div id="products-qty"></div>
 			<div class="products-title"><span style="text-align:right;">
 				<ul class="nav nav-list">
             		<li class="widget-header"><s:message code="label.generic.sortby" text="Sort by" />:

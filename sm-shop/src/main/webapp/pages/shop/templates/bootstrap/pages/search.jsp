@@ -71,6 +71,9 @@ response.setDateHeader ("Expires", -1);
 			}
 			
 			$('#productsContainer').hideLoading();
+			
+			var productQty = productList.productCount + ' ' + <s:message code="label.search.items.found" text="item(s) found" />
+			$('#products-qty').html(productQty);
 
 	}
  
@@ -97,7 +100,7 @@ response.setDateHeader ("Expires", -1);
         
         <!-- right column -->
         <div class="span9">
-
+			<div id="products-qty"></div>
           
         	<ul id="productsContainer" class="thumbnails product-list">
 				<!-- search ajax -->
