@@ -19,7 +19,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.constants.Constants;
 import com.salesmanager.core.utils.AbstractDataPopulator;
 import com.salesmanager.web.entity.catalog.ReadableImage;
-import com.salesmanager.web.entity.catalog.manufacturer.ManufacturerEntity;
+import com.salesmanager.web.entity.catalog.manufacturer.ReadableManufacturer;
 import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.utils.ImageFilePathUtils;
 
@@ -65,9 +65,12 @@ public class ReadableProductPopulator extends
 			
 			if(source.getManufacturer()!=null) {
 				ManufacturerDescription manufacturer = source.getManufacturer().getDescriptions().iterator().next(); 
-				ManufacturerEntity manufacturerEntity = new ManufacturerEntity();
-				manufacturerEntity.setName(manufacturer.getName());
+				ReadableManufacturer manufacturerEntity = new ReadableManufacturer();
+				com.salesmanager.web.entity.catalog.manufacturer.ManufacturerDescription d = new com.salesmanager.web.entity.catalog.manufacturer.ManufacturerDescription(); 
+				d.setName(manufacturer.getName());
+				manufacturerEntity.setDescription(d);
 				manufacturerEntity.setId(manufacturer.getId());
+				manufacturerEntity.setOrder(source.getManufacturer().getOrder());
 				target.setManufacturer(manufacturerEntity);
 			}
 			

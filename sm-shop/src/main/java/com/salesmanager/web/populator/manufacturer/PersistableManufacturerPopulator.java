@@ -38,6 +38,8 @@ public class PersistableManufacturerPopulator extends AbstractDataPopulator<Pers
 		
 		try {
 			
+			target.setMerchantStore(store);
+			
 
 			if(!CollectionUtils.isEmpty(source.getDescriptions())) {
 				Set<com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription> descriptions = new HashSet<com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription>();
