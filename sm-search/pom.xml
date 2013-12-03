@@ -44,11 +44,13 @@
 				 </exclusion>
 			</exclusions>
 		</dependency>
+		<!--
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 			<version>${org.springframework-version}</version>
 		</dependency>
+		-->
 		<!-- AspectJ -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
@@ -114,12 +116,6 @@
 			<version>1.8.1</version>
 		</dependency>
 
-		<!-- Rome Atom+RSS -->
-		<dependency>
-			<groupId>rome</groupId>
-			<artifactId>rome</artifactId>
-			<version>1.0</version>
-		</dependency>
 		
 		<!-- JSR 303 with Hibernate Validator -->
 		<dependency>
