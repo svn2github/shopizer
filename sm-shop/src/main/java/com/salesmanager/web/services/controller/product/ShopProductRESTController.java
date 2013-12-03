@@ -40,6 +40,10 @@ import com.salesmanager.web.entity.catalog.manufacturer.PersistableManufacturer;
 import com.salesmanager.web.entity.catalog.product.PersistableProduct;
 import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.entity.catalog.product.ReadableProductList;
+import com.salesmanager.web.entity.catalog.product.attribute.PersistableProductOption;
+import com.salesmanager.web.entity.catalog.product.attribute.PersistableProductOptionValue;
+import com.salesmanager.web.populator.catalog.PersistableProductOptionPopulator;
+import com.salesmanager.web.populator.catalog.PersistableProductOptionValuePopulator;
 import com.salesmanager.web.populator.catalog.PersistableProductPopulator;
 import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.web.populator.manufacturer.PersistableManufacturerPopulator;
@@ -182,6 +186,8 @@ public class ShopProductRESTController {
 		
 			manufacturerService.save(manuf);
 			
+			manufacturer.setId(manuf.getId());
+			
 			return manufacturer;
 			
 		} catch (Exception e) {
@@ -196,6 +202,105 @@ public class ShopProductRESTController {
 		
 	}
 	
+	
+	@RequestMapping( value="/shop/services/private/optionValue/{store}/create", method=RequestMethod.POST)
+	@ResponseStatus(HttpStatus.CREATED)
+	@ResponseBody
+	public PersistableProductOptionValue createProductOptionValue(@PathVariable final String store, @Valid @RequestBody PersistableProductOptionValue optionValue, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		
+		try {
+			
+			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+			if(merchantStore!=null) {
+				if(!merchantStore.getCode().equals(store)) {
+					merchantStore = null;
+				}
+			}
+			
+			if(merchantStore== null) {
+				merchantStore = merchantStoreService.getByCode(store);
+			}
+			
+			if(merchantStore==null) {
+				LOGGER.error("Merchant store is null for code " + store);
+				response.sendError(503, "Merchant store is null for code " + store);
+				return null;
+			}
+
+			PersistableProductOptionValuePopulator populator = new PersistableProductOptionValuePopulator();
+			populator.setLanguageService(languageService);
+			
+			com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue optValue = new com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue();
+			populator.populate(optionValue, optValue, merchantStore, merchantStore.getDefaultLanguage());
+		
+			productOptionValueService.save(optValue);
+			
+			optionValue.setId(optValue.getId());
+			
+			return optionValue;
+			
+		} catch (Exception e) {
+			LOGGER.error("Error while saving product option value",e);
+			try {
+				response.sendError(503, "Error while saving product option value" + e.getMessage());
+			} catch (Exception ignore) {
+			}
+			
+			return null;
+		}
+		
+	}
+	
+	
+	@RequestMapping( value="/shop/services/private/option/{store}/create", method=RequestMethod.POST)
+	@ResponseStatus(HttpStatus.CREATED)
+	@ResponseBody
+	public PersistableProductOption createProductOption(@PathVariable final String store, @Valid @RequestBody PersistableProductOption option, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		
+		try {
+			
+			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+			if(merchantStore!=null) {
+				if(!merchantStore.getCode().equals(store)) {
+					merchantStore = null;
+				}
+			}
+			
+			if(merchantStore== null) {
+				merchantStore = merchantStoreService.getByCode(store);
+			}
+			
+			if(merchantStore==null) {
+				LOGGER.error("Merchant store is null for code " + store);
+				response.sendError(503, "Merchant store is null for code " + store);
+				return null;
+			}
+
+			PersistableProductOptionPopulator populator = new PersistableProductOptionPopulator();
+			populator.setLanguageService(languageService);
+			
+			com.salesmanager.core.business.catalog.product.model.attribute.ProductOption opt = new com.salesmanager.core.business.catalog.product.model.attribute.ProductOption();
+			populator.populate(option, opt, merchantStore, merchantStore.getDefaultLanguage());
+		
+			productOptionService.save(opt);
+			
+			option.setId(opt.getId());
+			
+			return option;
+			
+		} catch (Exception e) {
+			LOGGER.error("Error while saving product option",e);
+			try {
+				response.sendError(503, "Error while saving product option" + e.getMessage());
+			} catch (Exception ignore) {
+			}
+			
+			return null;
+		}
+		
+	}
 	
 	
 	/**

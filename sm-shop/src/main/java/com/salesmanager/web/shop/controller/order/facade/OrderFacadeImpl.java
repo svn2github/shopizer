@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.model.OrderSummary;
 import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
+import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
@@ -30,6 +32,7 @@ import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
+import com.salesmanager.core.utils.CreditCardUtils;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.order.OrderEntity;
 import com.salesmanager.web.entity.order.OrderTotal;
@@ -70,6 +73,10 @@ public class OrderFacadeImpl implements OrderFacade {
 		//assert not null shopping cart items
 		
 		ShopOrder order = new ShopOrder();
+		
+		OrderStatus orderStatus = OrderStatus.ORDERED;
+		order.setOrderStatus(orderStatus);
+		
 		if(customer==null) {
 
 				customer = new Customer();
@@ -230,15 +237,32 @@ public class OrderFacadeImpl implements OrderFacade {
 		//order misc objects
 		modelOrder.setCurrency(store.getCurrency());
 		modelOrder.setMerchant(store);
+		modelOrder.setStatus(order.getOrderStatus());
 		
 		
 		//customer object
 		orderCustomer(customer, modelOrder, language);
-
-		
-		//populate payment information
 		
 		//populate shipping information
+		if(!StringUtils.isBlank(order.getShippingModule())) {
+			modelOrder.setShippingModuleCode(order.getShippingModule());
+		}
+		
+		//populate payment information
+		if(order.getCreditCard()!=null) {
+			//hash credit card number
+			String maskedNumber = CreditCardUtils.maskCardNumber(order.getCreditCard().getCcNumber());
+			order.getCreditCard().setCcNumber(maskedNumber);
+			modelOrder.setCreditCard(order.getCreditCard());
+		}
+		
+		if(!StringUtils.isBlank(order.getPaymentModule())) {
+			modelOrder.setPaymentModuleCode(order.getPaymentModule());
+		}
+
+		
+		orderService.create(modelOrder);
+		
 		
 
 	}
