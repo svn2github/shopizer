@@ -91,33 +91,7 @@ public class CategoryManagementAPITest {
 		}
 	}*/
 	
-/*	public void putCategory() throws Exception {
-		restTemplate = new RestTemplate();
-	
-		String jsonString = ("{"+
-				   " \"sortOrder\": \"0\","+
-				   " \"depth\": \"2\","+
-				   " \"code\": \"movie"+Math.random()+"\","+
-				   " \"lineage\": \"/movie\","+
-				   " \"categoryStatus\": \"true\","+
-				   " \"visible\": \"true\","+
-				   " \"categories\": [{"+
-				   "     \"code\":\"music\""+
-				   " },{"+
-				   "     \"code\":\"music123\""+
-				   " }],"+
-				   " \"descriptions\": [{"+
-				   "     \"metatagTitle\": \"Hollywood Movie\","+
-				   "     \"name\":\"Hollywood\""+
-				   " }],"+
-				   " \"categoryImage\": \"image.jpg\""+
-				"}");
-		
-		HttpEntity<String> entity = new HttpEntity<String>(jsonString, getHeader());
-		
-		restTemplate.put("http://localhost:8080/sm-shop/shop/services/private/category/DEFAULT"+testCategoryID, entity);
-		System.out.println("Category "+testCategoryID+" Updated.");
-	}*/
+
 	
 	public void postCategory() throws Exception {
 		restTemplate = new RestTemplate();
@@ -197,7 +171,7 @@ public class CategoryManagementAPITest {
 		}
 	}
 	
-	@Test
+/*	@Test
 	@Ignore
 	public void putProduct() throws Exception {
 		restTemplate = new RestTemplate();
@@ -225,6 +199,6 @@ public class CategoryManagementAPITest {
 		
 		restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/rest/products/DEFAULT/en/"+testCategoryID+"/"+testProductID, HttpMethod.DELETE, httpEntity, Product.class);
 		System.out.println("Product "+testProductID+" Deleted.");
-	}
+	}*/
 	
 }

@@ -17,11 +17,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.client.RestTemplate;
 
-import com.salesmanager.web.entity.catalog.category.CategoryDescription;
-import com.salesmanager.web.entity.catalog.category.PersistableCategory;
 import com.salesmanager.web.entity.catalog.manufacturer.ManufacturerDescription;
 import com.salesmanager.web.entity.catalog.manufacturer.PersistableManufacturer;
 import com.salesmanager.web.entity.catalog.product.ReadableProduct;
+import com.salesmanager.web.entity.catalog.product.attribute.PersistableProductOption;
+import com.salesmanager.web.entity.catalog.product.attribute.PersistableProductOptionValue;
+import com.salesmanager.web.entity.catalog.product.attribute.ProductOptionDescription;
+import com.salesmanager.web.entity.catalog.product.attribute.ProductOptionValueDescription;
 
 public class ProductManagementAPITest {
 	
@@ -51,7 +53,13 @@ public class ProductManagementAPITest {
 		return headers;
 	}
 	
+	/**
+	 * Creates a Manufacturer reference object that can be used when creating
+	 * a product
+	 * @throws Exception
+	 */
 	@Test
+	@Ignore
 	public void createManufacturer() throws Exception {
 		
 		ManufacturerDescription description = new ManufacturerDescription();
@@ -100,6 +108,81 @@ public class ProductManagementAPITest {
 		System.out.println("New Manufacturer ID : " + manuf.getId());
 		
 		
+	}
+	
+	/**
+	 * Creates a product option value that can be used to create a product attribute
+	 * when creating a new product
+	 * @throws Exception
+	 */
+	@Test
+	@Ignore
+	public void createOptionValue() throws Exception {
+		
+		ProductOptionValueDescription description = new ProductOptionValueDescription();
+		description.setLanguage("en");
+		description.setName("Red");
+		
+		List<ProductOptionValueDescription> descriptions = new ArrayList<ProductOptionValueDescription>();
+		descriptions.add(description);
+		
+		PersistableProductOptionValue optionValue = new PersistableProductOptionValue();
+		optionValue.setOrder(1);
+		optionValue.setCode("color-red");
+		optionValue.setDescriptions(descriptions);
+		
+
+		ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String json = writer.writeValueAsString(optionValue);
+		
+		System.out.println(json);
+
+		restTemplate = new RestTemplate();
+
+		HttpEntity<String> entity = new HttpEntity<String>(json, getHeader());
+
+		ResponseEntity response = restTemplate.postForEntity("http://localhost:8080/sm-shop/shop/services/private/optionValue/DEFAULT/create", entity, PersistableProductOptionValue.class);
+
+		PersistableProductOptionValue opt = (PersistableProductOptionValue) response.getBody();
+		System.out.println("New optionValue ID : " + opt.getId());
+
+	}
+	
+	/**
+	 * Creates a new ProductOption
+	 * @throws Exception
+	 */
+	@Test
+	@Ignore
+	public void createOption() throws Exception {
+		
+		ProductOptionDescription description = new ProductOptionDescription();
+		description.setLanguage("en");
+		description.setName("Color");
+		
+		List<ProductOptionDescription> descriptions = new ArrayList<ProductOptionDescription>();
+		descriptions.add(description);
+		
+		PersistableProductOption option = new PersistableProductOption();
+		option.setOrder(1);
+		option.setCode("color");
+		option.setDescriptions(descriptions);
+		
+
+		ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String json = writer.writeValueAsString(option);
+		
+		System.out.println(json);
+
+		restTemplate = new RestTemplate();
+
+		HttpEntity<String> entity = new HttpEntity<String>(json, getHeader());
+
+		ResponseEntity response = restTemplate.postForEntity("http://localhost:8080/sm-shop/shop/services/private/option/DEFAULT/create", entity, PersistableProductOption.class);
+
+		PersistableProductOption opt = (PersistableProductOption) response.getBody();
+		System.out.println("New option ID : " + opt.getId());
+
 	}
 		
 	
