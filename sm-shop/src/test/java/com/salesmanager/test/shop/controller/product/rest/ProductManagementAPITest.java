@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.client.RestTemplate;
 
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionType;
 import com.salesmanager.web.entity.catalog.manufacturer.ManufacturerDescription;
 import com.salesmanager.web.entity.catalog.manufacturer.PersistableManufacturer;
 import com.salesmanager.web.entity.catalog.product.ReadableProduct;
@@ -59,7 +60,7 @@ public class ProductManagementAPITest {
 	 * @throws Exception
 	 */
 	@Test
-	@Ignore
+	//@Ignore
 	public void createManufacturer() throws Exception {
 		
 		ManufacturerDescription description = new ManufacturerDescription();
@@ -116,7 +117,7 @@ public class ProductManagementAPITest {
 	 * @throws Exception
 	 */
 	@Test
-	@Ignore
+	//@Ignore
 	public void createOptionValue() throws Exception {
 		
 		ProductOptionValueDescription description = new ProductOptionValueDescription();
@@ -136,6 +137,25 @@ public class ProductManagementAPITest {
 		String json = writer.writeValueAsString(optionValue);
 		
 		System.out.println(json);
+		
+		/**
+		 * {
+			  "descriptions" : [ {
+			    "name" : "Red",
+			    "description" : null,
+			    "friendlyUrl" : null,
+			    "keyWords" : null,
+			    "highlights" : null,
+			    "metaDescription" : null,
+			    "title" : null,
+			    "language" : "en",
+			    "id" : 0
+			  } ],
+			  "order" : 1,
+			  "code" : "color-red",
+			  "id" : 0
+			}
+		 */
 
 		restTemplate = new RestTemplate();
 
@@ -153,7 +173,7 @@ public class ProductManagementAPITest {
 	 * @throws Exception
 	 */
 	@Test
-	@Ignore
+    //@Ignore
 	public void createOption() throws Exception {
 		
 		ProductOptionDescription description = new ProductOptionDescription();
@@ -166,6 +186,7 @@ public class ProductManagementAPITest {
 		PersistableProductOption option = new PersistableProductOption();
 		option.setOrder(1);
 		option.setCode("color");
+		option.setType(ProductOptionType.Select.name());
 		option.setDescriptions(descriptions);
 		
 
@@ -173,6 +194,26 @@ public class ProductManagementAPITest {
 		String json = writer.writeValueAsString(option);
 		
 		System.out.println(json);
+		
+		/**
+		 * {
+			  "descriptions" : [ {
+			    "name" : "Color",
+			    "description" : null,
+			    "friendlyUrl" : null,
+			    "keyWords" : null,
+			    "highlights" : null,
+			    "metaDescription" : null,
+			    "title" : null,
+			    "language" : "en",
+			    "id" : 0
+			  } ],
+			  "type" : SELECT,
+			  "order" : 1,
+			  "code" : "color",
+			  "id" : 0
+			}
+		 */
 
 		restTemplate = new RestTemplate();
 
