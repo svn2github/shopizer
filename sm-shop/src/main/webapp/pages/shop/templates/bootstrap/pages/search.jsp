@@ -15,8 +15,6 @@ response.setDateHeader ("Expires", -1);
 <%@page pageEncoding="UTF-8"%>
  
 
- <script src="<c:url value="/resources/js/jquery.isotope.min.js" />"></script>
-
  
  <script>
  
@@ -25,19 +23,7 @@ response.setDateHeader ("Expires", -1);
  
 
  $(function(){
-	 
-	 //var $container = $('#productsContainer');
-
-	 //$container.isotope({
-	 //	 itemSelector : '.item'
-	 // });
-	  
-	 //$('#sort-by a').click(function(){
-	 //	 // get href attribute, minus the '#'
-	 //	 $('#container').isotope({ sortBy : 'name' });
-		// return false;
-	 //});
-	 
+	 	 
 	 search();
 
  });
