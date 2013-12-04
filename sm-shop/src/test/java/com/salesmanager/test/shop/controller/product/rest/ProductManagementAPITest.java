@@ -60,7 +60,7 @@ public class ProductManagementAPITest {
 	 * @throws Exception
 	 */
 	@Test
-	//@Ignore
+	@Ignore
 	public void createManufacturer() throws Exception {
 		
 		ManufacturerDescription description = new ManufacturerDescription();
@@ -117,7 +117,7 @@ public class ProductManagementAPITest {
 	 * @throws Exception
 	 */
 	@Test
-	//@Ignore
+	@Ignore
 	public void createOptionValue() throws Exception {
 		
 		ProductOptionValueDescription description = new ProductOptionValueDescription();
@@ -173,7 +173,7 @@ public class ProductManagementAPITest {
 	 * @throws Exception
 	 */
 	@Test
-    //@Ignore
+    @Ignore
 	public void createOption() throws Exception {
 		
 		ProductOptionDescription description = new ProductOptionDescription();
