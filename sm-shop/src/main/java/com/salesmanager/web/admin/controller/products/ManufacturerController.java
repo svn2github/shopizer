@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValueDescription;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
@@ -113,15 +114,37 @@ public class ManufacturerController {
 				return ControllerConstants.Tiles.Product.manufacturerList;
 			}
 			
-			manufacturer.setManufacturer( dbManufacturer );
 			Set<ManufacturerDescription> manufacturerDescriptions = dbManufacturer.getDescriptions();
+
 			
-			for(ManufacturerDescription desc : manufacturerDescriptions) {				
-					descriptions.add(desc);
+			for(Language l : languages) {
+				
+				ManufacturerDescription manufDescription = null;
+				if(manufacturerDescriptions!=null) {
+					
+					for(ManufacturerDescription desc : manufacturerDescriptions) {				
+						String code = desc.getLanguage().getCode();
+						if(code.equals(l.getCode())) {
+							manufDescription = desc;
+						}
+
+					}
+					
+				}
+				
+				if(manufDescription==null) {
+					manufDescription = new ManufacturerDescription();
+					manufDescription.setLanguage(l);
+				}
+				
+				manufacturer.getDescriptions().add(manufDescription);
+				
 			}
 			
+			manufacturer.setManufacturer( dbManufacturer );
+		
+			
 			manufacturer.setOrder( dbManufacturer.getOrder() );
-			manufacturer.setDescriptions(descriptions );
 			
 		} else {	// Create mode
 

@@ -234,7 +234,7 @@ public class ShopProductRESTController {
 			com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue optValue = new com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue();
 			populator.populate(optionValue, optValue, merchantStore, merchantStore.getDefaultLanguage());
 		
-			productOptionValueService.save(optValue);
+			productOptionValueService.saveOrUpdate(optValue);
 			
 			optionValue.setId(optValue.getId());
 			
