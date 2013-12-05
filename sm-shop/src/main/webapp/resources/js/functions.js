@@ -3,6 +3,37 @@
 
 	$(function(){
 		
+		initBindings();
+		initMiniCart();
+
+	});
+	
+	function initMiniCart() {
+		
+		
+		var cart = $.cookie('cart'); //should be [storecode_cartid]
+		var code = new Array();
+		
+		if(cart!=null) {
+			code = cart.split('_');
+			if(code[0]==getMerchantStore()) {
+				shoppingCart = getShoppingCart(code[1]);
+				if(shoppingCart==null) {
+					$.cookie('cart',null, { expires: 1 ,path: '/'});
+				}
+			}
+		}
+		
+	}
+	
+	function initBindings() {
+		
+		/** add to cart **/
+		$(".addToCart").click(function(){
+			addToCart($(this).attr("productId"));
+	    });
+		
+		/** numeric formats **/
 		if($('#productPriceAmount')) {
 			$('#productPriceAmount').blur(function() {
 				$('#help-price').html(null);
@@ -37,24 +68,6 @@
 				}
 			});
 		}
-		
-		
-
-		
-		initBindings();
-		
-		
-		
-		
-
-	});
-	
-	function initBindings() {
-		$(".addToCart").click(function(){
-			
-			addToCart($(this).attr("productId"));
-	    });
-		
 	}
 	
 	/**
@@ -175,7 +188,6 @@
 			 },
 			 success: function(cart) {
 				
-			     //alert("Success: " + cart);
 			     cartDetails = merchantStore + '_' + cart.code;
 			     $.cookie('cart',cartDetails, { expires: 360 ,path: '/'});
 			     if(cart.message!=null) { 
@@ -188,6 +200,7 @@
 			    	 }
 			    	 $("#cartinfo").html('<span id="cartqty">(' + cart.quantity + ' ' + labelItem + ')</span><span id="cartprice">' + cart.total + '</span>');
 			     }
+			     //TODO Hogan template
 				 for (var i = 0; i < cart.shoppingCartItems.length; i++) {
 						var shoppingCartItem = cart.shoppingCartItems[i];
 						var item = '<tr id="' + shoppingCartItem.productId + '" class="cart-product">';
@@ -266,10 +279,25 @@ function removeItemFromMinicart(lineItemId){
 	});
 }
 
+function getShoppingCart(code){
+	$.ajax({  
+		 type: 'GET',  
+		 url: getContextPath() + '/shop/displayMiniCartByCode.html?shoppingCartCode='+code,  
+		 error: function(e) { 
+			// do nothing
+			console('error while getting cart');
+			 
+		 },
+		 success: function(cart) {
+			 if(cart!=null) {
+				return cart; 
+			 }
+		} 
+	});
+}
+
 function prepareMiniCartLineItemsData(cart) {
 
-
-	
 	var cartInfo = '<span id="cartqty">(' + cart.quantity + ' ' + getItemLabel(cart.quantity) + ')&nbsp;<span id="cartprice">' + cart.total + '</span></span>';
 	
 	$("#cartinfo").html(cartInfo);
