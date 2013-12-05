@@ -20,6 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Index;
 
@@ -74,6 +75,9 @@ public class ShoppingCart extends SalesManagerEntity<Long, ShoppingCart> impleme
 	@Index(name="SHP_CART_CUSTOMER_IDX")
 	@Column(name = "CUSTOMER_ID", nullable = true)
 	private Long customerId;
+	
+	@Transient
+	private boolean obsolete = false;//when all items are obsolete
     
 	@Override
 	public AuditSection getAuditSection() {
@@ -96,7 +100,15 @@ public class ShoppingCart extends SalesManagerEntity<Long, ShoppingCart> impleme
 		this.id = id;
 		
 	}
+	
 
+	public boolean isObsolete() {
+		return obsolete;
+	}
+
+	public void setObsolete(boolean obsolete) {
+		this.obsolete = obsolete;
+	}
 
 	public Set<ShoppingCartItem> getLineItems() {
 		return lineItems;

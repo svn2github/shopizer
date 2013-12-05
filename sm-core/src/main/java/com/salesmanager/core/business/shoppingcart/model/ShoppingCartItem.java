@@ -75,6 +75,11 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 
 	@Transient
 	private Product product;
+	
+	@Transient
+	private boolean obsolete = false;
+
+
 
 
 	public ShoppingCartItem(ShoppingCart shoppingCart, Product product) {
@@ -200,5 +205,13 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 
 	public FinalPrice getFinalPrice() {
 		return finalPrice;
+	}
+	
+	public boolean isObsolete() {
+		return obsolete;
+	}
+
+	public void setObsolete(boolean obsolete) {
+		this.obsolete = obsolete;
 	}
 }

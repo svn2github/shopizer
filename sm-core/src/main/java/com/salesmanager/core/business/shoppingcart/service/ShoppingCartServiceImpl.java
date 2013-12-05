@@ -59,12 +59,20 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	/**
 	 * Retrieve a {@link ShoppingCart} cart for a given customer
 	 */
+	@Transactional
 	public ShoppingCart getShoppingCart(Customer customer) throws ServiceException {
 
 		try {
 
 			ShoppingCart shoppingCart = shoppingCartDao.getByCustomer(customer);
-			return populateShoppingCart(shoppingCart);
+			populateShoppingCart(shoppingCart);
+			if(shoppingCart.isObsolete()) {
+				delete(shoppingCart);
+				return null;
+			} else {
+				return shoppingCart;
+			}
+
 		
 		} catch (Exception e) {
 			throw new ServiceException(e);
@@ -88,11 +96,19 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	 * prices and items based on the actual inventory.
 	 */
 	@Override
+	@Transactional
 	public ShoppingCart getById(Long id, MerchantStore store) throws ServiceException {
 
 		try {
 			ShoppingCart shoppingCart = shoppingCartDao.getById(id, store);
-			return populateShoppingCart(shoppingCart);
+			populateShoppingCart(shoppingCart);
+			if(shoppingCart.isObsolete()) {
+				delete(shoppingCart);
+				return null;
+			} else {
+				return shoppingCart;
+			}
+
 		
 		} catch (Exception e) {
 			throw new ServiceException(e);
@@ -102,17 +118,34 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	}
 	
 	@Override
+	@Transactional
 	public ShoppingCart getByCode(String code, MerchantStore store) throws ServiceException {
 
 		try {
 			ShoppingCart shoppingCart = shoppingCartDao.getByCode(code, store);
-			return populateShoppingCart(shoppingCart);
+			populateShoppingCart(shoppingCart);
+			
+			if(shoppingCart.isObsolete()) {
+				delete(shoppingCart);
+				return null;
+			} else {
+				return shoppingCart;
+			}
+
 		
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			throw new ServiceException(e);
+		} catch (Exception ee) {
+			throw new ServiceException(ee);
 		}
 		
 		
+	}
+	
+	@Override
+	public void delete(ShoppingCart shoppingCart) throws ServiceException {
+		shoppingCart = this.getById(shoppingCart.getId());
+		super.delete(shoppingCart);
 	}
 	
 	@Override
@@ -121,48 +154,64 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		try {
 			ShoppingCart shoppingCart = shoppingCartDao.getByCustomer(customer);
 			return populateShoppingCart(shoppingCart);
+
 		
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}
 	}
 	
-
-	
-	@Transactional
+	@Transactional(noRollbackFor={org.springframework.dao.EmptyResultDataAccessException.class})
 	private ShoppingCart populateShoppingCart(ShoppingCart shoppingCart) throws Exception {
 		
 		try {
 
+			boolean cartIsObsolete = true;
 			if(shoppingCart!=null) {
 				
 				Set<ShoppingCartItem> items = shoppingCart.getLineItems();
 				if(items==null || items.size()==0) {
-					
-					shoppingCartDao.delete(shoppingCart);
-					return null;
+					shoppingCart.setObsolete(true);
+					return shoppingCart;
 					
 				}
 				
-				Set<ShoppingCartItem> shoppingCartItems = new HashSet<ShoppingCartItem>();
+				//Set<ShoppingCartItem> shoppingCartItems = new HashSet<ShoppingCartItem>();
 				for(ShoppingCartItem item : items) {
+					LOGGER.debug("Populate item " + item.getId());
 					this.populateItem(item);
-					if(item.getProduct()==null) {//product has been removed
-						LOGGER.debug("Removing shopping cart item for product id " + item.getProductId());
-						shoppingCartItemDao.delete(item);
+					LOGGER.debug("Obsolete item ? " + item.isObsolete());
+					if(item.isObsolete()) {
 					} else {
-						shoppingCartItems.add(item);
+						cartIsObsolete = false;
 					}
+					//if(item.getProduct()==null) {//product has been removed
+						//LOGGER.debug("Removing shopping cart item for product id " + item.getProductId());
+						//shoppingCartItemDao.delete(item);
+					//} else {
+					//	shoppingCartItems.add(item);
+					//}
 				}
 				
-				shoppingCart.setLineItems(shoppingCartItems);
+				//shoppingCart.setLineItems(shoppingCartItems);
+				boolean refreshCart = false;
+                Set<ShoppingCartItem> refreshedItems = new HashSet<ShoppingCartItem>();
+                for(ShoppingCartItem item : items) {
+                	if(!item.isObsolete()) {
+                		refreshedItems.add(item);
+                	} else {
+                		refreshCart = true;
+                	}
+                }
+                
+                if(refreshCart) {
+                	shoppingCart.setLineItems(refreshedItems);
+                	this.update(shoppingCart);
+                }
 				
-				if(shoppingCart.getLineItems().size()==0) {
-					LOGGER.debug("Deleting cart with id " + shoppingCart.getId());
-					shoppingCartDao.delete(shoppingCart);
-					return null;
+				if(cartIsObsolete) {
+					shoppingCart.setObsolete(true);
 				}
-				
 				return shoppingCart;
 			}
 		
@@ -170,7 +219,7 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 			throw new ServiceException(e);
 		}
 		
-		return null;
+		return shoppingCart;
 		
 	}
 	
@@ -207,17 +256,28 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	}
 	
 
-	
-	@Transactional
 	private void populateItem(ShoppingCartItem item) throws Exception {
 		
-		Long productId = item.getProductId();
+		Product product = null;
+		//try {
+			
 
-		Product product = productService.getById(productId);
+			Long productId = item.getProductId();
+			product = productService.getById(productId);
+			
+			if(product==null) {
+				item.setObsolete(true);
+				return;
+			}
 		
-		if(product==null) {
-			return;
-		}
+		//} catch(Exception e) {
+			//if(e instanceof org.springframework.dao.EmptyResultDataAccessException) {
+
+			//}
+		//}
+
+		
+
 		
 		item.setProduct(product);
 		
@@ -256,6 +316,7 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 
 		BigDecimal subTotal = item.getItemPrice().multiply(new BigDecimal(item.getQuantity().intValue()));
 		item.setSubTotal(subTotal);
+		
 		
 	}
 	
