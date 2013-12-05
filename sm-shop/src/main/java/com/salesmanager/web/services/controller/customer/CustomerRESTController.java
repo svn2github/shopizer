@@ -60,7 +60,7 @@ public class CustomerRESTController {
 	 */
 	@RequestMapping( value="/{store}/{id}", method=RequestMethod.GET)
 	@ResponseBody
-	public com.salesmanager.web.entity.customer.Customer getCustomer(@PathVariable final String store, @PathVariable Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public com.salesmanager.web.entity.customer.Customer getCustomer(@PathVariable final String store, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		if(merchantStore!=null) {
 			if(!merchantStore.getCode().equals(store)) {
@@ -98,7 +98,7 @@ public class CustomerRESTController {
 	 */
 	@RequestMapping( value="/{store}", method=RequestMethod.GET)
 	@ResponseBody
-	public List<com.salesmanager.web.entity.customer.Customer> getCustomers(@PathVariable final String store, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public List<com.salesmanager.web.entity.customer.Customer> getCustomers(@PathVariable final String store, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		if(merchantStore!=null) {
 			if(!merchantStore.getCode().equals(store)) {
@@ -133,7 +133,7 @@ public class CustomerRESTController {
 	 */
 	@RequestMapping( value="/{store}/{id}", method=RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void updateCustomer(@PathVariable final String store, @PathVariable Long id, @Valid @RequestBody Customer customer, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public void updateCustomer(@PathVariable final String store, @PathVariable Long id, @Valid @RequestBody Customer customer, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		if(merchantStore!=null) {
 			if(!merchantStore.getCode().equals(store)) {
@@ -234,7 +234,7 @@ public class CustomerRESTController {
 	@RequestMapping( value="/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
-	public com.salesmanager.web.entity.customer.Customer createCustomer(@PathVariable final String store, @Valid @RequestBody Customer customer, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public com.salesmanager.web.entity.customer.Customer createCustomer(@PathVariable final String store, @Valid @RequestBody Customer customer, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		if(merchantStore!=null) {
 			if(!merchantStore.getCode().equals(store)) {

@@ -95,29 +95,19 @@ public class ShoppingCartFacadeImpl implements ShoppingCartFacade {
         }
 
         LOG.info("Cart model found.");
-
-        ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
-        shoppingCartDataPopulator.setShoppingCartCalculationService( shoppingCartCalculationService );
-        shoppingCartDataPopulator.setPricingService(pricingService);
-
-        Language language = (Language) getKeyValue(Constants.LANGUAGE);
-        MerchantStore merchantStore = (MerchantStore) getKeyValue(Constants.MERCHANT_STORE);
-        return shoppingCartDataPopulator
-                        .populate(cart, merchantStore, language);
+        
+        ShoppingCartData cartData = this.populateShoppingCart(cart);
+        return cartData;
 
     }
 
     @Override
     public ShoppingCartData getShoppingCartData(final ShoppingCart shoppingCartModel)
                     throws Exception {
-
-        ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
-        shoppingCartDataPopulator.setShoppingCartCalculationService( shoppingCartCalculationService );
-        shoppingCartDataPopulator.setPricingService(pricingService);
-        Language language = (Language) getKeyValue(Constants.LANGUAGE);
-        MerchantStore merchantStore = (MerchantStore) getKeyValue(Constants.MERCHANT_STORE);
-        return shoppingCartDataPopulator.populate(shoppingCartModel,
-                                                  merchantStore, language);
+    	
+    	ShoppingCartData cartData = this.populateShoppingCart(shoppingCartModel);
+    	return cartData;
+        
     }
 
     @Override
@@ -126,7 +116,6 @@ public class ShoppingCartFacadeImpl implements ShoppingCartFacade {
                                                    final MerchantStore store) throws Exception {
 
         Language language = (Language) getKeyValue(Constants.LANGUAGE);
-        Customer customer = (Customer) getKeyValue(Constants.CUSTOMER);
         com.salesmanager.core.business.shoppingcart.model.ShoppingCart cartModel = null;
         if (!StringUtils.isBlank(item.getCode())) {
             // get it from the db
@@ -150,12 +139,9 @@ public class ShoppingCartFacadeImpl implements ShoppingCartFacade {
         cartModel.getLineItems().add(shoppingCartItem);
         shoppingCartService.saveOrUpdate(cartModel);
         shoppingCartCalculationService.calculate( cartModel, store, language );
-
-        ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
-        shoppingCartDataPopulator.setShoppingCartCalculationService( shoppingCartCalculationService );
-        shoppingCartDataPopulator.setPricingService(pricingService);
-
-        return shoppingCartDataPopulator.populate(cartModel, store, language);
+        
+        ShoppingCartData cartData = this.populateShoppingCart(cartModel);
+        return cartData;
     }
 
     private com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem createCartItem(
@@ -226,14 +212,8 @@ public class ShoppingCartFacadeImpl implements ShoppingCartFacade {
                     cartModel.setLineItems(shoppingCartItemSet);
                     shoppingCartService.saveOrUpdate(cartModel);
 
-                    ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
-                    shoppingCartDataPopulator.setShoppingCartCalculationService( shoppingCartCalculationService );
-                    shoppingCartDataPopulator.setPricingService(pricingService);
-
-                    MerchantStore store = (MerchantStore) getKeyValue(Constants.MERCHANT_STORE);
-                    Language language = (Language) getKeyValue(Constants.LANGUAGE);
-                    return shoppingCartDataPopulator.populate(cartModel, store,
-                                                              language);
+                    ShoppingCartData cartData = this.populateShoppingCart(cartModel);
+                    return cartData;
                 }
             }
         }
@@ -269,13 +249,8 @@ public class ShoppingCartFacadeImpl implements ShoppingCartFacade {
                 shoppingCartService.saveOrUpdate(cartModel);
 
                 LOG.info("Cart entry updated with desired quantity");
-                ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
-                shoppingCartDataPopulator.setShoppingCartCalculationService( shoppingCartCalculationService );
-                shoppingCartDataPopulator.setPricingService(pricingService);
-                MerchantStore store = (MerchantStore) getKeyValue(Constants.MERCHANT_STORE);
-                Language language = (Language) getKeyValue(Constants.LANGUAGE);
-                return shoppingCartDataPopulator.populate(cartModel, store,
-                                                          language);
+                ShoppingCartData cartData = this.populateShoppingCart(cartModel);
+                return cartData;
 
             }
         }
@@ -304,12 +279,26 @@ public class ShoppingCartFacadeImpl implements ShoppingCartFacade {
         shoppingCartService.create(cartModel);
         return cartModel;
     }
+    
+    private ShoppingCartData populateShoppingCart(ShoppingCart cartModel) throws Exception {
+    	
+        ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
+        shoppingCartDataPopulator.setShoppingCartCalculationService( shoppingCartCalculationService );
+        shoppingCartDataPopulator.setPricingService(pricingService);
+        MerchantStore store = (MerchantStore) getKeyValue(Constants.MERCHANT_STORE);
+        Language language = (Language) getKeyValue(Constants.LANGUAGE);
+        return shoppingCartDataPopulator.populate(cartModel, store,
+                                                  language);
+    	
+    }
 
     private ShoppingCart getCartModel(final String cartId) {
         if (StringUtils.isNotBlank(cartId)) {
             MerchantStore store = (MerchantStore) getKeyValue(Constants.MERCHANT_STORE);
             try {
-                return shoppingCartService.getByCode(cartId, store);
+                ShoppingCart cart= shoppingCartService.getByCode(cartId, store);
+                return cart;
+    
             } catch (ServiceException e) {
                 LOG.error("unable to find any cart asscoiated with this Id: "
                                 + cartId);
@@ -341,5 +330,16 @@ public class ShoppingCartFacadeImpl implements ShoppingCartFacade {
         LOG.info("Unable to find any entry for given Id: " + entryId);
         return null;
     }
+
+	@Override
+	public ShoppingCartData getShoppingCartData(String shoppingCartCode) throws Exception {
+		MerchantStore store = (MerchantStore) getKeyValue(Constants.MERCHANT_STORE);
+		Language language = (Language) getKeyValue(Constants.LANGUAGE);
+		ShoppingCart cartModel = this.getCartModel(shoppingCartCode);
+		shoppingCartCalculationService.calculate( cartModel, store, language );       
+		ShoppingCartData cartData = this.populateShoppingCart(cartModel);
+		return cartData;
+
+	}
 
 }

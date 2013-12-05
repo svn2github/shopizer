@@ -35,6 +35,28 @@ public class MiniCartController extends AbstractController{
 		return getShoppingCartFromSession(request);
 		
 	}
+	
+	@RequestMapping(value={"/shop/displayMiniCartByCode.html"},  method = { RequestMethod.GET, RequestMethod.POST })
+	public @ResponseBody ShoppingCartData displayMiniCart(final String shoppingCartCode, HttpServletRequest request, Model model){
+		
+		try {
+			ShoppingCartData cart =  getShoppingCartFromSession(request);
+			
+			if(cart==null) {
+				cart = shoppingCartFacade.getShoppingCartData(shoppingCartCode);
+			}
+			if(cart.getCode().equals(shoppingCartCode)) {
+				return cart;
+			}
+			
+			
+		} catch(Exception e) {
+			LOG.error("Error while getting the shopping cart",e);
+		}
+		
+		return null;
+
+	}
 
 	
 	@RequestMapping(value={"/shop/miniCart/removeShoppingCartItem.html"},   method = { RequestMethod.GET, RequestMethod.POST })

@@ -94,7 +94,7 @@ public class ShopProductRESTController {
 	@RequestMapping( value="/shop/services/private/products/{store}/create", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
-	public PersistableProduct createProduct(@PathVariable final String store, @Valid @RequestBody PersistableProduct product, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public PersistableProduct createProduct(@PathVariable final String store, @Valid @RequestBody PersistableProduct product, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		
 		try {
@@ -155,7 +155,7 @@ public class ShopProductRESTController {
 	@RequestMapping( value="/shop/services/private/manufacturer/{store}/create", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
-	public PersistableManufacturer createManufacturer(@PathVariable final String store, @Valid @RequestBody PersistableManufacturer manufacturer, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public PersistableManufacturer createManufacturer(@PathVariable final String store, @Valid @RequestBody PersistableManufacturer manufacturer, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		
 		try {
@@ -206,7 +206,7 @@ public class ShopProductRESTController {
 	@RequestMapping( value="/shop/services/private/optionValue/{store}/create", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
-	public PersistableProductOptionValue createProductOptionValue(@PathVariable final String store, @Valid @RequestBody PersistableProductOptionValue optionValue, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public PersistableProductOptionValue createProductOptionValue(@PathVariable final String store, @Valid @RequestBody PersistableProductOptionValue optionValue, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		
 		try {
@@ -234,7 +234,7 @@ public class ShopProductRESTController {
 			com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue optValue = new com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue();
 			populator.populate(optionValue, optValue, merchantStore, merchantStore.getDefaultLanguage());
 		
-			productOptionValueService.saveOrUpdate(optValue);
+			productOptionValueService.save(optValue);
 			
 			optionValue.setId(optValue.getId());
 			
@@ -256,7 +256,7 @@ public class ShopProductRESTController {
 	@RequestMapping( value="/shop/services/private/option/{store}/create", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
-	public PersistableProductOption createProductOption(@PathVariable final String store, @Valid @RequestBody PersistableProductOption option, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public PersistableProductOption createProductOption(@PathVariable final String store, @Valid @RequestBody PersistableProductOption option, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		
 		try {

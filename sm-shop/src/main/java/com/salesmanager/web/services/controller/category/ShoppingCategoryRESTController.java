@@ -62,7 +62,7 @@ public class ShoppingCategoryRESTController {
 	
 	@RequestMapping( value="/shop/services/public/category/{store}/{language}/{id}", method=RequestMethod.GET)
 	@ResponseBody
-	public ReadableCategory getCategory(@PathVariable final String store, @PathVariable final String language, @PathVariable Long id, Model model, HttpServletRequest request, HttpServletResponse response) {
+	public ReadableCategory getCategory(@PathVariable final String store, @PathVariable final String language, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) {
 		
 		
 		try {
@@ -175,7 +175,7 @@ public class ShoppingCategoryRESTController {
 	@RequestMapping( value="/shop/services/private/category/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
-	public PersistableCategory createCategory(@PathVariable final String store, @Valid @RequestBody PersistableCategory category, Model model, HttpServletRequest request, HttpServletResponse response) {
+	public PersistableCategory createCategory(@PathVariable final String store, @Valid @RequestBody PersistableCategory category, HttpServletRequest request, HttpServletResponse response) {
 		
 		
 		try {
