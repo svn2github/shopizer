@@ -129,7 +129,7 @@ public class ProductManagementAPITest {
 		
 		PersistableProductOptionValue optionValue = new PersistableProductOptionValue();
 		optionValue.setOrder(1);
-		optionValue.setCode("color-red");
+		optionValue.setCode("colorred");
 		optionValue.setDescriptions(descriptions);
 		
 
