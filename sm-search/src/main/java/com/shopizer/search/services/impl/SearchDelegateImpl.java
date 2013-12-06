@@ -85,6 +85,16 @@ public class SearchDelegateImpl implements SearchDelegate {
 		
 		Client client = searchClient.getClient();
 		
+		/**
+		 *          client.admin()
+                    .indices()
+                    .create(createIndexRequest(index)
+                        .settings(settings)
+                        .mapping(type, mapping)
+                    )
+                    .actionGet(); 
+		 */
+		
 
 
 		//maintain a list of created index
