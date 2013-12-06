@@ -18,6 +18,7 @@ import com.shopizer.search.utils.SearchClient;
 public class ObjectIndexerImpl implements IndexWorker {
 	
 	private static boolean init = false;
+
 	@Inject
 	private SearchDelegate searchDelegate;
 	
@@ -47,16 +48,37 @@ public class ObjectIndexerImpl implements IndexWorker {
 				for(Object o : indexConfigurations) {
 					
 					IndexConfiguration config = (IndexConfiguration)o;
+					String mappingFile = null;
+					String settingsFile = null;
 					if(!StringUtils.isBlank(config.getMappingFileName())) {
+						mappingFile = config.getMappingFileName();
+					}
+					if(!StringUtils.isBlank(config.getSettingsFileName())) {
+						settingsFile = config.getSettingsFileName();
+					}
+					
+					if(mappingFile!=null || settingsFile!=null) {
+						
+						String metadata = null;
+						String settingsdata = null;
 						try {
-							String metadata = FileUtil.readFileAsString(config.getMappingFileName());
-							if(!StringUtils.isBlank(metadata) && !StringUtils.isBlank(config.getIndexName())) {
+							
+							if(mappingFile!=null) {
+								metadata = FileUtil.readFileAsString(mappingFile);
+							}
+							
+							if(settingsFile!=null) {
+								settingsdata = FileUtil.readFileAsString(settingsFile);
+							}
+
+							if(!StringUtils.isBlank(config.getIndexName())) {
 								
 								if(!searchDelegate.indexExist(config.getCollectionName())) {
-									searchDelegate.createIndice(metadata, config.getCollectionName(), config.getIndexName());
+									searchDelegate.createIndice(metadata, settingsdata, config.getCollectionName(), config.getIndexName());
 								}
 							}
 						} catch (Exception e) {
+							log.error(e);
 							log.error("*********************************************");
 							log.error(e);
 							log.error("*********************************************");
@@ -68,11 +90,10 @@ public class ObjectIndexerImpl implements IndexWorker {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "unused" })
 	public void execute(SearchClient client, String json, String collection, String object, String id, ExecutionContext context)
 			throws Exception {
-		// TODO Auto-generated method stub
-		
-		
+
 		try {
 			
 
@@ -81,7 +102,7 @@ public class ObjectIndexerImpl implements IndexWorker {
 			}
 			
 			//get json object
-			Map<String,Object> indexData = (Map)context.getObject("indexData");
+			Map<String,Object> indexData = (Map<String,Object>)context.getObject("indexData");
 			if(indexData==null) {
 				ObjectMapper mapper = new ObjectMapper();
 				indexData = mapper.readValue(json, Map.class);

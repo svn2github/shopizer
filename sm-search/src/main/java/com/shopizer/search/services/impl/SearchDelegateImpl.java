@@ -79,28 +79,24 @@ public class SearchDelegateImpl implements SearchDelegate {
 	 * @see com.shopizer.search.services.impl.SearchService#createIndice(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void createIndice(String json,String collection,String object) throws Exception {
+	public void createIndice(String mapping,String settings,String collection,String object) throws Exception {
 		
 	
 		
 		Client client = searchClient.getClient();
-		
-		/**
-		 *          client.admin()
-                    .indices()
-                    .create(createIndexRequest(index)
-                        .settings(settings)
-                        .mapping(type, mapping)
-                    )
-                    .actionGet(); 
-		 */
-		
-
 
 		//maintain a list of created index
 		
+		CreateIndexRequest indexRequest = new CreateIndexRequest(collection);
+		if(mapping!=null) {
+			indexRequest.mapping(object, mapping);
+		}
+		if(settings!=null) {
+			indexRequest.settings(settings);
+		}
+
 		client.admin().indices().  
-	    create(new CreateIndexRequest(collection).mapping(object, json)).
+	    create(indexRequest).
 	    actionGet();
 
 	}

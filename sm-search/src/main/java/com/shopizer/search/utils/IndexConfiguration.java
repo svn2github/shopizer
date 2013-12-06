@@ -9,6 +9,7 @@ public class IndexConfiguration {
 	
 	private String collectionName;
 	private String mappingFileName;
+	private String settingsFileName;
 	public String getMappingFileName() {
 		return mappingFileName;
 	}
@@ -26,6 +27,12 @@ public class IndexConfiguration {
 	}
 	public void setIndexName(String indexName) {
 		this.indexName = indexName;
+	}
+	public void setSettingsFileName(String settingsFileName) {
+		this.settingsFileName = settingsFileName;
+	}
+	public String getSettingsFileName() {
+		return settingsFileName;
 	}
 	private String indexName;
 

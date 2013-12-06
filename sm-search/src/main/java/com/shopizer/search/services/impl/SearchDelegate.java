@@ -14,7 +14,7 @@ public interface SearchDelegate {
 	/**
 	 * Creates a structure that represents the object and the content to be indexed
 	 */
-	public abstract void createIndice(String json, String collection,
+	public abstract void createIndice(String mappingJson, String settingsJson, String collection,
 			String object) throws Exception;
 
 	/**
