@@ -121,12 +121,16 @@
 		<property name="collectionName" value="product_en_default"/>
 		<property name="indexName" value="product_en"/>
 		<property name="mappingFileName" value="spring/product.json"/>
+		<!-- not necessary, only to define index and search rules -->
+		<property name="settingsFileName" value="spring/settings_product.json"/>
 	</bean>
 	
 	<bean id="productindex_fr_defaultstore" class="com.shopizer.search.utils.IndexConfiguration">
 		<property name="collectionName" value="product_fr_default"/>
 		<property name="indexName" value="product_fr"/>
 		<property name="mappingFileName" value="spring/product_fr.json"/>
+		<!-- not necessary, only to define index and search rules -->
+		<property name="settingsFileName" value="spring/settings_product_fr.json"/>
 	</bean>
 		
 	<bean id="keyword" class="com.shopizer.search.services.worker.KeywordIndexerImpl">
