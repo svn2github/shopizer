@@ -36,8 +36,8 @@ public class TestSearch {
 		
 		//String json="{\"wildcard\":{\"keyword\":\"Spr*\"}}";
 		
-		//String json ="{\"query\":{\"match\" : {\"_all\" : \"Sp\" }}}";
-		String json ="{\"query\":{\"query_string\":{\"fields\" : [\"name^5\", \"description\", \"tags\"], \"query\" : \"Sp*\", \"use_dis_max\" : true }}}";
+		//String json ="{\"query\":{\"match\" : {\"_all\" : \"sp\" }}}";
+		String json ="{\"query\":{\"query_string\":{\"fields\" : [\"name^5\", \"description\", \"tags\"], \"query\" : \"sp\", \"use_dis_max\" : true }}}";
 
 
 		//String json ="{\"query\":{\"filtered\":{\"query\":{\"text\":{\"_all\":\"beach\"}},\"filter\":{\"numeric_range\":{\"age\":{\"from\":\"22\",\"to\":\"45\",\"include_lower\":true,\"include_upper\":true}}}}},\"highlight\":{\"fields\":{\"description\":{}}},\"facets\":{\"tags\":{\"terms\":{\"field\":\"tags\"}}}}";
