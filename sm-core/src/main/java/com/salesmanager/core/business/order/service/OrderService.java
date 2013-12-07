@@ -14,49 +14,74 @@ import com.salesmanager.core.business.order.model.OrderSummary;
 import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 
 public interface OrderService extends SalesManagerEntityService<Long, Order> {
-	
-	Order getOrder(Long id);
-	
-	public OrderList listByStore(MerchantStore store, OrderCriteria criteria);
-	
-	public List<Order> listByStore(MerchantStore merchantStore);
+
+    void addOrderStatusHistory(Order order, OrderStatusHistory history)
+                    throws ServiceException;
+
+    /**
+     * Can be used to calculates the final prices of all items contained in checkout page
+     * @param orderSummary
+     * @param customer
+     * @param store
+     * @param language
+     * @return
+     * @throws ServiceException
+     */
+    OrderTotalSummary caculateOrderTotal(OrderSummary orderSummary,
+                                         Customer customer, MerchantStore store, Language language)
+                                                         throws ServiceException;
+
+    /**
+     * Can be used to calculates the final prices of all items contained in a ShoppingCart
+     * @param orderSummary
+     * @param store
+     * @param language
+     * @return
+     * @throws ServiceException
+     */
+    OrderTotalSummary caculateOrderTotal(OrderSummary orderSummary,
+                                         MerchantStore store, Language language) throws ServiceException;
 
 
-	void saveOrUpdate(Order order) throws ServiceException;
+    /**
+     * Can be used to calculates the final prices of all items contained in checkout page
+     * @param shoppingCart
+     * @param customer
+     * @param store
+     * @param language
+     * @return  @return {@link OrderTotalSummary}
+     * @throws ServiceException
+     */
+    OrderTotalSummary calculateShoppingCartTotal(final ShoppingCart shoppingCart,final Customer customer, final MerchantStore store, final Language language) throws ServiceException;
 
-	void addOrderStatusHistory(Order order, OrderStatusHistory history)
-			throws ServiceException;
+    /**
+     * Can be used to calculates the final prices of all items contained in a ShoppingCart
+     * @param shoppingCart
+     * @param store
+     * @param language
+     * @return {@link OrderTotalSummary}
+     * @throws ServiceException
+     */
+    OrderTotalSummary calculateShoppingCartTotal(final ShoppingCart shoppingCart,final MerchantStore store, final Language language) throws ServiceException;
 
-	ByteArrayOutputStream generateInvoice(MerchantStore store, Order order,
-			Language language) throws ServiceException;
+    ByteArrayOutputStream generateInvoice(MerchantStore store, Order order,
+                                          Language language) throws ServiceException;
 
-	/**
-	 * Can be used to calculates the final prices of all items contained in a ShoppingCart
-	 * @param orderSummary
-	 * @param store
-	 * @param language
-	 * @return
-	 * @throws ServiceException
-	 */
-	OrderTotalSummary caculateOrderTotal(OrderSummary orderSummary,
-			MerchantStore store, Language language) throws ServiceException;
+    Order getOrder(Long id);
 
-	/**
-	 * Can be used to calculates the final prices of all items contained in checkout page
-	 * @param orderSummary
-	 * @param customer
-	 * @param store
-	 * @param language
-	 * @return
-	 * @throws ServiceException
-	 */
-	OrderTotalSummary caculateOrderTotal(OrderSummary orderSummary,
-			Customer customer, MerchantStore store, Language language)
-			throws ServiceException;
+    public List<Order> listByStore(MerchantStore merchantStore);
 
 
-	
+
+
+    public OrderList listByStore(MerchantStore store, OrderCriteria criteria);
+
+    void saveOrUpdate(Order order) throws ServiceException;
+
+
+
 
 }
