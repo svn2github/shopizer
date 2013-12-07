@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.shopizer</groupId>
   <artifactId>sm-search</artifactId>
-  <version>0.0.3</version>
+  <version>0.0.4-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>sm-search</name>
   <url>http://www.shopizer.com</url>
@@ -23,9 +23,9 @@
     </parent>
     
     <scm>
-    	<connection>scm:svn:https://svn.code.sf.net/p/shopizer/code/shopizer-portlet/sm-search/tags/sm-search-0.0.3</connection>
-    	<developerConnection>scm:svn:https://svn.code.sf.net/p/shopizer/code/shopizer-portlet/sm-search/tags/sm-search-0.0.3</developerConnection>
-    	<url>https://svn.code.sf.net/p/shopizer/code/tags/sm-search-0.0.3</url>
+    	<connection>scm:svn:https://svn.code.sf.net/p/shopizer/code/shopizer-portlet/sm-search/</connection>
+    	<developerConnection>scm:svn:https://svn.code.sf.net/p/shopizer/code/shopizer-portlet/sm-search/</developerConnection>
+    	<url>https://svn.code.sf.net/p/shopizer/code</url>
     </scm>
 
 	
