@@ -343,3 +343,8 @@ function prepareEmptyCart(){
 	 $("#cartinfo").html('<span id="cartqty">(' + 0 + ' ' + labelItem + ')</span><span id="cartprice">' + 0 + '</span>');
 	
 }
+
+function viewShoppingCartPage(){
+	window.location.href=getContextPath() + '/shop/shoppingCart.html';
+	
+}

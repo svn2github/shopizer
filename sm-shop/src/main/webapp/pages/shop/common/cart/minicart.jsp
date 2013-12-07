@@ -40,8 +40,10 @@ response.setDateHeader ("Expires", -1);
 				</div>
 			</div>
 			<br />
+			<button class="btn" style="width: 100%" type="submit" onclick="viewShoppingCartPage();">View Cart</button>
 			<button class="btn" style="width: 100%" type="submit">Check
 				out</button>
+				
 		</div>
 	</div>
 </div>
