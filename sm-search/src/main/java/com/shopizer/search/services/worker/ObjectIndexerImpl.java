@@ -42,7 +42,7 @@ public class ObjectIndexerImpl implements IndexWorker {
 		if(init) {
 			return;
 		}
-		
+		init = true;
 		if(getIndexConfigurations()!=null && getIndexConfigurations().size()>0) {
 
 				for(Object o : indexConfigurations) {
@@ -82,12 +82,13 @@ public class ObjectIndexerImpl implements IndexWorker {
 							log.error("*********************************************");
 							log.error(e);
 							log.error("*********************************************");
+							init=false;
 						}
 					}
-				}
+				} 
 
-			init = true;
-		}
+			
+		} 
 	}
 
 	@SuppressWarnings({ "unchecked", "unused" })

@@ -25,6 +25,9 @@ public class KeywordSearchWorkerImpl implements KeywordSearchWorker {
 		
 		
 		resp.setInlineSearchList(array);
+		if(array.length>0) {
+			resp.setCount(array.length);
+		}
 		
 	    return resp; 
 
