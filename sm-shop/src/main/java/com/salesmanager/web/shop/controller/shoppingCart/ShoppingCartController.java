@@ -21,6 +21,7 @@ import com.salesmanager.core.business.catalog.product.service.attribute.ProductA
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.service.OrderService;
+import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.web.constants.Constants;
@@ -36,70 +37,168 @@ import com.salesmanager.web.shop.controller.shoppingCart.facade.ShoppingCartFaca
  * Landing page, Category page (list of products) and Product details page contains a form
  * that let the user add an item to the cart, see the quantity of items, total price of items
  * in the cart and remove items
- * 
+ *
  * Add To Cart
  * ---------------
  * The add to cart is 100% driven by javascript / ajax. The code is available in webapp\resources\js\functions.js
- * 
+ *
  * <!-- Simple add to cart html example ${id} is the product id -->
  * <form id="input-${id}">
  *  <input type="text" class="input-small" id="quantity-productId-${id}" placeholder="1" value="1">
  * 	<a href="#" class="addToCart" productId="${id}">Add to cart</a>
  * </form>
- * 
+ *
  * The javascript function creates com.salesmanager.web.entity.shoppingcart.ShoppingCartItem and ShoppingCartAttribute based on user selection
  * The javascript looks in the cookie if a shopping cart code exists ex $.cookie( 'cart' ); // requires jQuery-cookie
  * The javascript posts the ShoppingCartItem and the shopping cart code if present to /shop/addShoppingCartItem.html
- * 
- * @see 
- * 
+ *
+ * @see
+ *
  * The javascript re-creates the shopping cart div item (div id shoppingcart) (see webapp\pages\shop\templates\bootstrap\sections\header.jsp)
  * The javascript set the shopping cart code in the cookie
- * 
+ *
  * Display a page
  * ----------------
- * 
+ *
  * When a page is displayed from the shopping section, the shopping cart has to be displayed
  * 4 paths 1) No shopping cart 2) A shopping cart exist in the session 3) A shopping cart code exists in the cookie  4) A customer is logeed in and a shopping cart exists in the database
- * 
+ *
  * 1) No shopping cart, nothing to do !
- * 
+ *
  * 2) StoreFilter will tak care of a ShoppingCart present in the HttpSession
- * 
+ *
  * 3) Once a page is displayed and no cart returned from the controller, a javascript looks on load in the cookie to see if a shopping cart code is present
  * 	  If a code is present, by ajax the cart is loaded and displayed
- * 
+ *
  * 4) No cart in the session but the customer logs in, the system looks in the DB if a shopping cart exists, if so it is putted in the session so the StoreFilter can manage it and putted in the request
- * 
+ *
  * @author Carl Samson
  * @author Umesh
  */
 
 @Controller
 public class ShoppingCartController extends AbstractController {
-	
+
 	protected final Logger LOG= Logger.getLogger( getClass());
 	@Autowired
 	private ProductService productService;
-	
+
 	@Autowired
 	private ProductAttributeService productAttributeService;
-	
+
 	@Autowired
 	private PricingService pricingService;
-	
+
 	@Autowired
 	private OrderService orderService;
-	
+
 	@Autowired
 	private ShoppingCartService shoppingCartService;
-	
+
 	@Autowired
 	private ProductPriceUtils productPriceUtils;
-	
+
 	@Autowired
 	private ShoppingCartFacade shoppingCartFacade;
-	
+
+	/**
+	 * Add an item to the ShoppingCart (AJAX exposed method)
+	 * @param id
+	 * @param quantity
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+    @RequestMapping(value={"/shop/addShoppingCartItem.html"}, method=RequestMethod.POST)
+	public @ResponseBody
+	ShoppingCartData addShoppingCartItem(@RequestBody final ShoppingCartItem item, final HttpServletRequest request, final HttpServletResponse response, final Locale locale) throws Exception {
+
+
+		ShoppingCartData shoppingCart=null;
+
+
+
+		//Look in the HttpSession to see if a customer is logged in
+		MerchantStore store = super.<MerchantStore>getSessionValue(Constants.MERCHANT_STORE);
+		Customer customer = super.<Customer>getSessionValue(  Constants.CUSTOMER );
+		final Language language=super.<Language>getSessionValue(  Constants.LANGUAGE );
+
+		if(customer != null) {
+			com.salesmanager.core.business.shoppingcart.model.ShoppingCart customerCart = shoppingCartService.getByCustomer(customer);
+			if(customerCart!=null) {
+				shoppingCart = shoppingCartFacade.getShoppingCartData( customerCart);
+
+
+				//TODO if ahoppingCart != null ?? merge
+				//TODO maybe they have the same code
+				//TODO what if codes are different (-- merge carts, keep the latest one, delete the oldest, switch codes --)
+			}
+		}
+
+
+
+		//if shoppingCart is null create a new one
+
+		shoppingCart = new ShoppingCartData();
+		String code = UUID.randomUUID().toString().replaceAll("-", "");
+		shoppingCart.setCode(code);
+
+
+
+
+
+		shoppingCart=shoppingCartFacade.addItemsToShoppingCart( shoppingCart, item, store,language,customer );
+
+
+		/******************************************************/
+		//TODO validate all of this
+
+		//if a customer exists in http session
+			//if a cart does not exist in httpsession
+				//get cart from database
+					//if a cart exist in the database add the item to the cart and put cart in httpsession and save to the database
+					//else a cart does not exist in the database, create a new one, set the customer id, set the cart in the httpsession
+			//else a cart exist in the httpsession, add item to httpsession cart and save to the database
+		//else no customer in httpsession
+			//if a cart does not exist in httpsession
+				//create a new one, set the cart in the httpsession
+			//else a cart exist in the httpsession, add item to httpsession cart and save to the database
+
+
+		/**
+		 * my concern is with the following :
+		 * 	what if you add item in the shopping cart as an anonymous user
+		 *  later on you log in to process with checkout but the system retrieves a previous shopping cart saved in the database for that customer
+		 *  in that case we need to synchronize both carts and the original one (the one with the customer id) supercedes the current cart in session
+		 *  the sustem will have to deal with the original one and remove the latest
+		 */
+
+
+		//**more implementation details
+		//calculate the price of each item by using ProductPriceUtils in sm-core
+		//for each product in the shopping cart get the product
+		//invoke productPriceUtils.getFinalProductPrice
+		//from FinalPrice get final price which is the calculated price given attributes and discounts
+		//set each item price in ShoppingCartItem.price
+
+		//add new item shoppingCartService.create
+
+		//create JSON representation of the shopping cart
+
+		//return the JSON structure in AjaxResponse
+
+		//store the shopping cart in the http session
+		setCartDataToSession(request,shoppingCart);
+
+		//AjaxResponse resp = new AjaxResponse();
+		//resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+		return shoppingCart;
+
+	}
+
+
+
 	/**
 	 * Retrieves a Shopping cart from the database (regular shopping cart)
 	 * @param model
@@ -109,7 +208,7 @@ public class ShoppingCartController extends AbstractController {
 	 * @throws Exception
 	 */
     @RequestMapping( value = { "/shop/shoppingCart.html" }, method = RequestMethod.GET )
-    public String displayShoppingCart( Model model, HttpServletRequest request, HttpServletResponse response )
+    public String displayShoppingCart( final Model model, final HttpServletRequest request, final HttpServletResponse response )
         throws Exception
     {
 
@@ -131,102 +230,8 @@ public class ShoppingCartController extends AbstractController {
         return template.toString();
 
     }
-	
-	
-
-	/**
-	 * Add an item to the ShoppingCart (AJAX exposed method)
-	 * @param id
-	 * @param quantity
-	 * @param request
-	 * @param response
-	 * @return
-	 * @throws Exception
-	 */
-    @RequestMapping(value={"/shop/addShoppingCartItem.html"}, method=RequestMethod.POST)
-	public @ResponseBody
-	ShoppingCartData addShoppingCartItem(@RequestBody ShoppingCartItem item, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
-		
-		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-		ShoppingCartData shoppingCart=null;
 
 
-		
-		//Look in the HttpSession to see if a customer is logged in
-		Customer customer = (Customer)request.getSession().getAttribute(Constants.CUSTOMER);
-		if(customer != null) {
-			com.salesmanager.core.business.shoppingcart.model.ShoppingCart customerCart = shoppingCartService.getByCustomer(customer);
-			if(customerCart!=null) {
-				shoppingCart = shoppingCartFacade.getShoppingCartData( customerCart);
-				                
-				               
-				//TODO if ahoppingCart != null ?? merge
-				//TODO maybe they have the same code
-				//TODO what if codes are different (-- merge carts, keep the latest one, delete the oldest, switch codes --)
-			}
-		}
-
-		
-		
-		//if shoppingCart is null create a new one
-		
-		shoppingCart = new ShoppingCartData();
-		String code = UUID.randomUUID().toString().replaceAll("-", "");
-		shoppingCart.setCode(code);
-	
-	
-		
-		
-		shoppingCart=shoppingCartFacade.addItemsToShoppingCart( shoppingCart, item, store );
-		
-		
-		/******************************************************/
-		//TODO validate all of this
-		
-		//if a customer exists in http session
-			//if a cart does not exist in httpsession
-				//get cart from database
-					//if a cart exist in the database add the item to the cart and put cart in httpsession and save to the database
-					//else a cart does not exist in the database, create a new one, set the customer id, set the cart in the httpsession
-			//else a cart exist in the httpsession, add item to httpsession cart and save to the database
-		//else no customer in httpsession
-			//if a cart does not exist in httpsession
-				//create a new one, set the cart in the httpsession
-			//else a cart exist in the httpsession, add item to httpsession cart and save to the database
-		
-		
-		/**
-		 * my concern is with the following : 
-		 * 	what if you add item in the shopping cart as an anonymous user
-		 *  later on you log in to process with checkout but the system retrieves a previous shopping cart saved in the database for that customer
-		 *  in that case we need to synchronize both carts and the original one (the one with the customer id) supercedes the current cart in session
-		 *  the sustem will have to deal with the original one and remove the latest
-		 */
-		
-		
-		//**more implementation details
-		//calculate the price of each item by using ProductPriceUtils in sm-core
-		//for each product in the shopping cart get the product
-		//invoke productPriceUtils.getFinalProductPrice
-		//from FinalPrice get final price which is the calculated price given attributes and discounts
-		//set each item price in ShoppingCartItem.price
-		
-		//add new item shoppingCartService.create
-		
-		//create JSON representation of the shopping cart
-		
-		//return the JSON structure in AjaxResponse
-		
-		//store the shopping cart in the http session
-		setCartDataToSession(request,shoppingCart);
-		
-		//AjaxResponse resp = new AjaxResponse();
-		//resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
-		return shoppingCart;
-
-	}
-
-	
 	/**
 	 * Removes an item from the Shopping Cart (AJAX exposed method)
 	 * @param id
@@ -236,36 +241,37 @@ public class ShoppingCartController extends AbstractController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value={"/shop/removeShoppingCartItem.html"},   method = { RequestMethod.GET, RequestMethod.POST })
-	
-	String removeShoppingCartItem(Long lineItemId, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
 
-		
+	String removeShoppingCartItem(final Long lineItemId, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+
+
+
 		//Looks in the HttpSession to see if a customer is logged in
-		
+
 		//get any shopping cart for this user
-		
+
 		//** need to check if the item has property, similar items may exist but with different properties
 		//String attributes = request.getParameter("attribute");//attributes id are sent as 1|2|5|
 		//this will help with hte removal of the appropriate item
-		
+
 		//remove the item shoppingCartService.create
-		
+
 		//create JSON representation of the shopping cart
-		
+
 		//return the JSON structure in AjaxResponse
-		
+
 		//store the shopping cart in the http session
-		
-		
-		ShoppingCartData shoppingCartData=shoppingCartFacade.removeCartItem(lineItemId, getShoppingCartFromSession(request).getCode());
+
+	    final MerchantStore store = super.<MerchantStore>getSessionValue(Constants.MERCHANT_STORE);
+        final Language language=super.<Language>getSessionValue(  Constants.LANGUAGE );
+		ShoppingCartData shoppingCartData=shoppingCartFacade.removeCartItem(lineItemId, getShoppingCartFromSession(request).getCode(),store,language);
 		setCartDataToSession(request, shoppingCartData);
 		return Constants.REDIRECT_PREFIX + "/shop/shoppingCart.html";
-		
-		
-		
+
+
+
 	}
-	
+
 	/**
 	 * Update the quantity of an item in the Shopping Cart (AJAX exposed method)
 	 * @param id
@@ -277,15 +283,17 @@ public class ShoppingCartController extends AbstractController {
 	 */
 	@RequestMapping(value={"/shop/updateShoppingCartItem.html"},  method = { RequestMethod.GET, RequestMethod.POST })
 	public String updateShoppingCartItem( final Long lineItemId, final Integer quantity, final HttpServletRequest request, final  HttpServletResponse response) throws Exception {
-		
+
 		LOG.info("updating cart entry with qunatity: "+quantity);
-		ShoppingCartData shoppingCartData= shoppingCartFacade.updateCartItem(lineItemId, getShoppingCartFromSession(request).getCode(), quantity);
+		MerchantStore store = super.<MerchantStore>getSessionValue(Constants.MERCHANT_STORE);
+        final Language language=super.<Language>getSessionValue(  Constants.LANGUAGE );
+		ShoppingCartData shoppingCartData= shoppingCartFacade.updateCartItem(lineItemId, getShoppingCartFromSession(request).getCode(), quantity,store,language);
 		setCartDataToSession(request, shoppingCartData);
 		return Constants.REDIRECT_PREFIX + "/shop/shoppingCart.html";
 	}
-	
-	
-		
-   
-	
+
+
+
+
+
 }

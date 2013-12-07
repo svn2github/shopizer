@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.salesmanager.web.populator.shoppingCart;
 
@@ -42,14 +42,15 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
 
     private PricingService pricingService;
 
-    public PricingService getPricingService() {
-        return pricingService;
-    }
+    private  ShoppingCartCalculationService shoppingCartCalculationService;
 
 
 
-    public void setPricingService(final PricingService pricingService) {
-        this.pricingService = pricingService;
+    @Override
+    public ShoppingCartData createTarget()
+    {
+
+        return new ShoppingCartData();
     }
 
 
@@ -60,15 +61,9 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
 
 
 
-    public void setShoppingCartCalculationService(final ShoppingCartCalculationService shoppingCartCalculationService) {
-        this.shoppingCartCalculationService = shoppingCartCalculationService;
+    public PricingService getPricingService() {
+        return pricingService;
     }
-
-
-    private  ShoppingCartCalculationService shoppingCartCalculationService;;
-
-
-
 
 
     @Override
@@ -127,7 +122,8 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
             List<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> productsList = new ArrayList<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem>();
             productsList.addAll(shoppingCart.getLineItems());
             summary.setProducts(productsList);
-            OrderTotalSummary orderSummary = shoppingCartCalculationService.calculateCartTotal( shoppingCart,store, language );
+            OrderTotalSummary orderSummary = shoppingCartCalculationService.calculate(shoppingCart,store, language );
+
             cart.setSubTotal(pricingService.getDisplayAmount(orderSummary.getSubTotal(), store));
             cart.setTotal(pricingService.getDisplayAmount(orderSummary.getTotal(), store));
             cart.setQuantity(shoppingCart.getLineItems().size());
@@ -139,6 +135,14 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
         return cart;
 
 
+    };
+
+
+
+
+
+    public void setPricingService(final PricingService pricingService) {
+        this.pricingService = pricingService;
     }
 
 
@@ -146,11 +150,8 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
 
 
 
-    @Override
-    public ShoppingCartData createTarget()
-    {
-
-        return new ShoppingCartData();
+    public void setShoppingCartCalculationService(final ShoppingCartCalculationService shoppingCartCalculationService) {
+        this.shoppingCartCalculationService = shoppingCartCalculationService;
     }
 
 
