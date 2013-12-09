@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +32,7 @@ import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.services.controller.category.ShoppingCategoryRESTController;
 
 @Controller
-@RequestMapping("/shop/services/rest/customers")
+@RequestMapping("/shop/services/")
 public class CustomerRESTController {
 
 	@Autowired
@@ -58,7 +57,7 @@ public class CustomerRESTController {
 	/**
 	 * Returns a single customer for a given MerchantStore
 	 */
-	@RequestMapping( value="/{store}/{id}", method=RequestMethod.GET)
+	@RequestMapping( value="/private/customer/{store}/{id}", method=RequestMethod.GET)
 	@ResponseBody
 	public com.salesmanager.web.entity.customer.Customer getCustomer(@PathVariable final String store, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
@@ -96,7 +95,7 @@ public class CustomerRESTController {
 	/**
 	 * Returns all customers for a given MerchantStore
 	 */
-	@RequestMapping( value="/{store}", method=RequestMethod.GET)
+	@RequestMapping( value="/private/customer/{store}", method=RequestMethod.GET)
 	@ResponseBody
 	public List<com.salesmanager.web.entity.customer.Customer> getCustomers(@PathVariable final String store, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
@@ -131,7 +130,7 @@ public class CustomerRESTController {
 	/**
 	 * Updates a customer for a given MerchantStore
 	 */
-	@RequestMapping( value="/{store}/{id}", method=RequestMethod.PUT)
+	@RequestMapping( value="/private/customer/{store}/{id}", method=RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void updateCustomer(@PathVariable final String store, @PathVariable Long id, @Valid @RequestBody Customer customer, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
@@ -189,7 +188,7 @@ public class CustomerRESTController {
 	/**
 	 * Deletes a customer for a given MerchantStore
 	 */
-	@RequestMapping( value="/{store}/{id}", method=RequestMethod.DELETE)
+	@RequestMapping( value="/private/customer/{store}/{id}", method=RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteCustomer(@PathVariable final String store, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -231,7 +230,7 @@ public class CustomerRESTController {
 	/**
 	 * Create new customer for a given MerchantStore
 	 */
-	@RequestMapping( value="/{store}", method=RequestMethod.POST)
+	@RequestMapping( value="/private/customer/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public com.salesmanager.web.entity.customer.Customer createCustomer(@PathVariable final String store, @Valid @RequestBody Customer customer, HttpServletRequest request, HttpServletResponse response) throws Exception {
