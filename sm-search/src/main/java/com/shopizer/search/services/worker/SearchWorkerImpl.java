@@ -21,13 +21,14 @@ import org.elasticsearch.search.facet.terms.TermsFacet.Entry;
 import com.shopizer.search.services.SearchRequest;
 import com.shopizer.search.services.SearchResponse;
 import com.shopizer.search.services.impl.SearchDelegate;
-import com.shopizer.search.utils.SearchClient;
 
 
 public class SearchWorkerImpl implements SearchWorker {
 	
 	@Inject
 	private SearchDelegate searchDelegate;
+	
+	private final static String ORIGINAL_RESPONSE = "ORIGINAL_RESPONSE"; 
 	
 	private static Logger log = Logger.getLogger(SearchWorkerImpl.class);
 
@@ -42,6 +43,7 @@ public class SearchWorkerImpl implements SearchWorker {
 		List<String> ids = new ArrayList<String>();
 
         response.setCount(docs.length);
+        context.setObject(ORIGINAL_RESPONSE, resp);
         for (SearchHit sd : docs) {
           //to get explanation you'll need to enable this when querying:
           //System.out.println(sd.getExplanation().toString());
@@ -51,7 +53,7 @@ public class SearchWorkerImpl implements SearchWorker {
           // instead of doc.getSource()
 
 
-        	log.debug("Found entry " + sd.sourceAsString());
+        	//log.debug("Found entry " + sd.sourceAsString());
             //System.out.println(sd.getScore());
         	com.shopizer.search.services.SearchHit hit = new com.shopizer.search.services.SearchHit(sd);
         	hits.add(hit);
