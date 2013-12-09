@@ -20,7 +20,7 @@ import com.shopizer.search.services.SearchService;
 })
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners({
-	DependencyInjectionTestExecutionListener.class,
+	DependencyInjectionTestExecutionListener.class
 })
 
 
