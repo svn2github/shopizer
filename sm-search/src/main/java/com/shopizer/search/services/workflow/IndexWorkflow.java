@@ -48,7 +48,7 @@ public class IndexWorkflow extends Workflow {
 		if(indexWorkflow!=null) {
 			for(Object o : indexWorkflow) {
 				IndexWorker iw = (IndexWorker)o;
-				iw.execute(this.getSearchClient(),json, collection, object, _id, context);
+				iw.execute(json, collection, object, _id, context);
 			}
 		}
 	}

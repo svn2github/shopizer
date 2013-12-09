@@ -3,9 +3,11 @@ package com.shopizer.search.services.impl;
 import java.util.Collection;
 import java.util.Set;
 
+import org.elasticsearch.action.search.SearchResponse;
+
 import com.shopizer.search.services.IndexKeywordRequest;
 import com.shopizer.search.services.SearchRequest;
-import com.shopizer.search.services.SearchResponse;
+
 
 public interface SearchDelegate {
 

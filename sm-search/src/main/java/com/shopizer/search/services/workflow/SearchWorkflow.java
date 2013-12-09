@@ -45,7 +45,7 @@ public class SearchWorkflow extends Workflow{
 				//SearchWorker search = (SearchWorker)Class.forName(className).newInstance();
 				//search.execute(request.getJson(), request.getCollection());
 				KeywordSearchWorker sw = (KeywordSearchWorker)o;
-				response = sw.execute(super.getSearchClient(),collection,json,size, null);
+				response = sw.execute(collection,json,size, null);
 			}
 		}
 		
@@ -69,7 +69,7 @@ public class SearchWorkflow extends Workflow{
 				//SearchWorker search = (SearchWorker)Class.forName(className).newInstance();
 				//search.execute(request.getJson(), request.getCollection());
 				SearchWorker sw = (SearchWorker)o;
-				response = sw.execute(super.getSearchClient(),request, null);
+				response = sw.execute(request, null);
 			}
 		}
 		

@@ -6,6 +6,6 @@ import com.shopizer.search.utils.SearchClient;
 
 public interface SearchWorker {
 	
-	public SearchResponse execute(SearchClient client, SearchRequest request, ExecutionContext context) throws Exception;
+	public SearchResponse execute(SearchRequest request, ExecutionContext context) throws Exception;
 
 }

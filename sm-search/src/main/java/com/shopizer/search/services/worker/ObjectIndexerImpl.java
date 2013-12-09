@@ -12,7 +12,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import com.shopizer.search.services.impl.SearchDelegate;
 import com.shopizer.search.utils.FileUtil;
 import com.shopizer.search.utils.IndexConfiguration;
-import com.shopizer.search.utils.SearchClient;
 
 
 public class ObjectIndexerImpl implements IndexWorker {
@@ -34,7 +33,7 @@ public class ObjectIndexerImpl implements IndexWorker {
 	
 	private static Logger log = Logger.getLogger(ObjectIndexerImpl.class);
 	
-	public synchronized void init(SearchClient client) {
+	public synchronized void init() {
 		
 		//get the list of configuration
 		//get the collection name and index name
@@ -92,14 +91,14 @@ public class ObjectIndexerImpl implements IndexWorker {
 	}
 
 	@SuppressWarnings({ "unchecked", "unused" })
-	public void execute(SearchClient client, String json, String collection, String object, String id, ExecutionContext context)
+	public void execute(String json, String collection, String object, String id, ExecutionContext context)
 			throws Exception {
 
 		try {
 			
 
 			if(!init) {
-				init(client);
+				init();
 			}
 			
 			//get json object

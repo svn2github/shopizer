@@ -6,7 +6,6 @@ import javax.inject.Inject;
 
 import com.shopizer.search.services.SearchResponse;
 import com.shopizer.search.services.impl.SearchDelegate;
-import com.shopizer.search.utils.SearchClient;
 
 
 public class KeywordSearchWorkerImpl implements KeywordSearchWorker {
@@ -14,7 +13,7 @@ public class KeywordSearchWorkerImpl implements KeywordSearchWorker {
 	@Inject
 	private SearchDelegate searchDelegate;
 
-	public SearchResponse execute(SearchClient client, String collection,String json,int size, ExecutionContext context) throws Exception{
+	public SearchResponse execute(String collection,String json,int size, ExecutionContext context) throws Exception{
 
 		
 

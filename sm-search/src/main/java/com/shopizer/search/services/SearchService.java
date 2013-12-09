@@ -9,7 +9,6 @@ import com.shopizer.search.services.workflow.DeleteObjectWorkflow;
 import com.shopizer.search.services.workflow.GetWorkflow;
 import com.shopizer.search.services.workflow.IndexWorkflow;
 import com.shopizer.search.services.workflow.SearchWorkflow;
-import com.shopizer.search.utils.SearchClient;
 
 
 /**
@@ -40,16 +39,13 @@ public class SearchService {
 	
 	@Autowired
 	private KeywordIndexerImpl keyword;
-	
-	@Autowired
-	private SearchClient searchClient;
-	
+
 	public void initService() {
 		log.debug("Initializing search service");
 		
 		try {
-			index.init(searchClient);
-			keyword.init(searchClient);
+			index.init();
+			keyword.init();
 		} catch (Exception e) {
 			log.error("Cannot initialize SearchService correctly, will be initialized lazily",e);
 		}

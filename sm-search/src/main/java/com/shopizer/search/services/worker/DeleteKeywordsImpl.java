@@ -2,7 +2,7 @@ package com.shopizer.search.services.worker;
 
 
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -10,14 +10,13 @@ import java.util.StringTokenizer;
 import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.search.SearchHit;
 
 import com.shopizer.search.services.SearchRequest;
-import com.shopizer.search.services.SearchResponse;
 import com.shopizer.search.services.impl.SearchDelegate;
-import com.shopizer.search.services.impl.SearchDelegateImpl;
 import com.shopizer.search.utils.CustomIndexConfiguration;
 import com.shopizer.search.utils.DynamicIndexNameUtil;
-import com.shopizer.search.utils.SearchClient;
 
 
 public class DeleteKeywordsImpl implements DeleteObjectWorker {
@@ -28,8 +27,8 @@ public class DeleteKeywordsImpl implements DeleteObjectWorker {
 	@Inject
 	private SearchDelegate searchDelegate;
 
-	public void deleteObject(SearchClient client,String collection, String object, String id, ExecutionContext context) throws Exception {
-		// TODO Auto-generated method stub
+	public void deleteObject(String collection, String object, String id, ExecutionContext context) throws Exception {
+
 		
 		@SuppressWarnings("rawtypes")
 		Map indexData = (Map)context.getObject("indexData");
@@ -73,7 +72,14 @@ public class DeleteKeywordsImpl implements DeleteObjectWorker {
 
 					SearchResponse r = searchDelegate.search(sr);
 					if(r!=null) {
-						Collection<String> ids = r.getIds();
+						
+				        SearchHit[] docs = r.getHits().getHits();
+						List<String> ids = new ArrayList<String>();
+
+				        for (SearchHit sd : docs) {
+				        	ids.add(sd.getId());
+				        }
+
 						searchDelegate.bulkDeleteIndex(ids, indexName);
 					}
 		
@@ -85,7 +91,7 @@ public class DeleteKeywordsImpl implements DeleteObjectWorker {
 	}
 	
 
-	public void deleteObject(SearchClient client,String collection, String id) throws Exception {
+	public void deleteObject(String collection, String id) throws Exception {
 
 		if(searchDelegate.indexExist(collection)) {
 		
@@ -101,8 +107,14 @@ public class DeleteKeywordsImpl implements DeleteObjectWorker {
 			
 			SearchResponse r = searchDelegate.search(sr);
 			if(r!=null) {
-				Collection<String> ids = r.getIds();
-			
+				
+		        SearchHit[] docs = r.getHits().getHits();
+				List<String> ids = new ArrayList<String>();
+
+		        for (SearchHit sd : docs) {
+		        	ids.add(sd.getId());
+		        }
+
 				searchDelegate.bulkDeleteIndex(ids, collection);
 			}
 		

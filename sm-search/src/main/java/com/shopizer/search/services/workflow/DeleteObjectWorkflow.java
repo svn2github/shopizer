@@ -34,7 +34,7 @@ public class DeleteObjectWorkflow extends Workflow{
 			ExecutionContext context = new ExecutionContext();
 			for(Object o : deleteObjectWorkflow) {
 				DeleteObjectWorker iw = (DeleteObjectWorker)o;
-				iw.deleteObject(super.getSearchClient(),collection, object, id, context);
+				iw.deleteObject(collection, object, id, context);
 			}
 		}
 	}

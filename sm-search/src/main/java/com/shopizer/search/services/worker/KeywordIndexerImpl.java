@@ -26,7 +26,6 @@ import com.shopizer.search.utils.CustomIndexConfiguration;
 import com.shopizer.search.utils.CustomIndexFieldConfiguration;
 import com.shopizer.search.utils.DateUtil;
 import com.shopizer.search.utils.DynamicIndexNameUtil;
-import com.shopizer.search.utils.SearchClient;
 
 
 public class KeywordIndexerImpl implements IndexWorker {
@@ -56,7 +55,7 @@ public class KeywordIndexerImpl implements IndexWorker {
 
 	private static Map<String,CustomIndexConfiguration>  indexConfigurationsMap = null;
 
-	private synchronized void init() {
+	public synchronized void init() {
 		
 		
 		try {
@@ -96,7 +95,7 @@ public class KeywordIndexerImpl implements IndexWorker {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public void execute(SearchClient client, String json, String collection, String object, String id, ExecutionContext context)
+	public void execute(String json, String collection, String object, String id, ExecutionContext context)
 			throws Exception {
 		
 			if(!init) {
@@ -321,7 +320,7 @@ public class KeywordIndexerImpl implements IndexWorker {
 					
 					
 					//delete previous keywords for the same id
-					deleteKeywordsImpl.deleteObject(client, collectionName, id);
+					deleteKeywordsImpl.deleteObject(collectionName, id);
 
 					searchDelegate.bulkIndexKeywords(bulks, collectionName, "keyword");
 					
@@ -444,15 +443,6 @@ public class KeywordIndexerImpl implements IndexWorker {
 
 
 	}
-
-	@Override
-	public void init(SearchClient client) {
-		if(!init) {
-			init();
-		}
-		
-	}
-	
 
 
 }

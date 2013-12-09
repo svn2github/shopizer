@@ -3,7 +3,6 @@ package com.shopizer.search.services.worker;
 import javax.inject.Inject;
 
 import com.shopizer.search.services.impl.SearchDelegate;
-import com.shopizer.search.utils.SearchClient;
 
 
 public class DeleteObjectImpl implements DeleteObjectWorker {
@@ -11,7 +10,7 @@ public class DeleteObjectImpl implements DeleteObjectWorker {
 	@Inject
 	private SearchDelegate searchDelegate;
 
-	public void deleteObject(SearchClient client, String collection, String object, String id, ExecutionContext context) throws Exception {
+	public void deleteObject(String collection, String object, String id, ExecutionContext context) throws Exception {
 		
 		
 		//need to get the original entry
@@ -77,7 +76,7 @@ public class DeleteObjectImpl implements DeleteObjectWorker {
 	}
 
 
-	public void deleteObject(SearchClient client, String collection, String id)
+	public void deleteObject(String collection, String id)
 			throws Exception {
 		throw new Exception("Not implemented");
 		

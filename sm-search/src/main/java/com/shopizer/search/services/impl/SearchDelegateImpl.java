@@ -22,6 +22,7 @@ import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.search.SearchHit;
@@ -36,7 +37,6 @@ import org.elasticsearch.search.facet.terms.TermsFacet.Entry;
 
 import com.shopizer.search.services.IndexKeywordRequest;
 import com.shopizer.search.services.SearchRequest;
-import com.shopizer.search.services.SearchResponse;
 import com.shopizer.search.services.field.BooleanField;
 import com.shopizer.search.services.field.DateField;
 import com.shopizer.search.services.field.DoubleField;
@@ -275,7 +275,8 @@ public class SearchDelegateImpl implements SearchDelegate {
 			}
 		
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e);
+
 		}
 		
 	}
@@ -317,12 +318,7 @@ public class SearchDelegateImpl implements SearchDelegate {
 	@Override
 	public SearchResponse search(SearchRequest request) throws Exception {
 
-		SearchResponse response = new SearchResponse();
-		try {
-			
-			//SearchClient searchClient = new SearchClient("seniorcarlos","127.0.0.1",9300);
 
-			
 
 			
 			org.elasticsearch.action.search.SearchRequestBuilder builder = searchClient.getClient().prepareSearch(request.getCollection())
@@ -339,21 +335,7 @@ public class SearchDelegateImpl implements SearchDelegate {
 				builder.setSize(request.getSize());
 			}
 	        
-/*	        Collection<SearchField> queryStringColl = request.getTerms();
-	        StringBuilder queryBuild = new StringBuilder();
-	        if(queryStringColl==null) {
-	        	throw new Exception("terms cannot be null");
-	        }
-	        
-	        int i = 1;
-	        for(SearchField field : queryStringColl) {
-	        	
-	        	queryBuild.append(field.getField()).append(":").append(request.getSearchString());
-	        	if(i<queryStringColl.size()) {
-	        		queryBuild.append(",");
-	        	}
-	        	i++;
-	        }*/
+
 	        
 	        
 	        //try this block (filters)
@@ -369,131 +351,12 @@ public class SearchDelegateImpl implements SearchDelegate {
 	        //XContentQueryBuilder qb = QueryBuilders.queryString("_all" + ":" + "Tom");
 	        //XContentQueryBuilder qb = QueryBuilders.queryString(queryBuild.toString());
 	        //builder.setQuery(qb);
-	        
 
-	        //builder.setQuery(termQuery(field, term));
-	
-	        org.elasticsearch.action.search.SearchResponse rsp = builder.execute().actionGet();
-	        SearchHit[] docs = rsp.getHits().getHits();
-			List<com.shopizer.search.services.SearchHit> hits = new ArrayList<com.shopizer.search.services.SearchHit>();
-	        @SuppressWarnings("rawtypes")
-			List ids = new ArrayList();
-	        response.setCount(docs.length);
-	        for (SearchHit sd : docs) {
-	          //to get explanation you'll need to enable this when querying:
-	          //System.out.println(sd.getExplanation().toString());
-	
-	          // if we use in mapping: "_source" : {"enabled" : false}
-	          // we need to include all necessary fields in query and then to use doc.getFields()
-	          // instead of doc.getSource()
+	        org.elasticsearch.action.search.SearchResponse resp = builder.execute().actionGet();
+	        
+	        return resp;
 
 
-	        	log.debug("Found entry " + sd.sourceAsString());
-	            //System.out.println(sd.getScore());
-	        	com.shopizer.search.services.SearchHit hit = new com.shopizer.search.services.SearchHit(sd);
-	        	hits.add(hit);
-	        	ids.add(sd.getId());
-	        	//Map source = sd.getSource();
-	        	//Map highlights = sd.getHighlightFields();
-	        	//hits.add(sd);
-	          
-	          
-	        }
-	        
-	        response.setIds(ids);
-	        
-	        Facets facets = rsp.getFacets();
-	        if(facets!=null) {
-	        	Map<String,com.shopizer.search.services.Facet> facetsMap = new HashMap<String,com.shopizer.search.services.Facet>();
-	        	for (Facet facet : facets.facets()) {
-	        		 
-	        	     if (facet instanceof TermsFacet) {
-	        	         TermsFacet ff = (TermsFacet) facet;
-	        	         com.shopizer.search.services.Facet f = new com.shopizer.search.services.Facet();
-	        	         f.setName(ff.getName());
-	        	         List<com.shopizer.search.services.Entry> entries = new ArrayList<com.shopizer.search.services.Entry>();
-	        	         for(Object o : ff) {
-	        	        	 com.shopizer.search.services.Entry entry = new com.shopizer.search.services.Entry();
-	        	        	 Entry e = (Entry)o;
-	        	        	 entry.setName(e.getTerm().string());
-	        	        	 entry.setCount(e.getCount());
-	        	        	 entries.add(entry);
-	        	         }
-	        	         f.setEntries(entries);
-	        	         facetsMap.put(ff.getName(), f);
-	        	    }
-	        	     else if (facet instanceof RangeFacet) {
-	        	    	 RangeFacet ff = (RangeFacet) facet;
-	        	         com.shopizer.search.services.Facet f = new com.shopizer.search.services.Facet();
-	        	         f.setName(ff.getName());
-	        	         List<com.shopizer.search.services.Entry> entries = new ArrayList<com.shopizer.search.services.Entry>();
-	        	         for(Object o : ff) {
-	        	        	 com.shopizer.search.services.Entry entry = new com.shopizer.search.services.Entry();
-	        	        	 Entry e = (Entry)o;
-	        	        	 entry.setName(e.getTerm().string());
-	        	        	 entry.setCount(e.getCount());
-	        	        	 entries.add(entry);
-	        	         }
-	        	         f.setEntries(entries);
-	        	         facetsMap.put(ff.getName(), f);
-	        	    }
-	        	     else if (facet instanceof HistogramFacet) {
-	        	    	 HistogramFacet ff = (HistogramFacet) facet;
-	        	         com.shopizer.search.services.Facet f = new com.shopizer.search.services.Facet();
-	        	         f.setName(ff.getName());
-	        	         List<com.shopizer.search.services.Entry> entries = new ArrayList<com.shopizer.search.services.Entry>();
-	        	         for(Object o : ff) {
-	        	        	 com.shopizer.search.services.Entry entry = new com.shopizer.search.services.Entry();
-	        	        	 Entry e = (Entry)o;
-	        	        	 entry.setName(e.getTerm().string());//TODO
-	        	        	 entry.setCount(e.getCount());
-	        	        	 entries.add(entry);
-	        	         }
-	        	         f.setEntries(entries);
-	        	         facetsMap.put(ff.getName(), f);
-	        	    }
-	        	     else if (facet instanceof DateHistogramFacet) {
-	        	    	 DateHistogramFacet ff = (DateHistogramFacet) facet;
-	        	         com.shopizer.search.services.Facet f = new com.shopizer.search.services.Facet();
-	        	         f.setName(ff.getName());
-	        	         List<com.shopizer.search.services.Entry> entries = new ArrayList<com.shopizer.search.services.Entry>();
-	        	         for(Object o : ff) {
-	        	        	 com.shopizer.search.services.Entry entry = new com.shopizer.search.services.Entry();
-	        	        	 Entry e = (Entry)o;
-	        	        	 entry.setName(e.getTerm().string());//TODO
-	        	        	 entry.setCount(e.getCount());
-	        	        	 entries.add(entry);
-	        	         }
-	        	         f.setEntries(entries);
-	        	         facetsMap.put(ff.getName(), f);
-	        	    }
-	        	     else if (facet instanceof GeoDistanceFacet) {
-	        	    	 GeoDistanceFacet ff = (GeoDistanceFacet) facet;
-	        	         com.shopizer.search.services.Facet f = new com.shopizer.search.services.Facet();
-	        	         f.setName(ff.getName());
-	        	         List<com.shopizer.search.services.Entry> entries = new ArrayList<com.shopizer.search.services.Entry>();
-	        	         for(Object o : ff) {
-	        	        	 com.shopizer.search.services.Entry entry = new com.shopizer.search.services.Entry();
-	        	        	 Entry e = (Entry)o;
-	        	        	 entry.setName(e.getTerm().string());//TODO
-	        	        	 entry.setCount(e.getCount());
-	        	        	 entries.add(entry);
-	        	         }
-	        	         f.setEntries(entries);
-	        	         facetsMap.put(ff.getName(), f);
-	        	    }
-	        	}
-	        	response.setFacets(facetsMap);
-	        }
-	        
-	        response.setSearchHits(hits);
-	        return response;
-        
-		} catch (Exception e) {
-			throw e;
-		}
-		
-		
 	}
 
 	/* (non-Javadoc)
@@ -502,9 +365,8 @@ public class SearchDelegateImpl implements SearchDelegate {
 	@Override
 	public Set<String> searchAutocomplete(String collection,String json,int size) {
 		
-		Set<String> returnList = new HashSet();
-		
-		
+		Set<String> returnList = new HashSet<String>();
+
 		try {
 			
 
@@ -541,7 +403,7 @@ public class SearchDelegateImpl implements SearchDelegate {
 	          // if we use in mapping: "_source" : {"enabled" : false}
 	          // we need to include all necessary fields in query and then to use doc.getFields()
 	          // instead of doc.getSource()
-	        	Map source = sd.getSource();
+	        	Map<String,Object> source = sd.getSource();
 	        	//System.out.println(sd.getType());
 	        	//System.out.println(sd.getExplanation().toString());
 	        	//System.out.println(sd.fields().toString());
