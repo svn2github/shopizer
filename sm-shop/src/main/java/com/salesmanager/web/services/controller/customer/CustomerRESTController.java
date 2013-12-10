@@ -29,6 +29,8 @@ import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.customer.PersistableCustomer;
+import com.salesmanager.web.populator.customer.CustomerPopulator;
 import com.salesmanager.web.services.controller.category.ShoppingCategoryRESTController;
 
 @Controller
@@ -233,7 +235,7 @@ public class CustomerRESTController {
 	@RequestMapping( value="/private/customer/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
-	public com.salesmanager.web.entity.customer.Customer createCustomer(@PathVariable final String store, @Valid @RequestBody Customer customer, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public PersistableCustomer createCustomer(@PathVariable final String store, @Valid @RequestBody PersistableCustomer customer, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		if(merchantStore!=null) {
 			if(!merchantStore.getCode().equals(store)) {
@@ -251,7 +253,14 @@ public class CustomerRESTController {
 			return null;
 		}
 		
-		customer.setMerchantStore(merchantStore);
+		Customer cust = new Customer();
+		
+		CustomerPopulator populator = new CustomerPopulator();
+		populator.populate(customer, cust, merchantStore, merchantStore.getDefaultLanguage());
+		
+		
+		
+/*		customer.setMerchantStore(merchantStore);
 		customer.setDefaultLanguage(languageService.getByCode(Constants.DEFAULT_LANGUAGE));
 		
 		Country country = (customer.getCountry() != null)?countryService.getByCode(customer.getCountry().getIsoCode().toUpperCase()):null;
@@ -284,13 +293,12 @@ public class CustomerRESTController {
 			if(zoneCountry != null){
 				customer.getZone().setCountry(zoneCountry);
 			}
-		}
+		}*/
 		
-		customerService.saveOrUpdate(customer);
-		//TODO use customer populator
-		//com.salesmanager.web.entity.customer.Customer customerProxy = customerUtils.buildProxyCustomer(customer, merchantStore);
-		//return customerProxy;
-		return null;
+		customerService.saveOrUpdate(cust);
+		customer.setId(cust.getId());
+
+		return customer;
 	}
 	
 }

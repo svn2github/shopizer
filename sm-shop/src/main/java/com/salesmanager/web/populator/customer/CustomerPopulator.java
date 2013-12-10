@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import com.salesmanager.core.business.common.model.Billing;
+import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -35,6 +36,13 @@ public class CustomerPopulator extends
 			
 			//target.setAnonymous(anonymous)
 			//target.setAttributes(attributes)
+			
+			target.setPassword(source.getPassword());
+			target.setEmailAddress(source.getEmailAddress());
+			target.setNick(source.getUserName());
+			target.setFirstname(source.getFirstName());
+			target.setLastname(source.getLastName());
+
 
 			Map<String,Country> countries = countryService.getCountriesMap(language);
 			
@@ -66,11 +74,38 @@ public class CustomerPopulator extends
 					}
 					billing.setZone(zone);
 				}
-				
 				target.setBilling(billing);
 			}
 			
-			//the same for delivery
+			Address sourceShipping = source.getDelivery();
+			if(sourceShipping!=null) {
+				Delivery delivery = new Delivery();
+				delivery.setAddress(sourceShipping.getAddress());
+				delivery.setCity(sourceShipping.getCity());
+				delivery.setCompany(sourceShipping.getCompany());
+				delivery.setName(sourceShipping.getName());
+				delivery.setTelephone(sourceShipping.getPhone());
+				delivery.setPostalCode(sourceShipping.getPostalCode());
+				delivery.setState(sourceShipping.getStateProvince());
+				Country deliveryCountry = null;
+				if(!StringUtils.isBlank(sourceShipping.getCountry())) {
+					deliveryCountry = countries.get(sourceShipping.getCountry());
+					if(deliveryCountry==null) {
+						throw new ConversionException("Unsuported country code " + sourceShipping.getCountry());
+					}
+					delivery.setCountry(deliveryCountry);
+				}
+				
+				if(deliveryCountry!=null && !StringUtils.isBlank(sourceShipping.getZone())) {
+					Zone zone = zoneService.getByCode(sourceShipping.getZone());
+					if(zone==null) {
+						throw new ConversionException("Unsuported zone code " + sourceShipping.getZone());
+					}
+					delivery.setZone(zone);
+				}
+				target.setDelivery(delivery);
+			}
+
 		
 		} catch (Exception e) {
 			throw new ConversionException(e);
@@ -79,7 +114,7 @@ public class CustomerPopulator extends
 		
 		
 		
-		return null;
+		return target;
 	}
 
 	@Override

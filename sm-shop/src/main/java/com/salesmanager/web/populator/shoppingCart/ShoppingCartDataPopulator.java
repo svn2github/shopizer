@@ -10,7 +10,9 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.configuration.ConversionException;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
@@ -37,7 +39,7 @@ import com.salesmanager.web.utils.ImageFilePathUtils;
 public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCart,ShoppingCartData>
 {
 
-    protected final Logger LOG= Logger.getLogger( getClass());
+    protected final Logger LOG= LoggerFactory.getLogger( getClass());
 
 
     private PricingService pricingService;

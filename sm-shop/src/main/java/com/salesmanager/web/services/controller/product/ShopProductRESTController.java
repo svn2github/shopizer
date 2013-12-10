@@ -91,7 +91,7 @@ public class ShopProductRESTController {
 	/**
 	 * Create new product for a given MerchantStore
 	 */
-	@RequestMapping( value="/shop/services/private/products/{store}/create", method=RequestMethod.POST)
+	@RequestMapping( value="/shop/services/private/product/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public PersistableProduct createProduct(@PathVariable final String store, @Valid @RequestBody PersistableProduct product, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -152,7 +152,7 @@ public class ShopProductRESTController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping( value="/shop/services/private/manufacturer/{store}/create", method=RequestMethod.POST)
+	@RequestMapping( value="/shop/services/private/manufacturer/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public PersistableManufacturer createManufacturer(@PathVariable final String store, @Valid @RequestBody PersistableManufacturer manufacturer, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -203,7 +203,7 @@ public class ShopProductRESTController {
 	}
 	
 	
-	@RequestMapping( value="/shop/services/private/optionValue/{store}/create", method=RequestMethod.POST)
+	@RequestMapping( value="/shop/services/private/optionValue/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public PersistableProductOptionValue createProductOptionValue(@PathVariable final String store, @Valid @RequestBody PersistableProductOptionValue optionValue, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -253,7 +253,7 @@ public class ShopProductRESTController {
 	}
 	
 	
-	@RequestMapping( value="/shop/services/private/option/{store}/create", method=RequestMethod.POST)
+	@RequestMapping( value="/shop/services/private/option/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public PersistableProductOption createProductOption(@PathVariable final String store, @Valid @RequestBody PersistableProductOption option, HttpServletRequest request, HttpServletResponse response) throws Exception {

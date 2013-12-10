@@ -1,68 +1,15 @@
 package com.salesmanager.web.entity.customer.attribute;
 
 import java.io.Serializable;
-import java.util.List;
 
-import com.salesmanager.web.entity.ShopEntity;
+import com.salesmanager.web.entity.Entity;
 
-public class CustomerOption extends ShopEntity implements Serializable {
+public class CustomerOption extends Entity implements Serializable {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String type;
-	private String name;
-	
-	//private List<long> values;
-	//private String value;
-	//private long idValue;
-
-
-
-	private CustomerOptionValue defaultValue;
-
-	
-	private List<CustomerOptionValue> availableValues;
-
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public CustomerOptionValue getDefaultValue() {
-		return defaultValue;
-	}
-
-	public void setDefaultValue(CustomerOptionValue defaultValue) {
-		this.defaultValue = defaultValue;
-	}
-
-	public List<CustomerOptionValue> getAvailableValues() {
-		return availableValues;
-	}
-
-	public void setAvailableValues(List<CustomerOptionValue> availableValues) {
-		this.availableValues = availableValues;
-	}
-
-
-
-
-
-
 
 
 

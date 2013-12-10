@@ -1,4 +1,4 @@
-package com.salesmanager.web.entity.customer.attribute;
+package com.salesmanager.web.admin.entity.customer.attribute;
 
 import java.util.List;
 
