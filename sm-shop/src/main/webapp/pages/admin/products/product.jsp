@@ -14,7 +14,7 @@ var priceFormatMessage = '<s:message code="message.price.cents" text="Wrong form
 	<script src="<c:url value="/resources/js/ckeditor/ckeditor.js" />"></script>
 	<script src="<c:url value="/resources/js/jquery.formatCurrency-1.4.0.js" />"></script>
 	<script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
-	<script src="<c:url value="/resources/js/functions.js" />"></script>
+	<script src="<c:url value="/resources/js/adminFunctions.js" />"></script>
 	
 	
 	

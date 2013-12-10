@@ -104,7 +104,7 @@ response.setDateHeader ("Expires", -1);
 			var orderBy = getOrderBy();
 			orderProducts(orderBy);
 			
-			var productQty = productList.productCount + ' ' + <s:message code="label.search.items.found" text="item(s) found" />
+			var productQty = productList.productCount + ' <s:message code="label.search.items.found" text="item(s) found" />';
 			$('#products-qty').html(productQty);
 
 	}

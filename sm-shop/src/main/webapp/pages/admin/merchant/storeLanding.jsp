@@ -56,6 +56,9 @@
 		                        </div>
 		                  </div>
 		                  
+		                  
+		                  
+		                  
 		                  <!-- Keywords -->
 		                  <div class="control-group">
 		                        <label><s:message code="label.storefront.metatags.keywords" text="Keywords"/> (<c:out value="${description.language.code}"/>)</label>
@@ -67,14 +70,52 @@
 		                  
 		                  
 		                  <!-- Content -->
-		                  <div class="control-group">
-		                        <label><s:message code="label.storefront.storetext" text="Page content"/> (<c:out value="${description.language.code}"/>)</label>
-		                        <div class="controls">
-		                                  <textarea cols="30" id="descriptions[${counter.index}].homePageContent" class="ckeditor" name="descriptions[${counter.index}].homePageContent">
-                        						<c:out value="${storeLanding.descriptions[counter.index].homePageContent}"/>
-                        				  </textarea>
-		                        </div>
-		                  </div>
+		                  
+		                 <div class="control-group">
+                        	<label><s:message code="label.storefront.storetext" text="Page content"/> (<c:out value="${description.language.code}"/>)</label>
+                        	<div class="controls">
+                        
+
+                        
+		                        <textarea cols="30" id="descriptions[${counter.index}].homePageContent" class="ckeditor" name="descriptions[${counter.index}].homePageContent">
+		                        		<c:out value="${content.descriptions[counter.index].homePageContent}"/>
+		                        </textarea>
+
+
+                        	</div>
+                        
+                        <script type="text/javascript">
+						//<![CDATA[
+
+							CKEDITOR.replace('descriptions[${counter.index}].homePageContent',
+							{
+								skin : 'office2003',
+								toolbar : 
+								[
+									['Source','-','Save','NewPage','Preview'], 
+									['Cut','Copy','Paste','PasteText','-','Print'], 
+									['Undo','Redo','-','Find','-','SelectAll','RemoveFormat'], '/', 
+									['Bold','Italic','Underline','Strike','-','Subscript','Superscript'], 
+									['NumberedList','BulletedList','-','Outdent','Indent','Blockquote'], 
+									['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'], 
+									['Link','Unlink','Anchor'], 
+									['Image','Flash','Table','HorizontalRule','SpecialChar','PageBreak'], '/', 
+									['Styles','Format','Font','FontSize'], ['TextColor','BGColor'], 
+									['Maximize', 'ShowBlocks'] 
+								],
+								
+								filebrowserWindowWidth : '720',
+        						filebrowserWindowHeight : '740',
+								filebrowserImageBrowseUrl :    '<c:url value="/admin/content/fileBrowser.html"/>'
+								
+
+							});
+
+						//]]>
+						</script>
+
+                  </div>
+		                  
 		                  
 
 		                  <form:hidden path="descriptions[${counter.index}].language.code" />
