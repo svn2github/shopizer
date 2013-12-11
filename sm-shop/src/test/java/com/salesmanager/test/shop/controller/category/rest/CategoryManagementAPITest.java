@@ -155,7 +155,7 @@ public class CategoryManagementAPITest {
 		System.out.println("Category "+testCategoryID+" Deleted.");
 	}
 	
-	@Test
+/*	@Test
 	@Ignore
 	public void getProducts() throws Exception {
 		restTemplate = new RestTemplate();
@@ -169,36 +169,8 @@ public class CategoryManagementAPITest {
 		}else{
 			System.out.println(response.getBody().length + " Product records found.");
 		}
-	}
-	
-/*	@Test
-	@Ignore
-	public void putProduct() throws Exception {
-		restTemplate = new RestTemplate();
-		
-		//TODO: Put Product
-		
-	}
-	
-	@Test
-	@Ignore
-	public void postProduct() throws Exception {
-		restTemplate = new RestTemplate();
-		
-		//TODO: Post Product
-
-		
-	}
-	
-	@Test
-	@Ignore
-	public void deleteProduct() throws Exception {
-		restTemplate = new RestTemplate();
-		
-		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
-		
-		restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/rest/products/DEFAULT/en/"+testCategoryID+"/"+testProductID, HttpMethod.DELETE, httpEntity, Product.class);
-		System.out.println("Product "+testProductID+" Deleted.");
 	}*/
+	
+
 	
 }

@@ -34,13 +34,6 @@ public class ProductManagementAPITest {
 	
 	private Long testProductID;
 
-	@Test
-	@Ignore
-	public void categoryRESTTest() throws Exception {
-		
-
-		
-	}
 	
 	public HttpHeaders getHeader(){
 		HttpHeaders headers = new HttpHeaders();
@@ -161,7 +154,7 @@ public class ProductManagementAPITest {
 
 		HttpEntity<String> entity = new HttpEntity<String>(json, getHeader());
 
-		ResponseEntity response = restTemplate.postForEntity("http://localhost:8080/sm-shop/shop/services/private/optionValue/DEFAULT", entity, PersistableProductOptionValue.class);
+		ResponseEntity response = restTemplate.postForEntity("http://localhost:8080/sm-shop/shop/services/private/product/optionValue/DEFAULT", entity, PersistableProductOptionValue.class);
 
 		PersistableProductOptionValue opt = (PersistableProductOptionValue) response.getBody();
 		System.out.println("New optionValue ID : " + opt.getId());
@@ -219,7 +212,7 @@ public class ProductManagementAPITest {
 
 		HttpEntity<String> entity = new HttpEntity<String>(json, getHeader());
 
-		ResponseEntity response = restTemplate.postForEntity("http://localhost:8080/sm-shop/shop/services/private/option/DEFAULT", entity, PersistableProductOption.class);
+		ResponseEntity response = restTemplate.postForEntity("http://localhost:8080/sm-shop/shop/services/private/product/option/DEFAULT", entity, PersistableProductOption.class);
 
 		PersistableProductOption opt = (PersistableProductOption) response.getBody();
 		System.out.println("New option ID : " + opt.getId());
