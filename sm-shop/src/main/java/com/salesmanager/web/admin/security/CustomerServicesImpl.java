@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,6 +34,8 @@ import com.salesmanager.core.business.user.service.PermissionService;
 @Service("customerDetailsService")
 public class CustomerServicesImpl implements UserDetailsService{
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerServicesImpl.class);
+	
 	@Autowired
 	private CustomerService customerService;
 	
@@ -83,7 +87,8 @@ public class CustomerServicesImpl implements UserDetailsService{
 		
 		
 		} catch (ServiceException e) {
-			e.printStackTrace();
+			LOGGER.error("Exception while querrying customer",e);
+			throw new SecurityDataAccessException("Cannot authenticate customer",e);
 		}
 		
 		User authUser = new User(userName, user.getPassword(), true, true,

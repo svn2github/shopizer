@@ -118,14 +118,17 @@ public class ShopProductRESTController {
 
 			PersistableProductPopulator populator = new PersistableProductPopulator();
 			populator.setCategoryService(categoryService);
-			populator.setProductService(productService);
 			populator.setProductOptionService(productOptionService);
 			populator.setProductOptionValueService(productOptionValueService);
 			populator.setManufacturerService(manufacturerService);
 			populator.setTaxClassService(taxClassService);
 			populator.setLanguageService(languageService);
 			
-			populator.populate(product, new Product(), merchantStore, merchantStore.getDefaultLanguage());
+			
+			Product prod = new Product();
+			populator.populate(product, prod, merchantStore, merchantStore.getDefaultLanguage());
+			
+			productService.save(prod);
 			
 			return product;
 			
@@ -203,7 +206,7 @@ public class ShopProductRESTController {
 	}
 	
 	
-	@RequestMapping( value="/shop/services/private/optionValue/{store}", method=RequestMethod.POST)
+	@RequestMapping( value="/shop/services/private/product/optionValue/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public PersistableProductOptionValue createProductOptionValue(@PathVariable final String store, @Valid @RequestBody PersistableProductOptionValue optionValue, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -253,7 +256,7 @@ public class ShopProductRESTController {
 	}
 	
 	
-	@RequestMapping( value="/shop/services/private/option/{store}", method=RequestMethod.POST)
+	@RequestMapping( value="/shop/services/private/product/option/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public PersistableProductOption createProductOption(@PathVariable final String store, @Valid @RequestBody PersistableProductOption option, HttpServletRequest request, HttpServletResponse response) throws Exception {

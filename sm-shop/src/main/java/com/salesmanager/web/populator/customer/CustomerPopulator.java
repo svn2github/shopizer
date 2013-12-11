@@ -2,11 +2,17 @@ package com.salesmanager.web.populator.customer;
 
 import java.util.Map;
 
+import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.StringUtils;
 
 import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
+import com.salesmanager.core.business.customer.model.attribute.CustomerOption;
+import com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue;
+import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
+import com.salesmanager.core.business.customer.service.attribute.CustomerOptionValueService;
 import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
@@ -17,12 +23,15 @@ import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.utils.AbstractDataPopulator;
 import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
+import com.salesmanager.web.entity.customer.attribute.PersistableCustomerAttribute;
 
 public class CustomerPopulator extends
 		AbstractDataPopulator<PersistableCustomer, Customer> {
 	
 	private CountryService countryService;
 	private ZoneService zoneService;
+	private CustomerOptionService customerOptionService;
+	private CustomerOptionValueService customerOptionValueService;
 
 	/**
 	 * Creates a Customer entity ready to be saved
@@ -30,23 +39,25 @@ public class CustomerPopulator extends
 	@Override
 	public Customer populate(PersistableCustomer source, Customer target,
 			MerchantStore store, Language language) throws ConversionException {
-		
-		//TODO complete
+
+		Validate.notNull(customerOptionService, "Requires to set CustomerOptionService");
+		Validate.notNull(customerOptionValueService, "Requires to set CustomerOptionValueService");
+		Validate.notNull(zoneService, "Requires to set ZoneService");
+		Validate.notNull(countryService, "Requires to set CountryService");
 		try {
 			
-			//target.setAnonymous(anonymous)
-			//target.setAttributes(attributes)
-			
-			target.setPassword(source.getPassword());
+			if(!StringUtils.isBlank(source.getPassword())) {
+				target.setPassword(source.getPassword());
+				target.setAnonymous(false);
+			}
+
 			target.setEmailAddress(source.getEmailAddress());
 			target.setNick(source.getUserName());
 			target.setFirstname(source.getFirstName());
 			target.setLastname(source.getLastName());
 
-
 			Map<String,Country> countries = countryService.getCountriesMap(language);
-			
-			
+
 			Address sourceBilling = source.getBilling();
 			if(sourceBilling!=null) {
 				Billing billing = new Billing();
@@ -75,8 +86,15 @@ public class CustomerPopulator extends
 					billing.setZone(zone);
 				}
 				target.setBilling(billing);
+				
+				target.setCity(billing.getCity());
+				target.setCountry(billing.getCountry());
+				target.setPostalCode(billing.getPostalCode());
+				target.setState(billing.getState());
+				target.setTelephone(billing.getTelephone());
+				target.setStreetAddress(billing.getAddress());
+				target.setZone(billing.getZone());
 			}
-			
 			Address sourceShipping = source.getDelivery();
 			if(sourceShipping!=null) {
 				Delivery delivery = new Delivery();
@@ -105,6 +123,38 @@ public class CustomerPopulator extends
 				}
 				target.setDelivery(delivery);
 			}
+			
+			if(source.getAttributes()!=null) {
+				for(PersistableCustomerAttribute attr : source.getAttributes()) {
+
+					CustomerOption customerOption = customerOptionService.getById(attr.getCustomerOption().getId());
+					if(customerOption==null) {
+						throw new ConversionException("Customer option id " + attr.getCustomerOption().getId() + " does not exist");
+					}
+					
+					CustomerOptionValue customerOptionValue = customerOptionValueService.getById(attr.getCustomerOptionValue().getId());
+					if(customerOptionValue==null) {
+						throw new ConversionException("Customer option value id " + attr.getCustomerOptionValue().getId() + " does not exist");
+					}
+					
+					if(customerOption.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+						throw new ConversionException("Invalid customer option id ");
+					}
+					
+					if(customerOptionValue.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+						throw new ConversionException("Invalid customer option value id ");
+					}
+					
+					CustomerAttribute attribute = new CustomerAttribute();
+					attribute.setCustomer(target);
+					attribute.setCustomerOption(customerOption);
+					attribute.setCustomerOptionValue(customerOptionValue);
+					attribute.setTextValue(attr.getTextValue());
+					
+					target.getAttributes().add(attribute);
+					
+				}
+			}
 
 		
 		} catch (Exception e) {
@@ -120,6 +170,22 @@ public class CustomerPopulator extends
 	@Override
 	protected Customer createTarget() {
 		return null;
+	}
+
+	public void setCustomerOptionService(CustomerOptionService customerOptionService) {
+		this.customerOptionService = customerOptionService;
+	}
+
+	public CustomerOptionService getCustomerOptionService() {
+		return customerOptionService;
+	}
+
+	public void setCustomerOptionValueService(CustomerOptionValueService customerOptionValueService) {
+		this.customerOptionValueService = customerOptionValueService;
+	}
+
+	public CustomerOptionValueService getCustomerOptionValueService() {
+		return customerOptionValueService;
 	}
 
 }

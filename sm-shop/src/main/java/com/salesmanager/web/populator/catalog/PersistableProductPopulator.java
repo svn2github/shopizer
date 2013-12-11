@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.StringUtils;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
@@ -21,7 +22,6 @@ import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDescription;
-import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionValueService;
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
@@ -40,7 +40,6 @@ public class PersistableProductPopulator extends
 	
 	
 	private CategoryService categoryService;
-	private ProductService productService;
 	private ManufacturerService manufacturerService;
 	private TaxClassService taxClassService;
 	private LanguageService languageService;
@@ -53,6 +52,13 @@ public class PersistableProductPopulator extends
 	public Product populate(PersistableProduct source,
 			Product target, MerchantStore store, Language language)
 			throws ConversionException {
+		
+			Validate.notNull(manufacturerService, "Requires to set ManufacturerService");
+			Validate.notNull(languageService, "Requires to set LanguageService");
+			Validate.notNull(categoryService, "Requires to set CategoryService");
+			Validate.notNull(taxClassService, "Requires to set TaxClassService");
+			Validate.notNull(productOptionService, "Requires to set ProductOptionService");
+			Validate.notNull(productOptionValueService, "Requires to set ProductOptionValueService");
 		
 		try {
 
@@ -176,6 +182,9 @@ public class PersistableProductPopulator extends
 					
 					ProductAttribute attribute = new ProductAttribute();
 					attribute.setProduct(target);
+					attribute.setProductOption(productOption);
+					attribute.setProductOptionValue(productOptionValue);
+					attribute.setProductAttributePrice(attr.getProductAttributePrice());
 					attribute.setProductAttributeWeight(attr.getProductAttributeWeight());
 					attribute.setProductAttributePrice(attr.getProductAttributePrice());
 					target.getAttributes().add(attribute);
@@ -202,8 +211,6 @@ public class PersistableProductPopulator extends
 				}
 				
 			}
-
-			productService.saveOrUpdate(target);
 
 			return target;
 		
@@ -238,13 +245,6 @@ public class PersistableProductPopulator extends
 		return taxClassService;
 	}
 
-	public ProductService getProductService() {
-		return productService;
-	}
-
-	public void setProductService(ProductService productService) {
-		this.productService = productService;
-	}
 
 	public LanguageService getLanguageService() {
 		return languageService;

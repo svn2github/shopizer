@@ -1,17 +1,24 @@
 package com.salesmanager.web.populator.customer;
 
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
 import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.AbstractDataPopulator;
 import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.entity.customer.ReadableCustomer;
+import com.salesmanager.web.entity.customer.attribute.CustomerOptionDescription;
+import com.salesmanager.web.entity.customer.attribute.CustomerOptionValueDescription;
+import com.salesmanager.web.entity.customer.attribute.ReadableCustomerAttribute;
+import com.salesmanager.web.entity.customer.attribute.ReadableCustomerOption;
+import com.salesmanager.web.entity.customer.attribute.ReadableCustomerOptionValue;
 
 public class ReadableCustomerPopulator extends
 		AbstractDataPopulator<Customer, ReadableCustomer> {
 
 	
+
 	@Override
 	public ReadableCustomer populate(Customer source, ReadableCustomer target,
 			MerchantStore store, Language language) throws ConversionException {
@@ -52,6 +59,35 @@ public class ReadableCustomerPopulator extends
 			}
 			
 			target.setDelivery(address);
+		}
+		
+		if(source.getAttributes()!=null) {
+			for(CustomerAttribute attribute : source.getAttributes()) {
+				ReadableCustomerAttribute readableAttribute = new ReadableCustomerAttribute();
+				readableAttribute.setId(attribute.getId());
+				ReadableCustomerOption option = new ReadableCustomerOption();
+				option.setId(attribute.getCustomerOption().getId());
+				option.setCode(attribute.getCustomerOption().getCode());
+				
+				CustomerOptionDescription d = new CustomerOptionDescription();
+				d.setDescription(attribute.getCustomerOption().getDescriptionsSettoList().get(0).getDescription());
+				d.setName(attribute.getCustomerOption().getDescriptionsSettoList().get(0).getName());
+				option.setDescription(d);
+				
+				readableAttribute.setCustomerOption(option);
+				
+				ReadableCustomerOptionValue optionValue = new ReadableCustomerOptionValue();
+				optionValue.setId(attribute.getCustomerOptionValue().getId());
+				CustomerOptionValueDescription vd = new CustomerOptionValueDescription();
+				vd.setDescription(attribute.getCustomerOptionValue().getDescriptionsSettoList().get(0).getDescription());
+				vd.setName(attribute.getCustomerOptionValue().getDescriptionsSettoList().get(0).getName());
+				optionValue.setCode(attribute.getCustomerOptionValue().getCode());
+				optionValue.setDescription(vd);
+				
+				
+				readableAttribute.setCustomerOptionValue(optionValue);
+				target.getAttributes().add(readableAttribute);
+			}
 		}
 		
 		} catch (Exception e) {
