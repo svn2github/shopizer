@@ -41,7 +41,7 @@ import com.salesmanager.web.entity.order.PersistableOrderProduct;
 import com.salesmanager.web.entity.order.ShopOrder;
 import com.salesmanager.web.populator.customer.CustomerPopulator;
 import com.salesmanager.web.populator.customer.PersistableCustomerPopulator;
-import com.salesmanager.web.populator.order.PersistableOrderProductPopulator;
+import com.salesmanager.web.populator.order.OrderProductPopulator;
 import com.salesmanager.web.populator.order.ShoppingCartItemPopulator;
 
 @Service("orderFacade")
@@ -208,7 +208,7 @@ public class OrderFacadeImpl implements OrderFacade {
 		List<ShoppingCartItem> shoppingCartItems = order.getShoppingCartItems();
 		Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
 		
-		PersistableOrderProductPopulator orderProductPopulator = new PersistableOrderProductPopulator();
+		OrderProductPopulator orderProductPopulator = new OrderProductPopulator();
 		orderProductPopulator.setDigitalProductService(digitalProductService);
 		orderProductPopulator.setProductAttributeService(productAttributeService);
 		orderProductPopulator.setProductService(productService);
