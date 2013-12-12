@@ -2,9 +2,6 @@ package com.salesmanager.core.business.order.model;
 
 import java.math.BigDecimal;
 
-
-
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -20,7 +17,6 @@ import javax.persistence.TableGenerator;
 import org.hibernate.annotations.Type;
 
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
-import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
 import com.salesmanager.core.constants.SchemaConstant;
 
 
