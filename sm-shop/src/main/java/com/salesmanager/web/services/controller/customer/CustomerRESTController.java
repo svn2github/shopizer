@@ -210,7 +210,7 @@ public class CustomerRESTController {
 	 */
 	@RequestMapping( value="/private/customer/{store}", method=RequestMethod.GET)
 	@ResponseBody
-	public List<com.salesmanager.web.entity.customer.Customer> getCustomers(@PathVariable final String store, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public List<ReadableCustomer> getCustomers(@PathVariable final String store, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		if(merchantStore!=null) {
 			if(!merchantStore.getCode().equals(store)) {
@@ -229,20 +229,23 @@ public class CustomerRESTController {
 		}
 		
 		List<Customer> customers = customerService.listByStore(merchantStore);
-		List<com.salesmanager.web.entity.customer.Customer> returnCustomers = new ArrayList<com.salesmanager.web.entity.customer.Customer>();
+		List<ReadableCustomer> returnCustomers = new ArrayList<ReadableCustomer>();
 		for(Customer customer : customers) {
-			//TODO use customer populator
-			//com.salesmanager.web.entity.customer.Customer customerProxy = customerUtils.buildProxyCustomer(customer, merchantStore);
-			//returnCustomers.add(customerProxy);
+
+			ReadableCustomerPopulator populator = new ReadableCustomerPopulator();
+			ReadableCustomer readableCustomer = new ReadableCustomer();
+			populator.populate(customer, readableCustomer, merchantStore, merchantStore.getDefaultLanguage());
+			returnCustomers.add(readableCustomer);
+			
 		}
 		
 		return returnCustomers;
 	}
 	
 	
-	/**
+/*	*//**
 	 * Updates a customer for a given MerchantStore
-	 */
+	 *//*
 	@RequestMapping( value="/private/customer/{store}/{id}", method=RequestMethod.PUT)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void updateCustomer(@PathVariable final String store, @PathVariable Long id, @Valid @RequestBody Customer customer, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -295,7 +298,7 @@ public class CustomerRESTController {
 		}else{
 			response.sendError(404, "No Customer found for ID : " + id);
 		}
-	}
+	}*/
 	
 	
 	/**
@@ -334,8 +337,6 @@ public class CustomerRESTController {
 			response.sendError(404, "An exception occured while removing the customer");
 			return;
 		}
-		
-   
 
 	}
 	

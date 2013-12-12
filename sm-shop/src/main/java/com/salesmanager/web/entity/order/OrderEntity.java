@@ -19,6 +19,7 @@ public class OrderEntity extends Order implements Serializable {
 	private PaymentType paymentType;
 	private String paymentModule;
 	private String shippingModule;
+	private List<OrderStatus> previousOrderStatus;
 	private OrderStatus orderStatus;
 	private CreditCard creditCard;
 	private Date datePurchased;
@@ -47,12 +48,7 @@ public class OrderEntity extends Order implements Serializable {
 	public void setShippingModule(String shippingModule) {
 		this.shippingModule = shippingModule;
 	}
-	public OrderStatus getOrderStatus() {
-		return orderStatus;
-	}
-	public void setOrderStatus(OrderStatus orderStatus) {
-		this.orderStatus = orderStatus;
-	}
+
 	public CreditCard getCreditCard() {
 		return creditCard;
 	}
@@ -65,5 +61,18 @@ public class OrderEntity extends Order implements Serializable {
 	public void setDatePurchased(Date datePurchased) {
 		this.datePurchased = datePurchased;
 	}
+	public void setPreviousOrderStatus(List<OrderStatus> previousOrderStatus) {
+		this.previousOrderStatus = previousOrderStatus;
+	}
+	public List<OrderStatus> getPreviousOrderStatus() {
+		return previousOrderStatus;
+	}
+	public void setOrderStatus(OrderStatus orderStatus) {
+		this.orderStatus = orderStatus;
+	}
+	public OrderStatus getOrderStatus() {
+		return orderStatus;
+	}
+
 
 }

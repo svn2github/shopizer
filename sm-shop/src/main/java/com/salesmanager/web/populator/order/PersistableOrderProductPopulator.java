@@ -8,10 +8,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.Validate;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.catalog.product.model.file.DigitalProduct;
-import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
-import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
 import com.salesmanager.core.business.catalog.product.service.file.DigitalProductService;
@@ -22,12 +19,12 @@ import com.salesmanager.core.business.order.model.orderproduct.OrderProductAttri
 import com.salesmanager.core.business.order.model.orderproduct.OrderProductDownload;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProductPrice;
 import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.business.shoppingcart.model.ShoppingCartAttributeItem;
-import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.utils.AbstractDataPopulator;
+import com.salesmanager.web.entity.catalog.product.attribute.ProductAttribute;
+import com.salesmanager.web.entity.order.PersistableOrderProduct;
 
-public class OrderProductPopulator extends
-		AbstractDataPopulator<ShoppingCartItem, OrderProduct> {
+public class PersistableOrderProductPopulator extends
+		AbstractDataPopulator<PersistableOrderProduct, OrderProduct> {
 	
 	private ProductService productService;
 	private DigitalProductService digitalProductService;
@@ -56,7 +53,7 @@ public class OrderProductPopulator extends
 	 * that will be saved in the system
 	 */
 	@Override
-	public OrderProduct populate(ShoppingCartItem source, OrderProduct target,
+	public OrderProduct populate(PersistableOrderProduct source, OrderProduct target,
 			MerchantStore store, Language language) throws ConversionException {
 		
 		Validate.notNull(productService,"productService must be set");
@@ -65,13 +62,13 @@ public class OrderProductPopulator extends
 
 		
 		try {
-			Product modelProduct = productService.getById(source.getProductId());
+			Product modelProduct = productService.getById(source.getProduct().getId());
 			if(modelProduct==null) {
-				throw new ConversionException("Cannot get product with id (productId) " + source.getProductId());
+				throw new ConversionException("Cannot get product with id (productId) " + source.getProduct().getId());
 			}
 			
 			if(modelProduct.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
-				throw new ConversionException("Invalid product id " + source.getProductId());
+				throw new ConversionException("Invalid product id " + source.getProduct().getId());
 			}
 
 			DigitalProduct digitalProduct = digitalProductService.getByProduct(store, modelProduct);
@@ -83,23 +80,23 @@ public class OrderProductPopulator extends
 				target.getDownloads().add(orderProductDownload);
 			}
 
-			target.setOneTimeCharge(source.getItemPrice());	
+			target.setOneTimeCharge(source.getFinalPrice());	
 			target.setProductName(source.getProduct().getDescriptions().iterator().next().getName());
-			target.setProductQuantity(source.getQuantity());
+			target.setProductQuantity(source.getOrderedQuantity());
 			target.setSku(source.getProduct().getSku());
 			
-			FinalPrice finalPrice = source.getFinalPrice();
-			if(finalPrice==null) {
-				throw new ConversionException("Object final price not populated in shoppingCartItem (source)");
-			}
-			//Default price
-			OrderProductPrice orderProductPrice = orderProductPrice(finalPrice);
+			OrderProductPrice orderProductPrice = new OrderProductPrice();
+			orderProductPrice.setDefaultPrice(true);
+			orderProductPrice.setProductPrice(source.getFinalPrice());
 			orderProductPrice.setOrderProduct(target);
+			
+
 			
 			Set<OrderProductPrice> prices = new HashSet<OrderProductPrice>();
 			prices.add(orderProductPrice);
 
-			//Other prices
+			/** DO NOT SUPPORT MUTIPLE PRICES **/
+/*			//Other prices
 			List<FinalPrice> otherPrices = finalPrice.getAdditionalPrices();
 			if(otherPrices!=null) {
 				for(FinalPrice otherPrice : otherPrices) {
@@ -107,19 +104,19 @@ public class OrderProductPopulator extends
 					other.setOrderProduct(target);
 					prices.add(other);
 				}
-			}
+			}*/
 			
 			target.setPrices(prices);
 			
 			//OrderProductAttribute
-			Set<ShoppingCartAttributeItem> attributeItems = source.getAttributes();
+			List<ProductAttribute> attributeItems = source.getAttributes();
 			if(!CollectionUtils.isEmpty(attributeItems)) {
 				Set<OrderProductAttribute> attributes = new HashSet<OrderProductAttribute>();
-				for(ShoppingCartAttributeItem attribute : attributeItems) {
+				for(ProductAttribute attribute : attributeItems) {
 					OrderProductAttribute orderProductAttribute = new OrderProductAttribute();
 					orderProductAttribute.setOrderProduct(target);
-					Long id = attribute.getProductAttributeId();
-					ProductAttribute attr = productAttributeService.getById(id);
+					Long id = attribute.getId();
+					com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute attr = productAttributeService.getById(id);
 					if(attr==null) {
 						throw new ConversionException("Attribute id " + id + " does not exists");
 					}
@@ -162,25 +159,6 @@ public class OrderProductPopulator extends
 		return productService;
 	}
 	
-	private OrderProductPrice orderProductPrice(FinalPrice price) {
-		
-		OrderProductPrice orderProductPrice = new OrderProductPrice();
-		
-		ProductPrice productPrice = price.getProductPrice();
-		
-		orderProductPrice.setDefaultPrice(productPrice.isDefaultPrice());
-
-		orderProductPrice.setProductPrice(price.getFinalPrice());
-		orderProductPrice.setProductPriceCode(productPrice.getCode());
-		orderProductPrice.setProductPriceName(productPrice.getDescriptions().iterator().next().getName());
-		if(price.isDiscounted()) {
-			orderProductPrice.setProductPriceSpecial(productPrice.getProductPriceSpecialAmount());
-			orderProductPrice.setProductPriceSpecialStartDate(productPrice.getProductPriceSpecialStartDate());
-			orderProductPrice.setProductPriceSpecialEndDate(productPrice.getProductPriceSpecialEndDate());
-		}
-		
-		return orderProductPrice;
-	}
 
 
 }
