@@ -49,7 +49,7 @@ response.setDateHeader ("Expires", -1);
 								</div>
 							</div>
 							<address>
-								<strong><s:message code="label.product.brand" text="Brand"/></strong> <span itemprop="brand"><c:out value="${product.manufacturer.name}" /></span><br>
+								<strong><s:message code="label.product.brand" text="Brand"/></strong> <span itemprop="brand"><c:out value="${product.manufacturer.description.name}" /></span><br>
 								<strong><s:message code="label.product.code" text="Product code"/></strong> <span itemprop="identifier" content="mpn:${product.sku}">${product.sku}</span><br>								
 							</address>
 							<span itemprop="offerDetails" itemscope itemtype="http://data-vocabulary.org/Offer">

@@ -55,7 +55,7 @@
 		<div class="tab-pane active" id="catalogue-section">
 		
 				<c:url var="saveProductFile" value="/admin/products/product/saveDigitalProduct.html" />
-				<form:form method="POST" enctype="multipart/form-data" commandName="productFiles" action="${saveProductFile}">
+				<form:form method="POST" enctype="multipart/form-data" commandName="file" action="${saveProductFile}">
 
 					<form:errors path="*" cssClass="alert alert-error" element="div" />
 					<div id="store.success" class="alert alert-success"
@@ -63,22 +63,24 @@
 						<s:message code="message.success" text="Request successfull" />
 					</div>
 					<form:hidden path="product.id" />
-					<form:hidden path="digitalProduct.id" />
+					<c:if test="${file!=null}">
+					<form:hidden path="file.digitalProduct.id" />
+					</c:if>
 				
 					<!-- hidden when creating the product -->
 					<div class="control-group">
 						<label>
 							<s:message code="label.product.digitalproduct" text="Digital product"/>&nbsp;
-								<c:if test="${digitalProduct!=null}"><span id="productControlRemove"> - <a href="#" onClick="removeFile('${digitalProduct.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if>
+								<c:if test="${digitalProduct!=null}"><span id="productControlRemove"> - <a href="#" onClick="removeFile('${file.digitalProduct.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if>
 						</label>
 						<div class="controls" id="fileControl">
 						
 									   <c:choose>
-				                        		<c:when test="${digitalProduct==null}">
-				                                    <input class="input-file" id="file" name="file[0]" type="file"><br/>
+				                        		<c:when test="${file.digitalProduct==null}">
+				                                    <input class="input-file" id="digitalProduct" name="file.digitalProduct" type="file"><br/>
 				                                </c:when>
 				                                <c:otherwise>
-				                                	<a href="<sm:adminProductDownload digitalProduct="${digitalProduct}" />">${digitalProduct.productFileName}</a>
+				                                	<a href="<sm:adminProductDownload digitalProduct="${file.digitalProduct}" />">${file.digitalProduct.productFileName}</a>
 				                                </c:otherwise>
 			                            </c:choose>
 		
