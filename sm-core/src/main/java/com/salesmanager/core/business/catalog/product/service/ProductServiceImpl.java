@@ -390,9 +390,10 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 					
 					
 					productImageService.addProductImage(product, image, cmsContentImage);
-					newRelationshipIds.add(image.getId());
+					newImageIds.add(image.getId());
 				} else {
 					productImageService.update(image);
+					newImageIds.add(image.getId());
 				}
 			}
 		}
