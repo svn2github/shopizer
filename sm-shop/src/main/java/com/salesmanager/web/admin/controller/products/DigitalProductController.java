@@ -64,15 +64,20 @@ public class DigitalProductController {
 			return "redirect:/admin/products/products.html";
 		}
 		
+		model.addAttribute("product", product);
+		ProductFiles productFiles = new ProductFiles();
+		productFiles.setProduct(product);
+		
 		DigitalProduct digitalProduct = digitalProductService.getByProduct(store, product);
 		if(digitalProduct!=null) {
 			
-			ProductFiles productFiles = new ProductFiles();
-			productFiles.setProduct(product);
+
 			productFiles.setDigitalProduct(digitalProduct);
-			model.addAttribute("file", null);
+			
 			
 		}
+		
+		model.addAttribute("file", null);
 
 		return ControllerConstants.Tiles.Product.digitalProduct;
 		
@@ -80,7 +85,7 @@ public class DigitalProductController {
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/product/saveDigitalProduct.html", method=RequestMethod.POST)
-	public String saveFile(@RequestParam("id") long productId,@ModelAttribute(value="productFiles") @Valid final ContentFiles contentFiles, final BindingResult bindingResult,final Model model, final HttpServletRequest request) throws Exception{
+	public String saveFile(@RequestParam("id") long productId,@ModelAttribute(value="file") @Valid final ProductFiles productFiles, final BindingResult bindingResult,final Model model, final HttpServletRequest request) throws Exception{
 	    
 		this.setMenu(model, request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
@@ -99,9 +104,9 @@ public class DigitalProductController {
 	       
         }
 	    final List<InputContentFile> contentFilesList=new ArrayList<InputContentFile>();
-        if(CollectionUtils.isNotEmpty( contentFiles.getFile() )){
-            LOGGER.info("Saving {} product files for merchant {}",contentFiles.getFile().size(),store.getId());
-            for(final MultipartFile multipartFile:contentFiles.getFile()){
+        if(CollectionUtils.isNotEmpty( productFiles.getFiles() )){
+            LOGGER.info("Saving {} product files for merchant {}",productFiles.getFiles().size(),store.getId());
+            for(final MultipartFile multipartFile:productFiles.getFiles()){
                 if(!multipartFile.isEmpty()){
                     ByteArrayInputStream inputStream = new ByteArrayInputStream( multipartFile.getBytes() );
                     InputContentFile cmsContentImage = new InputContentFile();
