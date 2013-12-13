@@ -16,14 +16,20 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import com.salesmanager.core.business.catalog.product.service.ProductService;
+import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
+import com.salesmanager.core.business.catalog.product.service.file.DigitalProductService;
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.order.PersistableOrder;
 import com.salesmanager.web.populator.customer.CustomerPopulator;
+import com.salesmanager.web.populator.order.PersistableOrderPopulator;
 
 @Controller
 public class OrderRESTController {
@@ -34,11 +40,27 @@ public class OrderRESTController {
 	@Autowired
 	private MerchantStoreService merchantStoreService;
 	
+	@Autowired
+	private ProductService productService;
+	
+	@Autowired
+	private ProductAttributeService productAttributeService;
+	
+	@Autowired
+	private DigitalProductService digitalProductService;
+	
+	@Autowired
+	private OrderService orderService;
+	
+	@Autowired
+	private CustomerService customerService;
+
+	
 	
 	@RequestMapping( value="/private/order/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
-	public PersistableCustomer createCustomer(@PathVariable final String store, @Valid @RequestBody PersistableOrder order, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public PersistableOrder createOrder(@PathVariable final String store, @Valid @RequestBody PersistableOrder order, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		if(merchantStore!=null) {
 			if(!merchantStore.getCode().equals(store)) {
@@ -56,18 +78,30 @@ public class OrderRESTController {
 			return null;
 		}
 		
+		
+		PersistableCustomer cust = order.getCustomer();
+		if(cust!=null) {
+			CustomerPopulator customerPopulator = new CustomerPopulator();
+			Customer customer = new Customer();
+			customerPopulator.populate(cust, customer, merchantStore, merchantStore.getDefaultLanguage());
+			customerService.save(customer);
+			cust.setId(customer.getId());
+		}
+		
+		
 		Order modelOrder = new Order();
+		PersistableOrderPopulator populator = new PersistableOrderPopulator();
+		populator.setDigitalProductService(digitalProductService);
+		populator.setProductAttributeService(productAttributeService);
+		populator.setProductService(productService);
 		
-/*		CustomerPopulator populator = new CustomerPopulator();
-		populator.populate(customer, cust, merchantStore, merchantStore.getDefaultLanguage());
+		populator.populate(order, modelOrder, merchantStore, merchantStore.getDefaultLanguage());
 		
-
-		customerService.save(cust);
-		customer.setId(cust.getId());
-
-		return customer;*/
+	
+		orderService.save(modelOrder);
+		order.setId(modelOrder.getId());
 		
-		return null;
+		return order;
 	}
 
 }

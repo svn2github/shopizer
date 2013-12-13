@@ -195,23 +195,17 @@ public class PersistableProductPopulator extends
 			
 			//categories
 			if(!CollectionUtils.isEmpty(source.getCategories())) {
-				
 				for(com.salesmanager.web.entity.catalog.category.Category categ : source.getCategories()) {
-					
 					Category c = categoryService.getById(categ.getId());
 					if(c==null) {
 						throw new ConversionException("Category id " + categ.getId() + " does not exist");
 					}
-					
 					if(c.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 						throw new ConversionException("Invalid category id");
 					}
-					
 					target.getCategories().add(c);
 				}
-				
 			}
-
 			return target;
 		
 		} catch (Exception e) {

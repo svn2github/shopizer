@@ -11,6 +11,8 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.client.RestTemplate;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
@@ -144,6 +147,17 @@ public class ShopProductRESTController {
 		
 	}
 	
+
+	@RequestMapping( value="/shop/services/private/product/{store}/{id}", method=RequestMethod.DELETE)
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteProduct(@PathVariable final String store, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Product product = productService.getById(id);
+		if(product != null && product.getMerchantStore().getCode().equalsIgnoreCase(store)){
+			productService.delete(product);
+		}else{
+			response.sendError(404, "No Product found for ID : " + id);
+		}
+	}
 	
 	/**
 	 * Method for creating a manufacturer
@@ -449,8 +463,6 @@ public class ShopProductRESTController {
 
 				//create new proxy product
 				ReadableProduct readProduct = populator.populate(product, new ReadableProduct(), merchantStore, lang);
-				
-				//com.salesmanager.web.entity.catalog.Product p = catalogUtils.buildProxyProduct(product,merchantStore,LocaleUtils.getLocale(lang));
 				productList.getProducts().add(readProduct);
 				
 			}
