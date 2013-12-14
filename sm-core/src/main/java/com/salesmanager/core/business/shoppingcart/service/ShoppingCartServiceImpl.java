@@ -118,6 +118,27 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	}
 	
 	@Override
+	public ShoppingCart getById(Long id) {
+
+			ShoppingCart shoppingCart = shoppingCartDao.getById(id);
+			try {
+				populateShoppingCart(shoppingCart);
+
+			if(shoppingCart.isObsolete()) {
+				delete(shoppingCart);
+				return null;
+			} else {
+				return shoppingCart;
+			}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+
+	}
+	
+	@Override
 	@Transactional
 	public ShoppingCart getByCode(String code, MerchantStore store) throws ServiceException {
 

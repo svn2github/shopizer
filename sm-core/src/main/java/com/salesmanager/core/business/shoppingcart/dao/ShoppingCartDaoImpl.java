@@ -19,7 +19,7 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 	@Override
 	public ShoppingCart getById(Long id) {
 		
-		
+		try {
 		QShoppingCart qShoppingCart = QShoppingCart.shoppingCart;
 		QShoppingCartItem qShoppingCartItem = QShoppingCartItem.shoppingCartItem;
 		
@@ -32,13 +32,17 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 			.where(qShoppingCart.id.eq(id));
 		
 		return query.uniqueResult(qShoppingCart);
+		} catch(javax.persistence.NoResultException ers) {
+			return null;
+		}
 		
 	}
 	
 	@Override
 	public ShoppingCart getById(Long id, MerchantStore store) {
 		
-		
+		try {
+			
 		QShoppingCart qShoppingCart = QShoppingCart.shoppingCart;
 		QShoppingCartItem qShoppingCartItem = QShoppingCartItem.shoppingCartItem;
 		
@@ -53,11 +57,15 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 		
 		return query.uniqueResult(qShoppingCart);
 		
+		} catch(javax.persistence.NoResultException ers) {
+			return null;
+		}
+		
 	}
 	
 	@Override
 	public ShoppingCart getByCode(String code, MerchantStore store) {
-		
+		try {
 		
 		QShoppingCart qShoppingCart = QShoppingCart.shoppingCart;
 		QShoppingCartItem qShoppingCartItem = QShoppingCartItem.shoppingCartItem;
@@ -72,13 +80,16 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 					.and(qShoppingCart.merchantStore.id.eq(store.getId())));
 		
 		return query.uniqueResult(qShoppingCart);
+		} catch(javax.persistence.NoResultException ers) {
+			return null;
+		}
 		
 	}
 	
 	@Override
 	public ShoppingCart getByCustomer(Customer customer) {
 		
-		
+		try {
 		QShoppingCart qShoppingCart = QShoppingCart.shoppingCart;
 		QShoppingCartItem qShoppingCartItem = QShoppingCartItem.shoppingCartItem;
 		
@@ -91,6 +102,10 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 			.where(qShoppingCart.customerId.eq(customer.getId()));
 		
 		return query.uniqueResult(qShoppingCart);
+		
+		} catch(javax.persistence.NoResultException ers) {
+			return null;
+		}
 		
 	}
 	
