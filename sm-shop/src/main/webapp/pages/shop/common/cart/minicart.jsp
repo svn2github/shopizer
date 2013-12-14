@@ -19,30 +19,18 @@ response.setDateHeader ("Expires", -1);
 
 <div class="cartbox" id="cart-box">
 	<div class="box-content clearfix">
-		<h3 class="lbw">Shopping Cart</h3>
+		<p id="shoppingcarttitle" class="lbw"><s:message code="label.cart" text="Shopping cart"/></p>
 		<br />
+		<div id="cartShowLoading" class="loading-indicator" style="width:100%;display:none;"></div>
 		<div id="shoppingcart">
 			<table style="margin-bottom: 5px" class="table">
 				<tbody id="shoppingcartProducts">
 
 				</tbody>
 			</table>
-
-			<div style="padding-right: 4px;" class="row">
-				<div class="pull-right" id="shoppingCartCost">Shipping costs of <span id="mini-cart-total-block">$10.00 </span> : $10.00</div>
-			</div>
-
-			<div class="total-box">
-				<div class="pull-right">
-					<font class="total-box-label">Total : <font
-						class="total-box-price"><strong><span
-								id="checkout-total-plus">$39.99</span></strong></font></font>
-				</div>
-			</div>
+			<div id="total-box" class="total-box"></div>
 			<br />
-			<button class="btn" style="width: 100%" type="submit" onclick="viewShoppingCartPage();">View Cart</button>
-			<button class="btn" style="width: 100%" type="submit">Check
-				out</button>
+			<button class="btn-success btn-large" style="width: 100%" type="button" onclick="viewShoppingCartPage();"><s:message code="label.checkout" text="Checkout"/></button>
 				
 		</div>
 	</div>

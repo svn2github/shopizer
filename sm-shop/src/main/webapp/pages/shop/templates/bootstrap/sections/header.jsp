@@ -16,6 +16,10 @@ response.setDateHeader ("Expires", -1);
 <script>
     $(function() {
     	
+    	$("#open-cart").click(function(e) {
+    		displayMiniCart();
+    	});
+    	
     	$("#signinDrop").click(function(e){
     		$("#loginError").hide();
     		e.preventDefault();
@@ -47,22 +51,7 @@ response.setDateHeader ("Expires", -1);
             return false;
         });
     });
- 	//TODO ??
-    $.fn.serializeObject = function() {
-        var o = {};
-        var a = this.serializeArray();
-        $.each(a, function() {
-            if (o[this.name]) {
-                if (!o[this.name].push) {
-                    o[this.name] = [o[this.name]];
-                }
-                o[this.name].push(this.value || '');
-            } else {
-                o[this.name] = this.value || '';
-            }
-        });
-        return o;
-    };
+
 </script>
 
 
@@ -86,14 +75,14 @@ response.setDateHeader ("Expires", -1);
  					<div style="padding-top: 8px;padding-bottom:10px;" class="btn-group pull-right">
             					&nbsp;&nbsp;&nbsp;
             					<i class="icon-shopping-cart icon-black"></i>
-            					<a style="box-shadow:none;color:FF8C00;" href="#" data-toggle="dropdown" onclick="javascript:displayMiniCart();" class="open noboxshadow dropdown-toggle" id="open-cart">My Cart</a>
+            					<a style="box-shadow:none;color:FF8C00;" href="#" data-toggle="dropdown" class="open noboxshadow dropdown-toggle" id="open-cart"><s:message code="label.mycart" text="My cart"/></a>
 								<jsp:include page="/pages/shop/common/cart/minicartinfo.jsp" />
             				
-		            					<ul class="dropdown-menu minicart" id="minicartComponent">
-		              					  <li>
-												<jsp:include page="/pages/shop/common/cart/minicart.jsp" />
-		              						</li>	
-		            					</ul>
+		            			<ul class="dropdown-menu minicart" id="minicartComponent">
+		              				<li>
+										<jsp:include page="/pages/shop/common/cart/minicart.jsp" />
+		              				</li>	
+		            			</ul>
             					
 					
 					</div>

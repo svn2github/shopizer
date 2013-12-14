@@ -31,6 +31,21 @@ function getItemLabel(quantity) {
 	return labelItem;
 }
 
+function emptyCartLabel(){
+	$("#shoppingcart").html('<s:message code="cart.empty" text="Your Shopping cart is empty" />');
+	var labelItem = '<s:message code="label.generic.item" text="item" />';
+	$("#cartinfo").html('<span id="cartqty">(' + 0 + ' ' + labelItem + ')</span>&nbsp;<span id="cartprice"></span>');	
+}
+
+function cartInfoLabel(cart){
+	 var labelItem = getItemLabel(cart.quantity);
+	 $("#cartinfo").html('<span id="cartqty">(' + cart.quantity + ' ' + labelItem + ')</span>&nbsp;<span id="cartprice">' + cart.total + '</span>');	
+}
+
+function cartSubTotal(cart) {
+	return '<div class="pull-right"><font class="total-box-label"><s:message code="label.subtotal" text="Sub-total" /> : <font class="total-box-price"><strong><span id="checkout-total">' + cart.subTotal + '</span></strong></font></font></div>';
+}
+
 
 
  

@@ -23,7 +23,7 @@
 	                  						    <span id="cartprice"><c:out value="${requestScope.SHOPPING_CART.total}"/></span>
 	                  					</c:when>
 	                  					<c:otherwise>
-	                  						<span id="cartqty">(0&nbsp;<s:message code="label.generic.item" text="item" />)</span>
+	                  						<span id="cartqty">(0&nbsp;<s:message code="label.generic.item" text="item" />)</span><span id="cartprice"></span>
 	                  					</c:otherwise>
                   					</c:choose>
             					</span>

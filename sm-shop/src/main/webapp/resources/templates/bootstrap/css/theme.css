@@ -44,10 +44,9 @@ a:hover{
 }
 
 .lbw{
-	font: 24px "SalarymanRegular", Arial, sans-serif;
+	font: 16px "SalarymanRegular", Arial, sans-serif;
 	letter-spacing: 0;
 	padding:0;
-	margin-top:20px;
 	color:#a2a1a1;
 }
 
@@ -308,7 +307,7 @@ a:hover{
 	}
 
 	.total-box-label {
-		font-size: 14px;
+		font-size: 12px;
 	}
 
 	.total-box-price {

@@ -54,33 +54,46 @@
 
 		<div class="tab-pane active" id="catalogue-section">
 		
+				<c:if test="${product.id!=null && product.id>0}">
+						<c:set value="${product.id}" var="productId" scope="request"/>
+						<jsp:include page="/pages/admin/products/product-menu.jsp" />
+				</c:if>	
+		
+				<h3>
+						<s:message code="label.product.digitalproduct" text="Digital product"/>
+				</h3>
+			    <br/>
+				<strong><c:out value="${product.sku}"/></strong>		
+				
+
+				<br/><br/>
+		
 				<c:url var="saveProductFile" value="/admin/products/product/saveDigitalProduct.html" />
-				<form:form method="POST" enctype="multipart/form-data" commandName="file" action="${saveProductFile}">
+				<form method="POST" enctype="multipart/form-data" action="${saveProductFile}">
 
 					<form:errors path="*" cssClass="alert alert-error" element="div" />
 					<div id="store.success" class="alert alert-success"
 						style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>">
 						<s:message code="message.success" text="Request successfull" />
 					</div>
-					<form:hidden path="product.id" />
-					<c:if test="${file!=null}">
-					<form:hidden path="file.digitalProduct.id" />
-					</c:if>
+					<input type="hidden" name="product.id" value="${product.id}" />
+
+					
 				
 					<!-- hidden when creating the product -->
 					<div class="control-group">
 						<label>
 							<s:message code="label.product.digitalproduct" text="Digital product"/>&nbsp;
-								<c:if test="${digitalProduct!=null}"><span id="productControlRemove"> - <a href="#" onClick="removeFile('${file.digitalProduct.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if>
+								<c:if test="${digitalProduct!=null}"><span id="productControlRemove"> - <a href="#" onClick="removeFile('${digitalProduct.id}')"><s:message code="label.generic.remove" text="Remove"/></a></span></c:if>
 						</label>
 						<div class="controls" id="fileControl">
 						
 									   <c:choose>
-				                        		<c:when test="${file.digitalProduct==null}">
+				                        		<c:when test="${digitalProduct==null}">
 				                                    <input class="input-file" id="digitalProduct" name="file.digitalProduct" type="file"><br/>
 				                                </c:when>
 				                                <c:otherwise>
-				                                	<a href="<sm:adminProductDownload digitalProduct="${file.digitalProduct}" />">${file.digitalProduct.productFileName}</a>
+				                                	<a href="<sm:adminProductDownload digitalProduct="${digitalProduct}" />">${digitalProduct.productFileName}</a>
 				                                </c:otherwise>
 			                            </c:choose>
 		
@@ -93,7 +106,7 @@
 							</button>
 						</div>
 					</div>
-				</form:form>
+				</form>
 			</div>
 		</div>
 	</div>	
