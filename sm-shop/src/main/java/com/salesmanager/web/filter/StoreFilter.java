@@ -307,9 +307,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				configs = (Map<String, Object>) cache.getFromCache(configKey.toString());
 				if(configs==null) {
 					//get from missed cache
-					Boolean missedContent = (Boolean)cache.getFromCache(configKeyMissed.toString());
+					//Boolean missedContent = (Boolean)cache.getFromCache(configKeyMissed.toString());
 
-				   if( missedContent==null) {
+				   //if( missedContent==null) {
 					    configs = this.getConfigurations(store);
 						//put in cache
 					    
@@ -317,9 +317,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 					    	cache.putInCache(configs, configKey.toString());
 					    } else {
 					    	//put in missed cache
-					    	cache.putInCache(new Boolean(true), configKeyMissed.toString());
+					    	//cache.putInCache(new Boolean(true), configKeyMissed.toString());
 					    }
-				   }
+				   //}
 				}
 
 			} else {
@@ -376,10 +376,10 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 
 					if(contents==null) {
 						//get from missed cache
-						Boolean missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
+						//Boolean missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
 
 					
-						if(missedContent==null) {
+						//if(missedContent==null) {
 						
 							contents = this.getContentPagesNames(store, language);
 
@@ -389,9 +389,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 							
 							} else {
 								//put in missed cache
-								cache.putInCache(new Boolean(true), contentKeyMissed.toString());
+								//cache.putInCache(new Boolean(true), contentKeyMissed.toString());
 							}
-						}		
+						//}		
 				   } 
 				} else {
 					contents = this.getContentPagesNames(store, language);	
@@ -449,10 +449,10 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				if(contents==null) {
 
 					//get from missed cache
-					 Boolean missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
+					 //Boolean missedContent = (Boolean)cache.getFromCache(contentKeyMissed.toString());
 					
 					
-					if(missedContent==null) {
+					//if(missedContent==null) {
 					
 						contents = this.getContent(store, language);
 						if(contents!=null && contents.size()>0) {
@@ -460,9 +460,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 							cache.putInCache(contents, contentKey.toString());
 						} else {
 							//put in missed cache
-							cache.putInCache(new Boolean(true), contentKeyMissed.toString());
+							//cache.putInCache(new Boolean(true), contentKeyMissed.toString());
 						}
-					}		
+					//}		
 						
 				}
 			} else {
@@ -523,9 +523,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			
 
 				if(objects==null) {
-					Boolean missedContent = (Boolean)cache.getFromCache(categoriesKeyMissed.toString());
+					//Boolean missedContent = (Boolean)cache.getFromCache(categoriesKeyMissed.toString());
 
-					if(missedContent==null) {
+					//if(missedContent==null) {
 	
 						//Get top categories from the database
 						objects = this.getCategories(store, language);
@@ -535,10 +535,10 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 							cache.putInCache(objects, categoriesKey.toString());
 						} else {
 							//put in missed cache
-							cache.putInCache(new Boolean(true), categoriesKeyMissed.toString());
+							//cache.putInCache(new Boolean(true), categoriesKeyMissed.toString());
 						}
 						
-					} 
+					//} 
 				}
 				
 			} else {

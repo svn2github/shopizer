@@ -5,6 +5,7 @@ package com.salesmanager.web.shop.controller.shoppingCart;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -71,6 +72,12 @@ public class MiniCartController extends AbstractController{
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		ShoppingCartData shoppingCartData=shoppingCartFacade.removeCartItem(lineItemId, getShoppingCartFromSession(request).getCode(), merchantStore,language);
 		setCartDataToSession(request, shoppingCartData);
+		
+		if(CollectionUtils.isEmpty(shoppingCartData.getShoppingCartItems())) {
+			shoppingCartFacade.deleteShoppingCart(shoppingCartData.getId(), merchantStore);
+			return null;
+		}
+		
 		LOG.debug("removed item" + lineItemId + "from cart");
 		return getShoppingCartFromSession(request);
 	}

@@ -77,7 +77,7 @@ public class DigitalProductController {
 			
 		}
 		
-		model.addAttribute("file", null);
+		model.addAttribute("digitalProduct", digitalProduct);
 
 		return ControllerConstants.Tiles.Product.digitalProduct;
 		

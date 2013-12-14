@@ -233,18 +233,18 @@ public class ShoppingCategoryController {
 			subCategories = (List<ReadableCategory>) cache.getFromCache(subCategoriesCacheKey.toString());
 			if(subCategories==null) {
 				//get from missed cache
-				Boolean missedContent = (Boolean)cache.getFromCache(subCategoriesMissed.toString());
+				//Boolean missedContent = (Boolean)cache.getFromCache(subCategoriesMissed.toString());
 
-				if(missedContent==null) {
+				//if(missedContent==null) {
 					countProductsByCategories = getProductsByCategory(store, category, lineage, subCategs);
 					subCategories = getSubCategories(store,category,countProductsByCategories,language,locale);
 					
 					if(subCategories!=null) {
 						cache.putInCache(subCategories, subCategoriesCacheKey.toString());
 					} else {
-						cache.putInCache(new Boolean(true), subCategoriesCacheKey.toString());
+						//cache.putInCache(new Boolean(true), subCategoriesCacheKey.toString());
 					}
-				}
+				//}
 			}
 		} else {
 			countProductsByCategories = getProductsByCategory(store, category, lineage, subCategs);
@@ -308,15 +308,15 @@ public class ShoppingCategoryController {
 
 				if(manufacturerList==null) {
 					//get from missed cache
-					Boolean missedContent = (Boolean)cache.getFromCache(manufacturersKeyMissed.toString());
-					if(missedContent==null) {
+					//Boolean missedContent = (Boolean)cache.getFromCache(manufacturersKeyMissed.toString());
+					//if(missedContent==null) {
 						manufacturerList = this.getManufacturers(store, subCategoryIds, language);
 						if(CollectionUtils.isEmpty(manufacturerList)) {
 							cache.putInCache(new Boolean(true), manufacturersKeyMissed.toString());
 						} else {
-							cache.putInCache(manufacturerList, manufacturersKey.toString());
+							//cache.putInCache(manufacturerList, manufacturersKey.toString());
 						}
-					}
+					//}
 				}
 			} else {
 				manufacturerList  = this.getManufacturers(store, subCategoryIds, language);

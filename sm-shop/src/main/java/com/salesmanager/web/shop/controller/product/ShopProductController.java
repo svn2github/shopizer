@@ -114,18 +114,18 @@ public class ShopProductController {
 			relatedItemsMap = (Map<Long,List<ReadableProduct>>) cache.getFromCache(relatedItemsCacheKey.toString());
 			if(relatedItemsMap==null) {
 				//get from missed cache
-				Boolean missedContent = (Boolean)cache.getFromCache(relatedItemsMissed.toString());
+				//Boolean missedContent = (Boolean)cache.getFromCache(relatedItemsMissed.toString());
 
-				if(missedContent==null) {
+				//if(missedContent==null) {
 					relatedItems = relatedItems(store, product, language);
 					if(relatedItems!=null) {
 						relatedItemsMap = new HashMap<Long,List<ReadableProduct>>();
 						relatedItemsMap.put(product.getId(), relatedItems);
 						cache.putInCache(relatedItemsMap, relatedItemsCacheKey.toString());
 					} else {
-						cache.putInCache(new Boolean(true), relatedItemsMissed.toString());
+						//cache.putInCache(new Boolean(true), relatedItemsMissed.toString());
 					}
-				}
+				//}
 			} else {
 				relatedItems = relatedItemsMap.get(product.getId());
 			}

@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -266,6 +267,13 @@ public class ShoppingCartController extends AbstractController {
         final Language language=super.<Language>getSessionValue(  Constants.LANGUAGE );
 		ShoppingCartData shoppingCartData=shoppingCartFacade.removeCartItem(lineItemId, getShoppingCartFromSession(request).getCode(),store,language);
 		setCartDataToSession(request, shoppingCartData);
+		
+		if(CollectionUtils.isEmpty(shoppingCartData.getShoppingCartItems())) {
+			shoppingCartFacade.deleteShoppingCart(shoppingCartData.getId(), store);
+		}
+		
+		
+		
 		return Constants.REDIRECT_PREFIX + "/shop/shoppingCart.html";
 
 

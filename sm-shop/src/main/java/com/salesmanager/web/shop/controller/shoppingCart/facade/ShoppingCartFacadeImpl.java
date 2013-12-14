@@ -67,6 +67,14 @@ public class ShoppingCartFacadeImpl
 
     @Autowired
     private ProductAttributeService productAttributeService;
+    
+    @Override
+    public void deleteShoppingCart(final Long id, final MerchantStore store) throws Exception {
+    	ShoppingCart cart = shoppingCartService.getById(id, store);
+    	if(cart!=null) {
+    		shoppingCartService.delete(cart);
+    	}
+    }
 
     @Override
     public ShoppingCartData addItemsToShoppingCart( final ShoppingCartData shoppingCartData,
@@ -97,7 +105,12 @@ public class ShoppingCartFacadeImpl
         com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem shoppingCartItem =
             createCartItem( cartModel, item, store );
         cartModel.getLineItems().add( shoppingCartItem );
+        /** Update cart in database with line items **/
         shoppingCartService.saveOrUpdate( cartModel );
+        
+        //refresh cart
+        cartModel = shoppingCartService.getById(cartModel.getId(), store);
+         
         shoppingCartCalculationService.calculate( cartModel, store, language );
 
         ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
@@ -153,7 +166,6 @@ public class ShoppingCartFacadeImpl
                 }
             }
         }
-
         return item;
 
     }
@@ -296,7 +308,10 @@ public class ShoppingCartFacadeImpl
                     }
                     cartModel.setLineItems( shoppingCartItemSet );
                     shoppingCartService.saveOrUpdate( cartModel );
-
+                    
+                    
+                    
+                    
                     ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
                     shoppingCartDataPopulator.setShoppingCartCalculationService( shoppingCartCalculationService );
                     shoppingCartDataPopulator.setPricingService( pricingService );

@@ -97,10 +97,10 @@ public class ShopProductRelationshipTag extends RequestContextAwareTag  {
 			//get from the cache
 			objects = (List<ReadableProduct>) cache.getFromCache(groupKey.toString());
 			Boolean missedContent = null;
-			if(objects==null) {
+			//if(objects==null) {
 				//get from missed cache
-				missedContent = (Boolean)cache.getFromCache(groupKeyMissed.toString());
-			}
+			//	missedContent = (Boolean)cache.getFromCache(groupKeyMissed.toString());
+			//}
 			
 			if(objects==null && missedContent==null) {
 				objects = getProducts(request);
@@ -110,7 +110,7 @@ public class ShopProductRelationshipTag extends RequestContextAwareTag  {
 					
 			} else {
 				//put in missed cache
-				cache.putInCache(new Boolean(true), groupKeyMissed.toString());
+				//cache.putInCache(new Boolean(true), groupKeyMissed.toString());
 			}
 		
 		} else {

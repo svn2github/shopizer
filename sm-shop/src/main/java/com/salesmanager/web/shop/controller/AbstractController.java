@@ -40,8 +40,11 @@ public abstract class AbstractController {
 
 	  public void setCartDataToSession(final HttpServletRequest request,final ShoppingCartData shoppingCartData){
 	     HttpSession session=request.getSession();
-	    	synchronized (session) {
 	    		session.setAttribute(Constants.SHOPPING_CART, shoppingCartData);
-			}
 	    }
+	  
+	  public void removeCartDataFromSession(final HttpServletRequest request,final ShoppingCartData shoppingCartData){
+		     HttpSession session=request.getSession();
+		    		session.removeAttribute(Constants.SHOPPING_CART);
+		    }
 }
