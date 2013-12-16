@@ -13,6 +13,20 @@ public interface ShoppingCartDao extends SalesManagerEntityDao<Long, ShoppingCar
 
 	ShoppingCart getByCode(String code, MerchantStore store);
 
+	/**
+	 * Get a ShoppingCart object without collection objects
+	 * @param id
+	 * @return
+	 */
+	ShoppingCart getShoppingCartById(Long id);
+
+	/**
+	 * Get a ShoppingCart object without collection objects
+	 * @param code
+	 * @return
+	 */
+	ShoppingCart getShoppingCartByCode(String code);
+
 
 	
 }

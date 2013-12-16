@@ -20,21 +20,52 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 	public ShoppingCart getById(Long id) {
 		
 		try {
-		QShoppingCart qShoppingCart = QShoppingCart.shoppingCart;
-		QShoppingCartItem qShoppingCartItem = QShoppingCartItem.shoppingCartItem;
-		
-		JPQLQuery query = new JPAQuery (getEntityManager());
-		
-		query.from(qShoppingCart)
-			.leftJoin(qShoppingCart.lineItems, qShoppingCartItem).fetch()
-			.leftJoin(qShoppingCartItem.attributes).fetch()
-			.leftJoin(qShoppingCart.merchantStore).fetch()
-			.where(qShoppingCart.id.eq(id));
-		
-		return query.uniqueResult(qShoppingCart);
+			QShoppingCart qShoppingCart = QShoppingCart.shoppingCart;
+			QShoppingCartItem qShoppingCartItem = QShoppingCartItem.shoppingCartItem;
+			
+			JPQLQuery query = new JPAQuery (getEntityManager());
+			
+			query.from(qShoppingCart)
+				.leftJoin(qShoppingCart.lineItems, qShoppingCartItem).fetch()
+				.leftJoin(qShoppingCartItem.attributes).fetch()
+				.leftJoin(qShoppingCart.merchantStore).fetch()
+				.where(qShoppingCart.id.eq(id));
+			
+			return query.uniqueResult(qShoppingCart);
 		} catch(javax.persistence.NoResultException ers) {
 			return null;
 		}
+		
+	}
+	
+	@Override
+	public ShoppingCart getShoppingCartById(Long id) {
+		
+			QShoppingCart qShoppingCart = QShoppingCart.shoppingCart;
+			
+			JPQLQuery query = new JPAQuery (getEntityManager());
+			
+			query.from(qShoppingCart)
+				.leftJoin(qShoppingCart.merchantStore).fetch()
+				.where(qShoppingCart.id.eq(id));
+			
+			return query.uniqueResult(qShoppingCart);
+		
+	}
+	
+	@Override
+	public ShoppingCart getShoppingCartByCode(String code) {
+		
+			QShoppingCart qShoppingCart = QShoppingCart.shoppingCart;
+			
+			JPQLQuery query = new JPAQuery (getEntityManager());
+			
+			query.from(qShoppingCart)
+				.leftJoin(qShoppingCart.merchantStore).fetch()
+				.where(qShoppingCart.shoppingCartCode.eq(code));
+			
+			return query.uniqueResult(qShoppingCart);
+	
 		
 	}
 	
@@ -43,19 +74,19 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 		
 		try {
 			
-		QShoppingCart qShoppingCart = QShoppingCart.shoppingCart;
-		QShoppingCartItem qShoppingCartItem = QShoppingCartItem.shoppingCartItem;
-		
-		JPQLQuery query = new JPAQuery (getEntityManager());
-		
-		query.from(qShoppingCart)
-			.leftJoin(qShoppingCart.lineItems, qShoppingCartItem).fetch()
-			.leftJoin(qShoppingCartItem.attributes).fetch()
-			.leftJoin(qShoppingCart.merchantStore).fetch()
-			.where(qShoppingCart.id.eq(id)
-					.and(qShoppingCart.merchantStore.id.eq(store.getId())));
-		
-		return query.uniqueResult(qShoppingCart);
+			QShoppingCart qShoppingCart = QShoppingCart.shoppingCart;
+			QShoppingCartItem qShoppingCartItem = QShoppingCartItem.shoppingCartItem;
+			
+			JPQLQuery query = new JPAQuery (getEntityManager());
+			
+			query.from(qShoppingCart)
+				.leftJoin(qShoppingCart.lineItems, qShoppingCartItem).fetch()
+				.leftJoin(qShoppingCartItem.attributes).fetch()
+				.leftJoin(qShoppingCart.merchantStore).fetch()
+				.where(qShoppingCart.id.eq(id)
+						.and(qShoppingCart.merchantStore.id.eq(store.getId())));
+			
+			return query.uniqueResult(qShoppingCart);
 		
 		} catch(javax.persistence.NoResultException ers) {
 			return null;
@@ -67,19 +98,19 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 	public ShoppingCart getByCode(String code, MerchantStore store) {
 		try {
 		
-		QShoppingCart qShoppingCart = QShoppingCart.shoppingCart;
-		QShoppingCartItem qShoppingCartItem = QShoppingCartItem.shoppingCartItem;
-		
-		JPQLQuery query = new JPAQuery (getEntityManager());
-		
-		query.from(qShoppingCart)
-			.leftJoin(qShoppingCart.lineItems, qShoppingCartItem).fetch()
-			.leftJoin(qShoppingCartItem.attributes).fetch()
-			.leftJoin(qShoppingCart.merchantStore).fetch()
-			.where(qShoppingCart.shoppingCartCode.eq(code)
-					.and(qShoppingCart.merchantStore.id.eq(store.getId())));
-		
-		return query.uniqueResult(qShoppingCart);
+			QShoppingCart qShoppingCart = QShoppingCart.shoppingCart;
+			QShoppingCartItem qShoppingCartItem = QShoppingCartItem.shoppingCartItem;
+			
+			JPQLQuery query = new JPAQuery (getEntityManager());
+			
+			query.from(qShoppingCart)
+				.leftJoin(qShoppingCart.lineItems, qShoppingCartItem).fetch()
+				.leftJoin(qShoppingCartItem.attributes).fetch()
+				.leftJoin(qShoppingCart.merchantStore).fetch()
+				.where(qShoppingCart.shoppingCartCode.eq(code)
+						.and(qShoppingCart.merchantStore.id.eq(store.getId())));
+			
+			return query.uniqueResult(qShoppingCart);
 		} catch(javax.persistence.NoResultException ers) {
 			return null;
 		}
@@ -90,18 +121,18 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 	public ShoppingCart getByCustomer(Customer customer) {
 		
 		try {
-		QShoppingCart qShoppingCart = QShoppingCart.shoppingCart;
-		QShoppingCartItem qShoppingCartItem = QShoppingCartItem.shoppingCartItem;
-		
-		JPQLQuery query = new JPAQuery (getEntityManager());
-		
-		query.from(qShoppingCart)
-			.leftJoin(qShoppingCart.lineItems, qShoppingCartItem).fetch()
-			.leftJoin(qShoppingCartItem.attributes).fetch()
-			.leftJoin(qShoppingCart.merchantStore).fetch()
-			.where(qShoppingCart.customerId.eq(customer.getId()));
-		
-		return query.uniqueResult(qShoppingCart);
+			QShoppingCart qShoppingCart = QShoppingCart.shoppingCart;
+			QShoppingCartItem qShoppingCartItem = QShoppingCartItem.shoppingCartItem;
+			
+			JPQLQuery query = new JPAQuery (getEntityManager());
+			
+			query.from(qShoppingCart)
+				.leftJoin(qShoppingCart.lineItems, qShoppingCartItem).fetch()
+				.leftJoin(qShoppingCartItem.attributes).fetch()
+				.leftJoin(qShoppingCart.merchantStore).fetch()
+				.where(qShoppingCart.customerId.eq(customer.getId()));
+			
+			return query.uniqueResult(qShoppingCart);
 		
 		} catch(javax.persistence.NoResultException ers) {
 			return null;

@@ -66,7 +66,7 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 
 			ShoppingCart shoppingCart = shoppingCartDao.getByCustomer(customer);
 			populateShoppingCart(shoppingCart);
-			if(shoppingCart.isObsolete()) {
+			if(shoppingCart!=null && shoppingCart.isObsolete()) {
 				delete(shoppingCart);
 				return null;
 			} else {
@@ -93,7 +93,8 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	
 	/**
 	 * Get a {@link ShoppingCart} for a given id and MerchantStore. Will update the shopping cart
-	 * prices and items based on the actual inventory.
+	 * prices and items based on the actual inventory. This method will remove the shopping cart if
+	 * no items are attached.
 	 */
 	@Override
 	@Transactional
@@ -101,7 +102,11 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 
 		try {
 			ShoppingCart shoppingCart = shoppingCartDao.getById(id, store);
+			if(shoppingCart==null) {
+				return null;
+			}
 			populateShoppingCart(shoppingCart);
+
 			if(shoppingCart.isObsolete()) {
 				delete(shoppingCart);
 				return null;
@@ -117,12 +122,22 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		
 	}
 	
+	/**
+	 * Get a {@link ShoppingCart} for a given id. Will update the shopping cart
+	 * prices and items based on the actual inventory. This method will remove the shopping cart if
+	 * no items are attached.
+	 */
 	@Override
 	public ShoppingCart getById(Long id) {
 
+			
+		try {
 			ShoppingCart shoppingCart = shoppingCartDao.getById(id);
-			try {
-				populateShoppingCart(shoppingCart);
+			if(shoppingCart==null) {
+				return null;
+			}
+			populateShoppingCart(shoppingCart);
+
 
 			if(shoppingCart.isObsolete()) {
 				delete(shoppingCart);
@@ -138,13 +153,22 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 
 	}
 	
+	/**
+	 * Get a {@link ShoppingCart} for a given code. Will update the shopping cart
+	 * prices and items based on the actual inventory. This method will remove the shopping cart if
+	 * no items are attached.
+	 */
 	@Override
 	@Transactional
 	public ShoppingCart getByCode(String code, MerchantStore store) throws ServiceException {
 
 		try {
 			ShoppingCart shoppingCart = shoppingCartDao.getByCode(code, store);
+			if(shoppingCart==null) {
+				return null;
+			}
 			populateShoppingCart(shoppingCart);
+
 			
 			if(shoppingCart.isObsolete()) {
 				delete(shoppingCart);
@@ -165,15 +189,18 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	
 	@Override
 	public void delete(ShoppingCart shoppingCart) throws ServiceException {
-		shoppingCart = this.getById(shoppingCart.getId());
 		super.delete(shoppingCart);
 	}
+
 	
 	@Override
 	public ShoppingCart getByCustomer(Customer customer) throws ServiceException {
 		
 		try {
 			ShoppingCart shoppingCart = shoppingCartDao.getByCustomer(customer);
+			if(shoppingCart==null) {
+				return null;
+			}
 			return populateShoppingCart(shoppingCart);
 
 		
