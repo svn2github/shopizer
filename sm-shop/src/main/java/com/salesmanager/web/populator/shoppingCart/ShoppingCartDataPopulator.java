@@ -129,6 +129,7 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
             cart.setSubTotal(pricingService.getDisplayAmount(orderSummary.getSubTotal(), store));
             cart.setTotal(pricingService.getDisplayAmount(orderSummary.getTotal(), store));
             cart.setQuantity(shoppingCart.getLineItems().size());
+            cart.setId(shoppingCart.getId());
         }
         catch(ServiceException ex){
             LOG.error( "Error while converting cart Model to cart Data.."+ex );

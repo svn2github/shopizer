@@ -43,7 +43,7 @@ public abstract class AbstractController {
 	    		session.setAttribute(Constants.SHOPPING_CART, shoppingCartData);
 	    }
 	  
-	  public void removeCartDataFromSession(final HttpServletRequest request,final ShoppingCartData shoppingCartData){
+	  public void removeCartDataFromSession(final HttpServletRequest request){
 		     HttpSession session=request.getSession();
 		    		session.removeAttribute(Constants.SHOPPING_CART);
 		    }

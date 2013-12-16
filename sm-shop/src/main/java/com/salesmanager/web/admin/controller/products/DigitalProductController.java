@@ -85,12 +85,12 @@ public class DigitalProductController {
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/product/saveDigitalProduct.html", method=RequestMethod.POST)
-	public String saveFile(@RequestParam("id") long productId,@ModelAttribute(value="file") @Valid final ProductFiles productFiles, final BindingResult bindingResult,final Model model, final HttpServletRequest request) throws Exception{
+	public String saveFile(@ModelAttribute(value="file") @Valid final ProductFiles productFiles, final BindingResult bindingResult,final Model model, final HttpServletRequest request) throws Exception{
 	    
 		this.setMenu(model, request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
-		Product product = productService.getById(productId);
+		Product product = productService.getById(productFiles.getProduct().getId());
 		
 		if(product==null || product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 			return "redirect:/admin/products/products.html";
