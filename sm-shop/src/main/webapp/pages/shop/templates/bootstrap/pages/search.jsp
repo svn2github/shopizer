@@ -58,7 +58,8 @@ response.setDateHeader ("Expires", -1);
 			
 			$('#productsContainer').hideLoading();
 			
-			var productQty = productList.productCount + ' ' + <s:message code="label.search.items.found" text="item(s) found" />
+			
+			var productQty = productList.productCount + ' <s:message code="label.search.items.found" text="item(s) found" />';
 			$('#products-qty').html(productQty);
 
 	}
@@ -86,7 +87,28 @@ response.setDateHeader ("Expires", -1);
         
         <!-- right column -->
         <div class="span9">
-			<div id="products-qty"></div>
+
+        <div class="products-title row-fluid">
+    		<div class="span6">
+        		<p><div id="products-qty"></div></p>
+    		</div>
+		    <div class="span6">
+		        <div class="pull-right">
+		            <p>
+		            <ul class="nav nav-list">
+	            		<li class="widget-header"><s:message code="label.generic.sortby" text="Sort by" />:
+						<select id="filter">
+							<option value="item-order"><s:message code="label.generic.default" text="Default" /></option>
+							<option value="item-name"><s:message code="label.generic.name" text="Name" /></option>
+							<option value="item-price"><s:message code="label.generic.price" text="Price" /></option>
+						</select>
+						</li>
+					</ul>
+		            </p>
+		        </div>
+		    </div>
+		 </div>
+
           
         	<ul id="productsContainer" class="thumbnails product-list">
 				<!-- search ajax -->
