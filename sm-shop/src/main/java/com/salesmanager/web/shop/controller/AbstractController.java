@@ -29,7 +29,7 @@ public abstract class AbstractController {
     public <T> T getSessionValue(final String key) {
 	      ServletRequestAttributes reqAttr = (ServletRequestAttributes) RequestContextHolder
 	                          .currentRequestAttributes();
-	          return (T) reqAttr.getRequest().getAttribute(key);
+	          return (T) reqAttr.getRequest().getSession().getAttribute( key );
 	  }
 
 
