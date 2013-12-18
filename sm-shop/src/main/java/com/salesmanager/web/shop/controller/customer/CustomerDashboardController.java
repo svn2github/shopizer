@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 
 /**
@@ -21,7 +22,7 @@ import com.salesmanager.web.shop.controller.ControllerConstants;
  *
  */
 @Controller
-public class CustomerDashboardController {
+public class CustomerDashboardController extends AbstractController {
 	
 	@Autowired
     private AuthenticationManager customerAuthenticationManager;
@@ -30,9 +31,10 @@ public class CustomerDashboardController {
 	public String displayCustomerDashboard(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 
-		Language language = (Language)request.getAttribute(Constants.LANGUAGE);
-		
-		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+	    final MerchantStore store = super.<MerchantStore>getSessionValue(Constants.MERCHANT_STORE);
+        final Language language=super.<Language>getSessionValue(  Constants.LANGUAGE );
+        
+	   
 		
 		//LATEST orders
 		
