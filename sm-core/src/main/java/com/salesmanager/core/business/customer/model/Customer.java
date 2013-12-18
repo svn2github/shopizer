@@ -93,15 +93,11 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 	
 	@Column(name="CUSTOMER_STATE", length=100)
 	private String state;
-	
-	@Column(name="CUSTOMER_FAX", length=32)
-	private String fax;
+
 	
 	@Column(name="CUSTOMER_PASSWORD", length=50)
 	private String password;
-	
-	@Column(name="CUSTOMER_NEWSLETTER", length=1)
-	private Character newsletter;
+
 	
 	@Column(name="CUSTOMER_ANONYMOUS")
 	private boolean anonymous;
@@ -261,13 +257,7 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 		this.state = state;
 	}
 
-	public String getFax() {
-		return fax;
-	}
 
-	public void setFax(String fax) {
-		this.fax = fax;
-	}
 
 	public String getPassword() {
 		return password;
@@ -277,13 +267,7 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 		this.password = password;
 	}
 
-	public Character getNewsletter() {
-		return newsletter;
-	}
 
-	public void setNewsletter(Character newsletter) {
-		this.newsletter = newsletter;
-	}
 
 	public boolean isAnonymous() {
 		return anonymous;
