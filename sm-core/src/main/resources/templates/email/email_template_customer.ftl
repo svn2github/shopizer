@@ -32,13 +32,10 @@ a:visited {color:#0066cc;}
   <div class="content">
     <div class="content-line">
     	${EMAIL_STORE_NAME}<br /><br />
-    	${EMAIL_CUSTOMER_FIRSTNAME} ${EMAIL_CUSTOMER_LAST}<br/>
-    	${EMAIL_GREETING}<br /><br />
-    	${EMAIL_CUSTOMER_PORTAL_INFO}<br /><br />
+    	${EMAIL_CUSTOMER_FIRSTNAME} ${EMAIL_CUSTOMER_LASTNAME}<br/>
+    	${EMAIL_CUSTOMER_GREETING}<br /><br />
     	${EMAIL_CUSTOMER_USERNAME}</br><br />
-    	${EMAIL_CUSTOMER_PASSWORD}<br /><br />
-    	${EMAIL_CUSTOMER_PORTAL_ENTRY}<br /><br />
-    	${EMAIL_CONTACT_OWNER}
+    	${EMAIL_PASSWORD_LABEL}: ${EMAIL_CUSTOMER_PASSWORD}<br /><br />
     </div>
 </div>
 
