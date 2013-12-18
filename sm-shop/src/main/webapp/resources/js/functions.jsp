@@ -32,6 +32,7 @@ function getItemLabel(quantity) {
 }
 
 function emptyCartLabel(){
+	console.log('empty cart label');
 	$("#shoppingcart").html('<s:message code="cart.empty" text="Your Shopping cart is empty" />');
 	var labelItem = '<s:message code="label.generic.item" text="item" />';
 	$("#cartinfo").html('<span id="cartqty">(' + 0 + ' ' + labelItem + ')</span>&nbsp;<span id="cartprice"></span>');	
