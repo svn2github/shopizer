@@ -10,7 +10,8 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.configuration.ConversionException;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
@@ -37,7 +38,7 @@ public class ShoppingCartModelPopulator
     extends AbstractDataPopulator<ShoppingCartData,ShoppingCart>
 {
 
-    protected final Logger LOG= Logger.getLogger( getClass());
+	private static final Logger LOG = LoggerFactory.getLogger(ShoppingCartModelPopulator.class);
 
     private ShoppingCartService shoppingCartService;
     

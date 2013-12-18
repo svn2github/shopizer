@@ -6,7 +6,8 @@ package com.salesmanager.web.shop.controller.shoppingCart;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,8 +29,8 @@ import com.salesmanager.web.shop.controller.shoppingCart.facade.ShoppingCartFaca
  */
 @Controller
 public class MiniCartController extends AbstractController{
-	
-	protected final Logger LOG= Logger.getLogger( getClass());
+
+	private static final Logger LOG = LoggerFactory.getLogger(MiniCartController.class);
 	
 	@Autowired
 	private ShoppingCartFacade shoppingCartFacade;

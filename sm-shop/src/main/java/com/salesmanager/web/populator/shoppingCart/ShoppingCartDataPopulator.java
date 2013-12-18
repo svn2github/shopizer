@@ -13,7 +13,6 @@ import org.apache.commons.configuration.ConversionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -39,8 +38,7 @@ import com.salesmanager.web.utils.ImageFilePathUtils;
 public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCart,ShoppingCartData>
 {
 
-    protected final Logger LOG= LoggerFactory.getLogger( getClass());
-
+    private static final Logger LOG = LoggerFactory.getLogger(ShoppingCartDataPopulator.class);
 
     private PricingService pricingService;
 

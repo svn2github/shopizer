@@ -11,7 +11,8 @@ import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -48,7 +49,8 @@ public class ShoppingCartFacadeImpl
     implements ShoppingCartFacade
 {
 
-    protected final Logger LOG = Logger.getLogger( getClass() );
+    
+    private static final Logger LOG = LoggerFactory.getLogger(ShoppingCartFacadeImpl.class);
 
     @Autowired
     private ShoppingCartService shoppingCartService;
