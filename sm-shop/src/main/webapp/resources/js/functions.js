@@ -75,17 +75,8 @@
 				}
 			});
 		}
-		
-		//alert('product ' + sku + ' added to cart');
+
 		var merchantStore = getMerchantStore();
-		//var cartCode = 'cart_' + merchantStore;
-		//var cart = $.cookie('cart'); //should be [storecode_cartid]
-		//var code = new Array();
-		
-		//if(cart!=null) {
-		//	code = cart.split('_');
-		//}
-		
 		var cartCode = getCartCode();
 
 		
@@ -97,7 +88,6 @@
 		//cart item
 		var prefix = "{";
 		var suffix = "}";
-		//var shoppingCartItem = '"code":' + "11" + ',';
 		var shoppingCartItem = '';
 		if(cart!=null && cart != '') {
 			shoppingCartItem = '"code":' + '"' + cartCode[1] + '"'+',';
@@ -130,7 +120,8 @@
 		
 		var scItem = prefix + shoppingCartItem + suffix
 
-		alert(scItem);
+		/** debug add to cart **/
+		console.log(scItem);
 		
 		$.ajax({  
 			 type: 'POST',  
@@ -148,6 +139,7 @@
 			     $.cookie('cart',cartDetails, { expires: 360 ,path: '/'});
 			     if(cart.message!=null) { 
 			    	 //TODO error message
+			    	 console.log('Error while adding to cart ' + cart.message);
 			     } else { 
 			    	 
 			    	 cartInfoLabel(cart);
@@ -161,7 +153,6 @@
 	}
 	
 function removeLineItem(lineItemId){
-	alert(this.attr("action"));
 	$( "#shoppingCartRemoveLineitem_"+lineItemId).submit();		
 }
 
@@ -180,7 +171,7 @@ function displayMiniCart(){
 		 error: function(e) { 
 			 $('#cart-box').removeClass('loading-indicator-overlay');/** manage manually cart loading**/
 			 $('#cartShowLoading').hide();
-			 console.log('error');
+			 console.log('error ' + e);
 			 //nothing
 			 
 		 },
@@ -221,14 +212,18 @@ function removeItemFromMinicart(lineItemId){
 		 type: 'GET',  
 		 url: getContextPath() + '/shop/miniCart/removeShoppingCartItem.html?lineItemId='+lineItemId,  
 		 error: function(e) { 
-			// do nothing
+			 console.log('error ' + e);
 			 
 		 },
 		 success: function(miniCart) {
 			 //$('#shoppingcartProducts').html(prepareMiniCartLineItemsData(miniCart));
-			 showCartTotal(miniCart);
-			 displayShoppigCartItems(miniCart,'#shoppingcartProducts');
-			 displayTotals(miniCart);
+			 if(miniCart==null) {
+				 emptyCartLabel();
+			 } else {
+				 showCartTotal(miniCart);
+				 displayShoppigCartItems(miniCart,'#shoppingcartProducts');
+				 displayTotals(miniCart);
+			 }
 		} 
 	});
 }
