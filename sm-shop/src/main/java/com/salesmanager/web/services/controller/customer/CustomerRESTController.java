@@ -50,6 +50,8 @@ import com.salesmanager.web.populator.customer.PersistableCustomerOptionValuePop
 import com.salesmanager.web.populator.customer.ReadableCustomerPopulator;
 import com.salesmanager.web.services.controller.category.ShoppingCategoryRESTController;
 import com.salesmanager.web.utils.EmailUtils;
+import com.salesmanager.web.utils.FilePathUtils;
+import com.salesmanager.web.utils.LabelUtils;
 import com.salesmanager.web.utils.LocaleUtils;
 
 @Controller
@@ -87,6 +89,9 @@ public class CustomerRESTController {
 	
 	@Autowired
 	EmailService emailService;
+	
+	@Autowired
+	private LabelUtils messages;
 
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ShoppingCategoryRESTController.class);
@@ -414,28 +419,31 @@ public class CustomerRESTController {
 		
 		try {
 
-			//creation of a user, send an email
-			String[] storeEmail = {merchantStore.getStoreEmailAddress()};
+
+			
+			Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, merchantStore, messages, customerLocale);
+			templateTokens.put(EmailConstants.EMAIL_CUSTOMER_FIRSTNAME, customer.getFirstName());
+			templateTokens.put(EmailConstants.EMAIL_CUSTOMER_LASTNAME, customer.getLastName());
+			
+			String[] greetingMessage = {merchantStore.getStorename(),FilePathUtils.buildCustomerUri(merchantStore, request),merchantStore.getStoreEmailAddress()};
 			
 			
-/*			Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, store, messages, customerLocale);
-			templateTokens.put(EmailConstants.EMAIL_RESET_PASSWORD_TXT, messages.getMessage("email.customer.resetpassword.text", customerLocale));
-			templateTokens.put(EmailConstants.EMAIL_CONTACT_OWNER, messages.getMessage("email.contactowner", storeEmail, customerLocale));
+			templateTokens.put(EmailConstants.EMAIL_CUSTOMER_GREETING, messages.getMessage("email.customer.greeting", greetingMessage, customerLocale));
+			templateTokens.put(EmailConstants.EMAIL_USERNAME_LABEL, messages.getMessage("label.generic.username",customerLocale));
 			templateTokens.put(EmailConstants.EMAIL_PASSWORD_LABEL, messages.getMessage("label.generic.password",customerLocale));
+			templateTokens.put(EmailConstants.EMAIL_USER_NAME, customer.getUserName());
 			templateTokens.put(EmailConstants.EMAIL_CUSTOMER_PASSWORD, password);
 
 
 			Email email = new Email();
-			email.setFrom(store.getStorename());
-			email.setFromEmail(store.getStoreEmailAddress());
-			email.setSubject(messages.getMessage("label.generic.changepassword",customerLocale));
+			email.setFrom(merchantStore.getStorename());
+			email.setFromEmail(merchantStore.getStoreEmailAddress());
+			email.setSubject(messages.getMessage("email.newuser.title",customerLocale));
 			email.setTo(customer.getEmailAddress());
-			email.setTemplateName(RESET_PASSWORD_TPL);
-			email.setTemplateTokens(templateTokens);*/
+			email.setTemplateName(EmailConstants.EMAIL_CUSTOMER_TPL);
+			email.setTemplateTokens(templateTokens);
 
-
-			
-			//emailService.sendHtmlEmail(merchantStore, email);
+			emailService.sendHtmlEmail(merchantStore, email);
 		
 		} catch (Exception e) {
 			LOGGER.error("Cannot send email to user",e);

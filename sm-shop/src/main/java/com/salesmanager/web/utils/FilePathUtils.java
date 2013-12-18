@@ -14,7 +14,7 @@ import com.salesmanager.web.constants.Constants;
 public class FilePathUtils {
 	
 	
-	
+	private final static String CUSTOMER_ACCESS_LINK = "/store//customer/dashboard.html";
 	
 	
 	/**
@@ -56,6 +56,37 @@ public class FilePathUtils {
 		resourcePath.append(scheme).append("://")
 		.append(domainName)
 		.append(request.getContextPath());
+		
+		return resourcePath.toString();
+		
+	}
+	
+	
+	/**
+	 * Access to the customer section
+	 * @param store
+	 * @param request
+	 * @return
+	 */
+	public static String buildCustomerUri(MerchantStore store, HttpServletRequest request) {
+		StringBuilder resourcePath = new StringBuilder();
+		HttpSession session= request.getSession();
+		@SuppressWarnings("unchecked")
+		Map<String,String> configurations = (Map<String, String>)session.getAttribute(Constants.STORE_CONFIGURATION);
+		String scheme = Constants.HTTP_SCHEME;
+		if(configurations!=null) {
+			scheme = (String)configurations.get("scheme");
+		}
+		
+		String domainName = store.getDomainName();
+		if(StringUtils.isBlank(domainName)) {
+			domainName = Constants.DEFAULT_DOMAIN_NAME;
+		}
+		
+		resourcePath.append(scheme).append("://")
+		.append(domainName)
+		.append(request.getContextPath())
+		.append(CUSTOMER_ACCESS_LINK);
 		
 		return resourcePath.toString();
 		

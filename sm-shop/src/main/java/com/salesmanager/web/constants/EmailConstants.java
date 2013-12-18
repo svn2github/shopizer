@@ -12,9 +12,13 @@ public class EmailConstants {
 	public static final String EMAIL_ADMIN_PASSWORD = "EMAIL_ADMIN_PASSWORD";
 	
 	
+	public static final String EMAIL_USERNAME_LABEL = "EMAIL_USERNAME_LABEL";
 	public static final String EMAIL_PASSWORD_LABEL = "EMAIL_PASSWORD_LABEL";
 	public static final String EMAIL_CUSTOMER_PASSWORD = "EMAIL_CUSTOMER_PASSWORD";
 	public static final String EMAIL_CUSTOMER_NAME = "EMAIL_CUSTOMER_NAME";
+	public static final String EMAIL_CUSTOMER_FIRSTNAME = "EMAIL_CUSTOMER_FIRSTNAME";
+	public static final String EMAIL_CUSTOMER_LASTNAME = "EMAIL_CUSTOMER_LASTNAME";
+	public static final String EMAIL_CUSTOMER_GREETING = "EMAIL_CUSTOMER_GREETING";
 	public static final String EMAIL_RESET_PASSWORD_TXT = "EMAIL_RESET_PASSWORD_TXT";
 	public static final String EMAIL_USER_NAME = "EMAIL_USER_NAME";
 	public static final String EMAIL_USER_PASSWORD = "EMAIL_USER_PASSWORD";
@@ -35,5 +39,8 @@ public class EmailConstants {
 	public static final String EMAIL_CONTACT_OWNER = "EMAIL_CONTACT_OWNER";
 	public static final String EMAIL_ADMIN_URL_LABEL = "EMAIL_ADMIN_URL_LABEL";
 	public static final String EMAIL_ADMIN_URL = "EMAIL_ADMIN_URL";
-
+	
+	public static final String EMAIL_CUSTOMER_TPL = "email_template_customer.ftl";
+	
+	
 }
