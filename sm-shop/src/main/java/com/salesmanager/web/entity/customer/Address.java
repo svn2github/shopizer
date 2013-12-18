@@ -1,5 +1,7 @@
 package com.salesmanager.web.entity.customer;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 
 public class Address {
 	
@@ -9,22 +11,25 @@ public class Address {
 
 	private String company;
 	
+	@NotEmpty
 	private String phone;
 	
-
+	@NotEmpty
 	private String address;
 
-
+	@NotEmpty
 	private String city;
 	
-
+	@NotEmpty
 	private String postalCode;
 	
 
 	private String stateProvince;
 	
+	
 	private String zone;//code
 	
+	@NotEmpty
 	private String country;//code
 
 	public void setStateProvince(String stateProvince) {

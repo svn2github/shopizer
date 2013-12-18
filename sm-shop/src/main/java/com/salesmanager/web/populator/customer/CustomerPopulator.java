@@ -18,6 +18,7 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.utils.AbstractDataPopulator;
@@ -30,8 +31,11 @@ public class CustomerPopulator extends
 	
 	private CountryService countryService;
 	private ZoneService zoneService;
+	private LanguageService languageService;
+
 	private CustomerOptionService customerOptionService;
 	private CustomerOptionValueService customerOptionValueService;
+	
 
 	/**
 	 * Creates a Customer entity ready to be saved
@@ -44,6 +48,8 @@ public class CustomerPopulator extends
 		Validate.notNull(customerOptionValueService, "Requires to set CustomerOptionValueService");
 		Validate.notNull(zoneService, "Requires to set ZoneService");
 		Validate.notNull(countryService, "Requires to set CountryService");
+		Validate.notNull(languageService, "Requires to set LanguageService");
+
 		try {
 			
 			if(!StringUtils.isBlank(source.getPassword())) {
@@ -155,6 +161,13 @@ public class CustomerPopulator extends
 					
 				}
 			}
+			
+			Language lang = languageService.getByCode(source.getLanguage());
+			if(lang==null) {
+				throw new ConversionException("Language is null for code " + source.getLanguage() + " use language ISO code [en, fr ...]");
+			}
+			
+			target.setDefaultLanguage(lang);
 
 		
 		} catch (Exception e) {
@@ -186,6 +199,30 @@ public class CustomerPopulator extends
 
 	public CustomerOptionValueService getCustomerOptionValueService() {
 		return customerOptionValueService;
+	}
+
+	public CountryService getCountryService() {
+		return countryService;
+	}
+
+	public void setCountryService(CountryService countryService) {
+		this.countryService = countryService;
+	}
+
+	public ZoneService getZoneService() {
+		return zoneService;
+	}
+
+	public void setZoneService(ZoneService zoneService) {
+		this.zoneService = zoneService;
+	}
+
+	public LanguageService getLanguageService() {
+		return languageService;
+	}
+
+	public void setLanguageService(LanguageService languageService) {
+		this.languageService = languageService;
 	}
 
 }
