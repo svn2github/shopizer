@@ -197,8 +197,6 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 		customer.setAnonymous(true);
 		customer.setCompany("ifactory");
 		customer.setDateOfBirth(new Date());
-		customer.setFax("555-666-7777");
-		customer.setNewsletter('c');
 		customer.setNick("My nick");
 		customer.setPostalCode("J4B-8J9");			
 		customer.setStreetAddress("358 Du Languadoc");

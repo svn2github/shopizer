@@ -353,8 +353,6 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 		customer.setAnonymous(true);
 		customer.setCompany("ifactory");
 		customer.setDateOfBirth(new Date());
-		customer.setFax("fax");
-		customer.setNewsletter('c');
 		customer.setNick("My nick");
 		customer.setPassword("123456");
 		customer.setPostalCode("000");
@@ -542,8 +540,6 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 		customer.setAnonymous(true);
 		customer.setCompany("ifactory");
 		customer.setDateOfBirth(new Date());
-		customer.setFax("fax");
-		customer.setNewsletter('c');
 		customer.setNick("My nick");
 		customer.setPassword("123456");
 		customer.setPostalCode("000");

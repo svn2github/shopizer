@@ -112,8 +112,6 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		customer.setAnonymous(true);
 		customer.setCompany("ifactory");
 		customer.setDateOfBirth(new Date());
-		customer.setFax("555-666-7777");
-		customer.setNewsletter('c');
 		customer.setNick("My nick");
 		customer.setPostalCode("J4B-8J9");
 		customer.setDefaultLanguage(en);
@@ -293,13 +291,11 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		customer.setStreetAddress("Customer Address");		
 		customer.setTelephone("Customer Phone");
 		customer.setZone(zone);
-		customer.setNewsletter('W');
 		customer.setState("Unknown state");
 		customer.setPassword("-1999");
 		customer.setNick("My New nick");
 		customer.setCompany(" Apple");	
 		customer.setGender(CustomerGender.M);
-		customer.setFax("fax-123-4443");
 		customer.setDateOfBirth(new Date());		
 		
 		Billing billing = new Billing();
@@ -394,8 +390,6 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		firstCustomer.setAnonymous(true);
 		firstCustomer.setCompany("ifactory");
 		firstCustomer.setDateOfBirth(new Date());
-		firstCustomer.setFax("fax");
-		firstCustomer.setNewsletter('c');
 		firstCustomer.setNick("My nick");
 		firstCustomer.setPassword("123456");
 		firstCustomer.setPostalCode("000");
