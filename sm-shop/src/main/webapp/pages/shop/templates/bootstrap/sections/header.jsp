@@ -114,7 +114,7 @@ response.setDateHeader ("Expires", -1);
 									<button type="submit" style="width:100%" class="btn"><s:message code="button.label.login" text="Login" /></button>
 									
 								</form>
-								<a href="<c:url value="/shop/customer/registration.html" />" role="button" class="" data-toggle="modal"><s:message code="label.register.notyetregistered" value="Not yet registered ?" /></a>
+								<a href="<c:url value="/shop/customer/registration.html" />" role="button" class="" data-toggle="modal"><s:message code="label.register.notyetregistered" text="Not yet registered ?" /></a>
 							</div>
 					  </li>
 					</ul>
