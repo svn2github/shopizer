@@ -415,7 +415,6 @@ public class CustomerRESTController {
 		customerService.save(cust);
 		customer.setId(cust.getId());
 
-		//send email
 		
 		try {
 
@@ -443,21 +442,12 @@ public class CustomerRESTController {
 			email.setTemplateName(EmailConstants.EMAIL_CUSTOMER_TPL);
 			email.setTemplateTokens(templateTokens);
 
+			//send email
 			emailService.sendHtmlEmail(merchantStore, email);
 		
 		} catch (Exception e) {
 			LOGGER.error("Cannot send email to user",e);
 		}
-		
-		
-		
-		
-		
-		//password
-		
-		//send email
-
-
 
 		return customer;
 	}
