@@ -31,4 +31,20 @@ public class DigitalProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Digit
 		
 		return query.uniqueResult(qDigitalProduct);
 	}
+	
+	@Override
+	public DigitalProduct getById(Long id) {
+		
+		QDigitalProduct qDigitalProduct = QDigitalProduct.digitalProduct;
+		QProduct qProduct = QProduct.product;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qDigitalProduct)
+			.innerJoin(qDigitalProduct.product, qProduct).fetch()
+			.innerJoin(qProduct.merchantStore).fetch()
+					.where(qProduct.id.eq(id));
+		
+		return query.uniqueResult(qDigitalProduct);
+	}
 }
