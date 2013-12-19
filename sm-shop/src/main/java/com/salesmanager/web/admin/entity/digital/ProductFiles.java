@@ -31,20 +31,20 @@ public class ProductFiles implements Serializable
     private static final long serialVersionUID = 1L;
     
     
-    private List<MultipartFile> files;
+    private List<MultipartFile> file;
     private DigitalProduct digitalProduct;
     private Product product;
 
     @NotEmpty(message="{product.files.invalid}")
     @Valid
-    public List<MultipartFile> getFiles()
+    public List<MultipartFile> getFile()
     {
-        return files;
+        return file;
     }
 
-    public void Files( final List<MultipartFile> files )
+    public void setFile( final List<MultipartFile> file )
     {
-        this.files = files;
+        this.file = file;
     }
 
 

@@ -72,13 +72,15 @@ public class MiniCartController extends AbstractController{
 		Language language = (Language)request.getAttribute(Constants.LANGUAGE);
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		ShoppingCartData shoppingCartData=shoppingCartFacade.removeCartItem(lineItemId, getShoppingCartFromSession(request).getCode(), merchantStore,language);
-		setCartDataToSession(request, shoppingCartData);
+		
 		
 		if(CollectionUtils.isEmpty(shoppingCartData.getShoppingCartItems())) {
 			shoppingCartFacade.deleteShoppingCart(shoppingCartData.getId(), merchantStore);
 			super.removeCartDataFromSession(request);
 			return null;
 		}
+		
+		setCartDataToSession(request, shoppingCartData);
 		
 		LOG.debug("removed item" + lineItemId + "from cart");
 		return getShoppingCartFromSession(request);

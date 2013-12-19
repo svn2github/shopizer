@@ -70,7 +70,7 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
     public ShoppingCartData populate(final ShoppingCart shoppingCart,
                                      final ShoppingCartData cart, final MerchantStore store, final Language language) {
 
-
+    	int cartQuantity = 0;
         cart.setCode(shoppingCart.getShoppingCartCode());
         Set<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> items = shoppingCart.getLineItems();
         List<ShoppingCartItem> shoppingCartItemsList=Collections.emptyList();
@@ -89,6 +89,10 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
 
                     shoppingCartItem.setPrice(pricingService.getDisplayAmount(item.getItemPrice(),store));
                     shoppingCartItem.setQuantity(item.getQuantity());
+                    
+                    
+                    cartQuantity = cartQuantity + item.getQuantity();
+                    
                     shoppingCartItem.setProductPrice(item.getItemPrice());
                     shoppingCartItem.setSubTotal(pricingService.getDisplayAmount(item.getSubTotal(), store));
                     ProductImage image = item.getProduct().getProductImage();
@@ -126,7 +130,7 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
 
             cart.setSubTotal(pricingService.getDisplayAmount(orderSummary.getSubTotal(), store));
             cart.setTotal(pricingService.getDisplayAmount(orderSummary.getTotal(), store));
-            cart.setQuantity(shoppingCart.getLineItems().size());
+            cart.setQuantity(cartQuantity);
             cart.setId(shoppingCart.getId());
         }
         catch(ServiceException ex){

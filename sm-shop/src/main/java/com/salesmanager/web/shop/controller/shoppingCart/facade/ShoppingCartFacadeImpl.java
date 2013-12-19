@@ -106,7 +106,28 @@ public class ShoppingCartFacadeImpl
         }
         com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem shoppingCartItem =
             createCartItem( cartModel, item, store );
-        cartModel.getLineItems().add( shoppingCartItem );
+        
+        boolean duplicateFound = false;
+        if(CollectionUtils.isEmpty(item.getShoppingCartAttributes())) {//increment quantity
+        	//get duplicate item from the cart
+        	Set<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> cartModelItems = cartModel.getLineItems();
+        	for(com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem cartItem : cartModelItems) {
+        		if(cartItem.getProduct().getId().longValue()==shoppingCartItem.getProduct().getId().longValue()) {
+        			if(CollectionUtils.isEmpty(cartItem.getAttributes())) {
+        				if(!duplicateFound) {
+        					cartItem.setQuantity(cartItem.getQuantity() + shoppingCartItem.getQuantity());
+        					duplicateFound = true;
+        					break;
+        				}
+        			}
+        		}
+        	}
+        } 
+        
+        if(!duplicateFound) {
+        	cartModel.getLineItems().add( shoppingCartItem );
+        }
+        
         /** Update cart in database with line items **/
         shoppingCartService.saveOrUpdate( cartModel );
         

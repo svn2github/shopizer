@@ -85,7 +85,7 @@ public class DigitalProductController {
 	
 	@Secured("PRODUCTS")
 	@RequestMapping(value="/admin/products/product/saveDigitalProduct.html", method=RequestMethod.POST)
-	public String saveFile(@ModelAttribute(value="file") @Valid final ProductFiles productFiles, final BindingResult bindingResult,final Model model, final HttpServletRequest request) throws Exception{
+	public String saveFile(@ModelAttribute(value="productFiles") @Valid final ProductFiles productFiles, final BindingResult bindingResult,final Model model, final HttpServletRequest request) throws Exception{
 	    
 		this.setMenu(model, request);
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
@@ -104,9 +104,9 @@ public class DigitalProductController {
 	       
         }
 	    final List<InputContentFile> contentFilesList=new ArrayList<InputContentFile>();
-        if(CollectionUtils.isNotEmpty( productFiles.getFiles() )){
-            LOGGER.info("Saving {} product files for merchant {}",productFiles.getFiles().size(),store.getId());
-            for(final MultipartFile multipartFile:productFiles.getFiles()){
+        if(CollectionUtils.isNotEmpty( productFiles.getFile() )){
+            LOGGER.info("Saving {} product files for merchant {}",productFiles.getFile().size(),store.getId());
+            for(final MultipartFile multipartFile:productFiles.getFile()){
                 if(!multipartFile.isEmpty()){
                     ByteArrayInputStream inputStream = new ByteArrayInputStream( multipartFile.getBytes() );
                     InputContentFile cmsContentImage = new InputContentFile();
