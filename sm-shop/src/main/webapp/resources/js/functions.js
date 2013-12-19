@@ -14,7 +14,6 @@
 		var cartCode = getCartCode();
 
 		if(cartCode!=null) {
-			alert(cartCode[1]);
 			shoppingCart = getShoppingCart(cartCode[1]);
 			if(shoppingCart==null) {
 				$.cookie('cart',null, { expires: 1 ,path: '/'});
@@ -121,7 +120,7 @@
 		var scItem = prefix + shoppingCartItem + suffix
 
 		/** debug add to cart **/
-		console.log(scItem);
+		//console.log(scItem);
 		
 		$.ajax({  
 			 type: 'POST',  
@@ -176,7 +175,6 @@ function displayMiniCart(){
 		 },
 		 success: function(miniCart) {
 			 if($.isEmptyObject(miniCart)){
-				 console.log('empty');
 				 emptyCartLabel();
 			 }
 			 else{
@@ -211,14 +209,14 @@ function removeItemFromMinicart(lineItemId){
 			 
 		 },
 		 success: function(miniCart) {
-			 //$('#shoppingcartProducts').html(prepareMiniCartLineItemsData(miniCart));
 			 if(miniCart==null) {
-				 console.log('cart is null');
 				 emptyCartLabel();
 			 } else {
 				 if(miniCart.shoppingCartItems!=null) {
 					 displayShoppigCartItems(miniCart,'#shoppingcartProducts');
 					 displayTotals(miniCart);
+				 } else {
+					 emptyCartLabel();
 				 }
 			 }
 		} 
@@ -245,8 +243,6 @@ function getShoppingCart(code){
 
 
 function showCartTotal(cart){
-	console.log('Cart qty : ' + cart.quantity);
-	console.log('Cart total : ' + cart.total);
 	$("#mini-cart-total-block").html(cart.total);
 	$("#checkout-total-plus").html(cart.total);
 	
@@ -265,11 +261,9 @@ function displayShoppigCartItems(cart, div) {
     //TODO Hogan template
 	 $(div).html('');
 	 if(cart.shoppingCartItems==null) {
-		 console.log('items are null');
 		 emptyCartLabel();
 		 return;
 	 }
-	 console.log(cart.shoppingCartItems.length);
 	 for (var i = 0; i < cart.shoppingCartItems.length; i++) {
 			var shoppingCartItem = cart.shoppingCartItems[i];
 			var item = '<tr id="' + shoppingCartItem.productId + '" class="cart-product">';
@@ -280,13 +274,14 @@ function displayShoppigCartItems(cart, div) {
 				item = item + '&nbsp;';
 			}
 			item = item + '</td>';
+			item = item + '<td>' + shoppingCartItem.quantity + '</td>';
 			item = item + '<td>' + shoppingCartItem.name + '</td>';
 			item = item + '<td>' + shoppingCartItem.price + '</td>';
 			var onClickEvent = "removeItemFromMinicart(" + shoppingCartItem.id + ");";
 			item = item + '<td><button productid="' + shoppingCartItem.productId + '" class="close removeProductIcon" onclick="' + onClickEvent + '">x</button></td>';
 			item = item + '</tr>';
 			
-			console.log(item);
+			//console.log(item);
 			$(div).append(item);
 	 }
 	
@@ -294,7 +289,6 @@ function displayShoppigCartItems(cart, div) {
 }
 
 function displayTotals(cart) {
-	console.log('Display totals');
 	cartInfoLabel(cart);
 	$('#total-box').html(cartSubTotal(cart));
 

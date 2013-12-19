@@ -69,7 +69,7 @@
 				<br/><br/>
 		
 				<c:url var="saveProductFile" value="/admin/products/product/saveDigitalProduct.html" />
-				<form method="POST" enctype="multipart/form-data" action="${saveProductFile}">
+				<form:form method="POST" enctype="multipart/form-data" commandName="productFiles" action="${saveProductFile}">
 
 					<form:errors path="*" cssClass="alert alert-error" element="div" />
 					<div id="store.success" class="alert alert-success"
@@ -90,7 +90,8 @@
 						
 									   <c:choose>
 				                        		<c:when test="${digitalProduct==null}">
-				                                    <input class="input-file" id="digitalProduct" name="file.digitalProduct" type="file"><br/>
+				                                    <input class="input-file" id="file" name="file" type="file" multiple="multiple">				                                
+				                                    <br/>
 				                                </c:when>
 				                                <c:otherwise>
 				                                	<a href="<sm:adminProductDownload digitalProduct="${digitalProduct}" />">${digitalProduct.productFileName}</a>
@@ -106,7 +107,7 @@
 							</button>
 						</div>
 					</div>
-				</form>
+				</form:form>
 			</div>
 		</div>
 	</div>	
