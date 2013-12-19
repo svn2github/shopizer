@@ -127,8 +127,10 @@ response.setDateHeader ("Expires", -1);
 			<!--close .span7-->
 			
 			<div id="why-join" class="span4 offset1">
-				<h3 class="short_headline"><span>Why Join?</span></h3>
-				<p>Fill this up with information on why they should join, or photos, or something...</p>
+				<h3 class="short_headline"><span><s:message code="label.register.whyregister" text="Why register?" /></span></h3>
+				<p>
+					<s:message code="label.register.registerreasons" text="Simplify a checkout process by having your information pre-filed, re-order an item from one click and get access to premium information." />
+				</p>
 			</div>
 			<!--close span4 offset1--> 
 		</div>
