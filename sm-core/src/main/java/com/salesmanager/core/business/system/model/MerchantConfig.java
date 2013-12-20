@@ -17,6 +17,7 @@ public class MerchantConfig implements Serializable, JSONAware {
 	private boolean displayCustomerSection =true;
 	private boolean displayContactUs =false;
 	private boolean displayStoreAddress = true;
+	private boolean displayAddToCartOnFeaturedItems = true;
 	
 	/** Store default search json config **/
 	private Map<String,Boolean> useDefaultSearchConfig= new HashMap<String,Boolean>();//language code | true or false
@@ -29,6 +30,7 @@ public class MerchantConfig implements Serializable, JSONAware {
 		data.put("displayCustomerSection", this.isDisplayCustomerSection());
 		data.put("displayContactUs", this.isDisplayContactUs());
 		data.put("displayStoreAddress", this.isDisplayStoreAddress());
+		data.put("displayAddToCartOnFeaturedItems", this.isDisplayStoreAddress());
 		
 		if(useDefaultSearchConfig!=null) {
 			JSONObject obj = new JSONObject();
@@ -94,6 +96,15 @@ public class MerchantConfig implements Serializable, JSONAware {
 
 	public Map<String,String> getDefaultSearchConfigPath() {
 		return defaultSearchConfigPath;
+	}
+
+	public void setDisplayAddToCartOnFeaturedItems(
+			boolean displayAddToCartOnFeaturedItems) {
+		this.displayAddToCartOnFeaturedItems = displayAddToCartOnFeaturedItems;
+	}
+
+	public boolean isDisplayAddToCartOnFeaturedItems() {
+		return displayAddToCartOnFeaturedItems;
 	}
 
 }
