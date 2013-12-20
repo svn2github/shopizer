@@ -22,11 +22,11 @@ response.setDateHeader ("Expires", -1);
 
 					<div class="box">
 						<span class="box-title">
-							<p><font color="#FF8C00">Profile information</font></p>
+							<p><font color="#FF8C00"><s:message code="label.customer.myaccount" text="My account"/></font></p>
 						</span>
 						<ul>
-							<li>Profile</li>
-							<li>Shipping & Billing address</li>
+							<li><a href="<c:out value="/customer/account.html"/>"><s:message code="menu.profile" text="Profile"/></a></li>
+							<li><a href="<c:out value="/customer/billing.html"/>"><s:message code="label.customer.billingshipping" text="Billing & shipping information"/></a></li>
 						</ul>
 					</div>
 

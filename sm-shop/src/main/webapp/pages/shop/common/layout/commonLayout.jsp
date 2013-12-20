@@ -41,21 +41,19 @@ response.setDateHeader ("Expires", -1);
  	<body>
  	
  	<div class="container">
-	<tiles:insertAttribute name="header"/>
+	<tiles:insertAttribute name="header" ignore="true"/>
 
 
 
     
-	<tiles:insertAttribute name="navbar"/> 
+	<tiles:insertAttribute name="navbar" ignore="true"/> 
 
 	
-    <!--<div class="container-fluid">-->
       <div class="row">
 			<tiles:insertAttribute name="body"/>   
       </div><!--/row-->
-      <hr>FOOTER
-	  <tiles:insertAttribute name="footer"/>
-    <!--</div>-->
+      <hr>
+	  <tiles:insertAttribute name="footer" ignore="true"/>
 	</div>
 	<jsp:include page="/pages/shop/templates/bootstrap/sections/jsLinks.jsp" />
 
