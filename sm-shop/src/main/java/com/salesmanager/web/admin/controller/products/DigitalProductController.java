@@ -35,7 +35,6 @@ import com.salesmanager.core.business.content.model.InputContentFile;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
-import com.salesmanager.web.admin.entity.content.ContentFiles;
 import com.salesmanager.web.admin.entity.digital.ProductFiles;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
@@ -65,20 +64,10 @@ public class DigitalProductController {
 		}
 		
 		model.addAttribute("product", product);
-		ProductFiles productFiles = new ProductFiles();
-		productFiles.setProduct(product);
-		
+
 		DigitalProduct digitalProduct = digitalProductService.getByProduct(store, product);
-		if(digitalProduct!=null) {
-			
 
-			productFiles.setDigitalProduct(digitalProduct);
-			
-			
-		}
-		
 		model.addAttribute("digitalProduct", digitalProduct);
-
 		return ControllerConstants.Tiles.Product.digitalProduct;
 		
 	}
@@ -91,18 +80,21 @@ public class DigitalProductController {
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 
 		Product product = productService.getById(productFiles.getProduct().getId());
-		
+		DigitalProduct digitalProduct = new DigitalProduct();
 		if(product==null || product.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 			return "redirect:/admin/products/products.html";
 		}
 		
-		
-		
-	    if (bindingResult.hasErrors()) {
+		digitalProduct.setProduct(product);
+		model.addAttribute("product", product);
+		model.addAttribute("digitalProduct", digitalProduct);
+	    
+		if (bindingResult.hasErrors()) {
 	        LOGGER.info( "Found {} Validation errors", bindingResult.getErrorCount());
 	        return ControllerConstants.Tiles.Product.digitalProduct;
-	       
         }
+
+	    
 	    final List<InputContentFile> contentFilesList=new ArrayList<InputContentFile>();
         if(CollectionUtils.isNotEmpty( productFiles.getFile() )){
             LOGGER.info("Saving {} product files for merchant {}",productFiles.getFile().size(),store.getId());
@@ -118,18 +110,17 @@ public class DigitalProductController {
             }
             
             if(CollectionUtils.isNotEmpty( contentFilesList )){
-            	
-            	//create DigitalProduct
-            	DigitalProduct digitalProduct = new DigitalProduct();
+
             	digitalProduct.setProductFileName(contentFilesList.get(0).getFileName());
-            	
             	digitalProductService.addProductFile(product, digitalProduct, contentFilesList.get(0));
+            	
+            	//refresh digital product
+            	digitalProduct = digitalProductService.getByProduct(store, product);
    
             }
-            else{
-            	//TODO message
-            }
         }
+        
+        
         
         return ControllerConstants.Tiles.Product.digitalProduct;
 	}

@@ -27,6 +27,7 @@ import com.salesmanager.core.business.content.model.Content;
 import com.salesmanager.core.business.content.model.ContentDescription;
 import com.salesmanager.core.business.content.model.ContentType;
 import com.salesmanager.core.business.content.service.ContentService;
+import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -143,6 +144,14 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				}
 				
 				request.setAttribute(Constants.MERCHANT_STORE, store);
+				
+				/** customer **/
+				Customer customer = (Customer)request.getSession().getAttribute(Constants.CUSTOMER);
+				if(customer!=null) {
+					if(customer.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
+						request.getSession().removeAttribute(Constants.CUSTOMER);
+					}
+				}
 				
 				/** language & locale **/
 				Language language = (Language) request.getSession().getAttribute(Constants.LANGUAGE);
