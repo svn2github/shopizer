@@ -16,7 +16,7 @@ response.setDateHeader ("Expires", -1);
 
 	  <!-- footer -->
             <footer>
-                <div class="row">  
+                <div class="row-fluid">  
                 	<c:if test="${requestScope.CONFIGS['displayStoreAddress'] == true}">                 
                     <div class="span3">
 						<div class="company">
@@ -63,7 +63,7 @@ response.setDateHeader ("Expires", -1);
                 </div>
 		    <div id="footer-bottom">
 				<div class="container">
-				   <div class="row">
+				   <div class="row-fluid">
 					<div class="span12 text">&copy;&nbsp;<s:message code="label.generic.providedby" /> <a href="http://www.shopizer.com" class="footer-href" target="_blank">Shopizer</div>
 				   </div>
 				 </div>

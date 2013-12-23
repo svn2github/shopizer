@@ -10,6 +10,8 @@
 
 <br />
 <br />
+<div class="row-fluid show-grid">
+
 <table class="table table-bordered table-striped">
 
 	<c:if test="${not empty cart}">
@@ -91,6 +93,7 @@
 </div>
 </c:if>
 </c:if>
+</div>
 
 
 

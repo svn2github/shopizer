@@ -117,7 +117,6 @@
 				
 				function getUserInformation() {
 					 // get the form values 
-					alert('getUserInformation');
 					$('#securityQtn1Select').empty();
 					$('#securityQtn2Select').empty();
 					$('#securityQtn3Select').empty();

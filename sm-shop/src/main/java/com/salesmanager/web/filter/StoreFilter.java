@@ -276,9 +276,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				
 				/******* Shopping Cart *********/
 				
-				ShoppingCartData shoppingCart = (ShoppingCartData)request.getSession().getAttribute(Constants.SHOPPING_CART);
-				if(shoppingCart!=null) {
-					request.setAttribute(Constants.REQUEST_SHOPPING_CART, shoppingCart);
+				String shoppingCarCode = (String)request.getSession().getAttribute(Constants.SHOPPING_CART);
+				if(shoppingCarCode!=null) {
+					request.setAttribute(Constants.REQUEST_SHOPPING_CART, shoppingCarCode);
 				}
 				
 

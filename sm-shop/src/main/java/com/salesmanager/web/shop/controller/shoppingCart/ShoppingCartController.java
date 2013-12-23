@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,7 @@ import com.salesmanager.web.shop.controller.shoppingCart.facade.ShoppingCartFaca
  */
 
 @Controller
+@RequestMapping("/shop")
 public class ShoppingCartController extends AbstractController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ShoppingCartController.class);
@@ -102,6 +104,8 @@ public class ShoppingCartController extends AbstractController {
 
 	@Autowired
 	private ShoppingCartFacade shoppingCartFacade;
+	
+	
 
 	/**
 	 * Add an item to the ShoppingCart (AJAX exposed method)
@@ -112,7 +116,7 @@ public class ShoppingCartController extends AbstractController {
 	 * @return
 	 * @throws Exception
 	 */
-    @RequestMapping(value={"/shop/addShoppingCartItem.html"}, method=RequestMethod.POST)
+    @RequestMapping(value={"/addShoppingCartItem.html"}, method=RequestMethod.POST)
 	public @ResponseBody
 	ShoppingCartData addShoppingCartItem(@RequestBody final ShoppingCartItem item, final HttpServletRequest request, final HttpServletResponse response, final Locale locale) throws Exception {
 
@@ -132,7 +136,7 @@ public class ShoppingCartController extends AbstractController {
 				shoppingCart = shoppingCartFacade.getShoppingCartData( customerCart);
 
 
-				//TODO if ahoppingCart != null ?? merge
+				//TODO if shoppingCart != null ?? merge
 				//TODO maybe they have the same code
 				//TODO what if codes are different (-- merge carts, keep the latest one, delete the oldest, switch codes --)
 			}
@@ -151,6 +155,7 @@ public class ShoppingCartController extends AbstractController {
 
 
 		shoppingCart=shoppingCartFacade.addItemsToShoppingCart( shoppingCart, item, store,language,customer );
+		request.getSession().setAttribute(Constants.SHOPPING_CART, shoppingCart.getCode());
 
 
 		/******************************************************/
@@ -190,8 +195,7 @@ public class ShoppingCartController extends AbstractController {
 
 		//return the JSON structure in AjaxResponse
 
-		//store the shopping cart in the http session
-		setCartDataToSession(request,shoppingCart);
+		
 
 		//AjaxResponse resp = new AjaxResponse();
 		//resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
@@ -209,21 +213,27 @@ public class ShoppingCartController extends AbstractController {
 	 * @return
 	 * @throws Exception
 	 */
-    @RequestMapping( value = { "/shop/shoppingCart.html" }, method = RequestMethod.GET )
+    @RequestMapping( value = { "/shoppingCart.html" }, method = RequestMethod.GET )
     public String displayShoppingCart( final Model model, final HttpServletRequest request, final HttpServletResponse response )
         throws Exception
     {
 
         LOG.info( "Starting to calculate shopping cart..." );
-        Customer customer = (Customer) request.getSession().getAttribute( Constants.CUSTOMER );
+        Customer customer = super.<Customer>getSessionValue(  Constants.CUSTOMER );
 
         MerchantStore store = (MerchantStore) request.getAttribute( Constants.MERCHANT_STORE );
-        ShoppingCartData shoppingCart = getShoppingCartFromSession( request );
+        
+        /** there must be a cart in the session **/
+        String cartCode = (String)request.getSession().getAttribute(Constants.SHOPPING_CART);
+        
+        if(StringUtils.isBlank(cartCode)) {
+        	return "redirect:/shop";
+        }
+                
+        ShoppingCartData shoppingCart = shoppingCartFacade.getShoppingCartData(customer, store, cartCode);
         final String shoppingCartId = shoppingCart != null ? shoppingCart.getCode() : null;
 
-        // ShoppingCartData shoppingCart=convertFromEntity(cart, store,language);
         shoppingCart = shoppingCartFacade.getShoppingCartData( customer, store,shoppingCartId );
-       // shoppingCart = shoppingCartFacade.recalculateCart( shoppingCart );
         model.addAttribute( "cart", shoppingCart );
 
         /** template **/
@@ -242,7 +252,7 @@ public class ShoppingCartController extends AbstractController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value={"/shop/removeShoppingCartItem.html"},   method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value={"/removeShoppingCartItem.html"},   method = { RequestMethod.GET, RequestMethod.POST })
 
 	String removeShoppingCartItem(final Long lineItemId, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 
@@ -266,11 +276,23 @@ public class ShoppingCartController extends AbstractController {
 
 	    final MerchantStore store = super.<MerchantStore>getSessionValue(Constants.MERCHANT_STORE);
         final Language language=super.<Language>getSessionValue(  Constants.LANGUAGE );
-		ShoppingCartData shoppingCartData=shoppingCartFacade.removeCartItem(lineItemId, getShoppingCartFromSession(request).getCode(),store,language);
-		setCartDataToSession(request, shoppingCartData);
+        Customer customer = super.<Customer>getSessionValue(  Constants.CUSTOMER );
+        
+        /** there must be a cart in the session **/
+        String cartCode = (String)request.getSession().getAttribute(Constants.SHOPPING_CART);
+        
+        if(StringUtils.isBlank(cartCode)) {
+        	return "redirect:/shop";
+        }
+                
+        ShoppingCartData shoppingCart = shoppingCartFacade.getShoppingCartData(customer, store, cartCode);
+                
+		ShoppingCartData shoppingCartData=shoppingCartFacade.removeCartItem(lineItemId, shoppingCart.getCode(),store,language);
+
 		
 		if(CollectionUtils.isEmpty(shoppingCartData.getShoppingCartItems())) {
 			shoppingCartFacade.deleteShoppingCart(shoppingCartData.getId(), store);
+			return "redirect:/shop";
 		}
 		
 		
@@ -290,14 +312,23 @@ public class ShoppingCartController extends AbstractController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value={"/shop/updateShoppingCartItem.html"},  method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value={"/updateShoppingCartItem.html"},  method = { RequestMethod.GET, RequestMethod.POST })
 	public String updateShoppingCartItem( final Long lineItemId, final Integer quantity, final HttpServletRequest request, final  HttpServletResponse response) throws Exception {
 
 		LOG.info("updating cart entry with qunatity: "+quantity);
 		MerchantStore store = super.<MerchantStore>getSessionValue(Constants.MERCHANT_STORE);
         final Language language=super.<Language>getSessionValue(  Constants.LANGUAGE );
-		ShoppingCartData shoppingCartData= shoppingCartFacade.updateCartItem(lineItemId, getShoppingCartFromSession(request).getCode(), quantity,store,language);
-		setCartDataToSession(request, shoppingCartData);
+        Customer customer = super.<Customer>getSessionValue(  Constants.CUSTOMER );
+        
+        
+        String cartCode = (String)request.getSession().getAttribute(Constants.SHOPPING_CART);
+        
+        if(StringUtils.isBlank(cartCode)) {
+        	return "redirect:/shop";
+        }
+                
+        ShoppingCartData shoppingCart = shoppingCartFacade.getShoppingCartData(customer, store, cartCode);
+        
 		return Constants.REDIRECT_PREFIX + "/shop/shoppingCart.html";
 	}
 

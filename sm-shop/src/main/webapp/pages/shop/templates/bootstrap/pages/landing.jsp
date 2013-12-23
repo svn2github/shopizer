@@ -20,31 +20,6 @@ response.setDateHeader ("Expires", -1);
 
 
 			<div class="row-fluid">
-				<!--
-				<div class="span12">
-
-      					<div id="main-slider" class="carousel slide home">
-        					<div class="carousel-inner" id="slider">
-        					
-        					          <div class="item active">
-            							<img src="<c:url value="/resources/templates/bootstrap/img/surf-banner.jpg" />" alt="" height="377"/>
-            							<div class="carousel-caption">
-              								<h2>Title</h2>
-              								<p>Text</p>
-            							</div>
-          							  </div>
-
-        					</div>
-          					<a class="carousel-control left" href="#slider" data-slide="prev">&lsaquo;</a>
-          					<a class="carousel-control right" href="#slider" data-slide="next">&rsaquo;</a>
-      					</div>
-
-				
-				
-				
-
-          		</div>
-          		-->
           		
           		<c:if test="${page!=null}">
           		    <div class="span12">
@@ -73,6 +48,7 @@ response.setDateHeader ("Expires", -1);
 									<ul class="thumbnails product-list">
 									    <!-- Iterate over featuredItems -->
 										<c:set var="ITEMS" value="${requestScope.FEATURED_ITEM}" scope="request" />
+										<c:set var="FEATURED" value="true" scope="request" />
 	                         			<jsp:include page="/pages/shop/templates/bootstrap/sections/productBox.jsp" />
 									</ul>
 						</div>

@@ -55,7 +55,7 @@ import com.salesmanager.web.utils.LabelUtils;
 import com.salesmanager.web.utils.LocaleUtils;
 
 @Controller
-@RequestMapping("/shop/services/")
+@RequestMapping("/shop/services")
 public class CustomerRESTController {
 
 	@Autowired

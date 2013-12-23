@@ -26,6 +26,7 @@ response.setDateHeader ("Expires", -1);
     	});
 
         $("#login").submit(function() {
+        	alert('login');
         	$('#signinPane').showLoading();
  			$("#loginError").hide();
             var data = $(this).serializeObject();
@@ -86,6 +87,7 @@ response.setDateHeader ("Expires", -1);
 					
 					</div>
 					
+					<c:choose>
 					<c:when test="${requestScope.CUSTOMER!=null}">
 						<a href="<c:url value="/customer/dashboard.html"/>"><s:message code="label.generic.welcome" text="Welcome" /> <c:out value="${requestScope.CUSTOMER.firstname}"/> <c:out value="${requestScope.CUSTOMER.lastname}"/></a>
 					</c:when>
@@ -111,7 +113,7 @@ response.setDateHeader ("Expires", -1);
 											</div>
 									</div>
 									<input id="storeCode" name="storeCode" type="hidden" value="<c:out value="${requestScope.MERCHANT_STORE.code}"/>"/>					 
-									<button type="submit" style="width:100%" class="btn"><s:message code="button.label.login" text="Login" /></button>
+									<button type="button" style="width:100%" class="btn"><s:message code="button.label.login" text="Login" /></button>
 									
 								</form>
 								<a href="<c:url value="/shop/customer/registration.html" />" role="button" class="" data-toggle="modal"><s:message code="label.register.notyetregistered" text="Not yet registered ?" /></a>
@@ -119,7 +121,7 @@ response.setDateHeader ("Expires", -1);
 					  </li>
 					</ul>
 					</c:otherwise>
-
+					</c:choose>
 
 
 

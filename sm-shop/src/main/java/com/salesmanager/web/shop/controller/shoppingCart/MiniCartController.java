@@ -28,6 +28,7 @@ import com.salesmanager.web.shop.controller.shoppingCart.facade.ShoppingCartFaca
  *
  */
 @Controller
+@RequestMapping("/shop")
 public class MiniCartController extends AbstractController{
 
 	private static final Logger LOG = LoggerFactory.getLogger(MiniCartController.class);
@@ -36,26 +37,19 @@ public class MiniCartController extends AbstractController{
 	private ShoppingCartFacade shoppingCartFacade;
 	
 	
-	@RequestMapping(value={"/shop/displayMiniCart.html"},  method = RequestMethod.GET)
-	public @ResponseBody ShoppingCartData displayMiniCart(HttpServletRequest request, Model model){
-		return getShoppingCartFromSession(request);
-		
-	}
+
 	
-	@RequestMapping(value={"/shop/displayMiniCartByCode.html"},  method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value={"/displayMiniCartByCode.html"},  method = { RequestMethod.GET, RequestMethod.POST })
 	public @ResponseBody ShoppingCartData displayMiniCart(final String shoppingCartCode, HttpServletRequest request, Model model){
 		
 		try {
 			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 			Customer customer = super.<Customer>getSessionValue(  Constants.CUSTOMER );
-			ShoppingCartData cart =  getShoppingCartFromSession(request);
-			
-			if(cart==null) {
-				cart = shoppingCartFacade.getShoppingCartData(customer,merchantStore,shoppingCartCode);
+			ShoppingCartData cart =  shoppingCartFacade.getShoppingCartData(customer,merchantStore,shoppingCartCode);
+			if(cart!=null) {
+				request.getSession().setAttribute(Constants.SHOPPING_CART, cart.getCode());
 			}
-			if(cart.getCode().equals(shoppingCartCode)) {
-				return cart;
-			}
+			return cart;
 			
 			
 		} catch(Exception e) {
@@ -67,23 +61,28 @@ public class MiniCartController extends AbstractController{
 	}
 
 	
-	@RequestMapping(value={"/shop/miniCart/removeShoppingCartItem.html"},   method = { RequestMethod.GET, RequestMethod.POST })
-	public @ResponseBody ShoppingCartData removeShoppingCartItem(Long lineItemId, HttpServletRequest request, Model model) throws Exception {
+	@RequestMapping(value={"/removeMiniShoppingCartItem.html"},   method = { RequestMethod.GET, RequestMethod.POST })
+	public @ResponseBody ShoppingCartData removeShoppingCartItem(Long lineItemId, final String shoppingCartCode, HttpServletRequest request, Model model) throws Exception {
 		Language language = (Language)request.getAttribute(Constants.LANGUAGE);
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-		ShoppingCartData shoppingCartData=shoppingCartFacade.removeCartItem(lineItemId, getShoppingCartFromSession(request).getCode(), merchantStore,language);
+		ShoppingCartData cart =  shoppingCartFacade.getShoppingCartData(null, merchantStore, shoppingCartCode);
+		if(cart==null) {
+			return null;
+		}
+		ShoppingCartData shoppingCartData=shoppingCartFacade.removeCartItem(lineItemId, cart.getCode(), merchantStore,language);
 		
 		
 		if(CollectionUtils.isEmpty(shoppingCartData.getShoppingCartItems())) {
 			shoppingCartFacade.deleteShoppingCart(shoppingCartData.getId(), merchantStore);
-			super.removeCartDataFromSession(request);
+			request.getSession().removeAttribute(Constants.SHOPPING_CART);
 			return null;
 		}
 		
-		setCartDataToSession(request, shoppingCartData);
+		
+		request.getSession().setAttribute(Constants.SHOPPING_CART, cart.getCode());
 		
 		LOG.debug("removed item" + lineItemId + "from cart");
-		return getShoppingCartFromSession(request);
+		return shoppingCartData;
 	}
 	
 	

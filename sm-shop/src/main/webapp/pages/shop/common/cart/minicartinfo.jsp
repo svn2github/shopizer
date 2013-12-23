@@ -6,24 +6,7 @@
  
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
+						<!-- display is ajax driven -->
   		 			    <span id="cartinfo">
-           		 			    	<c:choose>
-	           		 			    	<c:when test="${requestScope.SHOPPING_CART != null}">
-	                  						<span id="cartqty">
-	                  						 (<c:out value="${requestScope.SHOPPING_CART.quantity}"/>
-	                  						  <c:choose>
-	                  						      <c:when test="${requestScope.SHOPPING_CART.quantity gt 1}" >
-	                  						     		<s:message code="label.generic.items" text="items" />
-	                  						       </c:when>
-	                  						      <c:otherwise>
-	                  						         <s:message code="label.generic.item" text="item" />
-	                  						        </c:otherwise>
-	                  						     </c:choose>
-	                  						    </span>)
-	                  						    <span id="cartprice"><c:out value="${requestScope.SHOPPING_CART.total}"/></span>
-	                  					</c:when>
-	                  					<c:otherwise>
-	                  						<span id="cartqty">(0&nbsp;<s:message code="label.generic.item" text="item" />)</span><span id="cartprice"></span>
-	                  					</c:otherwise>
-                  					</c:choose>
-            					</span>
+                  					<span id="cartqty">(0&nbsp;<s:message code="label.generic.item" text="item" />)</span><span id="cartprice"></span>
+            			</span>

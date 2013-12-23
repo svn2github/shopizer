@@ -22,16 +22,15 @@ response.setDateHeader ("Expires", -1);
 		<p id="shoppingcarttitle" class="lbw"><s:message code="label.cart" text="Shopping cart"/></p>
 		<br />
 		<div id="cartShowLoading" class="loading-indicator" style="width:100%;display:none;"></div>
+		<div id="cartMessage" style="width:100%;display:none;"></div>
 		<div id="shoppingcart">
 			<table style="margin-bottom: 5px" class="table">
-				<tbody id="shoppingcartProducts">
-
+				<tbody id="shoppingcartProducts"><!-- products place holder -->
 				</tbody>
 			</table>
-			<div id="total-box" class="total-box"></div>
+			<div id="total-box" class="total-box"></div><!-- totals place holder -->
 			<br />
 			<button class="btn-success btn-large" style="width: 100%" type="button" onclick="viewShoppingCartPage();"><s:message code="label.checkout" text="Checkout"/></button>
-				
 		</div>
 	</div>
 </div>
