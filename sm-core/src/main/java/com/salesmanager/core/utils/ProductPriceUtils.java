@@ -552,6 +552,7 @@ public class ProductPriceUtils {
 		FinalPrice finalPrice = new FinalPrice();
 		BigDecimal fPrice = price.getProductPriceAmount();
 		BigDecimal oPrice = price.getProductPriceAmount();
+
 		Date today = new Date();
 		//calculate discount price
 		boolean hasDiscount = false;
@@ -587,15 +588,19 @@ public class ProductPriceUtils {
 				finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
 			}
 		}
+		
+		finalPrice.setProductPrice(price);
+		finalPrice.setFinalPrice(fPrice);
+		finalPrice.setOriginalPrice(oPrice);
+		
+		
 		if(price.isDefaultPrice()) {
 			finalPrice.setDefaultPrice(true);
 		}
 		if(hasDiscount) {
 			discountPrice(finalPrice);
 		}
-		finalPrice.setProductPrice(price);
-		finalPrice.setFinalPrice(fPrice);
-		finalPrice.setOriginalPrice(oPrice);
+
 		
 		return finalPrice;
 	}
