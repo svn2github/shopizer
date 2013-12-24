@@ -43,7 +43,7 @@ public class DigitalProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Digit
 		query.from(qDigitalProduct)
 			.innerJoin(qDigitalProduct.product, qProduct).fetch()
 			.innerJoin(qProduct.merchantStore).fetch()
-					.where(qProduct.id.eq(id));
+					.where(qDigitalProduct.id.eq(id));
 		
 		return query.uniqueResult(qDigitalProduct);
 	}
