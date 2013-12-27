@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,11 +29,13 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartItem;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.shoppingCart.facade.ShoppingCartFacade;
+import com.salesmanager.web.utils.LabelUtils;
 
 
 /**
@@ -104,6 +107,9 @@ public class ShoppingCartController extends AbstractController {
 
 	@Autowired
 	private ShoppingCartFacade shoppingCartFacade;
+	
+	@Autowired
+	private LabelUtils messages;
 	
 	
 
@@ -178,7 +184,7 @@ public class ShoppingCartController extends AbstractController {
 		 * 	what if you add item in the shopping cart as an anonymous user
 		 *  later on you log in to process with checkout but the system retrieves a previous shopping cart saved in the database for that customer
 		 *  in that case we need to synchronize both carts and the original one (the one with the customer id) supercedes the current cart in session
-		 *  the sustem will have to deal with the original one and remove the latest
+		 *  the system will have to deal with the original one and remove the latest
 		 */
 
 
@@ -214,11 +220,19 @@ public class ShoppingCartController extends AbstractController {
 	 * @throws Exception
 	 */
     @RequestMapping( value = { "/shoppingCart.html" }, method = RequestMethod.GET )
-    public String displayShoppingCart( final Model model, final HttpServletRequest request, final HttpServletResponse response )
+    public String displayShoppingCart( final Model model, final HttpServletRequest request, final HttpServletResponse response, final Locale locale )
         throws Exception
     {
 
         LOG.info( "Starting to calculate shopping cart..." );
+        
+        
+		//meta information
+		PageInformation pageInformation = new PageInformation();
+		pageInformation.setPageTitle(messages.getMessage("label.cart.placeorder", locale));
+		request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
+        
+        
         Customer customer = super.<Customer>getSessionValue(  Constants.CUSTOMER );
 
         MerchantStore store = (MerchantStore) request.getAttribute( Constants.MERCHANT_STORE );
@@ -227,13 +241,13 @@ public class ShoppingCartController extends AbstractController {
         String cartCode = (String)request.getSession().getAttribute(Constants.SHOPPING_CART);
         
         if(StringUtils.isBlank(cartCode)) {
-        	return "redirect:/shop";
+        	//display empty cart
+            StringBuilder template =
+                    new StringBuilder().append( ControllerConstants.Tiles.ShoppingCart.shoppingCart ).append( "." ).append( store.getStoreTemplate() );
+                return template.toString();
         }
                 
         ShoppingCartData shoppingCart = shoppingCartFacade.getShoppingCartData(customer, store, cartCode);
-        final String shoppingCartId = shoppingCart != null ? shoppingCart.getCode() : null;
-
-        shoppingCart = shoppingCartFacade.getShoppingCartData( customer, store,shoppingCartId );
         model.addAttribute( "cart", shoppingCart );
 
         /** template **/
@@ -242,6 +256,39 @@ public class ShoppingCartController extends AbstractController {
         return template.toString();
 
     }
+    
+    
+	@RequestMapping(value={"/shoppingCartByCode.html"},  method = { RequestMethod.GET })
+	public String displayShoppingCart(@ModelAttribute String shoppingCartCode, final Model model, HttpServletRequest request, final Locale locale) throws Exception{
+
+			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+			Customer customer = super.<Customer>getSessionValue(  Constants.CUSTOMER );
+			
+			if(StringUtils.isBlank(shoppingCartCode)) {
+				return "redirect:/shop";
+			}
+			
+			ShoppingCartData cart =  shoppingCartFacade.getShoppingCartData(customer,merchantStore,shoppingCartCode);
+			if(cart==null) {
+				return "redirect:/shop";
+			}
+			
+			
+			//meta information
+			PageInformation pageInformation = new PageInformation();
+			pageInformation.setPageTitle(messages.getMessage("label.cart.placeorder", locale));
+			request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
+			request.getSession().setAttribute(Constants.SHOPPING_CART, cart.getCode());
+	        model.addAttribute("cart", cart);
+
+	        /** template **/
+	        StringBuilder template =
+	            new StringBuilder().append( ControllerConstants.Tiles.ShoppingCart.shoppingCart ).append( "." ).append( merchantStore.getStoreTemplate() );
+	        return template.toString();
+			
+
+
+	}
 
 
 	/**

@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.salesmanager.web.entity.ShopEntity;
+import com.salesmanager.web.entity.order.OrderTotal;
 
 @Component
 @Scope(value = "prototype")
@@ -22,7 +23,7 @@ public class ShoppingCartData extends ShopEntity implements Serializable {
 	private String total;
 	private String subTotal;
 	
-	
+	private List<OrderTotal> totals;//calculated from OrderTotalSummary
 	private List<ShoppingCartItem> shoppingCartItems;
 	
 	
@@ -61,6 +62,12 @@ public class ShoppingCartData extends ShopEntity implements Serializable {
 	}
 	public void setSubTotal(String subTotal) {
 		this.subTotal = subTotal;
+	}
+	public List<OrderTotal> getTotals() {
+		return totals;
+	}
+	public void setTotals(List<OrderTotal> totals) {
+		this.totals = totals;
 	}
 
 

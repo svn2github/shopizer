@@ -121,7 +121,7 @@ public class DigitalProductController {
         }
         
         
-        
+        model.addAttribute("success","success");
         return ControllerConstants.Tiles.Product.digitalProduct;
 	}
 	

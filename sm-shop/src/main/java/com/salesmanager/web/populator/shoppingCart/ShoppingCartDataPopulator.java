@@ -23,6 +23,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartCalculationService;
 import com.salesmanager.core.utils.AbstractDataPopulator;
+import com.salesmanager.web.entity.order.OrderTotal;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartAttribute;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartItem;
@@ -128,6 +129,17 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
             summary.setProducts(productsList);
             OrderTotalSummary orderSummary = shoppingCartCalculationService.calculate(shoppingCart,store, language );
 
+            if(CollectionUtils.isNotEmpty(orderSummary.getTotals())) {
+            	List<OrderTotal> totals = new ArrayList<OrderTotal>();
+            	for(com.salesmanager.core.business.order.model.OrderTotal t : orderSummary.getTotals()) {
+            		OrderTotal total = new OrderTotal();
+            		total.setCode(t.getOrderTotalCode());
+            		total.setValue(t.getValue());
+            		totals.add(total);
+            	}
+            	cart.setTotals(totals);
+            }
+            
             cart.setSubTotal(pricingService.getDisplayAmount(orderSummary.getSubTotal(), store));
             cart.setTotal(pricingService.getDisplayAmount(orderSummary.getTotal(), store));
             cart.setQuantity(cartQuantity);
