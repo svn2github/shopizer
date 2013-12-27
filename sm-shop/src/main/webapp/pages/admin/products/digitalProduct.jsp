@@ -11,6 +11,7 @@
 <script type="text/javascript">
 	
 	function removeFile(fileId){
+			alert('clicked');
 			$("#store.error").show();
 			$.ajax({
 			  type: 'POST',
@@ -23,8 +24,9 @@
 						
 						//remove delete
 						$("#productControlRemove").html('');
+						$("#fileLink").hide();
 						//add field
-						$("#productControl").html('<input class=\"input-file\" id=\"productImage\" name=\"productImage\" type=\"file\">');
+						$("#fileControl").html('<input class=\"input-file\" id=\"productImage\" name=\"productImage\" type=\"file\">');
 						$(".alert-success").show();
 						
 					} else {
@@ -94,7 +96,7 @@
 				                                    <br/>
 				                                </c:when>
 				                                <c:otherwise>
-				                                	<a href="<sm:adminProductDownload digitalProduct="${digitalProduct}" />">${digitalProduct.productFileName}</a>
+				                                	<a id="fileLink" href="<sm:adminProductDownload digitalProduct="${digitalProduct}" />">${digitalProduct.productFileName}</a>
 				                                </c:otherwise>
 			                            </c:choose>
 		

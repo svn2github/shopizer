@@ -27,10 +27,10 @@ response.setDateHeader ("Expires", -1);
  
      <head>
         	 	<meta charset="utf-8">
-    			<title>//TODO<s:message code="label.storeadministration" text="Store administration" /></title>
+    			<title><c:out value="${requestScope.PAGE_INFORMATION.pageTitle}" /></title>
     			<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    			<meta name="description" content="">
-    			<meta name="author" content="<c:out value="${requestScope.store.name}"/>">
+    			<meta name="description" content="<c:out value="${requestScope.PAGE_INFORMATION.pageDescription}" />">
+    			<meta name="author" content="<c:out value="${requestScope.MERCHANT_STORE.storename}"/>">
     			<!-- The one provided with the system -->
     			<script src="<c:url value="/resources/js/bootstrap/jquery.js" />"></script>
 

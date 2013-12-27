@@ -36,20 +36,20 @@
 }
 
 .sm-ui-component label {
-
-
     color: #333333;
     margin-bottom: 0;
     display: inline;
-
 }
 
 /** shopping cart **/
 .cartmessage {
 	margin-left:10px;
 	margin-top:10px;
-	margin-bottom:10px;
-	
+	margin-bottom:10px;	
+}
+
+#mainCartTable tbody tr:hover td, .table tbody tr:hover th {
+    background-color: transparent;
 }
 
 /** typeahead search **/

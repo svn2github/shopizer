@@ -12,7 +12,10 @@
 <br />
 <div class="row-fluid show-grid">
 
-<table class="table table-bordered table-striped">
+<h2><s:message code="label.cart.revieworder" text="Review your order" /></h2>
+<br/>
+
+<table id="mainCartTable" class="table table-bordered table-striped">
 
 	<c:if test="${not empty cart}">
 	   <c:choose>
@@ -23,10 +26,10 @@
 				<c:if test="${itemStatus.index eq 0}">
 					<thead>
 						<tr>
-							<th colspan="2" width="55%">Item</th>
-							<th colspan="2" width="15%">Quantity</th>
-							<th width="15%">Price</th>
-							<th width="15%">Total</th>
+							<th colspan="2" width="55%"><s:message code="label.generic.item.title" text="Item"/></th>
+							<th colspan="2" width="15%"><s:message code="label.quantity" text="Quantity"/></th>
+							<th width="15%"><s:message code="label.generic.price" text="Price"/></th>
+							<th width="15%"><s:message code="label.order.total" text="Total"/></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -34,18 +37,21 @@
 				<form:form action="${updateShoppingCartItemUrl}"
 					id="shoppingCartLineitem_${shoppingCartItem.id}">
 					<tr>
-						<td width="10%">image</td>
+						<td width="10%">
+							<c:if test="${shoppingCartItem.image!=null}">
+								<img width="60" src="<c:url value="${shoppingCartItem.image}"/>">
+							</c:if>
+						
+						</td>
 
-						<td>${shoppingCartItem.name}</td>
+						<td style="border-left:none;">${shoppingCartItem.name}</td>
 						<input type="hidden" name="lineItem_${itemStatus.index}"
 							id="lineItem_${itemStatus.index}" value="${shoppingCartItem.id}" />
-						<td><input type="text" class="input-small" placeholder="qty"
+						<td><input type="text" class="input-small" placeholder="<s:message code="label.quantity" text="Quantity"/>"
 							value="${shoppingCartItem.quantity}" name="quantity"></td>
-						<td><button class="close"
-								onclick="javascript:updateLineItem('${shoppingCartItem.id}','${removeShoppingCartItemUrl}');">&times;</button>&nbsp;&nbsp;
-							<button class="close"
-								onclick="javascript:updateLineItem('${shoppingCartItem.id}','${updateShoppingCartItemUrl}');"
-								title="Update Quantity">&#10003;</button></td>
+						<td style="border-left:none;"><button class="close"
+								onclick="javascript:updateLineItem('${shoppingCartItem.id}','${removeShoppingCartItemUrl}');">&times;</button>
+						</td>
 
 						<td><strong>${shoppingCartItem.price}</strong></td>
 						<td><strong>${shoppingCartItem.subTotal}</strong></td>
@@ -60,40 +66,60 @@
 
 
 			</c:forEach>
-			<tr class="subt">
-				<td colspan="2">&nbsp;</td>
-				<td colspan="3"><strong>Sub-total</strong></td>
-				<td><strong>${cart.subTotal}</strong></td>
-			</tr>
+			<c:forEach items="${cart.totals}" var="total">
+				<tr class="subt">
+					<td colspan="2">&nbsp;</td>
+					<td colspan="3"><strong><s:message code="${total.code}" text="label [${total.code}] not found"/></strong></td>
+					<td><strong>${total.value}</strong></td>
+				</tr>
+			</c:forEach>
 
-			<tr class="subt">
-				<td colspan="2">&nbsp;</td>
-				<td colspan="3"><strong>Grand total</strong></td>
-				<td><strong>${cart.total}</strong></td>
-			</tr>
 		</c:when>
 		 <c:otherwise>
 		   <tr><td><s:message code="cart.empty" text="Your Shopping cart is empty" /></td></tr>
 		 </c:otherwise>
 	   </c:choose>
-		
-        
 	</c:if>
 
 
 	</tbody>
 </table>
 <c:if test="${not empty cart}">
-<c:if test="${not empty cart.shoppingCartItems}">
-<div class="pull-right">
-	<div class="form-actions">
-		<button type="submit" class="btn">Recalculate</button>
-		<button type="submit" class="btn btn-success">Place order</button>
-	</div>
-</div>
+	<c:if test="${not empty cart.shoppingCartItems}">
+		<div class="pull-right">
+			<div class="form-actions">
+				<button type="submit" class="btn"><s:message code="label.order.recalculate" text="Racalculate"/></button>
+				<button type="submit" class="btn btn-success"><s:message code="label.cart.placeorder" text="Place your order" /></button>
+			</div>
+		</div>
+	</c:if>
 </c:if>
-</c:if>
 </div>
+<c:if test="${empty cart}">
+<!-- load cart with cookie -->
+<script>
+  $(document).ready(function(){
+		var cartCode=getCartCode();
+		if(cartCode!=null) {
+			console.log('cart code ' + cartCode);
+			location.href='<c:url value="/shop/shoppingCartByCode.html" />?shoppingCartCode=' + cartCode;
+		}
 
+   });
+</script>
+</c:if>
+
+<script>
+  $(document).ready(function(){		
+	    $("input[type='text']").keypress(function(e){
+	        //e.preventDefault();
+	        if (e.which == 13){
+	            alert("User pressed 'Enter' in a text input.");
+	            e.preventDefault();
+	            // do your custom processing here
+	        }
+	    });
+   });
+</script>
 
 

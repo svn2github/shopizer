@@ -9,7 +9,6 @@
 
 	
 	<context:annotation-config />
-	<context:component-scan base-package="org.springframework.samples.mvc" />
 	<context:component-scan base-package="com.salesmanager.web" />
 	<context:component-scan base-package="com.salesmanager.core.business" />
 	<context:component-scan base-package="com.salesmanager.core.utils" />
@@ -28,7 +27,7 @@
 	-->
 	
 	<!-- Maps '/' requests to the 'home' view -->
-	<mvc:view-controller path="/" view-name="home"/>
+	<mvc:view-controller path="/" view-name="shop"/>
 	
 
 	<mvc:interceptors>     

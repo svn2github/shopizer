@@ -115,7 +115,7 @@
 		var scItem = prefix + shoppingCartItem + suffix;
 
 		/** debug add to cart **/
-		console.log(scItem);
+		//console.log(scItem);
 		
 		$.ajax({  
 			 type: 'POST',  
