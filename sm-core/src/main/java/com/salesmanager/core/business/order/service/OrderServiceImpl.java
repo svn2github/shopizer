@@ -4,8 +4,10 @@ import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
@@ -208,10 +210,10 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
         orderTotal.setOrderTotalCode("order.total.total");
         orderTotal.setSortOrder(30);
         orderTotal.setValue(grandTotal);
+        orderTotals.add(orderTotal);
 
         totalSummary.setTotal(grandTotal);
-
-
+        totalSummary.setTotals(orderTotals);
         return totalSummary;
 
     }
@@ -250,32 +252,17 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 
     private OrderTotalSummary caculateShoppingCart( final ShoppingCart shoppingCart, final Customer customer, final MerchantStore store, final Language language) throws Exception {
 
-        OrderTotalSummary totalSummary = new OrderTotalSummary();
-        new ArrayList<OrderTotal>();
-        new HashMap<String,OrderTotal>();
-
-        BigDecimal grandTotal = new BigDecimal(0);
-
-        //price by item
-        /**
-         * qty * price
-         * subtotal
-         */
-
-
-        BigDecimal subTotal = new BigDecimal(0);
-        for(ShoppingCartItem item : shoppingCart.getLineItems()) {
-
-            BigDecimal st = item.getItemPrice().multiply(new BigDecimal(item.getQuantity()));
-            item.setSubTotal(st);
-            subTotal = subTotal.add(st);
-        }
-
-
-        totalSummary.setSubTotal(subTotal);
-        grandTotal=grandTotal.add(subTotal);
-        totalSummary.setTotal(grandTotal);
-        return totalSummary;
+        
+    	
+    	
+    	
+    	OrderSummary orderSummary = new OrderSummary();
+    	
+    	List<ShoppingCartItem> itemsSet = new ArrayList<ShoppingCartItem>(shoppingCart.getLineItems());
+    	orderSummary.setProducts(itemsSet);
+    	
+    	
+    	return this.caculateOrder(orderSummary, customer, store, language);
 
     }
 
