@@ -156,29 +156,31 @@ function updateLineItem(lineItemId,actionURL){
 
 //update full cart
 function updateCart(cartDiv) {
+	$('.alert-error').hide();
+	$('.quantity').removeClass('required');
+	$('#mainCartTable').showLoading();
 	var inputs = $(cartDiv).find('.quantity');
 	var cartCode = getCartCode();
 	if(inputs !=null && cartCode!=null) {
 		var items = new Array();
 		for(var i = 0; i< inputs.length; i++) {
 			var item = new Object();
-			
-			
-			
 			var qty = inputs[i].value;
-			
-			console.log('Qty ' + qty);
-			
+			if(qty =='' || qty<1) {
+				$('#' + inputs[i].id).addClass('required');
+				$('#mainCartTable').hideLoading();
+				return;
+			}
 			var id = inputs[i].id;
-			item.productCode = id;
+
+			item.id = id;
 			item.quantity = qty;
 			item.code=cartCode;
 			items[i] = item;
 		}
 		//update cart
 		json_data = JSON.stringify(items);
-		
-		
+
 		$.ajax({  
 			 type: 'POST',  
 			 url: getContextPath() + '/shop/updateShoppingCartItem.html',
@@ -188,14 +190,17 @@ function updateCart(cartDiv) {
 			 cache:false,
 			 error: function(e) { 
 				 console.log('error ' + e);
+				 $('#mainCartTable').hideLoading();
 			 },
 			 success: function(response) {
-				 console.log(response.status);
+				 $('#mainCartTable').hideLoading();
+				 if(response.response.status==-1) {
+					 $('.alert-error').show();
+				 } else {
+					 location.href= getContextPath() + '/shop/shoppingCart.html';
+				 }
 			} 
 		});
-		
-		
-		
 		
 	}	
 }
