@@ -30,7 +30,7 @@ public class MerchantConfig implements Serializable, JSONAware {
 		data.put("displayCustomerSection", this.isDisplayCustomerSection());
 		data.put("displayContactUs", this.isDisplayContactUs());
 		data.put("displayStoreAddress", this.isDisplayStoreAddress());
-		data.put("displayAddToCartOnFeaturedItems", this.isDisplayStoreAddress());
+		data.put("displayAddToCartOnFeaturedItems", this.isDisplayAddToCartOnFeaturedItems());
 		
 		if(useDefaultSearchConfig!=null) {
 			JSONObject obj = new JSONObject();
