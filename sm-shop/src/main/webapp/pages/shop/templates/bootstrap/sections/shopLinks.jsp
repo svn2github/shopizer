@@ -8,8 +8,10 @@
 
     <jsp:include page="/resources/js/functions.jsp" />
     <script src="<c:url value="/resources/templates/bootstrap/jquery/jquery-1.10.2.min.js" />"></script>
-    <script src="<c:url value="/resources/js/functions.js" />"></script>
+    <script src="<c:url value="/resources/js/json2.js" />"></script>
     <script src="<c:url value="/resources/js/jquery-cookie.js" />"></script>
+    <script src="<c:url value="/resources/js/shopping-cart.js" />"></script>
+    
     
     <link href="<c:url value="/resources/templates/bootstrap/css/bootstrap.min.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/templates/bootstrap/css/bootstrap-responsive.min.css" />" rel="stylesheet">

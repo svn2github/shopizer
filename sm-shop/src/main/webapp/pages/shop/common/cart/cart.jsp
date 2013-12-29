@@ -3,10 +3,14 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm"%>
+
+<script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
+
+
+
 <c:url value="/shop/removeShoppingCartItem.html"
 	var="removeShoppingCartItemUrl" />
-<c:url value="/shop/updateShoppingCartItem.html"
-	var="updateShoppingCartItemUrl" />
+
 
 <br />
 <br />
@@ -14,7 +18,8 @@
 
 <h2><s:message code="label.cart.revieworder" text="Review your order" /></h2>
 <br/>
-
+<div id="store.error" class="alert alert-error" style="display:none;"><s:message code="message.error.shoppingcart.update" text="An error occurred while updating the shopping cart"/></div>
+<br/>
 <table id="mainCartTable" class="table table-bordered table-striped">
 
 	<c:if test="${not empty cart}">
@@ -41,14 +46,11 @@
 							<c:if test="${shoppingCartItem.image!=null}">
 								<img width="60" src="<c:url value="${shoppingCartItem.image}"/>">
 							</c:if>
-						
 						</td>
 
 						<td style="border-left:none;">${shoppingCartItem.name}</td>
-						<input type="hidden" name="lineItem_${itemStatus.index}"
-							id="lineItem_${itemStatus.index}" value="${shoppingCartItem.id}" />
-						<td><input type="text" class="input-small" placeholder="<s:message code="label.quantity" text="Quantity"/>"
-							value="${shoppingCartItem.quantity}" name="quantity"></td>
+						<td><input type="text" class="input-small quantity" placeholder="<s:message code="label.quantity" text="Quantity"/>"
+							value="${shoppingCartItem.quantity}" name="quantity" id="${shoppingCartItem.id}"></td>
 						<td style="border-left:none;"><button class="close"
 								onclick="javascript:updateLineItem('${shoppingCartItem.id}','${removeShoppingCartItemUrl}');">&times;</button>
 						</td>
@@ -58,7 +60,7 @@
 
 
 						<input type="hidden" name="lineItemId" id="lineItemId"
-							value="${shoppingCartItem.id}" }"/>
+							value="${shoppingCartItem.id}"/>
 
 
 					</tr>
@@ -88,7 +90,7 @@
 	<c:if test="${not empty cart.shoppingCartItems}">
 		<div class="pull-right">
 			<div class="form-actions">
-				<button type="submit" class="btn"><s:message code="label.order.recalculate" text="Racalculate"/></button>
+				<button type="button" class="btn" onClick="javascript:updateCart('#mainCartTable');"><s:message code="label.order.recalculate" text="Racalculate"/></button>
 				<button type="submit" class="btn btn-success"><s:message code="label.cart.placeorder" text="Place your order" /></button>
 			</div>
 		</div>
@@ -111,12 +113,10 @@
 
 <script>
   $(document).ready(function(){		
+	    $('.quantity').numeric();
 	    $("input[type='text']").keypress(function(e){
-	        //e.preventDefault();
 	        if (e.which == 13){
-	            alert("User pressed 'Enter' in a text input.");
-	            e.preventDefault();
-	            // do your custom processing here
+	        	e.preventDefault();	        	
 	        }
 	    });
    });
