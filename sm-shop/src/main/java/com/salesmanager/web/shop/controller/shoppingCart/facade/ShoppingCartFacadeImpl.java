@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -387,6 +388,61 @@ public class ShoppingCartFacadeImpl
         }
         return null;
     }
+    
+    @Override
+    public ShoppingCartData updateCartItems( final List<ShoppingCartItem> shoppingCartItems, final MerchantStore store, final Language language )
+            throws Exception
+        {
+    	
+    		Validate.notEmpty(shoppingCartItems,"shoppingCartItems null or empty");
+    		ShoppingCart cartModel = null;
+    		Set<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem> cartItems = new HashSet<com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem>();
+    		for(ShoppingCartItem item : shoppingCartItems) {
+    			
+    			if(item.getQuantity()<1) {
+    				throw new CartModificationException( "Quantity must not be less than one" );
+    			}
+    			
+    			if(cartModel==null) {
+    				cartModel = getCartModel( item.getCode(), store );
+    			}
+    			
+                com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem entryToUpdate =
+                        getEntryToUpdate( item.getId(), cartModel );
+
+                if ( entryToUpdate == null ) {
+                        throw new CartModificationException( "Unknown entry number." );
+                }
+
+                entryToUpdate.getProduct();
+
+                LOG.info( "Updating cart entry quantity to" + item.getQuantity() );
+                entryToUpdate.setQuantity( (int) item.getQuantity() );
+                
+                List<ProductAttribute> productAttributes = new ArrayList<ProductAttribute>();
+                productAttributes.addAll( entryToUpdate.getProduct().getAttributes() );
+                
+                final FinalPrice finalPrice =
+                        productPriceUtils.getFinalProductPrice( entryToUpdate.getProduct(), productAttributes );
+                entryToUpdate.setItemPrice( finalPrice.getFinalPrice() );
+                    
+
+                cartItems.add(entryToUpdate);
+    			
+    			
+    			
+    			
+    		}
+    		
+    		cartModel.setLineItems(cartItems);
+    		shoppingCartService.saveOrUpdate( cartModel );
+            LOG.info( "Cart entry updated with desired quantity" );
+            ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
+            shoppingCartDataPopulator.setShoppingCartCalculationService( shoppingCartCalculationService );
+            shoppingCartDataPopulator.setPricingService( pricingService );
+            return shoppingCartDataPopulator.populate( cartModel, store, language );
+
+        }
 
 
     private ShoppingCart getCartModel( final String cartId,final MerchantStore store )

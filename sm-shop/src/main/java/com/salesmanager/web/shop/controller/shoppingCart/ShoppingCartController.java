@@ -1,6 +1,8 @@
 package com.salesmanager.web.shop.controller.shoppingCart;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +30,7 @@ import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.utils.ProductPriceUtils;
+import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
@@ -36,6 +39,8 @@ import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.shoppingCart.facade.ShoppingCartFacade;
 import com.salesmanager.web.utils.LabelUtils;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 
 /**
@@ -359,13 +364,15 @@ public class ShoppingCartController extends AbstractController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value={"/updateShoppingCartItem.html"},  method = { RequestMethod.GET, RequestMethod.POST })
-	public String updateShoppingCartItem( final Long lineItemId, final Integer quantity, final HttpServletRequest request, final  HttpServletResponse response) throws Exception {
+	@RequestMapping(value={"/updateShoppingCartItem.html"},  method = { RequestMethod.POST })
+	public @ResponseBody String updateShoppingCartItem( @RequestBody final ShoppingCartItem[] shoppingCartItems, final HttpServletRequest request, final  HttpServletResponse response)  {
 
-		LOG.info("updating cart entry with qunatity: "+quantity);
+		AjaxResponse ajaxResponse = new AjaxResponse();
+		
+		
+		
 		MerchantStore store = super.<MerchantStore>getSessionValue(Constants.MERCHANT_STORE);
         final Language language=super.<Language>getSessionValue(  Constants.LANGUAGE );
-        Customer customer = super.<Customer>getSessionValue(  Constants.CUSTOMER );
         
         
         String cartCode = (String)request.getSession().getAttribute(Constants.SHOPPING_CART);
@@ -373,14 +380,21 @@ public class ShoppingCartController extends AbstractController {
         if(StringUtils.isBlank(cartCode)) {
         	return "redirect:/shop";
         }
-                
-        ShoppingCartData shoppingCart = shoppingCartFacade.getShoppingCartData(customer, store, cartCode);
         
-		return Constants.REDIRECT_PREFIX + "/shop/shoppingCart.html";
+        try {
+        	List<ShoppingCartItem> items = Arrays.asList(shoppingCartItems);
+			ShoppingCartData shoppingCart = shoppingCartFacade.updateCartItems(items, store, language);
+			ajaxResponse.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+
+		} catch (Exception e) {
+			LOG.error("Excption while updating cart" ,e);
+			ajaxResponse.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+		}
+
+        	return ajaxResponse.toJSONString();
+
+
 	}
-
-
-
 
 
 }

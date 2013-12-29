@@ -3,6 +3,8 @@
  */
 package com.salesmanager.web.shop.controller.shoppingCart.facade;
 
+import java.util.List;
+
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -35,6 +37,8 @@ public interface ShoppingCartFacade {
     public ShoppingCartData removeCartItem(final Long itemID, final String cartId,final MerchantStore store,final Language language ) throws Exception;
     public ShoppingCartData updateCartItem(final Long itemID, final String cartId, final long quantity,final MerchantStore store,Language language ) throws Exception;
     public void deleteShoppingCart(final Long id, final MerchantStore store) throws Exception;
+	ShoppingCartData updateCartItems(List<ShoppingCartItem> shoppingCartItems,
+			MerchantStore store, Language language) throws Exception;
 
 
 }
