@@ -154,6 +154,52 @@ function updateLineItem(lineItemId,actionURL){
 	$( "#shoppingCartLineitem_"+lineItemId).submit();	
 }
 
+//update full cart
+function updateCart(cartDiv) {
+	var inputs = $(cartDiv).find('.quantity');
+	var cartCode = getCartCode();
+	if(inputs !=null && cartCode!=null) {
+		var items = new Array();
+		for(var i = 0; i< inputs.length; i++) {
+			var item = new Object();
+			
+			
+			
+			var qty = inputs[i].value;
+			
+			console.log('Qty ' + qty);
+			
+			var id = inputs[i].id;
+			item.productCode = id;
+			item.quantity = qty;
+			item.code=cartCode;
+			items[i] = item;
+		}
+		//update cart
+		json_data = JSON.stringify(items);
+		
+		
+		$.ajax({  
+			 type: 'POST',  
+			 url: getContextPath() + '/shop/updateShoppingCartItem.html',
+			 data: json_data,
+			 contentType: 'application/json;charset=utf-8',
+			 dataType: 'json', 
+			 cache:false,
+			 error: function(e) { 
+				 console.log('error ' + e);
+			 },
+			 success: function(response) {
+				 console.log(response.status);
+			} 
+		});
+		
+		
+		
+		
+	}	
+}
+
 function displayMiniCart(){
 	var cartCode = getCartCode();
 	if(cartCode==null) {
