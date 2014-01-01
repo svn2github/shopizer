@@ -14,29 +14,37 @@ response.setDateHeader ("Expires", -1);
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 
+<script src="<c:url value="/resources/js/jquery.elevateZoom-3.0.8.min.js" />"></script>
+
+
+
 			<jsp:include page="/pages/shop/templates/bootstrap/sections/breadcrumb.jsp" />
-            
             
             <div class="row-fluid">
 
                 <div class="span12" itemscope itemtype="http://data-vocabulary.org/Product">
                     <!--<div class="row">-->
                     	<!-- Image column -->
-						<div class="span4">
+						<div id="img" class="span4">
 							<c:if test="${product.image!=null}">
-							<a href="<c:out value="${product.image.imageUrl}"/>" class="" title="<c:out value="${product.description.name}"/>"><img alt="<c:out value="${product.description.name}"/>" src="<c:url value="${product.image.imageUrl}"/>"></a>												
-							<c:if test="${product.images!=null}">
-							<ul class="thumbnails small">
-								<c:forEach items="${product.images}" var="thumbnail">								
-								<li class="span1">
-									<a href="<c:out value="${thumbnail.imageUrl}"/>" class=""  title="<c:out value="${thumbnail.imageName}"/>"><img src="<c:out value="${thumbnail.imageUrl}"/>" alt="<c:url value="${thumbnail.imageName}"/>"></a>
-								</li>
-								</c:forEach>								
-							</ul>
+							<span id="mainImg" class=""><img id="im-<c:out value="${product.image.id}"/>" alt="<c:out value="${product.description.name}"/>" src="<c:url value="${product.image.imageUrl}"/>" data-zoom-image="<sm:shopProductImage imageName="${product.image.imageName}" sku="${product.sku}" size="LARGE"/>"></span>												
+							<script>
+								$(function() {
+									setImageZoom('im-<c:out value="${product.image.id}"/>');
+								});	
+							</script>
+							<c:if test="${product.images!=null && fn:length(product.images)>1}">
+								<ul id="imageGallery" class="thumbnails small">
+									<c:forEach items="${product.images}" var="thumbnail">								
+									<li class="span2">
+										<a href="#img" class="thumbImg" title="<c:out value="${thumbnail.imageName}"/>"><img id="im-<c:out value="${thumbnail.id}"/>" src="<c:url value="${thumbnail.imageUrl}"/>" data-zoom-image="<sm:shopProductImage imageName="${thumbnail.imageName}" sku="${product.sku}" size="LARGE"/>" alt="<c:url value="${thumbnail.imageName}"/>" ></a>
+									</li>
+									</c:forEach>								
+								</ul>
 							</c:if>
 							</c:if>
 						</div>
-						<!-- TDOD Google rich snippets (http://blog.hubspot.com/power-google-rich-snippets-ecommerce-seo-ht) -->
+						<!-- Google rich snippets (http://blog.hubspot.com/power-google-rich-snippets-ecommerce-seo-ht) -->
 						<!-- Product description column -->
 						<div class="span8">
 							<h1>${product.description.name}</h1>
@@ -177,11 +185,21 @@ response.setDateHeader ("Expires", -1);
 					e.preventDefault();
 					$(this).tab('show');
 				})
+				$('.thumbImg').click(function (e) {
+					img = $(this).find('img').clone();
+					$('#mainImg').html(img);
+					setImageZoom(img.attr('id'));
+				})
 			})
-			$(document).ready(function() {				
-				$('.carousel').carousel({
-                    interval: false
-                });
-			});
+
+			function setImageZoom(id) {
+			    $('#' + id).elevateZoom({
+		    			zoomType	: "lens",
+		    			lensShape : "square",
+		    			lensSize    : 240
+		   		}); 
+			}
+			
+			
 		</script>
     

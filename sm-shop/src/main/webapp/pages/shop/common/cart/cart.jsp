@@ -72,7 +72,7 @@
 				<tr class="subt">
 					<td colspan="2">&nbsp;</td>
 					<td colspan="3"><strong><s:message code="${total.code}" text="label [${total.code}] not found"/></strong></td>
-					<td><strong>${total.value}</strong></td>
+					<td><strong><sm:monetary value="${total.value}" /></strong></td>
 				</tr>
 			</c:forEach>
 

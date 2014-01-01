@@ -250,11 +250,13 @@ function displayMiniCart(){
   * mini-cart section.
   * @param lineItemId
   */
-function removeItemFromMinicart(cartCode, lineItemId){
+function removeItemFromMinicart(lineItemId){
+	
+	shoppingCartCode = getCartCode();
 	$.ajax({  
 		 type: 'GET',
 		 cache:false,
-		 url: getContextPath() + '/shop/removeMiniShoppingCartItem.html?lineItemId='+lineItemId + '&shoppingCartCode=' + cartCode,  
+		 url: getContextPath() + '/shop/removeMiniShoppingCartItem.html?lineItemId='+lineItemId + '&shoppingCartCode=' + shoppingCartCode,  
 		 error: function(e) { 
 			 console.log('error ' + e);
 			 
@@ -296,12 +298,6 @@ function displayMiniCartSummary(code){
 
 
 
-function showCartTotal(cart){
-	$("#mini-cart-total-block").html(cart.total);
-	$("#checkout-total-plus").html(cart.total);
-	
-}
-
 
 
 function viewShoppingCartPage(){
@@ -312,7 +308,12 @@ function viewShoppingCartPage(){
  
 function displayShoppigCartItems(cart, div) {
 	
-    //TODO Hogan template
+	 
+	//set cart contextPath
+	cart.contextPath=getContextPath(); 
+	var template = Hogan.compile(document.getElementById("miniShoppingCartTemplate").innerHTML);
+	
+    
 	 $(div).html('');
 	 if(cart.shoppingCartItems==null) {
 		 emptyCartLabel();
@@ -322,26 +323,9 @@ function displayShoppigCartItems(cart, div) {
 	 $('#cartMessage').hide();
 	 $('#shoppingcart').show();
 
-	 var cartCode = getCartCode();
-	 for (var i = 0; i < cart.shoppingCartItems.length; i++) {
-			var shoppingCartItem = cart.shoppingCartItems[i];
-			var item = '<tr id="' + shoppingCartItem.productId + '" class="cart-product">';
-			item = item + '<td>';
-			if(shoppingCartItem.image!=null){
-				item = item + '<img width="40" height="40" src="' + getContextPath() + '/' + shoppingCartItem.image + '">';
-			} else {
-				item = item + '&nbsp;';
-			}
-			item = item + '</td>';
-			item = item + '<td>' + shoppingCartItem.quantity + '</td>';
-			item = item + '<td>' + shoppingCartItem.name + '</td>';
-			item = item + '<td>' + shoppingCartItem.price + '</td>';
-			var onClickEvent = "removeItemFromMinicart('" + cartCode + "','" + shoppingCartItem.id + "');";
-			item = item + '<td><button productid="' + shoppingCartItem.productId + '" class="close removeProductIcon" onclick="' + onClickEvent + '">x</button></td>';
-			item = item + '</tr>';
+	 //call template defined in template directory
+	 $(div).append(template.render(cart));
 
-			$(div).append(item);
-	 }
 
 }
 
