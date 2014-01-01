@@ -48,7 +48,7 @@ public class ImageFilePathUtils {
 	}
 	
 	/**
-	 * Builds a product image file path that can be used by image servlet
+	 * Builds a default product image file path that can be used by image servlet
 	 * utility for getting the physical image
 	 * @param store
 	 * @param sku
@@ -57,6 +57,18 @@ public class ImageFilePathUtils {
 	 */
 	public static String buildProductImageFilePath(MerchantStore store, String sku, String imageName) {
 		return new StringBuilder().append(Constants.STATIC_URI).append("/").append(store.getCode()).append("/").append(FileContentType.PRODUCT.name()).append("/")
+				.append(sku).append("/").append(imageName).toString();
+	}
+	
+	/**
+	 * Builds a large product image file path that can be used by the image servlet
+	 * @param store
+	 * @param sku
+	 * @param imageName
+	 * @return
+	 */
+	public static String buildLargeProductImageFilePath(MerchantStore store, String sku, String imageName) {
+		return new StringBuilder().append(Constants.STATIC_URI).append("/").append(store.getCode()).append("/").append(FileContentType.PRODUCTLG.name()).append("/")
 				.append(sku).append("/").append(imageName).toString();
 	}
 

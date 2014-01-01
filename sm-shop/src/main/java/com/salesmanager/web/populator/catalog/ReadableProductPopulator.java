@@ -80,6 +80,7 @@ public class ReadableProductPopulator extends
 				rimg.setImageName(image.getProductImage());
 				String imagePath = ImageFilePathUtils.buildProductImageFilePath(store, source.getSku(), image.getProductImage());
 				rimg.setImageUrl(imagePath);
+				rimg.setId(image.getId());
 				target.setImage(rimg);
 				
 				//other images
@@ -88,11 +89,11 @@ public class ReadableProductPopulator extends
 					
 					List<ReadableImage> imageList = new ArrayList<ReadableImage>();
 					for(ProductImage img : images) {
-						
 						ReadableImage prdImage = new ReadableImage();
 						prdImage.setImageName(img.getProductImage());
 						String imgPath = ImageFilePathUtils.buildProductImageFilePath(store, source.getSku(), img.getProductImage());
 						prdImage.setImageUrl(imgPath);
+						prdImage.setId(img.getId());
 						imageList.add(prdImage);
 					}
 					target

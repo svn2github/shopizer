@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,9 +25,12 @@ public class ShopProductImageUrlTag extends TagSupport {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ShopProductImageUrlTag.class);
 
+	private final static String SMALL = "SMALL";
+	private final static String LARGE = "LARGE";
 
 	private String imageName;
 	private String sku;
+	private String size; //SMALL | LARGE
 
 
 	public int doStartTag() throws JspException {
@@ -67,11 +71,15 @@ public class ShopProductImageUrlTag extends TagSupport {
 			.append(merchantStore.getDomainName())
 			.append(request.getContextPath());
 			
-			imagePath
+			
 			
 			//.append(scheme).append("://").append(merchantStore.getDomainName())
-				
-				.append(ImageFilePathUtils.buildProductImageFilePath(merchantStore, this.getSku(), this.getImageName())).toString();
+			
+			if(StringUtils.isBlank(this.getSize()) || this.getSize().equals(SMALL)) {
+				imagePath.append(ImageFilePathUtils.buildProductImageFilePath(merchantStore, this.getSku(), this.getImageName())).toString();
+			} else {
+				imagePath.append(ImageFilePathUtils.buildLargeProductImageFilePath(merchantStore, this.getSku(), this.getImageName())).toString();
+			}
 
 			
 
@@ -106,6 +114,14 @@ public class ShopProductImageUrlTag extends TagSupport {
 
 	public String getSku() {
 		return sku;
+	}
+
+	public String getSize() {
+		return size;
+	}
+
+	public void setSize(String size) {
+		this.size = size;
 	}
 
 

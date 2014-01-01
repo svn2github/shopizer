@@ -12,6 +12,7 @@ import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.tags.RequestContextAwareTag;
 
+import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.utils.ProductPriceUtils;
@@ -29,7 +30,11 @@ public class ShopProductPriceFormatTag extends RequestContextAwareTag  {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ShopProductPriceFormatTag.class);
 
 	@Autowired
+	private PricingService pricingService;
+	
+	@Autowired
 	private ProductPriceUtils productPriceUtils;
+	
 	
 	
 	private BigDecimal value;
@@ -54,7 +59,7 @@ public class ShopProductPriceFormatTag extends RequestContextAwareTag  {
 
 	@Override
 	protected int doStartTagInternal() throws Exception {
-		if (productPriceUtils == null || productPriceUtils==null) {
+		if (pricingService == null || productPriceUtils==null) {
 			LOGGER.debug("Autowiring productPriceUtils");
             WebApplicationContext wac = getRequestContext().getWebApplicationContext();
             AutowireCapableBeanFactory factory = wac.getAutowireCapableBeanFactory();
@@ -66,14 +71,12 @@ public class ShopProductPriceFormatTag extends RequestContextAwareTag  {
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 
-		Locale locale = request.getLocale();
-
 		String formatedPrice = null;
 		
 		if(this.getCurrency()!=null) {
 			formatedPrice = productPriceUtils.getFormatedAmountWithCurrency(this.getCurrency(), this.getValue());
 		} else {
-			formatedPrice = productPriceUtils.getFormatedAmountWithCurrency(store, this.getValue(), locale);
+			formatedPrice = pricingService.getDisplayAmount(this.getValue(), store);
 		}
 		
 		pageContext.getOut().print(formatedPrice);

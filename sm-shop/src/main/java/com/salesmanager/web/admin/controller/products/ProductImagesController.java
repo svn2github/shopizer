@@ -1,9 +1,5 @@
 package com.salesmanager.web.admin.controller.products;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,13 +7,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +31,7 @@ import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.image.ProductImageService;
-import com.salesmanager.core.business.content.model.FileContentType;
-import com.salesmanager.core.business.content.model.ImageContentFile;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.utils.ProductPriceUtils;
 import com.salesmanager.core.utils.ajax.AjaxPageableResponse;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
@@ -133,8 +124,10 @@ public class ProductImagesController {
 				
 				for(ProductImage image : images) {
 					
+					String imagePath = ImageFilePathUtils.buildProductImageFilePath(store, product, image.getProductImage());
+					
 					Map entry = new HashMap();
-					entry.put("picture", new StringBuilder().append(request.getContextPath()).append(ImageFilePathUtils.buildProductImageFilePath(store, product, image.getProductImage()))).toString();
+					entry.put("picture", new StringBuilder().append(request.getContextPath()).append(imagePath).toString());
 					entry.put("name", image.getProductImage());
 					entry.put("id",image.getId());
 					
@@ -202,6 +195,7 @@ public class ProductImagesController {
                 	productImage.setImage(multipartFile.getInputStream());
                     productImage.setProductImage(multipartFile.getOriginalFilename() );
                     productImage.setProduct(product);
+                    productImage.setDefaultImage(false);//default image is uploaded in the product details
                     
                     contentImagesList.add( productImage);
                 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.product.model.file.ProductImageSize;
 import com.salesmanager.core.business.catalog.product.service.image.ProductImageService;
 import com.salesmanager.core.business.content.model.FileContentType;
 import com.salesmanager.core.business.content.model.OutputContentFile;
@@ -74,23 +75,22 @@ public class ImagesController {
 	public @ResponseBody byte[] printImage(@PathVariable final String storeCode, @PathVariable final String productCode, @PathVariable final String imageType, @PathVariable final String imageName, @PathVariable final String extension) throws IOException {
 
 		// product image
-		// example -> /static/1/PRODUCT/120/product1.jpg
+		// example small product image -> /static/1/PRODUCT/120/product1.jpg
 		
-		// 
+		// example large product image -> /static/1/PRODUCTLG/120/product1.jpg
 		
-		FileContentType imgType = null;
+
+		ProductImageSize size = ProductImageSize.SMALL;
 		
-		if(imageType.equals(FileContentType.PRODUCT)) {
-			imgType = FileContentType.PRODUCT;
-		}
+		if(imageType.equals(FileContentType.PRODUCTLG.name())) {
+			size = ProductImageSize.LARGE;
+		} 
 		
-		if(imageType.equals(FileContentType.PROPERTY)) {
-			imgType = FileContentType.PROPERTY;
-		}
+
 		
 		OutputContentFile image = null;
 		try {
-			image = productImageService.getProductImage(storeCode, productCode, new StringBuilder().append(imageName).append(".").append(extension).toString());
+			image = productImageService.getProductImage(storeCode, productCode, new StringBuilder().append(imageName).append(".").append(extension).toString(), size);
 		} catch (ServiceException e) {
 			LOGGER.error("Cannot retrieve image " + imageName, e);
 		}
