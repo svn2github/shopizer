@@ -17,12 +17,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.file.ProductImageSize;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.content.model.FileContentType;
 import com.salesmanager.core.business.content.model.ImageContentFile;
 import com.salesmanager.core.business.content.model.OutputContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.constants.Constants;
 import com.salesmanager.core.modules.cms.impl.CacheManager;
 
 /**
@@ -42,6 +44,9 @@ public class CmsImageFileManagerInfinispanImpl
     private static CmsImageFileManagerInfinispanImpl fileManager = null;
     
     private final static String ROOT_NAME = "product-merchant";
+    
+    private final static String SMALL = "SMALL";
+    private final static String LARGE = "LARGE";
     
     private String rootName = ROOT_NAME;
 
@@ -99,19 +104,18 @@ public class CmsImageFileManagerInfinispanImpl
         try
         {
 
- 
             // node
         	StringBuilder nodePath = new StringBuilder();
-        	nodePath.append(productImage.getProduct().getMerchantStore().getCode()).append("/").append(productImage.getProduct().getSku());
+        	nodePath.append(productImage.getProduct().getMerchantStore().getCode()).append(Constants.SLASH).append(productImage.getProduct().getSku()).append(Constants.SLASH);
+
+            
+        	if(contentImage.getFileContentType().name().equals(FileContentType.PRODUCT.name())) {
+        		nodePath.append(SMALL);
+        	} else if(contentImage.getFileContentType().name().equals(FileContentType.PRODUCTLG.name())) {
+        		nodePath.append(LARGE);
+        	}
         	
-        	
-            //String productPath = String.valueOf( productImage.getProduct().getSku() );
-
-            //Node<String, Object> merchantNode = getMerchantNode(productImage.getProduct().getMerchantStore().getCode());
-
-
-
-            Node<String, Object> productNode = this.getNode(nodePath.toString());
+        	Node<String, Object> productNode = this.getNode(nodePath.toString());
 
             
             InputStream isFile = contentImage.getFile();
@@ -267,11 +271,10 @@ public class CmsImageFileManagerInfinispanImpl
 
         	
         	StringBuilder nodePath = new StringBuilder();
-        	nodePath.append(productImage.getProduct().getMerchantStore().getCode()).append("/").append(productImage.getProduct().getSku());
+        	nodePath.append(productImage.getProduct().getMerchantStore().getCode()).append(Constants.SLASH).append(productImage.getProduct().getSku());
         	
         	
         	Node<String, Object> productNode = this.getNode(nodePath.toString());
-        	
         	productNode.remove(productImage.getProductImage());
         	
 
@@ -351,7 +354,7 @@ public class CmsImageFileManagerInfinispanImpl
         	Set<Node<String,Object>> childs = merchantNode.getChildren();
         	
         	Iterator<Node<String,Object>> iterator = childs.iterator();
-        	
+        	//TODO image sizes
         	while(iterator.hasNext()) {
         		
         		Node<String,Object> node = iterator.next();
@@ -399,6 +402,19 @@ public class CmsImageFileManagerInfinispanImpl
 	@Override
 	public OutputContentFile getProductImage(String merchantStoreCode,
 			String productCode, String imageName) throws ServiceException {
+		return getProductImage(merchantStoreCode, productCode, imageName, ProductImageSize.SMALL.name());
+	}
+	
+	@Override
+	public OutputContentFile getProductImage(String merchantStoreCode,
+			String productCode, String imageName, ProductImageSize size)
+			throws ServiceException {
+		return getProductImage(merchantStoreCode, productCode, imageName, size.name());
+	}
+	
+	private OutputContentFile getProductImage(String merchantStoreCode,
+			String productCode, String imageName, String size) throws ServiceException {
+		
         if ( cacheManager.getTreeCache() == null )
         {
             throw new ServiceException( "CmsImageFileManagerInfinispan has a null cacheManager.getTreeCache()" );
@@ -410,8 +426,9 @@ public class CmsImageFileManagerInfinispanImpl
         	
         	FileNameMap fileNameMap = URLConnection.getFileNameMap();
         	
+        	//SMALL by default
         	StringBuilder nodePath = new StringBuilder();
-        	nodePath.append(merchantStoreCode).append("/").append(productCode);
+        	nodePath.append(merchantStoreCode).append(Constants.SLASH).append(productCode).append(Constants.SLASH).append(size);
         	
         	Node<String,Object> productNode = this.getNode(nodePath.toString());
         	
@@ -430,39 +447,6 @@ public class CmsImageFileManagerInfinispanImpl
             contentImage.setFileName( imageName );
 
 
-        	
-        	
-        	
-
-            
-            
-            
-            
-
-/*            CacheAttribute productAttribute = (CacheAttribute) merchantNode.get( productPath );
-
-            if ( productAttribute == null )
-            {
-                return null;
-            }
-
-            byte[] imageBytes = (byte[]) productAttribute.getEntities().get( imageName );
-
-            if ( imageBytes == null )
-            {
-                return null;
-            }
-
-            input = new ByteArrayInputStream( imageBytes );
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-            IOUtils.copy( input, output );
-
-            FileNameMap fileNameMap = URLConnection.getFileNameMap();
-            String contentType = fileNameMap.getContentTypeFor( imageName );
-
-            contentImage.setFile( output );
-            contentImage.setMimeType( contentType );
-            contentImage.setFileName( imageName );*/
 
         }
         catch ( Exception e )
@@ -484,9 +468,8 @@ public class CmsImageFileManagerInfinispanImpl
         }
 
         return contentImage;
+		
 	}
-	
-	
 
 	
 	@SuppressWarnings("unchecked")
@@ -526,5 +509,7 @@ public class CmsImageFileManagerInfinispanImpl
 	public String getRootName() {
 		return rootName;
 	}
+
+
 
 }

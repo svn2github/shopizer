@@ -28,6 +28,8 @@ import com.salesmanager.core.business.search.model.IndexProduct;
 import com.salesmanager.core.business.search.model.SearchEntry;
 import com.salesmanager.core.business.search.model.SearchFacet;
 import com.salesmanager.core.business.search.model.SearchKeywords;
+import com.salesmanager.core.constants.Constants;
+import com.salesmanager.core.utils.CoreConfiguration;
 import com.shopizer.search.services.Facet;
 import com.shopizer.search.services.SearchHit;
 import com.shopizer.search.services.SearchRequest;
@@ -42,12 +44,16 @@ public class SearchServiceImpl implements SearchService {
 	
 	private final static String PRODUCT_INDEX_NAME = "product";
 	private final static String UNDERSCORE = "_";
+	private final static String INDEX_PRODUCTS = "INDEX_PRODUCTS";
 
 	@Autowired
 	private com.shopizer.search.services.SearchService searchService;
 	
 	@Autowired
 	private PricingService pricingService;
+	
+	@Autowired
+	private CoreConfiguration configuration;
 	
 	@Override
 	public void initService() {
@@ -91,6 +97,10 @@ public class SearchServiceImpl implements SearchService {
 		 * example ...index(json,"product_en_default",product)
 		 * 
 		 */
+		
+		if(configuration.getProperty(INDEX_PRODUCTS)==null || configuration.getProperty(INDEX_PRODUCTS).equals(Constants.FALSE)) {
+			return;
+		}
 		
 		FinalPrice price = pricingService.calculateProductPrice(product);
 
@@ -144,6 +154,10 @@ public class SearchServiceImpl implements SearchService {
 
 	@Override
 	public void deleteIndex(MerchantStore store, Product product) throws ServiceException {
+		
+		if(configuration.getProperty(INDEX_PRODUCTS)==null || configuration.getProperty(INDEX_PRODUCTS).equals(Constants.FALSE)) {
+			return;
+		}
 		
 		Set<ProductDescription> descriptions = product.getDescriptions();
 		for(ProductDescription description : descriptions) {

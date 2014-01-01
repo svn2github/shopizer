@@ -3,8 +3,8 @@ package com.salesmanager.core.business.catalog.product.service.image;
 import java.util.List;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.file.ProductImageSize;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
-import com.salesmanager.core.business.catalog.product.service.ProductImageEnum;
 import com.salesmanager.core.business.content.model.ImageContentFile;
 import com.salesmanager.core.business.content.model.OutputContentFile;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -31,7 +31,7 @@ public interface ProductImageService extends SalesManagerEntityService<Long, Pro
 	 * @return
 	 * @throws ServiceException
 	 */
-	OutputContentFile getProductImage(ProductImage productImage, ProductImageEnum size)
+	OutputContentFile getProductImage(ProductImage productImage, ProductImageSize size)
 			throws ServiceException;
 
 	/**
@@ -53,11 +53,12 @@ public interface ProductImageService extends SalesManagerEntityService<Long, Pro
 	 * @param store
 	 * @param product
 	 * @param fileName
+	 * @param size
 	 * @return
 	 * @throws ServiceException
 	 */
 	OutputContentFile getProductImage(String storeCode, String productCode,
-			String fileName) throws ServiceException;
+			String fileName, final ProductImageSize size) throws ServiceException;
 
 	void addProductImages(Product product, List<ProductImage> productImages)
 			throws ServiceException;

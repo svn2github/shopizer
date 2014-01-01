@@ -10,9 +10,9 @@ import org.springframework.util.Assert;
 
 import com.salesmanager.core.business.catalog.product.dao.image.ProductImageDao;
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.file.ProductImageSize;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImageDescription;
-import com.salesmanager.core.business.catalog.product.service.ProductImageEnum;
 import com.salesmanager.core.business.content.model.FileContentType;
 import com.salesmanager.core.business.content.model.ImageContentFile;
 import com.salesmanager.core.business.content.model.OutputContentFile;
@@ -98,9 +98,9 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		} finally {
 			try {
 				
-				if(inputImage.getBufferedImage()!=null){
-					inputImage.getBufferedImage().flush();
-				}
+				//if(inputImage.getBufferedImage()!=null){
+				//	inputImage.getBufferedImage().flush();
+				//}
 				
 				if(inputImage.getFile()!=null) {
 					inputImage.getFile().close();
@@ -158,16 +158,16 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 
 	
 	@Override
-	public OutputContentFile getProductImage(ProductImage productImage, ProductImageEnum size) throws ServiceException {
+	public OutputContentFile getProductImage(ProductImage productImage, ProductImageSize size) throws ServiceException {
 
 		
 		ProductImage pi = new ProductImage();
 		String imageName = productImage.getProductImage();
-		if(size == ProductImageEnum.LARGE) {
+		if(size == ProductImageSize.LARGE) {
 			imageName = "L-" + imageName;
 		}
 		
-		if(size == ProductImageEnum.SMALL) {
+		if(size == ProductImageSize.SMALL) {
 			imageName = "S-" + imageName;
 		}
 		
@@ -181,8 +181,8 @@ public class ProductImageServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	}
 	
 	@Override
-	public OutputContentFile getProductImage(final String storeCode, final String productCode, final String fileName) throws ServiceException {
-		OutputContentFile outputImage = productFileManager.getProductImage(storeCode,productCode,fileName);
+	public OutputContentFile getProductImage(final String storeCode, final String productCode, final String fileName, final ProductImageSize size) throws ServiceException {
+		OutputContentFile outputImage = productFileManager.getProductImage(storeCode, productCode, fileName, size);
 		return outputImage;
 		
 	}
