@@ -65,6 +65,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		qs.append("where pa.region in (:lid) ");
 		qs.append("and pd.seUrl=:seUrl ");
 		qs.append("and p.available=true and p.dateAvailable<=:dt ");
+		qs.append("order by pattr.productOptionSortOrder ");
 
 
     	String hql = qs.toString();

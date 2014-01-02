@@ -94,7 +94,7 @@ public class ProductPriceUtils {
 		BigDecimal attributePrice = new BigDecimal(0);
 		if(attributes!=null && attributes.size()>0) {
 			for(ProductAttribute attribute : attributes) {
-				if(attribute.getAttributeDefault()) {
+				if(attribute.getAttributeDefault()==true) {
 					if(attribute.getProductAttributePrice()!=null && attribute.getProductAttributePrice().doubleValue()>0) {
 						attributePrice = attributePrice.add(attribute.getProductAttributePrice());
 					}
@@ -102,26 +102,6 @@ public class ProductPriceUtils {
 			}
 		}
 		
-/*		BigDecimal finalProductPrice = finalPrice.getOriginalPrice().add(attributePrice);
-		finalPrice.setOriginalPrice(finalProductPrice);
-		
-		if(finalPrice.isDiscounted()) {
-			
-			finalPrice.setDiscounted(true);
-			
-			double arith = finalPrice.getOriginalPrice().doubleValue() / finalPrice.getDefaultPrice().getProductPriceAmount().doubleValue();
-			double fsdiscount = 100 - arith * 100;
-			Float percentagediscount = new Float(fsdiscount);
-			int percent = percentagediscount.intValue();
-			finalPrice.setDiscountPercent(percent);
-			
-			//calculate percent
-			BigDecimal price = finalPrice.getOriginalPrice();
-			price = price.multiply(new BigDecimal(fsdiscount));
-			finalPrice.setDiscountedPrice(price);
-
-			
-		}*/
 
 		return finalPrice;
 
@@ -142,21 +122,7 @@ public class ProductPriceUtils {
 
 
 		FinalPrice finalPrice = calculateFinalPrice(product);
-		
-/*		if(finalPrice.isDiscounted()) {
-			
-			finalPrice.setDiscounted(true);
-			finalPrice.setDiscountedPrice(finalPrice.getDefaultPrice().getProductPriceSpecialAmount());
-			double arith = finalPrice.getDefaultPrice().getProductPriceSpecialAmount().doubleValue() / finalPrice.getDefaultPrice().getProductPriceAmount().doubleValue();
-			double fsdiscount = 100 - arith * 100;
-			Float percentagediscount = new Float(fsdiscount);
-			int percent = percentagediscount.intValue();
-			finalPrice.setDiscountPercent(percent);
-			
-		}
-		if(finalPrice.getDefaultPrice()!=null) {
-			finalPrice.setOriginalPrice(finalPrice.getDefaultPrice().getProductPriceAmount());
-		}*/
+
 		return finalPrice;
 
 	}
@@ -479,60 +445,10 @@ public class ProductPriceUtils {
 						}
 						otherPrices.add(p);
 					}
-					
 				}
-					
-					//if(price.isDefaultPrice()) {//TODO other non default price
-						/*fPrice = price.getProductPriceAmount();
-						oPrice = price.getProductPriceAmount();
-						//calculate discount price
-						boolean hasDiscount = false;
-						if(price.getProductPriceSpecialStartDate()!=null
-								|| price.getProductPriceSpecialEndDate()!=null) {
-							
-							
-							if(price.getProductPriceSpecialStartDate()!=null) {
-								if(price.getProductPriceSpecialStartDate().before(today)) {
-									if(price.getProductPriceSpecialEndDate()!=null) {
-											if(price.getProductPriceSpecialEndDate().after(today)) {
-												hasDiscount = true;
-												fPrice = price.getProductPriceSpecialAmount();
-												finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
-											}
-									} 
-										
-								}
-							}
-							
-							
-							if(!hasDiscount && price.getProductPriceSpecialStartDate()==null && price.getProductPriceSpecialEndDate()!=null) {
-								if(price.getProductPriceSpecialEndDate().after(today)) {
-									hasDiscount = true;
-									fPrice = price.getProductPriceSpecialAmount();
-									finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
-								}
-							}
-						} else {
-							if(price.getProductPriceSpecialAmount()!=null && price.getProductPriceSpecialAmount().doubleValue()>0) {
-								hasDiscount = true;
-								fPrice = price.getProductPriceSpecialAmount();
-								finalPrice.setDiscountEndDate(price.getProductPriceSpecialEndDate());
-							}
-						}
-						finalPrice.setDefaultPrice(price);
-						if(hasDiscount) {
-							finalPrice.setDiscounted(true);
-						}
-					}
-*/					
-				//}
 			}
-			
 		}
-		
 
-		//finalPrice.setFinalPrice(fPrice);
-		//finalPrice.setOriginalPrice(oPrice);
 		
 		if(finalPrice!=null) {
 			finalPrice.setAdditionalPrices(otherPrices);

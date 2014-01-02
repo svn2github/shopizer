@@ -233,12 +233,6 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 					} else {
 						cartIsObsolete = false;
 					}
-					//if(item.getProduct()==null) {//product has been removed
-						//LOGGER.debug("Removing shopping cart item for product id " + item.getProductId());
-						//shoppingCartItemDao.delete(item);
-					//} else {
-					//	shoppingCartItems.add(item);
-					//}
 				}
 				
 				//shoppingCart.setLineItems(shoppingCartItems);
@@ -307,24 +301,14 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 	private void populateItem(ShoppingCartItem item) throws Exception {
 		
 		Product product = null;
-		//try {
+	
+		Long productId = item.getProductId();
+		product = productService.getById(productId);
 			
-
-			Long productId = item.getProductId();
-			product = productService.getById(productId);
-			
-			if(product==null) {
-				item.setObsolete(true);
-				return;
-			}
-		
-		//} catch(Exception e) {
-			//if(e instanceof org.springframework.dao.EmptyResultDataAccessException) {
-
-			//}
-		//}
-
-		
+		if(product==null) {
+			item.setObsolete(true);
+			return;
+		}
 
 		
 		item.setProduct(product);
@@ -346,14 +330,7 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 				}
 				
 			}
-		} else {
-			
-			if(productAttributes!=null && productAttributes.size()>0) {
-				LOGGER.debug("Removing attributes for shopping cart item " + item.getId());
-				item.setAttributes(null);//TODO check should update shopping cart
-			}
-			
-		}
+		} 
 		
 		//set item price
 		FinalPrice price = pricingService.calculateProductPrice(product, attributesList);
