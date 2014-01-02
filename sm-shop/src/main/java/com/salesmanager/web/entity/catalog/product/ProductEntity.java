@@ -22,6 +22,7 @@ public class ProductEntity extends Product implements Serializable {
 	private boolean productShipeable = false;
 	private boolean productVirtual = false;
 	private int quantityOrderMaximum =-1;//default unlimited
+	private int quantityOrderMinimum = 1;//default 1
 	private boolean productIsFree;
 	private boolean available;
 	private BigDecimal productLength;
@@ -119,6 +120,12 @@ public class ProductEntity extends Product implements Serializable {
 	}
 	public String getDateAvailable() {
 		return dateAvailable;
+	}
+	public int getQuantityOrderMinimum() {
+		return quantityOrderMinimum;
+	}
+	public void setQuantityOrderMinimum(int quantityOrderMinimum) {
+		this.quantityOrderMinimum = quantityOrderMinimum;
 	}
 
 }

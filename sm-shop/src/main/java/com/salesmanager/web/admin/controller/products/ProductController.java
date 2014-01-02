@@ -390,11 +390,13 @@ public class ProductController {
 			newProduct.setProductVirtual(product.getProduct().isProductVirtual());
 			newProduct.setProductShipeable(product.getProduct().isProductShipeable());
 
+
 			Set<ProductAvailability> avails = newProduct.getAvailabilities();
 			if(avails !=null && avails.size()>0) {
 				
 				for(ProductAvailability availability : avails) {
 					if(availability.getRegion().equals(com.salesmanager.core.constants.Constants.ALL_REGIONS)) {
+
 						
 						newProductAvailability = availability;
 						Set<ProductPrice> productPrices = availability.getPrices();
@@ -449,21 +451,19 @@ public class ProductController {
 			newProductAvailability = new ProductAvailability();
 		}
 		
-		if(newProductAvailability.getId()==null) {
-			newProductAvailability.setProductQuantity(product.getAvailability().getProductQuantity());
-			newProductAvailability.setProductQuantityOrderMin(product.getAvailability().getProductQuantityOrderMin());
-			newProductAvailability.setProductQuantityOrderMax(product.getAvailability().getProductQuantityOrderMax());
-			newProductAvailability.setProduct(newProduct);
-			newProductAvailability.setPrices(prices);
-			availabilities.add(newProductAvailability);
+
+		newProductAvailability.setProductQuantity(product.getAvailability().getProductQuantity());
+		newProductAvailability.setProductQuantityOrderMin(product.getAvailability().getProductQuantityOrderMin());
+		newProductAvailability.setProductQuantityOrderMax(product.getAvailability().getProductQuantityOrderMax());
+		newProductAvailability.setProduct(newProduct);
+		newProductAvailability.setPrices(prices);
+		availabilities.add(newProductAvailability);
 			
-			newProductPrice.setProductAvailability(newProductAvailability);
-			prices.add(newProductPrice);
+		newProductPrice.setProductAvailability(newProductAvailability);
+		prices.add(newProductPrice);
 			
-			newProduct.setAvailabilities(availabilities);
-		
-		}
-		
+		newProduct.setAvailabilities(availabilities);
+
 		Set<ProductDescription> descriptions = new HashSet<ProductDescription>();
 		if(product.getDescriptions()!=null && product.getDescriptions().size()>0) {
 			

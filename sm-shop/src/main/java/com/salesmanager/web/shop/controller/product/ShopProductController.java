@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,6 +22,7 @@ import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionDescription;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValueDescription;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationship;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationshipType;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
@@ -143,50 +145,82 @@ public class ShopProductController {
 		if(!CollectionUtils.isEmpty(attributes)) {
 			for(ProductAttribute attribute : attributes) {
 				Attribute attr = null;
-				ProductOptionValue optionValue = attribute.getProductOptionValue();
 				AttributeValue attrValue = new AttributeValue();
-				if(attribute.getProductOption().isReadOnly()) {
+				ProductOptionValue optionValue = attribute.getProductOptionValue();
+				
+				if(attribute.getProductOption().isReadOnly()) {//read only attribute
 					if(readOnlyAttributes==null) {
-						readOnlyAttributes = new HashMap<Long,Attribute>();
+						readOnlyAttributes = new TreeMap<Long,Attribute>();
 					}
 					attr = readOnlyAttributes.get(attribute.getProductOption().getId());
 					if(attr==null) {
 						attr = createAttribute(attribute, language);
-						readOnlyAttributes.put(attribute.getProductOption().getId(), attr);
+						//readOnlyAttributes.put(attr.getId(), attr);
 					}
-					readOnlyAttributes.put(attribute.getProductOption().getId(), attr);
-				} else {
+					if(attr!=null) {
+						readOnlyAttributes.put(attribute.getProductOption().getId(), attr);
+						attr.setReadOnlyValue(attrValue);
+					}
+				} else {//selectable option
 					if(selectableOptions==null) {
-						selectableOptions = new HashMap<Long,Attribute>();
+						selectableOptions = new TreeMap<Long,Attribute>();
 					}
 					attr = selectableOptions.get(attribute.getProductOption().getId());
 					if(attr==null) {
 						attr = createAttribute(attribute, language);
-						readOnlyAttributes.put(attribute.getProductOption().getId(), attr);
 					}
-					readOnlyAttributes.put(attribute.getProductOption().getId(), attr);
-					attr.setReadOnlyValue(attrValue);
+					if(attr!=null) {
+						selectableOptions.put(attribute.getProductOption().getId(), attr);
+					}
 				}
 				
 				attrValue.setDefaultAttribute(attribute.getAttributeDefault());
 				attrValue.setId(optionValue.getId());
 				attrValue.setLanguage(language.getCode());
-				attrValue.setName(optionValue.getDescriptionsList().get(0).getDescription());
+				if(attribute.getProductAttributePrice()!=null && attribute.getProductAttributePrice().doubleValue()>0) {
+					String formatedPrice = pricingService.getDisplayAmount(attribute.getProductAttributePrice(), store);
+					attrValue.setPrice(formatedPrice);
+				}
+				
+				List<ProductOptionValueDescription> descriptions = optionValue.getDescriptionsSettoList();
+				ProductOptionValueDescription description = null;
+				if(descriptions!=null && descriptions.size()>0) {
+					description = descriptions.get(0);
+					if(descriptions.size()>1) {
+						for(ProductOptionValueDescription optionValueDescription : descriptions) {
+							if(optionValueDescription.getLanguage().getId().intValue()==language.getId().intValue()) {
+								description = optionValueDescription;
+								break;
+							}
+						}
+					}
+				}
+				attrValue.setName(description.getName());
 				List<AttributeValue> attrs = attr.getValues();
 				if(attrs==null) {
 					attrs = new ArrayList<AttributeValue>();
 					attr.setValues(attrs);
 				}
 				attrs.add(attrValue);
-				
 			}
 		}
 
 		
 		//TODO reviews
 		
-		model.addAttribute("attributes", readOnlyAttributes);
-		model.addAttribute("options", selectableOptions);
+		
+		List<Attribute> attributesList = null;
+		if(readOnlyAttributes!=null) {
+			attributesList = new ArrayList<Attribute>(readOnlyAttributes.values());
+		}
+		
+		List<Attribute> optionsList = null;
+		if(selectableOptions!=null) {
+			optionsList = new ArrayList<Attribute>(selectableOptions.values());
+		}
+		
+		model.addAttribute("attributes", attributesList);
+		model.addAttribute("options", optionsList);
 			
 		model.addAttribute("product", productProxy);
 
@@ -202,19 +236,26 @@ public class ShopProductController {
 		Attribute attribute = new Attribute();
 		attribute.setId(productAttribute.getId());
 		attribute.setType(productAttribute.getProductOption().getProductOptionType());
-		List<ProductOptionDescription> descriptions = productAttribute.getProductOption().getDescriptionsList();
-		ProductOptionDescription description = descriptions.get(0);
-		if(descriptions.size()>1) {
-			
-			for(ProductOptionDescription optionDescription : descriptions) {
-				if(optionDescription.getLanguage().getId().intValue()==language.getId().intValue()) {
-					description = optionDescription;
-					break;
+		List<ProductOptionDescription> descriptions = productAttribute.getProductOption().getDescriptionsSettoList();
+		ProductOptionDescription description = null;
+		if(descriptions!=null && descriptions.size()>0) {
+			description = descriptions.get(0);
+			if(descriptions.size()>1) {
+				for(ProductOptionDescription optionDescription : descriptions) {
+					if(optionDescription.getLanguage().getId().intValue()==language.getId().intValue()) {
+						description = optionDescription;
+						break;
+					}
 				}
 			}
-
 		}
 		
+		if(description==null) {
+			return null;
+		}
+		
+		attribute.setType(productAttribute.getProductOption().getProductOptionType());
+		attribute.setId(productAttribute.getId());
 		attribute.setLanguage(language.getCode());
 		attribute.setName(description.getName());
 		attribute.setCode(productAttribute.getProductOption().getCode());

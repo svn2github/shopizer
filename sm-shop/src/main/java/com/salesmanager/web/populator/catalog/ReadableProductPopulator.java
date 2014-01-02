@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.Validate;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
@@ -104,7 +106,16 @@ public class ReadableProductPopulator extends
 			target.setSku(source.getSku());
 			//target.setLanguage(language.getCode());
 	
-			FinalPrice price = pricingService.calculateProductPrice(source);
+			FinalPrice price = null;
+			if(CollectionUtils.isNotEmpty(source.getAttributes())) {
+				List<ProductAttribute> attrs = new ArrayList<ProductAttribute>();
+				attrs.addAll(source.getAttributes());
+				price = pricingService.calculateProductPrice(source, attrs);
+			} else {
+				price = pricingService.calculateProductPrice(source);
+			}
+			
+			
 			target.setFinalPrice(pricingService.getDisplayAmount(price.getFinalPrice(), store));
 			target.setPrice(price.getFinalPrice());
 	
@@ -118,6 +129,7 @@ public class ReadableProductPopulator extends
 				if(availability.getRegion().equals(Constants.ALL_REGIONS)) {//TODO REL 2.1 accept a region
 					target.setQuantity(availability.getProductQuantity());
 					target.setQuantityOrderMaximum(availability.getProductQuantityOrderMax());
+					target.setQuantityOrderMinimum(availability.getProductQuantityOrderMin());
 				}
 			}
 			
