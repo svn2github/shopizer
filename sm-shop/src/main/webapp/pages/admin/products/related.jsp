@@ -57,7 +57,7 @@
 				 <c:set var="componentTitleKey" value="label.product.related.title" scope="request"/>
 				 <!-- same headers than featured -->
 				 <c:set var="gridHeader" value="/pages/admin/products/featured-gridHeader.jsp" scope="request"/>
-				 <c:set var="gridHeaderContainer" value="/pages/admin/products/featured-gridHeader-items.jsp" scope="request"/>
+				 <c:set var="gridHeaderContainer" value="/pages/admin/products/featured-gridHeader.jsp" scope="request"/>
 				 <c:set var="canRemoveEntry" value="true" scope="request"/>
 
             	 <jsp:include page="/pages/admin/components/product-container.jsp"></jsp:include> 

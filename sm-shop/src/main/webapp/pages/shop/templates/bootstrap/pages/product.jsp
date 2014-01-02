@@ -63,7 +63,7 @@ response.setDateHeader ("Expires", -1);
 							<span itemprop="offerDetails" itemscope itemtype="http://data-vocabulary.org/Offer">
 							<meta itemprop="seller" content="${requestScope.MERCHANT_STORE.storename}"/>
 							<meta itemprop="currency" content="<c:out value="${requestScope.MERCHANT_STORE.currency.code}" />" />
-							<h4>
+							<h3>
 									<c:choose>
 										<c:when test="${product.discounted}">
 												<del><c:out value="${product.originalPrice}" /></del>&nbsp;<span class="specialPrice"><span itemprop="price"><c:out value="${product.finalPrice}" /></span></span>
@@ -72,42 +72,42 @@ response.setDateHeader ("Expires", -1);
 												<span itemprop="price"><c:out value="${product.finalPrice}" /></span>
 										</c:otherwise>
 									</c:choose>
-									
-							</h4>
+							</h3>
 							<address>
 								<strong><s:message code="label.product.available" text="Availability"/></strong> <span><c:choose><c:when test="${product.quantity>0}"><span itemprop="availability" content="in_stock">${product.quantity}</span></c:when><c:otherwise><span itemprop="availability" content="out_of_stock"><s:message code="label.product.outofstock" text="Out of stock" /></c:otherwise></c:choose></span><br>								
 							</address>
 							</span>
-						</div>
-						<!--
-						<div class="span5">
-							<form id="input-<c:out value="${product.id}" />" class="form-inline">
+
+							
+							<p>
+								<form id="input-<c:out value="${product.id}" />">
+								<!-- select options -->
 								<c:if test="${options!=null}">
-									<c:forEach items="${options.values}" var="option">
+									<c:forEach items="${options}" var="option" varStatus="status">
 										<div class="control-group"> 
-	                        				<label><c:out value="${option.name}"/></label>
-	                        				<div class="controls">		       							
+	                        				<label><strong><c:out value="${option.name}"/></strong></label>
+	                        				<div class="controls">	       							
 											<c:choose>
-												<c:when test="${option.type=='Select'}">
-													<select id="${option.id}" name="options[${status.index}].id" class="attribute">
-													<c:forEach items="${option.option.id}" var="optionValue">
-														<option value="${optionValue.id}" <c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> SELECTED</c:if>>${optionValue.name}</option>
+												<c:when test="${option.type=='select'}">
+													<select id="${status.index}" name="${status.index}" class="attribute">
+													<c:forEach items="${option.values}" var="optionValue">
+														<option value="${optionValue.id}" <c:if test="${optionValue.defaultAttribute==true}"> SELECTED</c:if>>${optionValue.name}<c:if test="${optionValue.price!=null}">&nbsp;<c:out value="${optionValue.price}"/></c:if></option>
 													</c:forEach>
 													</select>
 												</c:when>
-												<c:when test="${option.type=='Radio'}">
-													<c:forEach items="${option.availableValues}" var="optionValue">
-														<input type="radio" class="attribute" id="<c:out value="${optionValue.id}"/>" name="options[${status.index}].id"/>" value="<c:out value="${optionValue.id}"/>"<c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> checked="checked" </c:if> />
-														<c:out value="${optionValue.name}"/>
+												<c:when test="${option.type=='radio'}">
+													<c:forEach items="${option.values}" var="optionValue">
+														<input type="radio" class="attribute" id="${status.index}" name="${status.index}" value="<c:out value="${optionValue.id}"/>" <c:if test="${optionValue.defaultAttribute==true}"> checked="checked" </c:if> />
+														<c:out value="${optionValue.name}"/><c:if test="${optionValue.price!=null}">&nbsp;<c:out value="${optionValue.price}"/></c:if><br/>
 													</c:forEach>
 												</c:when>
-												<c:when test="${option.type=='Text'}">
-													<input type="text" class="attribute" id="${option.id}" name="options[${status.index}].id" class="input-large">
+												<c:when test="${option.type=='text'}">
+													<input type="text" class="attribute" id="${status.index}" name="${status.index}" class="input-large">
 												</c:when>
-												<c:when test="${option.type=='Checkbox'}">
-													<c:forEach items="${option.availableValues}" var="optionValue">
-														<input type="checkbox" class="attribute" id="<c:out value="${optionValue.id}"/>" name="options[${status.index}].id" value="<c:out value="${optionValue.id}"/>"<c:if test="${option.defaultValue!=null && option.defaultValue.id==optionValue.id}"> checked="checked" </c:if>  />
-														<c:out value="${optionValue.name}"/>
+												<c:when test="${option.type=='checkbox'}">
+													<c:forEach items="${option.values}" var="optionValue">
+														<input type="checkbox" class="attribute" id="<c:out value="${optionValue.id}"/>" name="${status.index}" value="<c:out value="${optionValue.id}"/>"<c:if test="${optionValue.defaultAttribute==true}"> checked="checked" </c:if>  />
+														<c:out value="${optionValue.name}"/><c:if test="${optionValue.price!=null}">&nbsp;<c:out value="${optionValue.price}"/></c:if><br/>
 													</c:forEach>
 												</c:when>										
 											</c:choose>				       							
@@ -116,38 +116,39 @@ response.setDateHeader ("Expires", -1);
 	                    			</div>
 									</c:forEach>
 								</c:if>
-						
+								<br/>
+								<div class="form-inline">
 								<c:if test="${product.quantityOrderMaximum==-1 || product.quantityOrderMaximum>1}" >
-								<label><s:message code="label.quantity" text="Quantity"/></label>
-								<input quantity-productId-<c:out value="${product.id}" />" class="span1" placeholder="1" type="text">
+									<input quantity-productId-<c:out value="${product.id}" />" class="input-mini" placeholder="1" type="text">
 								</c:if>
-								<button class="btn" type="submit"><s:message code="button.label.addToCart" text="Add to cart"/></button>
+									<button class="btn btn-success addToCart" type="button" productId="<c:out value="${product.id}" />"><s:message code="button.label.addToCart" text="Add to cart"/></button>
+								</div>
+							
+
 							</form>
+							
+
+							
+	
+							
+							</p>
+							
+							
+							
 						</div>
-						<div class="span5">
-							<ul class="social">
-								<li>									
-									<div class="fb-like" send="false" layout="button_count" data-href="example.org"></div>
-									<script src="product_detail_files/all.htm"></script>
-								</li>
-								<li>
-									<iframe data-twttr-rendered="true" title="Twitter Tweet Button" style="width: 109px; height: 20px;" class="twitter-share-button twitter-count-horizontal" src="product_detail_files/tweet_button.htm" allowtransparency="true" frameborder="0" scrolling="no"></iframe>
-									<script type="text/javascript" src="product_detail_files/widgets.js"></script>
-								</li>
-							</ul>
-						</div>
-						-->
+
 					</div>
 			 </div>
 			 <div class="row-fluid">
                     <div class="span12">
+
 							<ul class="nav nav-tabs" id="myTab">
 								<li class="active"><a href="#description"><s:message code="label.productedit.productdesc" text="Product description" /></a></li>
 								<!--<li><a href="#reviews"><s:message code="label.product.customer.reviews" text="Customer reviews" /></a></li><!-- TODO read only attributes -->
 							</ul>							 
 							<div class="tab-content">
 								<div class="tab-pane active" id="description">
-									<c:out value="${product.description.description}"/>
+									<c:out value="${product.description.description}" escapeXml="false"/>
 									<br/>
 									<br/>
 									
@@ -168,8 +169,13 @@ response.setDateHeader ("Expires", -1);
                         </div>	
                         
                         <!-- Related items -->
-                        <c:if test="${relatedProducts!=null}">					
-
+                        <c:if test="${relatedProducts!=null}">	
+                        			<h1><s:message code="label.product.related.title" text="Related items"/></h1>				
+									<ul class="thumbnails product-list">
+										<!-- Iterate over featuredItems -->
+                         				<c:set var="ITEMS" value="${relatedProducts}" scope="request" />
+	                         			<jsp:include page="/pages/shop/templates/bootstrap/sections/productBox.jsp" />
+									</ul>
 						</c:if>
 						
 						
