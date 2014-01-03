@@ -19,21 +19,23 @@ $(document).ready(function() {
 	$('#order').numeric();
 	$('#weight').numeric({allow:"."});
 	$("#productOption").change(function() {
-		if($('#attributeDisplayOnly').attr('checked')) {
+		if($('#displayOnly').attr('checked')) {
 			checkReadOnlyAttribute($(this).val());
 		}
 	})
+	
+	var optionId = $('#productOption').find(":selected").val();
+	checkReadOnlyAttribute(optionId);
+	
+	$( "#productOption" ).change(function() {
+		checkReadOnlyAttribute($(this).val());
+	});
 
-	$("#attributeDisplayOnly").click(function() {
-		if($('#attributeDisplayOnly').attr('checked')) {
-			checkReadOnlyAttribute($("#productOption").val());
-		}
-	})
+
 });
 	
 function checkReadOnlyAttribute(optionId){
-	
-
+		//$('#displayOnly').removeAttr("disabled");
 		$.ajax({
 			  type: 'POST',
 			  url: '<c:url value="/admin/products/attributes/getAttributeType.html"/>',
@@ -43,11 +45,11 @@ function checkReadOnlyAttribute(optionId){
 		
 					var status = isc.XMLTools.selectObjects(response, "/response/status");
 					if(status==0 || status ==9999) {
-						
-						
-						var type = isc.XMLTools.selectObjects(response, "/response/data/type");
 
+						var type = isc.XMLTools.selectObjects(response, "/response/data/type");
 						if(type=='text') {
+							//$('#displayOnly').prop("checked", true);
+							//$('#displayOnly').attr("disabled", true);
 							$("#attributeValueText").show();
 							$("#optionValue").hide();
 						} else {
@@ -116,7 +118,7 @@ function checkReadOnlyAttribute(optionId){
 						
 						
 			    <div class="control-group">
-                        <label><s:message code="label.product.productoptions.name" text="Option name"/></label>
+                        <label><s:message code="label.product.attribute.option.name" text="Option / attribute name"/></label>
                         <div class="controls">    
 	                        <div class="controls">		
 	                        		<form:select cssClass="highlight" id="productOption" path="productOption.id">
@@ -130,7 +132,7 @@ function checkReadOnlyAttribute(optionId){
                  <div class="control-group">
                         <label><s:message code="label.product.attribute.display" text="Display only"/></label>
                         <div class="controls">
-                                    <form:checkbox id="attributeDisplayOnly" path="attributeDisplayOnly"/>	
+                                    <form:checkbox id="displayOnly" path="attributeDisplayOnly"/>
                                     <span class="help-inline"><form:errors path="attributeDisplayOnly" cssClass="error" /></span>
                         </div>
                   </div>
@@ -153,18 +155,17 @@ function checkReadOnlyAttribute(optionId){
                  <c:forEach items="${attribute.productOptionValue.descriptionsSettoList}" var="description" varStatus="counter">
 	                  
 		                 
-		                        <label class="required"><s:message code="label.product.productoptions.name" text="Option name"/> (<c:out value="${description.language.code}"/>)</label>
+		                        <label class="required"><s:message code="label.product.attribute.value" text="Attribute value"/> (<c:out value="${description.language.code}"/>)</label>
 		                        <div class="controls">
-		                        			<form:input cssClass="" id="name${counter.index}" path="productOptionValue.descriptionsList[${counter.index}].description"/>
+		                        			<form:input cssClass="input-xlarge" id="name${counter.index}" path="productOptionValue.descriptionsList[${counter.index}].description"/>
 		                        			<span class="help-inline"><form:errors path="productOptionValue.descriptionsList[${counter.index}].description" cssClass="error" /></span>
 		                        </div>
-		
-		                  
-		
 		                  
 		                  		<form:hidden path="productOptionValue.descriptionsList[${counter.index}].language.code" />
 		                  		<form:hidden path="productOptionValue.descriptionsList[${counter.index}].language.id" />
 		                  		<form:hidden path="productOptionValue.descriptionsList[${counter.index}].id" />
+		                  		<form:hidden path="productOptionValue.id" />
+		                  		<form:hidden path="productOptionValue.code" />
 	                  
 	               </c:forEach>
                    </div>

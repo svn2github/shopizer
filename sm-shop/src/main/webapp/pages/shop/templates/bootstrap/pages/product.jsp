@@ -97,6 +97,9 @@ response.setDateHeader ("Expires", -1);
 												</c:when>
 												<c:when test="${option.type=='radio'}">
 													<c:forEach items="${option.values}" var="optionValue">
+														<c:if test="${optionValue.image!=null}">
+															<img src="<c:url value="${optionValue.image}"/>" height="40">
+														</c:if>
 														<input type="radio" class="attribute" id="${status.index}" name="${status.index}" value="<c:out value="${optionValue.id}"/>" <c:if test="${optionValue.defaultAttribute==true}"> checked="checked" </c:if> />
 														<c:out value="${optionValue.name}"/><c:if test="${optionValue.price!=null}">&nbsp;<c:out value="${optionValue.price}"/></c:if><br/>
 													</c:forEach>
@@ -144,30 +147,31 @@ response.setDateHeader ("Expires", -1);
 
 							<ul class="nav nav-tabs" id="myTab">
 								<li class="active"><a href="#description"><s:message code="label.productedit.productdesc" text="Product description" /></a></li>
+								<c:if test="${attributes!=null}"><li><a href="#specifications"><s:message code="label.product.attribute.specifications" text="Specifications" /></a></li></c:if>
 								<!--<li><a href="#reviews"><s:message code="label.product.customer.reviews" text="Customer reviews" /></a></li><!-- TODO read only attributes -->
 							</ul>							 
 							<div class="tab-content">
 								<div class="tab-pane active" id="description">
 									<c:out value="${product.description.description}" escapeXml="false"/>
-									<br/>
-									<br/>
+
 									
+								</div>	
+								<div class="tab-pane" id="specifications">
 									<!--  read only properties -->
 									<c:if test="${attributes!=null}">
 										<table>
-										<c:forEach items="${attributes.values}" var="attribute">
+										<c:forEach items="${attributes}" var="attribute" varStatus="status">
 										<tr>
-	                        				<td><label><c:out value="${attribute.name}"/></label></td>
-											<td><label><c:out value="${attribute.readOnlyValue.name}" /></label></td>
+	                        				<td><c:out value="${attribute.name}"/> : </td>
+											<td><c:out value="${attribute.readOnlyValue.description}" /></td>
 										</tr>
 									</c:forEach>
 									</table>
 								  </c:if>
-									
-									
-								</div>						
+								</div>					
                         </div>	
-                        
+                        <br/>
+                        <br/>
                         <!-- Related items -->
                         <c:if test="${relatedProducts!=null}">	
                         			<h1><s:message code="label.product.related.title" text="Related items"/></h1>				
