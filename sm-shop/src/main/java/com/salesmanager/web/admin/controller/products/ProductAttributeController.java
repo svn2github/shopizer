@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -152,8 +153,8 @@ public class ProductAttributeController {
 						optionValueDescription = desc;
 					}
 				}
-				
 				entry.put("attribute", optionDescription.getName());
+				entry.put("display", attr.getAttributeDisplayOnly());
 				entry.put("value", optionValueDescription.getName());
 				entry.put("order", attr.getProductOptionSortOrder());
 				entry.put("price", priceUtil.getAdminFormatedAmountWithCurrency(store,attr.getProductAttributePrice()));
@@ -333,27 +334,51 @@ public class ProductAttributeController {
 		attribute.setProductOption(option);
 		
 		if(option.getProductOptionType().equals(TEXT_OPTION)) {
-			//create new option value
-			List<ProductOptionValueDescription> descriptions = attribute.getProductOptionValue().getDescriptionsList();
-			Set<ProductOptionValueDescription> newDescriptions = new HashSet<ProductOptionValueDescription>();
-			ProductOptionValue newValue = new ProductOptionValue();
-			for(ProductOptionValueDescription description : descriptions) {
-				ProductOptionValueDescription optionValueDescription = new ProductOptionValueDescription();
-				optionValueDescription.setAuditSection(description.getAuditSection());
-				optionValueDescription.setLanguage(description.getLanguage());
-				optionValueDescription.setName(description.getDescription().length()<15 ? description.getDescription() : description.getDescription().substring(0,15));
-				optionValueDescription.setLanguage(description.getLanguage());
-				optionValueDescription.setDescription(description.getDescription());
-				optionValueDescription.setProductOptionValue(newValue);
-				newDescriptions.add(optionValueDescription);
-			}
 			
-			newValue.setMerchantStore(store);
-			newValue.setProductOptionValueSortOrder(attribute.getProductOptionValue().getProductOptionValueSortOrder());
-			newValue.setDescriptions(newDescriptions);
-			newValue.setProductOptionDisplayOnly(true);
-			productOptionValueService.save(newValue);
-			attribute.setProductOptionValue(newValue);
+			if(dbEntity!=null && dbEntity.getProductOption().getProductOptionType().equals(TEXT_OPTION)) {//bcz it is overwrited by hidden product option value list
+				if(dbEntity.getProductOptionValue()!=null) {
+					ProductOptionValue optVal = dbEntity.getProductOptionValue();
+					List<ProductOptionValueDescription> descriptions = attribute.getProductOptionValue().getDescriptionsList();
+					Set<ProductOptionValueDescription> descriptionsSet = new HashSet<ProductOptionValueDescription>();
+					for(ProductOptionValueDescription description : descriptions) {
+						description.setProductOptionValue(optVal);
+						description.setName(description.getDescription().length()<15 ? description.getDescription() : description.getDescription().substring(0,15));
+						descriptionsSet.add(description);
+					}
+					optVal.setDescriptions(descriptionsSet);
+					optVal.setProductOptionDisplayOnly(true);
+					productOptionValueService.saveOrUpdate(optVal);
+					attribute.setProductOptionValue(optVal);
+				}
+			} else {//create a new value
+			
+				//create new option value
+				List<ProductOptionValueDescription> descriptions = attribute.getProductOptionValue().getDescriptionsList();
+				Set<ProductOptionValueDescription> newDescriptions = new HashSet<ProductOptionValueDescription>();
+				ProductOptionValue newValue = new ProductOptionValue();
+				for(ProductOptionValueDescription description : descriptions) {
+					ProductOptionValueDescription optionValueDescription = new ProductOptionValueDescription();
+					optionValueDescription.setAuditSection(description.getAuditSection());
+					optionValueDescription.setLanguage(description.getLanguage());
+					optionValueDescription.setName(description.getDescription().length()<15 ? description.getDescription() : description.getDescription().substring(0,15));
+					optionValueDescription.setLanguage(description.getLanguage());
+					optionValueDescription.setDescription(description.getDescription());
+					optionValueDescription.setProductOptionValue(newValue);
+					newDescriptions.add(optionValueDescription);
+				}
+				
+				//code generation
+				String code = RandomStringUtils.randomAlphanumeric(10).toUpperCase();
+				newValue.setCode(code);
+				newValue.setMerchantStore(store);
+				newValue.setProductOptionValueSortOrder(attribute.getProductOptionValue().getProductOptionValueSortOrder());
+				newValue.setDescriptions(newDescriptions);
+				newValue.setProductOptionDisplayOnly(true);
+				productOptionValueService.save(newValue);
+				attribute.setProductOptionValue(newValue);
+				attribute.setAttributeDisplayOnly(true);
+			
+			}
 			
 		}
 		

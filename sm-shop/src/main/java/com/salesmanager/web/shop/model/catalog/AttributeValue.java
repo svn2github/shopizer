@@ -11,6 +11,7 @@ public class AttributeValue extends ShopEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private String name = null;
+	private String description = null;
 	private boolean defaultAttribute;
 	private String image;
 	private String price;
@@ -38,6 +39,12 @@ public class AttributeValue extends ShopEntity implements Serializable {
 	}
 	public void setPrice(String price) {
 		this.price = price;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

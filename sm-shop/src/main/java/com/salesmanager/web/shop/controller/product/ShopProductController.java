@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,6 +39,7 @@ import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.model.catalog.Attribute;
 import com.salesmanager.web.shop.model.catalog.AttributeValue;
+import com.salesmanager.web.utils.ImageFilePathUtils;
 import com.salesmanager.web.utils.PageBuilderUtils;
 
 /**
@@ -148,7 +150,7 @@ public class ShopProductController {
 				AttributeValue attrValue = new AttributeValue();
 				ProductOptionValue optionValue = attribute.getProductOptionValue();
 				
-				if(attribute.getProductOption().isReadOnly()) {//read only attribute
+				if(attribute.getAttributeDisplayOnly()==true) {//read only attribute
 					if(readOnlyAttributes==null) {
 						readOnlyAttributes = new TreeMap<Long,Attribute>();
 					}
@@ -182,6 +184,10 @@ public class ShopProductController {
 					attrValue.setPrice(formatedPrice);
 				}
 				
+				if(!StringUtils.isBlank(attribute.getProductOptionValue().getProductOptionValueImage())) {
+					attrValue.setImage(ImageFilePathUtils.buildProductPropertyImageFilePath(store, attribute.getProductOptionValue().getProductOptionValueImage()));
+				}
+				
 				List<ProductOptionValueDescription> descriptions = optionValue.getDescriptionsSettoList();
 				ProductOptionValueDescription description = null;
 				if(descriptions!=null && descriptions.size()>0) {
@@ -196,6 +202,7 @@ public class ShopProductController {
 					}
 				}
 				attrValue.setName(description.getName());
+				attrValue.setDescription(description.getDescription());
 				List<AttributeValue> attrs = attr.getValues();
 				if(attrs==null) {
 					attrs = new ArrayList<AttributeValue>();

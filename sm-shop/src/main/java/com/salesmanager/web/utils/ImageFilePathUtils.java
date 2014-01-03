@@ -78,8 +78,19 @@ public class ImageFilePathUtils {
 	 * @return
 	 */
 	public static String buildStoreLogoFilePath(MerchantStore store) {
-		return new StringBuilder().append(Constants.STATIC_URI).append("/").append(store.getCode()).append("/").append(Constants.LOGO_TYPE).append("/")
+		return new StringBuilder().append(Constants.STATIC_URI).append("/").append(store.getCode()).append("/").append(FileContentType.LOGO).append("/")
 				.append(store.getStoreLogo()).toString();
+	}
+	
+	/**
+	 * Builds product property image url path
+	 * @param store
+	 * @param imageName
+	 * @return
+	 */
+	public static String buildProductPropertyImageFilePath(MerchantStore store, String imageName) {
+		return new StringBuilder().append(Constants.STATIC_URI).append("/").append(store.getCode()).append("/").append(FileContentType.PROPERTY).append("/")
+				.append(imageName).toString();
 	}
 	
 }

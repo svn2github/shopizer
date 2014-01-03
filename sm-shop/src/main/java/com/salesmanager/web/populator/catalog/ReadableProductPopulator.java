@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
@@ -61,7 +62,14 @@ public class ReadableProductPopulator extends
 				com.salesmanager.web.entity.catalog.product.ProductDescription tragetDescription = new com.salesmanager.web.entity.catalog.product.ProductDescription();
 				tragetDescription.setFriendlyUrl(description.getSeUrl());
 				tragetDescription.setName(description.getName());
+				if(!StringUtils.isBlank(description.getMetatagTitle())) {
+					tragetDescription.setTitle(description.getMetatagTitle());
+				} else {
+					tragetDescription.setTitle(description.getName());
+				}
+				tragetDescription.setMetaDescription(description.getMetatagDescription());
 				tragetDescription.setDescription(description.getDescription());
+				tragetDescription.setHighlights(description.getProductHighlight());
 				target.setDescription(tragetDescription);
 			}
 			
