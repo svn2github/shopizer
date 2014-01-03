@@ -109,6 +109,9 @@ response.setDateHeader ("Expires", -1);
 												</c:when>
 												<c:when test="${option.type=='checkbox'}">
 													<c:forEach items="${option.values}" var="optionValue">
+														<c:if test="${optionValue.image!=null}">
+															<img src="<c:url value="${optionValue.image}"/>" height="40">
+														</c:if>
 														<input type="checkbox" class="attribute" id="<c:out value="${optionValue.id}"/>" name="${status.index}" value="<c:out value="${optionValue.id}"/>"<c:if test="${optionValue.defaultAttribute==true}"> checked="checked" </c:if>  />
 														<c:out value="${optionValue.name}"/><c:if test="${optionValue.price!=null}">&nbsp;<c:out value="${optionValue.price}"/></c:if><br/>
 													</c:forEach>
