@@ -1,0 +1,152 @@
+<%
+response.setCharacterEncoding("UTF-8");
+response.setHeader("Cache-Control","no-cache");
+response.setHeader("Pragma","no-cache");
+response.setDateHeader ("Expires", -1);
+%>
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="s"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm"%>
+
+<%@page contentType="text/html"%>
+<%@page pageEncoding="UTF-8"%>
+
+<script>
+$(document).ready(function() { 
+
+	$('#input-<c:out value="${product.id}" /> select').change(function(e) { // select element changed
+		calculatePrice();
+	});
+
+	$('#input-<c:out value="${product.id}" /> :radio').change(function(e) { // radio changed
+		calculatePrice();
+	});
+	
+	$('#input-<c:out value="${product.id}" /> :checkbox').change(function(e) { // radio changed
+		calculatePrice();
+	});
+});
+
+
+function calculatePrice() {
+
+	$('#input-<c:out value="${product.id}" />').showLoading();
+	var values = new Array();
+	i = 0;
+	$('#input-<c:out value="${product.id}" />').find(':input').each(function(){
+			if($(this).hasClass('attribute')) {
+		        if($(this).is(':checkbox')) {
+		        	var checkboxSelected = $(this).is(':checked');
+		        	if(checkboxSelected==true) {
+						values[i] = $(this).val();
+						//console.log('checkbox ' + values[i]);
+						i++;
+					}
+		        	
+				} else if ($(this).is(':radio')) {
+					var radioChecked = $(this).is(':checked');
+					if(radioChecked==true) {
+						values[i] = $(this).val(); 
+						//console.log('radio ' + values[i]);
+						i++;
+					}
+				} else {
+				   if($(this).val()) {
+				       values[i] = $(this).val(); 
+				       //console.log('select ' + values[i]);
+				       i++;
+			       }
+
+				}
+			}
+			
+	});
+	$.ajax({  
+		 type: 'POST',  
+		 url: getContextPath() + '/shop/product/<c:out value="${product.id}"/>/calculatePrice.html',  
+		 dataType: 'json', 
+		 data:{"attributeIds":values},
+		 cache:false,
+		 error: function(e) { 
+			$('#input-<c:out value="${product.id}" />').hideLoading();
+			console.log('Error while loading price');
+			 
+		 },
+		 success: function(price) {
+			 $('#input-<c:out value="${product.id}" />').hideLoading();
+			 //console.log('product price ' + price.finalPrice);
+			 var displayPrice = '<del>' + price.originalPrice + '</del>&nbsp;<span class="specialPrice"><span itemprop="price">' + price.finalPrice + '</span></span>';
+			 if(price.discounted) {
+				 displayPrice = '<span itemprop="price">' + price.finalPrice + '</span>';
+			 }
+			 $('#productPrice').html(displayPrice);
+		 } 
+	});
+	
+	
+	
+	$('#input-<c:out value="${product.id}" />').hideLoading();
+	console.log('values ' + values.length);
+	
+	
+}
+
+
+
+</script>
+
+								<form id="input-<c:out value="${product.id}" />">
+								<!-- select options -->
+								<c:if test="${options!=null}">
+									<c:forEach items="${options}" var="option" varStatus="status">
+										<div class="control-group"> 
+	                        				<label><strong><c:out value="${option.name}"/></strong></label>
+	                        				<div class="controls">	       							
+											<c:choose>
+												<c:when test="${option.type=='select'}">
+													<select id="${status.index}" name="${status.index}" class="attribute">
+													<c:forEach items="${option.values}" var="optionValue">
+														<option value="${optionValue.id}" <c:if test="${optionValue.defaultAttribute==true}"> SELECTED</c:if>>${optionValue.name}<c:if test="${optionValue.price!=null}">&nbsp;<c:out value="${optionValue.price}"/></c:if></option>
+													</c:forEach>
+													</select>
+												</c:when>
+												<c:when test="${option.type=='radio'}">
+													<c:forEach items="${option.values}" var="optionValue">
+														<c:if test="${optionValue.image!=null}">
+															<img src="<c:url value="${optionValue.image}"/>" height="40">
+														</c:if>
+														<input type="radio" class="attribute" id="${status.index}" name="${status.index}" value="<c:out value="${optionValue.id}"/>" <c:if test="${optionValue.defaultAttribute==true}"> checked="checked" </c:if> />
+														<c:out value="${optionValue.name}"/><c:if test="${optionValue.price!=null}">&nbsp;<c:out value="${optionValue.price}"/></c:if><br/>
+													</c:forEach>
+												</c:when>
+												<c:when test="${option.type=='text'}">
+													<input type="text" class="attribute" id="${status.index}" name="${status.index}" class="input-large">
+												</c:when>
+												<c:when test="${option.type=='checkbox'}">
+													<c:forEach items="${option.values}" var="optionValue">
+														<c:if test="${optionValue.image!=null}">
+															<img src="<c:url value="${optionValue.image}"/>" height="40">
+														</c:if>
+														<input type="checkbox" class="attribute" id="<c:out value="${optionValue.id}"/>" name="${status.index}" value="<c:out value="${optionValue.id}"/>"<c:if test="${optionValue.defaultAttribute==true}"> checked="checked" </c:if>  />
+														<c:out value="${optionValue.name}"/><c:if test="${optionValue.price!=null}">&nbsp;<c:out value="${optionValue.price}"/></c:if><br/>
+													</c:forEach>
+												</c:when>										
+											</c:choose>				       							
+		                                 	<span class="help-inline"></span>
+	                        				</div>
+	                    			</div>
+									</c:forEach>
+								</c:if>
+								<br/>
+								<div class="form-inline">
+								<c:if test="${product.quantityOrderMaximum==-1 || product.quantityOrderMaximum>1}" >
+									<input quantity-productId-<c:out value="${product.id}" />" class="input-mini" placeholder="1" type="text">
+								</c:if>
+									<button class="btn btn-success addToCart" type="button" productId="<c:out value="${product.id}" />"><s:message code="button.label.addToCart" text="Add to cart"/></button>
+								</div>
+							
+
+							</form>
