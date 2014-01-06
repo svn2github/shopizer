@@ -19,4 +19,6 @@ public interface ProductAttributeDao extends SalesManagerEntityDao<Long, Product
 	List<ProductAttribute> getByProduct(MerchantStore store,
 			Product product, Language language);
 
+	List<ProductAttribute> getByAttributeIds(MerchantStore store, List<Long> ids);
+
 }

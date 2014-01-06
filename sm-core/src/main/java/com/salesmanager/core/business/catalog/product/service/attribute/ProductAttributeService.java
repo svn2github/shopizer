@@ -23,4 +23,7 @@ public interface ProductAttributeService extends
 
 	List<ProductAttribute> getByProductId(MerchantStore store, Product product, Language language)
 			throws ServiceException;
+
+	List<ProductAttribute> getByAttributeIds(MerchantStore store, List<Long> ids)
+			throws ServiceException;
 }

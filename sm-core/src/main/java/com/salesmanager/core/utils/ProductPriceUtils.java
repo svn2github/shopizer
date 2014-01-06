@@ -91,14 +91,25 @@ public class ProductPriceUtils {
 		FinalPrice finalPrice = calculateFinalPrice(product);
 		
 		//attributes
-		BigDecimal attributePrice = new BigDecimal(0);
+		BigDecimal attributePrice = null;
 		if(attributes!=null && attributes.size()>0) {
 			for(ProductAttribute attribute : attributes) {
-				if(attribute.getAttributeDefault()==true) {
 					if(attribute.getProductAttributePrice()!=null && attribute.getProductAttributePrice().doubleValue()>0) {
+						if(attributePrice==null) {
+							attributePrice = new BigDecimal(0);
+						}
 						attributePrice = attributePrice.add(attribute.getProductAttributePrice());
 					}
-				}
+			}
+			
+			if(attributePrice!=null && attributePrice.doubleValue()>0) {
+				BigDecimal fp = finalPrice.getFinalPrice();
+				fp = fp.add(attributePrice);
+				finalPrice.setFinalPrice(fp);
+				
+				BigDecimal op = finalPrice.getOriginalPrice();
+				op = op.add(attributePrice);
+				finalPrice.setOriginalPrice(op);
 			}
 		}
 		
@@ -122,6 +133,31 @@ public class ProductPriceUtils {
 
 
 		FinalPrice finalPrice = calculateFinalPrice(product);
+		
+		//attributes
+		BigDecimal attributePrice = null;
+		if(product.getAttributes()!=null && product.getAttributes().size()>0) {
+			for(ProductAttribute attribute : product.getAttributes()) {
+					if(attribute.getAttributeDefault()) {
+						if(attribute.getProductAttributePrice()!=null && attribute.getProductAttributePrice().doubleValue()>0) {
+							if(attributePrice==null) {
+								attributePrice = new BigDecimal(0);
+							}
+							attributePrice = attributePrice.add(attribute.getProductAttributePrice());
+						}
+					}
+			}
+			
+			if(attributePrice!=null && attributePrice.doubleValue()>0) {
+				BigDecimal fp = finalPrice.getFinalPrice();
+				fp = fp.add(attributePrice);
+				finalPrice.setFinalPrice(fp);
+				
+				BigDecimal op = finalPrice.getOriginalPrice();
+				op = op.add(attributePrice);
+				finalPrice.setOriginalPrice(op);
+			}
+		}
 
 		return finalPrice;
 

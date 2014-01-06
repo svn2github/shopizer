@@ -43,6 +43,14 @@ public class ProductAttributeServiceImpl extends
 	}
 	
 	@Override
+	public List<ProductAttribute> getByAttributeIds(MerchantStore store,
+			List<Long> ids) throws ServiceException {
+		
+		return productAttributeDao.getByAttributeIds(store, ids);
+		
+	}
+	
+	@Override
 	public List<ProductAttribute> getByOptionValueId(MerchantStore store,
 			Long id) throws ServiceException {
 		

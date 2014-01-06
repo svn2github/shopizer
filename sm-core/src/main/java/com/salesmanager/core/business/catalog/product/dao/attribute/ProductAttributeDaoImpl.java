@@ -62,6 +62,24 @@ public class ProductAttributeDaoImpl extends SalesManagerEntityDaoImpl<Long, Pro
 	}
 	
 	@Override
+	public List<ProductAttribute> getByAttributeIds(MerchantStore store, List<Long> ids) {
+		QProductAttribute qEntity = QProductAttribute.productAttribute;
+		QProductOption qProductOption = QProductOption.productOption;
+		
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qEntity)
+			.join(qEntity.product).fetch()
+			.leftJoin(qEntity.productOption, qProductOption).fetch()
+			.leftJoin(qProductOption.merchantStore).fetch()
+			.where(qEntity.id.in(ids)
+			.and(qProductOption.merchantStore.id.eq(store.getId())));
+		
+		return query.list(qEntity);
+	}
+	
+	@Override
 	public List<ProductAttribute> getByOptionValueId(MerchantStore store, Long id) {
 		QProductAttribute qEntity = QProductAttribute.productAttribute;
 		QProductOptionValue qProductOptionValue = QProductOptionValue.productOptionValue;
