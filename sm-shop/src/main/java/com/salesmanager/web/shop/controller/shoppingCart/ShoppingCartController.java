@@ -2,7 +2,6 @@ package com.salesmanager.web.shop.controller.shoppingCart;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;

@@ -114,14 +114,15 @@ public class ReadableProductPopulator extends
 			target.setSku(source.getSku());
 			//target.setLanguage(language.getCode());
 	
-			FinalPrice price = null;
-			if(CollectionUtils.isNotEmpty(source.getAttributes())) {
+			FinalPrice price = pricingService.calculateProductPrice(source);
+
+/*			if(CollectionUtils.isNotEmpty(source.getAttributes())) {
 				List<ProductAttribute> attrs = new ArrayList<ProductAttribute>();
 				attrs.addAll(source.getAttributes());
 				price = pricingService.calculateProductPrice(source, attrs);
 			} else {
 				price = pricingService.calculateProductPrice(source);
-			}
+			}*/
 			
 			
 			target.setFinalPrice(pricingService.getDisplayAmount(price.getFinalPrice(), store));

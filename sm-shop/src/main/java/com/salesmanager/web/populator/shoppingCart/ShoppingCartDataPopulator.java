@@ -13,6 +13,7 @@ import org.apache.commons.configuration.ConversionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionDescription;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
@@ -110,9 +111,12 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
                             cartAttribute.setAttributeId(attribute.getProductAttributeId());
                             cartAttribute.setOptionId(attribute.getProductAttribute().getProductOption().getId());
                             cartAttribute.setOptionValueId(attribute.getProductAttribute().getProductOptionValue().getId());
-                            cartAttribute.setOptionName(attribute.getProductAttribute().getProductOption().getDescriptionsList().get(0).getName());
-                            cartAttribute.setOptionValue(attribute.getProductAttribute().getProductOptionValue().getDescriptionsList().get(0).getName());
-                            cartAttributes.add(cartAttribute);
+                            List<ProductOptionDescription> optionDescriptions = attribute.getProductAttribute().getProductOption().getDescriptionsList();
+                            if(optionDescriptions!=null) {
+                            	cartAttribute.setOptionName(optionDescriptions.get(0).getName());
+                            	cartAttribute.setOptionValue(optionDescriptions.get(0).getName());
+                            	cartAttributes.add(cartAttribute);
+                            }
                         }
                         shoppingCartItem.setShoppingCartAttributes(cartAttributes);
                     }
