@@ -69,5 +69,6 @@ public class Constants {
 
 	
 	public final static String CATEGORY_LINEAGE_DELIMITER = "/";
+	public final static int MAX_REVIEW_RATING_SCORE = 5;
 
 }
