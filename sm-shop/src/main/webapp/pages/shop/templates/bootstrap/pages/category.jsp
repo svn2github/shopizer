@@ -77,7 +77,7 @@ response.setDateHeader ("Expires", -1);
  		if(filter!=null) {
  			url = url + '/filter=' + filter + '/filter-value=' + filterValue +'';
  		}
- 		loadProducts(url,'#productsContainer');
+ 		loadProducts(url,'#productsContainer','<c:out value="${category.id}"/>');
  	}
  	
  	

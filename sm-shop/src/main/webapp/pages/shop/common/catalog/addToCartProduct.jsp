@@ -14,90 +14,19 @@ response.setDateHeader ("Expires", -1);
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 
+<script src="<c:url value="/resources/js/product.js" />"></script>
 <script>
-$(document).ready(function() { 
 
-	$('#input-<c:out value="${product.id}" /> select').change(function(e) { // select element changed
-		calculatePrice();
-	});
+$(function(){
 
-	$('#input-<c:out value="${product.id}" /> :radio').change(function(e) { // radio changed
-		calculatePrice();
-	});
-	
-	$('#input-<c:out value="${product.id}" /> :checkbox').change(function(e) { // radio changed
-		calculatePrice();
-	});
+	initProduct('<c:out value="${product.id}"/>','#input-<c:out value="${product.id}" />');//pass form div
+
 });
-
-
-function calculatePrice() {
-
-	$('#input-<c:out value="${product.id}" />').showLoading();
-	var values = new Array();
-	i = 0;
-	$('#input-<c:out value="${product.id}" />').find(':input').each(function(){
-			if($(this).hasClass('attribute')) {
-		        if($(this).is(':checkbox')) {
-		        	var checkboxSelected = $(this).is(':checked');
-		        	if(checkboxSelected==true) {
-						values[i] = $(this).val();
-						//console.log('checkbox ' + values[i]);
-						i++;
-					}
-		        	
-				} else if ($(this).is(':radio')) {
-					var radioChecked = $(this).is(':checked');
-					if(radioChecked==true) {
-						values[i] = $(this).val(); 
-						//console.log('radio ' + values[i]);
-						i++;
-					}
-				} else {
-				   if($(this).val()) {
-				       values[i] = $(this).val(); 
-				       //console.log('select ' + values[i]);
-				       i++;
-			       }
-
-				}
-			}
-			
-	});
-	$.ajax({  
-		 type: 'POST',  
-		 url: getContextPath() + '/shop/product/<c:out value="${product.id}"/>/calculatePrice.html',  
-		 dataType: 'json', 
-		 data:{"attributeIds":values},
-		 cache:false,
-		 error: function(e) { 
-			$('#input-<c:out value="${product.id}" />').hideLoading();
-			console.log('Error while loading price');
-			 
-		 },
-		 success: function(price) {
-			 $('#input-<c:out value="${product.id}" />').hideLoading();
-			 //console.log('product price ' + price.finalPrice);
-			 var displayPrice = '<del>' + price.originalPrice + '</del>&nbsp;<span class="specialPrice"><span itemprop="price">' + price.finalPrice + '</span></span>';
-			 if(price.discounted) {
-				 displayPrice = '<span itemprop="price">' + price.finalPrice + '</span>';
-			 }
-			 $('#productPrice').html(displayPrice);
-		 } 
-	});
-	
-	
-	
-	$('#input-<c:out value="${product.id}" />').hideLoading();
-	console.log('values ' + values.length);
-	
-	
-}
-
-
 
 </script>
 
+
+								<!-- leave the form id as is -->
 								<form id="input-<c:out value="${product.id}" />">
 								<!-- select options -->
 								<c:if test="${options!=null}">
@@ -130,7 +59,7 @@ function calculatePrice() {
 														<c:if test="${optionValue.image!=null}">
 															<img src="<c:url value="${optionValue.image}"/>" height="40">
 														</c:if>
-														<input type="checkbox" class="attribute" id="<c:out value="${optionValue.id}"/>" name="${status.index}" value="<c:out value="${optionValue.id}"/>"<c:if test="${optionValue.defaultAttribute==true}"> checked="checked" </c:if>  />
+														<input type="checkbox" class="attribute" id="${status.index}" name="${status.index}" value="<c:out value="${optionValue.id}"/>"<c:if test="${optionValue.defaultAttribute==true}"> checked="checked" </c:if>  />
 														<c:out value="${optionValue.name}"/><c:if test="${optionValue.price!=null}">&nbsp;<c:out value="${optionValue.price}"/></c:if><br/>
 													</c:forEach>
 												</c:when>										
@@ -143,7 +72,7 @@ function calculatePrice() {
 								<br/>
 								<div class="form-inline">
 								<c:if test="${product.quantityOrderMaximum==-1 || product.quantityOrderMaximum>1}" >
-									<input quantity-productId-<c:out value="${product.id}" />" class="input-mini" placeholder="1" type="text">
+									<input id="qty-productId-<c:out value="${product.id}" />" class="input-mini" placeholder="1" type="text">
 								</c:if>
 									<button class="btn btn-success addToCart" type="button" productId="<c:out value="${product.id}" />"><s:message code="button.label.addToCart" text="Add to cart"/></button>
 								</div>

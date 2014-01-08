@@ -48,7 +48,18 @@
 							</c:if>
 						</td>
 
-						<td style="border-left:none;">${shoppingCartItem.name}</td>
+						<td style="border-left:none;">
+								<strong>${shoppingCartItem.name}</strong>
+								<c:if test="${fn:length(shoppingCartItem.shoppingCartAttributes)>0}">
+									<br/>
+									<ul>
+										<c:forEach items="${shoppingCartItem.shoppingCartAttributes}" var="option">
+										<li>${option.optionName} - ${option.optionValue}</li>
+										</c:forEach>
+									</ul>
+								</c:if>
+						
+						</td>
 						<td><input type="text" class="input-small quantity" placeholder="<s:message code="label.quantity" text="Quantity"/>"
 							value="${shoppingCartItem.quantity}" name="quantity" id="${shoppingCartItem.id}"></td>
 						<td style="border-left:none;"><button class="close"

@@ -37,33 +37,38 @@
 			quantity = 1;
 		}
 
-		var formId = '#input-' + sku +' :input';
-		var $inputs = $(formId); 
+		var formId = '#input-' + sku;
+		//var $inputs = $(formId); 
+		var $inputs = $(formId).find(':input');
 		
-		var values = {};
+		var values = new Array();
 		if($inputs.length>0) {//check for attributes
-
+			i = 0;
 			$inputs.each(function() { //attributes
 				if($(this).hasClass('attribute')) {
-				   //TODO remove class
-				   if($(this).hasClass('required') && !$(this).is(':checked')) {
-					   		$(this).parent().css('border', '1px solid red'); 
-				    }
+				    //if($(this).hasClass('required') && !$(this).is(':checked')) {
+					//   		$(this).parent().css('border', '1px solid red'); 
+				    //}
 			        if($(this).is(':checkbox')) {
-						if($(this).is(':checked') ) {
-							values[this.name] = $(this).val(); 
+			        	var checkboxSelected = $(this).is(':checked');
+			        	if(checkboxSelected==true) {
+							values[i] = $(this).val();
+							//console.log('checkbox ' + values[i]);
+							i++;
 						}
+			        	
 					} else if ($(this).is(':radio')) {
-						if($(this).is(':checked') ) {
-							values[this.name] = $(this).val(); 
+						var radioChecked = $(this).is(':checked');
+						if(radioChecked==true) {
+							values[i] = $(this).val(); 
+							//console.log('radio ' + values[i]);
+							i++;
 						}
 					} else {
-					   if($(this).hasClass('required') && !$(this).val()) {
-						   	$(this).css('border', '1px solid red'); 
-						   
-						}
 					   if($(this).val()) {
-					       values[this.name] = $(this).val(); 
+					       values[i] = $(this).val(); 
+					       //console.log('select ' + values[i]);
+					       i++;
 				       }
 					}
 				}
@@ -93,9 +98,7 @@
 		var attributes = null;
 		//cart attributes
 		if(values.length>0) {
-			if(values.length>1 ) {
-				attributes = '[';
-			}
+			attributes = '[';
 			for (var i = 0; i < values.length; i++) {
 				var shoppingAttribute= prefix + '"attributeId":' + values[i] + suffix ;
 				if(values.length>1 && i < values.length-1){
@@ -103,19 +106,18 @@
 				}
 				attributes = attributes + shoppingAttribute;
 			}
-			if(values.length>1 ) {
-				attributes = attributes + ']';
-			}
+			attributes = attributes + ']';
 		}
 		
 		if(attributes!=null) {
-			shoppingCartItem = shoppingCartItem + ',"shoppingCartAttributes:"' + attributes;
+			shoppingCartItem = shoppingCartItem + ',"shoppingCartAttributes":' + attributes;
 		}
 		
 		var scItem = prefix + shoppingCartItem + suffix;
 
 		/** debug add to cart **/
 		//console.log(scItem);
+
 		
 		$.ajax({  
 			 type: 'POST',  

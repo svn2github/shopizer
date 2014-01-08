@@ -51,7 +51,7 @@ function cartSubTotal(cart) {
 
 
  
-function loadProducts(url,divProductsContainer) {
+function loadProducts(url,divProductsContainer, ref) {
 		$(divProductsContainer).showLoading();
 
 		$.ajax({
@@ -60,7 +60,7 @@ function loadProducts(url,divProductsContainer) {
 				url: url,
 				success: function(productList) {
 
-					buildProductsList(productList,divProductsContainer);
+					buildProductsList(productList,divProductsContainer, ref);
 					callBackLoadProducts(productList);
 
 
@@ -115,7 +115,7 @@ function searchProducts(url,divProductsContainer,q,filter) {
 	  			contentType:"application/json;charset=UTF-8",
 				success: function(productList) {
 
-					buildProductsList(productList,divProductsContainer);
+					buildProductsList(productList,divProductsContainer, null);
 					//TODO manage total entries found
 					callBackSearchProducts(productList);
 
@@ -135,7 +135,7 @@ function searchProducts(url,divProductsContainer,q,filter) {
 /**
 * Builds the product container div from the product list
 **/
-function buildProductsList(productList, divProductsContainer) {
+function buildProductsList(productList, divProductsContainer, ref) {
 
 
 		for (var i = 0; i < productList.products.length; i++) {
@@ -147,10 +147,14 @@ function buildProductsList(productList, divProductsContainer) {
 			} else {
 					    productHtml = productHtml + '<h3>' + productList.products[i].finalPrice +'</h3>';
 			}
-			if(productList.products[i].image!=null) {
-					    productHtml = productHtml + '<a href="<c:url value="/shop/product/" />' + productList.products[i].description.friendlyUrl + '.html"><img src="<c:url value="/"/>' + productList.products[i].image.imageUrl +'" itemprop="image"></a>';
+			var productUrl = '<c:url value="/shop/product/" />' + productList.products[i].description.friendlyUrl + '.html';
+			if(ref!=null) {
+				productUrl = productUrl + '/ref=' + ref;
 			}
-			productHtml = productHtml + '<div class="bottom"><a href="<c:url value="/shop/product/" />' + productList.products[i].description.friendlyUrl + '.html" class="view"><s:message code="button.label.view" text="View" /></a> / <a productid="' + productList.products[i].id + '" href="#" class="addToCart"><s:message code="button.label.addToCart" text="Add to cart" /></a></div>';
+			if(productList.products[i].image!=null) {
+					    productHtml = productHtml + '<a href="' + productUrl + '">"<img src="<c:url value="/"/>' + productList.products[i].image.imageUrl +'" itemprop="image"></a>';
+			}
+			productHtml = productHtml + '<div class="bottom"><a href="' + productUrl + '" class="view"><s:message code="button.label.view" text="View" /></a> / <a productid="' + productList.products[i].id + '" href="#" class="addToCart"><s:message code="button.label.addToCart" text="Add to cart" /></a></div>';
 			productHtml = productHtml + '</div>'
 			productHtml = productHtml + '</li>'
 			$(divProductsContainer).append(productHtml);
