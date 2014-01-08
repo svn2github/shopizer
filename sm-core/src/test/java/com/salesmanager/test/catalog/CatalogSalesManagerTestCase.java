@@ -248,7 +248,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 	    
 	    ProductReview review = new ProductReview();
 	    review.setProduct(product);
-	    review.setReviewRating(4);
+	    review.setReviewRating(new Double(4));
 	    
 	    ProductReviewDescription reviewDescription = new ProductReviewDescription();
 	    reviewDescription.setLanguage(en);
@@ -260,7 +260,7 @@ public class CatalogSalesManagerTestCase extends AbstractSalesManagerCoreTestCas
 	    
 	    review = new ProductReview();
 	    review.setProduct(product);
-	    review.setReviewRating(5);
+	    review.setReviewRating(new Double(5));
 	    
 	    reviewDescription = new ProductReviewDescription();
 	    reviewDescription.setLanguage(en);
