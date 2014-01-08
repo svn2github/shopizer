@@ -14,6 +14,7 @@ import com.salesmanager.core.business.catalog.product.model.review.QProductRevie
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.QCustomer;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
+import com.salesmanager.core.business.reference.language.model.Language;
 
 @Repository("productReviewDao")
 public class ProductReviewDaoImpl extends SalesManagerEntityDaoImpl<Long, ProductReview>
@@ -60,6 +61,29 @@ public class ProductReviewDaoImpl extends SalesManagerEntityDaoImpl<Long, Produc
 		.leftJoin(qProduct.merchantStore).fetch()
 		.leftJoin(qEntity.descriptions,qDescription).fetch()
 		.where(qProduct.id.eq(product.getId()));
+		
+		return query.list(qEntity);
+		
+		
+	}
+	
+	@Override
+	public List<ProductReview> getByProduct(Product product, Language language) {
+		
+		
+		QProductReview qEntity = QProductReview.productReview;
+		QProductReviewDescription qDescription = QProductReviewDescription.productReviewDescription;
+		QProduct qProduct = QProduct.product;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qEntity)
+		.join(qEntity.customer).fetch()
+		.join(qEntity.product,qProduct).fetch()
+		.leftJoin(qProduct.merchantStore).fetch()
+		.leftJoin(qEntity.descriptions,qDescription).fetch()
+		.where(qProduct.id.eq(product.getId())
+				.and(qDescription.language.id.eq(language.getId())));
 		
 		return query.list(qEntity);
 		

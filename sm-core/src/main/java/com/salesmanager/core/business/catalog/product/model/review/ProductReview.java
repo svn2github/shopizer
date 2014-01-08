@@ -42,7 +42,7 @@ public class ProductReview extends SalesManagerEntity<Long, ProductReview> imple
 	private AuditSection audit = new AuditSection();
 	
 	@Column(name = "REVIEWS_RATING")
-	private Integer reviewRating;
+	private Double reviewRating;
 	
 	@Column(name = "REVIEWS_READ")
 	private Long reviewRead;
@@ -72,11 +72,11 @@ public class ProductReview extends SalesManagerEntity<Long, ProductReview> imple
 		this.id = id;
 	}
 
-	public Integer getReviewRating() {
+	public Double getReviewRating() {
 		return reviewRating;
 	}
 
-	public void setReviewRating(Integer reviewRating) {
+	public void setReviewRating(Double reviewRating) {
 		this.reviewRating = reviewRating;
 	}
 

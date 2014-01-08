@@ -273,21 +273,21 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		
 		ShoppingCartItem item = new ShoppingCartItem(product);
 
-		Set<ProductAttribute> productAttributes = product.getAttributes();
-		Set<ShoppingCartAttributeItem> attributesList = new HashSet<ShoppingCartAttributeItem>();
-		if(!CollectionUtils.isEmpty(productAttributes)) {
+		//Set<ProductAttribute> productAttributes = product.getAttributes();
+		//Set<ShoppingCartAttributeItem> attributesList = new HashSet<ShoppingCartAttributeItem>();
+		//if(!CollectionUtils.isEmpty(productAttributes)) {
 
-			for(ProductAttribute productAttribute : productAttributes) {
-					ShoppingCartAttributeItem attributeItem = new ShoppingCartAttributeItem();
-					attributeItem.setShoppingCartItem(item);
-					attributeItem.setProductAttribute(productAttribute);
-					attributeItem.setProductAttributeId(productAttribute.getId());
-					attributesList.add(attributeItem);
+		//	for(ProductAttribute productAttribute : productAttributes) {
+		//			ShoppingCartAttributeItem attributeItem = new ShoppingCartAttributeItem();
+		//			attributeItem.setShoppingCartItem(item);
+		//			attributeItem.setProductAttribute(productAttribute);
+		//			attributeItem.setProductAttributeId(productAttribute.getId());
+		//			attributesList.add(attributeItem);
 
-			}
+		//	}
 			
-			item.setAttributes(attributesList);
-		}
+		//	item.setAttributes(attributesList);
+		//}
 		
 		//set item price
 		FinalPrice price = pricingService.calculateProductPrice(product);

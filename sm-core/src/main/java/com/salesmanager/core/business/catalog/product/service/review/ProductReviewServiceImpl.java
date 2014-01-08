@@ -10,6 +10,7 @@ import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.review.ProductReview;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
+import com.salesmanager.core.business.reference.language.model.Language;
 
 @Service("productReviewService")
 public class ProductReviewServiceImpl extends
@@ -34,6 +35,11 @@ public class ProductReviewServiceImpl extends
 	@Override
 	public List<ProductReview> getByProduct(Product product) {
 		return productReviewDao.getByProduct(product);
+	}
+	
+	@Override
+	public List<ProductReview> getByProduct(Product product, Language language) {
+		return productReviewDao.getByProduct(product, language);
 	}
 
 

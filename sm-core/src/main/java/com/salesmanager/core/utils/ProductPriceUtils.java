@@ -110,6 +110,13 @@ public class ProductPriceUtils {
 				BigDecimal op = finalPrice.getOriginalPrice();
 				op = op.add(attributePrice);
 				finalPrice.setOriginalPrice(op);
+				
+				BigDecimal dp = finalPrice.getDiscountedPrice();
+				if(dp!=null) {
+					dp = dp.add(attributePrice);
+					finalPrice.setDiscountedPrice(dp);
+				}
+				
 			}
 		}
 		
@@ -561,16 +568,15 @@ public class ProductPriceUtils {
 		
 		finalPrice.setDiscounted(true);
 		
-		double arith = finalPrice.getOriginalPrice().doubleValue() / finalPrice.getProductPrice().getProductPriceAmount().doubleValue();
-		double fsdiscount = 100 - arith * 100;
+		double arith = finalPrice.getProductPrice().getProductPriceSpecialAmount().doubleValue() / finalPrice.getProductPrice().getProductPriceAmount().doubleValue();
+		double fsdiscount = 100 - (arith * 100);
 		Float percentagediscount = new Float(fsdiscount);
 		int percent = percentagediscount.intValue();
 		finalPrice.setDiscountPercent(percent);
 		
 		//calculate percent
 		BigDecimal price = finalPrice.getOriginalPrice();
-		price = price.multiply(new BigDecimal(fsdiscount));
-		finalPrice.setDiscountedPrice(price);
+		finalPrice.setDiscountedPrice(finalPrice.getProductPrice().getProductPriceSpecialAmount());
 	}
 
 

@@ -6,6 +6,7 @@ import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.review.ProductReview;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityService;
+import com.salesmanager.core.business.reference.language.model.Language;
 
 public interface ProductReviewService extends
 		SalesManagerEntityService<Long, ProductReview> {
@@ -13,6 +14,7 @@ public interface ProductReviewService extends
 	
 	List<ProductReview> getByCustomer(Customer customer);
 	List<ProductReview> getByProduct(Product product);
+	List<ProductReview> getByProduct(Product product, Language language);
 
 
 
