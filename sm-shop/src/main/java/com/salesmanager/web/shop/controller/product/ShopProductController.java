@@ -1,5 +1,6 @@
 package com.salesmanager.web.shop.controller.product;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jfree.util.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.category.model.Category;
+import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionDescription;
@@ -30,23 +34,30 @@ import com.salesmanager.core.business.catalog.product.model.attribute.ProductOpt
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationship;
 import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationshipType;
+import com.salesmanager.core.business.catalog.product.model.review.ProductReview;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
 import com.salesmanager.core.business.catalog.product.service.relationship.ProductRelationshipService;
+import com.salesmanager.core.business.catalog.product.service.review.ProductReviewService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.entity.catalog.product.ReadableProductPrice;
+import com.salesmanager.web.entity.shop.Breadcrumb;
+import com.salesmanager.web.entity.shop.BreadcrumbItem;
+import com.salesmanager.web.entity.shop.BreadcrumbItemType;
 import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.web.populator.catalog.ReadableProductPricePopulator;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.model.catalog.Attribute;
 import com.salesmanager.web.shop.model.catalog.AttributeValue;
+import com.salesmanager.web.utils.FilePathUtils;
 import com.salesmanager.web.utils.ImageFilePathUtils;
+import com.salesmanager.web.utils.LabelUtils;
 import com.salesmanager.web.utils.PageBuilderUtils;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
@@ -73,20 +84,62 @@ public class ShopProductController {
 	private PricingService pricingService;
 	
 	@Autowired
+	private ProductReviewService productReviewService;
+	
+	@Autowired
+	private LabelUtils messages;
+	
+	@Autowired
 	private CacheUtils cache;
 	
+	@Autowired
+	private CategoryService categoryService;
+	
 
+	/**
+	 * Display product details with reference to caller page
+	 * @param friendlyUrl
+	 * @param ref
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @param locale
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/{friendlyUrl}.html/ref={ref}")
+	public String displayProductWithReference(@PathVariable final String friendlyUrl, @PathVariable final String ref, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		return display(ref, friendlyUrl, model, request, response, locale);
+	}
+	
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * Display product details no reference
+	 * @param friendlyUrl
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @param locale
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping("/{friendlyUrl}.html")
 	public String displayProduct(@PathVariable final String friendlyUrl, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		return display(null, friendlyUrl, model, request, response, locale);
+	}
+
+
+	public String display(final String reference, final String friendlyUrl, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		
 		Product product = productService.getBySeUrl(store, friendlyUrl, locale);
+		
+		//TODO remove//
+		product.setProductReviewAvg(new BigDecimal(3.5));
+		product.setProductReviewCount(11);
 		
 		if(product==null) {
 			return PageBuilderUtils.build404(store);
@@ -106,8 +159,49 @@ public class ShopProductController {
 		
 		request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
 		
-		//TODO breadcrumbs
-		//build static breadcrumb ?
+		/** Build breadcrumb **/
+		BreadcrumbItem home = new BreadcrumbItem();
+		home.setItemType(BreadcrumbItemType.HOME);
+		home.setLabel(messages.getMessage(Constants.HOME_MENU_KEY, locale));
+		home.setUrl(FilePathUtils.buildStoreUri(store, request) + Constants.SHOP_URI);
+
+		Breadcrumb breadCrumb = new Breadcrumb();
+		breadCrumb.setLanguage(language);
+		
+		List<BreadcrumbItem> items = new ArrayList<BreadcrumbItem>();
+		items.add(home);
+		
+		if(!StringUtils.isBlank(reference)) {
+			//get category id
+			try {
+				Long categoryId = Long.parseLong(reference);
+				Category caller = categoryService.getByLanguage(categoryId, language);
+				if(caller!=null) {
+					if(caller.getMerchantStore().getId().intValue()==store.getId().intValue()) {
+						BreadcrumbItem categoryBreadcrump = new BreadcrumbItem();
+						categoryBreadcrump.setItemType(BreadcrumbItemType.CATEGORY);
+						categoryBreadcrump.setLabel(caller.getDescription().getName());
+						categoryBreadcrump.setUrl(caller.getDescription().getSeUrl());
+						items.add(categoryBreadcrump);
+					}
+				}
+			} catch(Exception e) {
+				Log.error("Cannot get category " + reference,e);
+			}
+			
+		}
+		
+		BreadcrumbItem productBreadcrump = new BreadcrumbItem();
+		productBreadcrump.setItemType(BreadcrumbItemType.PRODUCT);
+		productBreadcrump.setLabel(productProxy.getDescription().getName());
+		productBreadcrump.setUrl(productProxy.getDescription().getFriendlyUrl());
+		items.add(productBreadcrump);
+
+		breadCrumb.setBreadCrumbs(items);
+		breadCrumb.setItemType(BreadcrumbItemType.PRODUCT);
+		request.getSession().setAttribute(Constants.BREADCRUMB, breadCrumb);
+		request.setAttribute(Constants.BREADCRUMB, breadCrumb);
+		/** **/
 		
 		StringBuilder relatedItemsCacheKey = new StringBuilder();
 		relatedItemsCacheKey
@@ -170,7 +264,6 @@ public class ShopProductController {
 					attr = readOnlyAttributes.get(attribute.getProductOption().getId());
 					if(attr==null) {
 						attr = createAttribute(attribute, language);
-						//readOnlyAttributes.put(attr.getId(), attr);
 					}
 					if(attr!=null) {
 						readOnlyAttributes.put(attribute.getProductOption().getId(), attr);
@@ -189,8 +282,10 @@ public class ShopProductController {
 					}
 				}
 				
+				
+				
 				attrValue.setDefaultAttribute(attribute.getAttributeDefault());
-				attrValue.setId(optionValue.getId());
+				attrValue.setId(attribute.getId());//id of the attribute
 				attrValue.setLanguage(language.getCode());
 				if(attribute.getProductAttributePrice()!=null && attribute.getProductAttributePrice().doubleValue()>0) {
 					String formatedPrice = pricingService.getDisplayAmount(attribute.getProductAttributePrice(), store);
@@ -227,7 +322,10 @@ public class ShopProductController {
 
 		
 		//TODO reviews
-		
+		List<ProductReview> reviews = productReviewService.getByProduct(product, language);
+		if(!CollectionUtils.isEmpty(reviews)) {
+			
+		}
 		
 		List<Attribute> attributesList = null;
 		if(readOnlyAttributes!=null) {
@@ -284,7 +382,7 @@ public class ShopProductController {
 	private Attribute createAttribute(ProductAttribute productAttribute, Language language) {
 		
 		Attribute attribute = new Attribute();
-		attribute.setId(productAttribute.getId());
+		attribute.setId(productAttribute.getProductOption().getId());//attribute of the option
 		attribute.setType(productAttribute.getProductOption().getProductOptionType());
 		List<ProductOptionDescription> descriptions = productAttribute.getProductOption().getDescriptionsSettoList();
 		ProductOptionDescription description = null;
@@ -305,7 +403,6 @@ public class ShopProductController {
 		}
 		
 		attribute.setType(productAttribute.getProductOption().getProductOptionType());
-		attribute.setId(productAttribute.getId());
 		attribute.setLanguage(language.getCode());
 		attribute.setName(description.getName());
 		attribute.setCode(productAttribute.getProductOption().getCode());

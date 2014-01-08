@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.StringUtils;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
 import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
@@ -58,6 +56,10 @@ public class ReadableProductPopulator extends
 	
 			target.setId(source.getId());
 			target.setAvailable(source.isAvailable());
+			target.setReviewAverage(source.getProductReviewAvg());
+			if(source.getProductReviewAvg()!=null) {
+				target.setReviewCount(source.getProductReviewCount());
+			}
 			if(description!=null) {
 				com.salesmanager.web.entity.catalog.product.ProductDescription tragetDescription = new com.salesmanager.web.entity.catalog.product.ProductDescription();
 				tragetDescription.setFriendlyUrl(description.getSeUrl());
@@ -116,15 +118,6 @@ public class ReadableProductPopulator extends
 	
 			FinalPrice price = pricingService.calculateProductPrice(source);
 
-/*			if(CollectionUtils.isNotEmpty(source.getAttributes())) {
-				List<ProductAttribute> attrs = new ArrayList<ProductAttribute>();
-				attrs.addAll(source.getAttributes());
-				price = pricingService.calculateProductPrice(source, attrs);
-			} else {
-				price = pricingService.calculateProductPrice(source);
-			}*/
-			
-			
 			target.setFinalPrice(pricingService.getDisplayAmount(price.getFinalPrice(), store));
 			target.setPrice(price.getFinalPrice());
 	

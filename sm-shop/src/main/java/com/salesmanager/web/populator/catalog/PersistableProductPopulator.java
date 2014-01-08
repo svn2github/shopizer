@@ -124,6 +124,8 @@ public class PersistableProductPopulator extends
 			target.setProductWidth(source.getProductWidth());
 			target.setProductVirtual(source.isProductVirtual());
 			target.setProductShipeable(source.isProductShipeable());
+			target.setProductReviewAvg(source.getReviewAverage());
+			target.setProductReviewCount(source.getReviewCount());
 			
 			
 			ProductAvailability productAvailability = new ProductAvailability();

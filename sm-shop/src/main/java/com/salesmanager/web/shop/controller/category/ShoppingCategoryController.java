@@ -47,6 +47,7 @@ import com.salesmanager.web.populator.manufacturer.ReadableManufacturerPopulator
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.model.filter.QueryFilter;
 import com.salesmanager.web.shop.model.filter.QueryFilterType;
+import com.salesmanager.web.utils.FilePathUtils;
 import com.salesmanager.web.utils.LabelUtils;
 import com.salesmanager.web.utils.PageBuilderUtils;
 
@@ -172,7 +173,7 @@ public class ShoppingCategoryController {
 		BreadcrumbItem home = new BreadcrumbItem();
 		home.setItemType(BreadcrumbItemType.HOME);
 		home.setLabel(messages.getMessage(Constants.HOME_MENU_KEY, locale));
-		home.setUrl(Constants.HOME_URL);
+		home.setUrl(FilePathUtils.buildStoreUri(store, request) + Constants.SHOP_URI);
 
 		Breadcrumb breadCrumb = new Breadcrumb();
 		breadCrumb.setLanguage(language);
@@ -183,9 +184,9 @@ public class ShoppingCategoryController {
 		//category path - use lineage
 		for(Category c : categories) {
 			BreadcrumbItem categoryBreadcrump = new BreadcrumbItem();
-			home.setItemType(BreadcrumbItemType.CATEGORY);
-			home.setLabel(c.getDescription().getName());
-			home.setUrl(c.getDescription().getSeUrl());
+			categoryBreadcrump.setItemType(BreadcrumbItemType.CATEGORY);
+			categoryBreadcrump.setLabel(c.getDescription().getName());
+			categoryBreadcrump.setUrl(c.getDescription().getSeUrl());
 			items.add(categoryBreadcrump);
 		}
 

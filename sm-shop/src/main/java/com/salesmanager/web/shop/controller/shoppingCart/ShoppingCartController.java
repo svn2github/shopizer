@@ -152,17 +152,18 @@ public class ShoppingCartController extends AbstractController {
 			}
 		}
 
+		
+		if(shoppingCart==null && !StringUtils.isBlank(item.getCode())) {
+			shoppingCart = shoppingCartFacade.getShoppingCartData(item.getCode(), store);
+		}
 
 
 		//if shoppingCart is null create a new one
-
-		shoppingCart = new ShoppingCartData();
-		String code = UUID.randomUUID().toString().replaceAll("-", "");
-		shoppingCart.setCode(code);
-
-
-
-
+		if(shoppingCart==null) {
+			shoppingCart = new ShoppingCartData();
+			String code = UUID.randomUUID().toString().replaceAll("-", "");
+			shoppingCart.setCode(code);
+		}
 
 		shoppingCart=shoppingCartFacade.addItemsToShoppingCart( shoppingCart, item, store,language,customer );
 		request.getSession().setAttribute(Constants.SHOPPING_CART, shoppingCart.getCode());

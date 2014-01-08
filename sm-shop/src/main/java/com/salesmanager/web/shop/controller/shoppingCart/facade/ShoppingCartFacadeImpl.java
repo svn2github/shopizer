@@ -182,10 +182,7 @@ public class ShoppingCartFacadeImpl
                     com.salesmanager.core.business.shoppingcart.model.ShoppingCartAttributeItem attributeItem =
                         new com.salesmanager.core.business.shoppingcart.model.ShoppingCartAttributeItem( item,
                                                                                                          productAttribute );
-                    if ( attribute.getAttributeId() > 0 )
-                    {
-                        attributeItem.setId( attribute.getId() );
-                    }
+
                     item.addAttributes( attributeItem );
                 }
             }
@@ -462,4 +459,18 @@ public class ShoppingCartFacadeImpl
         }
         return null;
     }
+
+	@Override
+	public ShoppingCartData getShoppingCartData(String code, MerchantStore store) {
+		try {
+			ShoppingCart cartModel = shoppingCartService.getByCode( code, store );
+			if(cartModel!=null) {
+				ShoppingCartData cart = getShoppingCartData(cartModel);
+				return cart;
+			}
+		} catch(Exception e) {
+			LOG.error("Cannot retrieve cart code " + code,e);
+		}
+		return null;
+	}
 }
