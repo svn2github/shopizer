@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionType;
 import com.salesmanager.web.entity.catalog.manufacturer.ManufacturerDescription;
 import com.salesmanager.web.entity.catalog.manufacturer.PersistableManufacturer;
+import com.salesmanager.web.entity.catalog.product.PersistableProductReview;
 import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.entity.catalog.product.attribute.PersistableProductOption;
 import com.salesmanager.web.entity.catalog.product.attribute.PersistableProductOptionValue;
@@ -100,6 +101,54 @@ public class ProductManagementAPITest {
 
 		PersistableManufacturer manuf = (PersistableManufacturer) response.getBody();
 		System.out.println("New Manufacturer ID : " + manuf.getId());
+		
+		
+	}
+	
+	/**
+	 * Creates a ProductReview
+	 * requires an existing Customer and an existing Product
+	 * @throws Exception
+	 */
+	@Test
+	//@Ignore
+	public void createProductReview() throws Exception {
+		
+		//requires an existing product
+		//requires an existing customer
+		PersistableProductReview review = new PersistableProductReview();
+		review.setCustomerId(1L);
+		review.setProductId(1L);
+		review.setLanguage("en");
+		review.setRating(5D);//rating is on 5
+		review.setDescription("Excellent product 2 !");
+
+
+		ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String json = writer.writeValueAsString(review);
+		
+		System.out.println(json);
+		
+		/**
+		 * {
+  			"description" : "Excellent product !",
+  			"productId" : 1,
+  			"rating" : 4.5,
+  			"customerId" : 1,
+  			"language" : "en"
+			}
+		 */
+
+		
+		restTemplate = new RestTemplate();
+
+		
+		HttpEntity<String> entity = new HttpEntity<String>(json, getHeader());
+
+		ResponseEntity response = restTemplate.postForEntity("http://localhost:8080/sm-shop/shop/services/private/product/review/DEFAULT", entity, PersistableProductReview.class);
+
+		PersistableProductReview rev = (PersistableProductReview) response.getBody();
+		System.out.println("New ProductReview ID : " + rev.getId());
 		
 		
 	}
