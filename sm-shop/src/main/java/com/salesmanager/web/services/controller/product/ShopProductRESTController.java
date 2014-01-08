@@ -11,8 +11,6 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.client.RestTemplate;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
@@ -33,6 +30,8 @@ import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionValueService;
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
+import com.salesmanager.core.business.catalog.product.service.review.ProductReviewService;
+import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -41,6 +40,7 @@ import com.salesmanager.core.business.tax.service.TaxClassService;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.catalog.manufacturer.PersistableManufacturer;
 import com.salesmanager.web.entity.catalog.product.PersistableProduct;
+import com.salesmanager.web.entity.catalog.product.PersistableProductReview;
 import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.entity.catalog.product.ReadableProductList;
 import com.salesmanager.web.entity.catalog.product.attribute.PersistableProductOption;
@@ -48,6 +48,7 @@ import com.salesmanager.web.entity.catalog.product.attribute.PersistableProductO
 import com.salesmanager.web.populator.catalog.PersistableProductOptionPopulator;
 import com.salesmanager.web.populator.catalog.PersistableProductOptionValuePopulator;
 import com.salesmanager.web.populator.catalog.PersistableProductPopulator;
+import com.salesmanager.web.populator.catalog.PersistableProductReviewPopulator;
 import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.web.populator.manufacturer.PersistableManufacturerPopulator;
 import com.salesmanager.web.shop.model.filter.QueryFilter;
@@ -68,7 +69,13 @@ public class ShopProductRESTController {
 	private CategoryService categoryService;
 	
 	@Autowired
+	private CustomerService customerService;
+	
+	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+	private ProductReviewService productReviewService;
 	
 	@Autowired
 	private PricingService pricingService;
@@ -316,7 +323,64 @@ public class ShopProductRESTController {
 			
 			return null;
 		}
+	}
+	
+	
+	@RequestMapping( value="/shop/services/private/product/review/{store}", method=RequestMethod.POST)
+	@ResponseStatus(HttpStatus.CREATED)
+	@ResponseBody
+	public PersistableProductReview createProductReview(@PathVariable final String store, @Valid @RequestBody PersistableProductReview review, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
 		
+		try {
+			
+			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+			if(merchantStore!=null) {
+				if(!merchantStore.getCode().equals(store)) {
+					merchantStore = null;
+				}
+			}
+			
+			if(merchantStore== null) {
+				merchantStore = merchantStoreService.getByCode(store);
+			}
+			
+			if(merchantStore==null) {
+				LOGGER.error("Merchant store is null for code " + store);
+				response.sendError(503, "Merchant store is null for code " + store);
+				return null;
+			}
+			
+			//rating maximum 5
+			if(review.getRating()>Constants.MAX_REVIEW_RATING_SCORE) {
+				response.sendError(503, "Maximum rating score is " + Constants.MAX_REVIEW_RATING_SCORE);
+				return null;
+			}
+
+			PersistableProductReviewPopulator populator = new PersistableProductReviewPopulator();
+			populator.setLanguageService(languageService);
+			populator.setCustomerService(customerService);
+			populator.setProductService(productService);
+			
+			com.salesmanager.core.business.catalog.product.model.review.ProductReview rev = new com.salesmanager.core.business.catalog.product.model.review.ProductReview();
+			populator.populate(review, rev, merchantStore, merchantStore.getDefaultLanguage());
+		
+			productReviewService.create(rev);
+
+			
+			review.setId(rev.getId());
+			
+			return review;
+			
+		} catch (Exception e) {
+			LOGGER.error("Error while saving product review",e);
+			try {
+				response.sendError(503, "Error while saving product review" + e.getMessage());
+			} catch (Exception ignore) {
+			}
+			
+			return null;
+		}
 	}
 	
 	
