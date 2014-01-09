@@ -45,6 +45,11 @@ public class ProductReviewServiceImpl extends
 	}
 	
 	@Override
+	public ProductReview getByProductAndCustomer(Long productId, Long customerId) {
+		return productReviewDao.getByProductAndCustomer(productId, customerId);
+	}
+	
+	@Override
 	public List<ProductReview> getByProduct(Product product, Language language) {
 		return productReviewDao.getByProduct(product, language);
 	}

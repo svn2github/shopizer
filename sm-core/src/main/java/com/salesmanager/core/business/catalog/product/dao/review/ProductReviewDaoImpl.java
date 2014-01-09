@@ -13,6 +13,9 @@ import com.salesmanager.core.business.catalog.product.model.review.QProductRevie
 import com.salesmanager.core.business.catalog.product.model.review.QProductReviewDescription;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.QCustomer;
+import com.salesmanager.core.business.customer.model.attribute.QCustomerAttribute;
+import com.salesmanager.core.business.customer.model.attribute.QCustomerOption;
+import com.salesmanager.core.business.customer.model.attribute.QCustomerOptionValue;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.reference.language.model.Language;
 
@@ -52,17 +55,66 @@ public class ProductReviewDaoImpl extends SalesManagerEntityDaoImpl<Long, Produc
 		QProductReview qEntity = QProductReview.productReview;
 		QProductReviewDescription qDescription = QProductReviewDescription.productReviewDescription;
 		QProduct qProduct = QProduct.product;
+		QCustomer qCustomer = QCustomer.customer;
+		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
+		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
+		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qEntity)
-		.join(qEntity.customer).fetch()
+		.join(qEntity.customer, qCustomer).fetch()
+		.join(qCustomer.merchantStore).fetch()
+			.leftJoin(qCustomer.country).fetch()
+			.leftJoin(qCustomer.zone).fetch()
+			.leftJoin(qCustomer.defaultLanguage).fetch()
+			.leftJoin(qCustomer.attributes,qCustomerAttribute).fetch()
+			.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
+			.leftJoin(qCustomerAttribute.customerOptionValue, qCustomerOptionValue).fetch()
+			.leftJoin(qCustomerOption.descriptions).fetch()
+			.leftJoin(qCustomerOptionValue.descriptions).fetch()
 		.join(qEntity.product,qProduct).fetch()
 		.leftJoin(qProduct.merchantStore).fetch()
 		.leftJoin(qEntity.descriptions,qDescription).fetch()
 		.where(qProduct.id.eq(product.getId()));
 		
 		return query.list(qEntity);
+		
+		
+	}
+	
+	
+	@Override
+	public ProductReview getByProductAndCustomer(Long productId, Long customerId) {
+		
+		
+		QProductReview qEntity = QProductReview.productReview;
+		QProductReviewDescription qDescription = QProductReviewDescription.productReviewDescription;
+		QProduct qProduct = QProduct.product;
+		QCustomer qCustomer = QCustomer.customer;
+		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
+		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
+		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qEntity)
+		.join(qEntity.customer, qCustomer).fetch()
+		.join(qCustomer.merchantStore).fetch()
+			.leftJoin(qCustomer.country).fetch()
+			.leftJoin(qCustomer.zone).fetch()
+			.leftJoin(qCustomer.defaultLanguage).fetch()
+			.leftJoin(qCustomer.attributes,qCustomerAttribute).fetch()
+			.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
+			.leftJoin(qCustomerAttribute.customerOptionValue, qCustomerOptionValue).fetch()
+			.leftJoin(qCustomerOption.descriptions).fetch()
+			.leftJoin(qCustomerOptionValue.descriptions).fetch()
+		.join(qEntity.product,qProduct).fetch()
+		.leftJoin(qProduct.merchantStore).fetch()
+		.leftJoin(qEntity.descriptions,qDescription).fetch()
+		.where(qProduct.id.eq(productId).and(qCustomer.id.eq(customerId)));
+		
+		return query.uniqueResult(qEntity);
 		
 		
 	}
@@ -74,11 +126,24 @@ public class ProductReviewDaoImpl extends SalesManagerEntityDaoImpl<Long, Produc
 		QProductReview qEntity = QProductReview.productReview;
 		QProductReviewDescription qDescription = QProductReviewDescription.productReviewDescription;
 		QProduct qProduct = QProduct.product;
+		QCustomer qCustomer = QCustomer.customer;
+		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
+		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
+		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
 		query.from(qEntity)
-		.join(qEntity.customer).fetch()
+				.join(qEntity.customer, qCustomer).fetch()
+		.join(qCustomer.merchantStore).fetch()
+			.leftJoin(qCustomer.country).fetch()
+			.leftJoin(qCustomer.zone).fetch()
+			.leftJoin(qCustomer.defaultLanguage).fetch()
+			.leftJoin(qCustomer.attributes,qCustomerAttribute).fetch()
+			.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
+			.leftJoin(qCustomerAttribute.customerOptionValue, qCustomerOptionValue).fetch()
+			.leftJoin(qCustomerOption.descriptions).fetch()
+			.leftJoin(qCustomerOptionValue.descriptions).fetch()
 		.join(qEntity.product,qProduct).fetch()
 		.leftJoin(qProduct.merchantStore).fetch()
 		.leftJoin(qEntity.descriptions,qDescription).fetch()

@@ -4,10 +4,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -64,8 +66,8 @@ public class ProductReview extends SalesManagerEntity<Long, ProductReview> imple
 	@OneToOne
 	@JoinColumn(name="PRODUCT_ID")
 	private Product product;
-	
-	@OneToMany(mappedBy = "productReview", targetEntity = ProductReviewDescription.class)
+
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "productReview")
 	private Set<ProductReviewDescription> descriptions = new HashSet<ProductReviewDescription>();
 	
 	public ProductReview() {

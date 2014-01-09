@@ -13,6 +13,7 @@ public interface ProductReviewDao extends SalesManagerEntityDao<Long, ProductRev
 	List<ProductReview> getByCustomer(Customer customer);
 	List<ProductReview> getByProduct(Product product);
 	List<ProductReview> getByProduct(Product product, Language language);
+	ProductReview getByProductAndCustomer(Long productId, Long customerId);
 
 
 
