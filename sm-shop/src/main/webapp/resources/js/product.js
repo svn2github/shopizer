@@ -20,7 +20,7 @@
 
     function calculatePrice(productId, div) {
 
-		$(div).showLoading();
+		
 		var values = new Array();
 		i = 0;
 		$(div).find(':input').each(function(){
@@ -51,6 +51,13 @@
 			}
 			
 	});
+		
+	if(values.length==0) {
+		return;
+	}	
+	
+	$(div).showLoading();
+		
 	$.ajax({  
 		 type: 'POST',  
 		 url: getContextPath() + '/shop/product/' + productId + '/calculatePrice.html',  

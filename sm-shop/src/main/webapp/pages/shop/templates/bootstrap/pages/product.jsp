@@ -15,6 +15,7 @@ response.setDateHeader ("Expires", -1);
 <%@page pageEncoding="UTF-8"%>
 
 <script src="<c:url value="/resources/js/jquery.elevateZoom-3.0.8.min.js" />"></script>
+<script src="<c:url value="/resources/js/jquery.raty.min.js" />"></script>
 
 
 
@@ -23,7 +24,6 @@ response.setDateHeader ("Expires", -1);
             <div class="row-fluid">
 
                 <div class="span12" itemscope itemtype="http://data-vocabulary.org/Product">
-                    <!--<div class="row">-->
                     	<!-- Image column -->
 						<div id="img" class="span4">
 							<c:if test="${product.image!=null}">
@@ -48,12 +48,30 @@ response.setDateHeader ("Expires", -1);
 						<!-- Product description column -->
 						<div class="span8">
 							<h1>${product.description.name}</h1>
-							<div class="review">
+							<div id="review" class="review">
 								<div>
-									<img alt="1 reviews" src="catalog/view/theme/pav_foodstore/image/stars-1.png">
-									<a onclick="$('a[href=\'#tab-review\']').trigger('click');">1 reviews</a>
+									<div id="productRating" style="width: 100px;">
+									</div>
+									<script>
+									$(function() {
+										$('#productRating').raty({ 
+											readOnly: true, 
+											half: true,
+											path : '<c:url value="/resources/img/stars/"/>',
+											score: <c:out value="${product.rating}" />
+										});
+									});	
+									</script>
+									<c:choose>
+									   <c:when test="${product.ratingCount>0}">
+											<a href="#" onclick="$('a[href=\'#reviews\']').trigger('click');"><c:out value="${product.ratingCount}"/>&nbsp;<s:message code="label.product.customer.reviews" text="Customer reviews" /></a>
+									   </c:when>
+									   <c:otherwise>
+									   		0&nbsp;<s:message code="label.product.customer.reviews" text="Customer reviews" />
+									   </c:otherwise>
+									</c:choose>
   										|  
-									<a onclick="$('a[href=\'#tab-review\']').trigger('click');">Write a review</a>
+									<a href="#" onclick="$('a[href=\'#reviews\']').trigger('click');">Write a review</a>
 								</div>
 							</div>
 							<address>
@@ -78,15 +96,9 @@ response.setDateHeader ("Expires", -1);
 							</address>
 							</span>
 
-							
 							<p>
-
 								<jsp:include page="/pages/shop/common/catalog/addToCartProduct.jsp" />
-
 							</p>
-							
-							
-							
 						</div>
 
 					</div>
@@ -97,13 +109,11 @@ response.setDateHeader ("Expires", -1);
 							<ul class="nav nav-tabs" id="myTab">
 								<li class="active"><a href="#description"><s:message code="label.productedit.productdesc" text="Product description" /></a></li>
 								<c:if test="${attributes!=null}"><li><a href="#specifications"><s:message code="label.product.attribute.specifications" text="Specifications" /></a></li></c:if>
-								<!--<li><a href="#reviews"><s:message code="label.product.customer.reviews" text="Customer reviews" /></a></li><!-- TODO read only attributes -->
+								<li><a href="#reviews"><s:message code="label.product.customer.reviews" text="Customer reviews" /></a></li>
 							</ul>							 
 							<div class="tab-content">
 								<div class="tab-pane active" id="description">
 									<c:out value="${product.description.description}" escapeXml="false"/>
-
-									
 								</div>	
 								<div class="tab-pane" id="specifications">
 									<!--  read only properties -->
@@ -117,7 +127,37 @@ response.setDateHeader ("Expires", -1);
 									</c:forEach>
 									</table>
 								  </c:if>
-								</div>					
+								</div>
+								<div class="tab-pane" id="reviews">
+									<c:choose>
+									<c:when test="${reviews!=null}">
+										<c:forEach items="${reviews}" var="review" varStatus="status">
+											    <p>
+											    <div id="productRating<c:out value="${status.count}"/>" style="width: 100px;">
+											    </div>
+											    <br/>
+											    <blockquote>
+    												<p><c:out value="${review.description}" escapeXml="false" /></p>
+    												<small><c:out value="${review.customer.firstName}" />&nbsp;<c:out value="${review.customer.lastName}"/>&nbsp;<c:out value="${rating.date}"/>&nbsp;<c:out value="${review.date}" /></small>
+   	 											</blockquote>
+   	 											</p>
+   	 											<script>
+												  	$(function() {
+														$('#productRating<c:out value="${status.count}"/>').raty({ 
+															readOnly: true, 
+															half: true,
+															path : '<c:url value="/resources/img/stars/"/>',
+															score: <c:out value="${review.rating}" />
+														});
+												  	});
+								  			   </script>
+										</c:forEach>
+								 	 </c:when>
+								  	<c:otherwise>
+								  		No reviews
+								  	</c:otherwise>
+								  	</c:choose>
+								</div>						
                         </div>	
                         <br/>
                         <br/>
