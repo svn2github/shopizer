@@ -13,9 +13,9 @@ import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 
 
 public interface ShoppingCartService extends SalesManagerEntityService<Long, ShoppingCart> {
-	
+
 	ShoppingCart getShoppingCart(Customer customer) throws ServiceException;
-	
+
 	void saveOrUpdate(ShoppingCart shoppingCart) throws ServiceException;
 
 	ShoppingCart getById(Long id, MerchantStore store) throws ServiceException;
@@ -33,7 +33,7 @@ public interface ShoppingCartService extends SalesManagerEntityService<Long, Sho
 	 */
 	List<ShippingProduct> createShippingProduct(ShoppingCart cart)
 			throws ServiceException;
-	
+
 
 
 	/**
@@ -54,7 +54,17 @@ public interface ShoppingCartService extends SalesManagerEntityService<Long, Sho
 			throws ServiceException;
 
 
-	
+	boolean removeShoppingCart(ShoppingCart cart) throws ServiceException;
+
+	/**
+	 *
+	 * @param userShoppingModel
+	 * @param sessionCart
+	 * @param store
+	 * @return {@link ShoppingCart} merged Shopping Cart
+	 * @throws Exception
+	 */
+	public ShoppingCart mergeShoppingCarts(final ShoppingCart userShoppingCart,final ShoppingCart sessionCart,final MerchantStore store  ) throws Exception;
 
 
 

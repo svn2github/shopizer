@@ -27,6 +27,8 @@ public interface ShoppingCartDao extends SalesManagerEntityDao<Long, ShoppingCar
 	 */
 	ShoppingCart getShoppingCartByCode(String code);
 
+	public boolean removeShoppingCart(ShoppingCart cart);
 
-	
+
+
 }
