@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.catalog.product.model.review;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,6 +17,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.common.model.audit.AuditListener;
@@ -46,6 +49,10 @@ public class ProductReview extends SalesManagerEntity<Long, ProductReview> imple
 	
 	@Column(name = "REVIEWS_READ")
 	private Long reviewRead;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "REVIEW_DATE")
+	private Date reviewDate;
 	
 	@Column(name = "STATUS")
 	private Integer status;
@@ -128,6 +135,14 @@ public class ProductReview extends SalesManagerEntity<Long, ProductReview> imple
 	@Override
 	public void setAuditSection(AuditSection audit) {
 		this.audit = audit;
+	}
+	
+	public Date getReviewDate() {
+		return reviewDate;
+	}
+
+	public void setReviewDate(Date reviewDate) {
+		this.reviewDate = reviewDate;
 	}
 
 }
