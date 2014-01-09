@@ -26,7 +26,9 @@ public class ReadableCustomerPopulator extends
 		try {
 			
 
-		
+		target.setFirstName(source.getFirstname());
+		target.setLastName(source.getLastname());
+		target.setEmailAddress(source.getEmailAddress());
 		if(source.getBilling()!=null) {
 			Address address = new Address();
 			address.setCity(source.getBilling().getCity());

@@ -46,12 +46,14 @@ import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.entity.catalog.product.ReadableProductPrice;
+import com.salesmanager.web.entity.catalog.product.ReadableProductReview;
 import com.salesmanager.web.entity.shop.Breadcrumb;
 import com.salesmanager.web.entity.shop.BreadcrumbItem;
 import com.salesmanager.web.entity.shop.BreadcrumbItemType;
 import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.web.populator.catalog.ReadableProductPricePopulator;
+import com.salesmanager.web.populator.catalog.ReadableProductReviewPopulator;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.model.catalog.Attribute;
 import com.salesmanager.web.shop.model.catalog.AttributeValue;
@@ -136,11 +138,7 @@ public class ShopProductController {
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		
 		Product product = productService.getBySeUrl(store, friendlyUrl, locale);
-		
-		//TODO remove//
-		product.setProductReviewAvg(new BigDecimal(3.5));
-		product.setProductReviewCount(11);
-		
+				
 		if(product==null) {
 			return PageBuilderUtils.build404(store);
 		}
@@ -320,11 +318,16 @@ public class ShopProductController {
 			}
 		}
 
-		
-		//TODO reviews
 		List<ProductReview> reviews = productReviewService.getByProduct(product, language);
 		if(!CollectionUtils.isEmpty(reviews)) {
-			
+			List<ReadableProductReview> revs = new ArrayList<ReadableProductReview>();
+			ReadableProductReviewPopulator reviewPopulator = new ReadableProductReviewPopulator();
+			for(ProductReview review : reviews) {
+				ReadableProductReview rev = new ReadableProductReview();
+				reviewPopulator.populate(review, rev, store, language);
+				revs.add(rev);
+			}
+			model.addAttribute("reviews", revs);
 		}
 		
 		List<Attribute> attributesList = null;

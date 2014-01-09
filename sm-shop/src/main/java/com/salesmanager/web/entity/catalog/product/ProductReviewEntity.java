@@ -12,7 +12,8 @@ public class ProductReviewEntity extends ShopEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String description;
 	private Long productId;
-	private Long customerId;
+	private String date;
+	
 	private Double rating;
 	public String getDescription() {
 		return description;
@@ -33,11 +34,12 @@ public class ProductReviewEntity extends ShopEntity implements Serializable {
 	public void setRating(Double rating) {
 		this.rating = rating;
 	}
-	public Long getCustomerId() {
-		return customerId;
+	public String getDate() {
+		return date;
 	}
-	public void setCustomerId(Long customerId) {
-		this.customerId = customerId;
+	public void setDate(String date) {
+		this.date = date;
 	}
+
 
 }

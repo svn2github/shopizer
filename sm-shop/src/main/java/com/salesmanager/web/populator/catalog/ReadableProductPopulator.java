@@ -56,9 +56,13 @@ public class ReadableProductPopulator extends
 	
 			target.setId(source.getId());
 			target.setAvailable(source.isAvailable());
-			target.setReviewAverage(source.getProductReviewAvg());
 			if(source.getProductReviewAvg()!=null) {
-				target.setReviewCount(source.getProductReviewCount());
+				double avg = source.getProductReviewAvg().doubleValue();
+				double rating = Math.round(avg * 2) / 2.0f;
+				target.setRating(rating);
+			}
+			if(source.getProductReviewCount()!=null) {
+				target.setRatingCount(source.getProductReviewCount().intValue());
 			}
 			if(description!=null) {
 				com.salesmanager.web.entity.catalog.product.ProductDescription tragetDescription = new com.salesmanager.web.entity.catalog.product.ProductDescription();
@@ -98,7 +102,6 @@ public class ReadableProductPopulator extends
 				//other images
 				Set<ProductImage> images = source.getImages();
 				if(images!=null && images.size()>0) {
-					
 					List<ReadableImage> imageList = new ArrayList<ReadableImage>();
 					for(ProductImage img : images) {
 						ReadableImage prdImage = new ReadableImage();

@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,11 +135,14 @@ public class ProductReviewController {
 				entry.put("rating", review.getReviewRating().intValue());
 				Set<ProductReviewDescription> descriptions = review.getDescriptions();
 				String reviewDesc= "";
-				for(ProductReviewDescription description : descriptions){
-					if(description.getLanguage().getCode().equals(language.getCode())) {
-						reviewDesc = description.getDescription();
-					}
+				if(!CollectionUtils.isEmpty(descriptions)) {
+					reviewDesc = descriptions.iterator().next().getDescription();
 				}
+				//for(ProductReviewDescription description : descriptions){
+				//	if(description.getLanguage().getCode().equals(language.getCode())) {
+				//		reviewDesc = description.getDescription();
+				//	}
+				//}
 				entry.put("description", reviewDesc);
 				resp.addDataEntry(entry);
 			}

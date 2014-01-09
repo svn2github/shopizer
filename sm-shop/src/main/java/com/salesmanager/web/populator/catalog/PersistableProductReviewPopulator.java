@@ -1,6 +1,5 @@
 package com.salesmanager.web.populator.catalog;
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +18,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.utils.AbstractDataPopulator;
 import com.salesmanager.web.entity.catalog.product.PersistableProductReview;
+import com.shopizer.search.utils.DateUtil;
 
 public class PersistableProductReviewPopulator extends
 		AbstractDataPopulator<PersistableProductReview, ProductReview> {
@@ -63,7 +63,7 @@ public class PersistableProductReviewPopulator extends
 				throw new ConversionException("Invalid customer id for the given store");
 			}
 			
-			
+			target.setReviewDate(DateUtil.formatDate(source.getDate()));
 			target.setCustomer(customer);
 			target.setReviewRating(source.getRating());
 			

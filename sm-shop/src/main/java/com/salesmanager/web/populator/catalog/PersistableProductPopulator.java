@@ -1,6 +1,7 @@
 package com.salesmanager.web.populator.catalog;
 
 import java.io.ByteArrayInputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -104,19 +105,15 @@ public class PersistableProductPopulator extends
 					}
 					
 					languages.add(lang);
-					
 					productDescription.setLanguage(lang);
 					descriptions.add(productDescription);
-					
 				}
 			}
 			
 			if(descriptions.size()>0) {
 				target.setDescriptions(descriptions);
 			}
-			
-			
-			
+
 			//target.setType(source.getType());//not implemented yet
 			target.setProductHeight(source.getProductHeight());
 			target.setProductLength(source.getProductLength());
@@ -124,8 +121,8 @@ public class PersistableProductPopulator extends
 			target.setProductWidth(source.getProductWidth());
 			target.setProductVirtual(source.isProductVirtual());
 			target.setProductShipeable(source.isProductShipeable());
-			target.setProductReviewAvg(source.getReviewAverage());
-			target.setProductReviewCount(source.getReviewCount());
+			target.setProductReviewAvg(new BigDecimal(source.getRating()));
+			target.setProductReviewCount(source.getRatingCount());
 			
 			
 			ProductAvailability productAvailability = new ProductAvailability();
@@ -136,27 +133,22 @@ public class PersistableProductPopulator extends
 			productAvailability.getPrices().add(price);
 			target.getAvailabilities().add(productAvailability);
 			for(Language lang : languages) {
-				
 				ProductPriceDescription ppd = new ProductPriceDescription();
 				ppd.setProductPrice(price);
 				ppd.setLanguage(lang);
 				ppd.setName(ProductPriceDescription.DEFAULT_PRICE_DESCRIPTION);
 				price.getDescriptions().add(ppd);
-
 			}
 			
 			//image
 			if(source.getImages()!=null) {
-				
 				for(PersistableImage img : source.getImages()) {
-				
 					ByteArrayInputStream in = new ByteArrayInputStream(img.getBytes());
 					ProductImage productImage = new ProductImage();
 					productImage.setProduct(target);
 					productImage.setProductImage(img.getImageName());
 					productImage.setImage(in);
 					target.getImages().add(productImage);
-					
 				}
 			}
 			

@@ -25,6 +25,7 @@ import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.ProductCriteria;
+import com.salesmanager.core.business.catalog.product.model.review.ProductReview;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionService;
@@ -347,7 +348,15 @@ public class ShopProductRESTController {
 			
 			if(merchantStore==null) {
 				LOGGER.error("Merchant store is null for code " + store);
-				response.sendError(503, "Merchant store is null for code " + store);
+				response.sendError(500, "Merchant store is null for code " + store);
+				return null;
+			}
+			
+			
+			//rating already exist
+			ProductReview prodReview = productReviewService.getByProductAndCustomer(review.getProductId(), review.getCustomerId());
+			if(prodReview!=null) {
+				response.sendError(500, "A review already exist for this customer and product");
 				return null;
 			}
 			
@@ -356,6 +365,8 @@ public class ShopProductRESTController {
 				response.sendError(503, "Maximum rating score is " + Constants.MAX_REVIEW_RATING_SCORE);
 				return null;
 			}
+			
+			
 
 			PersistableProductReviewPopulator populator = new PersistableProductReviewPopulator();
 			populator.setLanguageService(languageService);

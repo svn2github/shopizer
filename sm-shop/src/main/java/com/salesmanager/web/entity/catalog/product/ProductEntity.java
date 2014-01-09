@@ -29,8 +29,8 @@ public class ProductEntity extends Product implements Serializable {
 	private BigDecimal productWidth;
 	private BigDecimal productHeight;
 	private BigDecimal productWeight;
-	private BigDecimal reviewAverage;
-	private int reviewCount;
+	private Double rating = 0D;
+	private int ratingCount;
 	private int sortOrder;
 	private String dateAvailable;
 
@@ -129,17 +129,18 @@ public class ProductEntity extends Product implements Serializable {
 	public void setQuantityOrderMinimum(int quantityOrderMinimum) {
 		this.quantityOrderMinimum = quantityOrderMinimum;
 	}
-	public BigDecimal getReviewAverage() {
-		return reviewAverage;
+	public int getRatingCount() {
+		return ratingCount;
 	}
-	public void setReviewAverage(BigDecimal reviewAverage) {
-		this.reviewAverage = reviewAverage;
+	public void setRatingCount(int ratingCount) {
+		this.ratingCount = ratingCount;
 	}
-	public int getReviewCount() {
-		return reviewCount;
+	public Double getRating() {
+		return rating;
 	}
-	public void setReviewCount(int reviewCount) {
-		this.reviewCount = reviewCount;
+	public void setRating(Double rating) {
+		this.rating = rating;
 	}
+
 
 }
