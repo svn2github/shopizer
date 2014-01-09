@@ -15,11 +15,12 @@ public class EmailTestCase extends AbstractSalesManagerCoreTestCase {
 	public void sendHtmlEmail() throws Exception {
 		
 		Map<String, String> templateTokens = new HashMap<String, String>();
-		templateTokens.put("EMAIL_NEW_USER_TEXT", "Hi Tapas,");
-		templateTokens.put("EMAIL_STORE_NAME", "Ebay Store");
+		templateTokens.put("EMAIL_NEW_USER_TEXT", "Hi My Friend,");
+		templateTokens.put("EMAIL_STORE_NAME", "Shopizer Store");
 		templateTokens.put("EMAIL_ADMIN_LABEL", "Adminstrator:");
-		templateTokens.put("EMAIL_CUSTOMER_FIRSTNAME", "Tapas");
-		templateTokens.put("EMAIL_CUSTOMER_LAST", "Jena");
+		templateTokens.put("EMAIL_TEXT_NEW_USER_CREATED", "New user created");
+		templateTokens.put("EMAIL_CUSTOMER_FIRSTNAME", "The");
+		templateTokens.put("EMAIL_CUSTOMER_LAST", "Rock");
 		templateTokens.put("EMAIL_ADMIN_USERNAME_LABEL", "UserName:");
 		templateTokens.put("EMAIL_ADMIN_NAME", "Admin");
 		templateTokens.put("EMAIL_ADMIN_PASSWORD_LABEL", "Password:");
