@@ -25,21 +25,30 @@ response.setDateHeader ("Expires", -1);
     		e.preventDefault();
     	});
 
-        $("#login").submit(function() {
-        	alert('login');
+        $("#login").submit(function(e) {
+        	 e.preventDefault();
         	$('#signinPane').showLoading();
- 			$("#loginError").hide();
-            var data = $(this).serializeObject();
+ 		    $("#loginError").hide();
+ 			
+            var data = $(this).serialize();
+           
             $.ajax({
-                'type': 'POST',
-                'url': "<c:url value="/customer/logon.html"/>",
-                'contentType': 'application/json',
-                'data': JSON.stringify(data),
-                'dataType': 'json',
+                'type': "POST",
+                'url': "<c:url value="/shop/customer/j_spring_security_check"/>",
+              
+                 'data':data,
+              
                 'success': function(result) {
                    $('#signinPane').hideLoading();
-                   var response = result.response;
-                   if (response.status==0) {
+                 
+                   
+                   if (result.STATUS=="SUCCESS") {
+                	   //SHOPPING_CART
+                	   if(result.SHOPPING_CART != ""){
+                		  var cartCode = buildCartCode( result.SHOPPING_CART);
+                		  $.cookie('cart',cartCode, { expires: 1024, path:'/' });
+          			      
+                	   }
                         location.href="<c:url value="/customer/dashboard.html" />";
                    } else {
                         $("#loginError").html("<s:message code="message.username.password" text="Login Failed. Username or Password is incorrect."/>");
@@ -47,7 +56,7 @@ response.setDateHeader ("Expires", -1);
                    }
                 }
             });
- 
+           // preventDefault();
             return false;
         });
     });
@@ -88,10 +97,27 @@ response.setDateHeader ("Expires", -1);
 					</div>
 					
 					<c:choose>
-					<c:when test="${requestScope.CUSTOMER!=null}">
-						<a href="<c:url value="/customer/dashboard.html"/>"><s:message code="label.generic.welcome" text="Welcome" /> <c:out value="${requestScope.CUSTOMER.firstname}"/> <c:out value="${requestScope.CUSTOMER.lastname}"/></a>
+					<c:when test="${sessionScope.CUSTOMER!=null}">
+						 <a href="<c:url value="/customer/dashboard.html"/>">
+						<s:message code="label.generic.welcome" text="Welcome" /> 
+						   <c:if test="${not empty sessionScope.CUSTOMER.firstname}">
+						       <c:out value="${sessionScope.CUSTOMER.firstname}"/>
+						   </c:if>
+						   <c:if test="${not empty sessionScope.CUSTOMER.lastname}">
+						       <c:out value="${sessionScope.CUSTOMER.lastname}"/>
+						   </c:if>
+						   <script>
+						   var cart = $.cookie('cart');
+						   var code = new Array();
+						   if(cart!=null) {
+								code = cart.split('_');
+						   }
+						  
+						   displayMiniCartSummary(code[1]);</script>
+						</a>
 					</c:when>
 					<c:otherwise>
+					
 					<ul class="pull-right" style="list-style-type: none;padding-top: 8px;z-index:500000;">
 					  <li id="fat-menu" class="dropdown">
 					    <a href="#" id="signinDrop" role="button" class="dropdown-toggle noboxshadow" data-toggle="dropdown"><s:message code="button.label.signin" text="Signin" /><b class="caret"></b></a>
@@ -103,17 +129,17 @@ response.setDateHeader ("Expires", -1);
 									<div class="control-group">
 	                        				<label><s:message code="label.username" text="Username" /></label>
 					                        <div class="controls">
-												<input id="userName" style="margin-bottom: 15px;" type="text" name="userName" size="30" />
+												<input id="userName" style="margin-bottom: 15px;" type="text" name="j_username" size="30" />
 											</div>
 									</div>
 									<div class="control-group">
 	                        				<label><s:message code="label.password" text="Password" /></label>
 					                        <div class="controls">
-												<input id="password" style="margin-bottom: 15px;" type="password" name="password" size="30" />
+												<input id="password" style="margin-bottom: 15px;" type="password" name="j_password" size="30" />
 											</div>
 									</div>
 									<input id="storeCode" name="storeCode" type="hidden" value="<c:out value="${requestScope.MERCHANT_STORE.code}"/>"/>					 
-									<button type="button" style="width:100%" class="btn"><s:message code="button.label.login" text="Login" /></button>
+									<button type="submit" style="width:100%" class="btn" id="login-button"><s:message code="button.label.login" text="Login" /></button>
 									
 								</form>
 								<a href="<c:url value="/shop/customer/registration.html" />" role="button" class="" data-toggle="modal"><s:message code="label.register.notyetregistered" text="Not yet registered ?" /></a>

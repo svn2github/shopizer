@@ -70,8 +70,7 @@ public class ShoppingCartFacadeImpl
 
     @Autowired
     private ProductAttributeService productAttributeService;
-    
-    @Override
+
     public void deleteShoppingCart(final Long id, final MerchantStore store) throws Exception {
     	ShoppingCart cart = shoppingCartService.getById(id, store);
     	if(cart!=null) {
@@ -131,10 +130,10 @@ public class ShoppingCartFacadeImpl
         
         /** Update cart in database with line items **/
         shoppingCartService.saveOrUpdate( cartModel );
-        
+
         //refresh cart
         cartModel = shoppingCartService.getById(cartModel.getId(), store);
-         
+
         shoppingCartCalculationService.calculate( cartModel, store, language );
 
         ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
@@ -329,10 +328,10 @@ public class ShoppingCartFacadeImpl
                     }
                     cartModel.setLineItems( shoppingCartItemSet );
                     shoppingCartService.saveOrUpdate( cartModel );
-                    
-                    
-                    
-                    
+
+
+
+
                     ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
                     shoppingCartDataPopulator.setShoppingCartCalculationService( shoppingCartCalculationService );
                     shoppingCartDataPopulator.setPricingService( pricingService );
