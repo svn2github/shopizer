@@ -38,6 +38,12 @@
   			<mvc:mapping path="/shop/**"/>
   			<bean class="com.salesmanager.web.filter.StoreFilter"/>
  		</mvc:interceptor>
+ 		
+ 		
+ 		<mvc:interceptor>
+  			<mvc:mapping path="/customer/**"/>
+  			<bean class="com.salesmanager.web.filter.StoreFilter"/>
+ 		</mvc:interceptor>
 		
 		
  		<mvc:interceptor>

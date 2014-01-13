@@ -33,7 +33,7 @@
 	}
 	
 	function callBackCheckCode(msg,code) {
-		
+		console.log(code);
 		if(code==0) {
 			$('.btn').removeClass('disabled');
 		}

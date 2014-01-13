@@ -48,32 +48,12 @@ response.setDateHeader ("Expires", -1);
 						<!-- Product description column -->
 						<div class="span8">
 							<h1>${product.description.name}</h1>
-							<div id="review" class="review">
-								<div>
-									<div id="productRating" style="width: 100px;">
-									</div>
-									<script>
-									$(function() {
-										$('#productRating').raty({ 
-											readOnly: true, 
-											half: true,
-											path : '<c:url value="/resources/img/stars/"/>',
-											score: <c:out value="${product.rating}" />
-										});
-									});	
-									</script>
-									<c:choose>
-									   <c:when test="${product.ratingCount>0}">
-											<a href="#" onclick="$('a[href=\'#reviews\']').trigger('click');"><c:out value="${product.ratingCount}"/>&nbsp;<s:message code="label.product.customer.reviews" text="Customer reviews" /></a>
-									   </c:when>
-									   <c:otherwise>
-									   		0&nbsp;<s:message code="label.product.customer.reviews" text="Customer reviews" />
-									   </c:otherwise>
-									</c:choose>
-  										|  
-									<a href="#" onclick="$('a[href=\'#reviews\']').trigger('click');">Write a review</a>
-								</div>
-							</div>
+							
+							
+							<!-- product rating -->
+							<jsp:include page="/pages/shop/common/catalog/rating.jsp" />
+							
+							
 							<address>
 								<strong><s:message code="label.product.brand" text="Brand"/></strong> <span itemprop="brand"><c:out value="${product.manufacturer.description.name}" /></span><br>
 								<strong><s:message code="label.product.code" text="Product code"/></strong> <span itemprop="identifier" content="mpn:${product.sku}">${product.sku}</span><br>								
@@ -95,7 +75,6 @@ response.setDateHeader ("Expires", -1);
 								<strong><s:message code="label.product.available" text="Availability"/></strong> <span><c:choose><c:when test="${product.quantity>0}"><span itemprop="availability" content="in_stock">${product.quantity}</span></c:when><c:otherwise><span itemprop="availability" content="out_of_stock"><s:message code="label.product.outofstock" text="Out of stock" /></c:otherwise></c:choose></span><br>								
 							</address>
 							</span>
-
 							<p>
 								<jsp:include page="/pages/shop/common/catalog/addToCartProduct.jsp" />
 							</p>
@@ -106,7 +85,7 @@ response.setDateHeader ("Expires", -1);
 			 <div class="row-fluid">
                     <div class="span12">
 
-							<ul class="nav nav-tabs" id="myTab">
+							<ul class="nav nav-tabs" id="productTabs">
 								<li class="active"><a href="#description"><s:message code="label.productedit.productdesc" text="Product description" /></a></li>
 								<c:if test="${attributes!=null}"><li><a href="#specifications"><s:message code="label.product.attribute.specifications" text="Specifications" /></a></li></c:if>
 								<li><a href="#reviews"><s:message code="label.product.customer.reviews" text="Customer reviews" /></a></li>
@@ -129,34 +108,11 @@ response.setDateHeader ("Expires", -1);
 								  </c:if>
 								</div>
 								<div class="tab-pane" id="reviews">
-									<c:choose>
-									<c:when test="${reviews!=null}">
-										<c:forEach items="${reviews}" var="review" varStatus="status">
-											    <p>
-											    <div id="productRating<c:out value="${status.count}"/>" style="width: 100px;">
-											    </div>
-											    <br/>
-											    <blockquote>
-    												<p><c:out value="${review.description}" escapeXml="false" /></p>
-    												<small><c:out value="${review.customer.firstName}" />&nbsp;<c:out value="${review.customer.lastName}"/>&nbsp;<c:out value="${rating.date}"/>&nbsp;<c:out value="${review.date}" /></small>
-   	 											</blockquote>
-   	 											</p>
-   	 											<script>
-												  	$(function() {
-														$('#productRating<c:out value="${status.count}"/>').raty({ 
-															readOnly: true, 
-															half: true,
-															path : '<c:url value="/resources/img/stars/"/>',
-															score: <c:out value="${review.rating}" />
-														});
-												  	});
-								  			   </script>
-										</c:forEach>
-								 	 </c:when>
-								  	<c:otherwise>
-								  		No reviews
-								  	</c:otherwise>
-								  	</c:choose>
+
+									<!-- reviews -->
+									<jsp:include page="/pages/shop/common/catalog/reviews.jsp" />
+
+
 								</div>						
                         </div>	
                         <br/>
@@ -179,8 +135,8 @@ response.setDateHeader ("Expires", -1);
 
 		<script>
 			$(function () {
-				$('#myTab a:first').tab('show');
-				$('#myTab a').click(function (e) {
+				$('#productTabs a:first').tab('show');
+				$('#productTabs a').click(function (e) {
 					e.preventDefault();
 					$(this).tab('show');
 				})

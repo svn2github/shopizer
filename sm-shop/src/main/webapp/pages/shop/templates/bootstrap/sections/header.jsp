@@ -9,6 +9,7 @@ response.setDateHeader ("Expires", -1);
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
  
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
@@ -26,37 +27,48 @@ response.setDateHeader ("Expires", -1);
     	});
 
         $("#login").submit(function(e) {
-        	 e.preventDefault();
+        	e.preventDefault();//do not submit form
+        	
+        	$("#loginError").hide();
+        	
+        	var userName = $(this).find('#userName').val();
+        	var password = $(this).find('#password').val();
+        	var storeCode = $(this).find('#storeCode').val();
+        	
+        	if(userName=='' || password=='') {
+        		 $("#loginError").html("<s:message code="message.username.password" text="Login Failed. Username or Password is incorrect."/>");
+        		 $("#loginError").show();
+        		 return;
+        	}
+        	
         	$('#signinPane').showLoading();
- 		    $("#loginError").hide();
- 			
-            var data = $(this).serialize();
+        	var data = $(this).serialize();
+
            
             $.ajax({
-                'type': "POST",
-                'url': "<c:url value="/shop/customer/j_spring_security_check"/>",
-              
-                 'data':data,
-              
-                'success': function(result) {
-                   $('#signinPane').hideLoading();
-                 
-                   
-                   if (result.STATUS=="SUCCESS") {
+                 type: "POST",
+                 //my version
+                 url: "<c:url value="/shop/customer/logon.html"/>",
+                 data: "userName=" + userName + "&password=" + password + "&storeCode=" + storeCode,
+                 cache:false,
+              	 dataType:'json',
+                 'success': function(response) {
+                    $('#signinPane').hideLoading();
+					console.log(response);
+                    if (response.STATUS==0) {//success
                 	   //SHOPPING_CART
-                	   if(result.SHOPPING_CART != ""){
-                		  var cartCode = buildCartCode( result.SHOPPING_CART);
-                		  $.cookie('cart',cartCode, { expires: 1024, path:'/' });
+                	   if(response.SHOPPING_CART != ""){
+       					  console.log('saving cart ' + response.SHOPPING_CART);
+                		  saveCart(response.SHOPPING_CART);
           			      
                 	   }
-                        location.href="<c:url value="/customer/dashboard.html" />";
-                   } else {
+                        location.href="<c:url value="/shop/customer/dashboard.html" />";
+                    } else {
                         $("#loginError").html("<s:message code="message.username.password" text="Login Failed. Username or Password is incorrect."/>");
                         $("#loginError").show();
-                   }
+                    }
                 }
             });
-           // preventDefault();
             return false;
         });
     });
@@ -96,28 +108,31 @@ response.setDateHeader ("Expires", -1);
 					
 					</div>
 					
-					<c:choose>
-					<c:when test="${sessionScope.CUSTOMER!=null}">
-						 <a href="<c:url value="/customer/dashboard.html"/>">
-						<s:message code="label.generic.welcome" text="Welcome" /> 
-						   <c:if test="${not empty sessionScope.CUSTOMER.firstname}">
-						       <c:out value="${sessionScope.CUSTOMER.firstname}"/>
-						   </c:if>
-						   <c:if test="${not empty sessionScope.CUSTOMER.lastname}">
-						       <c:out value="${sessionScope.CUSTOMER.lastname}"/>
-						   </c:if>
-						   <script>
-						   var cart = $.cookie('cart');
-						   var code = new Array();
-						   if(cart!=null) {
-								code = cart.split('_');
-						   }
-						  
-						   displayMiniCartSummary(code[1]);</script>
-						</a>
-					</c:when>
-					<c:otherwise>
 					
+					<sec:authorize access="hasRole('AUTH_CUSTOMER') and fullyAuthenticated">
+						<c:if test="${sessionScope.CUSTOMER!=null}">
+							<ul class="pull-right" style="list-style-type: none;padding-top: 8px;z-index:500000;">
+							<li id="fat-menu" class="dropdown">
+							<a class="dropdown-toggle noboxshadow" data-toggle="dropdown" href="#">
+							   <s:message code="label.generic.welcome" text="Welcome" /> 
+							   <c:if test="${not empty sessionScope.CUSTOMER.firstname}">
+							       <c:out value="${sessionScope.CUSTOMER.firstname}"/>
+							   </c:if><b class="caret"></b>
+							 </a>
+								<ul class="dropdown-menu">
+									<li>
+										<a href="<c:url value="/shop/customer/dashboard.html" />"><s:message code="label.customer.myaccount" text="My account"/></a>
+									</li>
+									<li class="divider"></li>
+									<li>
+										<a href="<c:url value="/shop/customer/j_spring_security_logout" />"><s:message code="button.label.logout" text="Logout"/></a>
+									</li>
+								</ul>
+							</li>
+							</ul>
+						</c:if>
+					</sec:authorize>
+					<sec:authorize access="!hasRole('AUTH_CUSTOMER') and !fullyAuthenticated">
 					<ul class="pull-right" style="list-style-type: none;padding-top: 8px;z-index:500000;">
 					  <li id="fat-menu" class="dropdown">
 					    <a href="#" id="signinDrop" role="button" class="dropdown-toggle noboxshadow" data-toggle="dropdown"><s:message code="button.label.signin" text="Signin" /><b class="caret"></b></a>
@@ -129,13 +144,13 @@ response.setDateHeader ("Expires", -1);
 									<div class="control-group">
 	                        				<label><s:message code="label.username" text="Username" /></label>
 					                        <div class="controls">
-												<input id="userName" style="margin-bottom: 15px;" type="text" name="j_username" size="30" />
+												<input id="userName" style="margin-bottom: 15px;" type="text" name="userName" size="30" />
 											</div>
 									</div>
 									<div class="control-group">
 	                        				<label><s:message code="label.password" text="Password" /></label>
 					                        <div class="controls">
-												<input id="password" style="margin-bottom: 15px;" type="password" name="j_password" size="30" />
+												<input id="password" style="margin-bottom: 15px;" type="password" name="password" size="30" />
 											</div>
 									</div>
 									<input id="storeCode" name="storeCode" type="hidden" value="<c:out value="${requestScope.MERCHANT_STORE.code}"/>"/>					 
@@ -146,8 +161,7 @@ response.setDateHeader ("Expires", -1);
 							</div>
 					  </li>
 					</ul>
-					</c:otherwise>
-					</c:choose>
+					</sec:authorize>
 
 
 

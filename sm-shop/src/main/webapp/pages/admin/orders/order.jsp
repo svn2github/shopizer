@@ -193,12 +193,12 @@
 
 	            <label><s:message code="label.order.paymentmode" text="Payment mode"/></label>
 	            <div class="controls">
-		 			 <c:out value="${order.order.paymentMethod}"/><form:hidden  path="order.paymentMethod"/><br/><br/>
+		 			 <c:out value="${order.order.paymentModuleCode}"/><form:hidden  path="order.paymentModuleCode"/><br/><br/>
 	            </div>	
 	            
 	            <label><s:message code="label.order.shippingmethod" text="Shipping method"/></label>
 	            <div class="controls">
-		 			 <c:out value="${order.order.shippingMethod}"/><form:hidden  path="order.shippingMethod"/>
+		 			 <c:out value="${order.order.shippingModuleCode}"/><form:hidden  path="order.shippingModuleCode"/>
 	            </div>	
 	
 				</dl> 
@@ -298,14 +298,14 @@
 					</thead> 
 					
  				    <tbody> 
-						<c:forEach items="${order.order.orderProducts}" var="orderProducts" varStatus="counter">	 
-			            	<c:set var="total" value="${orderProducts.finalPrice * orderProducts.productQuantity }" />
+						<c:forEach items="${order.order.orderProducts}" var="orderProduct" varStatus="counter">	 
+			            	<c:set var="total" value="${orderProduct.oneTimeCharge * orderProduct.productQuantity }" />
 			            	
 							<tr> 
-								<td colspan="2"> <c:out value="${orderProducts.productName}" /></td> 
-								<td ><c:out value="${orderProducts.productQuantity}" /></td> 
-			            		<td><strong><sm:monetary value="${orderProducts.finalPrice}" currency="${currency}"/></strong> </td>
-								<td><strong><sm:monetary value="${total}" currency="${currency}"/></strong></td> 
+								<td colspan="2"> <c:out value="${orderProduct.productName}" /></td> 
+								<td ><c:out value="${orderProduct.productQuantity}" /></td> 
+			            		<td><strong><sm:monetary value="${orderProduct.oneTimeCharge}" currency="${order.order.currency}"/></strong> </td>
+								<td><strong><sm:monetary value="${total}" currency="${order.order.currency}"/></strong></td> 
 							</tr> 
 			
 						</c:forEach> 
@@ -314,7 +314,7 @@
 							<tr class="subt"> 
 								<td colspan="2">&nbsp;</td> 
 								<td colspan="2" ><c:out value="${orderTotal.title}"  /></td> 
-								<td ><strong><sm:monetary value="${total}" currency="${currency}"/></strong></td> 
+								<td ><strong><sm:monetary value="${orderTotal.value}" currency="${order.order.currency}"/></strong></td> 
 							</tr> 
 						</c:forEach> 	 
 					</tbody>    

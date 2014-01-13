@@ -48,6 +48,13 @@
   		<put-attribute name="footer" value="/pages/shop/templates/{1}/sections/footer.jsp" />
   	</definition>
   	
+  	<definition name="review.*" template="/pages/shop/templates/{1}/catalogLayout.jsp">
+  		 <put-attribute name="header" value="/pages/shop/templates/{1}/sections/header.jsp" />
+  		<put-attribute name="navbar" value="/pages/shop/templates/{1}/sections/navbar.jsp" /> 
+  		<put-attribute name="body" value="/pages/shop/common/catalog/review.jsp" />
+  		<put-attribute name="footer" value="/pages/shop/templates/{1}/sections/footer.jsp" />
+  	</definition>
+  	
   	<definition name="search.*" template="/pages/shop/templates/{1}/catalogLayout.jsp">
   		 <put-attribute name="header" value="/pages/shop/templates/{1}/sections/header.jsp" />
   		<put-attribute name="navbar" value="/pages/shop/templates/{1}/sections/navbar.jsp" /> 
@@ -85,6 +92,14 @@
   		<put-attribute name="footer" value="/pages/shop/templates/{1}/sections/footer.jsp" />
   	</definition>
   	
+  	<!-- Rate product -->
+  	<definition name="rating.*" template="/pages/shop/templates/{1}/catalogLayout.jsp">
+  		 <put-attribute name="header" value="/pages/shop/templates/{1}/sections/header.jsp" />
+  		<put-attribute name="navbar" value="/pages/shop/templates/{1}/sections/navbar.jsp" /> 
+  		<put-attribute name="body" value="/pages/shop/common/catalog/rateProduct.jsp" />
+  		<put-attribute name="footer" value="/pages/shop/templates/{1}/sections/footer.jsp" />
+  	</definition>
+  	
   	<!-- Customer registration - account - orders -->
   	<definition name="register.*" template="/pages/shop/common/layout/commonLayout.jsp">
   	  	<put-attribute name="header" value="/pages/shop/templates/{1}/sections/header.jsp" />
@@ -118,6 +133,13 @@
   	  	<put-attribute name="header" value="/pages/shop/templates/{1}/sections/header.jsp" />
   		<put-attribute name="navbar" value="/pages/shop/templates/{1}/sections/navbar.jsp" />
   		<put-attribute name="body" value="/pages/shop/common/customer/orders.jsp" />
+  		<put-attribute name="footer" value="/pages/shop/templates/{1}/sections/footer.jsp" />
+  	</definition>
+  	
+  	<definition name="customerLogon.*" template="/pages/shop/common/layout/commonLayout.jsp">
+  	  	<put-attribute name="header" value="/pages/shop/templates/{1}/sections/header.jsp" />
+  		<put-attribute name="navbar" value="/pages/shop/templates/{1}/sections/navbar.jsp" />
+  		<put-attribute name="body" value="/pages/shop/common/customer/logon.jsp" />
   		<put-attribute name="footer" value="/pages/shop/templates/{1}/sections/footer.jsp" />
   	</definition>
   	

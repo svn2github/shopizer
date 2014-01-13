@@ -24,8 +24,8 @@
 	       //console.dir(json.message);
 	    },
 	    error: function(e) {
-	       //alert("Fail " + e.message);
-	       //console.log(e.message);
+	       alert("Fail " + e.message);
+	       console.log(e.message);
 	    }
 	});
 

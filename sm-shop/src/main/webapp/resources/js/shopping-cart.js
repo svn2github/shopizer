@@ -133,8 +133,8 @@
 			 },
 			 success: function(cart) {
 
-				 var cartCode = buildCartCode(cart.code);
-			     $.cookie('cart',cartCode, { expires: 1024, path:'/' });
+			     saveCart(cart.code);
+			     
 			     if(cart.message!=null) { 
 			    	 //TODO error message
 			    	 console.log('Error while adding to cart ' + cart.message);
@@ -360,6 +360,11 @@ function getCartCode() {
 function buildCartCode(code) {
 	var cartCode = getMerchantStoreCode() + '_' + code;
 	return cartCode;
+}
+
+function saveCart(code) {
+	var cartCode = buildCartCode(code);
+	$.cookie('cart',cartCode, { expires: 1024, path:'/' });
 }
 
 
