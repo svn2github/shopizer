@@ -19,6 +19,7 @@ import com.salesmanager.core.business.customer.model.attribute.QCustomerOption;
 import com.salesmanager.core.business.customer.model.attribute.QCustomerOptionValue;
 import com.salesmanager.core.business.generic.dao.SalesManagerEntityDaoImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.merchant.model.QMerchantStore;
 import com.salesmanager.core.business.reference.country.model.QCountry;
 import com.salesmanager.core.business.reference.zone.model.QZone;
 
@@ -262,6 +263,36 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.leftJoin(qCustomerOption.descriptions).fetch()
 			.leftJoin(qCustomerOptionValue.descriptions).fetch()
 			.where(qCustomer.nick.eq(nick));
+		
+		return query.uniqueResult(qCustomer);
+	}
+	
+	@Override
+	public Customer getByNick(String nick, int storeId){
+		QCustomer qCustomer = QCustomer.customer;
+		QMerchantStore qMerchantStore = QMerchantStore.merchantStore;
+		QCountry qCountry = QCountry.country;
+		QZone qZone = QZone.zone;
+		QCustomerAttribute qCustomerAttribute = QCustomerAttribute.customerAttribute;
+		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
+		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
+		
+
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		
+		query.from(qCustomer)
+			.join(qCustomer.merchantStore, qMerchantStore).fetch()
+			.leftJoin(qCustomer.country,qCountry).fetch()
+			.leftJoin(qCustomer.zone,qZone).fetch()
+			.leftJoin(qCustomer.defaultLanguage).fetch()
+			.leftJoin(qCustomer.groups).fetch()
+			.leftJoin(qCustomer.attributes,qCustomerAttribute).fetch()
+			.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
+			.leftJoin(qCustomerAttribute.customerOptionValue, qCustomerOptionValue).fetch()
+			.leftJoin(qCustomerOption.descriptions).fetch()
+			.leftJoin(qCustomerOptionValue.descriptions).fetch()
+			.where(qCustomer.nick.eq(nick).and(qMerchantStore.id.eq(storeId)));
 		
 		return query.uniqueResult(qCustomer);
 	}

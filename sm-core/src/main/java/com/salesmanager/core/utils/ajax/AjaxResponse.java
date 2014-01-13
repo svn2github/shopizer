@@ -1,6 +1,7 @@
 package com.salesmanager.core.utils.ajax;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +31,16 @@ public class AjaxResponse implements JSONAware {
 	public void addDataEntry(Map<String,String> dataEntry) {
 		this.data.add(dataEntry);
 	}
+	
+	public void addEntry(String key, String value) {
+		Map<String,String> dataMap = data.get(0);
+		if(dataMap==null) {
+			dataMap = new HashMap<String,String>();
+			this.addDataEntry(dataMap);
+		}
+		dataMap.put(key, value);
+	}
+	
 	
 	public void setErrorMessage(Throwable t) {
 		this.setStatusMessage(t.getMessage());

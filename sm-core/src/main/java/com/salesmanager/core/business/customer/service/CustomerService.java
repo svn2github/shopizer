@@ -21,5 +21,7 @@ public interface CustomerService  extends SalesManagerEntityService<Long, Custom
 
 	CustomerList listByStore(MerchantStore store, CustomerCriteria criteria);
 
+	Customer getByNick(String nick, int storeId);
+
 
 }
