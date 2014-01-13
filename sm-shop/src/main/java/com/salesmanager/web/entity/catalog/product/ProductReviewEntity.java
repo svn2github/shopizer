@@ -2,6 +2,8 @@ package com.salesmanager.web.entity.catalog.product;
 
 import java.io.Serializable;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.salesmanager.web.entity.ShopEntity;
 
 public class ProductReviewEntity extends ShopEntity implements Serializable {
@@ -10,6 +12,7 @@ public class ProductReviewEntity extends ShopEntity implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	@NotEmpty
 	private String description;
 	private Long productId;
 	private String date;

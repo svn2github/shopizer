@@ -20,8 +20,35 @@ import com.salesmanager.web.shop.controller.ControllerConstants;
  *
  */
 @Controller
+@RequestMapping("/shop/customer")
 public class CustomerAccountController extends AbstractController {
 
+	
+	/**
+	 * Dedicated customer logon page
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value="/customLogon.html", method=RequestMethod.GET)
+	public String displayLogon(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+
+	    final MerchantStore store = super.<MerchantStore>getSessionValue(Constants.MERCHANT_STORE);
+        final Language language=super.<Language>getSessionValue(  Constants.LANGUAGE );
+        
+
+		//dispatch to dedicated customer logon
+		
+		/** template **/
+		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.customerLogon).append(".").append(store.getStoreTemplate());
+
+		return template.toString();
+		
+	}
+	
 	
 	@RequestMapping(value="/customer/account.html", method=RequestMethod.GET)
 	public String displayCustomerAccount(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -41,7 +68,7 @@ public class CustomerAccountController extends AbstractController {
 	}
 	
 	
-	@RequestMapping(value="/customer/billing.html", method=RequestMethod.GET)
+	@RequestMapping(value="/billing.html", method=RequestMethod.GET)
 	public String displayCustomerBillingAddress(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 

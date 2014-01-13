@@ -1,4 +1,4 @@
-package com.salesmanager.web.admin.security;
+package com.salesmanager.web.services.security;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,6 +23,7 @@ import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.business.user.model.Permission;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
+import com.salesmanager.web.admin.security.SecurityDataAccessException;
 
 
 /**
@@ -79,9 +80,7 @@ public class CustomerServicesImpl implements UserDetailsService{
 	    		authorities.add(auth);
 	    	}
 			
-	
-			GrantedAuthority role = new GrantedAuthorityImpl("AUTH_CUSTOMER");
-			authorities.add(role);
+
 			
 
 		

@@ -1,7 +1,6 @@
 package com.salesmanager.web.tags;
 
 import java.math.BigDecimal;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 

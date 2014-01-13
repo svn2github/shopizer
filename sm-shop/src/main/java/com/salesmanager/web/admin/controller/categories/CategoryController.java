@@ -438,12 +438,12 @@ public class CategoryController {
 		Category category = categoryService.getByCode(store, code);
 		
 		
-		if(!StringUtils.isBlank(id)) {
+		if(category!=null && !StringUtils.isBlank(id)) {
 			try {
 				Long lid = Long.parseLong(id);
 				
 				if(category.getCode().equals(code) && category.getId().longValue()==lid) {
-					resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+					resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
 					return resp.toJSONString();
 				}
 			} catch (Exception e) {

@@ -22,12 +22,13 @@ import com.salesmanager.web.shop.controller.ControllerConstants;
  *
  */
 @Controller
+@RequestMapping("/shop/customer")
 public class CustomerDashboardController extends AbstractController {
 	
 	@Autowired
     private AuthenticationManager customerAuthenticationManager;
 	
-	@RequestMapping(value="/customer/dashboard.html", method=RequestMethod.GET)
+	@RequestMapping(value="/dashboard.html", method=RequestMethod.GET)
 	public String displayCustomerDashboard(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 

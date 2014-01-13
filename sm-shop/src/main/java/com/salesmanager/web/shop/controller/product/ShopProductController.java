@@ -1,6 +1,5 @@
 package com.salesmanager.web.shop.controller.product;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jfree.util.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -96,6 +96,8 @@ public class ShopProductController {
 	
 	@Autowired
 	private CategoryService categoryService;
+	
+	private static final Logger LOG = LoggerFactory.getLogger(ShopProductController.class);
 	
 
 	/**
@@ -184,7 +186,7 @@ public class ShopProductController {
 					}
 				}
 			} catch(Exception e) {
-				Log.error("Cannot get category " + reference,e);
+				LOG.error("Cannot get category " + reference,e);
 			}
 			
 		}

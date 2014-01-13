@@ -37,8 +37,6 @@ public interface CustomerFacade
     public CustomerEntity getCustomerDataByUserName(final String userName,final MerchantStore store, final Language language) throws Exception;
 
 
-    public Customer getCustomerByUserName(final String userName) throws Exception;
-
     /**
      * <p>Method responsible for performing customer auto-login, Method will perform following operations
      * <li> Fetch customer based on userName and Store.</li>
@@ -52,4 +50,6 @@ public interface CustomerFacade
      * @throws Exception
      */
     public ShoppingCartData customerAutoLogin(final String userName,final String sessionShoppingCartId,final MerchantStore store,final Language language) throws Exception;
+    
+    public Customer getCustomerByUserName(final String userName, final MerchantStore store) throws Exception;
 }

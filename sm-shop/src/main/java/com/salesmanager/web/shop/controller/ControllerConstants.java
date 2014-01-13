@@ -15,41 +15,43 @@ public interface ControllerConstants
 
     interface Tiles{
         interface ShoppingCart{
-            final String shoppingCart="maincart";
+            final static String shoppingCart="maincart";
         }
         
         interface Category{
-            final String category="category";
+            final static String category="category";
         }
         
         interface Product{
-            final String product="product";
+            final static String product="product";
         }
         
         interface Customer{
-            final String customer="customer";
-            final String register="register";
-            final String registerConfirmation="registerConfirmation";
+            final static String customer="customer";
+            final static String customerLogon="customerLogon";
+            final static String review="review";
+            final static String register="register";
+            final static String registerConfirmation="registerConfirmation";
         }
         
         interface Content{
-            final String content="content";
+            final static String content="content";
         }
         
         interface Pages{
-            final String notFound="404";
+            final static String notFound="404";
         }
         
         interface Merchant{
-            final String contactUs="contactus";
+            final static String contactUs="contactus";
         }
         
         interface Checkout{
-            final String checkout="checkout";
+            final static String checkout="checkout";
         }
         
         interface Search{
-            final String search="search";
+            final static String search="search";
         }
         
 

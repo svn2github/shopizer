@@ -1,8 +1,15 @@
 package com.salesmanager.web.shop.controller.customer;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,16 +17,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.customer.model.Customer;
-import com.salesmanager.core.business.customer.service.CustomerService;
+import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.customer.SecuredCustomer;
+import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
+import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
 
 /**
  * Custom Spring Security authentication
@@ -27,45 +38,79 @@ import com.salesmanager.web.entity.customer.SecuredCustomer;
  *
  */
 @Controller
+@RequestMapping("/shop/customer")
 public class CustomerLoginController {
 	
 	@Autowired
     private AuthenticationManager customerAuthenticationManager;
 	
-	@Autowired
-    private CustomerService customerService;
+
+    @Autowired
+    private  CustomerFacade customerFacade;
+
+    @Autowired
+    private ShoppingCartService shoppingCartService;
 	
-	@RequestMapping(value="/customer/logon.html", method=RequestMethod.POST)
-	public @ResponseBody String displayLogin(@RequestBody SecuredCustomer customer, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private static final Logger LOG = LoggerFactory.getLogger(CustomerLoginController.class);
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value="/logon.html", method=RequestMethod.POST)
+	public @ResponseBody String displayLogin(@ModelAttribute SecuredCustomer securedCustomer, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		AjaxResponse resp = new AjaxResponse();
-		
-        Authentication authenticationToken =
-                new UsernamePasswordAuthenticationToken(customer.getUserName(), customer.getPassword());
+        JSONObject jsonObject=new JSONObject();
+        
+
         try {
+
+        	Authentication authenticationToken =
+                    new UsernamePasswordAuthenticationToken(securedCustomer.getUserName(), securedCustomer.getPassword());
+        	
+        	LOG.debug("Authenticating user " + securedCustomer.getUserName());
+        	
+        	//user goes to shop filter first so store and language are set
+        	MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+        	Language language = (Language)request.getAttribute("LANGUAGE");
+        	
             Authentication authentication = customerAuthenticationManager.authenticate(authenticationToken);
             
             //check if username is from the appropriate store
-            Customer customerModel = customerService.getByNick(customer.getUserName());
+            Customer customerModel = customerFacade.getCustomerByUserName(securedCustomer.getUserName(), store);
             if(customerModel==null) {
-            	resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-            	return resp.toJSONString();
+            	jsonObject.put( Constants.RESPONSE_STATUS, AjaxResponse.RESPONSE_STATUS_FAIURE);
+            	return jsonObject.toJSONString();
             }
-            if(!customerModel.getMerchantStore().getCode().equals(customer.getStoreCode())){
-            	resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-            	return resp.toJSONString();
-            }
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            //set customer in the http session
             request.getSession().setAttribute(Constants.CUSTOMER, customerModel);
-            resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
-        } catch (AuthenticationException ex) {//TODO is it an application problem or username and password
-        	resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+            jsonObject.put( Constants.RESPONSE_STATUS, AjaxResponse.RESPONSE_STATUS_SUCCESS);
+
+            
+            
+            LOG.info( "Fetching and merging Shopping Cart data" );
+            final String sessionShoppingCartCode= (String)request.getSession().getAttribute( Constants.SHOPPING_CART );
+            if(!StringUtils.isBlank(sessionShoppingCartCode)) {
+	            ShoppingCartData shoppingCartData= customerFacade.customerAutoLogin( request.getRemoteUser(), sessionShoppingCartCode, store, language );
+	
+	
+	            if(shoppingCartData !=null){
+	                jsonObject.put( Constants.SHOPPING_CART, shoppingCartData.getCode());
+	                request.getSession().setAttribute(Constants.SHOPPING_CART, shoppingCartData.getCode());
+	            }
+            }
+
+            
+            
+            
+            
+        } catch (AuthenticationException ex) {
+        	jsonObject.put( Constants.RESPONSE_STATUS, AjaxResponse.RESPONSE_STATUS_FAIURE);
         } catch(Exception e) {
-        	resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+        	jsonObject.put( Constants.RESPONSE_STATUS, AjaxResponse.RESPONSE_STATUS_FAIURE);
         }
 		
         
-        return resp.toJSONString();
+        return jsonObject.toJSONString();
 		
 		
 	}

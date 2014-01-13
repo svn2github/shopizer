@@ -4,7 +4,8 @@
 package com.salesmanager.web.shop.controller.customer.facade;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.salesmanager.core.business.catalog.product.service.PricingService;
@@ -34,7 +35,7 @@ import com.salesmanager.web.populator.shoppingCart.ShoppingCartDataPopulator;
 public class CustomerFacadeImpl implements CustomerFacade
 {
 
-    protected final Logger LOG = Logger.getLogger( getClass() );
+	private static final Logger LOG = LoggerFactory.getLogger(CustomerFacadeImpl.class);
 
      @Autowired
      CustomerService customerService;
@@ -87,15 +88,6 @@ public class CustomerFacadeImpl implements CustomerFacade
     }
 
 
-    @Override
-    public Customer getCustomerByUserName( final String userName )
-        throws Exception
-    {
-
-        return customerService.getByNick( userName );
-    }
-
-
     /**
      * <p>Method responsible for performing customer auto-login, Method will perform following operations
      * <li> Fetch customer based on userName and Store.</li>
@@ -117,7 +109,7 @@ public class CustomerFacadeImpl implements CustomerFacade
     {
 
         LOG.info( "Starting customer autologin process" );
-        Customer customerModel=getCustomerByUserName(userName);
+        Customer customerModel=getCustomerByUserName(userName, store);
         if(customerModel != null){
             ShoppingCart cartModel =shoppingCartService.getByCustomer( customerModel );
             if(StringUtils.isNotBlank( sessionShoppingCartId )){
@@ -167,4 +159,11 @@ public class CustomerFacadeImpl implements CustomerFacade
         }
         return null;
     }
+
+
+ 	@Override
+ 	public Customer getCustomerByUserName(String userName, MerchantStore store)
+		throws Exception {
+ 		return customerService.getByNick( userName, store.getId() );
+ 	}
 }

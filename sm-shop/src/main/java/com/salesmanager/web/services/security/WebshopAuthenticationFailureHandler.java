@@ -6,7 +6,7 @@ package com.salesmanager.web.services.security;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
 /**
- * @author Admin
+ * @author Umesh Awasthi
  *
  */
 
