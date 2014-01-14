@@ -631,10 +631,10 @@ public class InitStoreData implements InitData {
 			
 		    Delivery delivery = new Delivery();
 		    delivery.setAddress("358 Du Languadoc");
-		    delivery.setCity( "Boucherville DiCaprio" );
+		    delivery.setCity( "Boucherville" );
 		    delivery.setCountry(canada);
 //		    delivery.setCountryCode(canada.getIsoCode());
-		    delivery.setName("Leonardo" );
+		    delivery.setName("Leonardo DiCaprio" );
 		    delivery.setPostalCode("J4B-8J9" );
 		    delivery.setZone(zone);	    
 		    

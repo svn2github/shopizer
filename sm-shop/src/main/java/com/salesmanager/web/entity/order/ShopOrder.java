@@ -22,7 +22,7 @@ public class ShopOrder extends PersistableOrder implements Serializable {
 	private Customer shoppingCartCustomer;//overrides parent API PersistableCustomer
 	
 	private OrderTotalSummary orderTotalSummary;//The order total displayed to the end user. That object will be used when committing the order
-	
+	private boolean shipToBillingAdress = true;
 	
 	public void setShoppingCartItems(List<ShoppingCartItem> shoppingCartItems) {
 		this.shoppingCartItems = shoppingCartItems;
@@ -42,5 +42,14 @@ public class ShopOrder extends PersistableOrder implements Serializable {
 	public OrderTotalSummary getOrderTotalSummary() {
 		return orderTotalSummary;
 	}
+	
+	public boolean isShipToBillingAdress() {
+		return shipToBillingAdress;
+	}
+	public void setShipToBillingAdress(boolean shipToBillingAdress) {
+		this.shipToBillingAdress = shipToBillingAdress;
+	}
+
+
 
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,11 @@ import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
+import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.LocaleUtils;
 
 
@@ -41,19 +44,38 @@ public class ReferenceController {
 	
 	@Autowired
 	private CountryService countryService;
+	
+	@Autowired
+	private LanguageService languageService;
 
 	
 	
 	@SuppressWarnings("unchecked")
-	@RequestMapping(value="/admin/reference/provinces.html", method=RequestMethod.POST, produces="application/json")
+	@RequestMapping(value={"/admin/reference/provinces.html","/shop/reference/provinces.html"}, method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String getProvinces(HttpServletRequest request, HttpServletResponse response) {
 		
 		String countryCode = request.getParameter("countryCode");
+		String lang = request.getParameter("lang");
 		LOGGER.debug("Province Country Code " + countryCode);
 		AjaxResponse resp = new AjaxResponse();
 		
 		try {
-			Language language = (Language)request.getAttribute("LANGUAGE");
+			
+			Language language = null;
+			
+			if(!StringUtils.isBlank(lang)) {
+				language = languageService.getByCode(lang);
+			}
+			
+			if(language==null) {
+				language = (Language)request.getAttribute("LANGUAGE");
+			}
+			
+			if(language==null) {
+				language = languageService.getByCode(Constants.DEFAULT_LANGUAGE);
+			}
+			
+			
 			Map<String,Country> countriesMap = countryService.getCountriesMap(language);
 			Country country = countriesMap.get(countryCode);
 			List<Zone> zones = zoneService.getZones(country, language);

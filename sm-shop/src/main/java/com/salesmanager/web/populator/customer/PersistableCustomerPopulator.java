@@ -27,6 +27,10 @@ public class PersistableCustomerPopulator extends
 				address.setName(source.getBilling().getName());
 				address.setPostalCode(source.getBilling().getPostalCode());
 				address.setPhone(source.getBilling().getTelephone());
+				if(source.getBilling().getTelephone()==null) {
+					address.setPhone(source.getTelephone());
+				}
+				address.setAddress(source.getStreetAddress());
 				if(source.getBilling().getCountry()!=null) {
 					address.setCountry(source.getBilling().getCountry().getIsoCode());
 				}

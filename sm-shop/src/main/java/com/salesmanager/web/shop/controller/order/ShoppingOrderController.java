@@ -114,22 +114,29 @@ public class ShoppingOrderController {
 			if(cart.getCustomerId()!=customer.getId().longValue()) {
 				return "redirect:/shop/shoppingCart.html";
 			}
+		} else {
+			customer = orderFacade.initEmptyCustomer(store);
 		}
 
 		Set<ShoppingCartItem> items = cart.getLineItems();
 		if(CollectionUtils.isEmpty(items)) {
 			return "redirect:/shop/shoppingCart.html";
 		}
-		
-		ShopOrder order = orderFacade.initializeOrder(store, customer, cart, language);
 
 		
+		ShopOrder order = (ShopOrder)request.getSession().getAttribute("SHOP_ORDER");
+		if(order==null) {
+			order = orderFacade.initializeOrder(store, customer, cart, language);
+		} else {
+			orderFacade.refreshOrder(order, store, customer, cart, language);
+		}
+		request.getSession().setAttribute("SHOP_ORDER", order);
 
 		//create shipping products
 		List<ShippingProduct> shippingProducts = shoppingCartService.createShippingProduct(cart);
 
 		
-		if(shippingProducts!=null) {//get shipping methods
+		if(!CollectionUtils.isEmpty(shippingProducts)) {//get shipping methods
 			ShippingQuote quote = shippingService.getShippingQuote(store, customer, shippingProducts, language);
 			model.addAttribute("shippingQuote", quote);
 		}
@@ -153,12 +160,9 @@ public class ShoppingOrderController {
 		//get countries
 		List<Country> countries = countryService.getCountries(language);
 		
-		//get list of zones
-		List<Zone> zones = zoneService.list();
-		
-		model.addAttribute("zones", zones);
+
 		model.addAttribute("countries", countries);
-		model.addAttribute("shopOrder",order);
+		model.addAttribute("order",order);
 		model.addAttribute("paymentMethods", paymentMethods);
 		//may have shippingquote
 		

@@ -12,6 +12,7 @@ import com.salesmanager.web.entity.order.ShopOrder;
 public interface OrderFacade {
 	
 	ShopOrder initializeOrder(MerchantStore store, Customer customer, ShoppingCart shoppingCart, Language language) throws Exception;
+	void refreshOrder(ShopOrder order, MerchantStore store, Customer customer, ShoppingCart shoppingCart, Language language) throws Exception;
 	/** used in website **/
 	OrderTotalSummary calculateOrderTotal(MerchantStore store, ShopOrder order, Language language) throws Exception;
 	/** used in the API **/
@@ -19,4 +20,7 @@ public interface OrderFacade {
 
 	/** saves a valid order **/
 	void saveOrder(ShopOrder order, MerchantStore store, Language language) throws Exception;
+	
+	/** creates a working copy of customer when the user is anonymous **/
+	Customer initEmptyCustomer(MerchantStore store);
 }

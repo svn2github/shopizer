@@ -78,20 +78,7 @@ public class OrderFacadeImpl implements OrderFacade {
 		order.setOrderStatus(orderStatus);
 		
 		if(customer==null) {
-
-				customer = new Customer();
-				Billing billing = new Billing();
-				billing.setCountry(store.getCountry());
-				billing.setZone(store.getZone());
-				billing.setState(store.getStorestateprovince());
-				customer.setBilling(billing);
-				
-				Delivery delivery = new Delivery();
-				delivery.setCountry(store.getCountry());
-				delivery.setZone(store.getZone());
-				delivery.setState(store.getStorestateprovince());
-				customer.setDelivery(delivery);
-
+				customer = this.initEmptyCustomer(store);
 		}
 		
 		PersistableCustomer persistableCustomer = persistableCustomer(customer, store, language);
@@ -293,6 +280,49 @@ public class OrderFacadeImpl implements OrderFacade {
 		order.setCustomerTelephone(customer.getTelephone());
 			
 		
+	}
+
+
+
+	@Override
+	public Customer initEmptyCustomer(MerchantStore store) {
+		
+		Customer customer = new Customer();
+		Billing billing = new Billing();
+		billing.setCountry(store.getCountry());
+		billing.setZone(store.getZone());
+		billing.setState(store.getStorestateprovince());
+		customer.setBilling(billing);
+		
+		Delivery delivery = new Delivery();
+		delivery.setCountry(store.getCountry());
+		delivery.setZone(store.getZone());
+		delivery.setState(store.getStorestateprovince());
+		customer.setDelivery(delivery);
+		
+		return customer;
+	}
+
+
+
+	@Override
+	public void refreshOrder(ShopOrder order, MerchantStore store,
+			Customer customer, ShoppingCart shoppingCart, Language language)
+			throws Exception {
+		if(customer==null && order.getCustomer()!=null) {
+			order.getCustomer().setId(0L);//reset customer id
+		}
+		
+		if(customer!=null) {
+			PersistableCustomer persistableCustomer = persistableCustomer(customer, store, language);
+			order.setCustomer(persistableCustomer);
+			order.setShoppingCartCustomer(customer);
+		}
+		
+		List<ShoppingCartItem> items = new ArrayList<ShoppingCartItem>(shoppingCart.getLineItems());
+		order.setShoppingCartItems(items);
+		
+		return;
 	}
 
 }
