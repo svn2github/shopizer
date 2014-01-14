@@ -1,8 +1,5 @@
 package com.salesmanager.web.shop.controller.customer;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
@@ -53,11 +51,11 @@ public class CustomerLoginController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(CustomerLoginController.class);
 	
-	@SuppressWarnings("unchecked")
+
 	@RequestMapping(value="/logon.html", method=RequestMethod.POST)
 	public @ResponseBody String displayLogin(@ModelAttribute SecuredCustomer securedCustomer, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-        JSONObject jsonObject=new JSONObject();
+        AjaxResponse jsonObject=new AjaxResponse();
         
 
         try {
@@ -76,14 +74,15 @@ public class CustomerLoginController {
             //check if username is from the appropriate store
             Customer customerModel = customerFacade.getCustomerByUserName(securedCustomer.getUserName(), store);
             if(customerModel==null) {
-            	jsonObject.put( Constants.RESPONSE_STATUS, AjaxResponse.RESPONSE_STATUS_FAIURE);
+            	jsonObject.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
             	return jsonObject.toJSONString();
             }
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             //set customer in the http session
             request.getSession().setAttribute(Constants.CUSTOMER, customerModel);
-            jsonObject.put( Constants.RESPONSE_STATUS, AjaxResponse.RESPONSE_STATUS_SUCCESS);
+            jsonObject.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+
 
             
             
@@ -94,9 +93,17 @@ public class CustomerLoginController {
 	
 	
 	            if(shoppingCartData !=null){
-	                jsonObject.put( Constants.SHOPPING_CART, shoppingCartData.getCode());
+	                jsonObject.addEntry(Constants.SHOPPING_CART, shoppingCartData.getCode());
 	                request.getSession().setAttribute(Constants.SHOPPING_CART, shoppingCartData.getCode());
 	            }
+            } else {
+
+	            ShoppingCart cartModel = shoppingCartService.getByCustomer(customerModel);
+	            if(cartModel!=null) {
+	                jsonObject.addEntry( Constants.SHOPPING_CART, cartModel.getShoppingCartCode());
+	                request.getSession().setAttribute(Constants.SHOPPING_CART, cartModel.getShoppingCartCode());
+	            }
+            
             }
 
             
@@ -104,9 +111,9 @@ public class CustomerLoginController {
             
             
         } catch (AuthenticationException ex) {
-        	jsonObject.put( Constants.RESPONSE_STATUS, AjaxResponse.RESPONSE_STATUS_FAIURE);
+        	jsonObject.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
         } catch(Exception e) {
-        	jsonObject.put( Constants.RESPONSE_STATUS, AjaxResponse.RESPONSE_STATUS_FAIURE);
+        	jsonObject.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
         }
 		
         

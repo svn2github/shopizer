@@ -88,7 +88,7 @@ public class ShoppingCartFacadeImpl
         if ( !StringUtils.isBlank( item.getCode() ) )
         {
             // get it from the db
-            cartModel = shoppingCartService.getByCode( item.getCode(), store );
+            cartModel = getShoppingCartModel( item.getCode(), store );
             if ( cartModel == null )
             {
                 cartModel = createCartModel( shoppingCartData.getCode(), store,customer );
@@ -471,5 +471,17 @@ public class ShoppingCartFacadeImpl
 			LOG.error("Cannot retrieve cart code " + code,e);
 		}
 		return null;
+	}
+
+	@Override
+	public ShoppingCart getShoppingCartModel(String shoppingCartCode,
+			MerchantStore store) throws Exception {
+		return shoppingCartService.getByCode( shoppingCartCode, store );
+	}
+
+	@Override
+	public ShoppingCart getShoppingCartModel(Customer customer,
+			MerchantStore store) throws Exception {
+		return shoppingCartService.getByCustomer(customer);
 	}
 }

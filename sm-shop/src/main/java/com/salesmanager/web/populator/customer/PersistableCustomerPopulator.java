@@ -56,13 +56,17 @@ public class PersistableCustomerPopulator extends
 			
 			target.setId(source.getId());
 			target.setEmailAddress(source.getEmailAddress());
-			target.setGender(source.getGender().name());
-			target.setLanguage(source.getDefaultLanguage().getCode());
+			if(source.getGender()!=null) {
+				target.setGender(source.getGender().name());
+			}
+			if(source.getDefaultLanguage()!=null) {
+				target.setLanguage(source.getDefaultLanguage().getCode());
+			}
 			target.setUserName(source.getNick());
 			target.setFirstName(source.getFirstname());
 			target.setLastName(source.getLastname());
 			target.setPhone(source.getTelephone());
-			target.setStoreCode(source.getMerchantStore().getCode());
+			target.setStoreCode(store.getCode());
 			
 			
 			

@@ -39,6 +39,7 @@ import com.salesmanager.web.entity.order.ShopOrder;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.order.facade.OrderFacade;
+import com.salesmanager.web.shop.controller.shoppingCart.facade.ShoppingCartFacade;
 
 @Controller
 @RequestMapping(Constants.SHOP_URI)
@@ -48,7 +49,10 @@ public class ShoppingOrderController {
 	.getLogger(ShoppingOrderController.class);
 	
 	@Autowired
-	private ShoppingCartService shoppingCartService;
+	private ShoppingCartFacade shoppingCartFacade;
+	
+    @Autowired
+    private ShoppingCartService shoppingCartService;
 	
 	@Autowired
 	private ShippingService shippingService;
@@ -88,25 +92,18 @@ public class ShoppingOrderController {
 		
 		//Get the cart from the DB
 		
-		String shoppingCartCode = null;
-		
-		ShoppingCartData shoppingCart = (ShoppingCartData)request.getSession().getAttribute(Constants.SHOPPING_CART);
+		String shoppingCartCode  = (String)request.getSession().getAttribute(Constants.SHOPPING_CART);
 		com.salesmanager.core.business.shoppingcart.model.ShoppingCart cart = null;
-		if(shoppingCart==null) {//cookie
-			if(!StringUtils.isBlank(cookie)) {
-				shoppingCartCode = new String(cookie.getBytes());//TODO validate
-			}
-		} else {
-			shoppingCartCode = shoppingCart.getCode();
+
+		if(!StringUtils.isBlank(shoppingCartCode)) {
+			cart = shoppingCartFacade.getShoppingCartModel(shoppingCartCode, store);
 		}
 
-		if(customer!=null) {
-			cart=shoppingCartService.getByCustomer(customer);
+		if(cart==null && customer!=null) {
+			cart=shoppingCartFacade.getShoppingCartModel(customer, store);
 		}
 		
-		if(cart==null && shoppingCartCode!=null) {
-			cart = shoppingCartService.getByCode(shoppingCartCode, store);
-		}
+
 		
 		if(shoppingCartCode==null && cart==null) {//error
 			return "redirect:/shop/shoppingCart.html";
@@ -115,7 +112,7 @@ public class ShoppingOrderController {
 
 		if(customer!=null) {
 			if(cart.getCustomerId()!=customer.getId().longValue()) {
-				//TODO error ?
+				return "redirect:/shop/shoppingCart.html";
 			}
 		}
 

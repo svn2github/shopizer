@@ -40,6 +40,8 @@ public interface ShoppingCartFacade {
     public void deleteShoppingCart(final Long id, final MerchantStore store) throws Exception;
 	ShoppingCartData updateCartItems(List<ShoppingCartItem> shoppingCartItems,
 			MerchantStore store, Language language) throws Exception;
+	public ShoppingCart getShoppingCartModel(final String shoppingCartCode, MerchantStore store) throws Exception;
+	public ShoppingCart getShoppingCartModel(final Customer customer, MerchantStore store) throws Exception;
 
 
 }
