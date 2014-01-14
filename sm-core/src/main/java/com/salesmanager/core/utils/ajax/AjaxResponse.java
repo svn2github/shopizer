@@ -18,6 +18,7 @@ public class AjaxResponse implements JSONAware {
 	
 	private int status;
 	private List<Map<String,String>> data = new ArrayList<Map<String,String>>();
+	private Map<String,String> dataMap = new HashMap<String,String>();
 	public int getStatus() {
 		return status;
 	}
@@ -33,11 +34,6 @@ public class AjaxResponse implements JSONAware {
 	}
 	
 	public void addEntry(String key, String value) {
-		Map<String,String> dataMap = data.get(0);
-		if(dataMap==null) {
-			dataMap = new HashMap<String,String>();
-			this.addDataEntry(dataMap);
-		}
 		dataMap.put(key, value);
 	}
 	
@@ -110,12 +106,42 @@ public class AjaxResponse implements JSONAware {
 			}
 			returnString.append("]");
 		}
+		
+		if(this.getDataMap().size()>0) {
+			StringBuilder dataEntries = null;
+			int count = 0;
+			for(String key : this.getDataMap().keySet()) {
+				if(dataEntries == null) {
+					dataEntries = new StringBuilder();
+				}
+				
+				dataEntries.append("\"").append(key).append("\"");
+				dataEntries.append(":");
+				dataEntries.append("\"").append(this.getDataMap().get(key)).append("\"");
+
+				if(count<this.data.size()-1) {
+					dataEntries.append(",");
+				}
+				count ++;
+			}
+
+			if(dataEntries!=null) {
+				returnString.append(",").append(dataEntries.toString());
+			}
+		}
+		
 		returnString.append("}}");
 
 		
 		return returnString.toString();
 
 		
+	}
+	public Map<String,String> getDataMap() {
+		return dataMap;
+	}
+	public void setDataMap(Map<String,String> dataMap) {
+		this.dataMap = dataMap;
 	}
 
 }
