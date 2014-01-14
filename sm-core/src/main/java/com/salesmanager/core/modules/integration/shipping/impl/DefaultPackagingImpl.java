@@ -28,6 +28,12 @@ public class DefaultPackagingImpl implements Packaging {
 	@Autowired
 	private MerchantLogService merchantLogService;
 	
+	/** default dimensions **/
+	private final static Double defaultWeight = 1D;
+	private final static Double defaultHeight = 4D;
+	private final static Double defaultLength = 4D;
+	private final static Double defaultWidth = 4D;
+	
 	@Override
 	public List<PackageDetails> getBoxPackagesDetails(
 			List<ShippingProduct> products, MerchantStore store)
@@ -82,9 +88,26 @@ public class DefaultPackagingImpl implements Packaging {
 
 			// set attributes values
 			BigDecimal w = product.getProductWeight();
+			BigDecimal h = product.getProductHeight();
+			BigDecimal l = product.getProductLength();
+			BigDecimal wd = product.getProductWidth();
+			if(w==null) {
+				w = new BigDecimal(defaultWeight);
+			}
+			if(h==null) {
+				h = new BigDecimal(defaultHeight);
+			}
+			if(l==null) {
+				l = new BigDecimal(defaultLength);
+			}
+			if(wd==null) {
+				wd = new BigDecimal(defaultWidth);
+			}
 			if (attrs != null && attrs.size() > 0) {
 				for(ProductAttribute attribute : attrs) {
-					w = w.add(attribute.getProductAttributeWeight());
+					if(attribute.getProductAttributeWeight()!=null) {
+						w = w.add(attribute.getProductAttributeWeight());
+					}
 				}
 			}
 			
@@ -94,9 +117,9 @@ public class DefaultPackagingImpl implements Packaging {
 
 				for (int i = 1; i <= qty; i++) {
 					Product temp = new Product();
-					temp.setProductHeight(product.getProductHeight());
-					temp.setProductLength(product.getProductLength());
-					temp.setProductWidth(product.getProductWidth());
+					temp.setProductHeight(h);
+					temp.setProductLength(l);
+					temp.setProductWidth(wd);
 					temp.setProductWeight(w);
 					temp.setAttributes(product.getAttributes());
 					temp.setDescriptions(product.getDescriptions());
@@ -104,9 +127,9 @@ public class DefaultPackagingImpl implements Packaging {
 				}
 			} else {
 				Product temp = new Product();
-				temp.setProductHeight(product.getProductHeight());
-				temp.setProductLength(product.getProductLength());
-				temp.setProductWidth(product.getProductWidth());
+				temp.setProductHeight(h);
+				temp.setProductLength(l);
+				temp.setProductWidth(wd);
 				temp.setProductWeight(w);
 				temp.setAttributes(product.getAttributes());
 				temp.setDescriptions(product.getDescriptions());
@@ -300,13 +323,30 @@ public class DefaultPackagingImpl implements Packaging {
 				continue;
 			}
 
-			BigDecimal weight = product.getProductWeight();
+			//BigDecimal weight = product.getProductWeight();
 			Set<ProductAttribute> attributes = product.getAttributes();
 			// set attributes values
 			BigDecimal w = product.getProductWeight();
+			BigDecimal h = product.getProductHeight();
+			BigDecimal l = product.getProductLength();
+			BigDecimal wd = product.getProductWidth();
+			if(w==null) {
+				w = new BigDecimal(defaultWeight);
+			}
+			if(h==null) {
+				h = new BigDecimal(defaultHeight);
+			}
+			if(l==null) {
+				l = new BigDecimal(defaultLength);
+			}
+			if(wd==null) {
+				wd = new BigDecimal(defaultWidth);
+			}
 			if (attributes != null && attributes.size() > 0) {
 				for(ProductAttribute attribute : attributes) {
-					w = w.add(attribute.getProductAttributeWeight());
+					if(attribute.getAttributeAdditionalWeight()!=null) {
+						w = w.add(attribute.getProductAttributeWeight());
+					}
 				}
 			}
 			
@@ -316,12 +356,12 @@ public class DefaultPackagingImpl implements Packaging {
 				PackageDetails detail = new PackageDetails();
 
 	
-				detail.setShippingHeight(product.getProductHeight()
+				detail.setShippingHeight(h
 						.doubleValue());
-				detail.setShippingLength(product.getProductLength()
+				detail.setShippingLength(l
 						.doubleValue());
-				detail.setShippingWeight(weight.doubleValue());
-				detail.setShippingWidth(product.getProductWidth().doubleValue());
+				detail.setShippingWeight(w.doubleValue());
+				detail.setShippingWidth(wd.doubleValue());
 				detail.setShippingQuantity(shippingProduct.getQuantity());
 				String description = "item";
 				if(product.getDescriptions().size()>0) {
@@ -333,12 +373,12 @@ public class DefaultPackagingImpl implements Packaging {
 			} else if (shippingProduct.getQuantity() > 1) {
 				for (int i = 0; i < shippingProduct.getQuantity(); i++) {
 					PackageDetails detail = new PackageDetails();
-					detail.setShippingHeight(product.getProductHeight()
+					detail.setShippingHeight(h
 							.doubleValue());
-					detail.setShippingLength(product.getProductLength()
+					detail.setShippingLength(l
 							.doubleValue());
-					detail.setShippingWeight(weight.doubleValue());
-					detail.setShippingWidth(product.getProductWidth()
+					detail.setShippingWeight(w.doubleValue());
+					detail.setShippingWidth(wd
 							.doubleValue());
 					detail.setShippingQuantity(shippingProduct.getQuantity());
 					String description = "item";
