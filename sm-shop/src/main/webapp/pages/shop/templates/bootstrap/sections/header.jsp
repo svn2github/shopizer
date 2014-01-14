@@ -14,68 +14,7 @@ response.setDateHeader ("Expires", -1);
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 
-<script>
-    $(function() {
-    	
-    	$("#open-cart").click(function(e) {
-    		displayMiniCart();
-    	});
-    	
-    	$("#signinDrop").click(function(e){
-    		$("#loginError").hide();
-    		e.preventDefault();
-    	});
 
-        $("#login").submit(function(e) {
-        	e.preventDefault();//do not submit form
-        	
-        	$("#loginError").hide();
-        	
-        	var userName = $(this).find('#userName').val();
-        	var password = $(this).find('#password').val();
-        	var storeCode = $(this).find('#storeCode').val();
-        	
-        	if(userName=='' || password=='') {
-        		 $("#loginError").html("<s:message code="message.username.password" text="Login Failed. Username or Password is incorrect."/>");
-        		 $("#loginError").show();
-        		 return;
-        	}
-        	
-        	$('#signinPane').showLoading();
-        	var data = $(this).serialize();
-
-           
-            $.ajax({
-                 type: "POST",
-                 //my version
-                 url: "<c:url value="/shop/customer/logon.html"/>",
-                 data: "userName=" + userName + "&password=" + password + "&storeCode=" + storeCode,
-                 cache:false,
-              	 dataType:'json',
-                 'success': function(response) {
-                    $('#signinPane').hideLoading();
-					console.log(response);
-                    if (response.response.status==0) {//success
-                	   //SHOPPING_CART
-                	   console.log(response.response.SHOPPING_CART);
-                	   if(response.response.SHOPPING_CART!=null && response.response.SHOPPING_CART != ""){
-       					  console.log('saving cart ' + response.response.SHOPPING_CART);
-       					  var cartCode = buildCartCode(response.response.SHOPPING_CART);
-       					  $.cookie('cart',cartCode, { expires: 1024, path:'/' });
-          			      
-                	   }
-                       location.href="<c:url value="/shop/customer/dashboard.html" />";
-                    } else {
-                        $("#loginError").html("<s:message code="message.username.password" text="Login Failed. Username or Password is incorrect."/>");
-                        $("#loginError").show();
-                    }
-                }
-            });
-            return false;
-        });
-    });
-
-</script>
 
 
 			<!-- header -->
@@ -106,12 +45,11 @@ response.setDateHeader ("Expires", -1);
 										<jsp:include page="/pages/shop/common/cart/minicart.jsp" />
 		              				</li>	
 		            			</ul>
-            					
-					
 					</div>
 					
 					
 					<sec:authorize access="hasRole('AUTH_CUSTOMER') and fullyAuthenticated">
+						<!-- logged in user -->
 						<c:if test="${sessionScope.CUSTOMER!=null}">
 							<ul class="pull-right" style="list-style-type: none;padding-top: 8px;z-index:500000;">
 							<li id="fat-menu" class="dropdown">
@@ -135,6 +73,7 @@ response.setDateHeader ("Expires", -1);
 						</c:if>
 					</sec:authorize>
 					<sec:authorize access="!hasRole('AUTH_CUSTOMER') and !fullyAuthenticated">
+					<!-- login box -->
 					<ul class="pull-right" style="list-style-type: none;padding-top: 8px;z-index:500000;">
 					  <li id="fat-menu" class="dropdown">
 					    <a href="#" id="signinDrop" role="button" class="dropdown-toggle noboxshadow" data-toggle="dropdown"><s:message code="button.label.signin" text="Signin" /><b class="caret"></b></a>
@@ -142,6 +81,7 @@ response.setDateHeader ("Expires", -1);
 					
 							<div id="signinPane" class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
 								<div id="loginError" class="alert alert-error" style="display:none;"></div>
+								<!-- form id must be login, form fields must be userName, password and storeCode -->
 								<form id="login" method="post" accept-charset="UTF-8">
 									<div class="control-group">
 	                        				<label><s:message code="label.username" text="Username" /></label>

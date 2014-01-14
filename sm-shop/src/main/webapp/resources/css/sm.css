@@ -182,4 +182,8 @@
 	margin:0px !important;
 }
 
+input.required, select.required, checkbox.required, textarea.required {
+            background-color: #FFC;
+}
+
 

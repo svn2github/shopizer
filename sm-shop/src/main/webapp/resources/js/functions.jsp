@@ -31,6 +31,10 @@ function getItemLabel(quantity) {
 	return labelItem;
 }
 
+function getLoginErrorLabel() {
+	return '<s:message code="message.username.password" text="Login Failed. Username or Password is incorrect."/>';
+}
+
 function emptyCartLabel(){
 	$("#cartMessage").html('<s:message code="cart.empty" text="Your Shopping cart is empty" />');
 	var labelItem = '<s:message code="label.generic.item" text="item" />';
@@ -49,8 +53,6 @@ function cartSubTotal(cart) {
 }
 
 
-
- 
 function loadProducts(url,divProductsContainer, ref) {
 		$(divProductsContainer).showLoading();
 

@@ -5,23 +5,25 @@
 
 <%@ page session="false" %>
 
-
+	<!-- required common scripts -->
     <jsp:include page="/resources/js/functions.jsp" />
-    <script src="<c:url value="/resources/templates/bootstrap/jquery/jquery-1.10.2.min.js" />"></script>
+    <script src="<c:url value="/resources/js/jquery-1.10.2.min.js" />"></script>
     <script src="<c:url value="/resources/js/json2.js" />"></script>
     <script src="<c:url value="/resources/js/jquery-cookie.js" />"></script>
     <script src="<c:url value="/resources/js/shopping-cart.js" />"></script>
+    <script src="<c:url value="/resources/js/login.js" />"></script>
+    <script src="<c:url value="/resources/js/jquery.showLoading.min.js" />"></script>
     
-    
+    <!-- specific css -->
     <link href="<c:url value="/resources/templates/bootstrap/css/bootstrap.min.css" />" rel="stylesheet">
     <link href="<c:url value="/resources/templates/bootstrap/css/bootstrap-responsive.min.css" />" rel="stylesheet">
-    <!-- generic css file -->
+    
+    <!-- generic and common css file -->
     <link href="<c:url value="/resources/css/sm.css" />" rel="stylesheet">
+    <link href="<c:url value="/resources/css/showLoading.css" />" rel="stylesheet">
+    
     <!-- template css file -->
     <link href="<c:url value="/resources/templates/bootstrap/css/theme.css" />" rel="stylesheet">
- 
-    <script src="<c:url value="/resources/js/jquery.showLoading.min.js" />"></script>
-	<link href="<c:url value="/resources/css/showLoading.css" />" rel="stylesheet">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
