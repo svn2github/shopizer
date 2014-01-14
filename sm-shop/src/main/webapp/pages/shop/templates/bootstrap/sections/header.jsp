@@ -55,14 +55,16 @@ response.setDateHeader ("Expires", -1);
                  'success': function(response) {
                     $('#signinPane').hideLoading();
 					console.log(response);
-                    if (response.STATUS==0) {//success
+                    if (response.response.status==0) {//success
                 	   //SHOPPING_CART
-                	   if(response.SHOPPING_CART != ""){
-       					  console.log('saving cart ' + response.SHOPPING_CART);
-                		  saveCart(response.SHOPPING_CART);
+                	   console.log(response.response.SHOPPING_CART);
+                	   if(response.response.SHOPPING_CART!=null && response.response.SHOPPING_CART != ""){
+       					  console.log('saving cart ' + response.response.SHOPPING_CART);
+       					  var cartCode = buildCartCode(response.response.SHOPPING_CART);
+       					  $.cookie('cart',cartCode, { expires: 1024, path:'/' });
           			      
                 	   }
-                        location.href="<c:url value="/shop/customer/dashboard.html" />";
+                       location.href="<c:url value="/shop/customer/dashboard.html" />";
                     } else {
                         $("#loginError").html("<s:message code="message.username.password" text="Login Failed. Username or Password is incorrect."/>");
                         $("#loginError").show();

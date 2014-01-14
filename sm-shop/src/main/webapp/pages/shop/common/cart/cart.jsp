@@ -102,7 +102,7 @@
 		<div class="pull-right">
 			<div class="form-actions">
 				<button type="button" class="btn" onClick="javascript:updateCart('#mainCartTable');"><s:message code="label.order.recalculate" text="Racalculate"/></button>
-				<button type="submit" class="btn btn-success"><s:message code="label.cart.placeorder" text="Place your order" /></button>
+				<button id="checkoutButton" type="submit" class="btn btn-success"><s:message code="label.cart.placeorder" text="Place your order" /></button>
 			</div>
 		</div>
 	</c:if>
@@ -129,6 +129,9 @@
 	        if (e.which == 13){
 	        	e.preventDefault();	        	
 	        }
+	    });
+	    $('#checkoutButton').click(function(e) {
+	    	location.href='<c:url value="/shop/order/checkout.html"/>';
 	    });
    });
 </script>
