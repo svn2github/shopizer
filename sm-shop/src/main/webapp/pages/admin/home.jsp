@@ -7,30 +7,7 @@
 
 <%@ page session="false" %>
 
-<script type="text/javascript">
-	var url = 'http://www.shopizer.com/messages/v-2_0.json?callback=?';
 
-	$.ajax({
-	   type: 'GET',
-	    url: url,
-	    async: false,
-	    jsonpCallback: 'jsonCallback',
-	    contentType: "application/json",
-	    dataType: 'jsonp',
-	    success: function(json) {
-	    	$('#messages').html(json.message);
-	    	$('#messages').show();
-	       //alert("Success " + json.message);
-	       //console.dir(json.message);
-	    },
-	    error: function(e) {
-	       alert("Fail " + e.message);
-	       console.log(e.message);
-	    }
-	});
-
-
-</script>
 
 
 

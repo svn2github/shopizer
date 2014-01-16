@@ -39,11 +39,13 @@
       								<form:errors path="*" cssClass="alert alert-error" element="div" />
 									<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
 								
+								
+								    <div class="control-group">
+						      			  		<table>
 
 									  <c:forEach items="${modules}" var="module">
       			  
-						      			  <div class="control-group">
-						      			  		<table>
+						      			  
 						      			  			<tr>
 						      			  				<td>
 						      			  					<c:choose>
@@ -73,12 +75,12 @@
 						      			  					</c:if>
 						      			  				</td>
 						      			  			</tr>
-						      			  		</table>
-						                        
-						                  </div>
+
 					                  
 					                  </c:forEach>
-					                  
+					     				</table>
+						                        
+						                  </div>             
 
             	 			</form:form>
 							

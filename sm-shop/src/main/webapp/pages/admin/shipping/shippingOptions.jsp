@@ -115,20 +115,21 @@ $(document).ready(function() {
       								<form:errors path="*" cssClass="alert alert-error" element="div" />
 									<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>    
 								
-
+									<!--
 									<div class="control-group">
                         				<label><s:message code="label.shipping.taxonshipping" text="Apply tax on shipping" /></label>
                         				<div class="controls">
                                     		<form:checkbox id="taxOnShipping" path="taxOnShipping" />
                         				</div>
                   					</div>
+                  					-->
 
                   					<div class="control-group well">
-                        				<label><s:message code="label.shipping.freeshipping" text="Apply free shipping"/></label>
+                        				<label><s:message code="label.shipping.freeshippingandhandling=" text="Apply free shipping and handling"/></label>
                         				<div class="controls">
                                     		<form:checkbox id="freeShippingEnabled" path="freeShippingEnabled" /><br/>
                                     		<form:radiobutton id="shipFreeType" path="shipFreeType" value="NATIONAL"/>&nbsp;<s:message code="label.shipping.national" text="National" /><br/>			
-											<form:radiobutton id="shipFreeType" path="shipFreeType" value="INTERNATIONAL"/>&nbsp;<s:message code="label.shipping.international" text="International" /><br/>
+											<form:radiobutton id="shipFreeType" path="shipFreeType" value="INTERNATIONAL"/>&nbsp;<s:message code="label.generic.all" text="All" /><br/>
 											<form:input cssClass="input-large" id="orderTotalFreeShippingText" path="orderTotalFreeShippingText" />&nbsp;<s:message code="label.shipping.freeshippingamount" text="Order total over" />
                         				</div>
                         				<span id="help-orderTotalFreeShippingText" class="help-inline"><form:errors path="orderTotalFreeShippingText" cssClass="error" /></span>

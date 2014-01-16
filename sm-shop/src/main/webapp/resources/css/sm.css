@@ -143,7 +143,10 @@
 
 /** boxes **/
 .box-title {
-    background-color: #F5F5F5;
+	
+	background-color: #FBFBFB;
+	background-image: -moz-linear-gradient(center top , #FFFFFF, #F5F5F5);
+	box-shadow: 0 1px 0 #FFFFFF inset;
     border: 1px solid #DDDDDD;
     border-radius: 4px 4px 0px 0px;
     color: #000000;
@@ -170,7 +173,7 @@
 
 
 .box {
-    background-color: #FFFFFF;
+    background-color: #FFF;
     border: 1px solid #DDDDDD;
     padding: 39px 19px 14px;
     position: relative;
@@ -184,6 +187,13 @@
 
 input.required, select.required, checkbox.required, textarea.required {
             background-color: #FFC;
+}
+
+/** cart colors **/
+#mainCartTable th {
+	background-color: #FBFBFB;
+	background-image: -moz-linear-gradient(center top , #FFFFFF, #F5F5F5);
+	box-shadow: 0 1px 0 #FFFFFF inset;
 }
 
 

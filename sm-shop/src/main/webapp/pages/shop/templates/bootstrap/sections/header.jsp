@@ -14,9 +14,6 @@ response.setDateHeader ("Expires", -1);
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 
-
-
-
 			<!-- header -->
 			<div id="mainmenu" class="row-fluid">
 				
@@ -33,8 +30,11 @@ response.setDateHeader ("Expires", -1);
 						<li><a href="<c:url value="/shop/contact/contactus.html"/>"><s:message code="label.customer.contactus" text="Contact us"/></a></li>
 						</c:if>
 					</ul>
+					
 
- 					<div style="padding-top: 8px;padding-bottom:10px;" class="btn-group pull-right">
+					<c:if test="${not fn:contains(requestScope['javax.servlet.forward.servlet_path'], 'order') && not fn:contains(requestScope['javax.servlet.forward.servlet_path'], 'cart')}">
+					<!-- not displayed in checkout (order) and cart -->
+ 					<div id="miniCart" style="padding-top: 8px;padding-bottom:10px;" class="btn-group pull-right">
             					&nbsp;&nbsp;&nbsp;
             					<i class="icon-shopping-cart icon-black"></i>
             					<a style="box-shadow:none;color:FF8C00;" href="#" data-toggle="dropdown" class="open noboxshadow dropdown-toggle" id="open-cart"><s:message code="label.mycart" text="My cart"/></a>
@@ -46,6 +46,7 @@ response.setDateHeader ("Expires", -1);
 		              				</li>	
 		            			</ul>
 					</div>
+					</c:if>
 					
 					
 					<sec:authorize access="hasRole('AUTH_CUSTOMER') and fullyAuthenticated">
@@ -71,6 +72,14 @@ response.setDateHeader ("Expires", -1);
 							</li>
 							</ul>
 						</c:if>
+					</sec:authorize>
+					<sec:authorize access="!hasRole('AUTH_CUSTOMER') and fullyAuthenticated">
+						<!-- no dual login -->
+						<ul class="pull-right" style="list-style-type: none;padding-top: 8px;z-index:500000;">
+							<li>
+								<s:message code="label.security.loggedinas" text="You are logged in as"/> [<sec:authentication property="principal.username"/>]. <s:message code="label.security.nologinacces.store" text="We can't display store logon box"/>
+							</li>
+						</ul>
 					</sec:authorize>
 					<sec:authorize access="!hasRole('AUTH_CUSTOMER') and !fullyAuthenticated">
 					<!-- login box -->

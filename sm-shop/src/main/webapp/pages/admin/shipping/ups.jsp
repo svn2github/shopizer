@@ -65,7 +65,7 @@
                   <div class="control-group">
                         <label class="required"><s:message code="module.shipping.ups.method" text="UPS Shipping method"/></label>
 	                        <div class="controls">
-	                        		<form:radiobutton cssClass="input-large highlight" path="integrationOptions['selectservice']" value="yes" />&nbsp;<s:message code="module.shipping.ups.method.select" text="Select a specific UPS shipping method" /><br/>
+	                        		<!--<form:radiobutton cssClass="input-large highlight" path="integrationOptions['selectservice']" value="yes" />&nbsp;<s:message code="module.shipping.ups.method.select" text="Select a specific UPS shipping method" /><br/>-->
 	                        		<form:radiobutton cssClass="input-large highlight" path="integrationOptions['selectservice']" value="no" />&nbsp;<s:message code="module.shipping.ups.method.unselect" text="Let UPS propose all available shipping methods" /></br>
 	                        </div>
                   </div>

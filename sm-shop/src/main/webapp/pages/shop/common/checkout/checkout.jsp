@@ -91,15 +91,12 @@ $(document).ready(function() {
 			setCountrySettings('delivery',$(this).val());
 	    })
 	    
-	    $("#useAddress").click(function() {
-	    	if( $(this).is(':checked') ) alert("checked");
-	    	//var checkboxClicked = $(this).prop(':checked');
-	    	//alert(checkboxClicked);
-	    	//if($(this).checked) {
-	    	//	$('#deliveryBox').hide();
-	    	//} else {
-	    	//	$('#deliveryBox').show();
-	    	//}
+	    $("#shipToBillingAdress").click(function() {
+	    	if ($('#shipToBillingAdress').is(':checked')) {
+	    		$('#deliveryBox').hide();
+	    	} else {
+	    		$('#deliveryBox').show();
+	    	}
 	    });
 
     
@@ -207,10 +204,12 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 
 					<!-- If error messages -->
 					<c:if test="${errorMessages!=null}">
-						<div id="store.error" class="alert alert-error"><c:out value="${errorMessages!=null}" /></div><br/>
+						<!-- disable submit button  -->
+						<div id="store.error" class="alert alert-error"><c:out value="${errorMessages}" /></div><br/>
 					</c:if>
 
-				
+					<!-- row fluid span -->
+					<div class="row-fluid">
 					<!-- left column -->
 					<div class="span8">
 
@@ -319,8 +318,13 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 										      					<form:input id="customer.billing.phone" cssClass="input-large required billing-phone" path="customer.billing.phone"/>
 										    				</div> 
 										  			</div>
-					
-													<label id="useAddress" class="checkbox"> <form:checkbox path="shipToBillingAdress" type="checkbox" id="useAddress"/> <s:message code="label.customer.shipping.shipaddress" text="Ship to this address" /></label>
+													
+													<c:if test="${shippingQuote!=null}">
+													<!-- display only if a shipping quote exist -->
+													<label id="useAddress" class="checkbox"> 
+													<form:checkbox path="shipToBillingAdress" id="shipToBillingAdress"/>
+													<s:message code="label.customer.shipping.shipaddress" text="Ship to this address" /></label>
+									  	  			</c:if>
 									  	  </div>
 								
 								
@@ -412,11 +416,149 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 								
 								
 									</div>
-									<!-- end shipping box -->
 									
-
-
-
+									<!-- Shipping box -->
+									<c:if test="${shippingQuote!=null}">
+									<br/>
+									<!-- Shipping -->
+									<div class="box">
+										<span class="box-title">
+												<p class="p-title"><s:message code="label.shipping.fees" text="Shipping fees" /> </p>
+										</span>
+						
+								        <c:choose>
+								        <c:when test="${fn:length(shippingQuote.shippingOptions)>0}">
+									        <div class="control-group"> 
+							 					<label class="control-label"><s:message code="label.shipping.options" text="Shipping options"/></label> 
+							 					<div class="controls"> 
+							 						<c:forEach items="${shippingQuote.shippingOptions}" var="option" varStatus="status">
+														<label class="radio"> 
+															<input type="radio" name="order.shippingSummary.shippingOption" id="${option.optionCode}" value="${option.optionCode}" <c:if test="${order.selectedShippingOption!=null && order.selectedShippingOption.optionCode==option.optionCode}">checked="checked"</c:if>> 
+															${option.optionName} - ${option.optionPriceText}
+														</label> 
+													</c:forEach>
+												</div> 
+									       	</div>
+								       	</c:when>
+								       	<c:otherwise>
+								       		<c:choose>
+								       			<c:when test="${shippingQuote.freeShipping==true && shippingQuote.freeShippingAmount!=null}" >
+								       				<s:message code="label.shipping.freeshipping.over" text="Free shipping for orders over"/>&nbsp;<strong><sm:monetary value="${shippingQuote.freeShippingAmount}"/></strong>
+								       			</c:when>
+								       			<c:otherwise>
+								       				<c:choose>
+								       				<c:when test="${shippingQuote.quoteError!=null}">
+								       					<font color="red"><c:out value="${shippingQuote.quoteError}" /></font>
+								       				</c:when>
+								       				<c:otherwise>
+								       					<c:choose>
+									       					<c:when test="${shippingQuote.shippingReturnCode=='NO_SHIPPING_MODULE_CONFIGURED'}">
+									       						<font color="red"><s:message code="message.noshipping.configured" text="No shipping method configured"/></font>
+									       					</c:when>
+									       					<c:otherwise>
+									       						<strong><s:message code="label.shipping.freeshipping" text="Free shipping!"/></strong>
+									       					</c:otherwise>
+								       					</c:choose>
+								       				</c:otherwise>
+								       				</c:choose>
+								       			</c:otherwise>								       	
+								       		</c:choose>
+								       	</c:otherwise>
+								       	</c:choose> 
+								       	<c:if test="${shippingQuote.handlingFees!=null && shippingQuote.handlingFees>0}">
+								       		<p><s:message code="label.shipping.handlingfees" text="Handling fees" />&nbsp;<sm:monetary value="${shippingQuote.handlingFees}"/></p>
+								       	</c:if>
+									</div>
+									<!-- end shipping box -->
+									</c:if>
+									<br/>
+									
+									
+									<!-- payment box -->
+									<div class="box">
+										<span class="box-title">
+											<p class="p-title"><s:message code="label.payment.module.title" text="Payment method" /></p>
+										</span>
+				
+										<!--<ul class="nav nav-tabs">
+											<li id="pp-tab"  class="active"><a href="#" id="pp-link" data-toggle="tab">PPAL</a></li>
+											<li id="cc-tab"  class="active"><a href="#" id="cc-link" data-toggle="tab">CC</a></li>
+										</ul>-->
+				
+										<c:if test="${paymentMethods!=null}">
+									    		<div class="tabbable"> 
+												    	<ul class="nav nav-tabs">
+												    		<c:forEach items="${paymentMethods}" var="paymentMethod">
+												    			<li class=""><a href="#PAYMENT-TYPE" data-toggle="tab"><s:message code="payment.type.CHANGEPLZ" text="Payment method type [CHANGEPLZ] not defined in payment.properties" /></a></li>
+												            </c:forEach>
+												        </ul>
+									    			<div class="tab-content">
+											    		<c:forEach items="${paymentMethods}" var="paymentMethod">
+												    		<div class="tab-pane active" id="CHANGEPLZ">
+												    			<p>Pay<p>
+												    		</div>
+												    		<div class="tab-pane" id="CHANGEPLZ">
+																<div class="control-group">
+																	<label class="control-label">Card Holder's Name</label>
+																	<div class="controls">
+																		<input type="text" class="input-large" pattern="\w+ \w+.*" title="Fill your first and last name" required>
+																	</div>
+																</div>
+																<div class="control-group">
+																	<label class="control-label">Card Number</label>
+																	<div class="controls">
+																		<div class="row-fluid">
+																			<input type="text" class="input-large" autocomplete="off"  required>
+																		</div>
+																	</div>
+																</div>
+																<div class="control-group">
+																	<label class="control-label">Card Expiry Date</label>
+																	<div class="controls">
+																		<div class="row-fluid">
+																		<div class="span3">
+																			<select class="input-medium">
+																				<option>January</option>
+																				<option>...</option>
+																				<option>December</option>
+																			</select>
+																		</div>
+																		<div class="span3">
+																			<select class="input-small">
+																				<option>2013</option>
+																				<option>...</option>
+																				<option>2015</option>
+																			</select>
+																		</div>
+																	</div>
+																</div>
+															</div>
+															<div class="control-group">
+																<label class="control-label">Card CVV</label>
+																<div class="controls">
+																<div class="row-fluid">
+																	<div class="span3">
+																		<input type="text" class="input-small" autocomplete="off" maxlength="3" pattern="\d{3}" title="Three digits at back of your card" required>
+																	</div>
+																	<div class="span8">
+																	<!-- screenshot may be here -->
+																	</div>
+																</div>
+															</div>
+													</div>
+											
+											    	</div>
+												    		<div class="tab-pane" id="CHANGE PLZ">
+												    			<p>Check<p>
+												    		</div>
+												    </c:forEach>
+									 			</div>
+									 	</c:if>
+				 
+				    			</div>
+				    			
+						</div>
+						<!-- end payment box -->
 			
 					</div>
 					<!-- end left column -->
@@ -424,13 +566,86 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 
 					<!-- Order summary right column -->
 					<div class="span4">
+					
+										<!-- order summary box -->
+										<div class="box">
+											<span id="summaryBox" class="box-title">
+												<p class="p-title"><s:message code="label.order.summary" text="Order summary" /></p>
+											</span>
+
+											<table class="table table-condensed">
+												<thead> 
+													<tr> 
+														<th width="55%"><s:message code="label.order.item" text="Item" /></th> 
+														<th width="15%"><s:message code="label.quantity" text="Quantity" /></th> 
+														<th width="15%"><s:message code="label.order.price" text="Price" /></th>
+														<th width="15%"><s:message code="label.order.total" text="Total" /></th>  
+													</tr> 
+												</thead> 
+									
+												<tbody> 
+													<c:forEach items="${cart.shoppingCartItems}" var="shoppingCartItem">
+													<tr> 
+														<td>
+															${shoppingCartItem.name}
+															<c:if test="${fn:length(shoppingCartItem.shoppingCartAttributes)>0}">
+															<br/>
+																<ul>
+																	<c:forEach items="${shoppingCartItem.shoppingCartAttributes}" var="option">
+																	<li>${option.optionName} - ${option.optionValue}</li>
+																	</c:forEach>
+																</ul>
+															</c:if>
+														</td> 
+														<td >${shoppingCartItem.quantity}</td> 
+														<td><strong>${shoppingCartItem.price}</strong></td> 
+														<td><strong>${shoppingCartItem.subTotal}</strong></td> 
+													</tr>
+													</c:forEach>
+													
+													<c:forEach items="${order.orderTotalSummary.totals}" var="total">
+									
+													<c:if test="${total.orderTotalCode!='order.total.total'}">
+													<tr class="subt"> 
+														<td colspan="3"><s:message code="${total.orderTotalCode}" text="${total.orderTotalCode}"/></td> 
+														<td><strong><sm:monetary value="${total.value}" /></strong></td> 
+													</tr> 
+													</c:if>
+													</c:forEach>
+												</tbody> 
+											</table>
+					
+					
+											<div class="total-box">
+												<span style="float:right">
+													<font class="total-box-label">
+													<s:message code="order.total.total" text="Total"/>
+													<font class="total-box-price"><sm:monetary value="${order.orderTotalSummary.total}"/></font>
+													</font>
+												</span>
+											</div>					
+										</div>
+										<!--  end order summary box -->
+					
+					
+					
+					
 			
 			
-			
+									<div class="form-actions">
+										<div class="pull-right"> 
+											<button type="submit" class="btn btn-success 
+											<c:if test="${errorMessages!=null}"> btn-disabled</c:if>" 
+											<c:if test="${errorMessages!=null}"> disabled="true"</c:if>
+											><s:message code="button.label.submitorder" text="Submit order"/></button>
+										</div>
+									</div> 
 			
 					</div>
 					<!-- end right column -->
 
+			    </div>
+			    <!-- end row fluid span -->
 			    </div>
 			    <!-- end span 12 -->
 

@@ -27,7 +27,7 @@ $(document).ready(function() {
     
 	$('#rateText').blur(function() {
 		$('#help-rateText').html(null);
-		$(this).formatCurrency({ roundToDecimalPlace: 2, eventOnDecimalsEntered: true, symbol: ''});
+		$(this).formatCurrency({ roundToDecimalPlace: 3, eventOnDecimalsEntered: true, symbol: ''});
 	})
 	.keyup(function(e) {
 			var e = window.event || e;
@@ -52,7 +52,7 @@ $(document).ready(function() {
 			}
 		})
 	.bind('decimalsEntered', function(e, cents) {
-		if (String(cents).length > 2) {
+		if (String(cents).length > 3) {
 			var errorMsg = priceFormatMessage + ' (0.' + cents + ')';
 			$('#help-rateText').html(errorMsg);
 		}

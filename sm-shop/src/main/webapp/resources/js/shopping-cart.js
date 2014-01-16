@@ -121,7 +121,7 @@
 		
 		$.ajax({  
 			 type: 'POST',  
-			 url: getContextPath() + '/shop/addShoppingCartItem.html',  
+			 url: getContextPath() + '/shop/cart/addShoppingCartItem.html',  
 			 data: scItem, 
 			 contentType: 'application/json;charset=utf-8',
 			 dataType: 'json', 
@@ -185,7 +185,7 @@ function updateCart(cartDiv) {
 
 		$.ajax({  
 			 type: 'POST',  
-			 url: getContextPath() + '/shop/updateShoppingCartItem.html',
+			 url: getContextPath() + '/shop/cart/updateShoppingCartItem.html',
 			 data: json_data,
 			 contentType: 'application/json;charset=utf-8',
 			 dataType: 'json', 
@@ -199,7 +199,7 @@ function updateCart(cartDiv) {
 				 if(response.response.status==-1) {
 					 $('.alert-error').show();
 				 } else {
-					 location.href= getContextPath() + '/shop/shoppingCart.html';
+					 location.href= getContextPath() + '/shop/cart/shoppingCart.html';
 				 }
 			} 
 		});
@@ -218,7 +218,7 @@ function displayMiniCart(){
 
 	$.ajax({  
 		 type: 'GET',  
-		 url: getContextPath() + '/shop/displayMiniCartByCode.html?shoppingCartCode='+cartCode,  
+		 url: getContextPath() + '/shop/cart/displayMiniCartByCode.html?shoppingCartCode='+cartCode,  
 		 cache:false,
 		 error: function(e) { 
 			 $('#cart-box').removeClass('loading-indicator-overlay');/** manage manually cart loading**/
@@ -258,7 +258,7 @@ function removeItemFromMinicart(lineItemId){
 	$.ajax({  
 		 type: 'GET',
 		 cache:false,
-		 url: getContextPath() + '/shop/removeMiniShoppingCartItem.html?lineItemId='+lineItemId + '&shoppingCartCode=' + shoppingCartCode,  
+		 url: getContextPath() + '/shop/cart/removeMiniShoppingCartItem.html?lineItemId='+lineItemId + '&shoppingCartCode=' + shoppingCartCode,  
 		 error: function(e) { 
 			 console.log('error ' + e);
 			 
@@ -281,7 +281,7 @@ function removeItemFromMinicart(lineItemId){
 function displayMiniCartSummary(code){
 	$.ajax({  
 		 type: 'GET',  
-		 url: getContextPath() + '/shop/displayMiniCartByCode.html?shoppingCartCode='+code,  
+		 url: getContextPath() + '/shop/cart/displayMiniCartByCode.html?shoppingCartCode='+code,  
 		 error: function(e) { 
 			// do nothing
 			console('error while getting cart');
@@ -303,7 +303,7 @@ function displayMiniCartSummary(code){
 
 
 function viewShoppingCartPage(){
-	window.location.href=getContextPath() + '/shop/shoppingCart.html';
+	window.location.href=getContextPath() + '/shop/cart/shoppingCart.html';
 	
 }
 

@@ -8,7 +8,7 @@
 
 
 
-<c:url value="/shop/removeShoppingCartItem.html"
+<c:url value="/shop/cart/removeShoppingCartItem.html"
 	var="removeShoppingCartItemUrl" />
 
 
@@ -115,7 +115,7 @@
 		var cartCode=getCartCode();
 		if(cartCode!=null) {
 			console.log('cart code ' + cartCode);
-			location.href='<c:url value="/shop/shoppingCartByCode.html" />?shoppingCartCode=' + cartCode;
+			location.href='<c:url value="/shop/cart/shoppingCartByCode.html" />?shoppingCartCode=' + cartCode;
 		}
 
    });

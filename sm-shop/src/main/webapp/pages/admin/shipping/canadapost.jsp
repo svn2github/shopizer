@@ -19,6 +19,30 @@
 	                        </span>
                   </div>
                   
+                  <div class="control-group">
+                        <label class="required"><s:message code="module.shipping.canadapost.username" text="Username"/></label>
+	                        <div class="controls">
+	                        		<form:input cssClass="input-large highlight" path="integrationKeys['username']" />
+	                        </div>
+	                        <span class="help-inline">
+	                        	<c:if test="${username!=null}">
+	                        	<span id="identifiererrors" class="error"><s:message code="module.shipping.canadapost.message.username" text="Field in error"/></span>
+	                        	</c:if>
+	                        </span>
+                  </div>
+                  
+                  <div class="control-group">
+                        <label class="required"><s:message code="module.shipping.canadapost.password" text="Password"/></label>
+	                        <div class="controls">
+	                        		<form:input cssClass="input-large highlight" path="integrationKeys['password']" />
+	                        </div>
+	                        <span class="help-inline">
+	                        	<c:if test="${username!=null}">
+	                        	<span id="identifiererrors" class="error"><s:message code="module.shipping.canadapost.message.password" text="Field in error"/></span>
+	                        	</c:if>
+	                        </span>
+                  </div>
+                  
                    <div class="control-group">
                         <label class="required"><s:message code="module.shipping.canadapost.packages" text="Packaging"/></label>
 	                        <div class="controls">
