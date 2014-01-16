@@ -715,14 +715,15 @@ public class CustomShippingMethodsController {
 		
 		
 		//get supported countries
-		List<String> includedCountries = shippingService.getSupportedCountries(store);
-		List<Country> shippingCountries = new ArrayList<Country>();
+		//List<String> includedCountries = shippingService.getSupportedCountries(store);
+		List<Country> shipToCountries = shippingService.getShipToCountryList(store, language);
+/*		List<Country> shippingCountries = new ArrayList<Country>();
 		Map<String,Country> countries = countryService.getCountriesMap(language);
 		if(shippingConfiguration.getShippingType().name().equals(ShippingType.INTERNATIONAL.name())){
 			
 			for(String key : countries.keySet()) {
 				Country country = (Country)countries.get(key);
-				if(!includedCountries.contains(key)) {
+				if(includedCountries.contains(key)) {
 					shippingCountries.add(country);
 				}
 			}
@@ -730,7 +731,7 @@ public class CustomShippingMethodsController {
 			if(!includedCountries.contains(store.getCountry().getIsoCode())) {
 				shippingCountries.add((Country)countries.get(store.getCountry().getIsoCode()));
 			}
-		}
+		}*/
 		
 		CustomShippingQuotesRegion customRegion = new CustomShippingQuotesRegion();
 		
@@ -742,7 +743,7 @@ public class CustomShippingMethodsController {
 		model.addAttribute("configuration", configuration);
 		model.addAttribute("customConfiguration", customConfiguration);
 		model.addAttribute("customRegion", customRegion);
-		model.addAttribute("shippingCountries", shippingCountries);
+		model.addAttribute("shippingCountries", shipToCountries);
 
 		
 	}

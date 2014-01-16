@@ -47,7 +47,7 @@ public class TaxRatesController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaxRatesController.class);
 	
-	private final static char DECIMALCOUNT = '2';
+	private final static char DECIMALCOUNT = '3';
 
 	
 	@Autowired

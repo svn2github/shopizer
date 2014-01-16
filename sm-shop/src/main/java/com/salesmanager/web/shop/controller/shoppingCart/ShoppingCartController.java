@@ -87,7 +87,7 @@ import edu.emory.mathcs.backport.java.util.Arrays;
  */
 
 @Controller
-@RequestMapping("/shop")
+@RequestMapping("/shop/cart/")
 public class ShoppingCartController extends AbstractController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ShoppingCartController.class);

@@ -26,11 +26,10 @@ import com.salesmanager.core.business.payments.service.PaymentService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
-import com.salesmanager.core.business.shipping.model.ShippingProduct;
+import com.salesmanager.core.business.shipping.model.ShippingOption;
 import com.salesmanager.core.business.shipping.model.ShippingQuote;
-import com.salesmanager.core.business.shipping.service.ShippingService;
+import com.salesmanager.core.business.shipping.model.ShippingSummary;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
@@ -54,8 +53,7 @@ public class ShoppingOrderController {
     @Autowired
     private ShoppingCartService shoppingCartService;
 	
-	@Autowired
-	private ShippingService shippingService;
+
 	
 	@Autowired
 	private PaymentService paymentService;
@@ -106,7 +104,7 @@ public class ShoppingOrderController {
 
 		
 		if(shoppingCartCode==null && cart==null) {//error
-			return "redirect:/shop/shoppingCart.html";
+			return "redirect:/shop/cart/shoppingCart.html";
 		}
 		
 
@@ -128,43 +126,78 @@ public class ShoppingOrderController {
 		if(order==null) {
 			order = orderFacade.initializeOrder(store, customer, cart, language);
 		} else {
-			orderFacade.refreshOrder(order, store, customer, cart, language);
+			//orderFacade.refreshOrder(order, store, customer, cart, language);
 		}
 		request.getSession().setAttribute("SHOP_ORDER", order);
-
-		//create shipping products
-		List<ShippingProduct> shippingProducts = shoppingCartService.createShippingProduct(cart);
-
 		
-		if(!CollectionUtils.isEmpty(shippingProducts)) {//get shipping methods
-			ShippingQuote quote = shippingService.getShippingQuote(store, customer, shippingProducts, language);
-			model.addAttribute("shippingQuote", quote);
+		boolean freeShoppingCart = shoppingCartService.isFreeShoppingCart(cart);
+		
+		/** shipping **/
+		ShippingQuote quote = orderFacade.getShippingQuote(cart, order, store, language);
+		model.addAttribute("shippingQuote", quote);
+
+		if(quote!=null) {
+
+			if(StringUtils.isBlank(quote.getShippingReturnCode())) {
+			
+				ShippingSummary summary = orderFacade.getShippingSummary(quote, store, language);
+				order.setShippingSummary(summary);
+				order.setSelectedShippingOption(quote.getSelectedShippingOption());
+				
+				//save quotes in HttpSession
+				List<ShippingOption> options = quote.getShippingOptions();
+				request.getSession().setAttribute("SHIPPING_QUOTES", options);
+			
+			}
+			
+			
+			//get shipping countries
+			List<Country> shippingCountriesList = orderFacade.getShipToCountry(store, language);
+			model.addAttribute("countries", shippingCountriesList);
+		} else {
+			//get all countries
+			List<Country> countries = countryService.getCountries(language);
+			model.addAttribute("countries", countries);
 		}
 		
-		//determine if all free items
-		boolean freeShoppingCart = shoppingCartService.isFreeShoppingCart(cart);
+		if(quote!=null && quote.getShippingReturnCode()!=null && quote.getShippingReturnCode().equals(ShippingQuote.NO_SHIPPING_MODULE_CONFIGURED)) {
+			LOGGER.error("Shipping quote error " + quote.getShippingReturnCode());
+			model.addAttribute("errorMessages", quote.getShippingReturnCode());
+		}
+		
+		if(quote!=null && !StringUtils.isBlank(quote.getQuoteError())) {
+			LOGGER.error("Shipping quote error " + quote.getQuoteError());
+			model.addAttribute("errorMessages", quote.getQuoteError());
+		}
+		
+		if(quote!=null && quote.getShippingReturnCode()!=null && quote.getShippingReturnCode().equals(ShippingQuote.NO_SHIPPING_TO_SELECTED_COUNTRY)) {
+			LOGGER.error("Shipping quote error " + quote.getShippingReturnCode());
+			model.addAttribute("errorMessages", quote.getShippingReturnCode());
+		}
+		/** end shipping **/
+
 
 		//get payment methods
 		Map<String,IntegrationConfiguration> paymentMethods = paymentService.getPaymentModulesConfigured(store);
 		
 		//not free and no payment methods
-		if(paymentMethods==null && !freeShoppingCart) {
+		if((paymentMethods==null || CollectionUtils.isEmpty(paymentMethods.keySet())) && !freeShoppingCart) {
+			LOGGER.error("No payment method configured");
 			model.addAttribute("errorMessages", "No payments configured");
 		}
+		
+		//readable shopping cart items for order summary box
+        ShoppingCartData shoppingCart = shoppingCartFacade.getShoppingCartData(cart);
+        model.addAttribute( "cart", shoppingCart );
+		
+
 
 		//order total
 		OrderTotalSummary orderTotalSummary = orderFacade.calculateOrderTotal(store, order, language);
 		order.setOrderTotalSummary(orderTotalSummary);
 
-		
-		//get countries
-		List<Country> countries = countryService.getCountries(language);
-		
-
-		model.addAttribute("countries", countries);
 		model.addAttribute("order",order);
 		model.addAttribute("paymentMethods", paymentMethods);
-		//may have shippingquote
 		
 		/** template **/
 		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Checkout.checkout).append(".").append(store.getStoreTemplate());

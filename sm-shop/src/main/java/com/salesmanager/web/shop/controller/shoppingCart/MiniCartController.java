@@ -28,7 +28,7 @@ import com.salesmanager.web.shop.controller.shoppingCart.facade.ShoppingCartFaca
  *
  */
 @Controller
-@RequestMapping("/shop")
+@RequestMapping("/shop/cart")
 public class MiniCartController extends AbstractController{
 
 	private static final Logger LOG = LoggerFactory.getLogger(MiniCartController.class);

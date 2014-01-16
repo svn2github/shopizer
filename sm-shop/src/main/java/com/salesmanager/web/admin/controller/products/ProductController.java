@@ -389,6 +389,7 @@ public class ProductController {
 			newProduct.setProductWidth(product.getProduct().getProductWidth());
 			newProduct.setProductVirtual(product.getProduct().isProductVirtual());
 			newProduct.setProductShipeable(product.getProduct().isProductShipeable());
+			newProduct.setTaxClass(product.getProduct().getTaxClass());
 
 
 			Set<ProductAvailability> avails = newProduct.getAvailabilities();

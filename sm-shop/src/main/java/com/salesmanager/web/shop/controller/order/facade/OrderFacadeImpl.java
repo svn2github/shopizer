@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
+import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
+import com.salesmanager.core.business.customer.service.attribute.CustomerOptionValueService;
+import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.model.OrderSummary;
@@ -27,8 +31,13 @@ import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
+import com.salesmanager.core.business.shipping.model.ShippingProduct;
+import com.salesmanager.core.business.shipping.model.ShippingQuote;
+import com.salesmanager.core.business.shipping.model.ShippingSummary;
+import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
@@ -64,6 +73,14 @@ public class OrderFacadeImpl implements OrderFacade {
 	private CountryService countryService;
 	@Autowired
 	private ZoneService zoneService;
+	@Autowired
+	private CustomerOptionService customerOptionService;
+	@Autowired
+	private CustomerOptionValueService customerOptionValueService;
+	@Autowired
+	private LanguageService languageService;
+	@Autowired
+	private ShippingService shippingService;
 
 
 	@Override
@@ -83,8 +100,8 @@ public class OrderFacadeImpl implements OrderFacade {
 		
 		PersistableCustomer persistableCustomer = persistableCustomer(customer, store, language);
 		order.setCustomer(persistableCustomer);
-		order.setShoppingCartCustomer(customer);
-		
+
+		//keep list of shopping cart items for core price calculation
 		List<ShoppingCartItem> items = new ArrayList<ShoppingCartItem>(shoppingCart.getLineItems());
 		order.setShoppingCartItems(items);
 		
@@ -96,8 +113,10 @@ public class OrderFacadeImpl implements OrderFacade {
 	@Override
 	public OrderTotalSummary calculateOrderTotal(MerchantStore store,
 			ShopOrder order, Language language) throws Exception {
+		
 
-		OrderTotalSummary summary = this.calculateOrderTotal(store, order.getShoppingCartCustomer(), order.getShoppingCartItems(), language);
+		Customer customer = this.toCustomerModel(order.getCustomer(), store, language);
+		OrderTotalSummary summary = this.calculateOrderTotal(store, customer, order, language);
 		this.setOrderTotals(order, summary);
 		return summary;
 	}
@@ -122,25 +141,32 @@ public class OrderFacadeImpl implements OrderFacade {
 
 		Customer customer = customer(order.getCustomer(), store, language);
 		
-		OrderTotalSummary summary = this.calculateOrderTotal(store, customer, items, language);
+		OrderTotalSummary summary = this.calculateOrderTotal(store, customer, order, language);
 
 		return summary;
 	}
 	
-	private OrderTotalSummary calculateOrderTotal(MerchantStore store, Customer customer, List<ShoppingCartItem> items, Language language) throws Exception {
+	private OrderTotalSummary calculateOrderTotal(MerchantStore store, Customer customer, PersistableOrder order, Language language) throws Exception {
 		
+		OrderTotalSummary orderTotalSummary = null;
 		
-		ShoppingCart temporaryCart = new ShoppingCart();
-		temporaryCart.setLineItems(new HashSet<ShoppingCartItem>(items));
-		
-
-		//order total
 		OrderSummary summary = new OrderSummary();
-		summary.setProducts(items);
-		//no default shipping summary
 		
-		OrderTotalSummary orderTotalSummary = orderService.caculateOrderTotal(summary, customer, store, language);
 		
+		if(order instanceof ShopOrder) {
+			ShopOrder o = (ShopOrder)order;
+			summary.setProducts(o.getShoppingCartItems());
+			
+			if(o.getShippingSummary()!=null) {
+				summary.setShippingSummary(o.getShippingSummary());
+			}
+			orderTotalSummary = orderService.caculateOrderTotal(summary, customer, store, language);
+		} else {
+			//need Set of ShoppingCartItem
+			//PersistableOrder not implemented
+			throw new Exception("calculateOrderTotal not yet implemented for PersistableOrder");
+		}
+
 		return orderTotalSummary;
 		
 	}
@@ -185,7 +211,7 @@ public class OrderFacadeImpl implements OrderFacade {
 		
 		
 		
-		Customer customer = order.getShoppingCartCustomer();
+		Customer customer = this.toCustomerModel(order.getCustomer(), store, language);
 		if(customer.getId()==null || customer.getId()==0) {
 			customerService.saveOrUpdate(customer);
 		}
@@ -292,12 +318,14 @@ public class OrderFacadeImpl implements OrderFacade {
 		billing.setCountry(store.getCountry());
 		billing.setZone(store.getZone());
 		billing.setState(store.getStorestateprovince());
+		billing.setPostalCode(store.getStorepostalcode());
 		customer.setBilling(billing);
 		
 		Delivery delivery = new Delivery();
 		delivery.setCountry(store.getCountry());
 		delivery.setZone(store.getZone());
 		delivery.setState(store.getStorestateprovince());
+		delivery.setPostalCode(store.getStorepostalcode());
 		customer.setDelivery(delivery);
 		
 		return customer;
@@ -316,13 +344,74 @@ public class OrderFacadeImpl implements OrderFacade {
 		if(customer!=null) {
 			PersistableCustomer persistableCustomer = persistableCustomer(customer, store, language);
 			order.setCustomer(persistableCustomer);
-			order.setShoppingCartCustomer(customer);
 		}
 		
 		List<ShoppingCartItem> items = new ArrayList<ShoppingCartItem>(shoppingCart.getLineItems());
 		order.setShoppingCartItems(items);
 		
 		return;
+	}
+	
+	@Override
+	public ShippingQuote getShippingQuote(ShoppingCart cart, ShopOrder order, MerchantStore store, Language language) throws Exception {
+		
+
+		//create shipping products
+		List<ShippingProduct> shippingProducts = shoppingCartService.createShippingProduct(cart);
+
+		if(CollectionUtils.isEmpty(shippingProducts)) {
+			return null;//products are virtual
+		}
+				
+		Customer customer = this.toCustomerModel(order.getCustomer(), store, language);
+		ShippingQuote quote = shippingService.getShippingQuote(store, customer, shippingProducts, language);
+
+		return quote;
+
+	}
+	
+	@Override
+	public List<Country> getShipToCountry(MerchantStore store, Language language) throws Exception {
+		
+		List<Country> shippingCountriesList = shippingService.getShipToCountryList(store, language);
+		return shippingCountriesList;
+		
+	}
+	
+	private Customer toCustomerModel(PersistableCustomer persistableCustomer, MerchantStore store, Language language) throws ConversionException {
+		
+		CustomerPopulator populator = new CustomerPopulator();
+		Customer customer = new Customer();
+		populator.setCountryService(countryService);
+		populator.setCustomerOptionService(customerOptionService);
+		populator.setCustomerOptionValueService(customerOptionValueService);
+		populator.setLanguageService(languageService);
+		populator.setZoneService(zoneService);
+		return populator.populate(persistableCustomer, customer, store, language);
+		
+	}
+
+
+
+	@Override
+	public ShippingSummary getShippingSummary(ShippingQuote quote,
+			MerchantStore store, Language language) {
+		
+		if(quote.getSelectedShippingOption()!=null) {
+		
+			ShippingSummary summary = new ShippingSummary();
+			summary.setFreeShipping(quote.isFreeShipping());
+			summary.setTaxOnShipping(quote.isApplyTaxOnShipping());
+			summary.setHandling(quote.getHandlingFees());
+			summary.setShipping(quote.getSelectedShippingOption().getOptionPrice());
+			summary.setShippingOption(quote.getSelectedShippingOption().getOptionName());
+			summary.setShippingModule(quote.getShippingModuleCode());
+			
+			return summary;
+		
+		} else {
+			return null;
+		}
 	}
 
 }

@@ -71,6 +71,11 @@ public class PersistableCustomerPopulator extends
 			target.setLastName(source.getLastname());
 			target.setPhone(source.getTelephone());
 			target.setStoreCode(store.getCode());
+			if(source.getDefaultLanguage()!=null) {
+				target.setLanguage(source.getDefaultLanguage().getCode());
+			} else {
+				target.setLanguage(store.getDefaultLanguage().getCode());
+			}
 			
 			
 			

@@ -164,7 +164,7 @@ public class CustomerPopulator extends
 			
 			Language lang = languageService.getByCode(source.getLanguage());
 			if(lang==null) {
-				throw new ConversionException("Language is null for code " + source.getLanguage() + " use language ISO code [en, fr ...]");
+				lang = store.getDefaultLanguage();
 			}
 			
 			target.setDefaultLanguage(lang);
