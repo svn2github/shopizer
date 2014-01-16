@@ -18,7 +18,6 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -29,9 +28,7 @@ import com.salesmanager.core.business.shipping.model.ShippingOption;
 import com.salesmanager.core.business.system.model.CustomIntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
-import com.salesmanager.core.business.system.model.MerchantLog;
 import com.salesmanager.core.business.system.model.ModuleConfig;
-import com.salesmanager.core.business.system.service.MerchantLogService;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.shipping.model.ShippingQuoteModule;
 import com.salesmanager.core.utils.DataUtils;
@@ -44,9 +41,7 @@ import com.salesmanager.core.utils.DataUtils;
 public class UPSShippingQuote implements ShippingQuoteModule {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(UPSShippingQuote.class);
-	
-	@Autowired
-	private MerchantLogService merchantLogService;
+
 
 	@Override
 	public void validateModuleConfiguration(
@@ -170,10 +165,6 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 			
 			Set<String> regions = module.getRegionsSet();
 			if(!regions.contains(store.getCountry().getIsoCode())) {
-				merchantLogService.save(
-						new MerchantLog(store,
-						"Can't use UPS shipping quote service for store country code"
-								+ store.getCountry().getIsoCode()));
 				throw new IntegrationException("Can't use the service for store country code ");
 			}
 			
@@ -453,34 +444,21 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 
 			if (!StringUtils.isBlank(parsed.getErrorCode())) {
 
-				merchantLogService.save(
-						new MerchantLog(store,
-						"Can't process UPS shipping quote service for store country code"
-								+ parsed.getStatusCode() + " message= "
-								+ parsed.getError()));
 				
 					LOGGER.error("Can't process UPS statusCode="
 							+ parsed.getErrorCode() + " message= "
 							+ parsed.getError());
-				return null;
+				throw new IntegrationException(parsed.getError());
 			}
 			if (!StringUtils.isBlank(parsed.getStatusCode())
 					&& !parsed.getStatusCode().equals("1")) {
-				
-				merchantLogService.save(
-						new MerchantLog(store,
-								"Can't process UPS statusCode="
-								+ parsed.getStatusCode() + " message= "
-								+ parsed.getError()));
 
-				return null;
+				throw new IntegrationException(parsed.getError());
 			}
 
 			if (parsed.getOptions() == null || parsed.getOptions().size() == 0) {
-				merchantLogService.save(
-						new MerchantLog(store,
-								"No options returned from UPS"));
-				return null;
+
+				throw new IntegrationException("No shipping options available for the configuration");
 			}
 
 			/*String carrier = getShippingMethodDescription(locale);
@@ -530,8 +508,21 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 				for(ShippingOption option : shippingOptions) {
 					
 					String name = details.get(option.getOptionCode());
-					
 					option.setOptionName(name);
+					if(option.getOptionPrice()==null) {
+						String priceText = option.getOptionPriceText();
+						if(StringUtils.isBlank(priceText)) {
+							throw new IntegrationException("Price text is null for option " + name);
+						}
+						
+						try {
+							BigDecimal price = new BigDecimal(priceText);
+							option.setOptionPrice(price);
+						} catch(Exception e) {
+							throw new IntegrationException("Can't convert to numeric price " + priceText);
+						}
+						
+					}
 					
 					
 				}
@@ -614,7 +605,7 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 
 		} catch (Exception e1) {
 			LOGGER.error("UPS quote error",e1);
-			return null;
+			throw new IntegrationException(e1);
 		} finally {
 			if (reader != null) {
 				try {

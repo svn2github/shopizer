@@ -4,10 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
@@ -147,14 +145,14 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
         //shipping
         if(summary.getShippingSummary()!=null) {
 
-            OrderTotal shippingSubTotal = new OrderTotal();
-            shippingSubTotal.setModule(Constants.OT_SHIPPING_MODULE_CODE);
-            shippingSubTotal.setOrderTotalType(OrderTotalType.SHIPPING);
-            shippingSubTotal.setOrderTotalCode("order.total.shipping");
-            shippingSubTotal.setSortOrder(10);
 
-            orderTotals.add(shippingSubTotal);
-
+	            OrderTotal shippingSubTotal = new OrderTotal();
+	            shippingSubTotal.setModule(Constants.OT_SHIPPING_MODULE_CODE);
+	            shippingSubTotal.setOrderTotalType(OrderTotalType.SHIPPING);
+	            shippingSubTotal.setOrderTotalCode("order.total.shipping");
+	            shippingSubTotal.setSortOrder(10);
+	
+	            orderTotals.add(shippingSubTotal);
 
             if(!summary.getShippingSummary().isFreeShipping()) {
                 shippingSubTotal.setValue(summary.getShippingSummary().getShipping());
@@ -190,7 +188,7 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
                 OrderTotal taxLine = new OrderTotal();
                 taxLine.setModule(Constants.OT_TAX_MODULE_CODE);
                 taxLine.setOrderTotalType(OrderTotalType.TAX);
-                taxLine.setOrderTotalCode(tax.getItemCode());
+                taxLine.setOrderTotalCode(tax.getLabel());
                 taxLine.setSortOrder(taxCount);
                 taxLine.setText(tax.getLabel());
                 taxLine.setValue(tax.getItemPrice());

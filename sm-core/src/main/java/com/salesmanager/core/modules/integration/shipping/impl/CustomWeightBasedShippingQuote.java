@@ -20,7 +20,6 @@ import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
-import com.salesmanager.core.business.system.service.MerchantLogService;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuoteWeightItem;
 import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuotesConfiguration;
@@ -37,9 +36,7 @@ public class CustomWeightBasedShippingQuote implements ShippingQuoteModule {
 	
 	@Autowired
 	private ProductPriceUtils productPriceUtils;
-	
-	@Autowired
-	private MerchantLogService merchantLogService;
+
 
 	@Override
 	public void validateModuleConfiguration(

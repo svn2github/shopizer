@@ -19,4 +19,7 @@ public interface CountryService extends SalesManagerEntityService<Integer, Count
 
 	Map<String, Country> getCountriesMap(Language language)
 			throws ServiceException;
+
+	List<Country> getCountries(List<String> isoCodes, Language language)
+			throws ServiceException;
 }

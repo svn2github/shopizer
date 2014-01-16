@@ -102,8 +102,8 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 		BigDecimal total = orderTotal;
 
 
-		Validate.notNull(packages);
-		Validate.notNull(delivery.getPostalCode());
+		Validate.notNull(packages, "Packages are null");
+		Validate.notNull(delivery.getPostalCode(), "Delivery postal code is null");
 		
 		List<ShippingOption> options = null;
 
@@ -436,6 +436,8 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 				LOGGER.error("Nothing received from CanadaPost");
 				return null;
 			}
+			
+			System.out.println(canadaPost.getStatusCode());
 	
 			if (canadaPost.getStatusCode().equals("-6")
 					|| canadaPost.getStatusCode().equals("-7")) {
@@ -444,6 +446,14 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 						"Can't process CanadaPost statusCode="
 								+ canadaPost.getStatusCode() + " message= "
 								+ canadaPost.getStatusMessage()));
+			}
+			
+			if (canadaPost.getStatusCode().equals("-5000")) {
+				merchantLogService.save(
+						new MerchantLog(store,("An error occured with canadapost request (code-> "
+						+ canadaPost.getStatusCode() + " message-> "
+						+ canadaPost.getStatusMessage() )));
+				throw new IntegrationException("Error with post canada service " + canadaPost.getStatusMessage());
 			}
 	
 			if (!canadaPost.getStatusCode().equals("1")) {
@@ -490,6 +500,7 @@ public class CanadaPostShippingQuote implements ShippingQuoteModule {
 		
 		} catch (Exception e) {
 			LOGGER.error("Canadapost getShippingQuote", e);
+			throw new IntegrationException(e);
 		} finally {
 				if (httppost != null) {
 					httppost.releaseConnection();

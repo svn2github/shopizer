@@ -1,6 +1,7 @@
 package com.salesmanager.core.business.shoppingcart.service;
 
 import java.util.List;
+import java.util.Set;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.customer.model.Customer;
@@ -27,6 +28,7 @@ public interface ShoppingCartService extends SalesManagerEntityService<Long, Sho
 
 	/**
 	 * Creates a list of ShippingProduct based on the ShoppingCart
+	 * if items are virtual return list will be null
 	 * @param cart
 	 * @return
 	 * @throws ServiceException
@@ -65,6 +67,7 @@ public interface ShoppingCartService extends SalesManagerEntityService<Long, Sho
 	 * @throws Exception
 	 */
 	public ShoppingCart mergeShoppingCarts(final ShoppingCart userShoppingCart,final ShoppingCart sessionCart,final MerchantStore store  ) throws Exception;
+
 
 
 

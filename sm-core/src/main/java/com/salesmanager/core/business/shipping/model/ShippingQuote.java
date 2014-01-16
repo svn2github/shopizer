@@ -18,9 +18,10 @@ public class ShippingQuote implements Serializable {
 	private static final long serialVersionUID = 1L;
 	public final static String NO_SHIPPING_TO_SELECTED_COUNTRY = "NO_SHIPPING_TO_SELECTED_COUNTRY";
 	public final static String NO_SHIPPING_MODULE_CONFIGURED= "NO_SHIPPING_MODULE_CONFIGURED";
+	public final static String ERROR= "ERROR";
 
 	private String shippingModuleCode;
-	private List<ShippingOption> shippingOptions;
+	private List<ShippingOption> shippingOptions = null;
 	/** if an error occurs, this field will be populated from constants defined above **/
 	private String shippingReturnCode = null;
 	/** indicates if this quote is configured with free shipping **/
@@ -33,6 +34,8 @@ public class ShippingQuote implements Serializable {
 	private boolean applyTaxOnShipping;
 	
 	private ShippingOption selectedShippingOption = null;
+	
+	private String quoteError = null;
 	
 	
 	
@@ -83,6 +86,12 @@ public class ShippingQuote implements Serializable {
 	}
 	public ShippingOption getSelectedShippingOption() {
 		return selectedShippingOption;
+	}
+	public String getQuoteError() {
+		return quoteError;
+	}
+	public void setQuoteError(String quoteError) {
+		this.quoteError = quoteError;
 	}
 	
 	

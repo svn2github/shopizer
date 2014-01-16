@@ -19,6 +19,7 @@ public class ShippingSummary implements Serializable {
 	private String shippingModule;
 	private String shippingOption;
 	private boolean freeShipping;
+	private boolean taxOnShipping;
 	public BigDecimal getShipping() {
 		return shipping;
 	}
@@ -48,6 +49,12 @@ public class ShippingSummary implements Serializable {
 	}
 	public void setFreeShipping(boolean freeShipping) {
 		this.freeShipping = freeShipping;
+	}
+	public boolean isTaxOnShipping() {
+		return taxOnShipping;
+	}
+	public void setTaxOnShipping(boolean taxOnShipping) {
+		this.taxOnShipping = taxOnShipping;
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.shoppingcart.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashSet;
@@ -33,7 +34,7 @@ import com.salesmanager.core.constants.SchemaConstant;
 @Entity
 @EntityListeners(value = AuditListener.class)
 @Table(name = "SHOPPING_CART_ITEM", schema=SchemaConstant.SALESMANAGER_SCHEMA)
-public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem> implements Auditable {
+public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem> implements Auditable, Serializable {
 
 
 	private static final long serialVersionUID = 1L;

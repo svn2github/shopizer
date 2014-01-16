@@ -1,12 +1,12 @@
 package com.salesmanager.core.business.shipping.service;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
@@ -21,7 +21,9 @@ import com.salesmanager.core.business.system.model.IntegrationModule;
 public interface ShippingService {
 
 	/**
-	 * Returns a list of supported countries configured by merchant
+	 * Returns a list of supported countries (ship to country list) configured by merchant
+	 * when the merchant configured shipping National and has saved a list of ship to country
+	 * from the list
 	 * @param store
 	 * @return
 	 * @throws ServiceException
@@ -166,6 +168,19 @@ public interface ShippingService {
 	 */
 	ShippingSummary getShippingSummary(MerchantStore store, ShippingQuote shippingQuote, 
 			ShippingOption selectedShippingOption) throws ServiceException;
+
+	/**
+	 * Returns a list of supported countries (ship to country list) configured by merchant
+	 * If the merchant configured shipping National, then only store country will be in the list
+	 * If the merchant configured shipping International, then the list of accepted country is returned
+	 * from the list
+	 * @param store
+	 * @param language
+	 * @return
+	 * @throws ServiceException
+	 */
+	List<Country> getShipToCountryList(MerchantStore store, Language language)
+			throws ServiceException;
 
 
 

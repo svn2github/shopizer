@@ -388,10 +388,10 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 				return false;
 			}
 		}
+		
 		return true;
 
 	}
-
 
     @Override
     public boolean removeShoppingCart( final ShoppingCart cart )

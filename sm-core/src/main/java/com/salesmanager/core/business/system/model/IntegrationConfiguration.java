@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
@@ -94,7 +95,7 @@ public class IntegrationConfiguration implements JSONAware {
 		 }
 		
 		
-		if(this.getIntegrationOptions().size()>0) {
+		if(this.getIntegrationOptions()!=null && this.getIntegrationOptions().size()>0) {
 
 				//JSONObject data = new JSONObject();
 				StringBuilder optionDataEntries = new StringBuilder();

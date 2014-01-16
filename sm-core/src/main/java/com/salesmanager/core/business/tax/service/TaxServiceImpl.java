@@ -193,24 +193,30 @@ public class TaxServiceImpl
 		}
 		
 		//tax on shipping ?
-		ShippingConfiguration shippingConfiguration = shippingService.getShippingConfiguration(store);	
+		//ShippingConfiguration shippingConfiguration = shippingService.getShippingConfiguration(store);	
 		
-		if(shippingConfiguration!=null) {
-			if(shippingConfiguration.isTaxOnShipping()){
-				//get default tax class
+		/** always calculate tax on shipping **/
+		//if(shippingConfiguration!=null) {
+			//if(shippingConfiguration.isTaxOnShipping()){
+				//use default tax class for shipping
 				TaxClass defaultTaxClass = taxClassService.getByCode(TaxClass.DEFAULT_TAX_CLASS);
-				BigDecimal amount = taxClassAmountMap.get(defaultTaxClass.getId());
-				if(amount==null) {
-					amount = new BigDecimal(0);
+				//taxClasses.put(defaultTaxClass.getId(), defaultTaxClass);
+				BigDecimal amnt = taxClassAmountMap.get(defaultTaxClass.getId());
+				if(amnt==null) {
+					amnt = new BigDecimal(0);
+					taxClassAmountMap.put(defaultTaxClass.getId(), amnt);
 				}
 				ShippingSummary shippingSummary = orderSummary.getShippingSummary();
-				if(shippingSummary!=null) {
-					amount = amount.add(shippingSummary.getShipping());
-					taxClassAmountMap.put(defaultTaxClass.getId(), amount);
-					taxClasses.put(defaultTaxClass.getId(), defaultTaxClass);
+				if(shippingSummary!=null && shippingSummary.getShipping()!=null && shippingSummary.getShipping().doubleValue()>0) {
+					amnt = amnt.add(shippingSummary.getShipping());
+					taxClassAmountMap.put(defaultTaxClass.getId(), amnt);
+					if(shippingSummary.getHandling()!=null && shippingSummary.getHandling().doubleValue()>0) {
+						amnt = amnt.add(shippingSummary.getHandling());
+						taxClassAmountMap.put(defaultTaxClass.getId(), amnt);
+					}
 				}
-			}
-		}
+			//}
+		//}
 		
 		
 		List<TaxItem> taxItems = new ArrayList<TaxItem>();
@@ -234,15 +240,14 @@ public class TaxServiceImpl
 			BigDecimal beforeTaxeAmount = taxClassAmountMap.get(taxClassId);
 			for(TaxRate taxRate : taxRates) {
 				
-				double taxRateDouble = taxRate.getTaxRate().doubleValue();
+				double taxRateDouble = taxRate.getTaxRate().doubleValue();//5% ... 8% ...
 				
 
-				if(taxRate.isPiggyback()) {
+				if(taxRate.isPiggyback()) {//(compound)
 					if(totalTaxedItemValue.doubleValue()>0) {
 						beforeTaxeAmount = totalTaxedItemValue;
 					}
-					
-				}
+				} //else just use nominal taxing (combine)
 				
 				double value  = (beforeTaxeAmount.doubleValue() * taxRateDouble)/100;
 				taxedItemValue = new BigDecimal(value);

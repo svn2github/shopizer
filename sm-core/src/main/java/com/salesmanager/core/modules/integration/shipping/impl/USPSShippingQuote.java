@@ -24,7 +24,6 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 import com.salesmanager.core.business.shipping.model.ShippingOption;
@@ -49,9 +48,7 @@ import com.salesmanager.core.utils.ProductPriceUtils;
 public class USPSShippingQuote implements ShippingQuoteModule {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(USPSShippingQuote.class);
-	
-	@Autowired
-	private MerchantLogService merchantLogService;
+
 	
 	@Autowired
 	private ProductPriceUtils productPriceUtils;
@@ -188,10 +185,6 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 
 			//must be US
 			if(!store.getCountry().getIsoCode().equals("US")) {
-				merchantLogService.save(
-						new MerchantLog(store,
-						"Can't use USPS shipping quote service for store country code"
-								+ store.getCountry().getIsoCode()));
 				throw new IntegrationException("Can't use the service for store country code ");
 			}
 
@@ -534,23 +527,19 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 			if (!StringUtils.isBlank(parsed.getError())) {
 				LOGGER.error("Can't process USPS message= "
 						+ parsed.getError());
-				return null;
+				throw new IntegrationException(parsed.getError());
 			}
 			if (!StringUtils.isBlank(parsed.getStatusCode())
 					&& !parsed.getStatusCode().equals("1")) {
-				merchantLogService.save(new MerchantLog(store,
-						"Can't process USPS statusCode="
-								+ parsed.getStatusCode() + " message= "
-								+ parsed.getError()));
 				LOGGER.error("Can't process USPS statusCode="
 						+ parsed.getStatusCode() + " message= "
 						+ parsed.getError());
-				return null;
+				throw new IntegrationException(parsed.getError());
 			}
 		
 			if (parsed.getOptions() == null || parsed.getOptions().size() == 0) {
 				LOGGER.warn("No options returned from USPS");
-				return null;
+				throw new IntegrationException(parsed.getError());
 			}
 
 	
@@ -653,7 +642,7 @@ public class USPSShippingQuote implements ShippingQuoteModule {
 		
 		} catch (Exception e1) {
 			LOGGER.error("Error in USPS shipping quote ",e1);
-			return null;
+			throw new IntegrationException(e1);
 		} finally {
 			if (xmlreader != null) {
 				try {

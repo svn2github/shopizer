@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.reference.country.service;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
@@ -60,6 +62,22 @@ public class CountryServiceImpl extends SalesManagerEntityServiceImpl<Integer, C
 		
 		return returnMap;
 	}
+	
+	
+	@Override
+	public List<Country> getCountries(final List<String> isoCodes, final Language language) throws ServiceException {
+		List<Country> countryList = getCountries(language);
+		List<Country> requestedCountryList = new ArrayList<Country>();
+		if(!CollectionUtils.isEmpty(countryList)) {
+			for(Country c : countryList) {
+				if(isoCodes.contains(c.getIsoCode())) {
+					requestedCountryList.add(c);
+				}
+			}
+		}
+		return requestedCountryList;
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	@Override
