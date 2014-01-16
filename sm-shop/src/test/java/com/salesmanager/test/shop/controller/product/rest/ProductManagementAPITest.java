@@ -111,7 +111,7 @@ public class ProductManagementAPITest {
 	 * @throws Exception
 	 */
 	@Test
-	//@Ignore
+	@Ignore
 	public void createProductReview() throws Exception {
 		
 		//requires an existing product
@@ -120,9 +120,9 @@ public class ProductManagementAPITest {
 		review.setCustomerId(1L);
 		review.setProductId(1L);
 		review.setLanguage("en");
-		review.setRating(5D);//rating is on 5
-		review.setDescription("Excellent product 2 !");
-
+		review.setRating(2D);//rating is on 5
+		review.setDescription("Not as good as expected. From what i understood that was supposed to be premium quality but unfortunately i had to return the item after one week... Verry disapointed !");
+		review.setDate("2013-06-06");
 
 		ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
 		String json = writer.writeValueAsString(review);
@@ -135,6 +135,7 @@ public class ProductManagementAPITest {
   			"productId" : 1,
   			"rating" : 4.5,
   			"customerId" : 1,
+  			"date" : "2013-06-06",
   			"language" : "en"
 			}
 		 */
