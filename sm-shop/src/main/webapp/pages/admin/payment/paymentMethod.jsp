@@ -30,14 +30,9 @@
 								
 								
 
-							<s:message code="module.payment.${configuration.moduleCode}.note" text=""/><br/>
+							<p><s:message code="module.payment.${configuration.moduleCode}.note" text=""/></p><br/>
 							
 							<c:url var="savePaymentMethod" value="/admin/payments/savePaymentMethod.html"/>
-							
-							<c:if test="${customConfiguration!=null}">
-										<c:url var="saveShippingMethod" value="/admin/shipping/save${configuration.moduleCode}ShippingMethod.html"/>
-	               
-	                    	</c:if>
 							
 							
 							<form:form method="POST" commandName="configuration" action="${savePaymentMethod}">
@@ -51,6 +46,13 @@
                         				<label><s:message code="label.entity.enabled" text="Module enabled"/></label>
                         				<div class="controls">
                                     		<form:checkbox path="active" />
+                        				</div>
+                  					</div>
+                  					
+                  					<div class="control-group">
+                        				<label><s:message code="label.generic.default" text="Default"/></label>
+                        				<div class="controls">
+                                    		<form:checkbox path="defaultSelected" />
                         				</div>
                   					</div>
                   					

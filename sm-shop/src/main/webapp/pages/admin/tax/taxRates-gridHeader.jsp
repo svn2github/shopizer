@@ -14,6 +14,6 @@
 			      				{title:"<s:message code="label.entity.name" text="Name"/>", name:"name", canFilter:false},
 			      				{title:"<s:message code="menu.taxrates.rate" text="Rate"/>", name:"rate", canFilter:false},
 			      				{title:"<s:message code="label.entity.order" text="Order"/>", name:"priority", canFilter:false},
-			      				{title:"<s:message code="label.tax.piggyback" text="Piggy back"/>", name:"piggyback", type:"boolean", canFilter:false},
+			      				{title:"<s:message code="label.tax.compound" text="Compound"/>", name:"piggyback", type:"boolean", canFilter:false},
 			      				{title:"<s:message code="label.taxclass" text="Tax class"/>", name:"taxClass", canFilter:false},
 			      				{title:"<s:message code="label.entity.details" text="Details"/>", name: "buttonField", align: "center",canFilter:false,canSort:false, canReorder:false}

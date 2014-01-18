@@ -19,18 +19,31 @@ response.setDateHeader ("Expires", -1);
 
 <script>
 
-function formChanged() {
+function setDisplay() {
 	var $inputs = $('#checkoutForm').find(':input');
+	var valid = true;
 	$inputs.each(function() {
 		if($(this).hasClass('required')) {
 			var value = $(this).val();
 			if(value!='') {
 				$(this).css('background-color', '#FFF');
+				
 			} else {
+				valid = false;
+				console.log($(this).prop('id') + ' is null');
 				$(this).css('background-color', '#FFC');
 			}
 		}
 	});
+	
+	//display - hide shipping
+    if ($('#shipToBillingAdress').is(':checked')) {
+	    $('#deliveryBox').hide();
+    } else {
+	    $('#deliveryBox').show();
+    }
+	
+	console.log('Form is valid ? ' + valid);
 }
 
 
@@ -40,11 +53,10 @@ $(document).ready(function() {
 		<!-- 
 			//can use masked input for phone (USA - CANADA)
 		-->
-		formChanged();
-		$('#deliveryBox').hide();
-		
+		setDisplay();
+
 		$("input[type='text']").change( function() {
-			formChanged();
+			setDisplay();
 		});
 		
 		<c:if test="${order.customer.billing.country!=null}">
@@ -91,6 +103,7 @@ $(document).ready(function() {
 			setCountrySettings('delivery',$(this).val());
 	    })
 	    
+	    <!-- shipping / billing decision -->
 	    $("#shipToBillingAdress").click(function() {
 	    	if ($('#shipToBillingAdress').is(':checked')) {
 	    		$('#deliveryBox').hide();
@@ -98,6 +111,8 @@ $(document).ready(function() {
 	    		$('#deliveryBox').show();
 	    	}
 	    });
+		
+
 
     
 });
@@ -326,8 +341,6 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 													<s:message code="label.customer.shipping.shipaddress" text="Ship to this address" /></label>
 									  	  			</c:if>
 									  	  </div>
-								
-								
 									</div>
 									<!-- end billing box -->
 					
@@ -413,13 +426,11 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 										    				</div> 
 										  			</div>
 									  	  </div>
-								
-								
 									</div>
+									 <br/>
 									
 									<!-- Shipping box -->
 									<c:if test="${shippingQuote!=null}">
-									<br/>
 									<!-- Shipping -->
 									<div class="box">
 										<span class="box-title">
@@ -429,7 +440,12 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 								        <c:choose>
 								        <c:when test="${fn:length(shippingQuote.shippingOptions)>0}">
 									        <div class="control-group"> 
-							 					<label class="control-label"><s:message code="label.shipping.options" text="Shipping options"/></label> 
+							 					<label class="control-label">
+							 						<s:message code="label.shipping.options" text="Shipping options"/>
+							 						<c:if test="${shippingQuote.handlingFees!=null && shippingQuote.handlingFees>0}">
+								       					&nbsp;(<s:message code="label.shipping.handlingfees" text="Handling fees" />&nbsp;<sm:monetary value="${shippingQuote.handlingFees}"/>)
+								       				</c:if>
+							 					</label> 
 							 					<div class="controls"> 
 							 						<c:forEach items="${shippingQuote.shippingOptions}" var="option" varStatus="status">
 														<label class="radio"> 
@@ -465,101 +481,58 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 								       		</c:choose>
 								       	</c:otherwise>
 								       	</c:choose> 
-								       	<c:if test="${shippingQuote.handlingFees!=null && shippingQuote.handlingFees>0}">
-								       		<p><s:message code="label.shipping.handlingfees" text="Handling fees" />&nbsp;<sm:monetary value="${shippingQuote.handlingFees}"/></p>
-								       	</c:if>
 									</div>
 									<!-- end shipping box -->
 									</c:if>
 									<br/>
 									
-									
+									<c:if test="${fn:length(paymentMethods)>0}">
 									<!-- payment box -->
 									<div class="box">
 										<span class="box-title">
 											<p class="p-title"><s:message code="label.payment.module.title" text="Payment method" /></p>
 										</span>
-				
-										<!--<ul class="nav nav-tabs">
-											<li id="pp-tab"  class="active"><a href="#" id="pp-link" data-toggle="tab">PPAL</a></li>
-											<li id="cc-tab"  class="active"><a href="#" id="cc-link" data-toggle="tab">CC</a></li>
-										</ul>-->
-				
-										<c:if test="${paymentMethods!=null}">
+
 									    		<div class="tabbable"> 
 												    	<ul class="nav nav-tabs">
 												    		<c:forEach items="${paymentMethods}" var="paymentMethod">
-												    			<li class=""><a href="#PAYMENT-TYPE" data-toggle="tab"><s:message code="payment.type.CHANGEPLZ" text="Payment method type [CHANGEPLZ] not defined in payment.properties" /></a></li>
+												    			<li class="<c:if test="${paymentMethod.defaultSelected==true}"> active</c:if>">
+												    				<a href="#${paymentMethod.paymentType}" data-toggle="tab">
+												    					<c:choose>
+												    						<c:when test="${paymentMethod.paymentType=='CREDITCARD' || paymentMethod.paymentType=='PAYPAL'}">
+												    							<c:if test="${paymentMethod.paymentType=='CREDITCARD'}">
+												    								<img src="<c:url value="/resources/img/payment/icons/visa-straight-64px.png"/>" width="40">
+												    								<img src="<c:url value="/resources/img/payment/icons/mastercard-straight-64px.png"/>" width="40">
+												    								<img src="<c:url value="/resources/img/payment/icons/american-express-straight-64px.png"/>" width="40">
+												    							</c:if>
+												    							<c:if test="${paymentMethod.paymentType=='PAYPAL'}"><img src="<c:url value="/resources/img/payment/icons/paypal-straight-64px.png"/>" width="40"></c:if>
+												    						</c:when>
+												    						<c:otherwise>
+												    							<h4><s:message code="payment.type.${paymentMethod.paymentType}" text="Payment method type [payment.type.${paymentMethod.paymentType}] not defined in payment.properties" /></h4>
+												    						</c:otherwise>
+												    					</c:choose>
+												    				</a>
+												    			</li>
 												            </c:forEach>
 												        </ul>
-									    			<div class="tab-content">
-											    		<c:forEach items="${paymentMethods}" var="paymentMethod">
-												    		<div class="tab-pane active" id="CHANGEPLZ">
-												    			<p>Pay<p>
-												    		</div>
-												    		<div class="tab-pane" id="CHANGEPLZ">
-																<div class="control-group">
-																	<label class="control-label">Card Holder's Name</label>
-																	<div class="controls">
-																		<input type="text" class="input-large" pattern="\w+ \w+.*" title="Fill your first and last name" required>
-																	</div>
-																</div>
-																<div class="control-group">
-																	<label class="control-label">Card Number</label>
-																	<div class="controls">
-																		<div class="row-fluid">
-																			<input type="text" class="input-large" autocomplete="off"  required>
-																		</div>
-																	</div>
-																</div>
-																<div class="control-group">
-																	<label class="control-label">Card Expiry Date</label>
-																	<div class="controls">
-																		<div class="row-fluid">
-																		<div class="span3">
-																			<select class="input-medium">
-																				<option>January</option>
-																				<option>...</option>
-																				<option>December</option>
-																			</select>
-																		</div>
-																		<div class="span3">
-																			<select class="input-small">
-																				<option>2013</option>
-																				<option>...</option>
-																				<option>2015</option>
-																			</select>
-																		</div>
-																	</div>
-																</div>
-															</div>
-															<div class="control-group">
-																<label class="control-label">Card CVV</label>
-																<div class="controls">
-																<div class="row-fluid">
-																	<div class="span3">
-																		<input type="text" class="input-small" autocomplete="off" maxlength="3" pattern="\d{3}" title="Three digits at back of your card" required>
-																	</div>
-																	<div class="span8">
-																	<!-- screenshot may be here -->
-																	</div>
-																</div>
-															</div>
-													</div>
-											
-											    	</div>
-												    		<div class="tab-pane" id="CHANGE PLZ">
-												    			<p>Check<p>
-												    		</div>
-												    </c:forEach>
+									    				<div class="tab-content">
+									    				<c:forEach items="${paymentMethods}" var="paymentMethod">
+													    		<div class="tab-pane <c:if test="${paymentMethod.defaultSelected==true}">active</c:if>" id="${paymentMethod.paymentType}">
+													    			<c:set var="paymentMethod" value="${paymentMethod}" scope="request"/>
+													    			<c:set var="pageName" value="${fn:toLowerCase(paymentMethod.paymentType)}" />
+													    			<jsp:include page="/pages/shop/common/checkout/${pageName}.jsp" />
+													    		</div>
+									    				</c:forEach>
+									    				</div>
 									 			</div>
-									 	</c:if>
-				 
-				    			</div>
-				    			
-						</div>
-						<!-- end payment box -->
-			
+									</div>
+									<!-- end payment box -->
+									</c:if>
+									
+									
+							
+									
+									
 					</div>
 					<!-- end left column -->
 
@@ -626,20 +599,17 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 											</div>					
 										</div>
 										<!--  end order summary box -->
-					
-					
-					
-					
-			
-			
-									<div class="form-actions">
-										<div class="pull-right"> 
-											<button type="submit" class="btn btn-success 
-											<c:if test="${errorMessages!=null}"> btn-disabled</c:if>" 
-											<c:if test="${errorMessages!=null}"> disabled="true"</c:if>
-											><s:message code="button.label.submitorder" text="Submit order"/></button>
-										</div>
-									</div> 
+										
+										
+										<!-- Submit -->
+										<div class="form-actions">
+											<div class="pull-right"> 
+												<button type="submit" class="btn-large btn-success 
+												<c:if test="${errorMessages!=null}"> btn-disabled</c:if>" 
+												<c:if test="${errorMessages!=null}"> disabled="true"</c:if>
+												><s:message code="button.label.submitorder" text="Submit order"/></button>
+											</div>
+										</div> 
 			
 					</div>
 					<!-- end right column -->

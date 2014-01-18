@@ -188,7 +188,7 @@ function getZones(countryCode){
                   				   </div>
                   				   
                   				   <div class="control-group">
-                        				<label><s:message code="label.tax.piggyback" text="Piggy back" /></label>
+                        				<label><s:message code="label.tax.compound" text="Compound" /></label>
                         				<div class="controls">
                                     		<form:checkbox id="piggyback" path="piggyback" /><br/>
 					       					<span class="help-inline"><form:errors path="piggyback" cssClass="error" /></span>

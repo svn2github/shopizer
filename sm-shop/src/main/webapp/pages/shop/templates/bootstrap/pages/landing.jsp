@@ -18,16 +18,13 @@ response.setDateHeader ("Expires", -1);
 
 
 
-
+			<c:if test="${page!=null}">
 			<div class="row-fluid">
-          		
-          		<c:if test="${page!=null}">
           		    <div class="span12">
           			    <span id="homeText"><c:out value="${page.description}" escapeXml="false"/></span>
           		    </div>
-          		</c:if>
-          		
 			</div>
+			</c:if>
 			
 			<br/>
 			<sm:shopProductGroup groupName="FEATURED_ITEM"/>

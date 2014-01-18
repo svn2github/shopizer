@@ -196,4 +196,8 @@ input.required, select.required, checkbox.required, textarea.required {
 	box-shadow: 0 1px 0 #FFFFFF inset;
 }
 
+form input.valid {
+    background: url("../img/check.png") no-repeat scroll 250px center rgba(0, 0, 0, 0);
+}
+
 
