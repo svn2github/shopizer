@@ -22,6 +22,7 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.order.service.OrderService;
+import com.salesmanager.core.business.payments.model.PaymentMethod;
 import com.salesmanager.core.business.payments.service.PaymentService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
@@ -121,13 +122,9 @@ public class ShoppingOrderController {
 			return "redirect:/shop/shoppingCart.html";
 		}
 
-		
-		ShopOrder order = (ShopOrder)request.getSession().getAttribute("SHOP_ORDER");
-		if(order==null) {
-			order = orderFacade.initializeOrder(store, customer, cart, language);
-		} else {
-			//orderFacade.refreshOrder(order, store, customer, cart, language);
-		}
+
+		ShopOrder order = orderFacade.initializeOrder(store, customer, cart, language);
+
 		request.getSession().setAttribute("SHOP_ORDER", order);
 		
 		boolean freeShoppingCart = shoppingCartService.isFreeShoppingCart(cart);
@@ -176,14 +173,30 @@ public class ShoppingOrderController {
 		}
 		/** end shipping **/
 
-
 		//get payment methods
-		Map<String,IntegrationConfiguration> paymentMethods = paymentService.getPaymentModulesConfigured(store);
-		
+		List<PaymentMethod> paymentMethods = paymentService.getAcceptedPaymentMethods(store);
+
 		//not free and no payment methods
-		if((paymentMethods==null || CollectionUtils.isEmpty(paymentMethods.keySet())) && !freeShoppingCart) {
+		if(CollectionUtils.isEmpty(paymentMethods) && !freeShoppingCart) {
 			LOGGER.error("No payment method configured");
 			model.addAttribute("errorMessages", "No payments configured");
+		}
+		
+		if(!CollectionUtils.isEmpty(paymentMethods)) {//select default payment method
+			PaymentMethod defaultPaymentSelected = null;
+			for(PaymentMethod paymentMethod : paymentMethods) {
+				if(paymentMethod.isDefaultSelected()) {
+					defaultPaymentSelected = paymentMethod;
+					break;
+				}
+			}
+			
+			if(defaultPaymentSelected==null) {//forced default selection
+				defaultPaymentSelected = paymentMethods.get(0);
+				defaultPaymentSelected.setDefaultSelected(true);
+			}
+			
+			
 		}
 		
 		//readable shopping cart items for order summary box
