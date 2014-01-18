@@ -347,8 +347,7 @@ public class ShippingServiceImpl implements ShippingService {
 		
 		return shippingSummary;
 	}
-	
-	@SuppressWarnings("unused")
+
 	@Override
 	public ShippingQuote getShippingQuote(MerchantStore store, Customer customer, List<ShippingProduct> products, Language language) throws ServiceException  {
 		

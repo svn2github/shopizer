@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.payments.model.Transaction;
@@ -696,26 +695,17 @@ public class PaypalPayment implements PaymentModule {
 		
 		//validate integrationKeys['account']
 		Map<String,String> keys = integrationConfiguration.getIntegrationKeys();
-		if(keys==null || StringUtils.isBlank(keys.get("account"))) {
+		if(keys==null || StringUtils.isBlank(keys.get("client"))) {
 			errorFields = new ArrayList<String>();
-			errorFields.add("account");
+			errorFields.add("client");
 		}
 		
-		if(keys==null || StringUtils.isBlank(keys.get("api"))) {
+		if(keys==null || StringUtils.isBlank(keys.get("secret"))) {
 			if(errorFields==null) {
 				errorFields = new ArrayList<String>();
 			}
-			errorFields.add("api");
+			errorFields.add("secret");
 		}
-		
-		if(keys==null || StringUtils.isBlank(keys.get("signature"))) {
-			if(errorFields==null) {
-				errorFields = new ArrayList<String>();
-			}
-			errorFields.add("signature");
-		}
-
-
 		
 
 		if(errorFields!=null) {

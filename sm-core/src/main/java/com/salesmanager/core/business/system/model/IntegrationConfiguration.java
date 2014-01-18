@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
@@ -25,6 +24,7 @@ public class IntegrationConfiguration implements JSONAware {
 	
 	private String moduleCode;
 	private boolean active;
+	private boolean defaultSelected;
 	//private boolean customModule;
 	private Map<String,String> integrationKeys= new HashMap<String,String>();
 	private Map<String,List<String>> integrationOptions= new HashMap<String,List<String>>();
@@ -61,6 +61,8 @@ public class IntegrationConfiguration implements JSONAware {
 		returnString.append("\"moduleCode\"").append(":\"").append(this.getModuleCode()).append("\"");
 		returnString.append(",");
 		returnString.append("\"active\"").append(":").append(this.isActive());
+		returnString.append(",");
+		returnString.append("\"defaultSelected\"").append(":").append(this.isDefaultSelected());
 		returnString.append(",");
 		//returnString.append("\"customModule\"").append(":").append(this.isCustomModule());
 		//returnString.append(",");
@@ -153,6 +155,12 @@ public class IntegrationConfiguration implements JSONAware {
 	}
 	public void setIntegrationOptions(Map<String,List<String>> integrationOptions) {
 		this.integrationOptions = integrationOptions;
+	}
+	public boolean isDefaultSelected() {
+		return defaultSelected;
+	}
+	public void setDefaultSelected(boolean defaultSelected) {
+		this.defaultSelected = defaultSelected;
 	}
 
 

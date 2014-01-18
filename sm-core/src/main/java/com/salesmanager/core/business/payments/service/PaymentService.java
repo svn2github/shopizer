@@ -10,6 +10,7 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.payments.model.CreditCardType;
 import com.salesmanager.core.business.payments.model.Payment;
+import com.salesmanager.core.business.payments.model.PaymentMethod;
 import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
@@ -28,13 +29,23 @@ public interface PaymentService {
 	Transaction processRefund(Order order, Customer customer, MerchantStore store, BigDecimal amount) throws ServiceException;
 
 	/**
-	 * Get a specific Payment module
+	 * Get a specific Payment module by payment type CREDITCART, MONEYORDER ...
 	 * @param store
-	 * @param moduleName
+	 * @param type (payment type)
 	 * @return
 	 * @throws ServiceException
 	 */
-	IntegrationModule getPaymentMethod(MerchantStore store, String moduleName)
+	IntegrationModule getPaymentMethodByType(MerchantStore store, String type)
+			throws ServiceException;
+	
+	/**
+	 * Get a specific Payment module by payment name paypal, authorizenet ..
+	 * @param store
+	 * @param name
+	 * @return
+	 * @throws ServiceException
+	 */
+	IntegrationModule getPaymentMethodByName(MerchantStore store, String name)
 			throws ServiceException;
 
 	/**
@@ -73,6 +84,9 @@ public interface PaymentService {
 
 	Transaction processCapturePayment(Order order, Customer customer,
 			MerchantStore store, Payment payment, BigDecimal amount)
+			throws ServiceException;
+
+	List<PaymentMethod> getAcceptedPaymentMethods(MerchantStore store)
 			throws ServiceException;
 
 }

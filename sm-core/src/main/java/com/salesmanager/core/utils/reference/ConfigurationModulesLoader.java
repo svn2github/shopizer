@@ -67,6 +67,9 @@ public class ConfigurationModulesLoader {
             	if(object.get("active")!=null) {
             		configuration.setActive((Boolean)object.get("active"));
             	}
+            	if(object.get("defaultSelected")!=null) {
+            		configuration.setDefaultSelected((Boolean)object.get("defaultSelected"));
+            	}
             	if(object.get("environment")!=null) {
             		configuration.setEnvironment((String)object.get("environment"));
             	}

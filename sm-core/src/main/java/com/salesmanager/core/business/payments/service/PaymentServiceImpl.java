@@ -25,6 +25,8 @@ import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.payments.model.CreditCardType;
 import com.salesmanager.core.business.payments.model.CreditCardPayment;
 import com.salesmanager.core.business.payments.model.Payment;
+import com.salesmanager.core.business.payments.model.PaymentMethod;
+import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.payments.model.PaypalPayment;
 import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.payments.model.TransactionType;
@@ -82,11 +84,67 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 	
 	@Override
-	public IntegrationModule getPaymentMethod(MerchantStore store, String moduleName) throws ServiceException {
+	public List<PaymentMethod> getAcceptedPaymentMethods(MerchantStore store) throws ServiceException {
+		
+		Map<String,IntegrationConfiguration> modules =  this.getPaymentModulesConfigured(store);
+
+		List<PaymentMethod> returnModules = new ArrayList<PaymentMethod>();
+		
+		for(String module : modules.keySet()) {
+			IntegrationConfiguration config = modules.get(module);
+			if(config.isActive()) {
+				
+				IntegrationModule md = this.getPaymentMethodByName(store, config.getModuleCode());
+				if(md==null) {
+					continue;
+				}
+				PaymentMethod paymentMethod = new PaymentMethod();
+				
+				paymentMethod.setDefaultSelected(config.isDefaultSelected());
+				paymentMethod.setPaymentMethodCode(config.getModuleCode());
+				paymentMethod.setModule(md);
+				paymentMethod.setInformations(config);
+				PaymentType type = PaymentType.COD;
+				if(md.getType().equalsIgnoreCase(PaymentType.CREDITCARD.name())) {
+					type = PaymentType.CREDITCARD;
+				} else 	if(md.getType().equalsIgnoreCase(PaymentType.FREE.name())) {
+					type = PaymentType.FREE;
+				} else 	if(md.getType().equalsIgnoreCase(PaymentType.MONEYORDER.name())) {
+					type = PaymentType.MONEYORDER;
+				} else 	if(md.getType().equalsIgnoreCase(PaymentType.PAYPAL.name())) {
+					type = PaymentType.PAYPAL;
+				}
+				paymentMethod.setPaymentType(type);
+				returnModules.add(paymentMethod);
+			}
+		}
+		
+		return returnModules;
+		
+		
+	}
+	
+	@Override
+	public IntegrationModule getPaymentMethodByType(MerchantStore store, String type) throws ServiceException {
 		List<IntegrationModule> modules =  getPaymentMethods(store);
 
 		for(IntegrationModule module : modules) {
-			if(module.getModule().equals(moduleName)) {
+			if(module.getModule().equals(type)) {
+				
+				return module;
+			}
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public IntegrationModule getPaymentMethodByName(MerchantStore store,
+			String name) throws ServiceException {
+		List<IntegrationModule> modules =  getPaymentMethods(store);
+
+		for(IntegrationModule module : modules) {
+			if(module.getCode().equals(name)) {
 				
 				return module;
 			}
@@ -111,6 +169,8 @@ public class PaymentServiceImpl implements PaymentService {
 		return null;
 		
 	}
+	
+
 	
 	@Override
 	public Map<String,IntegrationConfiguration> getPaymentModulesConfigured(MerchantStore store) throws ServiceException {
@@ -272,7 +332,7 @@ public class PaymentServiceImpl implements PaymentService {
 			validateCreditCard(creditCardPayment.getCreditCardNumber(),creditCardPayment.getCreditCard(),creditCardPayment.getExpirationMonth(),creditCardPayment.getExpirationYear());
 		}
 		
-		IntegrationModule integrationModule = getPaymentMethod(store,payment.getModuleName());
+		IntegrationModule integrationModule = getPaymentMethodByName(store,payment.getModuleName());
 		
 		TransactionType transactionType = payment.getTransactionType();
 		Transaction transaction = null;
@@ -350,7 +410,7 @@ public class PaymentServiceImpl implements PaymentService {
 			paypalPayment.setTransactionType(TransactionType.AUTHORIZECAPTURE);
 		}
 		
-		IntegrationModule integrationModule = getPaymentMethod(store,payment.getModuleName());
+		IntegrationModule integrationModule = getPaymentMethodByName(store,payment.getModuleName());
 		
 		TransactionType transactionType = payment.getTransactionType();
 
@@ -414,7 +474,7 @@ public class PaymentServiceImpl implements PaymentService {
 			partial = true;
 		}
 		
-		IntegrationModule integrationModule = getPaymentMethod(store,module);
+		IntegrationModule integrationModule = getPaymentMethodByName(store,module);
 		
 		//get the associated transaction
 		Transaction refundable = transactionService.getRefundableTransaction(order);
@@ -575,6 +635,8 @@ public class PaymentServiceImpl implements PaymentService {
 		}
 	
 	}
+
+
 	
 
 

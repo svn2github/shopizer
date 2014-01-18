@@ -23,7 +23,6 @@ import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.model.Zone;
-import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 import com.salesmanager.core.business.shipping.model.ShippingSummary;
 import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
