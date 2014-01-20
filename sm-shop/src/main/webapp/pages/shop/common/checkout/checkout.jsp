@@ -17,21 +17,29 @@ response.setDateHeader ("Expires", -1);
 <script src="<c:url value="/resources/js/jquery.maskedinput.min.js" />"></script>
 
 
+
 <script>
 
-function setDisplay() {
-	var $inputs = $('#checkoutForm').find(':input');
+
+<!-- checkout form id -->
+var checkoutFormId = '#checkoutForm';
+var formErrorMessageId = '#formErrorMessage';
+
+function isFormValid() {
+	$(formErrorMessageId).hide();//reset error message
+	var $inputs = $(checkoutFormId).find(':input');
 	var valid = true;
+	var firstErrorMessage = null;
 	$inputs.each(function() {
 		if($(this).hasClass('required')) {
-			var value = $(this).val();
-			if(value!='') {
-				$(this).css('background-color', '#FFF');
-				
-			} else {
+			var fieldValid = isFieldValid($(this));
+			if(!fieldValid) {
+				if(firstErrorMessage==null) {
+					if($(this).attr('title')) {
+						firstErrorMessage = $(this).attr('title');
+					}
+				}
 				valid = false;
-				console.log($(this).prop('id') + ' is null');
-				$(this).css('background-color', '#FFC');
 			}
 		}
 	});
@@ -44,6 +52,66 @@ function setDisplay() {
     }
 	
 	console.log('Form is valid ? ' + valid);
+	if(valid==false) {//disable submit button
+		//alert(firstErrorMessage);
+		if(firstErrorMessage!=null) {
+			$(formErrorMessageId).html('<br/><img src="<c:url value="/resources/img/icon_error.png"/>" width="40"/>&nbsp;<strong><font color="red">' + firstErrorMessage + '</font></strong>');
+			$(formErrorMessageId).show();
+		}
+		$('#submitOrder').addClass('btn-disabled');
+		$('#submitOrder').prop('disabled', true);
+	} else {
+		$(formErrorMessageId).html('<br/><img src="<c:url value="/resources/img/icon_success.png"/>" width="40"/>&nbsp;<strong><s:message code="message.order.canprocess" text="The order can be completed"/></strong>');
+		$(formErrorMessageId).show();
+		$('#submitOrder').removeClass('btn-disabled');
+		$('#submitOrder').prop('disabled', false);
+	}
+}
+
+function isFieldValid(field) {
+	var validateField = true;
+	var fieldId = field.prop('id');
+	var value = field.val();
+	if (fieldId.indexOf("creditcard") >= 0) {
+		validateField = false;	//ignore credit card number field
+	}
+	if(!field.is(':visible')) {
+		validateField = false; //ignore invisible fields
+	}
+	//shipping information
+	<c:if test="${shippingQuote!=null}">
+	if ($('#shipToBillingAdress').is(':checked')) {
+		//validate shipping fields
+		if (fieldId.indexOf("delivery") >= 0) {
+			validateField = false; //ignore shipping fields when ship to billing
+		}
+	}
+	</c:if>
+	<c:if test="${fn:length(paymentMethods)>0}">
+		//if any payment option need validation insert here
+		//console.log($('input[name=paymentMethodType]:checked', checkoutFormId).val());
+		if($('input[name=paymentMethodType]:checked', checkoutFormId).val()=='creditcard') {
+			if (fieldId.indexOf("creditcard") >= 0) {
+				if(fieldId!='creditcard_card_number') {
+					validateField = true;// but validate credit card fields when credit card is selected
+				}
+				if(fieldId=='creditcard_card_number') {
+					return isCreditCardValid();// validate credit card number differently
+				}
+				
+			}
+		}
+	</c:if>
+	if(!validateField) {
+		return true;
+	}
+	if(value!='') {
+		field.css('background-color', '#FFF');
+		return true;
+	} else {
+		field.css('background-color', '#FFC');
+		return false;
+	}
 }
 
 
@@ -53,10 +121,10 @@ $(document).ready(function() {
 		<!-- 
 			//can use masked input for phone (USA - CANADA)
 		-->
-		setDisplay();
+		isFormValid();
 
-		$("input[type='text']").change( function() {
-			setDisplay();
+		$("input[type='text']").on("change keyup paste", function(){
+			isFormValid();
 		});
 		
 		<c:if test="${order.customer.billing.country!=null}">
@@ -82,15 +150,15 @@ $(document).ready(function() {
 		</c:if>
 		
 		<c:if test="${order.customer.delivery.stateProvince!=null && order.customer.delivery.stateProvince!=''}">  
-			$('#shippingStateList').hide();          
-			$('#shippingStateProvince').show(); 
-			$('#shippingStateProvince').val('<c:out value="${order.customer.delivery.stateProvince}"/>');
+			$('#deliveryStateList').hide();          
+			$('#deliveryStateProvince').show(); 
+			$('#deliveryStateProvince').val('<c:out value="${order.customer.delivery.stateProvince}"/>');
 		</c:if>
 		
 		<c:if test="${order.customer.delivery.stateProvince==null || order.customer.delivery.stateProvince==''}">  
-			$('#shippingStateList').show();          
-			$('#shippingStateProvince').hide();
-			getZones('#shippingStateList','#shippingStateProvince','<c:out value="${order.customer.delivery.country}" />','<c:out value="${order.customer.billing.zone}" />');
+			$('#deliveryStateList').show();          
+			$('#deliveryStateProvince').hide();
+			getZones('#deliveryStateList','#deliveryStateProvince','<c:out value="${order.customer.delivery.country}" />','<c:out value="${order.customer.billing.zone}" />');
 		</c:if>
 
 		$(".billing-country-list").change(function() {
@@ -99,7 +167,7 @@ $(document).ready(function() {
 	    })
 	    
 	    $(".shipping-country-list").change(function() {
-			getZones('#shippingStateList','#shippingStateProvince',$(this).val(),'<c:out value="${order.customer.delivery.zone}" />');
+			getZones('#deliveryStateList','#deliveryStateProvince',$(this).val(),'<c:out value="${order.customer.delivery.zone}" />');
 			setCountrySettings('delivery',$(this).val());
 	    })
 	    
@@ -107,9 +175,15 @@ $(document).ready(function() {
 	    $("#shipToBillingAdress").click(function() {
 	    	if ($('#shipToBillingAdress').is(':checked')) {
 	    		$('#deliveryBox').hide();
+	    		isFormValid();
 	    	} else {
 	    		$('#deliveryBox').show();
+	    		isFormValid();
 	    	}
+	    });
+	    
+	    $('input[name=paymentMethodType]', checkoutFormId).click(function() {
+	    	isFormValid();//change payment method
 	    });
 		
 
@@ -124,12 +198,12 @@ function setCountrySettings(prefix, countryCode) {
 	var phoneSelector = '.' + prefix + '-phone';
 	var postalCodeSelector = '.' + prefix + '-postalCode';
 	
-	if(countryCode=='CA') {
+	if(countryCode=='CA') {//mask for canada
 		$(phoneSelector).mask("?(999) 999-9999");
 		$(postalCodeSelector).mask("?*** ***");
 		return;
 	}
-	if(countryCode=='US') {
+	if(countryCode=='US') {// mask for united states
 		$(phoneSelector).mask("?(999) 999-9999");
 		$(postalCodeSelector).mask("?99999");
 		return;
@@ -191,6 +265,7 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 				$(listDiv).hide();             
 				$(textDiv).show();
 			}
+			isFormValid();
 	  },
 	    error: function(xhr, textStatus, errorThrown) {
 	  	alert('error ' + errorThrown);
@@ -240,7 +315,8 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 									  				   <div class="control-group"> 
 														<label><s:message code="label.generic.firstname" text="First Name"/></label>
 									    					<div class="controls"> 
-									      					<form:input id="customer.firstName" cssClass="input-large required" path="customer.firstName"/>
+									    					<s:message code="NotEmpty.customer.firstName" text="First name is required" var="msgFirstName"/>
+									      					<form:input id="customer.firstName" cssClass="input-large required" path="customer.firstName" title="${msgFirstName}"/>
 									    					</div> 
 									  				   </div> 
 													</div>
@@ -248,7 +324,8 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 									  				   <div class="control-group"> 
 														<label><s:message code="label.generic.lastname" text="Last Name"/></label>
 									    					<div class="controls"> 
-									    					<form:input id="customer.lastName" cssClass="input-large required"  maxlength="32" path="customer.lastName" />
+									    					<s:message code="NotEmpty.customer.lastName" text="Last name is required" var="msgLastName"/>
+									    					<form:input id="customer.lastName" cssClass="input-large required"  maxlength="32" path="customer.lastName" title="${msgLastName}" />
 									    					</div> 
 									  				   </div> 
 													</div>
@@ -260,8 +337,9 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 													<div class="span4">
 									  				   <div class="control-group"> 
 														<label><s:message code="label.generic.email" text="Email address"/></label>
-									    					<div class="controls"> 
-									    					<form:input id="customer.emailAddress" cssClass="input-large required" path="customer.emailAddress"/>
+									    					<div class="controls">
+									    					<s:message code="NotEmpty.customer.emailAddress" text="Email address is required" var="msgEmail"/> 
+									    					<form:input id="customer.emailAddress" cssClass="input-large required" path="customer.emailAddress" title="${msgEmail}"/>
 									    					</div> 
 									  				   </div> 
 													</div>
@@ -280,7 +358,8 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 										  			<div class="control-group"> 
 														<label><s:message code="label.generic.streetaddress" text="Street address"/></label>
 										    				<div class="controls"> 
-										      					<form:input id="customer.billing.address" cssClass="input-xxlarge required" path="customer.billing.address"/>
+										    					<s:message code="NotEmpty.customer.billing.address" text="Address is required" var="msgAddress"/>
+										      					<form:input id="customer.billing.address" cssClass="input-xxlarge required" path="customer.billing.address" title="${msgAddress}"/>
 										    				</div> 
 										  			</div> 
 											</div>
@@ -291,7 +370,8 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 											  			<div class="control-group"> 
 															<label><s:message code="label.generic.city" text="City"/></label>
 											    				<div class="controls"> 
-											      					<form:input id="customer.billing.city" cssClass="input-large required" path="customer.billing.city"/>
+											    					<s:message code="NotEmpty.customer.billing.city" text="City is required" var="msgCity"/>
+											      					<form:input id="customer.billing.city" cssClass="input-large required" path="customer.billing.city" title="${msgCity}"/>
 											    				</div> 
 											  			</div>
 													</div>
@@ -299,7 +379,8 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 											  			<div class="control-group"> 
 															<label><s:message code="label.generic.postalcode" text="Postal code"/></label>
 											    				<div class="controls"> 
-											      					<form:input id="customer.billing.postalCode" cssClass="input-large required billing-postalCode" path="customer.billing.postalCode"/>
+											    					<s:message code="NotEmpty.customer.billing.postalCode" text="Postal code is required" var="msgPostalCode"/>
+											      					<form:input id="customer.billing.postalCode" cssClass="input-large required billing-postalCode" path="customer.billing.postalCode" title="${msgPostalCode}"/>
 											    				</div> 
 											  			</div>
 													</div>
@@ -311,7 +392,8 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 														<label><s:message code="label.generic.stateprovince" text="State / Province"/></label>
 											    		<div class="controls"> 
 												       			<form:select cssClass="zone-list" id="billingStateList" path="customer.billing.zone"/>
-											                    <form:input  class="input-large required" id="billingStateProvince"  maxlength="100" name="billingStateProvince" path="customer.billing.stateProvince" /> 
+											                    <s:message code="NotEmpty.customer.billing.stateProvince" text="State / Province is required" var="msgStateProvince"/>
+											                    <form:input  class="input-large required" id="billingStateProvince"  maxlength="100" name="billingStateProvince" path="customer.billing.stateProvince" title="${msgStateProvince}"/> 
 											    		</div> 
 											  		</div>
 										   </div>
@@ -330,7 +412,8 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 										  			<div class="control-group"> 
 														<label><s:message code="label.generic.phone" text="Phone number"/></label>
 										    				<div class="controls"> 
-										      					<form:input id="customer.billing.phone" cssClass="input-large required billing-phone" path="customer.billing.phone"/>
+										    					<s:message code="NotEmpty.customer.billing.phone" text="Phone number is required" var="msgPhone"/>
+										      					<form:input id="customer.billing.phone" cssClass="input-large required billing-phone" path="customer.billing.phone" title="${msgPhone}"/>
 										    				</div> 
 										  			</div>
 													
@@ -357,7 +440,8 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 									  				   <div class="control-group"> 
 														<label><s:message code="label.customer.shipping.name" text="Shipping name"/></label>
 									    					<div class="controls"> 
-									      					<form:input id="customer.delivery.name" cssClass="input-xxlarge required" path="customer.delivery.name"/>
+									    					<s:message code="NotEmpty.customer.shipping.name" text="Shipping name should not be empty" var="msgShippingName"/>
+									      					<form:input id="customer.delivery.name" cssClass="input-xxlarge required" path="customer.delivery.name" title="${msgShippingName}"/>
 									    					</div> 
 									  				   </div> 
 													</div>
@@ -379,7 +463,8 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 										  			<div class="control-group"> 
 														<label><s:message code="label.customer.shipping.streetaddress" text="Shipping street address"/></label>
 										    				<div class="controls"> 
-										      					<form:input id="customer.delivery.address" cssClass="input-xxlarge required" path="customer.delivery.address"/>
+										    					<s:message code="NotEmpty.customer.shipping.address" text="Shipping street address should not be empty" var="msgShippingAddress"/>
+										      					<form:input id="customer.delivery.address" cssClass="input-xxlarge required" path="customer.delivery.address" title="${msgShippingAddress}"/>
 										    				</div> 
 										  			</div> 
 											</div>
@@ -389,8 +474,9 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 													<div class="span4">
 											  			<div class="control-group"> 
 															<label><s:message code="label.customer.shipping.city" text="Shipping city"/></label>
-											    				<div class="controls"> 
-											      					<form:input id="customer.delivery.city" cssClass="input-large required" path="customer.delivery.city"/>
+											    				<div class="controls">
+											    					<s:message code="NotEmpty.customer.shipping.city" text="Shipping city should not be empty" var="msgShippingCity"/> 
+											      					<form:input id="customer.delivery.city" cssClass="input-large required" path="customer.delivery.city" title="${msgShippingCity}"/>
 											    				</div> 
 											  			</div>
 													</div>
@@ -398,7 +484,8 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 											  			<div class="control-group"> 
 															<label><s:message code="label.customer.shipping.postalcode" text="Shipping postal code"/></label>
 											    				<div class="controls"> 
-											      					<form:input id="customer.delivery.postalCode" cssClass="input-large required delivery-postalCode" path="customer.delivery.postalCode"/>
+											    				    <s:message code="NotEmpty.customer.shipping.postalcode" text="Shipping postal code should not be empty" var="msgShippingPostal"/>
+											      					<form:input id="customer.delivery.postalCode" cssClass="input-large required delivery-postalCode" path="customer.delivery.postalCode" title="${msgShippingPostal}"/>
 											    				</div> 
 											  			</div>
 													</div>
@@ -409,8 +496,9 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 										   			<div class="control-group"> 
 														<label><s:message code="label.customer.shipping.zone" text="Shipping state / province"/></label>
 											    		<div class="controls"> 
-												       			<form:select cssClass="zone-list" id="shippingStateList" path="customer.delivery.zone"/>
-											                    <form:input  class="input-large required" id="shippingStateProvince"  maxlength="100" name="shippingStateProvince" path="customer.delivery.stateProvince" /> 
+												       			<form:select cssClass="zone-list" id="deliveryStateList" path="customer.delivery.zone"/>
+											                    <s:message code="NotEmpty.customer.shipping.stateProvince" text="Shipping State / Province is required" var="msgShippingState"/>
+											                    <form:input  class="input-large required" id="deliveryStateProvince"  maxlength="100" name="shippingStateProvince" path="customer.delivery.stateProvince" title="${msgShippingState}"/> 
 											    		</div> 
 											  		</div>
 										   </div>
@@ -600,14 +688,17 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 										</div>
 										<!--  end order summary box -->
 										
-										
+										<div id="formErrorMessage">
+											<br/>
+										</div>
 										<!-- Submit -->
 										<div class="form-actions">
 											<div class="pull-right"> 
-												<button type="submit" class="btn-large btn-success 
+												<button id="submitOrder" type="submit" class="btn btn-large btn-success 
 												<c:if test="${errorMessages!=null}"> btn-disabled</c:if>" 
 												<c:if test="${errorMessages!=null}"> disabled="true"</c:if>
 												><s:message code="button.label.submitorder" text="Submit order"/></button>
+
 											</div>
 										</div> 
 			

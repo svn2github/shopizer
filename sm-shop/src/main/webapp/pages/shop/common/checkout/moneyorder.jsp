@@ -15,12 +15,12 @@ response.setDateHeader ("Expires", -1);
 <%@page pageEncoding="UTF-8"%>          
           
           <div class="control-group">
-            <label class="control-label">Use Money order</label>
+            <label class="control-label"><s:message code="label.payment.moneyorder.usemoneyorder" text="Use money order" /></label>
             <div class="controls">
                <input type="radio" name="paymentMethodType" value="moneyorder" <c:if test="${requestScope.paymentMethod.defaultSelected==true}"> checked</c:if>/>
             </div>
           </div>
           
          <div class="control-group">
-			<c:out value="${requestScope.paymentMethod.paymentModuleInformations.integrationKeys['address']}" />
+			<c:out value="${requestScope.paymentMethod.informations.integrationKeys['address']}" escapeXml="false"/>
          </div>
