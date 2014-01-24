@@ -68,17 +68,10 @@
 		<access-denied-handler error-page="/admin/denied.html"/>
 	</http>
 	
+
+	
 	<http pattern="/shop/**" auto-config="true" use-expressions="true" authentication-manager-ref="customerAuthenticationManager">
-	<!--<http pattern="/customer/**" auto-config="true" use-expressions="true">-->
-		
-		<!-- <intercept-url pattern="/customer" access="hasRole('AUTH_CUSTOMER')" />
-		<intercept-url pattern="/customer/" access="hasRole('AUTH_CUSTOMER')" />
-		<intercept-url pattern="/customer/*.html" access="hasRole('AUTH_CUSTOMER')" />
-		<intercept-url pattern="/customer/*/*.html" access="hasRole('AUTH_CUSTOMER')" />
-		<intercept-url pattern="/shop/customer/logon.html*" access="permitAll" />
-		<intercept-url pattern="/shop/customer/denied.html" access="permitAll"/>
-		<intercept-url pattern="/shop/customer/j_spring_security_check" access="permitAll"/> -->
-		
+
 		<intercept-url pattern="/shop" access="permitAll" />
 		<intercept-url pattern="/shop/" access="permitAll" />
 		<intercept-url pattern="/shop/**" access="permitAll" />
@@ -100,6 +93,7 @@
 			logout-url="/shop/customer/j_spring_security_logout" />
 		<access-denied-handler error-page="/shop/"/>
 	</http>
+	
 	
 	<!-- REST services -->
 	<http pattern="/shop/services/private/**" create-session="stateless" use-expressions="true" authentication-manager-ref="userAuthenticationManager" entry-point-ref="servicesAuthenticationEntryPoint">

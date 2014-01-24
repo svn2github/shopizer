@@ -38,7 +38,7 @@ response.setDateHeader ("Expires", -1);
  
  	<body>
  	
-	<div class="container">
+	<div id="pageContainer" class="container">
 				<tiles:insertAttribute name="header" ignore="true"/>
 
 				<tiles:insertAttribute name="navbar" ignore="true"/>

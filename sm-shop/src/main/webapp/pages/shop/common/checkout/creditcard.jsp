@@ -16,6 +16,9 @@ response.setDateHeader ("Expires", -1);
 
 <script src="<c:url value="/resources/js/jquery.creditCardValidator.js" />"></script>
 
+<script>$.ajax({url: "<c:url value="/shop/reference/creditCardDates.html"/>",type: "GET",success: function(data){populateData($('#creditCardYears'), data);	}})</script>
+<script>$.ajax({url: "<c:url value="/shop/reference/monthsOfYear.html"/>",type: "GET",success: function(data){populateData($('#creditCardDays'),data);	}})</script>
+
 <script type="text/javascript">
 		var ccValid = false;
 
@@ -38,7 +41,7 @@ response.setDateHeader ("Expires", -1);
 						invalidCreditCardNumber(creditCardDiv);
 					}
 					//call parent form valid
-					isFormValid();
+					//isFormValid();
 				},
 				{ accept: ['visa', 'mastercard', 'amex'] }
 				
@@ -64,67 +67,76 @@ response.setDateHeader ("Expires", -1);
 			return ccValid;
 		}
 		
-
+		function populateData(div, data) {
+			$.each(data, function() {
+			    div.append($("<option />").val(this).text(this));
+			});
+		}
+		
+		$.fn.addData = function(div, data) {
+			alert(data);
+			var selector = div + ' > option';
+		    $(selector).remove();
+		        return this.each(function() {
+		            var list = this;
+		            $.each(data, function(index, itemData) {
+		                var option = new Option(itemData, itemData);
+		                list.add(option);
+		            });
+		     });
+		};
 </script>
 
 
 		  
           <div class="control-group">
-            <label class="control-label"><c:message code="label.payment.creditcard.usecredicard" text="Use your credit card" /></label>
+            <label class="control-label"><s:message code="label.payment.creditcard.usecredicard" text="Use your credit card" /></label>
             <div class="controls">
                <input type="radio" name="paymentMethodType" value="creditcard" <c:if test="${requestScope.paymentMethod.defaultSelected==true}"> checked</c:if>/>
             </div>
           </div>
 
           <div class="control-group">
-            <label class="control-label"><c:message code="label.payment.creditcard.cardowner" text="Card Holder's Name" /></label>
+            <label class="control-label"><s:message code="label.payment.creditcard.cardowner" text="Card Holder's Name" /></label>
             <div class="controls">
               <s:message code="NotEmpty.order.creditcard.name" text="Credit card holder's name is required" var="msgCardHolderName"/>
-              <input type="text" id="creditcard_card_holder" name="" class="input-xlarge required" title="${msgCardHolderName}">
+              <input type="text" id="creditcard_card_holder" name="payment['creditcard_card_holder']" class="input-xlarge required" title="${msgCardHolderName}">
             </div>
           </div>
        
           <div class="control-group">
-            <label class="control-label"><c:message code="label.payment.creditcard.cardnumber" text="Card number" /></label>
+            <label class="control-label"><s:message code="label.payment.creditcard.cardnumber" text="Card number" /></label>
             <s:message code="NotEmpty.order.creditcard.number" text="A valid credit card number is required" var="msgCardNumber"/>
             <div class="input-append">
-            <input id="creditcard_card_number" class="input-xlarge valid required" type="text" name="card_number" autocomplete="off" title="${msgCardNumber}">
+            <input id="creditcard_card_number" class="input-xlarge valid required" type="text" name="payment['creditcard_card_number']" autocomplete="off" title="${msgCardNumber}">
           	<span id="creditcard_card_image" class="img-add-on"></span>
           	</div>
           </div>
        
           <div class="control-group">
-            <label class="control-label">Card Expiry Date</label>
+            <label class="control-label"><s:message code="label.payment.creditcard.cardexpiry" text="Card expiry year" /></label>
             <div class="controls">
               <div class="row-fluid">
-                <div class="span3">
-                  <select class="input-medium">
-                    <option>January</option>
-                    <option>...</option>
-                    <option>December</option>
-                  </select>
+                <div class="span2">
+                  <select id="creditCardDays" name="payment['creditcard_card_expirationmonth']" class="input-small"></select>
                 </div>
-                <div class="span3">
-                  <select class="input-small">
-                    <option>2013</option>
-                    <option>...</option>
-                    <option>2015</option>
-                  </select>
+                <div class="span2">
+                  <select id="creditCardYears" name="payment['creditcard_card_expirationtear']" class="input-small"></select>
                 </div>
               </div>
             </div>
           </div>
        
           <div class="control-group">
-            <label class="control-label">Card CVV</label>
+            <label class="control-label"><s:message code="label.payment.creditcard.cardcvv" text="Card validation number" /></label>
             <div class="controls">
               <div class="row-fluid">
-                <div class="span4">
+                <div class="span2">
                   <s:message code="NotEmpty.order.creditcard.cvv" text="Credit card validation digit is required" var="msgCardCvv"/>
-                  <input type="text" id="creditcard_card_cvv" name="" class="input-small required" autocomplete="off" maxlength="3" pattern="\d{3}" title="${msgCardCvv}">
+                  <input type="text" id="creditcard_card_cvv" name="payment['creditcard_card_cvv']" class="input-small required" autocomplete="off" maxlength="3" pattern="\d{3}" title="${msgCardCvv}">
                 </div>
                 <div class="span4">
-                  <!-- screenshot may be here -->
+                  <img src="<c:url value="/resources/img/cvv.jpg"/>" width="100">
                 </div>
               </div>
             </div>

@@ -30,7 +30,7 @@
 	 * Function used for adding a product to the Shopping Cart
 	 */
 	function addToCart(sku) {
-		
+		$('#pageContainer').showLoading();
 		var qty = '#qty-productId-'+ sku;
 		var quantity = $(qty).val();
 		if(!quantity || quantity==null || quantity==0) {
@@ -128,6 +128,7 @@
 			 cache:false,
 			 error: function(e) { 
 				console.log('Error while adding to cart');
+				$('#pageContainer').hideLoading();
 				alert('failure'); 
 				 
 			 },
@@ -142,6 +143,7 @@
 				 
 				 displayShoppigCartItems(cart,'#shoppingcartProducts');
 				 displayTotals(cart);
+				 $('#pageContainer').hideLoading();
 			 } 
 		});
 		

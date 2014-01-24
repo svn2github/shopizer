@@ -16,11 +16,45 @@ response.setDateHeader ("Expires", -1);
 
 <script src="<c:url value="/resources/js/jquery.maskedinput.min.js" />"></script>
 
+<!-- subtotals template -->
+<script type="text/html" id="subTotalsTemplate">
+		{{#subTotals}}
+			<tr class="subt"> 
+				<td colspan="3">{{title}}</td> 
+				<td><strong>{{total}}</strong></td> 
+			</tr>
+		{{/subTotals}}
+</script>
 
+<!-- total template -->
+<script type="text/html" id="totalTemplate">
+		<span style="float:right">
+			<font class="total-box-label">
+			  <s:message code="order.total.total" text="Total"/>
+			  <font class="total-box-price">{{grandTotal}}</font>
+			</font>
+		</span>
+</script>
+
+<!-- shipping template -->
+<!--
+<script type="text/html" id="shippingTemplate">
+			<label class="control-label">
+				<s:message code="label.shipping.options" text="Shipping options"/>
+					{{#handlingFees}}
+					&nbsp;(<s:message code="label.shipping.handlingfees" text="Handling fees" />&nbsp;{{handlingFees}})
+					{{/handlingFees}}			       				
+			</label> 
+			<div class="controls"> 	
+			    <label class="radio"> 
+						<input type="radio" name="selectedShippingOption.optionCode" id="{{option.optionCode}}" value="{{option.optionCode}}" {{#checked}} checked="checked"{{/checked}}> 
+						{{option.optionName}} - {{option.optionPriceText}}
+				</label>						
+			</div> 
+</script>
+-->
 
 <script>
-
-
 <!-- checkout form id -->
 var checkoutFormId = '#checkoutForm';
 var formErrorMessageId = '#formErrorMessage';
@@ -98,7 +132,6 @@ function isFieldValid(field) {
 				if(fieldId=='creditcard_card_number') {
 					return isCreditCardValid();// validate credit card number differently
 				}
-				
 			}
 		}
 	</c:if>
@@ -164,12 +197,24 @@ $(document).ready(function() {
 		$(".billing-country-list").change(function() {
 			getZones('#billingStateList','#billingStateProvince',$(this).val(),'<c:out value="${order.customer.billing.zone}" />');
 			setCountrySettings('billing',$(this).val());
+			shippingQuotes();
 	    })
 	    
 	    $(".shipping-country-list").change(function() {
 			getZones('#deliveryStateList','#deliveryStateProvince',$(this).val(),'<c:out value="${order.customer.delivery.zone}" />');
 			setCountrySettings('delivery',$(this).val());
+			shippingQuotes();
 	    })
+	    
+	    $("#billingStateList").change(function() {
+	    	shippingQuotes();	
+	    })
+	    
+	    $("#shippingStateList").change(function() {
+	    	shippingQuotes();		
+	    })
+	    
+	    
 	    
 	    <!-- shipping / billing decision -->
 	    $("#shipToBillingAdress").click(function() {
@@ -274,6 +319,69 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 	});
 	
 }
+
+
+function shippingQuotes(){
+	
+	//var data = JSON.stringify($(checkoutFormId).serializeObject());
+	$('#pageContainer').showLoading();
+	var data = $(checkoutFormId).serialize();
+	console.log(data);
+	
+	$.ajax({
+	  type: 'POST',
+	  url: '<c:url value="/shop/order/shippingQuotes.html"/>',
+	  data: data,
+	  cache: false,
+	  dataType: 'json',
+	  //contentType: 'application/json;charset=utf-8',
+	  success: function(response){
+		  
+		  
+		  	if(response.errorMessage!=null && response.errorMessage!='') {
+		  		alert(response.errorMessage);
+		  	}
+		  
+		  
+		    $('#pageContainer').hideLoading();
+			console.log(response);
+			
+			$('#summary-table tr.subt').remove();
+			$('#totalRow').html('');
+			var subTotalsTemplate = Hogan.compile(document.getElementById("subTotalsTemplate").innerHTML);
+			var totalTemplate = Hogan.compile(document.getElementById("totalTemplate").innerHTML);
+			var subTotalsRendered = subTotalsTemplate.render(response);
+			var totalRendred = totalTemplate.render(response);
+			//console.log(rendered);
+			$('#summaryRows').append(subTotalsRendered);
+			$('#totalRow').html(totalRendred);
+			isFormValid();
+	  },
+	    error: function(xhr, textStatus, errorThrown) {
+	    	$('#pageContainer').hideLoading();
+	  		alert('error ' + errorThrown);
+	  }
+
+	});
+	
+}
+
+$.fn.serializeObject = function()
+{
+   var o = {};
+   var a = this.serializeArray();
+   $.each(a, function() {
+       if (o[this.name]) {
+           if (!o[this.name].push) {
+               o[this.name] = [o[this.name]];
+           }
+           o[this.name].push(this.value || '');
+       } else {
+           o[this.name] = this.value || '';
+       }
+   });
+   return o;
+};
 
 
 															
@@ -527,7 +635,7 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 						
 								        <c:choose>
 								        <c:when test="${fn:length(shippingQuote.shippingOptions)>0}">
-									        <div class="control-group"> 
+									        <div id="shippingRows" class="control-group"> 
 							 					<label class="control-label">
 							 						<s:message code="label.shipping.options" text="Shipping options"/>
 							 						<c:if test="${shippingQuote.handlingFees!=null && shippingQuote.handlingFees>0}">
@@ -537,7 +645,7 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 							 					<div class="controls"> 
 							 						<c:forEach items="${shippingQuote.shippingOptions}" var="option" varStatus="status">
 														<label class="radio"> 
-															<input type="radio" name="order.shippingSummary.shippingOption" id="${option.optionCode}" value="${option.optionCode}" <c:if test="${order.selectedShippingOption!=null && order.selectedShippingOption.optionCode==option.optionCode}">checked="checked"</c:if>> 
+															<input type="radio" name="selectedShippingOption.optionCode" id="${option.optionCode}" value="${option.optionCode}" <c:if test="${order.selectedShippingOption!=null && order.selectedShippingOption.optionCode==option.optionCode}">checked="checked"</c:if>> 
 															${option.optionName} - ${option.optionPriceText}
 														</label> 
 													</c:forEach>
@@ -634,7 +742,7 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 												<p class="p-title"><s:message code="label.order.summary" text="Order summary" /></p>
 											</span>
 
-											<table class="table table-condensed">
+											<table id="summary-table" class="table table-condensed">
 												<thead> 
 													<tr> 
 														<th width="55%"><s:message code="label.order.item" text="Item" /></th> 
@@ -644,9 +752,9 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 													</tr> 
 												</thead> 
 									
-												<tbody> 
+												<tbody id="summaryRows"> 
 													<c:forEach items="${cart.shoppingCartItems}" var="shoppingCartItem">
-													<tr> 
+													<tr class="item"> 
 														<td>
 															${shoppingCartItem.name}
 															<c:if test="${fn:length(shoppingCartItem.shoppingCartAttributes)>0}">
@@ -663,9 +771,8 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 														<td><strong>${shoppingCartItem.subTotal}</strong></td> 
 													</tr>
 													</c:forEach>
-													
+													<!-- subtotals -->
 													<c:forEach items="${order.orderTotalSummary.totals}" var="total">
-									
 													<c:if test="${total.orderTotalCode!='order.total.total'}">
 													<tr class="subt"> 
 														<td colspan="3"><s:message code="${total.orderTotalCode}" text="${total.orderTotalCode}"/></td> 
@@ -677,7 +784,7 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 											</table>
 					
 					
-											<div class="total-box">
+											<div id="totalRow" class="total-box">
 												<span style="float:right">
 													<font class="total-box-label">
 													<s:message code="order.total.total" text="Total"/>
