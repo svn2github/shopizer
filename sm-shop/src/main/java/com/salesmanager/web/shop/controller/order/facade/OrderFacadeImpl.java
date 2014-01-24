@@ -364,6 +364,22 @@ public class OrderFacadeImpl implements OrderFacade {
 		}
 				
 		Customer customer = this.toCustomerModel(order.getCustomer(), store, language);
+		
+		//ajust shipping and billing
+		if(order.isShipToBillingAdress()) {
+			Billing billing = customer.getBilling();
+			Delivery shipping = new Delivery();
+			shipping.setAddress(billing.getAddress());
+			shipping.setCompany(billing.getCompany());
+			shipping.setPostalCode(billing.getPostalCode());
+			shipping.setState(billing.getState());
+			shipping.setCountry(billing.getCountry());
+			shipping.setZone(billing.getZone());
+			customer.setDelivery(shipping);
+		}
+		
+		
+		
 		ShippingQuote quote = shippingService.getShippingQuote(store, customer, shippingProducts, language);
 
 		return quote;

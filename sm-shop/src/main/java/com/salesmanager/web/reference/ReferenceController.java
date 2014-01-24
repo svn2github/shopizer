@@ -1,13 +1,17 @@
 package com.salesmanager.web.reference;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +28,10 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
+import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.utils.DateUtil;
 import com.salesmanager.web.utils.LocaleUtils;
 
 
@@ -47,6 +53,10 @@ public class ReferenceController {
 	
 	@Autowired
 	private LanguageService languageService;
+	
+	@Autowired
+	private CacheUtils cache;
+
 
 	
 	
@@ -153,6 +163,84 @@ public class ReferenceController {
 			LOGGER.error("Error while looking up zone " + zoneCode);
 		}
 		return zoneCode;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value={"/shop/reference/creditCardDates.html"}, method=RequestMethod.GET, produces="application/json")
+	public @ResponseBody String getCreditCardDates(HttpServletRequest request, HttpServletResponse response) {
+		
+
+		List<String> years = null;
+		String serialized = null;
+		try {
+			
+	
+			years = (List<String>)cache.getFromCache(Constants.CREDIT_CARD_YEARS_CACHE_KEY);
+			
+			if(years==null) {
+			
+				years = new ArrayList<String>();
+				//current year
+				Calendar localCalendar = Calendar.getInstance(TimeZone.getDefault());
+				String dt = DateUtil.formatDate(localCalendar.getTime());
+				years.add(dt);
+				for(int i = 1 ; i < 20 ; i++) {
+					localCalendar.add(Calendar.YEAR, i);
+					dt = DateUtil.formatYear(localCalendar.getTime());
+					years.add(dt);
+				}
+				//up to year + 20
+				
+				cache.putInCache(years, Constants.CREDIT_CARD_YEARS_CACHE_KEY);
+			
+			}
+		
+
+		
+			final ObjectMapper mapper = new ObjectMapper();
+			serialized = mapper.writeValueAsString(years);
+		
+		} catch(Exception e) {
+			LOGGER.error("ReferenceControler ",e);
+		}
+		
+		return serialized;
+	
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value={"/shop/reference/monthsOfYear.html"}, method=RequestMethod.GET, produces="application/json")
+	public @ResponseBody String getMonthsOfYear(HttpServletRequest request, HttpServletResponse response) {
+		
+
+		List<String> days = null;
+		String serialized = null;
+		
+		try {	
+			days = (List<String>)cache.getFromCache(Constants.MONTHS_OF_YEAR_CACHE_KEY);
+			if(days==null) {
+
+				days = new ArrayList<String>();
+				for(int i = 1 ; i < 13 ; i++) {
+					days.add(String.format("%02d", i));
+				}
+
+				cache.putInCache(days, Constants.MONTHS_OF_YEAR_CACHE_KEY);
+			
+			}
+		
+
+		
+			final ObjectMapper mapper = new ObjectMapper();
+			serialized = mapper.writeValueAsString(days);
+		
+		} catch(Exception e) {
+			LOGGER.error("ReferenceControler ",e);
+		}
+		
+		return serialized;
+	
 	}
 
 }

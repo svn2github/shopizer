@@ -17,5 +17,12 @@ public class ReadableOrder extends OrderEntity implements Serializable {
 	public ReadableCustomer getCustomer() {
 		return customer;
 	}
+	public OrderTotal getTotal() {
+		return total;
+	}
+	public void setTotal(OrderTotal total) {
+		this.total = total;
+	}
+	private OrderTotal total;
 
 }

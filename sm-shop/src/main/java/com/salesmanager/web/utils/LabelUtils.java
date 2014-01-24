@@ -24,6 +24,13 @@ public class LabelUtils implements ApplicationContextAware {
 		return applicationContext.getMessage(key, null, locale);
 	}
 	
+	public String getMessage(String key, Locale locale, String defaultValue) {
+		try {
+			return applicationContext.getMessage(key, null, locale);
+		} catch(Exception ignore) {}
+		return defaultValue;
+	}
+	
 	public String getMessage(String key, String[] args, Locale locale) {
 		return applicationContext.getMessage(key, args, locale);
 	}

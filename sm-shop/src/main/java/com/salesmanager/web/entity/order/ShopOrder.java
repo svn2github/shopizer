@@ -2,6 +2,7 @@ package com.salesmanager.web.entity.order;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.shipping.model.ShippingOption;
@@ -23,8 +24,15 @@ public class ShopOrder extends PersistableOrder implements Serializable {
 
 	private OrderTotalSummary orderTotalSummary;//The order total displayed to the end user. That object will be used when committing the order
 	private boolean shipToBillingAdress = true;
+	
 	private ShippingSummary shippingSummary;
-	private ShippingOption selectedShippingOption = null;
+	private ShippingOption selectedShippingOption = null;//Default selected option
+	
+	
+	private String paymentMethodType = null;//user selected payment type
+	private Map<String,String> payment;//user payment information
+	
+	private String errorMessage = null;
 
 	
 	public void setShoppingCartItems(List<ShoppingCartItem> shoppingCartItems) {
@@ -57,6 +65,24 @@ public class ShopOrder extends PersistableOrder implements Serializable {
 	}
 	public void setSelectedShippingOption(ShippingOption selectedShippingOption) {
 		this.selectedShippingOption = selectedShippingOption;
+	}
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+	public String getPaymentMethodType() {
+		return paymentMethodType;
+	}
+	public void setPaymentMethodType(String paymentMethodType) {
+		this.paymentMethodType = paymentMethodType;
+	}
+	public Map<String,String> getPayment() {
+		return payment;
+	}
+	public void setPayment(Map<String,String> payment) {
+		this.payment = payment;
 	}
 
 

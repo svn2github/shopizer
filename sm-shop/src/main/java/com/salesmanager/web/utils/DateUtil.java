@@ -60,6 +60,15 @@ public class DateUtil {
 		return format.format(dt);
 
 	}
+	
+	public static String formatYear(Date dt) {
+
+		if (dt == null)
+			return null;
+		SimpleDateFormat format = new SimpleDateFormat(Constants.DEFAULT_DATE_FORMAT_YEAR);
+		return format.format(dt);
+
+	}
 
 	/**
 	 * yy-MMM-dd

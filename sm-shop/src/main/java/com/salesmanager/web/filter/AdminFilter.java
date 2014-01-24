@@ -68,7 +68,7 @@ public class AdminFilter extends HandlerInterceptorAdapter {
 		
 		String userName = request.getRemoteUser();
 		
-		if(userName==null) {
+		if(userName==null) {//** IMPORTANT FOR SPRING SECURITY **//
 			//response.sendRedirect(new StringBuilder().append(request.getContextPath()).append("/").append("/admin").toString());
 		} else {
 		

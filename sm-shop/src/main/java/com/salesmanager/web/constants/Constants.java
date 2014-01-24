@@ -72,5 +72,8 @@ public class Constants {
 
 	public final static String CATEGORY_LINEAGE_DELIMITER = "/";
 	public final static int MAX_REVIEW_RATING_SCORE = 5;
+	
+	public final static String CREDIT_CARD_YEARS_CACHE_KEY = "CREDIT_CARD_YEARS_CACHE_KEY";
+	public final static String MONTHS_OF_YEAR_CACHE_KEY = "MONTHS_OF_YEAR_CACHE_KEY";
 
 }
