@@ -387,7 +387,7 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 		
 		customerService.create(customer);
 	    
-	    ShippingQuote shippingQuote = shippingService.getShippingQuote(store, customer, shippingProducts, en);
+	    ShippingQuote shippingQuote = shippingService.getShippingQuote(store, delivery, shippingProducts, en);
 
 	    Assert.notNull(shippingQuote);
 	    
@@ -574,7 +574,7 @@ public class ShippingTestCase extends AbstractSalesManagerCoreTestCase {
 		
 		customerService.create(customer);
 	    
-	    ShippingQuote shippingQuote = shippingService.getShippingQuote(store, customer, shippingProducts, en);
+	    ShippingQuote shippingQuote = shippingService.getShippingQuote(store, delivery, shippingProducts, en);
 
 	    Assert.notNull(shippingQuote);
 	    

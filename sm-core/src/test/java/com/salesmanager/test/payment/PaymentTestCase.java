@@ -107,8 +107,8 @@ public class PaymentTestCase extends AbstractSalesManagerCoreTestCase {
 		
 		paymentService.savePaymentModuleConfiguration(paymentConfiguration, store);
 		
-
-		paymentService.processPayment(customer, store, payment, new BigDecimal(20));
+		//paypal requires item list List<ShoppinCartItem> for the rest i set null
+		paymentService.processPayment(customer, store, payment, null, new BigDecimal(20));
 
 		
 		
