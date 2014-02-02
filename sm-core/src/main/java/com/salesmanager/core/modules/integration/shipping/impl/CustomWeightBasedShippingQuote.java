@@ -30,6 +30,7 @@ import com.salesmanager.core.utils.ProductPriceUtils;
 public class CustomWeightBasedShippingQuote implements ShippingQuoteModule {
 	
 	public final static String MODULE_CODE = "weightBased";
+	private final static String CUSTOM_WEIGHT = "CUSTOM_WEIGHT";
 	
 	@Autowired
 	private MerchantConfigurationService merchantConfigurationService;
@@ -118,8 +119,8 @@ public class CustomWeightBasedShippingQuote implements ShippingQuoteModule {
 						for(CustomShippingQuoteWeightItem quoteItem : quoteItems) {
 							if(weight<= quoteItem.getMaximumWeight()) {
 								shippingOption = new ShippingOption();
-								shippingOption.setOptionCode("CUSTOMWEIGHT");
-								shippingOption.setOptionId("CUSTOMWEIGHT");
+								shippingOption.setOptionCode(new StringBuilder().append(CUSTOM_WEIGHT).toString());
+								shippingOption.setOptionId(new StringBuilder().append(CUSTOM_WEIGHT).append("_").append(region.getCustomRegionName()).toString());
 								shippingOption.setOptionPrice(quoteItem.getPrice());
 								shippingOption.setOptionPriceText(productPriceUtils.getStoreFormatedAmountWithCurrency(store, quoteItem.getPrice()));
 								break;

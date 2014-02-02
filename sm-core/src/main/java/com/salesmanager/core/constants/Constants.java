@@ -2,6 +2,9 @@ package com.salesmanager.core.constants;
 
 public class Constants {
 	
+	public final static String TEST_ENVIRONMENT= "TEST";
+	public final static String PRODUCTION_ENVIRONMENT= "PRODUCTION";
+	
 	public static final String ALL_REGIONS = "*";
 	public final static String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 	public final static String DEFAULT_DATE_FORMAT_YEAR = "yyyy";

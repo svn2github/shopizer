@@ -14,6 +14,7 @@ import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.payments.model.TransactionType;
+import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.modules.integration.IntegrationException;
@@ -61,7 +62,7 @@ public class MoneyOrderPayment implements PaymentModule {
 
 	@Override
 	public Transaction authorize(MerchantStore store, Customer customer,
-			BigDecimal amount, Payment payment,
+			List<ShoppingCartItem> items, BigDecimal amount, Payment payment,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
 		//NOT REQUIRED
@@ -70,7 +71,7 @@ public class MoneyOrderPayment implements PaymentModule {
 
 	@Override
 	public Transaction capture(MerchantStore store, Customer customer,
-			BigDecimal amount, Payment payment, Transaction transaction,
+			List<ShoppingCartItem> items, BigDecimal amount, Payment payment, Transaction transaction,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
 		//NOT REQUIRED
@@ -79,7 +80,7 @@ public class MoneyOrderPayment implements PaymentModule {
 
 	@Override
 	public Transaction authorizeAndCapture(MerchantStore store, Customer customer,
-			BigDecimal amount, Payment payment,
+			List<ShoppingCartItem> items, BigDecimal amount, Payment payment,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
 		

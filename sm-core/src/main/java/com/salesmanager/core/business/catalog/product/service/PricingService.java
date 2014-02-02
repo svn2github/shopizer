@@ -75,4 +75,14 @@ public interface PricingService {
 	 */
 	String getDisplayAmount(BigDecimal amount, MerchantStore store)
 			throws ServiceException;
+	
+	/**
+	 * String format of the money amount without currency symbol
+	 * @param amount
+	 * @param store
+	 * @return
+	 * @throws ServiceException
+	 */
+	String getStringAmount(BigDecimal amount, MerchantStore store)
+			throws ServiceException;
 }

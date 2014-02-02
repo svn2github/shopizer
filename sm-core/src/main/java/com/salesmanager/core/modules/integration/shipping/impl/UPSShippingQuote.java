@@ -133,7 +133,8 @@ public class UPSShippingQuote implements ShippingQuoteModule {
 
 		
 		if(!(country.getIsoCode().equals("US") || country.getIsoCode().equals("CA"))) {
-			throw new IntegrationException("UPS Not configured for shipping in country " + country.getIsoCode());
+			return null;
+			//throw new IntegrationException("UPS Not configured for shipping in country " + country.getIsoCode());
 		}
 
 		// supports en and fr

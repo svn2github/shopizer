@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
-import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
@@ -30,7 +30,6 @@ import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.shipping.model.PackageDetails;
-import com.salesmanager.core.business.shipping.model.ShippingBasisType;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 import com.salesmanager.core.business.shipping.model.ShippingOption;
 import com.salesmanager.core.business.shipping.model.ShippingOptionPriceType;
@@ -349,7 +348,7 @@ public class ShippingServiceImpl implements ShippingService {
 	}
 
 	@Override
-	public ShippingQuote getShippingQuote(MerchantStore store, Customer customer, List<ShippingProduct> products, Language language) throws ServiceException  {
+	public ShippingQuote getShippingQuote(MerchantStore store, Delivery delivery, List<ShippingProduct> products, Language language) throws ServiceException  {
 		
 		ShippingQuote shippingQuote = new ShippingQuote();
 		ShippingQuoteModule shippingQuoteModule = null;
@@ -369,9 +368,9 @@ public class ShippingServiceImpl implements ShippingService {
 			}
 
 			//look if customer country code excluded
-			Country shipCountry = customer.getDelivery().getCountry();
+			Country shipCountry = delivery.getCountry();
 			if(shipCountry==null) {
-				shipCountry = customer.getCountry();
+				throw new ServiceException("Delivery country is null");
 			}
 			
 			//a ship to country is required
@@ -473,12 +472,12 @@ public class ShippingServiceImpl implements ShippingService {
 			
 			
 			//create delivery
-			com.salesmanager.core.business.common.model.Delivery delivery = customer.getDelivery();
-			com.salesmanager.core.business.common.model.Billing billing = customer.getBilling();
+			//com.salesmanager.core.business.common.model.Delivery delivery = customer.getDelivery();
+			//com.salesmanager.core.business.common.model.Billing billing = customer.getBilling();
 			
 
 			//determine shipping basis
-			if(shippingConfiguration.getShippingBasisType().name().equals(ShippingBasisType.BILLING)) {
+/*			if(shippingConfiguration.getShippingBasisType().name().equals(ShippingBasisType.BILLING)) {
 					
 					delivery = new com.salesmanager.core.business.common.model.Delivery();
 					if(billing!=null) {
@@ -505,7 +504,7 @@ public class ShippingServiceImpl implements ShippingService {
 //				delivery.setState(customer.getState());
 				delivery.setZone(customer.getZone());
 				delivery.setCountry(customer.getCountry());
-			}
+			}*/
 						
 
 			Locale locale = languageService.toLocale(language);

@@ -3,6 +3,7 @@ package com.salesmanager.core.business.shipping.service;
 import java.util.List;
 import java.util.Map;
 
+import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -109,7 +110,7 @@ public interface ShippingService {
 	 * @return
 	 * @throws ServiceException
 	 */
-	ShippingQuote getShippingQuote(MerchantStore store, Customer customer,
+	ShippingQuote getShippingQuote(MerchantStore store, Delivery delivery,
 			List<ShippingProduct> products, Language language)
 			throws ServiceException;
 	

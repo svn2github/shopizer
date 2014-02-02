@@ -61,5 +61,16 @@ public class PricingServiceImpl implements PricingService {
 			throw new ServiceException(e);
 		}
 	}
+
+	@Override
+	public String getStringAmount(BigDecimal amount, MerchantStore store)
+			throws ServiceException {
+		try {
+			String price = priceUtil.getAdminFormatedAmount(store, amount);
+			return price;
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	}
 	
 }

@@ -25,6 +25,7 @@ import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.payments.model.TransactionType;
+import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
@@ -203,14 +204,14 @@ public class PaypalPayment implements PaymentModule {
 
 	@Override
 	public Transaction authorize(MerchantStore store, Customer customer,
-			BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module) throws IntegrationException {
+			List<ShoppingCartItem> items, BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module) throws IntegrationException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Transaction capture(MerchantStore store, Customer customer,
-			BigDecimal amount, com.salesmanager.core.business.payments.model.Payment payment, Transaction trx, IntegrationConfiguration configuration, IntegrationModule module) throws IntegrationException {
+			List<ShoppingCartItem> items, BigDecimal amount, com.salesmanager.core.business.payments.model.Payment payment, Transaction trx, IntegrationConfiguration configuration, IntegrationModule module) throws IntegrationException {
 		// TODO Auto-generated method stub
 		
 		
@@ -406,7 +407,7 @@ public class PaypalPayment implements PaymentModule {
 
 	@Override
 	public Transaction authorizeAndCapture(MerchantStore store, Customer customer,
-			BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module) throws IntegrationException {
+			List<ShoppingCartItem> items, BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module) throws IntegrationException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -695,16 +696,23 @@ public class PaypalPayment implements PaymentModule {
 		
 		//validate integrationKeys['account']
 		Map<String,String> keys = integrationConfiguration.getIntegrationKeys();
-		if(keys==null || StringUtils.isBlank(keys.get("client"))) {
+		if(keys==null || StringUtils.isBlank(keys.get("api"))) {
 			errorFields = new ArrayList<String>();
-			errorFields.add("client");
+			errorFields.add("api");
 		}
 		
-		if(keys==null || StringUtils.isBlank(keys.get("secret"))) {
+		if(keys==null || StringUtils.isBlank(keys.get("username"))) {
 			if(errorFields==null) {
 				errorFields = new ArrayList<String>();
 			}
-			errorFields.add("secret");
+			errorFields.add("username");
+		}
+		
+		if(keys==null || StringUtils.isBlank(keys.get("signature"))) {
+			if(errorFields==null) {
+				errorFields = new ArrayList<String>();
+			}
+			errorFields.add("signature");
 		}
 		
 

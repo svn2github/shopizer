@@ -12,8 +12,10 @@ import com.salesmanager.core.business.payments.model.CreditCardType;
 import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.PaymentMethod;
 import com.salesmanager.core.business.payments.model.Transaction;
+import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
+import com.salesmanager.core.modules.integration.payment.model.PaymentModule;
 
 public interface PaymentService {
 
@@ -25,27 +27,27 @@ public interface PaymentService {
 	Map<String, IntegrationConfiguration> getPaymentModulesConfigured(
 			MerchantStore store) throws ServiceException;
 	
-	Transaction processPayment(Customer customer, MerchantStore store, Payment payment, BigDecimal amount) throws ServiceException;
+	Transaction processPayment(Customer customer, MerchantStore store, Payment payment, List<ShoppingCartItem> items, BigDecimal amount) throws ServiceException;
 	Transaction processRefund(Order order, Customer customer, MerchantStore store, BigDecimal amount) throws ServiceException;
 
 	/**
 	 * Get a specific Payment module by payment type CREDITCART, MONEYORDER ...
 	 * @param store
 	 * @param type (payment type)
-	 * @return
+	 * @return IntegrationModule
 	 * @throws ServiceException
 	 */
 	IntegrationModule getPaymentMethodByType(MerchantStore store, String type)
 			throws ServiceException;
 	
 	/**
-	 * Get a specific Payment module by payment name paypal, authorizenet ..
+	 * Get a specific Payment module by payment code (defined in integrationmoduel.json) paypal, authorizenet ..
 	 * @param store
 	 * @param name
-	 * @return
+	 * @return IntegrationModule
 	 * @throws ServiceException
 	 */
-	IntegrationModule getPaymentMethodByName(MerchantStore store, String name)
+	IntegrationModule getPaymentMethodByCode(MerchantStore store, String name)
 			throws ServiceException;
 
 	/**
@@ -73,7 +75,7 @@ public interface PaymentService {
 	 * for a specific payment module
 	 * @param moduleCode
 	 * @param store
-	 * @return
+	 * @return IntegrationConfiguration
 	 * @throws ServiceException
 	 */
 	IntegrationConfiguration getPaymentConfiguration(String moduleCode,
@@ -83,10 +85,19 @@ public interface PaymentService {
 			throws ServiceException;
 
 	Transaction processCapturePayment(Order order, Customer customer,
-			MerchantStore store, Payment payment, BigDecimal amount)
+			MerchantStore store, Payment payment, List<ShoppingCartItem> items, BigDecimal amount)
 			throws ServiceException;
 
 	List<PaymentMethod> getAcceptedPaymentMethods(MerchantStore store)
+			throws ServiceException;
+
+	/**
+	 * Returns a PaymentModule based on the payment code
+	 * @param paymentModuleCode
+	 * @return PaymentModule
+	 * @throws ServiceException
+	 */
+	PaymentModule getPaymentModule(String paymentModuleCode)
 			throws ServiceException;
 
 }
