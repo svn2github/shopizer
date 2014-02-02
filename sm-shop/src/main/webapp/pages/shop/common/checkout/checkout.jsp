@@ -37,24 +37,28 @@ response.setDateHeader ("Expires", -1);
 </script>
 
 <!-- shipping template -->
-<!--
 <script type="text/html" id="shippingTemplate">
-			<label class="control-label">
-				<s:message code="label.shipping.options" text="Shipping options"/>
-					{{#handlingFees}}
-					&nbsp;(<s:message code="label.shipping.handlingfees" text="Handling fees" />&nbsp;{{handlingFees}})
-					{{/handlingFees}}			       				
-			</label> 
-			<div class="controls"> 	
-			    <label class="radio"> 
-						<input type="radio" name="selectedShippingOption.optionCode" id="{{option.optionCode}}" value="{{option.optionCode}}" {{#checked}} checked="checked"{{/checked}}> 
-						{{option.optionName}} - {{option.optionPriceText}}
-				</label>						
-			</div> 
+
+		<label class="control-label">
+			<s:message code="label.shipping.options" text="Shipping options"/>
+			{{#showHandling}}
+				&nbsp;(<s:message code="label.shipping.handlingfees" text="Handling fees" />&nbsp;{{handlingText}})
+			{{/showHandling}}			       				
+		</label> 
+		<div class="controls">
+			{{#shippingOptions}}	
+				<label class="radio"> 
+					<input type="radio" name="selectedShippingOption.optionId" class="shippingOption" id="{{optionId}}" value="{{optionId}}" {{#checked}} checked="checked"{{/checked}}> 
+					{{optionName}} - {{optionPriceText}}
+				</label>
+			{{/shippingOptions}}						
+		</div>
+
 </script>
--->
+
 
 <script>
+
 <!-- checkout form id -->
 var checkoutFormId = '#checkoutForm';
 var formErrorMessageId = '#formErrorMessage';
@@ -89,13 +93,17 @@ function isFormValid() {
 	if(valid==false) {//disable submit button
 		//alert(firstErrorMessage);
 		if(firstErrorMessage!=null) {
-			$(formErrorMessageId).html('<br/><img src="<c:url value="/resources/img/icon_error.png"/>" width="40"/>&nbsp;<strong><font color="red">' + firstErrorMessage + '</font></strong>');
+			$(formErrorMessageId).addClass('alert-error');
+			$(formErrorMessageId).removeClass('alert-success');
+			$(formErrorMessageId).html('<img src="<c:url value="/resources/img/icon_error.png"/>" width="40"/>&nbsp;<strong><font color="red">' + firstErrorMessage + '</font></strong>');
 			$(formErrorMessageId).show();
 		}
 		$('#submitOrder').addClass('btn-disabled');
 		$('#submitOrder').prop('disabled', true);
 	} else {
-		$(formErrorMessageId).html('<br/><img src="<c:url value="/resources/img/icon_success.png"/>" width="40"/>&nbsp;<strong><s:message code="message.order.canprocess" text="The order can be completed"/></strong>');
+		$(formErrorMessageId).removeClass('alert-error');
+		$(formErrorMessageId).addClass('alert-success');
+		$(formErrorMessageId).html('<img src="<c:url value="/resources/img/icon_success.png"/>" width="40"/>&nbsp;<strong><s:message code="message.order.canprocess" text="The order can be completed"/></strong>');
 		$(formErrorMessageId).show();
 		$('#submitOrder').removeClass('btn-disabled');
 		$('#submitOrder').prop('disabled', false);
@@ -150,11 +158,12 @@ function isFieldValid(field) {
 
 $(document).ready(function() {
 
-
 		<!-- 
 			//can use masked input for phone (USA - CANADA)
 		-->
 		isFormValid();
+		
+		bindActions();
 
 		$("input[type='text']").on("change keyup paste", function(){
 			isFormValid();
@@ -179,7 +188,7 @@ $(document).ready(function() {
 		<c:if test="${order.customer.billing.stateProvince==null || order.customer.billing.stateProvince==''}">
 			$('#billingStateList').show();           
 			$('#billingStateProvince').hide();
-			getZones('#billingStateList','#billingStateProvince','<c:out value="${order.customer.billing.country}" />','<c:out value="${order.customer.billing.zone}" />'); 
+			getZones('#billingStateList','#billingStateProvince','<c:out value="${order.customer.billing.country}" />','<c:out value="${order.customer.billing.zone}" />', null); 
 		</c:if>
 		
 		<c:if test="${order.customer.delivery.stateProvince!=null && order.customer.delivery.stateProvince!=''}">  
@@ -191,19 +200,17 @@ $(document).ready(function() {
 		<c:if test="${order.customer.delivery.stateProvince==null || order.customer.delivery.stateProvince==''}">  
 			$('#deliveryStateList').show();          
 			$('#deliveryStateProvince').hide();
-			getZones('#deliveryStateList','#deliveryStateProvince','<c:out value="${order.customer.delivery.country}" />','<c:out value="${order.customer.billing.zone}" />');
+			getZones('#deliveryStateList','#deliveryStateProvince','<c:out value="${order.customer.delivery.country}" />','<c:out value="${order.customer.billing.zone}" />', null);
 		</c:if>
 
 		$(".billing-country-list").change(function() {
-			getZones('#billingStateList','#billingStateProvince',$(this).val(),'<c:out value="${order.customer.billing.zone}" />');
+			getZones('#billingStateList','#billingStateProvince',$(this).val(),'<c:out value="${order.customer.billing.zone}" />', shippingQuotes);
 			setCountrySettings('billing',$(this).val());
-			shippingQuotes();
 	    })
 	    
 	    $(".shipping-country-list").change(function() {
-			getZones('#deliveryStateList','#deliveryStateProvince',$(this).val(),'<c:out value="${order.customer.delivery.zone}" />');
+			getZones('#deliveryStateList','#deliveryStateProvince',$(this).val(),'<c:out value="${order.customer.delivery.zone}" />', shippingQuotes);
 			setCountrySettings('delivery',$(this).val());
-			shippingQuotes();
 	    })
 	    
 	    $("#billingStateList").change(function() {
@@ -218,6 +225,7 @@ $(document).ready(function() {
 	    
 	    <!-- shipping / billing decision -->
 	    $("#shipToBillingAdress").click(function() {
+	    	shippingQuotes();	
 	    	if ($('#shipToBillingAdress').is(':checked')) {
 	    		$('#deliveryBox').hide();
 	    		isFormValid();
@@ -227,11 +235,21 @@ $(document).ready(function() {
 	    	}
 	    });
 	    
+
+	    
 	    $('input[name=paymentMethodType]', checkoutFormId).click(function() {
 	    	isFormValid();//change payment method
 	    });
+	    
+		$("input[id=billingPostalCode]").blur(function() {
+			shippingQuotes();
+		});
 		
-
+		$("input[id=shippingPostalCode]").blur(function() {
+			if (!$('#shipToBillingAdress').is(':checked')) {
+				shippingQuotes();
+			}
+		});
 
     
 });
@@ -262,6 +280,7 @@ function setCountrySettings(prefix, countryCode) {
 
 
 $.fn.addItems = function(div, data, defaultValue) {
+	//console.log('Populating div ' + div + ' defaultValue ' + defaultValue);
 	var selector = div + ' > option';
 	var defaultExist = false;
     $(selector).remove();
@@ -282,7 +301,15 @@ $.fn.addItems = function(div, data, defaultValue) {
 
 };
 
-function getZones(listDiv, textDiv, countryCode, defaultValue){
+/** 
+ * Specify 
+ * div list container
+ * text div (shown or not)
+ * selected countryCode
+ * preselected value
+ * callback to invoke
+ */
+function getZones(listDiv, textDiv, countryCode, defaultValue, callBackFunction){
 	$.ajax({
 	  type: 'POST',
 	  url: '<c:url value="/shop/reference/provinces.html"/>',
@@ -311,6 +338,9 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 				$(textDiv).show();
 			}
 			isFormValid();
+			if(callBackFunction!=null) {
+				callBackFunction();
+			}
 	  },
 	    error: function(xhr, textStatus, errorThrown) {
 	  	alert('error ' + errorThrown);
@@ -320,13 +350,18 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 	
 }
 
+function bindActions() {
+    $(".shippingOption").click(function() {
+    	calculateTotal();
+    });
+}
+
 
 function shippingQuotes(){
-	
-	//var data = JSON.stringify($(checkoutFormId).serializeObject());
+	resetErrorMessage();
 	$('#pageContainer').showLoading();
 	var data = $(checkoutFormId).serialize();
-	console.log(data);
+	//console.log(data);
 	
 	$.ajax({
 	  type: 'POST',
@@ -334,24 +369,45 @@ function shippingQuotes(){
 	  data: data,
 	  cache: false,
 	  dataType: 'json',
-	  //contentType: 'application/json;charset=utf-8',
 	  success: function(response){
 		  
-		  
-		  	if(response.errorMessage!=null && response.errorMessage!='') {
-		  		alert(response.errorMessage);
-		  	}
-		  
-		  
 		    $('#pageContainer').hideLoading();
+		  	if(response.errorMessage!=null && response.errorMessage!='') {
+		  		showErrorMessage(response.errorMessage);
+		  		return;
+		  	}
+
 			console.log(response);
 			
 			$('#summary-table tr.subt').remove();
 			$('#totalRow').html('');
 			var subTotalsTemplate = Hogan.compile(document.getElementById("subTotalsTemplate").innerHTML);
 			var totalTemplate = Hogan.compile(document.getElementById("totalTemplate").innerHTML);
+			var quotesTemplate = Hogan.compile(document.getElementById("shippingTemplate").innerHTML);
 			var subTotalsRendered = subTotalsTemplate.render(response);
 			var totalRendred = totalTemplate.render(response);
+			
+			if(response.shippingSummary!=null) {
+				//create extra fields
+				summary = response.shippingSummary;
+				for(var i = 0; i< summary.shippingOptions.length; i++) {
+					if(summary.shippingOptions[i].optionId == summary.selectedShippingOption.optionId) {
+						summary.shippingOptions[i].checked = true;
+						break;
+					}
+				}
+				if(summary.handling && summary.handling>0) {
+					summary.showHandling = true;
+				}
+				
+				//render summary
+				$('#shippingSection').html('');
+				var quotesRendered = quotesTemplate.render(response.shippingSummary);
+				console.log(quotesRendered);
+				$('#shippingSection').html(quotesRendered);
+				bindActions();
+				//alert('end');
+			} 
 			//console.log(rendered);
 			$('#summaryRows').append(subTotalsRendered);
 			$('#totalRow').html(totalRendred);
@@ -365,6 +421,51 @@ function shippingQuotes(){
 	});
 	
 }
+
+function calculateTotal(){
+	resetErrorMessage();
+	$('#pageContainer').showLoading();
+	var data = $(checkoutFormId).serialize();
+	//console.log(data);
+	
+	$.ajax({
+	  type: 'POST',
+	  url: '<c:url value="/shop/order/calculateOrderTotal.html"/>',
+	  data: data,
+	  cache: false,
+	  dataType: 'json',
+	  success: function(response){
+		  
+		    $('#pageContainer').hideLoading();
+		  	if(response.errorMessage!=null && response.errorMessage!='') {
+		  		showErrorMessage(response.errorMessage);
+		  		return;
+		  	}
+
+			//console.log(response);
+			
+			$('#summary-table tr.subt').remove();
+			$('#totalRow').html('');
+			var subTotalsTemplate = Hogan.compile(document.getElementById("subTotalsTemplate").innerHTML);
+			var totalTemplate = Hogan.compile(document.getElementById("totalTemplate").innerHTML);
+			var subTotalsRendered = subTotalsTemplate.render(response);
+			var totalRendred = totalTemplate.render(response);
+			
+
+			//console.log(rendered);
+			$('#summaryRows').append(subTotalsRendered);
+			$('#totalRow').html(totalRendred);
+			isFormValid();
+	  },
+	    error: function(xhr, textStatus, errorThrown) {
+	    	$('#pageContainer').hideLoading();
+	  		alert('error ' + errorThrown);
+	  }
+
+	});
+	
+}
+
 
 $.fn.serializeObject = function()
 {
@@ -385,7 +486,28 @@ $.fn.serializeObject = function()
 
 
 															
+function showErrorMessage(message) {
+	
+	$('#checkoutError').addClass('alert');
+	$('#checkoutError').addClass('alert-error');
+	$('#checkoutError').html(message);
+	$('#submitOrder').addClass('btn-disabled');
+	$('#submitOrder').prop('disabled', true);
+	
+	$(formErrorMessageId).addClass('alert-error');
+	$(formErrorMessageId).removeClass('alert-success');
+	$(formErrorMessageId).html('<img src="<c:url value="/resources/img/icon_error.png"/>" width="40"/>&nbsp;<strong><font color="red">' + message + '</font></strong>');
+	$(formErrorMessageId).show();
+	
+}
 
+function resetErrorMessage() {
+	
+	$('#checkoutError').html('');
+	$('#checkoutError').removeClass('alert');
+	$('#checkoutError').removeClass('alert-error');
+	
+}
 
 
 
@@ -401,10 +523,12 @@ $.fn.serializeObject = function()
 
 
 					<!-- If error messages -->
-					<c:if test="${errorMessages!=null}">
-						<!-- disable submit button  -->
-						<div id="store.error" class="alert alert-error"><c:out value="${errorMessages}" /></div><br/>
-					</c:if>
+					<div id="checkoutError"  class="<c:if test="${errorMessages!=null}">alert  alert-error</c:if>">
+						<c:if test="${errorMessages!=null}">
+						<c:out value="${errorMessages}" />
+						</c:if>
+					</div>
+					<!--alert-error-->
 
 					<!-- row fluid span -->
 					<div class="row-fluid">
@@ -416,6 +540,8 @@ $.fn.serializeObject = function()
 											<span class="box-title">
 												<p class="p-title"><s:message code="label.customer.billinginformation" text="Billing information"/></p>
 											</span>
+											
+											<form:hidden path="customer.id"/>
 					
 											<!-- First name - Last name -->
 											<div class="row-fluid">
@@ -488,7 +614,7 @@ $.fn.serializeObject = function()
 															<label><s:message code="label.generic.postalcode" text="Postal code"/></label>
 											    				<div class="controls"> 
 											    					<s:message code="NotEmpty.customer.billing.postalCode" text="Postal code is required" var="msgPostalCode"/>
-											      					<form:input id="customer.billing.postalCode" cssClass="input-large required billing-postalCode" path="customer.billing.postalCode" title="${msgPostalCode}"/>
+											      					<form:input id="billingPostalCode" cssClass="input-large required billing-postalCode" path="customer.billing.postalCode" title="${msgPostalCode}"/>
 											    				</div> 
 											  			</div>
 													</div>
@@ -593,7 +719,7 @@ $.fn.serializeObject = function()
 															<label><s:message code="label.customer.shipping.postalcode" text="Shipping postal code"/></label>
 											    				<div class="controls"> 
 											    				    <s:message code="NotEmpty.customer.shipping.postalcode" text="Shipping postal code should not be empty" var="msgShippingPostal"/>
-											      					<form:input id="customer.delivery.postalCode" cssClass="input-large required delivery-postalCode" path="customer.delivery.postalCode" title="${msgShippingPostal}"/>
+											      					<form:input id="deliveryPostalCode" cssClass="input-large required delivery-postalCode" path="customer.delivery.postalCode" title="${msgShippingPostal}"/>
 											    				</div> 
 											  			</div>
 													</div>
@@ -635,7 +761,7 @@ $.fn.serializeObject = function()
 						
 								        <c:choose>
 								        <c:when test="${fn:length(shippingQuote.shippingOptions)>0}">
-									        <div id="shippingRows" class="control-group"> 
+									        <div id="shippingSection" class="control-group"> 
 							 					<label class="control-label">
 							 						<s:message code="label.shipping.options" text="Shipping options"/>
 							 						<c:if test="${shippingQuote.handlingFees!=null && shippingQuote.handlingFees>0}">
@@ -645,7 +771,7 @@ $.fn.serializeObject = function()
 							 					<div class="controls"> 
 							 						<c:forEach items="${shippingQuote.shippingOptions}" var="option" varStatus="status">
 														<label class="radio"> 
-															<input type="radio" name="selectedShippingOption.optionCode" id="${option.optionCode}" value="${option.optionCode}" <c:if test="${order.selectedShippingOption!=null && order.selectedShippingOption.optionCode==option.optionCode}">checked="checked"</c:if>> 
+															<input type="radio" name="selectedShippingOption.optionId" class="shippingOption" id="${option.optionCode}" value="${option.optionCode}" <c:if test="${order.selectedShippingOption!=null && order.selectedShippingOption.optionCode==option.optionCode}">checked="checked"</c:if>> 
 															${option.optionName} - ${option.optionPriceText}
 														</label> 
 													</c:forEach>
@@ -794,9 +920,8 @@ $.fn.serializeObject = function()
 											</div>					
 										</div>
 										<!--  end order summary box -->
-										
-										<div id="formErrorMessage">
-											<br/>
+										<br/>
+										<div id="formErrorMessage" class="alert">
 										</div>
 										<!-- Submit -->
 										<div class="form-actions">

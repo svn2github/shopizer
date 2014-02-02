@@ -141,7 +141,7 @@ response.setDateHeader ("Expires", -1);
               </c:if>
               <c:forEach items="${subCategories}" var="subCategory">
               	<li>
-              		<a href="<c:url value="/shop/category/${subCategory.description.friendlyUrl}.html/ref=${subCategory.id}"/>"><c:out value="${subCategory.description.name}" />
+              		<a href="<c:url value="/shop/category/${subCategory.description.friendlyUrl}.html/ref=${parent.id}"/>"><c:out value="${subCategory.description.name}" />
               			<c:if test="${subCategory.productCount>0}">&nbsp;<span class="countItems">(<c:out value="${subCategory.productCount}" />)</span></c:if></a></li>
               </c:forEach>
             </ul>

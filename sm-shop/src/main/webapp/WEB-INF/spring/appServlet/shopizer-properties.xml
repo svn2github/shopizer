@@ -29,6 +29,10 @@
 				<prop key="IMAGE_FORMATS">jpg|png|gif</prop>
 				
 				<prop key="POPULATE_TEST_DATA">true</prop>
+				
+				<prop key="ORDER_SCHEME">https</prop>
+				<prop key="CONTEXT_PATH">sm-shop</prop>
+				<prop key="URL_EXTENSION">.html</prop>
 	</util:properties>
 	
 	
