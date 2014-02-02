@@ -68,7 +68,7 @@ public class ProductDescriptionUrlTag extends TagSupport {
 				productPath.append(this.getProductDescription().getProduct().getSku());
 			}
 			
-			productPath.append(".").append(Constants.URL_EXTENSION);
+			productPath.append(Constants.URL_EXTENSION);
 			
 
 

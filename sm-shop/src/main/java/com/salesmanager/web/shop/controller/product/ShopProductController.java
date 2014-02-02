@@ -194,7 +194,7 @@ public class ShopProductController {
 		BreadcrumbItem productBreadcrump = new BreadcrumbItem();
 		productBreadcrump.setItemType(BreadcrumbItemType.PRODUCT);
 		productBreadcrump.setLabel(productProxy.getDescription().getName());
-		productBreadcrump.setUrl(productProxy.getDescription().getFriendlyUrl());
+		productBreadcrump.setUrl((FilePathUtils.buildProductUrl(store, request, productProxy.getDescription().getFriendlyUrl())));
 		items.add(productBreadcrump);
 
 		breadCrumb.setBreadCrumbs(items);

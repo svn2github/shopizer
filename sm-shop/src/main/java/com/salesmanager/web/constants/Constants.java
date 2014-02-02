@@ -12,6 +12,9 @@ public class Constants {
 	public final static String HOME_URL = "/shop";
 	public final static String ADMIN_URL = "/admin";
 	public final static String SHOP_URI = "/shop";
+	public final static String SHOP = "shop";
+	
+
 
 	public final static String DEFAULT_DOMAIN_NAME = "localhost:8080";
 
@@ -35,14 +38,14 @@ public class Constants {
 	public final static String STATIC_URI = "/static";
 	public final static String FILES_URI = "/files";
 	public final static String PRODUCT_URI= "/product";
+	public final static String CATEGORY_URI = "/category";
 	public final static String PRODUCT_ID_URI= "/productid";
 
-	public final static String URL_EXTENSION= "html";
+	public final static String URL_EXTENSION= ".html";
 	public final static String REDIRECT_PREFIX ="redirect:";
 
 
-	public final static String TEST_ENVIRONMENT= "TEST";
-	public final static String PRODUCTION_ENVIRONMENT= "PRODUCTION";
+
 
 	public final static String STORE_CONFIGURATION = "STORECONFIGURATION";
 

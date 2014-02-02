@@ -50,8 +50,9 @@ public class CustomerProductReviewController extends AbstractController {
 	public String displayCustomerAccount(@RequestParam Long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 
-	    final MerchantStore store = super.<MerchantStore>getSessionValue(Constants.MERCHANT_STORE);
-        final Language language=super.<Language>getSessionValue(  Constants.LANGUAGE );
+	    MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+	    Language language = (Language)request.getAttribute(Constants.LANGUAGE);
+
         
         
         //get product

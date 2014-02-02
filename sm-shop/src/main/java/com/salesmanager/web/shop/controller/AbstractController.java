@@ -3,8 +3,7 @@
  */
 package com.salesmanager.web.shop.controller;
 
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Umesh A
@@ -20,10 +19,12 @@ public abstract class AbstractController {
      * @return value stored in session corresponding to the key
      */
     @SuppressWarnings( "unchecked" )
-    public <T> T getSessionValue(final String key) {
-	      ServletRequestAttributes reqAttr = (ServletRequestAttributes) RequestContextHolder
-	                          .currentRequestAttributes();
-	          return (T) reqAttr.getRequest().getSession().getAttribute( key );
+    public <T> T getSessionAttribute(final String key, HttpServletRequest req) {
+	          return (T) req.getSession().getAttribute( key );
+	  }
+    
+    public void setSessionAttribute(final String key, final Object value, HttpServletRequest req) {
+	          req.getSession().setAttribute( key, value );
 	  }
 
 

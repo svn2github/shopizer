@@ -44,7 +44,7 @@ public class MiniCartController extends AbstractController{
 		
 		try {
 			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-			Customer customer = super.<Customer>getSessionValue(  Constants.CUSTOMER );
+		    Customer customer = getSessionAttribute(  Constants.CUSTOMER, request );
 			ShoppingCartData cart =  shoppingCartFacade.getShoppingCartData(customer,merchantStore,shoppingCartCode);
 			if(cart!=null) {
 				request.getSession().setAttribute(Constants.SHOPPING_CART, cart.getCode());

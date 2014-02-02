@@ -136,9 +136,10 @@ public class ShoppingCartController extends AbstractController {
 
 
 		//Look in the HttpSession to see if a customer is logged in
-		MerchantStore store = super.<MerchantStore>getSessionValue(Constants.MERCHANT_STORE);
-		Customer customer = super.<Customer>getSessionValue(  Constants.CUSTOMER );
-		final Language language=super.<Language>getSessionValue(  Constants.LANGUAGE );
+	    MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+	    Language language = (Language)request.getAttribute(Constants.LANGUAGE);
+	    Customer customer = getSessionAttribute(  Constants.CUSTOMER, request );
+
 
 		if(customer != null) {
 			com.salesmanager.core.business.shoppingcart.model.ShoppingCart customerCart = shoppingCartService.getByCustomer(customer);
@@ -238,10 +239,9 @@ public class ShoppingCartController extends AbstractController {
 		request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
         
         
-        Customer customer = super.<Customer>getSessionValue(  Constants.CUSTOMER );
+	    MerchantStore store = (MerchantStore) request.getAttribute(Constants.MERCHANT_STORE);
+	    Customer customer = getSessionAttribute(  Constants.CUSTOMER, request );
 
-        MerchantStore store = (MerchantStore) request.getAttribute( Constants.MERCHANT_STORE );
-        
         /** there must be a cart in the session **/
         String cartCode = (String)request.getSession().getAttribute(Constants.SHOPPING_CART);
         
@@ -267,7 +267,7 @@ public class ShoppingCartController extends AbstractController {
 	public String displayShoppingCart(@ModelAttribute String shoppingCartCode, final Model model, HttpServletRequest request, final Locale locale) throws Exception{
 
 			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-			Customer customer = super.<Customer>getSessionValue(  Constants.CUSTOMER );
+			Customer customer = getSessionAttribute(  Constants.CUSTOMER, request );
 			
 			if(StringUtils.isBlank(shoppingCartCode)) {
 				return "redirect:/shop";
@@ -326,9 +326,9 @@ public class ShoppingCartController extends AbstractController {
 
 		//store the shopping cart in the http session
 
-	    final MerchantStore store = super.<MerchantStore>getSessionValue(Constants.MERCHANT_STORE);
-        final Language language=super.<Language>getSessionValue(  Constants.LANGUAGE );
-        Customer customer = super.<Customer>getSessionValue(  Constants.CUSTOMER );
+	    MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+	    Language language = (Language)request.getAttribute(Constants.LANGUAGE);
+	    Customer customer = getSessionAttribute(  Constants.CUSTOMER, request );
         
         /** there must be a cart in the session **/
         String cartCode = (String)request.getSession().getAttribute(Constants.SHOPPING_CART);
@@ -371,9 +371,9 @@ public class ShoppingCartController extends AbstractController {
 		
 		
 		
-		MerchantStore store = super.<MerchantStore>getSessionValue(Constants.MERCHANT_STORE);
-        final Language language=super.<Language>getSessionValue(  Constants.LANGUAGE );
-        
+	    MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+	    Language language = (Language)request.getAttribute(Constants.LANGUAGE);
+
         
         String cartCode = (String)request.getSession().getAttribute(Constants.SHOPPING_CART);
         

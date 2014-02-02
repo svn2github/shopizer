@@ -186,7 +186,7 @@ public class ShoppingCategoryController {
 			BreadcrumbItem categoryBreadcrump = new BreadcrumbItem();
 			categoryBreadcrump.setItemType(BreadcrumbItemType.CATEGORY);
 			categoryBreadcrump.setLabel(c.getDescription().getName());
-			categoryBreadcrump.setUrl(c.getDescription().getSeUrl());
+			categoryBreadcrump.setUrl(FilePathUtils.buildCategoryUrl(store, request, c.getDescription().getSeUrl()));
 			items.add(categoryBreadcrump);
 		}
 

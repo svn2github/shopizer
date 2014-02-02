@@ -116,5 +116,33 @@ public class FilePathUtils {
 		
 	}
 	
+	public static String buildCategoryUrl(MerchantStore store, HttpServletRequest request, String url) {
+		StringBuilder resourcePath = new StringBuilder();
+		resourcePath.append(buildStoreUri(store, request))
+	
+			.append(Constants.SHOP_URI)
+			
+			.append(Constants.CATEGORY_URI)
+			.append("/")
+			.append(url)
+			.append(Constants.URL_EXTENSION);
+
+		return resourcePath.toString();
+		
+	}
+	
+	public static String buildProductUrl(MerchantStore store, HttpServletRequest request, String url) {
+		StringBuilder resourcePath = new StringBuilder();
+		resourcePath.append(buildStoreUri(store, request))
+			.append(Constants.SHOP_URI)
+			.append(Constants.PRODUCT_URI)
+			.append("/")
+			.append(url)
+			.append(Constants.URL_EXTENSION);
+
+		return resourcePath.toString();
+		
+	}
+	
 
 }

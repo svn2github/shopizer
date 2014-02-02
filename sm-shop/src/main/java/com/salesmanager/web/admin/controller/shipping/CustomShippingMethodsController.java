@@ -197,8 +197,8 @@ public class CustomShippingMethodsController {
 		LOGGER.debug("Saving module code " + moduleCode);
 		
 		List<String> environments = new ArrayList<String>();
-		environments.add(Constants.TEST_ENVIRONMENT);
-		environments.add(Constants.PRODUCTION_ENVIRONMENT);
+		environments.add(com.salesmanager.core.constants.Constants.TEST_ENVIRONMENT);
+		environments.add(com.salesmanager.core.constants.Constants.PRODUCTION_ENVIRONMENT);
 
 		model.addAttribute("environments", environments);
 		model.addAttribute("configuration", configuration);
@@ -737,7 +737,7 @@ public class CustomShippingMethodsController {
 		
 		
 		List<String> environments = new ArrayList<String>();
-		environments.add(Constants.PRODUCTION_ENVIRONMENT);//only production
+		environments.add(com.salesmanager.core.constants.Constants.PRODUCTION_ENVIRONMENT);//only production
 		
 		model.addAttribute("environments", environments);
 		model.addAttribute("configuration", configuration);

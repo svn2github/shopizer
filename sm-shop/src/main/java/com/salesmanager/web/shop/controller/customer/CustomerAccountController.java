@@ -36,9 +36,8 @@ public class CustomerAccountController extends AbstractController {
 	public String displayLogon(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 
-	    final MerchantStore store = super.<MerchantStore>getSessionValue(Constants.MERCHANT_STORE);
-        final Language language=super.<Language>getSessionValue(  Constants.LANGUAGE );
-        
+	    MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+
 
 		//dispatch to dedicated customer logon
 		
@@ -54,9 +53,7 @@ public class CustomerAccountController extends AbstractController {
 	public String displayCustomerAccount(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 
-	    final MerchantStore store = super.<MerchantStore>getSessionValue(Constants.MERCHANT_STORE);
-        final Language language=super.<Language>getSessionValue(  Constants.LANGUAGE );
-        
+	    MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
 
 		
 		
@@ -72,11 +69,8 @@ public class CustomerAccountController extends AbstractController {
 	public String displayCustomerBillingAddress(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 
-	    final MerchantStore store = super.<MerchantStore>getSessionValue(Constants.MERCHANT_STORE);
-        final Language language=super.<Language>getSessionValue(  Constants.LANGUAGE );
-        
+	    MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
 
-		
 		
 		/** template **/
 		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.customer).append(".").append(store.getStoreTemplate());

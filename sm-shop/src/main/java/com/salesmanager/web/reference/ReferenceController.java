@@ -182,11 +182,9 @@ public class ReferenceController {
 				years = new ArrayList<String>();
 				//current year
 				Calendar localCalendar = Calendar.getInstance(TimeZone.getDefault());
-				String dt = DateUtil.formatDate(localCalendar.getTime());
-				years.add(dt);
 				for(int i = 1 ; i < 20 ; i++) {
 					localCalendar.add(Calendar.YEAR, i);
-					dt = DateUtil.formatYear(localCalendar.getTime());
+					String dt = DateUtil.formatYear(localCalendar.getTime());
 					years.add(dt);
 				}
 				//up to year + 20
