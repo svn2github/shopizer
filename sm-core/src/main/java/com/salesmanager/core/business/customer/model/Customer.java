@@ -76,16 +76,16 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 	@Column(name="CUSTOMER_NICK", length=96)
 	private String nick;
 	
-	@Column(name="CUSTOMER_TELEPHONE", length=32, nullable=false)
+	@Column(name="CUSTOMER_TELEPHONE", length=32)
 	private String telephone;
 	
-	@Column(name="CUSTOMER_ADDRESS", length=256, nullable=false)
+	@Column(name="CUSTOMER_ADDRESS", length=256)
 	private String streetAddress;
 	
-	@Column(name="CUSTOMER_POSTALCODE", length=20, nullable=false)
+	@Column(name="CUSTOMER_POSTALCODE", length=20)
 	private String postalCode;
 	
-	@Column(name="CUSTOMER_CITY", length=100, nullable=false)
+	@Column(name="CUSTOMER_CITY", length=100)
 	private String city;
 	
 	@Column(name="CUSTOMER_COMPANY", length=100)
@@ -107,7 +107,7 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 	private Country country;
 	
 	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name="ZONE_ID", nullable=true)
+	@JoinColumn(name="ZONE_ID")
 	private Zone zone;
 	
 	

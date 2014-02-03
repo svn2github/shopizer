@@ -34,7 +34,7 @@ a:visited {color:#0066cc;}
     	${EMAIL_STORE_NAME}<br /><br />
     	${EMAIL_CUSTOMER_FIRSTNAME} ${EMAIL_CUSTOMER_LASTNAME}<br/>
     	${EMAIL_CUSTOMER_GREETING}<br /><br />
-    	${EMAIL_CUSTOMER_USERNAME}</br><br />
+    	${EMAIL_USER_NAME</br><br />
     	${EMAIL_PASSWORD_LABEL}: ${EMAIL_CUSTOMER_PASSWORD}<br /><br />
     </div>
 </div>
