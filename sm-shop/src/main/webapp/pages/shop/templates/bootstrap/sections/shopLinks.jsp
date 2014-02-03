@@ -12,6 +12,7 @@
     <script src="<c:url value="/resources/js/jquery-cookie.js" />"></script>
     <script src="<c:url value="/resources/js/shopping-cart.js" />"></script>
     <script src="<c:url value="/resources/js/login.js" />"></script>
+     <script src="<c:url value="/resources/js/registration.js" />"></script>
     <script src="<c:url value="/resources/js/jquery.showLoading.min.js" />"></script>
     
     <!-- specific css -->
