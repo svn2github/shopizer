@@ -57,4 +57,15 @@ public interface ControllerConstants
 
         
     }
+
+    interface Views
+    {
+        interface Controllers
+        {
+            interface Registration
+            {
+                String RegistrationPage = "shop/customer/registration.html";
+            }
+        }
+    }
 }

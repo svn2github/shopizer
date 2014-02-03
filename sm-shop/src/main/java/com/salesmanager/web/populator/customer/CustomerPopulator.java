@@ -4,6 +4,8 @@ import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.common.model.Delivery;
@@ -29,7 +31,8 @@ import com.salesmanager.web.entity.customer.attribute.PersistableCustomerAttribu
 public class CustomerPopulator extends
 		AbstractDataPopulator<PersistableCustomer, Customer> {
 	
-	private CountryService countryService;
+	protected static final Logger LOG=LoggerFactory.getLogger( CustomerPopulator.class );
+    private CountryService countryService;
 	private ZoneService zoneService;
 	private LanguageService languageService;
 
@@ -52,8 +55,8 @@ public class CustomerPopulator extends
 
 		try {
 			
-			if(!StringUtils.isBlank(source.getPassword())) {
-				target.setPassword(source.getPassword());
+			if(!StringUtils.isBlank(source.getPwd())) {
+				target.setPassword(source.getPwd());
 				target.setAnonymous(false);
 			}
 
@@ -61,8 +64,28 @@ public class CustomerPopulator extends
 			target.setNick(source.getUserName());
 			target.setFirstname(source.getFirstName());
 			target.setLastname(source.getLastName());
+			
+			 
+			//target.setCity( source.get );
 
 			Map<String,Country> countries = countryService.getCountriesMap(language);
+			if(StringUtils.isNotBlank( source.getCountry() )) {
+                Country country = countries.get(source.getCountry());
+                if(country==null) {
+                    throw new ConversionException("Unsuported country code " + source.getCountry());
+                }
+                target.setCountry(country);
+                if(country!=null && !StringUtils.isBlank(source.getProvince())) {
+                    Zone zone = zoneService.getByCode(source.getProvince());
+                    if(zone!=null) {
+                        target.setZone(zone);
+                    }
+                   
+                }
+			}
+			
+			target.setDefaultLanguage( language );
+			target.setMerchantStore( store );
 
 			Address sourceBilling = source.getBilling();
 			if(sourceBilling!=null) {
@@ -101,6 +124,19 @@ public class CustomerPopulator extends
 				target.setStreetAddress(billing.getAddress());
 				target.setZone(billing.getZone());
 			}
+			if(target.getBilling() ==null){
+			    LOG.info( "Setting default values for billing" );
+			    Billing billing = new Billing();
+			    Country billingCountry = null;
+			    if(StringUtils.isNotBlank( source.getCountry() )) {
+                    billingCountry = countries.get(source.getCountry());
+                    if(billingCountry==null) {
+                        throw new ConversionException("Unsuported country code " + sourceBilling.getCountry());
+                    }
+                    billing.setCountry(billingCountry);
+                    target.setBilling( billing );
+                }
+			}
 			Address sourceShipping = source.getDelivery();
 			if(sourceShipping!=null) {
 				Delivery delivery = new Delivery();
@@ -112,6 +148,9 @@ public class CustomerPopulator extends
 				delivery.setPostalCode(sourceShipping.getPostalCode());
 				delivery.setState(sourceShipping.getStateProvince());
 				Country deliveryCountry = null;
+				
+				
+				
 				if(!StringUtils.isBlank(sourceShipping.getCountry())) {
 					deliveryCountry = countries.get(sourceShipping.getCountry());
 					if(deliveryCountry==null) {
@@ -128,6 +167,20 @@ public class CustomerPopulator extends
 					delivery.setZone(zone);
 				}
 				target.setDelivery(delivery);
+			}
+			
+			if(target.getDelivery() ==null){
+			    LOG.info( "Setting default value for delivery" );
+			    Delivery delivery = new Delivery();
+			    Country deliveryCountry = null;
+                if(StringUtils.isNotBlank( source.getCountry() )) {
+                    deliveryCountry = countries.get(source.getCountry());
+                    if(deliveryCountry==null) {
+                        throw new ConversionException("Unsuported country code " + sourceShipping.getCountry());
+                    }
+                    delivery.setCountry(deliveryCountry);
+                    target.setDelivery( delivery );
+                }
 			}
 			
 			if(source.getAttributes()!=null) {
@@ -182,7 +235,7 @@ public class CustomerPopulator extends
 
 	@Override
 	protected Customer createTarget() {
-		return null;
+		return new Customer();
 	}
 
 	public void setCustomerOptionService(CustomerOptionService customerOptionService) {

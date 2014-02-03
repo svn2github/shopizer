@@ -8,6 +8,7 @@ import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.web.entity.customer.CustomerEntity;
+import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 
 /**
@@ -52,4 +53,8 @@ public interface CustomerFacade
     public ShoppingCartData customerAutoLogin(final String userName,final String sessionShoppingCartId,final MerchantStore store,final Language language) throws Exception;
     
     public Customer getCustomerByUserName(final String userName, final MerchantStore store) throws Exception;
+    
+    public boolean checkIfUserExists(final String userName,final MerchantStore store) throws Exception;
+    
+    public CustomerEntity  registerCustomer( final PersistableCustomer customer,final MerchantStore merchantStore) throws Exception;
 }

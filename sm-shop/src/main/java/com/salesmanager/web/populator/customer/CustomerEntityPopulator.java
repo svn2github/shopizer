@@ -3,6 +3,8 @@
  */
 package com.salesmanager.web.populator.customer;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -38,6 +40,12 @@ public class CustomerEntityPopulator
             if(source.getLastname() !=null){
                 target.setLastName( source.getLastname() );
             }
+            
+            if(StringUtils.isNotBlank( source.getEmailAddress() )){
+                target.setEmailAddress( source.getEmailAddress() );
+            }
+            
+          
 
             if ( source.getBilling() != null )
             {

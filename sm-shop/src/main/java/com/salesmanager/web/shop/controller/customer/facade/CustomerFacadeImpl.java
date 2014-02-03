@@ -3,26 +3,43 @@
  */
 package com.salesmanager.web.shop.controller.customer.facade;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
+import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
 
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
+import com.salesmanager.core.business.customer.CustomerRegistrationException;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
+import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
+import com.salesmanager.core.business.customer.service.attribute.CustomerOptionValueService;
 import com.salesmanager.core.business.generic.exception.ConversionException;
+import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.language.service.LanguageService;
+import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartCalculationService;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
+import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.web.entity.customer.CustomerEntity;
+import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.populator.customer.CustomerEntityPopulator;
+import com.salesmanager.web.populator.customer.CustomerPopulator;
 import com.salesmanager.web.populator.shoppingCart.ShoppingCartDataPopulator;
+import com.salesmanager.core.business.user.model.Group;
+import com.salesmanager.core.business.user.model.GroupType;
+
 
 /**
  * Customer Facade work as an abstraction layer between Controller and Service layer.
@@ -32,6 +49,7 @@ import com.salesmanager.web.populator.shoppingCart.ShoppingCartDataPopulator;
  */
 
 //@Service("customerFacade")
+//// http://stackoverflow.com/questions/17444258/how-to-use-new-passwordencoder-from-spring-security
 public class CustomerFacadeImpl implements CustomerFacade
 {
 
@@ -54,6 +72,29 @@ public class CustomerFacadeImpl implements CustomerFacade
 
      @Autowired
      private ProductAttributeService productAttributeService;
+     
+     @Autowired
+     private LanguageService languageService;
+
+     @Autowired
+     private CustomerOptionValueService customerOptionValueService;
+
+     @Autowired
+     private CustomerOptionService customerOptionService;
+
+
+     @Autowired
+     private CountryService countryService;
+
+     @Autowired
+     private GroupService   groupService;
+
+     @Autowired
+     private ZoneService zoneService;
+     
+     @SuppressWarnings( "deprecation" )
+     @Autowired
+     private PasswordEncoder passwordEncoder;
 
 
     /**
@@ -166,4 +207,125 @@ public class CustomerFacadeImpl implements CustomerFacade
 		throws Exception {
  		return customerService.getByNick( userName, store.getId() );
  	}
+
+
+   /**
+    * <p>
+    * Method to check if given user exists for given username under given store.
+    * System treat username as unique for a given store, 
+    * customer is not allowed
+    * to use same username twice for a given store, however it can be used for 
+    * different stores.</p>
+    * 
+    * @param userName Customer slected userName
+    * @param store store for which customer want to register
+    * @return boolean flag indicating if user exists for given store or not
+    * @throws Exception 
+    * 
+    */
+   @Override
+    public boolean checkIfUserExists( final String userName, final MerchantStore store )
+        throws Exception
+    {
+        if ( StringUtils.isNotBlank( userName ) && store != null )
+        {
+            Customer customer = customerService.getByNick( userName, store.getId() );
+            if ( customer != null )
+            {
+                LOG.info( "Customer with userName {} already exists for store {} ", userName, store.getStorename() );
+                return true;
+            }
+            
+            LOG.info( "No customer found with userName {} for store {} ", userName, store.getStorename());
+            return false;
+
+        }
+        LOG.info( "Either userName is empty or we have not found any value for store" );
+        return false;
+    }
+
+
+    @Override
+    public CustomerEntity registerCustomer( final PersistableCustomer customer,final MerchantStore merchantStore )
+        throws Exception
+    {
+       LOG.info( "Starting customer registration process.." );
+        Customer customerModel=populateCustomerModel(customer,merchantStore);
+        if(customerModel == null){
+            LOG.equals( "Unable to create customer in system" );
+            throw new CustomerRegistrationException( "Unable to register customer" );
+        }
+        
+       LOG.info( "Returning customer data to controller.." );
+       return customerEntityPoulator(customerModel,merchantStore);
+     }
+    
+    @SuppressWarnings( "deprecation" )
+    private Customer populateCustomerModel(final PersistableCustomer customer,final MerchantStore merchantStore){
+        
+        LOG.info( "Starting to populate customer model from customer data" );
+        Customer customerModel=null;
+        CustomerPopulator populator = new CustomerPopulator();
+        populator.setCountryService(countryService);
+        populator.setCustomerOptionService(customerOptionService);
+        populator.setCustomerOptionValueService(customerOptionValueService);
+        populator.setLanguageService(languageService);
+        populator.setLanguageService(languageService);
+        populator.setZoneService(zoneService);
+        try
+        {
+            //populator.populate(customer, customerModel, merchantStore, merchantStore.getDefaultLanguage());
+            customerModel= populator.populate( customer, merchantStore, merchantStore.getDefaultLanguage() );
+            List<Group> groups = groupService.listGroup(GroupType.CUSTOMER);
+            customerModel.setGroups( groups );
+            customerModel.setPassword(passwordEncoder.encodePassword(customer.getPwd(), null));
+            LOG.info( "About to persist customer to database." );
+            customerService.saveOrUpdate( customerModel );
+       }
+        catch ( ConversionException e )
+        {
+           LOG.error( "Exception while converting customer data to customer model ",e );
+           return null;
+        }
+        catch ( ServiceException e )
+        {
+            LOG.error( "Unable to find any group ",e );
+            return null;
+        }
+       
+        if(customerModel.getId() !=null){
+            LOG.info( "Returning update instance of customer" );
+            return customerService.getById( customerModel.getId() ); 
+        }
+       
+        Log.info( "Seems some issue while persisting customer  to database..returning null" );
+        return null;
+
+    }
+    
+    
+    private CustomerEntity customerEntityPoulator(final Customer customerModel,final MerchantStore merchantStore){
+        CustomerEntityPopulator customerPopulator=new CustomerEntityPopulator();
+        try
+        {
+            CustomerEntity customerEntity= customerPopulator.populate( customerModel, merchantStore, merchantStore.getDefaultLanguage() );
+            if(customerEntity !=null){
+                customerEntity.setId( customerModel.getId() );
+                LOG.info( "Retunring populated instance of customer entity" );
+                return customerEntity;
+            }
+            LOG.warn( "Seems some issue with customerEntity populator..retunring null instance of customerEntity " );
+            return null;
+              
+        }
+        catch ( ConversionException e )
+        {
+           LOG.error( "Error while converting customer model to customer entity ",e );
+          
+        }
+        return null;
+    }
+
+  
+
 }
