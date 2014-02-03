@@ -17,7 +17,6 @@
         	var userName = $(this).find('#userName').val();
         	var password = $(this).find('#password').val();
         	var storeCode = $(this).find('#storeCode').val();
-        	
         	if(userName=='' || password=='') {
         		 $("#loginError").html(getLoginErrorLabel());
         		 $("#loginError").show();
@@ -32,7 +31,7 @@
                  type: "POST",
                  //my version
                  url: getContextPath() + "/shop/customer/logon.html",
-                 data: "userName=" + userName + "&password=" + password + "&storeCode=" + storeCode,
+                 data: "userName=" + userName + "&pwd=" + password + "&storeCode=" + storeCode,
                  cache:false,
               	 dataType:'json',
                  'success': function(response) {
