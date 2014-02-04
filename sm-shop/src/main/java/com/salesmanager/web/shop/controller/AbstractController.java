@@ -19,12 +19,12 @@ public abstract class AbstractController {
      * @return value stored in session corresponding to the key
      */
     @SuppressWarnings( "unchecked" )
-    public <T> T getSessionAttribute(final String key, HttpServletRequest req) {
-	          return (T) req.getSession().getAttribute( key );
+    public <T> T getSessionAttribute(final String key, HttpServletRequest request) {
+	          return (T) request.getSession().getAttribute( key );
 	  }
     
-    public void setSessionAttribute(final String key, final Object value, HttpServletRequest req) {
-	          req.getSession().setAttribute( key, value );
+    public void setSessionAttribute(final String key, final Object value, HttpServletRequest request) {
+    	request.getSession().setAttribute( key, value );
 	  }
 
 

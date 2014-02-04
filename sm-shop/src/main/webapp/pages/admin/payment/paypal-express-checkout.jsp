@@ -10,10 +10,10 @@
                  <div class="control-group">
                         <label class="required"><s:message code="module.payment.paypal-express-checkout.userid" text="Paypal API user name"/></label>
 	                        <div class="controls">
-	                        		<form:input cssClass="input-large highlight" path="integrationKeys['account']" />
+	                        		<form:input cssClass="input-large highlight" path="integrationKeys['username']" />
 	                        </div>
 	                        <span class="help-inline">
-	                        	<c:if test="${account!=null}">
+	                        	<c:if test="${username!=null}">
 	                        	<span id="identifiererrors" class="error"><s:message code="module.payment.paypal.message.identifier" text="Field in error"/></span>
 	                        	</c:if>
 	                        </span>

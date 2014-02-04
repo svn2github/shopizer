@@ -56,6 +56,7 @@ public class ShoppingOrderPaymentController extends AbstractController {
 	.getLogger(ShoppingOrderPaymentController.class);
 	
 	private final static String INIT_ACTION = "init";
+	private final static String INIT_TRANSACTION_KEY = "init_transaction";
 	
 	@Autowired
 	private ShoppingCartFacade shoppingCartFacade;
@@ -110,7 +111,7 @@ public class ShoppingOrderPaymentController extends AbstractController {
 		String shoppingCartCode  = getSessionAttribute(Constants.SHOPPING_CART, request);
 		
 		Validate.notNull(shoppingCartCode,"shoppingCartCode does not exist in the session");
-
+		AjaxResponse ajaxResponse = new AjaxResponse();
 		try {
 			
 			IntegrationConfiguration config = paymentService.getPaymentConfiguration(paymentmethod, store);
@@ -138,10 +139,24 @@ public class ShoppingOrderPaymentController extends AbstractController {
 			
 			if(action.equals(this.INIT_ACTION)) {
 				if(paymentmethod.equals("paypal-express-checkout")) {
-					PaymentModule module = paymentService.getPaymentModule("paypal-express-checkout");
-					PayPalExpressCheckoutPayment p = (PayPalExpressCheckoutPayment)module;
-					PaypalPayment payment = new PaypalPayment();
-					Transaction transaction = p.initTransaction(store, customer, orderTotalSummary.getTotal(), payment, config, integrationModule);
+					try {
+						
+
+					
+						PaymentModule module = paymentService.getPaymentModule("paypal-express-checkout");
+						PayPalExpressCheckoutPayment p = (PayPalExpressCheckoutPayment)module;
+						PaypalPayment payment = new PaypalPayment();
+						Transaction transaction = p.initTransaction(store, customer, orderTotalSummary.getTotal(), payment, config, integrationModule);
+						super.setSessionAttribute(INIT_TRANSACTION_KEY, transaction, request);
+						
+						//build url
+						
+						//ajaxResponse.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+					
+					} catch(Exception e) {
+						ajaxResponse.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+					}
+							
 				}
 			}
 		
@@ -150,7 +165,7 @@ public class ShoppingOrderPaymentController extends AbstractController {
 
 		}
 		
-		return null;
+		return ajaxResponse;
 	}
 
 }

@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.client.RestTemplate;
 
-import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.web.entity.catalog.category.Category;
 import com.salesmanager.web.entity.catalog.category.CategoryDescription;
 import com.salesmanager.web.entity.catalog.category.PersistableCategory;
@@ -26,32 +25,9 @@ import com.salesmanager.web.entity.catalog.category.ReadableCategory;
 public class CategoryManagementAPITest {
 	
 	private RestTemplate restTemplate;
-	
-	private Long testCategoryID;
-	
-	private Long testProductID;
 
-	@Test
-	@Ignore
-	public void categoryRESTTest() throws Exception {
-		
-		//getCategory();
-		
-		//create customer
-		postCategory();
-		
-		//get All customers
-		//getCategories();
-		
-		//update customer
-		//putCategory();
-		
-		//delete customer
-		//deleteCategory();
-		
-	}
-	
-	public HttpHeaders getHeader(){
+
+	private HttpHeaders getHeader(){
 		HttpHeaders headers = new HttpHeaders();
 		MediaType mediaType = new MediaType("application", "json", Charset.forName("UTF-8"));
 		//MediaType.APPLICATION_JSON //for application/json
@@ -63,6 +39,12 @@ public class CategoryManagementAPITest {
 		return headers;
 	}
 	
+	/**
+	 * Read - GET a category by id
+	 * @throws Exception
+	 */
+	@Test
+	@Ignore
 	public void getCategory() throws Exception {
 		restTemplate = new RestTemplate();
 		
@@ -92,23 +74,14 @@ public class CategoryManagementAPITest {
 	}*/
 	
 
-	
+	/**
+	 * Creates - POST a category for a given store
+	 * @throws Exception
+	 */
+	@Test
+	@Ignore
 	public void postCategory() throws Exception {
 		restTemplate = new RestTemplate();
-		
-/*		String jsonString = ("{"+
-				   " \"sortOrder\": \"0\","+
-				   " \"depth\": \"2\","+
-				   " \"code\": \"movie"+Math.random()+"\","+
-				   " \"lineage\": \"/movie\","+
-				   " \"categoryStatus\": \"true\","+
-				   " \"visible\": \"true\","+
-				   " \"descriptions\": [{"+
-				   "     \"metatagTitle\": \"Hollywood Movie\","+
-				   "     \"name\":\"Hollywood\""+
-				   " }],"+
-				   " \"categoryImage\": \"image.jpg\""+
-				"}");*/
 		
 		PersistableCategory newCategory = new PersistableCategory();
 		newCategory.setCode("javascript");
@@ -143,16 +116,17 @@ public class CategoryManagementAPITest {
 
 		PersistableCategory cat = (PersistableCategory) response.getBody();
 		System.out.println("New Category ID : " + cat.getId());
-		testCategoryID = cat.getId();
 	}
 	
+	@Test
+	@Ignore
 	public void deleteCategory() throws Exception {
 		restTemplate = new RestTemplate();
 		
 		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
 		
-		restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/category/DEFAULT/en/"+testCategoryID, HttpMethod.DELETE, httpEntity, Category.class);
-		System.out.println("Category "+testCategoryID+" Deleted.");
+		restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/category/DEFAULT/100", HttpMethod.DELETE, httpEntity, Category.class);
+		System.out.println("Category id 100 Deleted.");
 	}
 	
 /*	@Test

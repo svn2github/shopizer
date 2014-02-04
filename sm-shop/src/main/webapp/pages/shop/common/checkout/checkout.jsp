@@ -63,6 +63,7 @@ response.setDateHeader ("Expires", -1);
 var checkoutFormId = '#checkoutForm';
 var formErrorMessageId = '#formErrorMessage';
 
+
 function isFormValid() {
 	$(formErrorMessageId).hide();//reset error message
 	var $inputs = $(checkoutFormId).find(':input');
@@ -154,6 +155,263 @@ function isFieldValid(field) {
 		return false;
 	}
 }
+
+$.fn.addItems = function(div, data, defaultValue) {
+	//console.log('Populating div ' + div + ' defaultValue ' + defaultValue);
+	var selector = div + ' > option';
+	var defaultExist = false;
+    $(selector).remove();
+        return this.each(function() {
+            var list = this;
+            $.each(data, function(index, itemData) {
+            	//console.log(itemData.code + ' ' + defaultValue);
+            	if(itemData.code==defaultValue) {
+            		defaultExist = true;
+            	}
+                var option = new Option(itemData.name, itemData.code);
+                list.add(option);
+            });
+            if(defaultExist && (defaultValue!=null && defaultValue!='')) {
+           	 	$(div).val(defaultValue);
+            }
+     });
+};
+
+$.fn.serializeObject = function()
+{
+   var o = {};
+   var a = this.serializeArray();
+   $.each(a, function() {
+       if (o[this.name]) {
+           if (!o[this.name].push) {
+               o[this.name] = [o[this.name]];
+           }
+           o[this.name].push(this.value || '');
+       } else {
+           o[this.name] = this.value || '';
+       }
+   });
+   return o;
+};
+
+function showErrorMessage(message) {
+	
+	$('#checkoutError').addClass('alert');
+	$('#checkoutError').addClass('alert-error');
+	$('#checkoutError').html(message);
+	$('#submitOrder').addClass('btn-disabled');
+	$('#submitOrder').prop('disabled', true);
+	
+	$(formErrorMessageId).addClass('alert-error');
+	$(formErrorMessageId).removeClass('alert-success');
+	$(formErrorMessageId).html('<img src="<c:url value="/resources/img/icon_error.png"/>" width="40"/>&nbsp;<strong><font color="red">' + message + '</font></strong>');
+	$(formErrorMessageId).show();
+	
+}
+
+function resetErrorMessage() {
+	
+	$('#checkoutError').html('');
+	$('#checkoutError').removeClass('alert');
+	$('#checkoutError').removeClass('alert-error');
+	
+}
+
+
+
+/** 
+ * Specify 
+ * div list container
+ * text div (shown or not)
+ * selected countryCode
+ * preselected value
+ * callback to invoke
+ */
+function getZones(listDiv, textDiv, countryCode, defaultValue, callBackFunction){
+	$.ajax({
+	  type: 'POST',
+	  url: '<c:url value="/shop/reference/provinces.html"/>',
+	  data: 'countryCode=' + countryCode + '&lang=${requestScope.LANGUAGE.code}',
+	  dataType: 'json',
+	  success: function(response){
+			var status = response.response.status;
+			//console.log(status);
+			if(status==0 || status ==9999) {
+				
+				var data = response.response.data;
+				//console.log(data);
+				if(data && data.length>0) {
+					$(listDiv).show();  
+					$(textDiv).hide();
+					$(listDiv).addItems(listDiv, data, defaultValue);		
+				} else {
+					$(listDiv).hide();             
+					$(textDiv).show();
+					if(defaultValue!=null || defaultValue !='') {
+						$(textDiv).val(defaultValue);
+					}
+				}
+			} else {
+				$(listDiv).hide();             
+				$(textDiv).show();
+			}
+			isFormValid();
+			if(callBackFunction!=null) {
+				callBackFunction();
+			}
+	  },
+	    error: function(xhr, textStatus, errorThrown) {
+	  	alert('error ' + errorThrown);
+	  }
+
+	});
+	
+}
+
+
+function setCountrySettings(prefix, countryCode) {
+	//add masks to your country
+	//console.log('Apply mask ' + countryCode);
+	
+	var phoneSelector = '.' + prefix + '-phone';
+	var postalCodeSelector = '.' + prefix + '-postalCode';
+	
+	if(countryCode=='CA') {//mask for canada
+		$(phoneSelector).mask("?(999) 999-9999");
+		$(postalCodeSelector).mask("?*** ***");
+		return;
+	}
+	if(countryCode=='US') {// mask for united states
+		$(phoneSelector).mask("?(999) 999-9999");
+		$(postalCodeSelector).mask("?99999");
+		return;
+	}
+	
+	$(phoneSelector).unmask();
+	$(postalCodeSelector).unmask();
+
+	
+}
+
+
+
+function bindActions() {
+    $(".shippingOption").click(function() {
+    	calculateTotal();
+    });
+}
+
+
+
+function shippingQuotes(){
+	resetErrorMessage();
+	$('#pageContainer').showLoading();
+	var data = $(checkoutFormId).serialize();
+	//console.log(data);
+	
+	$.ajax({
+	  type: 'POST',
+	  url: '<c:url value="/shop/order/shippingQuotes.html"/>',
+	  data: data,
+	  cache: false,
+	  dataType: 'json',
+	  success: function(response){
+		  
+		    $('#pageContainer').hideLoading();
+		  	if(response.errorMessage!=null && response.errorMessage!='') {
+		  		showErrorMessage(response.errorMessage);
+		  		return;
+		  	}
+
+			console.log(response);
+			
+			$('#summary-table tr.subt').remove();
+			$('#totalRow').html('');
+			var subTotalsTemplate = Hogan.compile(document.getElementById("subTotalsTemplate").innerHTML);
+			var totalTemplate = Hogan.compile(document.getElementById("totalTemplate").innerHTML);
+			var quotesTemplate = Hogan.compile(document.getElementById("shippingTemplate").innerHTML);
+			var subTotalsRendered = subTotalsTemplate.render(response);
+			var totalRendred = totalTemplate.render(response);
+			
+			if(response.shippingSummary!=null) {
+				//create extra fields
+				summary = response.shippingSummary;
+				for(var i = 0; i< summary.shippingOptions.length; i++) {
+					if(summary.shippingOptions[i].optionId == summary.selectedShippingOption.optionId) {
+						summary.shippingOptions[i].checked = true;
+						break;
+					}
+				}
+				if(summary.handling && summary.handling>0) {
+					summary.showHandling = true;
+				}
+				
+				//render summary
+				$('#shippingSection').html('');
+				var quotesRendered = quotesTemplate.render(response.shippingSummary);
+				console.log(quotesRendered);
+				$('#shippingSection').html(quotesRendered);
+				bindActions();
+				//alert('end');
+			} 
+			//console.log(rendered);
+			$('#summaryRows').append(subTotalsRendered);
+			$('#totalRow').html(totalRendred);
+			isFormValid();
+	  },
+	    error: function(xhr, textStatus, errorThrown) {
+	    	$('#pageContainer').hideLoading();
+	  		alert('error ' + errorThrown);
+	  }
+
+	});
+	
+}
+
+
+function calculateTotal(){
+	resetErrorMessage();
+	$('#pageContainer').showLoading();
+	var data = $(checkoutFormId).serialize();
+	//console.log(data);
+	
+	$.ajax({
+	  type: 'POST',
+	  url: '<c:url value="/shop/order/calculateOrderTotal.html"/>',
+	  data: data,
+	  cache: false,
+	  dataType: 'json',
+	  success: function(response){
+		  
+		    $('#pageContainer').hideLoading();
+		  	if(response.errorMessage!==null && response.errorMessage!=='') {
+		  		showErrorMessage(response.errorMessage);
+		  		return;
+		  	}
+
+			//console.log(response);
+			
+			$('#summary-table tr.subt').remove();
+			$('#totalRow').html('');
+			var subTotalsTemplate = Hogan.compile(document.getElementById("subTotalsTemplate").innerHTML);
+			var totalTemplate = Hogan.compile(document.getElementById("totalTemplate").innerHTML);
+			var subTotalsRendered = subTotalsTemplate.render(response);
+			var totalRendred = totalTemplate.render(response);
+			
+
+			//console.log(rendered);
+			$('#summaryRows').append(subTotalsRendered);
+			$('#totalRow').html(totalRendred);
+			isFormValid();
+	  },
+	    error: function(xhr, textStatus, errorThrown) {
+	    	$('#pageContainer').hideLoading();
+	  		alert('error ' + errorThrown);
+	  }
+
+	});
+}
+
 
 
 $(document).ready(function() {
@@ -250,264 +508,46 @@ $(document).ready(function() {
 				shippingQuotes();
 			}
 		});
+		
+		$("#submitOrder").click(function() {
 
-    
+			resetErrorMessage();
+			$('#pageContainer').showLoading();
+			var data = $(checkoutFormId).serialize();
+			if($('input[name=paymentMethodType]:checked', checkoutFormId).val().contains('paypal')) {
+				var url = getContextPath() + '/shop/paymentAction.html/init/' + $('input[name=paymentMethodType]:checked', checkoutFormId).val();
+				alert(url);
+				$.ajax({
+					  type: 'POST',
+					  url: url,
+					  data: data,
+					  dataType: 'json',
+					  success: function(response){
+							var status = response.response.status;
+							//console.log(status);
+							if(status==0 || status ==9999) {
+								
+								var data = response.response.data;
+								console.log(data);
+
+							} else {
+								console.log('Wrong status ' + status);
+							}
+					  },
+					    error: function(xhr, textStatus, errorThrown) {
+					  	alert('error ' + errorThrown);
+					  }
+
+				});
+				
+				
+			} else {
+				//submit form
+			}
+	    });
+		
 });
 
-function setCountrySettings(prefix, countryCode) {
-	//add masks to your country
-	//console.log('Apply mask ' + countryCode);
-	
-	var phoneSelector = '.' + prefix + '-phone';
-	var postalCodeSelector = '.' + prefix + '-postalCode';
-	
-	if(countryCode=='CA') {//mask for canada
-		$(phoneSelector).mask("?(999) 999-9999");
-		$(postalCodeSelector).mask("?*** ***");
-		return;
-	}
-	if(countryCode=='US') {// mask for united states
-		$(phoneSelector).mask("?(999) 999-9999");
-		$(postalCodeSelector).mask("?99999");
-		return;
-	}
-	
-	$(phoneSelector).unmask();
-	$(postalCodeSelector).unmask();
-
-	
-}
-
-
-$.fn.addItems = function(div, data, defaultValue) {
-	//console.log('Populating div ' + div + ' defaultValue ' + defaultValue);
-	var selector = div + ' > option';
-	var defaultExist = false;
-    $(selector).remove();
-        return this.each(function() {
-            var list = this;
-            $.each(data, function(index, itemData) {
-            	//console.log(itemData.code + ' ' + defaultValue);
-            	if(itemData.code==defaultValue) {
-            		defaultExist = true;
-            	}
-                var option = new Option(itemData.name, itemData.code);
-                list.add(option);
-            });
-            if(defaultExist && (defaultValue!=null && defaultValue!='')) {
-           	 	$(div).val(defaultValue);
-            }
-     });
-
-};
-
-/** 
- * Specify 
- * div list container
- * text div (shown or not)
- * selected countryCode
- * preselected value
- * callback to invoke
- */
-function getZones(listDiv, textDiv, countryCode, defaultValue, callBackFunction){
-	$.ajax({
-	  type: 'POST',
-	  url: '<c:url value="/shop/reference/provinces.html"/>',
-	  data: 'countryCode=' + countryCode + '&lang=${requestScope.LANGUAGE.code}',
-	  dataType: 'json',
-	  success: function(response){
-			var status = response.response.status;
-			//console.log(status);
-			if(status==0 || status ==9999) {
-				
-				var data = response.response.data;
-				//console.log(data);
-				if(data && data.length>0) {
-					$(listDiv).show();  
-					$(textDiv).hide();
-					$(listDiv).addItems(listDiv, data, defaultValue);		
-				} else {
-					$(listDiv).hide();             
-					$(textDiv).show();
-					if(defaultValue!=null || defaultValue !='') {
-						$(textDiv).val(defaultValue);
-					}
-				}
-			} else {
-				$(listDiv).hide();             
-				$(textDiv).show();
-			}
-			isFormValid();
-			if(callBackFunction!=null) {
-				callBackFunction();
-			}
-	  },
-	    error: function(xhr, textStatus, errorThrown) {
-	  	alert('error ' + errorThrown);
-	  }
-
-	});
-	
-}
-
-function bindActions() {
-    $(".shippingOption").click(function() {
-    	calculateTotal();
-    });
-}
-
-
-function shippingQuotes(){
-	resetErrorMessage();
-	$('#pageContainer').showLoading();
-	var data = $(checkoutFormId).serialize();
-	//console.log(data);
-	
-	$.ajax({
-	  type: 'POST',
-	  url: '<c:url value="/shop/order/shippingQuotes.html"/>',
-	  data: data,
-	  cache: false,
-	  dataType: 'json',
-	  success: function(response){
-		  
-		    $('#pageContainer').hideLoading();
-		  	if(response.errorMessage!=null && response.errorMessage!='') {
-		  		showErrorMessage(response.errorMessage);
-		  		return;
-		  	}
-
-			console.log(response);
-			
-			$('#summary-table tr.subt').remove();
-			$('#totalRow').html('');
-			var subTotalsTemplate = Hogan.compile(document.getElementById("subTotalsTemplate").innerHTML);
-			var totalTemplate = Hogan.compile(document.getElementById("totalTemplate").innerHTML);
-			var quotesTemplate = Hogan.compile(document.getElementById("shippingTemplate").innerHTML);
-			var subTotalsRendered = subTotalsTemplate.render(response);
-			var totalRendred = totalTemplate.render(response);
-			
-			if(response.shippingSummary!=null) {
-				//create extra fields
-				summary = response.shippingSummary;
-				for(var i = 0; i< summary.shippingOptions.length; i++) {
-					if(summary.shippingOptions[i].optionId == summary.selectedShippingOption.optionId) {
-						summary.shippingOptions[i].checked = true;
-						break;
-					}
-				}
-				if(summary.handling && summary.handling>0) {
-					summary.showHandling = true;
-				}
-				
-				//render summary
-				$('#shippingSection').html('');
-				var quotesRendered = quotesTemplate.render(response.shippingSummary);
-				console.log(quotesRendered);
-				$('#shippingSection').html(quotesRendered);
-				bindActions();
-				//alert('end');
-			} 
-			//console.log(rendered);
-			$('#summaryRows').append(subTotalsRendered);
-			$('#totalRow').html(totalRendred);
-			isFormValid();
-	  },
-	    error: function(xhr, textStatus, errorThrown) {
-	    	$('#pageContainer').hideLoading();
-	  		alert('error ' + errorThrown);
-	  }
-
-	});
-	
-}
-
-function calculateTotal(){
-	resetErrorMessage();
-	$('#pageContainer').showLoading();
-	var data = $(checkoutFormId).serialize();
-	//console.log(data);
-	
-	$.ajax({
-	  type: 'POST',
-	  url: '<c:url value="/shop/order/calculateOrderTotal.html"/>',
-	  data: data,
-	  cache: false,
-	  dataType: 'json',
-	  success: function(response){
-		  
-		    $('#pageContainer').hideLoading();
-		  	if(response.errorMessage!=null && response.errorMessage!='') {
-		  		showErrorMessage(response.errorMessage);
-		  		return;
-		  	}
-
-			//console.log(response);
-			
-			$('#summary-table tr.subt').remove();
-			$('#totalRow').html('');
-			var subTotalsTemplate = Hogan.compile(document.getElementById("subTotalsTemplate").innerHTML);
-			var totalTemplate = Hogan.compile(document.getElementById("totalTemplate").innerHTML);
-			var subTotalsRendered = subTotalsTemplate.render(response);
-			var totalRendred = totalTemplate.render(response);
-			
-
-			//console.log(rendered);
-			$('#summaryRows').append(subTotalsRendered);
-			$('#totalRow').html(totalRendred);
-			isFormValid();
-	  },
-	    error: function(xhr, textStatus, errorThrown) {
-	    	$('#pageContainer').hideLoading();
-	  		alert('error ' + errorThrown);
-	  }
-
-	});
-	
-}
-
-
-$.fn.serializeObject = function()
-{
-   var o = {};
-   var a = this.serializeArray();
-   $.each(a, function() {
-       if (o[this.name]) {
-           if (!o[this.name].push) {
-               o[this.name] = [o[this.name]];
-           }
-           o[this.name].push(this.value || '');
-       } else {
-           o[this.name] = this.value || '';
-       }
-   });
-   return o;
-};
-
-
-															
-function showErrorMessage(message) {
-	
-	$('#checkoutError').addClass('alert');
-	$('#checkoutError').addClass('alert-error');
-	$('#checkoutError').html(message);
-	$('#submitOrder').addClass('btn-disabled');
-	$('#submitOrder').prop('disabled', true);
-	
-	$(formErrorMessageId).addClass('alert-error');
-	$(formErrorMessageId).removeClass('alert-success');
-	$(formErrorMessageId).html('<img src="<c:url value="/resources/img/icon_error.png"/>" width="40"/>&nbsp;<strong><font color="red">' + message + '</font></strong>');
-	$(formErrorMessageId).show();
-	
-}
-
-function resetErrorMessage() {
-	
-	$('#checkoutError').html('');
-	$('#checkoutError').removeClass('alert');
-	$('#checkoutError').removeClass('alert-error');
-	
-}
 
 
 

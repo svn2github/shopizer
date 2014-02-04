@@ -41,7 +41,7 @@
 								
 								
 								    <div class="control-group">
-						      			  		<table>
+						      			  		<table class="table table-hover">
 
 									  <c:forEach items="${modules}" var="module">
       			  
