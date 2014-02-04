@@ -13,7 +13,7 @@
 
 	
 	<!-- Enables the Spring MVC @Controller programming model -->
-	<annotation-driven validator="validator">
+	<annotation-driven>
 		<!--
 		<argument-resolvers>
 			<beans:bean class="org.springframework.samples.mvc.data.custom.CustomArgumentResolver"/>
@@ -30,7 +30,6 @@
 	                </beans:list>
 	            </beans:property>
 	        </beans:bean>
-	       
     	</message-converters>
 
 	</annotation-driven>
@@ -66,22 +65,16 @@
 		<beans:property name="maxUploadSize" value="10000000"/>
 	</beans:bean>
 	
-	
-	
 	<beans:bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
 		<beans:property name="basenames">
 			<beans:list>
   				<beans:value>bundles/shopizer</beans:value>
   				<beans:value>bundles/messages</beans:value>
   				<beans:value>bundles/shipping</beans:value>
-  				<beans:value>bundles/payment</beans:value> 
-  		</beans:list>
-  	    </beans:property>
+  				<beans:value>bundles/payment</beans:value>    
+  			</beans:list>
+  		</beans:property>
   	</beans:bean>
-  	
-  	<beans:bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
-		<beans:property name="validationMessageSource" ref="messageSource"/>
-	</beans:bean>
   	
   	<beans:bean id="appConfiguration" class="com.salesmanager.web.utils.AppConfiguration">
 		<beans:property name="properties">
