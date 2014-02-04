@@ -31,5 +31,22 @@ public class ModuleConfigurationDaoImpl extends SalesManagerEntityDaoImpl<Long, 
 
 
 	}
+	
+	@Override
+	public IntegrationModule getByCode(String moduleCode) {
+		
+		
+		
+		QIntegrationModule qIntegrationModule = QIntegrationModule.integrationModule;
+
+		
+		JPQLQuery query = new JPAQuery (getEntityManager());
+		query.from(qIntegrationModule)
+			.where(qIntegrationModule.code.eq(moduleCode));
+		
+		return query.uniqueResult(qIntegrationModule);
+
+
+	}
 
 }

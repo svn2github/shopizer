@@ -9,6 +9,8 @@ public interface ModuleConfigurationService extends
 		SalesManagerEntityService<Long, IntegrationModule> {
 
 	List<IntegrationModule> getIntegrationModules(String module);
+
+	IntegrationModule getByCode(String moduleCode);
 	
 
 

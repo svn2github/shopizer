@@ -191,7 +191,7 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 			
 			Properties sdkConfig = new Properties();
 			sdkConfig.put("mode", mode);
-			sdkConfig.put("acct1.UserName", configuration.getIntegrationKeys().get("account"));
+			sdkConfig.put("acct1.UserName", configuration.getIntegrationKeys().get("username"));
 			sdkConfig.put("acct1.Password", configuration.getIntegrationKeys().get("api"));
 			sdkConfig.put("acct1.Signature", configuration.getIntegrationKeys().get("signature"));
 			
@@ -306,7 +306,7 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 			
 			Properties sdkConfig = new Properties();
 			sdkConfig.put("mode", mode);
-			sdkConfig.put("acct1.UserName", configuration.getIntegrationKeys().get("account"));
+			sdkConfig.put("acct1.UserName", configuration.getIntegrationKeys().get("username"));
 			sdkConfig.put("acct1.Password", configuration.getIntegrationKeys().get("api"));
 			sdkConfig.put("acct1.Signature", configuration.getIntegrationKeys().get("signature"));
 			

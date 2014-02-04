@@ -39,6 +39,11 @@ public class ModuleConfigurationServiceImpl extends
 			this.integrationModuleDao = integrationModuleDao;
 	}
 	
+	@Override
+	public IntegrationModule getByCode(String moduleCode) {
+		return integrationModuleDao.getByCode(moduleCode);
+	}
+	
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
@@ -99,6 +104,12 @@ public class ModuleConfigurationServiceImpl extends
 		            		config.setPort((String)values.get("port"));
 		            		config.setUri((String)values.get("uri"));
 		            		config.setEnv((String)values.get("env"));
+		            		if((String)values.get("config1")!=null) {
+		            			config.setConfig1((String)values.get("config1"));
+		            		}
+		            		if((String)values.get("config2")!=null) {
+		            			config.setConfig1((String)values.get("config2"));
+		            		}
 		            		
 		            		moduleConfigs.put(env, config);
 		            		
@@ -108,29 +119,7 @@ public class ModuleConfigurationServiceImpl extends
 						
 						mod.setModuleConfigs(moduleConfigs);
 						
-						
-						
-/*						Object objConfigs=JSONValue.parse(config); 
-						JSONArray arrayConfigs=(JSONArray)objConfigs;
-						Iterator i = arrayConfigs.iterator();
-						while(i.hasNext()) {
-							
-							//String c = (String)i.next();
-							
-							Object o = i.next();
-							
-							System.out.println(o.getClass().getName());
-							
-							//ObjectMapper mapper = new ObjectMapper();
-							//ModuleConfig conf = mapper.readValue(c, ModuleConfig.class);
-							
-							//mod.getModuleConfigs().put(conf., value)
-						}*/
-						
-						
-						//ObjectMapper mapper = new ObjectMapper();
-						//ModuleConfig conf = mapper.readValue(config, ModuleConfig.class);
-						//mod.setModuleConfig(conf);
+
 					}
 
 

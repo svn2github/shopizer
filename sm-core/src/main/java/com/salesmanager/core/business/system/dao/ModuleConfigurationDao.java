@@ -9,4 +9,6 @@ public interface ModuleConfigurationDao extends SalesManagerEntityDao<Long, Inte
 
 	List<IntegrationModule> getModulesConfiguration(String module);
 
+	IntegrationModule getByCode(String moduleCode);
+
 }

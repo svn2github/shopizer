@@ -23,6 +23,7 @@
 	<util:map id="paymentModules" map-class="java.util.HashMap" key-type="java.lang.String" value-type="com.salesmanager.core.modules.integration.payment.model.PaymentModule">
     			<entry key="beanstream" value-ref="beanstream"/>
     			<entry key="paypal" value-ref="paypal"/>
+    			<entry key="paypal-express-checkout" value-ref="paypal-ec"/>
     			<entry key="moneyorder" value-ref="moneyorder"/>
     </util:map>
 
@@ -48,6 +49,8 @@
 		class="com.salesmanager.core.modules.integration.payment.impl.PaypalPayment"/>
 	<bean id="moneyorder"
 		class="com.salesmanager.core.modules.integration.payment.impl.MoneyOrderPayment"/>
+	<bean id="paypal-ec"
+		class="com.salesmanager.core.modules.integration.payment.impl.PayPalExpressCheckoutPayment"/>
 
 	<!--     -->
 	<!-- CMS -->
