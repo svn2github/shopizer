@@ -248,36 +248,7 @@ public class CustomerController {
 		
 		//get countries
 		List<Country> countries = countryService.getCountries(language);
-		
-		if( StringUtils.isBlank(customer.getFirstname() ) ){
-			 ObjectError error = new ObjectError("customerFirstName", messages.getMessage("NotEmpty.customer.FirstName", locale));
-			 result.addError(error);
-		}
-		 
-		if( StringUtils.isBlank(customer.getLastname() ) ){
-			 ObjectError error = new ObjectError("customerLastName", messages.getMessage("NotEmpty.customer.LastName", locale));
-			 result.addError(error);
-		}
-		
-		if( StringUtils.isBlank(customer.getStreetAddress() ) ){
-			 ObjectError error = new ObjectError("customerStreetAddress", messages.getMessage("NotEmpty.customer.StreetAddress", locale));
-			 result.addError(error);
-		}
-		
-		if( StringUtils.isBlank(customer.getCity() ) ){
-			 ObjectError error = new ObjectError("customerCity", messages.getMessage("NotEmpty.customer.City", locale));
-			 result.addError(error);
-		}
-		
-		if( StringUtils.isBlank(customer.getPostalCode() ) ){
-			 ObjectError error = new ObjectError("customerPostCode", messages.getMessage("NotEmpty.customer.PostCode", locale));
-			 result.addError(error);
-		}
-		
-		if( StringUtils.isBlank(customer.getTelephone() ) ){
-			 ObjectError error = new ObjectError("customerTelephone", messages.getMessage("NotEmpty.customer.Telephone", locale));
-			 result.addError(error);
-		}
+
 		
 		if(!StringUtils.isBlank(customer.getEmailAddress() ) ){
 			 java.util.regex.Matcher matcher = pattern.matcher(customer.getEmailAddress());
@@ -293,8 +264,13 @@ public class CustomerController {
 		
 
 		 
-		if( StringUtils.isBlank(customer.getBilling().getName() ) ){
-			 ObjectError error = new ObjectError("billingName", messages.getMessage("NotEmpty.customer.billingName", locale));
+		if( StringUtils.isBlank(customer.getBilling().getFirstName() ) ){
+			 ObjectError error = new ObjectError("billingFirstName", messages.getMessage("NotEmpty.customer.billingFirstName", locale));
+			 result.addError(error);
+		}
+		
+		if( StringUtils.isBlank(customer.getBilling().getLastName() ) ){
+			 ObjectError error = new ObjectError("billingLastName", messages.getMessage("NotEmpty.customer.billingLastName", locale));
 			 result.addError(error);
 		}
 		
@@ -350,31 +326,17 @@ public class CustomerController {
 			newCustomer.setMerchantStore(merchantStore);
 		}
 		
-		newCustomer.setFirstname( customer.getFirstname() );
-		newCustomer.setLastname( customer.getLastname() );
+
 		newCustomer.setEmailAddress(customer.getEmailAddress() );		
-		newCustomer.setTelephone( customer.getTelephone() );
-		newCustomer.setStreetAddress( customer.getStreetAddress() );
-		newCustomer.setCity( customer.getCity() );
-		newCustomer.setPostalCode( customer.getPostalCode() );
 		
-		
-		//get Customer country/zone
-		Country country = countryService.getByCode(customer.getCountry().getIsoCode());  		
+		//get Customer country/zone 		
 		Country deliveryCountry = countryService.getByCode( customer.getDelivery().getCountry().getIsoCode()); 
 		Country billingCountry  = countryService.getByCode( customer.getBilling().getCountry().getIsoCode()) ;
 
-		Zone zone = customer.getZone();
 		Zone deliveryZone = customer.getDelivery().getZone();
 		Zone billingZone  = customer.getBilling().getZone();
 		
-		if (customer.getShowCustomerStateList().equalsIgnoreCase("yes" )) {
-			zone = zoneService.getByCode(zone.getCode());
-			newCustomer.setState( null );			
-		}else if (customer.getShowCustomerStateList().equalsIgnoreCase("no" )){
-			zone = null ;
-			newCustomer.setState( customer.getState() );			
-		}
+
 		
 		if (customer.getShowDeliveryStateList().equalsIgnoreCase("yes" )) {
 			deliveryZone = zoneService.getByCode(customer.getDelivery().getZone().getCode());
@@ -394,8 +356,7 @@ public class CustomerController {
 			customer.getBilling().setState( customer.getBilling().getState() );
 		}
 				
-		newCustomer.setZone( zone);
-		newCustomer.setCountry(country );
+
 		
 		newCustomer.setDefaultLanguage(customer.getDefaultLanguage() );
 		
@@ -629,10 +590,10 @@ public class CustomerController {
 					@SuppressWarnings("rawtypes")
 					Map entry = new HashMap();
 					entry.put("id", customer.getId());
-					entry.put("firstName", customer.getFirstname());
-					entry.put("lastName", customer.getLastname());
+					entry.put("firstName", customer.getBilling().getFirstName());
+					entry.put("lastName", customer.getBilling().getLastName());
 					entry.put("email", customer.getEmailAddress());
-					entry.put("country", customer.getCountry().getIsoCode());
+					entry.put("country", customer.getBilling().getCountry().getIsoCode());
 					resp.addDataEntry(entry);
 					
 				}

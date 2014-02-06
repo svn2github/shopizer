@@ -33,12 +33,17 @@ public class CustomerEntityPopulator
     {
         try
         {
-            if(source.getFirstname() !=null){
-                target.setFirstName( source.getFirstname() );
+            if(source.getBilling() !=null){
+            	if(source.getBilling().getFirstName() !=null){
+            		target.setFirstName( source.getBilling().getFirstName() );
+            	}
+            	if(source.getBilling().getLastName() !=null){
+            		target.setLastName( source.getBilling().getLastName() );
+            	}
             }
 
-            if(source.getLastname() !=null){
-                target.setLastName( source.getLastname() );
+            if(source.getBilling() !=null){
+                
             }
             
             if(StringUtils.isNotBlank( source.getEmailAddress() )){
@@ -52,7 +57,8 @@ public class CustomerEntityPopulator
                 Address address = new Address();
                 address.setCity( source.getBilling().getCity() );
                 address.setCompany( source.getBilling().getCompany() );
-                address.setName( source.getBilling().getName() );
+                address.setFirstName( source.getBilling().getFirstName() );
+                address.setLastName( source.getBilling().getLastName() );
                 address.setPostalCode( source.getBilling().getPostalCode() );
                 address.setPhone( source.getBilling().getTelephone() );
                 if ( source.getBilling().getCountry() != null )
@@ -72,7 +78,8 @@ public class CustomerEntityPopulator
                 Address address = new Address();
                 address.setCity( source.getDelivery().getCity() );
                 address.setCompany( source.getDelivery().getCompany() );
-                address.setName( source.getDelivery().getName() );
+                address.setFirstName( source.getDelivery().getFirstName() );
+                address.setLastName( source.getDelivery().getLastName() );
                 address.setPostalCode( source.getDelivery().getPostalCode() );
                 address.setPhone( source.getDelivery().getTelephone() );
                 if ( source.getDelivery().getCountry() != null )

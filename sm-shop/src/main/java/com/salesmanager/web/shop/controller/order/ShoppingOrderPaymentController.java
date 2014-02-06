@@ -1,7 +1,9 @@
 package com.salesmanager.web.shop.controller.order;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +35,7 @@ import com.salesmanager.core.business.reference.language.service.LanguageService
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.shipping.model.ShippingOption;
 import com.salesmanager.core.business.shipping.model.ShippingSummary;
+import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
@@ -103,8 +106,8 @@ public class ShoppingOrderPaymentController extends AbstractController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value={"/paymentAction.html/{action}/{paymentmethod}"}, method=RequestMethod.POST)
-	public @ResponseBody AjaxResponse calculateShipping(@ModelAttribute(value="order") ShopOrder order, @PathVariable String action, @PathVariable String paymentmethod, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	@RequestMapping(value={"/payment/{action}/{paymentmethod}.html"}, method=RequestMethod.POST)
+	public @ResponseBody AjaxResponse paymentAction(@ModelAttribute(value="order") ShopOrder order, @PathVariable String action, @PathVariable String paymentmethod, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
@@ -112,12 +115,19 @@ public class ShoppingOrderPaymentController extends AbstractController {
 		
 		Validate.notNull(shoppingCartCode,"shoppingCartCode does not exist in the session");
 		AjaxResponse ajaxResponse = new AjaxResponse();
+
 		try {
 			
 			IntegrationConfiguration config = paymentService.getPaymentConfiguration(paymentmethod, store);
 			IntegrationModule integrationModule = paymentService.getPaymentMethodByCode(store, paymentmethod);
 			
 			com.salesmanager.core.business.shoppingcart.model.ShoppingCart cart = shoppingCartFacade.getShoppingCartModel(shoppingCartCode, store);
+			
+			Set<ShoppingCartItem> items = cart.getLineItems();
+			List<ShoppingCartItem> cartItems = new ArrayList<ShoppingCartItem>(items);
+			order.setShoppingCartItems(cartItems);
+			
+			
 			OrderTotalSummary orderTotalSummary = orderFacade.calculateOrderTotal(store, order, language);
 			
 			ShippingSummary summary = (ShippingSummary)request.getSession().getAttribute("SHIPPING_SUMMARY");
@@ -157,11 +167,14 @@ public class ShoppingOrderPaymentController extends AbstractController {
 						ajaxResponse.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 					}
 							
+					ajaxResponse.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
 				}
 			}
 		
 		} catch(Exception e) {
 			LOGGER.error("Error while performing payment action " + action + " for payment method " + paymentmethod ,e);
+			ajaxResponse.setErrorMessage(e);
+			ajaxResponse.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 
 		}
 		

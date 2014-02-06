@@ -55,34 +55,20 @@ public class CustomerPopulator extends
 
 		try {
 			
-			if(!StringUtils.isBlank(source.getPwd())) {
-				target.setPassword(source.getPwd());
+			if(!StringUtils.isBlank(source.getPassword())) {
+				target.setPassword(source.getPassword());
 				target.setAnonymous(false);
 			}
 
 			target.setEmailAddress(source.getEmailAddress());
 			target.setNick(source.getUserName());
-			target.setFirstname(source.getFirstName());
-			target.setLastname(source.getLastName());
+
 			
 			 
 			//target.setCity( source.get );
 
 			Map<String,Country> countries = countryService.getCountriesMap(language);
-			if(StringUtils.isNotBlank( source.getCountry() )) {
-                Country country = countries.get(source.getCountry());
-                if(country==null) {
-                    throw new ConversionException("Unsuported country code " + source.getCountry());
-                }
-                target.setCountry(country);
-                if(country!=null && !StringUtils.isBlank(source.getProvince())) {
-                    Zone zone = zoneService.getByCode(source.getProvince());
-                    if(zone!=null) {
-                        target.setZone(zone);
-                    }
-                   
-                }
-			}
+
 			
 			target.setDefaultLanguage( language );
 			target.setMerchantStore( store );
@@ -94,7 +80,8 @@ public class CustomerPopulator extends
 				billing.setCity(sourceBilling.getCity());
 				billing.setCompany(sourceBilling.getCompany());
 				//billing.setCountry(country);
-				billing.setName(sourceBilling.getName());
+				billing.setFirstName(sourceBilling.getFirstName());
+				billing.setLastName(sourceBilling.getLastName());
 				billing.setTelephone(source.getPhone());
 				billing.setPostalCode(sourceBilling.getPostalCode());
 				billing.setState(sourceBilling.getStateProvince());
@@ -115,14 +102,7 @@ public class CustomerPopulator extends
 					billing.setZone(zone);
 				}
 				target.setBilling(billing);
-				
-				target.setCity(billing.getCity());
-				target.setCountry(billing.getCountry());
-				target.setPostalCode(billing.getPostalCode());
-				target.setState(billing.getState());
-				target.setTelephone(billing.getTelephone());
-				target.setStreetAddress(billing.getAddress());
-				target.setZone(billing.getZone());
+
 			}
 			if(target.getBilling() ==null){
 			    LOG.info( "Setting default values for billing" );
@@ -143,7 +123,8 @@ public class CustomerPopulator extends
 				delivery.setAddress(sourceShipping.getAddress());
 				delivery.setCity(sourceShipping.getCity());
 				delivery.setCompany(sourceShipping.getCompany());
-				delivery.setName(sourceShipping.getName());
+				delivery.setFirstName(sourceShipping.getFirstName());
+				delivery.setLastName(sourceShipping.getLastName());
 				delivery.setTelephone(sourceShipping.getPhone());
 				delivery.setPostalCode(sourceShipping.getPostalCode());
 				delivery.setState(sourceShipping.getStateProvince());

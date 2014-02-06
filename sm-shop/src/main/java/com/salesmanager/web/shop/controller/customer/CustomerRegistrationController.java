@@ -11,12 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-
-
-
-
 import net.tanesha.recaptcha.ReCaptchaImpl;
 import net.tanesha.recaptcha.ReCaptchaResponse;
+
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -44,16 +41,17 @@ import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.system.service.EmailService;
 import com.salesmanager.core.modules.email.Email;
+import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.constants.EmailConstants;
 import com.salesmanager.web.entity.customer.Customer;
 import com.salesmanager.web.entity.customer.CustomerEntity;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
+import com.salesmanager.web.entity.customer.ShopPersistableCustomer;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
 import com.salesmanager.web.shop.controller.data.CountryData;
-import com.salesmanager.web.utils.Config;
 import com.salesmanager.web.utils.EmailUtils;
 import com.salesmanager.web.utils.FilePathUtils;
 import com.salesmanager.web.utils.LabelUtils;
@@ -71,13 +69,12 @@ import com.salesmanager.web.utils.LabelUtils;
 public class CustomerRegistrationController{
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerRegistrationController.class);
-    public static final String RECAPATCHA_PUBLIC_KEY="shopizer.demo.recapatcha_public_key";
-    public static final String RECAPATCHA_PRIVATE_KEY="shopizer.demo.recapatcha_private_key";
+    public static final String RECAPATCHA_PUBLIC_KEY="shopizer.recapatcha_public_key";
+    public static final String RECAPATCHA_PRIVATE_KEY="shopizer.recapatcha_private_key";
+    
+	@Autowired
+	private CoreConfiguration coreConfiguration;
 
-    /*@Autowired
-    private ReCaptcha reCaptcha;*/
-
-	
 	@Autowired
 	private LanguageService languageService;
 
@@ -109,10 +106,8 @@ public class CustomerRegistrationController{
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 
 		//TODO object will change
-		Customer customer = new Customer();
-		model.addAttribute( "recapatcha_public_key", Config.getParameter( RECAPATCHA_PUBLIC_KEY ) );
-		model.addAttribute("customer", customer);
-		model.addAttribute( new PersistableCustomer() );
+		model.addAttribute( "recapatcha_public_key", coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
+		model.addAttribute("customer", new ShopPersistableCustomer() );
 
 		/** template **/
 		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.register).append(".").append(store.getStoreTemplate());
@@ -125,14 +120,14 @@ public class CustomerRegistrationController{
     @RequestMapping( value = "/register.html", method = RequestMethod.POST )
     public String registerCustomer( @Valid
     @ModelAttribute
-    final PersistableCustomer customer, final BindingResult bindingResult, final Model model,
+    final ShopPersistableCustomer customer, final BindingResult bindingResult, final Model model,
                                     final HttpServletRequest request, final Locale locale )
         throws Exception
     {
         final MerchantStore merchantStore = (MerchantStore) request.getAttribute( Constants.MERCHANT_STORE );
         ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
-        reCaptcha.setPublicKey( Config.getParameter( RECAPATCHA_PUBLIC_KEY ) );
-        reCaptcha.setPrivateKey( Config.getParameter( RECAPATCHA_PRIVATE_KEY ) );
+        reCaptcha.setPublicKey( coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
+        reCaptcha.setPrivateKey( coreConfiguration.getProperty( RECAPATCHA_PRIVATE_KEY ) );
         
         if ( StringUtils.isNotBlank( customer.getRecaptcha_challenge_field() )
             && StringUtils.isNotBlank( customer.getRecaptcha_response_field() ) )
@@ -324,7 +319,7 @@ public class CustomerRegistrationController{
            templateTokens.put(EmailConstants.EMAIL_USERNAME_LABEL, messages.getMessage("label.generic.username",customerLocale));
            templateTokens.put(EmailConstants.EMAIL_PASSWORD_LABEL, messages.getMessage("label.generic.password",customerLocale));
            templateTokens.put(EmailConstants.EMAIL_USER_NAME, customer.getUserName());
-           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_PASSWORD, customer.getPwd());
+           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_PASSWORD, customer.getPassword());
 
 
            Email email = new Email();

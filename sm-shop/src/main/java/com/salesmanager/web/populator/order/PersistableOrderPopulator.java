@@ -72,30 +72,9 @@ public class PersistableOrderPopulator extends
 					target.setCustomerId(modelCustomer.getId());
 					target.setBilling(modelCustomer.getBilling());
 					target.setDelivery(modelCustomer.getDelivery());
-					target.setCustomerCity(modelCustomer.getCity());
-					target.setCustomerFirstName(modelCustomer.getFirstname());
-					target.setCustomerFirstName(modelCustomer.getLastname());
-					target.setCustomerPostCode(modelCustomer.getPostalCode());
-					target.setCustomerStreetAddress(modelCustomer.getStreetAddress());
-					target.setCustomerTelephone(modelCustomer.getTelephone());
 					target.setCustomerEmailAddress(source.getCustomer().getEmailAddress());
-					if(modelCustomer.getCountry()==null) {
-						throw new ConversionException("Customer country is null");
-					}
-					Country c = countriesMap.get(modelCustomer.getCountry().getIsoCode());
-					if(c==null) {
-						throw new ConversionException("Country code " + modelCustomer.getCountry().getIsoCode() + " is invalid");
-					}
-					target.setCustomerCountry(c.getName());
-					if(modelCustomer.getZone()!=null) {
-						Zone z = zonesMap.get(modelCustomer.getZone().getCode());
-						if(z==null) {
-							throw new ConversionException("Country zone code " + modelCustomer.getZone().getCode() + " is invalid");
-						}
-						target.setCustomerState(z.getName());
-					}  else {
-						target.setCustomerState(modelCustomer.getState());
-					}
+
+
 					
 				} 
 			}

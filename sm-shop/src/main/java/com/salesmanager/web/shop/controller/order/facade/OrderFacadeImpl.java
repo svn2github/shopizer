@@ -216,7 +216,9 @@ public class OrderFacadeImpl implements OrderFacade {
 			customerService.saveOrUpdate(customer);
 		}
 		
-		Order modelOrder = new Order(customer);
+		Order modelOrder = new Order();
+		modelOrder.setBilling(customer.getBilling());
+		modelOrder.setDelivery(customer.getDelivery());
 
 		List<ShoppingCartItem> shoppingCartItems = order.getShoppingCartItems();
 		Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
@@ -289,22 +291,10 @@ public class OrderFacadeImpl implements OrderFacade {
 		//populate customer
 		order.setBilling(customer.getBilling());
 		order.setDelivery(customer.getDelivery());
-		order.setCustomerCity(customer.getCity());
-		order.setCustomerCountry(countriesMap.get(customer.getCountry().getIsoCode()).getName());
 		order.setCustomerEmailAddress(customer.getEmailAddress());
-		order.setCustomerFirstName(customer.getFirstname());
-		order.setCustomerLastName(customer.getLastname());
 		order.setCustomerId(customer.getId());
-		order.setCustomerPostCode(customer.getPostalCode());
-		if(customer.getZone()!=null) {
-			Zone z = zonesMap.get(customer.getZone().getCode());
-			order.setCustomerState(z.getName());
-		} else {
-			order.setCustomerState(customer.getState());
-		}
-		order.setCustomerStreetAddress(customer.getStreetAddress());
-		order.setCustomerTelephone(customer.getTelephone());
-			
+
+		
 		
 	}
 

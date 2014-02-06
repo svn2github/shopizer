@@ -150,6 +150,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 					if(customer.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 						request.getSession().removeAttribute(Constants.CUSTOMER);
 					}
+					request.setAttribute(Constants.CUSTOMER, customer);
 				}
 				
 				/** language & locale **/

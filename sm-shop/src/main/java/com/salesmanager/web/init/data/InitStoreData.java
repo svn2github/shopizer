@@ -599,21 +599,13 @@ public class InitStoreData implements InitData {
 		    //Create a customer (user name[nick] : shopizer password : password)
 
 		    Customer customer = new Customer();
-			customer.setFirstname("Leonardo");
 			customer.setMerchantStore(store);
-			customer.setLastname("DiCaprio");
-			customer.setCity("Boucherville");
 			customer.setEmailAddress("test@shopizer.com");
 			customer.setGender(CustomerGender.M);						
-			customer.setTelephone("444-555-6666");
 			customer.setAnonymous(false);
 			customer.setCompany("CSTI Consulting");
 			customer.setDateOfBirth(new Date());
-			customer.setPostalCode("J4B-8J9");			
-			customer.setStreetAddress("358 Du Languadoc");
-			customer.setTelephone("444-555-6666");
-			customer.setCountry(canada);
-			customer.setZone(zone);
+
 			customer.setDefaultLanguage(en);
 			customer.setNick("shopizer");
 			
@@ -634,7 +626,8 @@ public class InitStoreData implements InitData {
 		    delivery.setCity( "Boucherville" );
 		    delivery.setCountry(canada);
 //		    delivery.setCountryCode(canada.getIsoCode());
-		    delivery.setName("Leonardo DiCaprio" );
+		    delivery.setFirstName("Leonardo" );
+		    delivery.setLastName("DiCaprio" );
 		    delivery.setPostalCode("J4B-8J9" );
 		    delivery.setZone(zone);	    
 		    
@@ -644,7 +637,8 @@ public class InitStoreData implements InitData {
 		    billing.setCompany("CSTI Consulting");
 		    billing.setCountry(canada);
 //		    billing.setCountryCode(canada.getIsoCode());
-		    billing.setName("CSTI Consulting");
+		    billing.setFirstName("Leonardo" );
+		    billing.setLastName("DiCaprio" );
 		    billing.setPostalCode("J4B-8J9");
 		    billing.setZone(zone);
 		    
@@ -667,8 +661,8 @@ public class InitStoreData implements InitData {
 
 			order.setCurrencyValue(new BigDecimal(0.98));//compared to based currency (not necessary)
 			order.setCustomerId(customer.getId());
-			order.setCustomerFirstName("Leo");
-			order.setCustomerLastName("DiCaprio");
+			order.setBilling(billing);
+			order.setDelivery(delivery);
 			order.setCustomerEmailAddress("leo@shopizer.com");
 			order.setDelivery(delivery);
 			order.setIpAddress("ipAddress" );

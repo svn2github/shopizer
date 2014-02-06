@@ -60,7 +60,7 @@ public class CustomerLoginController {
         try {
 
         	Authentication authenticationToken =
-                    new UsernamePasswordAuthenticationToken(securedCustomer.getUserName(), securedCustomer.getPwd());
+                    new UsernamePasswordAuthenticationToken(securedCustomer.getUserName(), securedCustomer.getPassword());
         	
         	LOG.debug("Authenticating user " + securedCustomer.getUserName());
         	

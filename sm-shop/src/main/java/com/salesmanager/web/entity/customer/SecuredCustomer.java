@@ -14,6 +14,7 @@ public class SecuredCustomer extends CustomerEntity implements Serializable {
 	
 	private String userName;
 	private String storeCode;
+	private String password;
 
 
 	public void setUserName(final String userName) {
@@ -36,6 +37,14 @@ public class SecuredCustomer extends CustomerEntity implements Serializable {
 
 	public String getStoreCode() {
 		return storeCode;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }

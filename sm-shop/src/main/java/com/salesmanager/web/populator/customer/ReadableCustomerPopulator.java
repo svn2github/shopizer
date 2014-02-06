@@ -26,14 +26,13 @@ public class ReadableCustomerPopulator extends
 		try {
 			
 
-		target.setFirstName(source.getFirstname());
-		target.setLastName(source.getLastname());
 		target.setEmailAddress(source.getEmailAddress());
 		if(source.getBilling()!=null) {
 			Address address = new Address();
 			address.setCity(source.getBilling().getCity());
 			address.setCompany(source.getBilling().getCompany());
-			address.setName(source.getBilling().getName());
+			address.setFirstName(source.getBilling().getFirstName());
+			address.setLastName(source.getBilling().getLastName());
 			address.setPostalCode(source.getBilling().getPostalCode());
 			address.setPhone(source.getBilling().getTelephone());
 			if(source.getBilling().getCountry()!=null) {
@@ -50,7 +49,8 @@ public class ReadableCustomerPopulator extends
 			Address address = new Address();
 			address.setCity(source.getDelivery().getCity());
 			address.setCompany(source.getDelivery().getCompany());
-			address.setName(source.getDelivery().getName());
+			address.setFirstName(source.getDelivery().getFirstName());
+			address.setLastName(source.getDelivery().getLastName());
 			address.setPostalCode(source.getDelivery().getPostalCode());
 			address.setPhone(source.getDelivery().getTelephone());
 			if(source.getDelivery().getCountry()!=null) {

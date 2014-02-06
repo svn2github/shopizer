@@ -35,7 +35,8 @@ public class ReadableShopOrderPopulator extends
 				Address address = new Address();
 				address.setCity(persistableCustomer.getBilling().getCity());
 				address.setCompany(persistableCustomer.getBilling().getCompany());
-				address.setName(persistableCustomer.getBilling().getName());
+				address.setFirstName(persistableCustomer.getBilling().getFirstName());
+				address.setLastName(persistableCustomer.getBilling().getLastName());
 				address.setPostalCode(persistableCustomer.getBilling().getPostalCode());
 				address.setPhone(persistableCustomer.getBilling().getPhone());
 				if(persistableCustomer.getBilling().getCountry()!=null) {
@@ -52,7 +53,8 @@ public class ReadableShopOrderPopulator extends
 				Address address = new Address();
 				address.setCity(persistableCustomer.getDelivery().getCity());
 				address.setCompany(persistableCustomer.getDelivery().getCompany());
-				address.setName(persistableCustomer.getDelivery().getName());
+				address.setFirstName(persistableCustomer.getDelivery().getFirstName());
+				address.setLastName(persistableCustomer.getDelivery().getLastName());
 				address.setPostalCode(persistableCustomer.getDelivery().getPostalCode());
 				address.setPhone(persistableCustomer.getDelivery().getPhone());
 				if(persistableCustomer.getDelivery().getCountry()!=null) {

@@ -30,6 +30,8 @@ import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartCalculationService;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
+import com.salesmanager.core.business.user.model.Group;
+import com.salesmanager.core.business.user.model.GroupType;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.web.entity.customer.CustomerEntity;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
@@ -37,8 +39,6 @@ import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.populator.customer.CustomerEntityPopulator;
 import com.salesmanager.web.populator.customer.CustomerPopulator;
 import com.salesmanager.web.populator.shoppingCart.ShoppingCartDataPopulator;
-import com.salesmanager.core.business.user.model.Group;
-import com.salesmanager.core.business.user.model.GroupType;
 
 
 /**
@@ -278,7 +278,7 @@ public class CustomerFacadeImpl implements CustomerFacade
             customerModel= populator.populate( customer, merchantStore, merchantStore.getDefaultLanguage() );
             List<Group> groups = groupService.listGroup(GroupType.CUSTOMER);
             customerModel.setGroups( groups );
-            customerModel.setPassword(passwordEncoder.encodePassword(customer.getPwd(), null));
+            customerModel.setPassword(passwordEncoder.encodePassword(customer.getPassword(), null));
             LOG.info( "About to persist customer to database." );
             customerService.saveOrUpdate( customerModel );
        }

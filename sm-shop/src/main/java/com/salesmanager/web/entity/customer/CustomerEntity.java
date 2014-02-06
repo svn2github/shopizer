@@ -27,15 +27,6 @@ public class CustomerEntity extends Customer implements Serializable {
 	private Address delivery;
 	private String gender;
 
-	
-	private String recaptcha_challenge_field;
-	
-	private String recaptcha_response_field;
-
-	 private String pwd;
-	 private String checkPwd;
-
-
 	private String language;
 	
 	private String country;
@@ -97,38 +88,8 @@ public class CustomerEntity extends Customer implements Serializable {
 	public String getGender() {
 		return gender;
 	}
-    public String getRecaptcha_challenge_field()
-    {
-        return recaptcha_challenge_field;
-    }
-    public void setRecaptcha_challenge_field( final String recaptcha_challenge_field )
-    {
-        this.recaptcha_challenge_field = recaptcha_challenge_field;
-    }
-    public String getRecaptcha_response_field()
-    {
-        return recaptcha_response_field;
-    }
-    public void setRecaptcha_response_field( final String recaptcha_response_field )
-    {
-        this.recaptcha_response_field = recaptcha_response_field;
-    }
-    public String getPwd()
-    {
-        return pwd;
-    }
-    public void setPwd( final String pwd )
-    {
-        this.pwd = pwd;
-    }
-    public String getCheckPwd()
-    {
-        return checkPwd;
-    }
-    public void setCheckPwd( final String checkPwd )
-    {
-        this.checkPwd = checkPwd;
-    }
+
+
 
     @NotEmpty(message="{registration.lastName.invalid}")
     public String getCountry()

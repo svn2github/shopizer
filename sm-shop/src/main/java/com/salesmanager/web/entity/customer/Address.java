@@ -6,7 +6,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class Address {
 	
 
-	private String name;
+	private String firstName;
+	private String lastName;
 	
 
 	private String company;
@@ -40,13 +41,7 @@ public class Address {
 		this.country = country;
 	}
 
-	public String getName() {
-		return name;
-	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public String getCompany() {
 		return company;
@@ -102,6 +97,22 @@ public class Address {
 
 	public String getPhone() {
 		return phone;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 

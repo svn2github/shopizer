@@ -186,36 +186,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 			date = null;
 		}
 		 
-		if( StringUtils.isBlank(entityOrder.getOrder().getCustomerFirstName() ) ){
-			 ObjectError error = new ObjectError("customerFirstName", messages.getMessage("NotEmpty.order.customerFirstName", locale));
-			 result.addError(error);
-		}
-		 
-		if( StringUtils.isBlank(entityOrder.getOrder().getCustomerLastName() ) ){
-			 ObjectError error = new ObjectError("customerLastName", messages.getMessage("NotEmpty.order.customerLastName", locale));
-			 result.addError(error);
-		}
-		
-		if( StringUtils.isBlank(entityOrder.getOrder().getCustomerStreetAddress() ) ){
-			 ObjectError error = new ObjectError("customerStreetAddress", messages.getMessage("NotEmpty.order.customerStreetAddress", locale));
-			 result.addError(error);
-		}
-		
-		if( StringUtils.isBlank(entityOrder.getOrder().getCustomerCity() ) ){
-			 ObjectError error = new ObjectError("customerCity", messages.getMessage("NotEmpty.order.customerCity", locale));
-			 result.addError(error);
-		}
-		
-		if( StringUtils.isBlank(entityOrder.getOrder().getCustomerPostCode() ) ){
-			 ObjectError error = new ObjectError("customerPostCode", messages.getMessage("NotEmpty.order.customerPostCode", locale));
-			 result.addError(error);
-		}
-		
-		if( StringUtils.isBlank(entityOrder.getOrder().getCustomerTelephone() ) ){
-			 ObjectError error = new ObjectError("customerTelephone", messages.getMessage("NotEmpty.order.customerTelephone", locale));
-			 result.addError(error);
-		}
-		
+
 		if(!StringUtils.isBlank(entityOrder.getOrder().getCustomerEmailAddress() ) ){
 			 java.util.regex.Matcher matcher = pattern.matcher(entityOrder.getOrder().getCustomerEmailAddress());
 			 
@@ -229,8 +200,13 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		}
 
 		 
-		if( StringUtils.isBlank(entityOrder.getOrder().getBilling().getName() ) ){
-			 ObjectError error = new ObjectError("billingName", messages.getMessage("NotEmpty.order.billingName", locale));
+		if( StringUtils.isBlank(entityOrder.getOrder().getBilling().getFirstName() ) ){
+			 ObjectError error = new ObjectError("billingFirstName", messages.getMessage("NotEmpty.order.billingFirstName", locale));
+			 result.addError(error);
+		}
+		
+		if( StringUtils.isBlank(entityOrder.getOrder().getBilling().getFirstName() ) ){
+			 ObjectError error = new ObjectError("billingLastName", messages.getMessage("NotEmpty.order.billingLastName", locale));
 			 result.addError(error);
 		}
 		 
@@ -274,15 +250,8 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		Country deliveryCountry = countryService.getByCode( entityOrder.getOrder().getDelivery().getCountry().getIsoCode()); 
 		Country billingCountry  = countryService.getByCode( entityOrder.getOrder().getBilling().getCountry().getIsoCode()) ;
 		
-		newOrder.setCustomerFirstName(entityOrder.getOrder().getCustomerFirstName() );
-		newOrder.setCustomerLastName(entityOrder.getOrder().getCustomerLastName() );
-		newOrder.setCustomerStreetAddress(entityOrder.getOrder().getCustomerStreetAddress() );
-		newOrder.setCustomerCity(entityOrder.getOrder().getCustomerCity() );
-		newOrder.setCustomerState(entityOrder.getOrder().getCustomerState() ); 
-		newOrder.setCustomerPostCode(entityOrder.getOrder().getCustomerPostCode() );
-		newOrder.setCustomerTelephone(entityOrder.getOrder().getCustomerTelephone() );
+
 		newOrder.setCustomerEmailAddress(entityOrder.getOrder().getCustomerEmailAddress() );
-		newOrder.setCustomerCountry(entityOrder.getOrder().getCustomerCountry() );
 		newOrder.setPaymentType(entityOrder.getOrder().getPaymentType() );
 		newOrder.setStatus(entityOrder.getOrder().getStatus() );		
 		
@@ -326,7 +295,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 				Locale customerLocale = LocaleUtils.getLocale(lang);
 
 				StringBuilder customerName = new StringBuilder();
-				customerName.append(newOrder.getCustomerFirstName()).append(" ").append(newOrder.getCustomerLastName());
+				customerName.append(newOrder.getBilling().getFirstName()).append(" ").append(newOrder.getBilling().getLastName());
 				
 				
 				Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, store, messages, customerLocale);
@@ -474,7 +443,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		ByteArrayOutputStream stream  = orderService.generateInvoice(store, order, lang);
 		StringBuilder attachment = new StringBuilder();
 		attachment.append("attachment; filename=");
-		attachment.append(order.getBilling().getName());
+		attachment.append(order.getBilling().getFirstName() + "-" + order.getBilling().getLastName());
 		attachment.append(".pdf");
 		
 		String fileName = attachment.toString();
