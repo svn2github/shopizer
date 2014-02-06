@@ -509,13 +509,14 @@ $(document).ready(function() {
 			}
 		});
 		
-		$("#submitOrder").click(function() {
-
+		$("#submitOrder").click(function(e) {
+			e.preventDefault();//do not submit form
 			resetErrorMessage();
 			$('#pageContainer').showLoading();
 			var data = $(checkoutFormId).serialize();
-			if($('input[name=paymentMethodType]:checked', checkoutFormId).val().contains('paypal')) {
-				var url = getContextPath() + '/shop/paymentAction.html/init/' + $('input[name=paymentMethodType]:checked', checkoutFormId).val();
+			var paymentSelection = $('input[name=paymentMethodType]:checked', checkoutFormId).val();
+			if(paymentSelection.contains('paypal')) {
+				var url = '<c:url value="/shop/order/payment/init/"/>' + paymentSelection + '.html';
 				alert(url);
 				$.ajax({
 					  type: 'POST',
@@ -523,6 +524,7 @@ $(document).ready(function() {
 					  data: data,
 					  dataType: 'json',
 					  success: function(response){
+						    $('#pageContainer').hideLoading();
 							var status = response.response.status;
 							//console.log(status);
 							if(status==0 || status ==9999) {
@@ -535,7 +537,8 @@ $(document).ready(function() {
 							}
 					  },
 					    error: function(xhr, textStatus, errorThrown) {
-					  	alert('error ' + errorThrown);
+					    	$('#pageContainer').hideLoading();
+					  		alert('error ' + errorThrown);
 					  }
 
 				});
@@ -543,6 +546,7 @@ $(document).ready(function() {
 				
 			} else {
 				//submit form
+				$('#pageContainer').hideLoading();
 			}
 	    });
 		
@@ -590,7 +594,7 @@ $(document).ready(function() {
 														<label><s:message code="label.generic.firstname" text="First Name"/></label>
 									    					<div class="controls"> 
 									    					<s:message code="NotEmpty.customer.firstName" text="First name is required" var="msgFirstName"/>
-									      					<form:input id="customer.firstName" cssClass="input-large required" path="customer.firstName" title="${msgFirstName}"/>
+									      					<form:input id="customer.firstName" cssClass="input-large required" path="customer.billing.firstName" title="${msgFirstName}"/>
 									    					</div> 
 									  				   </div> 
 													</div>
@@ -599,7 +603,7 @@ $(document).ready(function() {
 														<label><s:message code="label.generic.lastname" text="Last Name"/></label>
 									    					<div class="controls"> 
 									    					<s:message code="NotEmpty.customer.lastName" text="Last name is required" var="msgLastName"/>
-									    					<form:input id="customer.lastName" cssClass="input-large required"  maxlength="32" path="customer.lastName" title="${msgLastName}" />
+									    					<form:input id="customer.lastName" cssClass="input-large required"  maxlength="32" path="customer.billing.lastName" title="${msgLastName}" />
 									    					</div> 
 									  				   </div> 
 													</div>
@@ -712,15 +716,26 @@ $(document).ready(function() {
 											<div class="row-fluid">
 													<div class="span4">
 									  				   <div class="control-group"> 
-														<label><s:message code="label.customer.shipping.name" text="Shipping name"/></label>
+														<label><s:message code="label.customer.shipping.firtsname" text="Shipping first name"/></label>
 									    					<div class="controls"> 
-									    					<s:message code="NotEmpty.customer.shipping.name" text="Shipping name should not be empty" var="msgShippingName"/>
-									      					<form:input id="customer.delivery.name" cssClass="input-xxlarge required" path="customer.delivery.name" title="${msgShippingName}"/>
+									    					<s:message code="NotEmpty.customer.shipping.name" text="Shipping name should not be empty" var="msgShippingFirstName"/>
+									      					<form:input id="customer.delivery.name" cssClass="input-xxlarge required" path="customer.delivery.firstName" title="${msgShippingFirstName}"/>
 									    					</div> 
 									  				   </div> 
 													</div>
 											</div>
-					
+
+											<div class="row-fluid">
+													<div class="span4">
+									  				   <div class="control-group"> 
+														<label><s:message code="label.customer.shipping.lastname" text="Shipping last name"/></label>
+									    					<div class="controls"> 
+									    					<s:message code="NotEmpty.customer.shipping.name" text="Shipping name should not be empty" var="msgShippingLastName"/>
+									      					<form:input id="customer.delivery.name" cssClass="input-xxlarge required" path="customer.delivery.lastName" title="${msgShippingLastName}"/>
+									    					</div> 
+									  				   </div> 
+													</div>
+											</div>					
 					
 											<!-- company -->
 											<div class="row-fluid">

@@ -51,13 +51,13 @@ response.setDateHeader ("Expires", -1);
 					
 					<sec:authorize access="hasRole('AUTH_CUSTOMER') and fullyAuthenticated">
 						<!-- logged in user -->
-						<c:if test="${sessionScope.CUSTOMER!=null}">
+						<c:if test="${requestScope.CUSTOMER!=null}">
 							<ul class="pull-right" style="list-style-type: none;padding-top: 8px;z-index:500000;">
 							<li id="fat-menu" class="dropdown">
 							<a class="dropdown-toggle noboxshadow" data-toggle="dropdown" href="#">
 							   <s:message code="label.generic.welcome" text="Welcome" /> 
-							   <c:if test="${not empty sessionScope.CUSTOMER.firstname}">
-							       <c:out value="${sessionScope.CUSTOMER.firstname}"/>
+							   <c:if test="${not empty requestScope.CUSTOMER.billing.firstname}">
+							       <c:out value="${sessionScope.CUSTOMER.billing.firstname}"/>
 							   </c:if><b class="caret"></b>
 							 </a>
 								<ul class="dropdown-menu">

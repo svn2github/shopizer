@@ -19,7 +19,7 @@ response.setDateHeader ("Expires", -1);
 	<div id="main-content" class="container clearfix">
 		<div class="row-fluid">
 			<div class="span7">
-				<form:form method="post" action="${register_url}" id="registration-form" class="form-horizontal" commandName="persistableCustomer">
+				<form:form method="post" action="${register_url}" id="registration-form" class="form-horizontal" commandName="customer">
 				<%-- <form:errors path="*" cssClass="errorblock"/> --%>
 					<fieldset>
 						<div class="control-group">
@@ -119,15 +119,15 @@ response.setDateHeader ("Expires", -1);
 						<div class="control-group">
 							<label class="required control-label" for="password">Password <span class="required">*</span></label>
 							<div class="controls">
-							    <form:password path="pwd" class="span12" id="password"/>
-								<form:errors path="pwd" cssClass="error" />
+							    <form:password path="password" class="span12" id="password"/>
+								<form:errors path="password" cssClass="error" />
 							</div>
 						</div>
 						<div class="control-group">
 							<label class="required control-label" for="passwordAgain">Password again <span class="required">*</span></label>
 							<div class="controls">
-							     <form:password path="checkPwd" class="span12" id="passwordAgain"/>
-								<form:errors path="checkPwd" cssClass="error" />
+							     <form:password path="checkPassword" class="span12" id="passwordAgain"/>
+								<form:errors path="checkPassword" cssClass="error" />
 							</div>
 						</div>
 						<div class="control-group">
