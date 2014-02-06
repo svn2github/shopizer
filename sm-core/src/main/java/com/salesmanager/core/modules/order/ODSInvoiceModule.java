@@ -190,8 +190,10 @@ public class ODSInvoiceModule implements InvoiceModule {
 			//bill to
 			//count bill to address cell
 			int billToCell = BILLTO_ROW_START;
-			if(!StringUtils.isBlank(order.getBilling().getName())) {
-				sheet.setValueAt(order.getBilling().getName(), 0, billToCell);
+			if(!StringUtils.isBlank(order.getBilling().getFirstName())) {
+				StringBuilder nm = new StringBuilder();
+				nm.append(order.getBilling().getFirstName()).append(" ").append(order.getBilling().getLastName());
+				sheet.setValueAt(nm.toString(), 0, billToCell);
 				billToCell ++;
 			}
 			
@@ -264,8 +266,8 @@ public class ODSInvoiceModule implements InvoiceModule {
 			}
 			
 			//13
-			if(!StringUtils.isBlank(order.getCustomerTelephone())) {
-				sheet.setValueAt(order.getCustomerTelephone(), 0, billToCell);
+			if(!StringUtils.isBlank(order.getBilling().getTelephone())) {
+				sheet.setValueAt(order.getBilling().getTelephone(), 0, billToCell);
 			}
 			
 			//delete address blank lines

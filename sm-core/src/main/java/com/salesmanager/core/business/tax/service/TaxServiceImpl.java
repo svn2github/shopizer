@@ -114,9 +114,9 @@ public class TaxServiceImpl
 			taxConfiguration.setTaxBasisCalculation(TaxBasisCalculation.SHIPPINGADDRESS);
 		}
 		
-		Country country = customer.getCountry();
-		Zone zone = customer.getZone();
-		String stateProvince = customer.getState();
+		Country country = customer.getBilling().getCountry();
+		Zone zone = customer.getBilling().getZone();
+		String stateProvince = customer.getBilling().getState();
 		
 		TaxBasisCalculation taxBasisCalculation = taxConfiguration.getTaxBasisCalculation();
 		if(taxBasisCalculation.name().equals(TaxBasisCalculation.SHIPPINGADDRESS)){

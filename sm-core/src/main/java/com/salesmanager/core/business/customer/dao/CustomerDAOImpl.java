@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.mysema.query.BooleanBuilder;
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
+import com.salesmanager.core.business.common.model.QBilling;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.CustomerCriteria;
 import com.salesmanager.core.business.customer.model.CustomerList;
@@ -44,8 +45,8 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		
 		query.from(qCustomer)
 			.join(qCustomer.merchantStore).fetch()
-			.leftJoin(qCustomer.country,qCountry).fetch()
-			.leftJoin(qCustomer.zone,qZone).fetch()
+			//.leftJoin(qCustomer.billing.country,qCountry).fetch()
+			//.leftJoin(qCustomer.billing.zone,qZone).fetch()
 			.leftJoin(qCustomer.defaultLanguage).fetch()
 			.leftJoin(qCustomer.attributes,qCustomerAttribute).fetch()
 			.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
@@ -73,8 +74,8 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		
 		query.from(qCustomer)
 			.join(qCustomer.merchantStore).fetch()
-			.leftJoin(qCustomer.country,qCountry).fetch()
-			.leftJoin(qCustomer.zone,qZone).fetch()
+			//.leftJoin(qCustomer.billing.country,qCountry).fetch()
+			//.leftJoin(qCustomer.billing.zone,qZone).fetch()
 			.leftJoin(qCustomer.defaultLanguage).fetch()
 			.leftJoin(qCustomer.attributes,qCustomerAttribute).fetch()
 			.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
@@ -82,7 +83,7 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.leftJoin(qCustomerOption.descriptions).fetch()
 			.leftJoin(qCustomerOptionValue.descriptions).fetch()
 			.where(
-					qCustomer.firstname.eq(name).or(qCustomer.lastname.eq(name))
+					qCustomer.billing.firstName.eq(name).or(qCustomer.billing.lastName.eq(name))
 					
 			);
 		
@@ -102,16 +103,16 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		countBuilderWhere.append(" where c.merchantStore.id=:mId");
 
 		if(!StringUtils.isBlank(criteria.getName())) {
-			countBuilderWhere.append(" and c.firstname like:nm");
-			countBuilderWhere.append(" or c.lastname like:nm");
+			countBuilderWhere.append(" and c.billing.firstName like:nm");
+			countBuilderWhere.append(" or c.billing.lastName like:nm");
 		}
 		
 		if(!StringUtils.isBlank(criteria.getFirstName())) {
-			countBuilderWhere.append(" and c.firstname like:fn");
+			countBuilderWhere.append(" and c..billing.firstName like:fn");
 		}
 		
 		if(!StringUtils.isBlank(criteria.getLastName())) {
-			countBuilderWhere.append(" and c.lastname like:ln");
+			countBuilderWhere.append(" and c.billing.lastName like:ln");
 		}
 		
 		if(!StringUtils.isBlank(criteria.getEmail())) {
@@ -119,7 +120,7 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		}
 		
 		if(!StringUtils.isBlank(criteria.getCountry())) {
-			countBuilderWhere.append(" and c.country.isoCode like:country");
+			countBuilderWhere.append(" and c.billing.country.isoCode like:country");
 		}
 
 		Query countQ = super.getEntityManager().createQuery(
@@ -171,9 +172,9 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		
 		query.from(qCustomer)
 			.join(qCustomer.merchantStore).fetch()
-			.leftJoin(qCustomer.country,qCountry).fetch()
+			//.leftJoin(qCustomer.billing.country,qCountry).fetch()
+			//.leftJoin(qCustomer.billing.zone,qZone).fetch()
 			.leftJoin(qCustomer.defaultLanguage).fetch()
-			.leftJoin(qCustomer.zone,qZone).fetch()
 			.leftJoin(qCustomer.attributes,qCustomerAttribute).fetch()
 			.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
 			.leftJoin(qCustomerAttribute.customerOptionValue, qCustomerOptionValue).fetch()
@@ -189,8 +190,8 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			if(pBuilder==null) {
 				pBuilder = new BooleanBuilder();
 			}
-			pBuilder.and(qCustomer.firstname.like(criteria.getName())
-					.or(qCustomer.lastname.like(criteria.getName())));
+			pBuilder.and(qCustomer.billing.firstName.like(criteria.getName())
+					.or(qCustomer.billing.lastName.like(criteria.getName())));
 
 		}
 		
@@ -199,14 +200,14 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			if(pBuilder==null) {
 				pBuilder = new BooleanBuilder();
 			}
-			pBuilder.and(qCustomer.firstname.like(criteria.getFirstName()));
+			pBuilder.and(qCustomer.billing.firstName.like(criteria.getFirstName()));
 		}
 		
 		if(!StringUtils.isBlank(criteria.getLastName())) {
 			if(pBuilder==null) {
 				pBuilder = new BooleanBuilder();
 			}
-			pBuilder.and(qCustomer.lastname.like(criteria.getLastName()));
+			pBuilder.and(qCustomer.billing.lastName.like(criteria.getLastName()));
 		}
 		
 		if(!StringUtils.isBlank(criteria.getEmail())) {
@@ -220,7 +221,7 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			if(pBuilder==null) {
 				pBuilder = new BooleanBuilder();
 			}
-			pBuilder.and(qCustomer.country.isoCode.like(criteria.getCountry()));
+			pBuilder.and(qCustomer.billing.country.isoCode.like(criteria.getCountry()));
 		}
 		
 
@@ -253,8 +254,8 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		
 		query.from(qCustomer)
 			.join(qCustomer.merchantStore).fetch()
-			.leftJoin(qCustomer.country,qCountry).fetch()
-			.leftJoin(qCustomer.zone,qZone).fetch()
+			//.leftJoin(qCustomer.billing.country,qCountry).fetch()
+			//.leftJoin(qCustomer.billing.zone,qZone).fetch()
 			.leftJoin(qCustomer.defaultLanguage).fetch()
 			.leftJoin(qCustomer.groups).fetch()
 			.leftJoin(qCustomer.attributes,qCustomerAttribute).fetch()
@@ -283,8 +284,8 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		
 		query.from(qCustomer)
 			.join(qCustomer.merchantStore, qMerchantStore).fetch()
-			.leftJoin(qCustomer.country,qCountry).fetch()
-			.leftJoin(qCustomer.zone,qZone).fetch()
+			//.leftJoin(qCustomer.billing.country,qCountry).fetch()
+			//.leftJoin(qCustomer.billing.zone,qZone).fetch()
 			.leftJoin(qCustomer.defaultLanguage).fetch()
 			.leftJoin(qCustomer.groups).fetch()
 			.leftJoin(qCustomer.attributes,qCustomerAttribute).fetch()
@@ -311,8 +312,8 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		
 		query.from(qCustomer)
 			.join(qCustomer.merchantStore).fetch()
-			.leftJoin(qCustomer.country,qCountry).fetch()
-			.leftJoin(qCustomer.zone,qZone).fetch()
+			//.leftJoin(qCustomer.billing.country,qCountry).fetch()
+			//.leftJoin(qCustomer.billing.zone,qZone).fetch()
 			.leftJoin(qCustomer.defaultLanguage).fetch()
 			.leftJoin(qCustomer.attributes,qCustomerAttribute).fetch()
 			.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()

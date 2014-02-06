@@ -67,8 +67,8 @@ public class OrderDaoImpl  extends SalesManagerEntityDaoImpl<Long, Order> implem
 		countBuilderWhere.append(" where o.merchant.id=:mId");
 
 		if(!StringUtils.isBlank(criteria.getCustomerName())) {
-			countBuilderWhere.append(" and o.customerFirstName like:nm");
-			countBuilderWhere.append(" or o.customerLastName like:nm");
+			countBuilderWhere.append(" and o.billing.firstName like:nm");
+			countBuilderWhere.append(" or o.billing.lastName like:nm");
 		}
 		
 		if(!StringUtils.isBlank(criteria.getPaymentMethod())) {
@@ -123,8 +123,8 @@ public class OrderDaoImpl  extends SalesManagerEntityDaoImpl<Long, Order> implem
 			if(pBuilder==null) {
 				pBuilder = new BooleanBuilder();
 			}
-			pBuilder.and(qOrder.customerFirstName.like(criteria.getCustomerName())
-					.or(qOrder.customerLastName.like(criteria.getCustomerName())));
+			pBuilder.and(qOrder.billing.firstName.like(criteria.getCustomerName())
+					.or(qOrder.billing.lastName.like(criteria.getCustomerName())));
 
 
 		}

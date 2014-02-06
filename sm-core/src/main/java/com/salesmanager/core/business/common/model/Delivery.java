@@ -12,11 +12,18 @@ import com.salesmanager.core.business.reference.zone.model.Zone;
 @Embeddable
 public class Delivery {
 	
+	@Column (name ="DELIVERY_LAST_NAME", length=64)
+	private String lastName;
+
+
+
+
+	@Column (name ="DELIVERY_FIRST_NAME", length=64)
+	private String firstName;
+
 	
 
-	@Column (name ="DELIVERY_NAME", length=64)
-	private String name;
-	
+
 	@Column (name ="DELIVERY_COMPANY", length=100)
 	private String company;
 	
@@ -43,13 +50,7 @@ public class Delivery {
 	@JoinColumn(name="DELIVERY_ZONE_ID", nullable=true)
 	private Zone zone;
 	
-	public String getName() {
-		return name;
-	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public String getCompany() {
 		return company;
@@ -115,5 +116,21 @@ public class Delivery {
 	public String getTelephone() {
 		return telephone;
 	}	
+	
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+	
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
 	
 }
