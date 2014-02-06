@@ -41,24 +41,15 @@ public class PaymentTestCase extends AbstractSalesManagerCoreTestCase {
 	    
 	    //create customer
 		Customer customer = new Customer();
-		customer.setFirstname("Test");
 		customer.setMerchantStore(store);
-		customer.setLastname("User");
-		customer.setCity("city");
 		customer.setEmailAddress("test@test.com");
 		customer.setGender(CustomerGender.M);
-		customer.setTelephone("00000");
 		customer.setAnonymous(true);
 		customer.setCompany("ifactory");
 		customer.setDateOfBirth(new Date());
 		customer.setNick("My nick");
 		customer.setPassword("123456");
-		customer.setPostalCode("000");
-		customer.setState("state");
-		customer.setStreetAddress("Street 1");
-		customer.setTelephone("123123");
-		customer.setCountry(country);
-		customer.setZone(zone);
+
 		
 	    Delivery delivery = new Delivery();
 	    delivery.setAddress("Shipping address");

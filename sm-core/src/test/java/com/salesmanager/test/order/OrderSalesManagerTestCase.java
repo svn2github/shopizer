@@ -39,7 +39,6 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;
 
-
 public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase {
 
 //	@Ignore
@@ -102,31 +101,23 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		Zone zone = zoneService.getByCode("QC");
 		
 		Customer customer = new Customer();
-		customer.setFirstname("Leonardo");
 		customer.setMerchantStore(store);
-		customer.setLastname("DiCaprio");
-		customer.setCity("city");
 		customer.setEmailAddress("test@test.com");
 		customer.setGender(CustomerGender.M);						
-		customer.setTelephone("444-555-6666");
 		customer.setAnonymous(true);
 		customer.setCompany("ifactory");
 		customer.setDateOfBirth(new Date());
 		customer.setNick("My nick");
-		customer.setPostalCode("J4B-8J9");
 		customer.setDefaultLanguage(en);
-		customer.setStreetAddress("358 Du Languadoc");
-		customer.setTelephone("444-555-6666");
-		customer.setCountry(country);
-		customer.setZone(zone);
 		
 	    Delivery delivery = new Delivery();
 	    delivery.setAddress("358 Du Languadoc");
 	    delivery.setCity( "Boucherville" );
 	    delivery.setCountry(country);
 //	    delivery.setCountryCode(CA_COUNTRY_CODE);
-	    delivery.setName("Delivery Name" );
 	    delivery.setPostalCode("J4B-8J9" );
+	    delivery.setFirstName("Carl");
+	    delivery.setLastName("Samson");
 	    delivery.setZone(zone);	    
 	    
 	    Billing billing = new Billing();
@@ -135,7 +126,8 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 	    billing.setCompany("CSTI Consulting");
 	    billing.setCountry(country);
 //	    billing.setCountryCode(CA_COUNTRY_CODE);
-	    billing.setName("CSTI Consulting");
+	    billing.setFirstName("Carl");
+	    billing.setLastName("Samson");
 	    billing.setPostalCode("J4B-8J9");
 	    billing.setZone(zone);
 	    
@@ -161,10 +153,9 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		order.setIpAddress("ipAddress" );
 		order.setMerchant(store);
 		order.setCustomerEmailAddress(customer.getEmailAddress());
-		order.setCustomerFirstName(customer.getFirstname());
-		order.setCustomerLastName(customer.getLastname());
+
 		order.setOrderDateFinished(new Date());//committed date
-		
+
 		orderStatusHistory.setComments("We received your order");
 		orderStatusHistory.setCustomerNotified(1);
 		orderStatusHistory.setStatus(OrderStatus.ORDERED);
@@ -282,16 +273,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		
 		Customer customer = new Customer();	
 		customer.setMerchantStore(merchant);
-		customer.setCountry(country);
-		customer.setFirstname("Ahmed");
-		customer.setLastname("Faraz");
-		customer.setCity("Dubai");
 		customer.setEmailAddress("email@email.com");
-		customer.setPostalCode("63839");		
-		customer.setStreetAddress("Customer Address");		
-		customer.setTelephone("Customer Phone");
-		customer.setZone(zone);
-		customer.setState("Unknown state");
 		customer.setPassword("-1999");
 		customer.setNick("My New nick");
 		customer.setCompany(" Apple");	
@@ -304,7 +286,8 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 	    billing.setCompany("Billing company");
 	    billing.setCountry(country);
 //	    billing.setCountryCode(CA_COUNTRY_CODE);
-	    billing.setName("Billing name");
+	    billing.setFirstName("Carl");
+	    billing.setLastName("Samson");
 	    billing.setPostalCode("Billing postal code");
 	    billing.setState("Billing state");
 	    billing.setZone(zone);
@@ -380,24 +363,14 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		
 		//create 3 customers
 		Customer firstCustomer = new Customer();
-		firstCustomer.setFirstname("Leonardo");
 		firstCustomer.setMerchantStore(store);
-		firstCustomer.setLastname("Di Caprio");
-		firstCustomer.setCity("city");
 		firstCustomer.setEmailAddress("test@test.com");
 		firstCustomer.setGender(CustomerGender.M);
-		firstCustomer.setTelephone("00000");
 		firstCustomer.setAnonymous(true);
 		firstCustomer.setCompany("ifactory");
 		firstCustomer.setDateOfBirth(new Date());
 		firstCustomer.setNick("My nick");
 		firstCustomer.setPassword("123456");
-		firstCustomer.setPostalCode("000");
-		firstCustomer.setState("state");
-		firstCustomer.setStreetAddress("Street 1");
-		firstCustomer.setTelephone("123123");
-		firstCustomer.setCountry(country);
-		firstCustomer.setZone(zone);
 
 	    Delivery delivery = new Delivery();
 	    delivery.setAddress("Shipping address");
@@ -416,21 +389,12 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		customerService.create(firstCustomer);
 		
 		Customer secondCustomer = new Customer();
-		secondCustomer.setFirstname("Tom");
 		secondCustomer.setMerchantStore(store);
-		secondCustomer.setLastname("Cruise");
-		secondCustomer.setCity("city");
 		secondCustomer.setEmailAddress("test@test.com");
 		secondCustomer.setGender(CustomerGender.M);
-		secondCustomer.setTelephone("00000");
 		secondCustomer.setDateOfBirth(new Date());
 		secondCustomer.setPassword("123456");
-		secondCustomer.setPostalCode("000");
-		secondCustomer.setState("state");
-		secondCustomer.setStreetAddress("Street 1");
-		secondCustomer.setTelephone("123123");
-		secondCustomer.setCountry(country);
-		secondCustomer.setZone(zone);
+
 		
 		secondCustomer.setBilling(billing);
 		secondCustomer.setDelivery(delivery);
@@ -438,21 +402,12 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		customerService.create(secondCustomer);
 		
 		Customer thirdCustomer = new Customer();
-		thirdCustomer.setFirstname("Cruise");
 		thirdCustomer.setMerchantStore(store);
-		thirdCustomer.setLastname("Control");
-		thirdCustomer.setCity("city");
 		thirdCustomer.setEmailAddress("test@test.com");
 		thirdCustomer.setGender(CustomerGender.M);
-		thirdCustomer.setTelephone("00000");
 		thirdCustomer.setDateOfBirth(new Date());
 		thirdCustomer.setPassword("123456");
-		thirdCustomer.setPostalCode("000");
-		thirdCustomer.setState("state");
-		thirdCustomer.setStreetAddress("Street 1");
-		thirdCustomer.setTelephone("123123");
-		thirdCustomer.setCountry(country);
-		thirdCustomer.setZone(zone);
+
 		
 		thirdCustomer.setBilling(billing);
 		thirdCustomer.setDelivery(delivery);
@@ -460,7 +415,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		customerService.create(thirdCustomer);
 		
 		//create a few orders
-		Order order = new Order(firstCustomer);
+		Order order = new Order();
 		order.setDatePurchased(new Date());
 		order.setCurrency(store.getCurrency());
 		order.setMerchant(store);
@@ -516,7 +471,7 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		orderService.create(order);
 		
 		
-		Order secondOrder = new Order(secondCustomer);
+		Order secondOrder = new Order();
 		secondOrder.setDatePurchased(new Date());
 		secondOrder.setCurrency(store.getCurrency());
 		secondOrder.setMerchant(store);

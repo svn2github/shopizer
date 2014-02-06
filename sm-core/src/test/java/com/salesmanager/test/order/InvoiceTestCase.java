@@ -187,22 +187,13 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 		Zone zone = zoneService.getByCode("QC");
 		
 		Customer customer = new Customer();
-		customer.setFirstname("Leonardo");
 		customer.setMerchantStore(store);
-		customer.setLastname("DiCaprio");
-		customer.setCity("city");
 		customer.setEmailAddress("test@test.com");
 		customer.setGender(CustomerGender.M);				
-		customer.setTelephone("444-555-6666");
 		customer.setAnonymous(true);
 		customer.setCompany("ifactory");
 		customer.setDateOfBirth(new Date());
 		customer.setNick("My nick");
-		customer.setPostalCode("J4B-8J9");			
-		customer.setStreetAddress("358 Du Languadoc");
-		customer.setTelephone("444-555-6666");
-		customer.setCountry(country);
-		customer.setZone(zone);
 		customer.setDefaultLanguage(en);
 		
 		
@@ -211,7 +202,8 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 	    delivery.setCity( "Boucherville" );
 	    delivery.setCountry(country);
 //	    delivery.setCountryCode(CA_COUNTRY_CODE);
-	    delivery.setName("Delivery Name" );
+	    delivery.setFirstName("First" );
+	    delivery.setLastName("Last" );
 	    delivery.setPostalCode("J4B-8J9" );
 	    delivery.setZone(zone);	    
 	    
@@ -221,7 +213,8 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 	    billing.setCompany("CSTI Consulting");
 	    billing.setCountry(country);
 //	    billing.setCountryCode(CA_COUNTRY_CODE);
-	    billing.setName("Carl Samson");
+	    billing.setFirstName("Carl" );
+	    billing.setLastName("Samson" );
 	    billing.setPostalCode("J4B-8J9");
 	    billing.setZone(zone);
 	    
@@ -248,8 +241,6 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 		order.setIpAddress("ipAddress" );
 		order.setMerchant(store);
 		order.setCustomerEmailAddress(customer.getEmailAddress());
-		order.setCustomerFirstName(customer.getFirstname());
-		order.setCustomerLastName(customer.getLastname());
 		order.setOrderDateFinished(new Date());//committed date
 		
 		orderStatusHistory.setComments("We received your order");
@@ -487,8 +478,8 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 			//bill to
 			//count bill to address cell
 			int billToCell = 8;
-			if(!StringUtils.isBlank(customer.getBilling().getName())) {
-				sheet.setValueAt(customer.getBilling().getName(), 0, billToCell);
+			if(!StringUtils.isBlank(customer.getBilling().getFirstName())) {
+				sheet.setValueAt(customer.getBilling().getFirstName() + " " + customer.getBilling().getLastName(), 0, billToCell);
 				billToCell ++;
 			}
 			
@@ -562,8 +553,8 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 			}
 			
 			//13
-			if(!StringUtils.isBlank(customer.getTelephone())) {
-				sheet.setValueAt(customer.getTelephone(), 0, billToCell);
+			if(!StringUtils.isBlank(customer.getBilling().getTelephone())) {
+				sheet.setValueAt(customer.getBilling().getTelephone(), 0, billToCell);
 			}
 			
 			//delete address blank lines
