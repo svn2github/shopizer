@@ -17,6 +17,7 @@ import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.client.RestTemplate;
 
 import com.salesmanager.web.entity.customer.Customer;
+import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.customer.attribute.CustomerOptionValueDescription;
 import com.salesmanager.web.entity.customer.attribute.PersistableCustomerOptionValue;
 
@@ -94,29 +95,12 @@ public class CustomerRESTControllerTest {
 	public void postCustomer() throws Exception {
 		restTemplate = new RestTemplate();
 
-		String jsonString = ("{"+
-			   " \"password\": \"5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8\","+
-			   " \"firstname\": \"Tapas\","+
-			   " \"lastname\": \"Jena\","+
-			   " \"emailAddress\": \"tapasfs.friends@gmail.com\","+
-			   " \"telephone\": \"9703517026\","+
-			   " \"streetAddress\": \"Hitech City\","+
-			   " \"postalCode\": \"500008\","+
-			   " \"city\": \"Hyderabad\","+
-			   " \"country\": \"IN\","+
-			   " \"billing\": {"+
-			   "     \"country\":\"US\""+
-			   " },"+
-			   " \"delivery\": {"+
-			   "     \"country\": \"IN\","+
-			   "     \"state\":\"a state\""+
-			   " },"+
-			   " \"zone\": {"+
-			   "	\"country\": \"IN\""+
-			   " }"+
-			"}");
+		PersistableCustomer customer = new PersistableCustomer();
 
-		HttpEntity<String> entity = new HttpEntity<String>(jsonString, getHeader());
+		ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String json = writer.writeValueAsString(customer);
+		
+		HttpEntity<String> entity = new HttpEntity<String>(json, getHeader());
 
 		ResponseEntity response = restTemplate.postForEntity("http://localhost:8080/sm-shop/shop/services/rest/customers/DEFAULT", entity, Customer.class);
 
