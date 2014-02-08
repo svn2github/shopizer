@@ -1,5 +1,7 @@
 package com.salesmanager.core.business.shoppingcart.dao;
 
+import javax.persistence.NoResultException;
+
 import org.springframework.stereotype.Repository;
 
 import com.mysema.query.jpa.JPQLQuery;
@@ -100,6 +102,8 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 
 			QShoppingCart qShoppingCart = QShoppingCart.shoppingCart;
 			QShoppingCartItem qShoppingCartItem = QShoppingCartItem.shoppingCartItem;
+			
+			System.out.println("T");
 
 			JPQLQuery query = new JPAQuery (getEntityManager());
 
@@ -111,7 +115,10 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 						.and(qShoppingCart.merchantStore.id.eq(store.getId())));
 
 			return query.uniqueResult(qShoppingCart);
-		} catch(javax.persistence.NoResultException ers) {
+		//} catch(javax.persistence.NoResultException ers) {
+		} catch (NoResultException nre){
+			return null;
+		} catch(RuntimeException ers) {
 			return null;
 		}
 

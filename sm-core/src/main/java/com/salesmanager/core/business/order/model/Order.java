@@ -21,8 +21,10 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.Valid;
 
 import org.hibernate.annotations.OrderBy;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.common.model.Delivery;
@@ -102,9 +104,11 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@Column (name ="SHIPPING_MODULE_CODE")
 	private String shippingModuleCode;
 
+	
 	@Embedded
 	private Delivery delivery = null;
 	
+	@Valid
 	@Embedded
 	private Billing billing = null;
 	
@@ -116,6 +120,7 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@JoinColumn(name = "CURRENCY_ID")
 	private Currency currency;
 	
+	@NotEmpty
 	@ManyToOne(targetEntity = MerchantStore.class)
 	@JoinColumn(name="MERCHANTID")
 	private MerchantStore merchant;

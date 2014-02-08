@@ -21,22 +21,22 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.validation.Valid;
 
 import org.hibernate.annotations.Cascade;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import com.salesmanager.core.business.catalog.product.model.review.ProductReview;
 import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.constants.SchemaConstant;
 import com.salesmanager.core.utils.CloneUtils;
@@ -65,6 +65,8 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 	@Column(name="CUSTOMER_DOB")
 	private Date dateOfBirth;
 	
+	@Email
+	@NotEmpty
 	@Column(name="CUSTOMER_EMAIL_ADDRESS", length=96, nullable=false)
 	private String emailAddress;
 	
@@ -97,9 +99,11 @@ public class Customer extends SalesManagerEntity<Long, Customer> {
 	@JoinColumn(name="MERCHANT_ID", nullable=false)
 	private MerchantStore merchantStore;
 	
+
 	@Embedded
 	private com.salesmanager.core.business.common.model.Delivery delivery = null;
 	
+	@Valid
 	@Embedded
 	private com.salesmanager.core.business.common.model.Billing billing = null;
 	

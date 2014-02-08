@@ -6,17 +6,19 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 
 @Embeddable
 public class Billing {
 	
-	
+	@NotEmpty
 	@Column (name ="BILLING_LAST_NAME", length=64, nullable=false)
 	private String lastName;
 
-
+	@NotEmpty
 	@Column (name ="BILLING_FIRST_NAME", length=64, nullable=false)
 	private String firstName;
 	
@@ -41,6 +43,7 @@ public class Billing {
 	@Column (name ="BILLING_STATE", length=100)
 	private String state;
 
+	@NotEmpty
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="BILLING_COUNTRY_ID", nullable=false)
 	private Country country;

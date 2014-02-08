@@ -2,6 +2,7 @@ package com.salesmanager.core.business.customer.dao;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
@@ -278,7 +279,7 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		QCustomerOption qCustomerOption = QCustomerOption.customerOption;
 		QCustomerOptionValue qCustomerOptionValue = QCustomerOptionValue.customerOptionValue;
 		
-
+		try {
 		
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		
@@ -296,6 +297,10 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.where(qCustomer.nick.eq(nick).and(qMerchantStore.id.eq(storeId)));
 		
 		return query.uniqueResult(qCustomer);
+		
+		} catch(NoResultException nre) {
+			return null;
+		}
 	}
 	
 	@Override
