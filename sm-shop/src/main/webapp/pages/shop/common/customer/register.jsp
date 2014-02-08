@@ -17,7 +17,8 @@ response.setDateHeader ("Expires", -1);
 <script type="text/javascript">
 
 var RecaptchaOptions = {
-	    theme : 'clean'
+	    theme : 'clean',
+	    lang :'en'
 };
 
 $(document).ready(function() {

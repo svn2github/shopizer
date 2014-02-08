@@ -56,8 +56,8 @@ response.setDateHeader ("Expires", -1);
 							<li id="fat-menu" class="dropdown">
 							<a class="dropdown-toggle noboxshadow" data-toggle="dropdown" href="#">
 							   <s:message code="label.generic.welcome" text="Welcome" /> 
-							   <c:if test="${not empty requestScope.CUSTOMER.billing.firstname}">
-							       <c:out value="${sessionScope.CUSTOMER.billing.firstname}"/>
+							   <c:if test="${not empty requestScope.CUSTOMER.billing.firstName}">
+							       <c:out value="${sessionScope.CUSTOMER.billing.firstName}"/>
 							   </c:if><b class="caret"></b>
 							 </a>
 								<ul class="dropdown-menu">

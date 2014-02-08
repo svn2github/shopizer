@@ -31,7 +31,7 @@
                  type: "POST",
                  //my version
                  url: getContextPath() + "/shop/customer/logon.html",
-                 data: "userName=" + userName + "&pwd=" + password + "&storeCode=" + storeCode,
+                 data: "userName=" + userName + "&password=" + password + "&storeCode=" + storeCode,
                  cache:false,
               	 dataType:'json',
                  'success': function(response) {

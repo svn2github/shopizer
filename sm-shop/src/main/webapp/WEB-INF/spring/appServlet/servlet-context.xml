@@ -13,14 +13,14 @@
 
 	
 	<!-- Enables the Spring MVC @Controller programming model -->
-	<annotation-driven>
+	<annotation-driven validator="validator" >
 		<!--
 		<argument-resolvers>
 			<beans:bean class="org.springframework.samples.mvc.data.custom.CustomArgumentResolver"/>
 		</argument-resolvers>
 		-->
 		
-		<message-converters>
+		<message-converters >
 	        <beans:bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter">
 	            <beans:property name="supportedMediaTypes">
 	                <beans:list>
@@ -33,7 +33,12 @@
     	</message-converters>
 
 	</annotation-driven>
+	<!-- <annotation-driven validator="validator" /> -->
 
+
+<beans:bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<beans:property name="validationMessageSource" ref="messageSource"/> 
+</beans:bean>
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources/ directory -->
 	<resources mapping="/resources/**" location="/resources/" />
 	
