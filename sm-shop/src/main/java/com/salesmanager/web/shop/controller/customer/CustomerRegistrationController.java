@@ -128,7 +128,7 @@ public class CustomerRegistrationController{
         reCaptcha.setPublicKey( coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
         reCaptcha.setPrivateKey( coreConfiguration.getProperty( RECAPATCHA_PRIVATE_KEY ) );
         
-        if ( StringUtils.isNotBlank( customer.getRecaptcha_challenge_field() )
+        /*if ( StringUtils.isNotBlank( customer.getRecaptcha_challenge_field() )
             && StringUtils.isNotBlank( customer.getRecaptcha_response_field() ) )
         {
             ReCaptchaResponse reCaptchaResponse =
@@ -141,7 +141,7 @@ public class CustomerRegistrationController{
                                            new Object[] {}, "validaion.recaptcha.not.matched" );
             }
 
-        }
+        }*/
         
         if ( StringUtils.isNotBlank( customer.getUserName() ) )
         {

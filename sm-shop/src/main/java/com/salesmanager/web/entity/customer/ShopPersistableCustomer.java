@@ -15,12 +15,8 @@ public class ShopPersistableCustomer extends PersistableCustomer {
 	private String recaptcha_challenge_field;
 	private String recaptcha_response_field;
 	
-	
-	
-	
-	
-    @NotEmpty(message="{validaion.recaptcha.not.matched}")
-    @Size( max=1,message="{validaion.recaptcha.not.matched}")
+	@NotEmpty(message="{validaion.recaptcha.not.matched}")
+    @Size( min=1,message="{validaion.recaptcha.not.matched}")
 	public String getRecaptcha_challenge_field()
     {
         return recaptcha_challenge_field;
@@ -32,7 +28,7 @@ public class ShopPersistableCustomer extends PersistableCustomer {
     
    
     @NotEmpty(message="{validaion.recaptcha.not.matched}")
-    @Size( max=1,message="{validaion.recaptcha.not.matched}")
+    @Size( min=1,message="{validaion.recaptcha.not.matched}")
     public String getRecaptcha_response_field()
     {
         return recaptcha_response_field;
