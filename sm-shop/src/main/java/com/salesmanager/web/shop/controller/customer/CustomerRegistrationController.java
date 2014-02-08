@@ -45,7 +45,6 @@ import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.constants.EmailConstants;
-import com.salesmanager.web.entity.customer.Customer;
 import com.salesmanager.web.entity.customer.CustomerEntity;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.customer.ShopPersistableCustomer;
@@ -123,6 +122,7 @@ public class CustomerRegistrationController{
                                     final HttpServletRequest request, final Locale locale )
         throws Exception
     {
+        model.addAttribute( "recapatcha_public_key", coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
         final MerchantStore merchantStore = (MerchantStore) request.getAttribute( Constants.MERCHANT_STORE );
         ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
         reCaptcha.setPublicKey( coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );

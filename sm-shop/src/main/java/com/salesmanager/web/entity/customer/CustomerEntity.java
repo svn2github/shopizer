@@ -3,6 +3,7 @@ package com.salesmanager.web.entity.customer;
 import java.io.Serializable;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -56,6 +57,7 @@ public class CustomerEntity extends Customer implements Serializable {
 	}
 	
 	@NotEmpty(message="{registration.firstName.invalid}")
+	@Size(message="{registration.firstName.invalid}")
 	public String getFirstName() {
 		return firstName;
 	}
@@ -64,6 +66,7 @@ public class CustomerEntity extends Customer implements Serializable {
 	}
 	
 	@NotEmpty(message="{registration.lastName.invalid}")
+	@Size(message="{registration.lastName.invalid}")
 	public String getLastName() {
 		return lastName;
 	}
@@ -91,7 +94,8 @@ public class CustomerEntity extends Customer implements Serializable {
 
 
 
-    @NotEmpty(message="{registration.lastName.invalid}")
+    @NotEmpty(message="{registration.country.invalid}")
+    @Size(min=1,message="{registration.country.invalid}")
     public String getCountry()
     {
         return country;
@@ -102,7 +106,8 @@ public class CustomerEntity extends Customer implements Serializable {
         this.country = country;
     }
 
-    @NotEmpty(message="{registration.lastName.invalid}")
+    @NotEmpty(message="{registration.province.invalid}")
+    @Size(min=1, message="{registration.province.invalid}")
     public String getProvince()
     {
         return province;

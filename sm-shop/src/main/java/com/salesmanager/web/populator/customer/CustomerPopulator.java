@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.model.CustomerGender;
 import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOption;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue;
@@ -62,7 +63,7 @@ public class CustomerPopulator extends
 
 			target.setEmailAddress(source.getEmailAddress());
 			target.setNick(source.getUserName());
-
+		    target.setGender( CustomerGender.valueOf( source.getGender() ) );
 			
 			 
 			//target.setCity( source.get );
@@ -114,6 +115,8 @@ public class CustomerPopulator extends
                         throw new ConversionException("Unsuported country code " + sourceBilling.getCountry());
                     }
                     billing.setCountry(billingCountry);
+                    billing.setFirstName( source.getFirstName() );
+                    billing.setLastName( source.getLastName() );
                     target.setBilling( billing );
                 }
 			}
@@ -160,6 +163,8 @@ public class CustomerPopulator extends
                         throw new ConversionException("Unsuported country code " + sourceShipping.getCountry());
                     }
                     delivery.setCountry(deliveryCountry);
+                    delivery.setFirstName( source.getFirstName() );
+                    delivery.setLastName( source.getLastName() );
                     target.setDelivery( delivery );
                 }
 			}
