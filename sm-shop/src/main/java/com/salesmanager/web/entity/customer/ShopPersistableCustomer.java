@@ -1,6 +1,8 @@
 package com.salesmanager.web.entity.customer;
 
-import org.hibernate.validator.constraints.Email;
+import javax.validation.constraints.Size;
+
+
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class ShopPersistableCustomer extends PersistableCustomer {
@@ -18,6 +20,7 @@ public class ShopPersistableCustomer extends PersistableCustomer {
 	
 	
     @NotEmpty(message="{validaion.recaptcha.not.matched}")
+    @Size( max=1,message="{validaion.recaptcha.not.matched}")
 	public String getRecaptcha_challenge_field()
     {
         return recaptcha_challenge_field;
@@ -29,6 +32,7 @@ public class ShopPersistableCustomer extends PersistableCustomer {
     
    
     @NotEmpty(message="{validaion.recaptcha.not.matched}")
+    @Size( max=1,message="{validaion.recaptcha.not.matched}")
     public String getRecaptcha_response_field()
     {
         return recaptcha_response_field;

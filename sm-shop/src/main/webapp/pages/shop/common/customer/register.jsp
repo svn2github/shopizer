@@ -17,12 +17,12 @@ response.setDateHeader ("Expires", -1);
 <script type="text/javascript">
 
 var RecaptchaOptions = {
-	    theme : 'clean',
-	    lang :'en'
+	    theme : '${recapatcha_theme}',
+	    lang :'${requestScope.LANGUAGE.code}'
 };
 
 $(document).ready(function() {
-	isFormValid();
+	//isFormValid();
 	$("input[type='text']").on("change keyup paste", function(){
 		isFormValid();
 	});
@@ -78,6 +78,7 @@ $(document).ready(function() {
 			$('#submitRegistration').prop('disabled', false);
 			$('#registrationError').hide();
 		}
+		return valid;
  }
  
  
@@ -112,7 +113,7 @@ $(document).ready(function() {
 	<div id="main-content" class="container clearfix">
 		<div class="row-fluid">
 			<div class="span7">
-				<form:form method="post" action="${register_url}" id="registrationForm" class="form-horizontal" commandName="customer">
+				<form:form method="post" action="${register_url}" id="registrationForm" class="form-horizontal" commandName="customer" onsubmit="return isFormValid();">
 					<fieldset>
 						<div class="control-group">
 							<label class="required control-label" for="FirstNameRegister"><s:message code="label.generic.firstname" text="First Name"/></label>
@@ -209,12 +210,13 @@ $(document).ready(function() {
 								</iframe>
 								<br/>
 								<form:textarea path="recaptcha_challenge_field" readonly="3" cols="40"/>
-								<form:errors path="recaptcha_challenge_field" cssClass="error" />
+								
      							
 								<input type="hidden" name="recaptcha_response_field"
 									value="manual_challenge">
 							</noscript>
 						</div>
+						<form:errors path="recaptcha_challenge_field" cssClass="error" />
 						</div>
 
 						<div class="form-actions">

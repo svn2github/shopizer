@@ -70,6 +70,8 @@ public class CustomerRegistrationController{
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerRegistrationController.class);
     public static final String RECAPATCHA_PUBLIC_KEY="shopizer.recapatcha_public_key";
     public static final String RECAPATCHA_PRIVATE_KEY="shopizer.recapatcha_private_key";
+    public static final String RECAPATCHA_DEFAULT_LANGUAGE="shopizer.recapatcha.default.language";
+    public static final String RECAPATCHA_THEME="shopizer.recapatcha.theme";
     
 	@Autowired
 	private CoreConfiguration coreConfiguration;
@@ -104,7 +106,7 @@ public class CustomerRegistrationController{
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 
-		model.addAttribute( "recapatcha_public_key", coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
+		initCaptcha( model, request);
 		model.addAttribute("customer", new ShopPersistableCustomer() );
 
 		/** template **/
@@ -116,13 +118,11 @@ public class CustomerRegistrationController{
 	}
 
     @RequestMapping( value = "/register.html", method = RequestMethod.POST )
-    public String registerCustomer( @Valid
-    @ModelAttribute
-    final ShopPersistableCustomer customer, final BindingResult bindingResult, final Model model,
+    public String registerCustomer( @Valid  @ModelAttribute(value="customer") final ShopPersistableCustomer customer, final BindingResult bindingResult, final Model model,
                                     final HttpServletRequest request, final Locale locale )
         throws Exception
     {
-        model.addAttribute( "recapatcha_public_key", coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
+        initCaptcha( model, request);
         final MerchantStore merchantStore = (MerchantStore) request.getAttribute( Constants.MERCHANT_STORE );
         ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
         reCaptcha.setPublicKey( coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
@@ -335,5 +335,11 @@ public class CustomerRegistrationController{
        } catch (Exception e) {
            LOGGER.error("Error occured while sending welcome email ",e);
        }
+    }
+    
+    private void initCaptcha(final Model model,final HttpServletRequest request){
+        model.addAttribute( "recapatcha_public_key", coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
+        model.addAttribute( "recapatcha_theme", coreConfiguration.getProperty( RECAPATCHA_THEME ) );
+             
     }
 }
