@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.NoResultException;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -274,6 +276,9 @@ public class ShoppingCartFacadeImpl
         {
             LOG.error( "Error while retriving cart from customer", ex );
         }
+        catch( NoResultException nre) {
+        	//nothing
+        }
 
         if ( cart == null )
         {
@@ -455,6 +460,10 @@ public class ShoppingCartFacadeImpl
                 LOG.error( "error while fetching cart model...", e );
                 return null;
             }
+            catch( NoResultException nre) {
+           	//nothing
+            }
+
         }
         return null;
     }
@@ -467,9 +476,14 @@ public class ShoppingCartFacadeImpl
 				ShoppingCartData cart = getShoppingCartData(cartModel);
 				return cart;
 			}
+		} catch( NoResultException nre) {
+	        	//nothing
+
 		} catch(Exception e) {
 			LOG.error("Cannot retrieve cart code " + code,e);
 		}
+
+
 		return null;
 	}
 

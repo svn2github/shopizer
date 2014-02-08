@@ -235,10 +235,11 @@ function getZones(listDiv, textDiv, countryCode, defaultValue, callBackFunction)
 	  dataType: 'json',
 	  success: function(response){
 			var status = response.response.status;
+			var data = response.response.data;
 			//console.log(status);
-			if(status==0 || status ==9999) {
+			if((status==0 || status ==9999) && data) {
 				
-				var data = response.response.data;
+				
 				//console.log(data);
 				if(data && data.length>0) {
 					$(listDiv).show();  

@@ -14,142 +14,201 @@ response.setDateHeader ("Expires", -1);
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 
+<script type="text/javascript">
+
+var RecaptchaOptions = {
+	    theme : 'clean'
+};
+
+$(document).ready(function() {
+	isFormValid();
+	$("input[type='text']").on("change keyup paste", function(){
+		isFormValid();
+	});
+	
+	$("input[type='password']").on("change keyup paste", function(){
+		isFormValid();
+	});
+
+	$("#registration_country").change(function() {
+		isFormValid();	
+	})
+	
+});
+
+
+ 
+
+
+ function isFormValid() {
+		$('#registrationError').hide();//reset error message
+		var $inputs = $('#registrationForm').find(':input');
+		var valid = true;
+		var firstErrorMessage = null;
+		$inputs.each(function() {
+			if($(this).hasClass('required')) {				
+				var fieldValid = isFieldValid($(this));
+				if(!fieldValid) {
+					if(firstErrorMessage==null) {
+						if($(this).attr('title')) {
+							firstErrorMessage = $(this).attr('title');
+						}
+					}
+					valid = false;
+				}
+			}
+			//if has class email
+			
+			//user name
+			
+			//password rules
+			
+			//repeat password
+		});
+		
+		console.log('Form is valid ? ' + valid);
+		if(valid==false) {//disable submit button
+			$('#submitRegistration').addClass('btn-disabled');
+			$('#submitRegistration').prop('disabled', true);
+			$('#registrationError').html(firstErrorMessage);
+			$('#registrationError').show();
+		} else {
+			$('#submitRegistration').removeClass('btn-disabled');
+			$('#submitRegistration').prop('disabled', false);
+			$('#registrationError').hide();
+		}
+ }
+ 
+ 
+ function isFieldValid(field) {
+		var validateField = true;
+		var fieldId = field.prop('id');
+		var value = field.val();
+		if (fieldId.indexOf("hidden_registration_zones") >= 0) {
+			console.log(field.is(":hidden"));
+			if(field.is(":hidden")) {
+				return true;
+			}
+		}
+		if(value!='') {
+			field.css('background-color', '#FFF');
+			return true;
+		} else {
+			field.css('background-color', '#FFC');
+			return false;
+		} 
+ }
+ 
+ 
+ </script>
+
+<div id="registrationError"  class="alert alert-error" style="display:none;">
+
+</div>
+
 <c:set var="register_url" value="${pageContext.request.contextPath}/shop/customer/register.html"/>
 
 	<div id="main-content" class="container clearfix">
 		<div class="row-fluid">
 			<div class="span7">
-				<form:form method="post" action="${register_url}" id="registration-form" class="form-horizontal" commandName="customer">
-				<%-- <form:errors path="*" cssClass="errorblock"/> --%>
+				<form:form method="post" action="${register_url}" id="registrationForm" class="form-horizontal" commandName="customer">
 					<fieldset>
 						<div class="control-group">
-							<label class="required control-label" for="FirstNameRegister">First Name <span class="required">*</span></label>
+							<label class="required control-label" for="FirstNameRegister"><s:message code="label.generic.firstname" text="First Name"/></label>
 							<div class="controls">
-							   <form:input path="firstName" cssClass="span12" id="firstName"/>
+							   <s:message code="NotEmpty.customer.firstName" text="First name is required" var="msgFirstName"/>
+							   <form:input path="firstName" cssClass="span12 required" id="firstName" title="${msgFirstName}"/>
 							   <form:errors path="firstName" cssClass="error" />
 								
 							</div>
 						</div>
 						<div class="control-group">
-							<label class="required control-label" for="LastNameRegister">Last Name <span class="required">*</span></label>
+							<label class="required control-label" for="LastNameRegister"><s:message code="label.generic.lastname" text="Last Name"/></label>
 							<div class="controls">
-							    <form:input path="lastName" cssClass="span12" id="lastName"/>
+							    <s:message code="NotEmpty.customer.lastName" text="Last name is required" var="msgLastName"/>
+							    <form:input path="lastName" cssClass="span12 required" id="lastName" title="${msgLastName}"/>
 							    <form:errors path="lastName" cssClass="error" />
 								
 							</div>
 						</div>
 
 						<div class="control-group">
-							<label class="required control-label" for="sex">Sex <span class="required">*</span></label>
+							<label class="required control-label" for="sex"><s:message code="label.generic.genre" text="Genre"/></label>
 							<div class="controls">
 							 <form:select path="gender">
-							    <form:option value="M">Male</form:option>
-							     <form:option value="F">Female</form:option>
+							    <form:option value="M"><s:message code="label.generic.male" text="Male"/></form:option>
+							     <form:option value="F"><s:message code="label.generic.female" text="Female"/></form:option>
 							 </form:select>
 								<form:errors path="gender" cssClass="error" />
 							</div>
 						</div>
 
-						<%-- <div class="control-group">
-							<label class="required control-label" for="address">Address <span class="required">*</span></label>
-							<div class="controls">
-								<input type="text" class="span12" id="address" name="address">
-							</div>
-						</div>
-						
 						<div class="control-group">
-							<label class="required control-label" for="city">City <span class="required">*</span></label>
-							<div class="controls">
-								<input type="text" class="span12" id="city" name="city">
-							</div>
-						</div>  --%>
-						<!-- 
-							 LOOK IN ADMIN - CUSTOMER ON HOW TO SWITCH ZONES BASED ON COUNTRY
-							 AND FOR PROVINCES NOT DEFINED IN THE SYSTEM
-						 -->
-						<div class="control-group">
-							<label class="control-label required">Select Your Country <span class="required">*</span></label>
+							<label class="control-label required"><s:message code="label.generic.country" text="Country"/></label>
 							<div class="controls">
 							<form:select path="country" id="registration_country">
 							  <form:options items="${countryList}" itemValue="isoCode" itemLabel="name"/>
 							</form:select>
-								<%-- <select name="country">
-									<option value="US" selected="">United States</option>
-									<option value="AF">Afghanistan</option>
-									<option value="AL">Albania</option>
-									<option value="DZ">Algeria</option>
-									<option value="AS">American Samoa</option>
-									<option value="AD">Andorra</option>
-									<option value="AO">Angola</option>
-									<option value="AI">...</option>
-								</select> --%>
 							</div>
 						</div>
 						
 						<div class="control-group">
-							<label class="control-label required">Select Province <span class="required">*</span></label>
+							<label class="control-label required"><s:message code="label.generic.stateprovince" text="State / Province"/></label>
 							<div class="controls">
-							<form:select path="province" id="registration_zones">
-							
+							<s:message code="NotEmpty.customer.billing.stateProvince" text="State / Province is required" var="msgStateProvince"/>
+							<form:select path="province" id="registration_zones" >
 							</form:select>
-								<%-- <select name="province">
-									<option value="AL">Alabama</option>
-									<option value="AK">Arkansas</option>
-									<option value="AI">...</option>
-								</select> --%>
-								<form:input path="province" id="hidden_registration_zones"/>
+								<form:input path="province" cssClass="span12 required" id="hidden_registration_zones" title="${msgStateProvince}"/>
 							</div>
 						</div>
 						<div class="control-group">
-							<label class="required control-label" for="username">User Name <span class="required">*</span></label>
+							<label class="required control-label" for="username"><s:message code="label.generic.username" text="User name" /></label>
 							<div class="controls">
-								 <form:input path="userName" cssClass="span12" id="userName"/>
+								<s:message code="NotEmpty.customer.userName" text="User name is required" var="msgUserName"/>
+								<form:input path="userName" cssClass="span12 required" id="userName" title="${msgUserName}"/>
 								<form:errors path="userName" cssClass="error" />
 							</div>
 						</div>
 						
 						<div class="control-group">
-							<label class="required control-label" for="email">Email <span class="required">*</span></label>
+							<label class="required control-label" for="email"><s:message code="label.generic.email" text="Email address"/></label>
 							<div class="controls">
-							     <form:input path="emailAddress" cssClass="span12" id="email"/>
+							     <s:message code="NotEmpty.customer.emailAddress" text="Email address is required" var="msgEmail"/>
+							     <form:input path="emailAddress" cssClass="span12 required" id="email" title="${msgEmail}"/>
 							     <form:errors path="emailAddress" cssClass="error" />
 								
 							</div>
 						</div>
 						<div class="control-group">
-							<label class="required control-label" for="password">Password <span class="required">*</span></label>
+							<label class="required control-label" for="password"><s:message code="label.generic.password" text="Password"/></label>
 							<div class="controls">
-							    <form:password path="password" class="span12" id="password"/>
+							    <s:message code="message.password.required" text="Password is required" var="msgPassword"/>
+							    <form:password path="password" class="span12 required" id="password" title="${msgPassword}"/>
 								<form:errors path="password" cssClass="error" />
 							</div>
 						</div>
 						<div class="control-group">
-							<label class="required control-label" for="passwordAgain">Password again <span class="required">*</span></label>
+							<label class="required control-label" for="passwordAgain"><s:message code="label.generic.repeatpassword" text="Repeat password"/></label>
 							<div class="controls">
-							     <form:password path="checkPassword" class="span12" id="passwordAgain"/>
+							     <s:message code="message.password.repeat.required" text="Repeated password is required" var="msgRepeatPassword"/>
+							     <form:password path="checkPassword" class="span12 required" id="passwordAgain" title="${msgRepeatPassword}"/>
 								<form:errors path="checkPassword" cssClass="error" />
-							</div>
-						</div>
-						<div class="control-group">
-							<div class="controls"><!--watch the white space in IOS!-->
-								<label for="registerNewsletter" class="checkbox inline"><input type="checkbox" value="1" id="registerNewsletter" name="registerNewsletter"> Sign up for our newsletter</label>
 							</div>
 						</div>
 
 						<div class="control-group">
 							<div class="controls"><!--watch the white space in IOS!-->
 								<script type="text/javascript"
-    								 src="http://www.google.com/recaptcha/api/challenge?k=6Lc1Pe0SAAAAADQDlWbv3MYYj7lGEeCEanwC42bv">
+    								 src="http://www.google.com/recaptcha/api/challenge?k=<c:out value="${recapatcha_public_key}"/>&hl=${requestScope.LANGUAGE.code}">
   								</script>
 							<noscript>
 								<iframe
-									src="http://www.google.com/recaptcha/api/noscript?k=6Lc1Pe0SAAAAADQDlWbv3MYYj7lGEeCEanwC42bv"
-									height="300" width="500" frameborder="0"></iframe>
-								<br>
+									src="http://www.google.com/recaptcha/api/noscript?k=<c:out value="${recapatcha_public_key}"/>&hl=${requestScope.LANGUAGE.code}"
+									height="300" width="500" frameborder="0">
+								</iframe>
+								<br/>
 								<form:textarea path="recaptcha_challenge_field" readonly="3" cols="40"/>
 								<form:errors path="recaptcha_challenge_field" cssClass="error" />
-								<!-- <textarea name="recaptcha_challenge_field" rows="3" cols="40">
-     							</textarea> -->
      							
 								<input type="hidden" name="recaptcha_response_field"
 									value="manual_challenge">
@@ -158,7 +217,7 @@ response.setDateHeader ("Expires", -1);
 						</div>
 
 						<div class="form-actions">
-							<input type="submit" value="Register" name="register" class="btn btn-primary btn-large">
+							<input id="submitRegistration" type="submit" value="<s:message code="label.generic.register" text="Register"/>" name="register" class="btn btn-primary btn-large">
 						</div>
 					</fieldset>
 				</form:form>

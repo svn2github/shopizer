@@ -116,61 +116,58 @@
 		  			<form:hidden path="order.id" />
 		  			<form:hidden path="order.customerId" />
  			
- 		<div class="span4">  
+ 		<div class="span8"> 
+ 		
+ 			<div class="span4"> 
 			
-			<h6> <s:message code="label.customer.address2" text="Customer Address"/> </h6>
+			<h6> <s:message code="label.customer.billinginformation" text="Billing information"/> </h6>
 			<address>			        
 
 				<label><s:message code="label.customer.firstname" text="First Name"/></label>
 	            <div class="controls">
 	            		
-			 				<form:input id="customerFirstName" cssClass="input-large highlight" path="order.customerFirstName"/>
+			 				<form:input id="customerFirstName" cssClass="input-large highlight" path="order.billing.firstName"/>
 			 				<span class="help-inline">
-			 				<form:errors path="order.customerFirstName" cssClass="error" /></span>
+			 				<form:errors path="order.billing.firstName" cssClass="error" /></span>
 	            </div>
 	            
 	            <label><s:message code="label.customer.lastname" text="Last Name"/></label>
 	            <div class="controls">
-		 					<form:input id="customerLastName" cssClass="input-large highlight" path="order.customerLastName"/>
-		 					<span class="help-inline"><form:errors path="order.customerLastName" cssClass="error" /></span>
+		 					<form:input id="customerLastName" cssClass="input-large highlight" path="order.billing.lastName"/>
+		 					<span class="help-inline"><form:errors path="order.billing.lastName" cssClass="error" /></span>
 	            </div>
 	            
-	            <label><s:message code="label.customer.streetaddress" text="StreetAddress"/></label>
-	            <div class="controls">
-	            		
-		 				<form:input id="customerStreetAddress" cssClass="input-large highlight" path="order.customerStreetAddress"/>
-		 				<span class="help-inline"><form:errors path="order.customerStreetAddress" cssClass="error" /></span>
-	            </div>
 	            
-	            <label><s:message code="label.customer.city" text="City"/></label>
-	            <div class="controls">
-		 				<form:input id="customerCity" cssClass="input-large highlight" path="order.customerCity"/>
-		 				<span class="help-inline"><form:errors path="order.customerCity" cssClass="error" /></span>
-	            </div> 
-	 
-	 
-	 			<label><s:message code="label.customer.zone" text="State"/></label>
-	 			<div class="controls">
-			 	<form:input  cssClass="input-large" path="order.customerState"/>
-			 	</div> 
-			 	
-			 	<label><s:message code="label.customer.country" text="Country"/></label>
-	 			<div class="controls">
-			 	<form:input  cssClass="input-large" path="order.customerCountry"/>
-			 	</div> 
-				
-				<label><s:message code="label.customer.postalcode" text="Postal code"/></label>
-				<div class="controls">
-		 				<form:input id="customerPostCode" cssClass="input-large highlight" path="order.customerPostCode"/>
-		 				<span class="help-inline"><form:errors path="order.customerPostCode" cssClass="error" /></span>
-	            </div> 
-	           
-	           <label><s:message code="label.customer.telephone" text="Phone"/></label>
-	            <div class="controls">
-		 				<form:input id="customerTelephone" cssClass="input-large highlight" path="order.customerTelephone"/>
-		 				<span class="help-inline"><form:errors path="order.customerTelephone" cssClass="error" /></span>
-	            </div>	
+	            <address>
 	            
+	            		<label><s:message code="label.customer.billing.streetaddress" text="Billing address"/></label>
+			            <div class="controls">
+				 				<form:input id="billingAdress" cssClass="input-large highlight" path="order.billing.address"/>
+				 				<span class="help-inline"><form:errors path="order.billing.address" cssClass="error" /></span>
+			            </div>
+			            <label><s:message code="label.customer.billing.city" text="Billing city"/></label>
+			            <div class="controls">
+				 				<form:input id="billingCity" cssClass="input-large highlight" path="order.billing.city"/>
+				 				<span class="help-inline"><form:errors path="order.billing.city" cssClass="error" /></span>
+			            </div>
+			            <label><s:message code="label.customer.billing.zone" text="Billing state / province"/></label>
+			            <div class="controls">
+				 				<form:input id="billingState" cssClass="input-large highlight" path="order.billing.state"/>
+				 				<span class="help-inline"><form:errors path="order.billing.state" cssClass="error" /></span>
+			            </div>
+			            <label><s:message code="label.customer.billing.country" text="Country"/></label>
+			            <div class="controls">
+				 				<form:select cssClass="country-list" path="order.billing.country.isoCode">
+					  					<form:options items="${countries}" itemValue="isoCode" itemLabel="name"/>
+				       			</form:select>
+			            </div>
+			            <label><s:message code="label.customer.billing.postalcode" text="Billing postal code"/></label>
+			            <div class="controls">
+				 				<form:input id="billingPostalCode" cssClass="input-large highlight" path="order.billing.postalCode"/>
+				 				<span class="help-inline"><form:errors path="order.billing.postalCode" cssClass="error" /></span>
+			            </div>	
+			    </address>
+
 	            
 	           <label><s:message code="label.customer.email" text="Email"/></label>
 	            <div class="controls">
@@ -178,39 +175,20 @@
 		 				<span class="help-inline"><form:errors path="order.customerEmailAddress" cssClass="error" /></span>
 	            </div>
 	            
-	
-   
-				<s:message code="label.customer.order.date" text="Order date"/>			 		
-			 	<div class="controls">
-							<form:input  cssClass="input-large" path="datePurchased"  class="small" type="text"
-							 data-date-format="<%=com.salesmanager.core.constants.Constants.DEFAULT_DATE_FORMAT%>" />
-							  <script type="text/javascript">
-                                 $('#datePurchased').datepicker();
-                              </script>
-		 						<span class="help-inline"><form:errors path="datePurchased" cssClass="error" /></span>
-	            </div>  
-	
-
-	            <label><s:message code="label.order.paymentmode" text="Payment mode"/></label>
-	            <div class="controls">
-		 			 <c:out value="${order.order.paymentModuleCode}"/><form:hidden  path="order.paymentModuleCode"/><br/><br/>
-	            </div>	
+	            </div>
 	            
-	            <label><s:message code="label.order.shippingmethod" text="Shipping method"/></label>
-	            <div class="controls">
-		 			 <c:out value="${order.order.shippingModuleCode}"/><form:hidden  path="order.shippingModuleCode"/>
-	            </div>	
-	
-				</dl> 
-			</address>
-			</div>
-			
-		 	<div class="offset5">			
+	            <div span="4">
+	            
+	            
 				<h6><s:message code="label.customer.shippinginformation" text="Shipping information"/></h6>
 				<address>
-						<label><s:message code="label.customer.shipping.name" text="Shipping name"/></label>
+						<label><s:message code="label.customer.shipping.firstName" text="Shipping first name"/></label>
 			            <div class="controls">
-				 				<form:input  cssClass="input-large" path="order.delivery.name"/>				 							
+				 				<form:input  cssClass="input-large" path="order.delivery.firstName"/>				 							
+			            </div>
+			            <label><s:message code="label.customer.shipping.lastName" text="Shipping last name"/></label>
+			            <div class="controls">
+				 				<form:input  cssClass="input-large" path="order.delivery.lastName"/>				 							
 			            </div>
 			            <label><s:message code="label.customer.shipping.streetaddress" text="Shipping address"/></label>
 			            <div class="controls">
@@ -235,52 +213,39 @@
 				 				<form:input  cssClass="input-large" path="order.delivery.postalCode"/>
 			            </div>	            	            	            	            				
 				</address>	
-			
-				<br/>
+	            
+	            
+	            </div>
+	            
+	            </div>
 	
-			    <h6><s:message code="label.customer.billinginformation" text="Billing information"/></h6>
-			    <address>
+   				<div class="span8">
+				<s:message code="label.customer.order.date" text="Order date"/>			 		
+			 	<div class="controls">
+							<form:input  cssClass="input-large" path="datePurchased"  class="small" type="text"
+							 data-date-format="<%=com.salesmanager.core.constants.Constants.DEFAULT_DATE_FORMAT%>" />
+							  <script type="text/javascript">
+                                 $('#datePurchased').datepicker();
+                              </script>
+		 						<span class="help-inline"><form:errors path="datePurchased" cssClass="error" /></span>
+	            </div>  
+	
 
-			             <label><s:message code="label.customer.billing.company" text="Company"/></label>
-					     <div class="controls">
-				 				<form:input id="billingCompany" cssClass="input-large" path="order.billing.company"/>
-				 				<span class="help-inline"><form:errors path="order.billing.name" cssClass="error" /></span>
-			             </div>
+	            <label><s:message code="label.order.paymentmode" text="Payment mode"/></label>
+	            <div class="controls">
+		 			 <c:out value="${order.order.paymentModuleCode}"/><form:hidden  path="order.paymentModuleCode"/><br/><br/>
+	            </div>	
+	            
+	            <label><s:message code="label.order.shippingmethod" text="Shipping method"/></label>
+	            <div class="controls">
+		 			 <c:out value="${order.order.shippingModuleCode}"/><form:hidden  path="order.shippingModuleCode"/>
+	            </div>	
+	
+				</dl>
+				
+				</div> 
+						
 
-			    		 <label><s:message code="label.customer.billing.name" text="Billing name"/></label>
-					     <div class="controls">
-				 				<form:input id="billingName" cssClass="input-large highlight" path="order.billing.name"/>
-				 				<span class="help-inline"><form:errors path="order.billing.name" cssClass="error" /></span>
-			             </div>
-
-			            <label><s:message code="label.customer.billing.streetaddress" text="Billing address"/></label>
-			            <div class="controls">
-				 				<form:input id="billingAdress" cssClass="input-large highlight" path="order.billing.address"/>
-				 				<span class="help-inline"><form:errors path="order.billing.address" cssClass="error" /></span>
-			            </div>
-			            <label><s:message code="label.customer.billing.city" text="Billing city"/></label>
-			            <div class="controls">
-				 				<form:input id="billingCity" cssClass="input-large highlight" path="order.billing.city"/>
-				 				<span class="help-inline"><form:errors path="order.billing.city" cssClass="error" /></span>
-			            </div>
-			            <label><s:message code="label.customer.billing.zone" text="Billing state / province"/></label>
-			            <div class="controls">
-				 				<form:input id="billingState" cssClass="input-large highlight" path="order.billing.state"/>
-				 				<span class="help-inline"><form:errors path="order.billing.state" cssClass="error" /></span>
-			            </div>
-			            <label><s:message code="label.customer.billing.country" text="Country"/></label>
-			            <div class="controls">
-				 				<form:select cssClass="country-list highlight" path="order.billing.country.isoCode">
-					  					<form:options items="${countries}" itemValue="isoCode" itemLabel="name"/>
-				       			</form:select>
-			            </div>
-			            <label><s:message code="label.customer.billing.postalcode" text="Billing postal code"/></label>
-			            <div class="controls">
-				 				<form:input id="billingPostalCode" cssClass="input-large highlight" path="order.billing.postalCode"/>
-				 				<span class="help-inline"><form:errors path="order.billing.postalCode" cssClass="error" /></span>
-			            </div>	
-			    </address>			 
-		  </div>
 		
  
       

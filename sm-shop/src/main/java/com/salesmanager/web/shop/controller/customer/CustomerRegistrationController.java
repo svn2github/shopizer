@@ -105,7 +105,6 @@ public class CustomerRegistrationController{
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 
-		//TODO object will change
 		model.addAttribute( "recapatcha_public_key", coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
 		model.addAttribute("customer", new ShopPersistableCustomer() );
 
