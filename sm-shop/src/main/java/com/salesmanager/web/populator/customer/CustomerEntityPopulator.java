@@ -33,18 +33,7 @@ public class CustomerEntityPopulator
     {
         try
         {
-            if(source.getBilling() !=null){
-            	if(source.getBilling().getFirstName() !=null){
-            		target.setFirstName( source.getBilling().getFirstName() );
-            	}
-            	if(source.getBilling().getLastName() !=null){
-            		target.setLastName( source.getBilling().getLastName() );
-            	}
-            }
 
-            if(source.getBilling() !=null){
-                
-            }
             
             if(StringUtils.isNotBlank( source.getEmailAddress() )){
                 target.setEmailAddress( source.getEmailAddress() );

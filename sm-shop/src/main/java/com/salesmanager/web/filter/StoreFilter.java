@@ -23,6 +23,7 @@ import com.salesmanager.core.business.catalog.category.model.CategoryDescription
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
+import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.content.model.Content;
 import com.salesmanager.core.business.content.model.ContentDescription;
 import com.salesmanager.core.business.content.model.ContentType;
@@ -38,6 +39,8 @@ import com.salesmanager.core.business.system.model.MerchantConfigurationType;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
 import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.customer.Address;
+import com.salesmanager.web.entity.customer.AnonymousCustomer;
 import com.salesmanager.web.entity.shop.Breadcrumb;
 import com.salesmanager.web.entity.shop.BreadcrumbItem;
 import com.salesmanager.web.entity.shop.BreadcrumbItemType;
@@ -152,6 +155,25 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 					}
 					request.setAttribute(Constants.CUSTOMER, customer);
 				}
+				AnonymousCustomer anonymousCustomer =  (AnonymousCustomer)request.getSession().getAttribute(Constants.ANONYMOUS_CUSTOMER);
+				if(anonymousCustomer==null) {
+					anonymousCustomer = new AnonymousCustomer();
+					Address address = new Address();
+					address.setCountry(store.getCountry().getIsoCode());
+					if(store.getZone()!=null) {
+						address.setZone(store.getZone().getCode());
+					} else {
+						address.setStateProvince(store.getStorestateprovince());
+					}
+					address.setPostalCode(store.getStorepostalcode());
+					anonymousCustomer.setBilling(address);
+					request.getSession().setAttribute(Constants.ANONYMOUS_CUSTOMER, anonymousCustomer);
+				} else {
+					request.setAttribute(Constants.ANONYMOUS_CUSTOMER, anonymousCustomer);
+				}
+				
+				
+				
 				
 				/** language & locale **/
 				Language language = (Language) request.getSession().getAttribute(Constants.LANGUAGE);

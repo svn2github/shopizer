@@ -5,23 +5,20 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 public class Address {
 	
-
+	@NotEmpty(message="{NotEmpty.customer.firstName}")
 	private String firstName;
+	
+	@NotEmpty(message="{NotEmpty.customer.lastName}")
 	private String lastName;
 	
 
 	private String company;
-	
-	@NotEmpty
-	private String phone;
-	
-	@NotEmpty
-	private String address;
 
-	@NotEmpty
+	private String phone;
+	private String address;
 	private String city;
 	
-	@NotEmpty
+
 	private String postalCode;
 	
 
@@ -30,7 +27,7 @@ public class Address {
 	
 	private String zone;//code
 	
-	@NotEmpty
+	@NotEmpty(message="{NotEmpty.customer.billing.country}")
 	private String country;//code
 
 	public void setStateProvince(String stateProvince) {

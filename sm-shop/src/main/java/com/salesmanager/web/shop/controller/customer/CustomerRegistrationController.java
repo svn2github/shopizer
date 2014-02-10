@@ -14,7 +14,6 @@ import javax.validation.Valid;
 import net.tanesha.recaptcha.ReCaptchaImpl;
 import net.tanesha.recaptcha.ReCaptchaResponse;
 
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -45,6 +44,7 @@ import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.constants.EmailConstants;
+import com.salesmanager.web.entity.customer.AnonymousCustomer;
 import com.salesmanager.web.entity.customer.CustomerEntity;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.customer.ShopPersistableCustomer;
@@ -70,8 +70,6 @@ public class CustomerRegistrationController{
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerRegistrationController.class);
     public static final String RECAPATCHA_PUBLIC_KEY="shopizer.recapatcha_public_key";
     public static final String RECAPATCHA_PRIVATE_KEY="shopizer.recapatcha_private_key";
-    public static final String RECAPATCHA_DEFAULT_LANGUAGE="shopizer.recapatcha.default.language";
-    public static final String RECAPATCHA_THEME="shopizer.recapatcha.theme";
     
 	@Autowired
 	private CoreConfiguration coreConfiguration;
@@ -106,8 +104,15 @@ public class CustomerRegistrationController{
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 
-		initCaptcha( model, request);
-		model.addAttribute("customer", new ShopPersistableCustomer() );
+		model.addAttribute( "recapatcha_public_key", coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
+		
+		ShopPersistableCustomer customer = new ShopPersistableCustomer();
+		AnonymousCustomer anonymousCustomer = (AnonymousCustomer)request.getAttribute(Constants.ANONYMOUS_CUSTOMER);
+		if(anonymousCustomer!=null) {
+			customer.setBilling(anonymousCustomer.getBilling());
+		}
+		
+		model.addAttribute("customer", customer);
 
 		/** template **/
 		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.register).append(".").append(store.getStoreTemplate());
@@ -118,17 +123,20 @@ public class CustomerRegistrationController{
 	}
 
     @RequestMapping( value = "/register.html", method = RequestMethod.POST )
-    public String registerCustomer( @Valid  @ModelAttribute(value="customer") final ShopPersistableCustomer customer, final BindingResult bindingResult, final Model model,
+    public String registerCustomer( @Valid
+    @ModelAttribute
+    final ShopPersistableCustomer customer, final BindingResult bindingResult, final Model model,
                                     final HttpServletRequest request, final Locale locale )
         throws Exception
     {
-        initCaptcha( model, request);
         final MerchantStore merchantStore = (MerchantStore) request.getAttribute( Constants.MERCHANT_STORE );
         ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
         reCaptcha.setPublicKey( coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
         reCaptcha.setPrivateKey( coreConfiguration.getProperty( RECAPATCHA_PRIVATE_KEY ) );
         
-        /*if ( StringUtils.isNotBlank( customer.getRecaptcha_challenge_field() )
+        model.addAttribute("customer", customer);
+        
+        if ( StringUtils.isNotBlank( customer.getRecaptcha_challenge_field() )
             && StringUtils.isNotBlank( customer.getRecaptcha_response_field() ) )
         {
             ReCaptchaResponse reCaptchaResponse =
@@ -141,7 +149,7 @@ public class CustomerRegistrationController{
                                            new Object[] {}, "validaion.recaptcha.not.matched" );
             }
 
-        }*/
+        }
         
         if ( StringUtils.isNotBlank( customer.getUserName() ) )
         {
@@ -311,8 +319,8 @@ public class CustomerRegistrationController{
        try {
 
            Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, merchantStore, messages, customerLocale);
-           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_FIRSTNAME, customer.getFirstName());
-           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_LASTNAME, customer.getLastName());
+           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_FIRSTNAME, customer.getBilling().getFirstName());
+           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_LASTNAME, customer.getBilling().getLastName());
            String[] greetingMessage = {merchantStore.getStorename(),FilePathUtils.buildCustomerUri(merchantStore, request),merchantStore.getStoreEmailAddress()};
            templateTokens.put(EmailConstants.EMAIL_CUSTOMER_GREETING, messages.getMessage("email.customer.greeting", greetingMessage, customerLocale));
            templateTokens.put(EmailConstants.EMAIL_USERNAME_LABEL, messages.getMessage("label.generic.username",customerLocale));
@@ -329,17 +337,11 @@ public class CustomerRegistrationController{
            email.setTemplateName(EmailConstants.EMAIL_CUSTOMER_TPL);
            email.setTemplateTokens(templateTokens);
 
-           LOGGER.info( "Sending email to {} on their  registered email id {} ",customer.getFirstName(),customer.getEmailAddress() );
+           LOGGER.info( "Sending email to {} on their  registered email id {} ",customer.getBilling().getFirstName(),customer.getEmailAddress() );
            emailService.sendHtmlEmail(merchantStore, email);
 
        } catch (Exception e) {
            LOGGER.error("Error occured while sending welcome email ",e);
        }
-    }
-    
-    private void initCaptcha(final Model model,final HttpServletRequest request){
-        model.addAttribute( "recapatcha_public_key", coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
-        model.addAttribute( "recapatcha_theme", coreConfiguration.getProperty( RECAPATCHA_THEME ) );
-             
     }
 }

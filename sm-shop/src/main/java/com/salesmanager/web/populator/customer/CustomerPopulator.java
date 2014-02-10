@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.common.model.Delivery;
 import com.salesmanager.core.business.customer.model.Customer;
-import com.salesmanager.core.business.customer.model.CustomerGender;
 import com.salesmanager.core.business.customer.model.attribute.CustomerAttribute;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOption;
 import com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue;
@@ -83,7 +82,7 @@ public class CustomerPopulator extends
 				//billing.setCountry(country);
 				billing.setFirstName(sourceBilling.getFirstName());
 				billing.setLastName(sourceBilling.getLastName());
-				billing.setTelephone(source.getPhone());
+				billing.setTelephone(sourceBilling.getPhone());
 				billing.setPostalCode(sourceBilling.getPostalCode());
 				billing.setState(sourceBilling.getStateProvince());
 				Country billingCountry = null;
@@ -105,18 +104,16 @@ public class CustomerPopulator extends
 				target.setBilling(billing);
 
 			}
-			if(target.getBilling() ==null){
+			if(target.getBilling() ==null && source.getBilling()!=null){
 			    LOG.info( "Setting default values for billing" );
 			    Billing billing = new Billing();
 			    Country billingCountry = null;
-			    if(StringUtils.isNotBlank( source.getCountry() )) {
-                    billingCountry = countries.get(source.getCountry());
+			    if(StringUtils.isNotBlank( source.getBilling().getCountry() )) {
+                    billingCountry = countries.get(source.getBilling().getCountry());
                     if(billingCountry==null) {
                         throw new ConversionException("Unsuported country code " + sourceBilling.getCountry());
                     }
                     billing.setCountry(billingCountry);
-                    billing.setFirstName( source.getFirstName() );
-                    billing.setLastName( source.getLastName() );
                     target.setBilling( billing );
                 }
 			}
@@ -153,18 +150,16 @@ public class CustomerPopulator extends
 				target.setDelivery(delivery);
 			}
 			
-			if(target.getDelivery() ==null){
+			if(target.getDelivery() ==null && source.getDelivery()!=null){
 			    LOG.info( "Setting default value for delivery" );
 			    Delivery delivery = new Delivery();
 			    Country deliveryCountry = null;
-                if(StringUtils.isNotBlank( source.getCountry() )) {
-                    deliveryCountry = countries.get(source.getCountry());
+                if(StringUtils.isNotBlank( source.getDelivery().getCountry() )) {
+                    deliveryCountry = countries.get(source.getDelivery().getCountry());
                     if(deliveryCountry==null) {
                         throw new ConversionException("Unsuported country code " + sourceShipping.getCountry());
                     }
                     delivery.setCountry(deliveryCountry);
-                    delivery.setFirstName( source.getFirstName() );
-                    delivery.setLastName( source.getLastName() );
                     target.setDelivery( delivery );
                 }
 			}
