@@ -62,7 +62,7 @@ public class CustomerPopulator extends
 
 			target.setEmailAddress(source.getEmailAddress());
 			target.setNick(source.getUserName());
-		    target.setGender( CustomerGender.valueOf( source.getGender() ) );
+		    target.setGender( com.salesmanager.core.business.customer.model.CustomerGender.valueOf( source.getGender() ) );
 			
 			 
 			//target.setCity( source.get );
