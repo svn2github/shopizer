@@ -43,7 +43,7 @@ public class Billing {
 	@Column (name ="BILLING_STATE", length=100)
 	private String state;
 
-	@NotEmpty
+
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="BILLING_COUNTRY_ID", nullable=false)
 	private Country country;
