@@ -35,8 +35,6 @@
 				<prop key="URL_EXTENSION">.html</prop>
 				<!-- #https://www.google.com/recaptcha/admin/create -->
 				<prop key="shopizer.recapatcha_public_key">6Lc1Pe0SAAAAADQDlWbv3MYYj7lGEeCEanwC42bv</prop>
-				<prop key="shopizer.recapatcha.theme">clean</prop>
-				<prop key="shopizer.recapatcha.default.language">en</prop>
 				<prop key="shopizer.recapatcha_private_key">6Lc1Pe0SAAAAAFMolDugwnZN9Xe3CnapokqoQjhg</prop>
 	</util:properties>
 	

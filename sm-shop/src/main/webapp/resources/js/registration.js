@@ -1,14 +1,8 @@
     /**
      * registration functionality for storefront
      */
-$(document).ready(function() {
-	getZones($('#registration_country').val());
-	$("#hidden_registration_zones").hide();
-	$("#registration_country").change(function() {
-			getZones($(this).val());
-	})
-});
-function getZones(countryCode){
+
+function getZones(countryCode, zoneCode){
 	$("#registration_zones option").remove(); 
 	var url=getContextPath() + '/shop/reference/provinces.html';
 	var data='countryCode=' + countryCode + '&lang=' + getLanguageCode();
@@ -35,6 +29,10 @@ function getZones(countryCode){
 							zone.appendChild(option);
 						}
 					});
+					
+					if(zoneCode!=null) {
+						$("#registration_zones").val(zoneCode);
+					}
 			
 			  } else {
 				  $('#registration_zones').hide();  

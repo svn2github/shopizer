@@ -14,15 +14,24 @@ response.setDateHeader ("Expires", -1);
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 
+<script src="<c:url value="/resources/js/registration.js" />"></script>
+
 <script type="text/javascript">
 
 var RecaptchaOptions = {
-	    theme : '${recapatcha_theme}',
-	    lang :'${requestScope.LANGUAGE.code}'
+	    theme : 'clean'
 };
 
 $(document).ready(function() {
-	//isFormValid();
+	
+	getZones($('#registration_country').val(),'<c:out value="${customer.billing.zone}" />');
+	$("#hidden_registration_zones").hide();
+	$("#registration_country").change(function() {
+			getZones($(this).val(),'<c:out value="${customer.billing.zone}" />');
+	})
+	
+	
+	isFormValid();
 	$("input[type='text']").on("change keyup paste", function(){
 		isFormValid();
 	});
@@ -59,15 +68,50 @@ $(document).ready(function() {
 				}
 			}
 			//if has class email
+			if($(this).hasClass('email')) {	
+				var emailValid = validateEmail($(this).val());
+				console.log('Email is valid ? ' + emailValid);
+				if(!emailValid) {
+					if(firstErrorMessage==null) {
+						firstErrorMessage = '<s:message code="messages.invalid.email" text="Invalid email address"/>';
+						valid = false;
+					}
+				}
+			}
 			
 			//user name
+			if($(this).hasClass('userName')) {	
+				if($(this).val().length<6) {
+					if(firstErrorMessage==null) {
+						firstErrorMessage = '<s:message code="registration.username.length.invalid" text="User name must be at least 6 characters long"/>';
+						valid = false;
+					}
+				}
+			}
 			
 			//password rules
+			if($(this).hasClass('password')) {	
+				if($(this).val().length<6) {
+					if(firstErrorMessage==null) {
+						firstErrorMessage = '<s:message code="message.password.length" text="Password must be at least 6 characters long"/>';
+						valid = false;
+					}
+				}
+			}
 			
 			//repeat password
+			if($(this).hasClass('checkPassword')) {	
+					var pass = $('.password').val();
+					if(($(this).val()!=pass)) {
+						if(firstErrorMessage==null) {
+							firstErrorMessage = '<s:message code="message.password.checkpassword.identical" text="Both password must match"/>';
+							valid = false;
+						}
+					}
+			}
 		});
 		
-		console.log('Form is valid ? ' + valid);
+		//console.log('Form is valid ? ' + valid);
 		if(valid==false) {//disable submit button
 			$('#submitRegistration').addClass('btn-disabled');
 			$('#submitRegistration').prop('disabled', true);
@@ -78,7 +122,6 @@ $(document).ready(function() {
 			$('#submitRegistration').prop('disabled', false);
 			$('#registrationError').hide();
 		}
-		return valid;
  }
  
  
@@ -104,7 +147,7 @@ $(document).ready(function() {
  
  </script>
 
-<div id="registrationError"  class="alert alert-error" style="display:none;">
+<div id="registrationError"  class="alert alert-warning" style="display:none;">
 
 </div>
 
@@ -113,14 +156,15 @@ $(document).ready(function() {
 	<div id="main-content" class="container clearfix">
 		<div class="row-fluid">
 			<div class="span7">
-				<form:form method="post" action="${register_url}" id="registrationForm" class="form-horizontal" commandName="customer" onsubmit="return isFormValid();">
+				<form:form method="post" action="${register_url}" id="registrationForm" class="form-horizontal" commandName="customer">
+					<form:errors path="*" cssClass="alert alert-error" element="div" />
 					<fieldset>
 						<div class="control-group">
 							<label class="required control-label" for="FirstNameRegister"><s:message code="label.generic.firstname" text="First Name"/></label>
 							<div class="controls">
 							   <s:message code="NotEmpty.customer.firstName" text="First name is required" var="msgFirstName"/>
-							   <form:input path="firstName" cssClass="span12 required" id="firstName" title="${msgFirstName}"/>
-							   <form:errors path="firstName" cssClass="error" />
+							   <form:input path="billing.firstName" cssClass="span8 required" id="firstName" title="${msgFirstName}"/>
+							   <form:errors path="billing.firstName" cssClass="error" />
 								
 							</div>
 						</div>
@@ -128,8 +172,8 @@ $(document).ready(function() {
 							<label class="required control-label" for="LastNameRegister"><s:message code="label.generic.lastname" text="Last Name"/></label>
 							<div class="controls">
 							    <s:message code="NotEmpty.customer.lastName" text="Last name is required" var="msgLastName"/>
-							    <form:input path="lastName" cssClass="span12 required" id="lastName" title="${msgLastName}"/>
-							    <form:errors path="lastName" cssClass="error" />
+							    <form:input path="billing.lastName" cssClass="span8 required" id="lastName" title="${msgLastName}"/>
+							    <form:errors path="billing.lastName" cssClass="error" />
 								
 							</div>
 						</div>
@@ -148,7 +192,7 @@ $(document).ready(function() {
 						<div class="control-group">
 							<label class="control-label required"><s:message code="label.generic.country" text="Country"/></label>
 							<div class="controls">
-							<form:select path="country" id="registration_country">
+							<form:select path="billing.country" id="registration_country">
 							  <form:options items="${countryList}" itemValue="isoCode" itemLabel="name"/>
 							</form:select>
 							</div>
@@ -158,16 +202,16 @@ $(document).ready(function() {
 							<label class="control-label required"><s:message code="label.generic.stateprovince" text="State / Province"/></label>
 							<div class="controls">
 							<s:message code="NotEmpty.customer.billing.stateProvince" text="State / Province is required" var="msgStateProvince"/>
-							<form:select path="province" id="registration_zones" >
+							<form:select path="billing.zone" id="registration_zones" >
 							</form:select>
-								<form:input path="province" cssClass="span12 required" id="hidden_registration_zones" title="${msgStateProvince}"/>
+								<form:input path="billing.stateProvince" cssClass="span8 required" id="hidden_registration_zones" title="${msgStateProvince}"/>
 							</div>
 						</div>
 						<div class="control-group">
 							<label class="required control-label" for="username"><s:message code="label.generic.username" text="User name" /></label>
 							<div class="controls">
 								<s:message code="NotEmpty.customer.userName" text="User name is required" var="msgUserName"/>
-								<form:input path="userName" cssClass="span12 required" id="userName" title="${msgUserName}"/>
+								<form:input path="userName" cssClass="span8 required userName" id="userName" title="${msgUserName}"/>
 								<form:errors path="userName" cssClass="error" />
 							</div>
 						</div>
@@ -176,7 +220,7 @@ $(document).ready(function() {
 							<label class="required control-label" for="email"><s:message code="label.generic.email" text="Email address"/></label>
 							<div class="controls">
 							     <s:message code="NotEmpty.customer.emailAddress" text="Email address is required" var="msgEmail"/>
-							     <form:input path="emailAddress" cssClass="span12 required" id="email" title="${msgEmail}"/>
+							     <form:input path="emailAddress" cssClass="span8 required email" id="email" title="${msgEmail}"/>
 							     <form:errors path="emailAddress" cssClass="error" />
 								
 							</div>
@@ -185,7 +229,7 @@ $(document).ready(function() {
 							<label class="required control-label" for="password"><s:message code="label.generic.password" text="Password"/></label>
 							<div class="controls">
 							    <s:message code="message.password.required" text="Password is required" var="msgPassword"/>
-							    <form:password path="password" class="span12 required" id="password" title="${msgPassword}"/>
+							    <form:password path="password" class="span8 required password" id="password" title="${msgPassword}"/>
 								<form:errors path="password" cssClass="error" />
 							</div>
 						</div>
@@ -193,7 +237,7 @@ $(document).ready(function() {
 							<label class="required control-label" for="passwordAgain"><s:message code="label.generic.repeatpassword" text="Repeat password"/></label>
 							<div class="controls">
 							     <s:message code="message.password.repeat.required" text="Repeated password is required" var="msgRepeatPassword"/>
-							     <form:password path="checkPassword" class="span12 required" id="passwordAgain" title="${msgRepeatPassword}"/>
+							     <form:password path="checkPassword" class="span8 required checkPassword" id="passwordAgain" title="${msgRepeatPassword}"/>
 								<form:errors path="checkPassword" cssClass="error" />
 							</div>
 						</div>
@@ -210,13 +254,12 @@ $(document).ready(function() {
 								</iframe>
 								<br/>
 								<form:textarea path="recaptcha_challenge_field" readonly="3" cols="40"/>
-								
+								<form:errors path="recaptcha_challenge_field" cssClass="error" />
      							
 								<input type="hidden" name="recaptcha_response_field"
 									value="manual_challenge">
 							</noscript>
 						</div>
-						<form:errors path="recaptcha_challenge_field" cssClass="error" />
 						</div>
 
 						<div class="form-actions">

@@ -13,7 +13,7 @@
 
 	
 	<!-- Enables the Spring MVC @Controller programming model -->
-	<annotation-driven validator="validator" >
+	<annotation-driven>
 		<!--
 		<argument-resolvers>
 			<beans:bean class="org.springframework.samples.mvc.data.custom.CustomArgumentResolver"/>
@@ -36,9 +36,7 @@
 	<!-- <annotation-driven validator="validator" /> -->
 
 
-<beans:bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
-		<beans:property name="validationMessageSource" ref="messageSource"/> 
-</beans:bean>
+
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources/ directory -->
 	<resources mapping="/resources/**" location="/resources/" />
 	

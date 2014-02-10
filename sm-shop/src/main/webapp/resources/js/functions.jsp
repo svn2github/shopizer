@@ -52,6 +52,15 @@ function cartSubTotal(cart) {
 	return '<div class="pull-right"><font class="total-box-label"><s:message code="label.subtotal" text="Sub-total" /> : <font class="total-box-price"><strong><span id="checkout-total">' + cart.subTotal + '</span></strong></font></font></div>';
 }
 
+function validateEmail($email) {
+	  var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+	  if ( $email.length > 0 && emailReg.test($email)) {
+	    return true;
+	  } else {
+	    return false;
+	  }
+}
+
 
 function loadProducts(url,divProductsContainer, ref) {
 		$(divProductsContainer).showLoading();

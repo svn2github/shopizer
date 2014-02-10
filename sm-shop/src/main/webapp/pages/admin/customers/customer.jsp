@@ -268,8 +268,8 @@ function getBillingZones(countryCode){
 
 
 function resetCustomerPassword(customerId){
-		$('.alert-error').hide();
-		$('.alert-success').hide();
+		$('#customerError').hide();
+		$('#customerSuccess').hide();
 		$('#confirmationInnerBox').showLoading({
                 'indicatorZIndex' : 1000001,
                 'overlayZIndex': 1000000
@@ -285,12 +285,12 @@ function resetCustomerPassword(customerId){
 				var status = isc.XMLTools.selectObjects(response, "/response/status");
 				if(status==0 || status ==9999) {
 					
-					$('.alert-success').html('<s:message code="message.password.reset" text="Password has been reset" />');
-					$('.alert-success').show();
+					$('#customerSuccess').html('<s:message code="message.password.reset" text="Password has been reset" />');
+					$('#customerSuccess').show();
 					
 				} else {
-					$('.alert-error').html('<s:message code="message.error" text="An error occured" />');
-					$('.alert-error').show();
+					$('#customerError').html('<s:message code="message.error" text="An error occured" />');
+					$('#customerError').show();
 				}
 
 
@@ -300,8 +300,8 @@ function resetCustomerPassword(customerId){
 		  	//alert('error ' + errorThrown);
 		  	$('#confirmationInnerBox').hideLoading();
 			$('#confirmModal').modal('hide');
-		  	$('.alert-error').html('<s:message code="message.error" text="An error occured" />');
-			$('.alert-error').show();
+		  	$('#customerError').html('<s:message code="message.error" text="An error occured" />');
+			$('#customerError').show();
 		  }
 		  
 		});
@@ -352,8 +352,9 @@ function resetCustomerPassword(customerId){
 
 				<form:form method="POST" commandName="customer" action="${customer}">
 				
-					<form:errors path="*" cssClass="alert alert-error" element="div" />
-					<div id="customer.success" class="alert alert-success" 
+					<form:errors id="customer.error" path="*" cssClass="alert alert-error" element="div" />
+					<div id="customerError" class="alert alert-error" style="display:none;"></div>
+					<div id="customerSuccess" class="alert alert-success" 
 							style="<c:choose>
 								<c:when test="${success!=null}">display:block;</c:when>
 								<c:otherwise>display:none;</c:otherwise></c:choose>">
