@@ -43,7 +43,7 @@ public class Delivery {
 	private String telephone;
 	
 	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name="DELIVERY_COUNTRY_ID", nullable=false)
+	@JoinColumn(name="DELIVERY_COUNTRY_ID", nullable=true)
 	private Country country;
 	
 	@OneToOne(fetch = FetchType.EAGER)
