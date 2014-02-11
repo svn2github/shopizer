@@ -133,7 +133,7 @@ public class CustomerRegistrationController{
         ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
         reCaptcha.setPublicKey( coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
         reCaptcha.setPrivateKey( coreConfiguration.getProperty( RECAPATCHA_PRIVATE_KEY ) );
-        
+        model.addAttribute( "recapatcha_public_key", coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
         model.addAttribute("customer", customer);
         
         if ( StringUtils.isNotBlank( customer.getRecaptcha_challenge_field() )
@@ -187,7 +187,7 @@ public class CustomerRegistrationController{
         }
         catch ( Exception e )
         {
-            LOGGER.error( "Error while registering customer.. ", e);
+            LOGGER.error( "Error while registering customer.. {} ", e);
             bindingResult.reject( "registration.failed" );
             StringBuilder template =
                             new StringBuilder().append( ControllerConstants.Tiles.Customer.register ).append( "." ).append( merchantStore.getStoreTemplate() );

@@ -68,7 +68,7 @@ public class CustomerPopulator extends
 			//target.setCity( source.get );
 
 			Map<String,Country> countries = countryService.getCountriesMap(language);
-
+			
 			
 			target.setDefaultLanguage( language );
 			target.setMerchantStore( store );
@@ -151,6 +151,7 @@ public class CustomerPopulator extends
 			}
 			
 			if(target.getDelivery() ==null && source.getDelivery()!=null){
+			    
 			    LOG.info( "Setting default value for delivery" );
 			    Delivery delivery = new Delivery();
 			    Country deliveryCountry = null;
