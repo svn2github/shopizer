@@ -168,7 +168,7 @@ public class CustomerOptionsController {
 		
 		//validate if it contains an existing code
 		CustomerOption byCode = customerOptionService.getByCode(store, option.getCode());
-		if(byCode!=null) {
+		if(byCode!=null && option.getId()==null) {
 			ObjectError error = new ObjectError("code",messages.getMessage("message.code.exist", locale));
 			result.addError(error);
 		}

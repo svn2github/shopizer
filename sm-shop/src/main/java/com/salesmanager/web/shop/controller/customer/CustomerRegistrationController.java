@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.customer.CustomerRegistrationException;
+import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
@@ -54,6 +55,7 @@ import com.salesmanager.web.entity.customer.AnonymousCustomer;
 import com.salesmanager.web.entity.customer.CustomerEntity;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.customer.ShopPersistableCustomer;
+import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
 import com.salesmanager.web.shop.controller.data.CountryData;
@@ -71,7 +73,7 @@ import com.salesmanager.web.utils.LabelUtils;
 // http://stackoverflow.com/questions/17444258/how-to-use-new-passwordencoder-from-spring-security
 @Controller
 @RequestMapping("/shop/customer")
-public class CustomerRegistrationController{
+public class CustomerRegistrationController extends AbstractController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerRegistrationController.class);
     public static final String RECAPATCHA_PUBLIC_KEY="shopizer.recapatcha_public_key";
@@ -137,7 +139,9 @@ public class CustomerRegistrationController{
                                     HttpServletRequest request, final Locale locale )
         throws Exception
     {
-        final MerchantStore merchantStore = (MerchantStore) request.getAttribute( Constants.MERCHANT_STORE );
+        MerchantStore merchantStore = (MerchantStore) request.getAttribute( Constants.MERCHANT_STORE );
+        Language language = (Language)request.getAttribute(Constants.LANGUAGE);
+        
         ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
         reCaptcha.setPublicKey( coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
         reCaptcha.setPrivateKey( coreConfiguration.getProperty( RECAPATCHA_PRIVATE_KEY ) );
@@ -235,6 +239,10 @@ public class CustomerRegistrationController{
 	        Authentication authentication = customerAuthenticationManager.authenticate(authenticationToken);
 	        SecurityContextHolder.getContext().setAuthentication(authentication);
 	        
+	        //refresh customer
+	        Customer c = customerFacade.getCustomerByUserName(customer.getUserName(), merchantStore);
+	        
+	        super.setSessionAttribute(Constants.CUSTOMER, c, request);
 	        
 	        return "redirect:/shop/customer/dashboard.html";
         

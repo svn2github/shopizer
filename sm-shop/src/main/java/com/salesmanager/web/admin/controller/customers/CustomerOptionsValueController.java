@@ -189,7 +189,7 @@ public class CustomerOptionsValueController {
 		
 		//validate if it contains an existing code
 		CustomerOptionValue byCode = customerOptionValueService.getByCode(store, optionValue.getCode());
-		if(byCode!=null) {
+		if(byCode!=null && optionValue.getId()==null) {
 			ObjectError error = new ObjectError("code",messages.getMessage("message.code.exist", locale));
 			result.addError(error);
 		}

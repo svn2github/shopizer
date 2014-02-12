@@ -23,7 +23,6 @@ import com.salesmanager.core.business.catalog.category.model.CategoryDescription
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
-import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.content.model.Content;
 import com.salesmanager.core.business.content.model.ContentDescription;
 import com.salesmanager.core.business.content.model.ContentType;
