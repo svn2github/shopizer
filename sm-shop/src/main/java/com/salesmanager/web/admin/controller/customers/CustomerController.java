@@ -113,6 +113,7 @@ public class CustomerController {
 	 * @return
 	 * @throws Exception
 	 */
+	@Secured("CUSTOMER")
 	@RequestMapping(value="/admin/customers/customer.html", method=RequestMethod.GET)
 	public String displayCustomer(Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 			
@@ -122,7 +123,6 @@ public class CustomerController {
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
 		List<Language> languages = languageService.getLanguages();
-		
 
 		model.addAttribute("languages",languages);
 		
@@ -191,20 +191,7 @@ public class CustomerController {
 				
 				optionPopulator.populate(custOption, customerOption, store, language);
 				options.put(customerOption.getId(), customerOption);
-				
-/*				List<CustomerOptionValue> values = customerOption.getAvailableValues();
-				if(values==null) {
-					values = new ArrayList<CustomerOptionValue>();
-					customerOption.setAvailableValues(values);
-				}
-				
-				com.salesmanager.core.business.customer.model.attribute.CustomerOptionValue optionValue = optSet.getCustomerOptionValue();
-				CustomerOptionValue custOptValue = new CustomerOptionValue();
-				custOptValue.setId(optionValue.getId());
-				custOptValue.setLanguage(language.getCode());
-				custOptValue.setName(optionValue.getDescriptionsSettoList().get(0).getName());
-				values.add(custOptValue);
-				*/
+
 				if(!CollectionUtils.isEmpty(customerAttributes)) {
 					for(CustomerAttribute customerAttribute : customerAttributes) {
 						if(customerAttribute.getCustomerOption().getId().longValue()==customerOption.getId()){

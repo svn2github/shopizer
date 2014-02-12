@@ -437,6 +437,11 @@ public class CategoryController {
 			
 		Category category = categoryService.getByCode(store, code);
 		
+		if(category!=null && StringUtils.isBlank(id)) {
+			resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
+			return resp.toJSONString();
+		}
+		
 		
 		if(category!=null && !StringUtils.isBlank(id)) {
 			try {

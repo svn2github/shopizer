@@ -14,6 +14,7 @@ public class ShopPersistableCustomer extends PersistableCustomer {
 	
 	private String recaptcha_challenge_field;
 	private String recaptcha_response_field;
+	private String checkPassword;
 	
 	@NotEmpty(message="{validaion.recaptcha.not.matched}")
     @Size( min=1,message="{validaion.recaptcha.not.matched}")
@@ -37,6 +38,12 @@ public class ShopPersistableCustomer extends PersistableCustomer {
     {
         this.recaptcha_response_field = recaptcha_response_field;
     }
+	public String getCheckPassword() {
+		return checkPassword;
+	}
+	public void setCheckPassword(String checkPassword) {
+		this.checkPassword = checkPassword;
+	}
 	
 
 

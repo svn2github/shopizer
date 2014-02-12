@@ -27,6 +27,7 @@ import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.customer.SecuredCustomer;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
+import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
 
 /**
@@ -36,7 +37,7 @@ import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
  */
 @Controller
 @RequestMapping("/shop/customer")
-public class CustomerLoginController {
+public class CustomerLoginController extends AbstractController {
 	
 	@Autowired
     private AuthenticationManager customerAuthenticationManager;
@@ -79,7 +80,7 @@ public class CustomerLoginController {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
             //set customer in the http session
-            request.getSession().setAttribute(Constants.CUSTOMER, customerModel);
+            super.setSessionAttribute(Constants.CUSTOMER, customerModel, request);
             jsonObject.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
 
 

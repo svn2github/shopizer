@@ -20,12 +20,13 @@ public abstract class AbstractController {
      */
     @SuppressWarnings( "unchecked" )
     public <T> T getSessionAttribute(final String key, HttpServletRequest request) {
-	          return (T) request.getSession().getAttribute( key );
+	          return (T) com.salesmanager.web.utils.SessionUtil.getSessionAttribute(key, request);
+
 	  }
     
     public void setSessionAttribute(final String key, final Object value, HttpServletRequest request) {
-    	request.getSession().setAttribute( key, value );
-	  }
+    	com.salesmanager.web.utils.SessionUtil.setSessionAttribute(key, value, request);
+	}
 
 
 }

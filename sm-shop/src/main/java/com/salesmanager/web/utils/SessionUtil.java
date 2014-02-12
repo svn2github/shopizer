@@ -3,8 +3,7 @@
  */
 package com.salesmanager.web.utils;
 
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Umesh Awasthi
@@ -13,18 +12,16 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class SessionUtil
 {
 
-    /**
-     * Method which will help to retrieving values from Session
-     * based on the key being passed to the method.
-     * @param key
-     * @return value stored in session corresponding to the key
-     */
-    @SuppressWarnings( "unchecked" )
-    public static <T> T getSessionValue(final String key) {
-          ServletRequestAttributes reqAttr = (ServletRequestAttributes) RequestContextHolder
-                              .currentRequestAttributes();
-              return (T) reqAttr.getRequest().getSession().getAttribute( key );
-      }
+
+    
+    @SuppressWarnings("unchecked")
+	public static <T> T getSessionAttribute(final String key, HttpServletRequest request) {
+        return (T) request.getSession().getAttribute( key );
+    }
+
+    public static void setSessionAttribute(final String key, final Object value, HttpServletRequest request) {
+    	request.getSession().setAttribute( key, value );
+    }
 
 
 }

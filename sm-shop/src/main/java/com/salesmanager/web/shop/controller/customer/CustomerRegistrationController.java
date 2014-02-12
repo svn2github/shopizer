@@ -19,10 +19,16 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -96,6 +102,9 @@ public class CustomerRegistrationController{
 	
 	@Autowired
 	private CustomerFacade customerFacade;
+	
+	@Autowired
+    private AuthenticationManager customerAuthenticationManager;
 
 
 
@@ -124,17 +133,17 @@ public class CustomerRegistrationController{
 
     @RequestMapping( value = "/register.html", method = RequestMethod.POST )
     public String registerCustomer( @Valid
-    @ModelAttribute
-    final ShopPersistableCustomer customer, final BindingResult bindingResult, final Model model,
-                                    final HttpServletRequest request, final Locale locale )
+    @ModelAttribute("customer") ShopPersistableCustomer customer, BindingResult bindingResult, Model model,
+                                    HttpServletRequest request, final Locale locale )
         throws Exception
     {
         final MerchantStore merchantStore = (MerchantStore) request.getAttribute( Constants.MERCHANT_STORE );
         ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
         reCaptcha.setPublicKey( coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
         reCaptcha.setPrivateKey( coreConfiguration.getProperty( RECAPATCHA_PRIVATE_KEY ) );
+        
+
         model.addAttribute( "recapatcha_public_key", coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
-        model.addAttribute("customer", customer);
         
         if ( StringUtils.isNotBlank( customer.getRecaptcha_challenge_field() )
             && StringUtils.isNotBlank( customer.getRecaptcha_response_field() ) )
@@ -144,9 +153,9 @@ public class CustomerRegistrationController{
                                        customer.getRecaptcha_response_field() );
             if ( !reCaptchaResponse.isValid() )
             {
-                LOGGER.warn( "Captcha response does not matched" );
-                bindingResult.rejectValue( "recaptcha_challenge_field", "validaion.recaptcha.not.matched",
-                                           new Object[] {}, "validaion.recaptcha.not.matched" );
+                LOGGER.info( "Captcha response does not matched" );
+    			FieldError error = new FieldError("recaptcha_challenge_field","recaptcha_challenge_field",messages.getMessage("validaion.recaptcha.not.matched", locale));
+    			bindingResult.addError(error);
             }
 
         }
@@ -155,15 +164,26 @@ public class CustomerRegistrationController{
         {
             if ( customerFacade.checkIfUserExists( customer.getUserName(), merchantStore ) )
             {
-                LOGGER.warn( "Customer with username {} already exists for this store ", customer.getUserName() );
-                bindingResult.rejectValue( "userName", "registration.username.already.exists", new Object[] {},
-                                           "registration.username.already.exists" );
+                LOGGER.info( "Customer with username {} already exists for this store ", customer.getUserName() );
+            	FieldError error = new FieldError("userName","userName",messages.getMessage("registration.username.already.exists", locale));
+            	bindingResult.addError(error);
+            }
+        }
+        
+        
+        if ( StringUtils.isNotBlank( customer.getPassword() ) &&  StringUtils.isNotBlank( customer.getCheckPassword() ))
+        {
+            if (! customer.getPassword().equals(customer.getCheckPassword()) )
+            {
+            	FieldError error = new FieldError("password","password",messages.getMessage("message.password.checkpassword.identical", locale));
+            	bindingResult.addError(error);
+
             }
         }
 
         if ( bindingResult.hasErrors() )
         {
-            LOGGER.warn( "found {} validation error while validating in customer registration ",
+            LOGGER.info( "found {} validation error while validating in customer registration ",
                          bindingResult.getErrorCount() );
             StringBuilder template =
                 new StringBuilder().append( ControllerConstants.Tiles.Customer.register ).append( "." ).append( merchantStore.getStoreTemplate() );
@@ -180,33 +200,54 @@ public class CustomerRegistrationController{
         catch ( CustomerRegistrationException cre )
         {
             LOGGER.error( "Error while registering customer.. ", cre);
-            bindingResult.reject( "registration.failed" );
+        	ObjectError error = new ObjectError("registration",messages.getMessage("registration.failed", locale));
+        	bindingResult.addError(error);
             StringBuilder template =
                             new StringBuilder().append( ControllerConstants.Tiles.Customer.register ).append( "." ).append( merchantStore.getStoreTemplate() );
              return template.toString();
         }
         catch ( Exception e )
         {
-            LOGGER.error( "Error while registering customer.. {} ", e);
-            bindingResult.reject( "registration.failed" );
+            LOGGER.error( "Error while registering customer.. ", e);
+        	ObjectError error = new ObjectError("registration",messages.getMessage("registration.failed", locale));
+        	bindingResult.addError(error);
             StringBuilder template =
                             new StringBuilder().append( ControllerConstants.Tiles.Customer.register ).append( "." ).append( merchantStore.getStoreTemplate() );
             return template.toString();
         }
-                     
+              
+        /**
+         * Send registration email
+         */
         sendRegistrationEmail( request, customer, merchantStore, locale );
 
-        String[] greetingMessage =
-            { customer.getEmailAddress(), FilePathUtils.buildCustomerUri( merchantStore, request ),
-                merchantStore.getStoreEmailAddress() };
+        /**
+         * Login user
+         */
+        
+        try {
+        	
 
-        String registrationConfirmation = messages.getMessage( "label.register.confirmation", greetingMessage, locale );
-        model.addAttribute( "registrationConfirmation", registrationConfirmation );
-
-        /** template **/
+	        
+	    	Authentication authenticationToken =
+	                new UsernamePasswordAuthenticationToken(customer.getUserName(), customer.getPassword());
+	    	
+	        Authentication authentication = customerAuthenticationManager.authenticate(authenticationToken);
+	        SecurityContextHolder.getContext().setAuthentication(authentication);
+	        
+	        
+	        return "redirect:/shop/customer/dashboard.html";
+        
+        
+        } catch(Exception e) {
+        	LOGGER.error("Cannot authenticate user ",e);
+        	ObjectError error = new ObjectError("registration",messages.getMessage("registration.failed", locale));
+        	bindingResult.addError(error);
+        }
+        
+        
         StringBuilder template =
-            new StringBuilder().append( ControllerConstants.Tiles.Customer.registerConfirmation ).append( "." ).append( merchantStore.getStoreTemplate() );
-        LOGGER.info( "Sending customer to {} page ", template.toString() );
+                new StringBuilder().append( ControllerConstants.Tiles.Customer.register ).append( "." ).append( merchantStore.getStoreTemplate() );
         return template.toString();
 
     }
