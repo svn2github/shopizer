@@ -35,6 +35,11 @@
 	COLOR: #535353
 }
 
+.short-form-actions {
+    margin-top: 5px;
+    padding: 5px 0px 18px;
+}
+
 .sm-ui-component label {
     color: #333333;
     margin-bottom: 0;
@@ -187,6 +192,18 @@
 
 input.required, select.required, checkbox.required, textarea.required {
             background-color: #FFC;
+}
+
+.contentPages {
+	margin:10px !important;
+}
+
+.customerSection {
+	margin:10px !important;
+}
+
+.socialLinksSection {
+	margin:10px !important;
 }
 
 /** cart colors **/

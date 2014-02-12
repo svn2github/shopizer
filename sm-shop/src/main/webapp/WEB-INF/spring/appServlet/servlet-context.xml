@@ -87,12 +87,7 @@
 		</beans:property>
 	</beans:bean>
 
-	<!-- Imports user-defined @Controller beans that process client requests -->
-	<!-- <context:property-placeholder location="project.properties" />
-	<beans:bean id="reCaptcha" class="net.tanesha.recaptcha.ReCaptchaImpl">
- 		<beans:property name="privateKey" value="${shopizer.demo.recapatcha_private_key}"/>
- 		<beans:property name="publicKey" value="${shopizer.demo.recapatcha_public_key}"/>
-	</beans:bean> -->
+
 	<beans:import resource="controllers.xml" />
 	
 </beans:beans>

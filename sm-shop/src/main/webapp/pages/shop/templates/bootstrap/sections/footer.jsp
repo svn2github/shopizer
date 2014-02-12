@@ -27,7 +27,7 @@ response.setDateHeader ("Expires", -1);
                     </div>
                     </c:if>
                      <c:if test="${not empty requestScope.CONTENT_PAGE}">
-					 <div class="span3">   
+					 <div class="span3 contentPages">   
 						<h4><s:message code="label.store.information.title" text="Informations"/></h4>
 						<!-- Pages -->
                         <ul class="footerLiks">
@@ -40,7 +40,7 @@ response.setDateHeader ("Expires", -1);
 						</ul>
                     </div>
                     </c:if>
-                    <div class="span3">
+                    <div class="span3 customerSection">
                     	<c:if test="${requestScope.CONFIGS['displayCustomerSection'] == true}">
                         <h4><s:message code="label.customer.myaccount" text="My Account" /></h4>
                         <ul class="footerLiks">
@@ -48,7 +48,7 @@ response.setDateHeader ("Expires", -1);
 						</ul>
 						</c:if>
                     </div>
-                    <div class="span3">
+                    <div class="span3 socialLinksSection">
                     	<!-- Social links -->
                     	<c:if test="${requestScope.CONFIGS['facebook_page_url'] != null}">
 	                        <h4><s:message code="label.social.connect" text="Connect with us"/></h4>
