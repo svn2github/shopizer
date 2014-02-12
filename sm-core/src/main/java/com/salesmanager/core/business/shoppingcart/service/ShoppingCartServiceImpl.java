@@ -189,6 +189,8 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 			throw new ServiceException(e);
 		} catch (Exception ee) {
 			throw new ServiceException(ee);
+		} catch (Throwable t) {
+			throw new ServiceException(t);
 		} 
 
 
