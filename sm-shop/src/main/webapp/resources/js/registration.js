@@ -2,6 +2,29 @@
      * registration functionality for storefront
      */
 
+
+$.fn.addZoneItems = function(div, data, defaultValue) {
+	//console.log('Populating div ' + div + ' defaultValue ' + defaultValue);
+	var selector = div + ' > option';
+	var defaultExist = false;
+    $(selector).remove();
+        return this.each(function() {
+            var list = this;
+            $.each(data, function(index, itemData) {
+            	//console.log(itemData.code + ' ' + defaultValue);
+            	if(itemData.code==defaultValue) {
+            		defaultExist = true;
+            	}
+                var option = new Option(itemData.name, itemData.code);
+                list.add(option);
+            });
+            if(defaultExist && (defaultValue!=null && defaultValue!='')) {
+           	 	$(div).val(defaultValue);
+            }
+     });
+};
+
+
 function getZones(countryCode, zoneCode){
 	$("#registration_zones option").remove(); 
 	var url=getContextPath() + '/shop/reference/provinces.html';
@@ -18,21 +41,9 @@ function getZones(countryCode, zoneCode){
 					$("#registration_zones option").remove();
 					$('#registration_zones').show();  
 					$('#hidden_registration_zones').hide();
-					$.each(responseObj.response.data,function(index, value){
-						
-						var zone = document.getElementById("registration_zones");
-						var option=new Option(value.name,value.code);
-						try{
-							zone.add(option);
-						}
-						catch(e){
-							zone.appendChild(option);
-						}
-					});
 					
-					if(zoneCode!=null) {
-						$("#registration_zones").val(zoneCode);
-					}
+					//var zone = $('#registration_zones');
+					$('#registration_zones').addZoneItems('#registration_zones', responseObj.response.data, zoneCode);
 			
 			  } else {
 				  $('#registration_zones').hide();  
@@ -46,4 +57,8 @@ function getZones(countryCode, zoneCode){
 		
 	});
 
-}	
+}
+
+
+
+

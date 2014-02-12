@@ -198,15 +198,19 @@ $(document).ready(function() {
 							</div>
 						</div>
 						
+						
+		
 						<div class="control-group">
 							<label class="control-label required"><s:message code="label.generic.stateprovince" text="State / Province"/></label>
 							<div class="controls">
 							<s:message code="NotEmpty.customer.billing.stateProvince" text="State / Province is required" var="msgStateProvince"/>
 							<form:select path="billing.zone" id="registration_zones" >
 							</form:select>
-								<form:input path="billing.stateProvince" cssClass="span8 required" id="hidden_registration_zones" title="${msgStateProvince}"/>
+							<form:input path="billing.stateProvince" cssClass="span8 required" id="hidden_registration_zones" title="${msgStateProvince}"/>
 							</div>
-						</div>
+						</div>		
+						
+						
 						<div class="control-group">
 							<label class="required control-label" for="username"><s:message code="label.generic.username" text="User name" /></label>
 							<div class="controls">
@@ -215,6 +219,8 @@ $(document).ready(function() {
 								<form:errors path="userName" cssClass="error" />
 							</div>
 						</div>
+						
+						
 						
 						<div class="control-group">
 							<label class="required control-label" for="email"><s:message code="label.generic.email" text="Email address"/></label>
@@ -225,6 +231,7 @@ $(document).ready(function() {
 								
 							</div>
 						</div>
+						
 						<div class="control-group">
 							<label class="required control-label" for="password"><s:message code="label.generic.password" text="Password"/></label>
 							<div class="controls">
@@ -233,15 +240,16 @@ $(document).ready(function() {
 								<form:errors path="password" cssClass="error" />
 							</div>
 						</div>
+						
 						<div class="control-group">
 							<label class="required control-label" for="passwordAgain"><s:message code="label.generic.repeatpassword" text="Repeat password"/></label>
 							<div class="controls">
 							     <s:message code="message.password.repeat.required" text="Repeated password is required" var="msgRepeatPassword"/>
 							     <form:password path="checkPassword" class="span8 required checkPassword" id="passwordAgain" title="${msgRepeatPassword}"/>
-								<form:errors path="checkPassword" cssClass="error" />
+								 <form:errors path="checkPassword" cssClass="error" />
 							</div>
-						</div>
-
+						</div>						
+		
 						<div class="control-group">
 							<div class="controls"><!--watch the white space in IOS!-->
 								<script type="text/javascript"

@@ -179,7 +179,7 @@
     position: relative;
 }
 
-
+.error { color: #ff0000; }
 
 .no_margin{
 	margin:0px !important;
