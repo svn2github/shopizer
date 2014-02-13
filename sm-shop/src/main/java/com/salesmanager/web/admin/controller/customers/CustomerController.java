@@ -365,10 +365,16 @@ public class CustomerController {
 		
 	}
 	
-
+	/**
+	 * Deserves shop and admin
+	 * @param request
+	 * @param locale
+	 * @return
+	 * @throws Exception
+	 */
 	@Secured("CUSTOMER")
-	@RequestMapping(value="/admin/customers/attributes/save.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String saveOption(HttpServletRequest request, Locale locale) throws Exception {
+	@RequestMapping(value={"/admin/customers/attributes/save.html"}, method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String saveCustomerAttributes(HttpServletRequest request, Locale locale) throws Exception {
 		
 
 		AjaxResponse resp = new AjaxResponse();
@@ -459,6 +465,8 @@ public class CustomerController {
 						if(!StringUtils.isBlank(parameterValue)) {
 							attribute.setCustomerOptionValue(customerOptionValue);
 							attribute.setTextValue(parameterValue);
+						} else {
+							attribute.setTextValue(null);
 						}
 					} else {
 						attribute.setCustomerOptionValue(customerOptionValue);
