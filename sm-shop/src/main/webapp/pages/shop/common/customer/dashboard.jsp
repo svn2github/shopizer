@@ -13,6 +13,51 @@ response.setDateHeader ("Expires", -1);
  
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
+<script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
+
+<script>
+
+
+
+
+$(document).ready(function() {
+	
+	
+	$('.textAttribute').alphanumeric({ichars:'&=?'});
+	
+	$('#attributes').on('submit',function (event) {
+		alert('submit');
+		$('#attributesBox').showLoading();
+		$("#attributesError").hide();
+		$("#attributesSuccess").hide();
+		var data = $('#attributes').serialize();
+		console.log('Saving attributes ' + data);
+	    $.ajax({
+	        url: '<c:url value="/shop/customer/attributes/save.html"/>',
+	        cache: false,
+	        type: 'POST',
+	        data : data,
+	        success: function(result) {
+	            $('#attributesBox').hideLoading();
+	               var response = result.response;
+                   if (response.status==0) {
+                        $("#attributesSuccess").show();
+                   } else {
+                        $("#attributesError").html(response.message);
+                        $("#attributesError").show();
+                   }
+	        },
+			error: function(jqXHR,textStatus,errorThrown) { 
+					$('#attributesBox').hideLoading();
+					alert('Error ' + jqXHR + "-" + textStatus + "-" + errorThrown);
+			}
+	    });
+	    
+	    event.preventDefault();
+	});
+});	
+	
+</script>
 
 
 	<div id="main-content" class="container clearfix">
@@ -25,15 +70,15 @@ response.setDateHeader ("Expires", -1);
 					<div class="span12">
 						<div id="attributesSuccess" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>   
 			            <div id="attributesError" class="alert alert-error" style="display:none;"><s:message code="message.error" text="An error occured"/></div>
+						<form action="#" id="attributes">
 						<div id="attributesBox" class="box">
 								<span class="box-title">
 									<p><font color="#FF8C00"><s:message code="label.customer.moredetails" text="More details"/></font></p>
 								</span
 						
-						
-							<c:url var="customerOptions" value="/admin/customers/attributes/save.html"/>
-							<form id="attributes">
-							<input id="customer" type="hidden" value="<c:out value="${customerAttr.id}"/>" name="customer">
+					
+							
+							
 							<c:forEach items="${options}" var="option" varStatus="status">
 								<div class="control-group"> 
 			                        <label><c:out value="${option.name}"/></label>
@@ -65,11 +110,12 @@ response.setDateHeader ("Expires", -1);
 												
 											</c:choose>				       							
 		                                 	<span class="help-inline"></span>
-			                        </div>
+			                       
 			                    </div> 
 		
 							
 							</c:forEach>
+							<input id="customer" type="hidden" value="<c:out value="${requestScope.CUSTOMER.id}"/>" name="customer">
 							
 							<div class="short-form-actions">
 		                 	  <div class="pull-left">
@@ -79,8 +125,10 @@ response.setDateHeader ("Expires", -1);
 		
 		
 		      					
-						</form>
+							
 						</div>
+						</div>
+						</form>
 					</div>
 				</div>
 				</c:if>

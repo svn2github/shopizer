@@ -530,7 +530,7 @@ function resetCustomerPassword(customerId){
 						</span>
 				
 				
-					<c:url var="customerOptions" value="/admin/customers/attributes/save.html"/>
+					
 					<form id="attributes">
 					<input id="customer" type="hidden" value="<c:out value="${customerAttr.id}"/>" name="customer">
 					<c:forEach items="${options}" var="option" varStatus="status">
