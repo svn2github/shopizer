@@ -3,6 +3,7 @@ package com.salesmanager.core.modules.integration.payment.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -125,7 +126,12 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 			
 			
 			PaymentDetailsType paymentDetails = new PaymentDetailsType();
-			paymentDetails.setPaymentAction(urn.ebay.apis.eBLBaseComponents.PaymentActionCodeType.SALE);
+			if(configuration.getIntegrationKeys().get("transaction").equalsIgnoreCase(TransactionType.AUTHORIZECAPTURE.name())) {
+				paymentDetails.setPaymentAction(urn.ebay.apis.eBLBaseComponents.PaymentActionCodeType.SALE);
+			} else {
+				paymentDetails.setPaymentAction(urn.ebay.apis.eBLBaseComponents.PaymentActionCodeType.AUTHORIZATION);
+			}
+			
 
 			List<PaymentDetailsItemType> lineItems = new ArrayList<PaymentDetailsItemType>();
 			
@@ -164,8 +170,8 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 
 
 			SetExpressCheckoutRequestDetailsType setExpressCheckoutRequestDetails = new SetExpressCheckoutRequestDetailsType();
-			setExpressCheckoutRequestDetails.setReturnURL(RETURN_URL.append("/paypal/").append(coreConfiguration.getProperty("URL_EXTENSION", ".html")).append("/success").toString());
-			setExpressCheckoutRequestDetails.setCancelURL(RETURN_URL.append("/paypal/").append(coreConfiguration.getProperty("URL_EXTENSION", ".html")).append("/cancel").toString());
+			setExpressCheckoutRequestDetails.setReturnURL(RETURN_URL.append("paypal/").append(coreConfiguration.getProperty("URL_EXTENSION", ".html")).append("/success").toString());
+			setExpressCheckoutRequestDetails.setCancelURL(RETURN_URL.append("paypal/").append(coreConfiguration.getProperty("URL_EXTENSION", ".html")).append("/cancel").toString());
 
 			setExpressCheckoutRequestDetails.setPaymentDetails(paymentDetailsList);
 
@@ -189,13 +195,21 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 				mode = "production";
 			}
 			
-			Properties sdkConfig = new Properties();
-			sdkConfig.put("mode", mode);
-			sdkConfig.put("acct1.UserName", configuration.getIntegrationKeys().get("username"));
-			sdkConfig.put("acct1.Password", configuration.getIntegrationKeys().get("api"));
-			sdkConfig.put("acct1.Signature", configuration.getIntegrationKeys().get("signature"));
+			//Properties sdkConfig = new Properties();
+			//sdkConfig.put("mode", mode);
+			//sdkConfig.put("acct1.UserName", configuration.getIntegrationKeys().get("username"));
+			//sdkConfig.put("acct1.Password", configuration.getIntegrationKeys().get("api"));
+			//sdkConfig.put("acct1.Signature", configuration.getIntegrationKeys().get("signature"));
 			
-			PayPalAPIInterfaceServiceService service = new PayPalAPIInterfaceServiceService(sdkConfig);
+			
+			Map<String,String> configurationMap = new HashMap<String,String>();
+			configurationMap.put("mode", mode);
+			configurationMap.put("acct1.UserName", configuration.getIntegrationKeys().get("username"));
+			configurationMap.put("acct1.Password", configuration.getIntegrationKeys().get("api"));
+			configurationMap.put("acct1.Signature", configuration.getIntegrationKeys().get("signature"));
+			
+			PayPalAPIInterfaceServiceService service = new PayPalAPIInterfaceServiceService(configurationMap);
+			//PayPalAPIInterfaceServiceService service = new PayPalAPIInterfaceServiceService(configurationMap);
 			SetExpressCheckoutResponseType setExpressCheckoutResponse = service.setExpressCheckout(setExpressCheckoutReq);
 			
 			String token = setExpressCheckoutResponse.getToken();
@@ -219,7 +233,11 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 
 			return transaction;
 			
+			//redirect user to 
+			//https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=EC-5LL13394G30048922
+			
 		} catch(Exception e) {
+			e.printStackTrace();
 			throw new IntegrationException(e);
 		}
 		
@@ -366,6 +384,7 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 				orderTotal.setValue(1.00);
 				orderTotal.setCurrencyID(CurrencyCodeType.fromValue("USD"));
 				paymentDetail.setOrderTotal(orderTotal);
+				paymentDetail.setButtonSource(Your BN Code);
 				paymentDetail.setPaymentAction(PaymentActionCodeType.fromValue("Sale"));
 				List<PaymentDetailsType> paymentDetails = new ArrayList<PaymentDetailsType>();
 				paymentDetails.add(paymentDetail);

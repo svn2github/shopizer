@@ -8,8 +8,8 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.paypal.core.rest.OAuthTokenCredential;
-import com.paypal.core.rest.PayPalRESTException;
+//import com.paypal.core.rest.OAuthTokenCredential;
+//import com.paypal.core.rest.PayPalRESTException;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.payments.model.Payment;
@@ -237,16 +237,16 @@ public class PayPalRestPayment implements PaymentModule {
 		return null;
 	}
 	
-	private String getAccessToken(String clientID, String clientSecret) throws PayPalRESTException {
+	private String getAccessToken(String clientID, String clientSecret) throws Exception {
 
 		// ###AccessToken
 		// Retrieve the access token from
 		// OAuthTokenCredential by passing in
 		// ClientID and ClientSecret
 
-
-		return new OAuthTokenCredential(clientID, clientSecret)
-				.getAccessToken();
+		return null;
+		//return new OAuthTokenCredential(clientID, clientSecret)
+		//		.getAccessToken();
 	}
 
 }

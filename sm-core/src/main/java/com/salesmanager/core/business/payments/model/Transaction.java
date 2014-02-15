@@ -25,6 +25,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.hibernate.annotations.Type;
 import org.json.simple.JSONAware;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,6 @@ import com.salesmanager.core.business.common.model.audit.Auditable;
 import com.salesmanager.core.business.generic.model.SalesManagerEntity;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.constants.SchemaConstant;
-import com.salesmanager.core.utils.reference.IntegrationModulesLoader;
 
 
 @Entity
@@ -61,7 +61,7 @@ public class Transaction extends SalesManagerEntity<Long, Transaction> implement
 
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="ORDER_ID", nullable=false)
+	@JoinColumn(name="ORDER_ID", nullable=true)
 	private Order order;
 	
 	@Column(name="AMOUNT")
@@ -79,6 +79,8 @@ public class Transaction extends SalesManagerEntity<Long, Transaction> implement
 	@Enumerated(value = EnumType.STRING)
 	private PaymentType paymentType;
 	
+	@Column(name="DETAILS")
+	@Type(type = "org.hibernate.type.StringClobType")
 	private String details;
 	
 	@Transient
@@ -86,7 +88,6 @@ public class Transaction extends SalesManagerEntity<Long, Transaction> implement
 
 	@Override
 	public AuditSection getAuditSection() {
-		// TODO Auto-generated method stub
 		return this.auditSection;
 	}
 
@@ -98,7 +99,6 @@ public class Transaction extends SalesManagerEntity<Long, Transaction> implement
 
 	@Override
 	public Long getId() {
-		// TODO Auto-generated method stub
 		return this.id;
 	}
 
