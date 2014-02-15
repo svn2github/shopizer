@@ -29,7 +29,6 @@ import com.salesmanager.core.business.customer.service.attribute.CustomerOptionS
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionValueService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
-import com.salesmanager.web.admin.controller.customers.CustomerController;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;

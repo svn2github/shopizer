@@ -29,6 +29,7 @@ import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.payments.model.PaypalPayment;
 import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.payments.service.PaymentService;
+import com.salesmanager.core.business.payments.service.TransactionService;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
@@ -41,6 +42,7 @@ import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.modules.integration.payment.impl.PayPalExpressCheckoutPayment;
 import com.salesmanager.core.modules.integration.payment.model.PaymentModule;
+import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
@@ -97,6 +99,12 @@ public class ShoppingOrderPaymentController extends AbstractController {
 	@Autowired
 	private CustomerOptionValueService customerOptionValueService;
 	
+	@Autowired
+	private TransactionService transactionService;
+	
+	@Autowired
+	private CoreConfiguration coreConfiguration;
+	
 	/**
 	 * Recalculates shipping and tax following a change in country or province
 	 * @param order
@@ -147,7 +155,7 @@ public class ShoppingOrderPaymentController extends AbstractController {
 			customerPopulator.setLanguageService(languageService);
 			customerPopulator.setZoneService(zoneService);
 			
-			if(action.equals(this.INIT_ACTION)) {
+			if(action.equals(INIT_ACTION)) {
 				if(paymentmethod.equals("paypal-express-checkout")) {
 					try {
 						
@@ -156,12 +164,21 @@ public class ShoppingOrderPaymentController extends AbstractController {
 						PaymentModule module = paymentService.getPaymentModule("paypal-express-checkout");
 						PayPalExpressCheckoutPayment p = (PayPalExpressCheckoutPayment)module;
 						PaypalPayment payment = new PaypalPayment();
-						Transaction transaction = p.initTransaction(store, customer, orderTotalSummary.getTotal(), payment, config, integrationModule);
+						Transaction transaction = p.initPaypalTransaction(store, customer, cartItems, orderTotalSummary.getTotal(), payment, config, integrationModule);
+						transactionService.create(transaction);
+						
 						super.setSessionAttribute(INIT_TRANSACTION_KEY, transaction, request);
 						
-						//build url
+						if(config.getEnvironment().equals(com.salesmanager.core.constants.Constants.PRODUCTION_ENVIRONMENT)) {
+							ajaxResponse.addEntry("url", coreConfiguration.getProperty("PAYPAL_EXPRESSCHECKOUT_PRODUCTION"));
+						} else {
+							ajaxResponse.addEntry("url", coreConfiguration.getProperty("PAYPAL_EXPRESSCHECKOUT_SANDBOX"));
+						}
 						
-						//ajaxResponse.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+						//build url
+						//https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=EC-5LL13394G30048922
+						
+						ajaxResponse.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 					
 					} catch(Exception e) {
 						ajaxResponse.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);

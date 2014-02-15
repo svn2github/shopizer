@@ -175,6 +175,9 @@ public class CustomerController {
 			for(CustomerOptionSet optSet : optionSet) {
 				
 				com.salesmanager.core.business.customer.model.attribute.CustomerOption custOption = optSet.getCustomerOption();
+				if(!custOption.isActive()) {
+					continue;
+				}
 				CustomerOption customerOption = options.get(custOption.getId());
 				
 				optionPopulator.setOptionSet(optSet);

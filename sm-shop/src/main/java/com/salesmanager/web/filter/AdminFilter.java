@@ -83,6 +83,11 @@ public class AdminFilter extends HandlerInterceptorAdapter {
 				store=null;
 			}
 			
+			if(user==null) {
+				response.sendRedirect(request.getContextPath() + "/admin/unauthorized.html");
+				return true;
+			}
+			
 			if(!user.getAdminName().equals(userName)) {
 				user = userService.getByUserName(userName);
 				if(user!=null) {

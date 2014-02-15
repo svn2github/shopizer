@@ -62,13 +62,16 @@ public class CustomerPopulator extends
 
 			target.setEmailAddress(source.getEmailAddress());
 			target.setNick(source.getUserName());
-		    target.setGender( com.salesmanager.core.business.customer.model.CustomerGender.valueOf( source.getGender() ) );
+			target.setGender( com.salesmanager.core.business.customer.model.CustomerGender.M);
+			if(source.getGender()!=null) {
+				target.setGender( com.salesmanager.core.business.customer.model.CustomerGender.valueOf( source.getGender() ) );
+			}
 			
 			 
 			//target.setCity( source.get );
 
 			Map<String,Country> countries = countryService.getCountriesMap(language);
-			
+
 			
 			target.setDefaultLanguage( language );
 			target.setMerchantStore( store );
@@ -151,7 +154,6 @@ public class CustomerPopulator extends
 			}
 			
 			if(target.getDelivery() ==null && source.getDelivery()!=null){
-			    
 			    LOG.info( "Setting default value for delivery" );
 			    Delivery delivery = new Delivery();
 			    Country deliveryCountry = null;
