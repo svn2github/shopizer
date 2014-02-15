@@ -81,6 +81,16 @@ function isFormValid() {
 				valid = false;
 			}
 		}
+		if($(this).hasClass('email')) {	
+			var emailValid = validateEmail($(this).val());
+			//console.log('Email is valid ? ' + emailValid);
+			if(!emailValid) {
+				if(firstErrorMessage==null) {
+					firstErrorMessage = '<s:message code="messages.invalid.email" text="Invalid email address"/>';
+					valid = false;
+				}
+			}
+		}
 	});
 	
 	//display - hide shipping
@@ -90,7 +100,7 @@ function isFormValid() {
 	    $('#deliveryBox').show();
     }
 	
-	console.log('Form is valid ? ' + valid);
+	//console.log('Form is valid ? ' + valid);
 	if(valid==false) {//disable submit button
 		//alert(firstErrorMessage);
 		if(firstErrorMessage!=null) {
@@ -147,7 +157,7 @@ function isFieldValid(field) {
 	if(!validateField) {
 		return true;
 	}
-	if(value!='') {
+	if(!emptyString(value)) {
 		field.css('background-color', '#FFF');
 		return true;
 	} else {
@@ -369,6 +379,39 @@ function shippingQuotes(){
 	
 }
 
+function initPayment(paymentSelection) {
+	
+	var url = '<c:url value="/shop/order/payment/init/"/>' + paymentSelection + '.html';
+	//alert(url);
+	var data = $(checkoutFormId).serialize();
+	$.ajax({
+		  type: 'POST',
+		  url: url,
+		  data: data,
+		  dataType: 'json',
+		  success: function(response){
+			    $('#pageContainer').hideLoading();
+				var status = response.response.status;
+				//console.log(status);
+				if(status==0 || status ==9999) {
+					
+					var data = response.response.data;
+					console.log(data.url);
+					location.href='data.url';
+
+				} else {
+					console.log('Wrong status ' + status);
+				}
+		  },
+		    error: function(xhr, textStatus, errorThrown) {
+		    	$('#pageContainer').hideLoading();
+		  		alert('error ' + errorThrown);
+		  }
+
+	});
+	
+}
+
 
 function calculateTotal(){
 	resetErrorMessage();
@@ -514,36 +557,10 @@ $(document).ready(function() {
 			e.preventDefault();//do not submit form
 			resetErrorMessage();
 			$('#pageContainer').showLoading();
-			var data = $(checkoutFormId).serialize();
 			var paymentSelection = $('input[name=paymentMethodType]:checked', checkoutFormId).val();
 			if(paymentSelection.contains('paypal')) {
-				var url = '<c:url value="/shop/order/payment/init/"/>' + paymentSelection + '.html';
-				alert(url);
-				$.ajax({
-					  type: 'POST',
-					  url: url,
-					  data: data,
-					  dataType: 'json',
-					  success: function(response){
-						    $('#pageContainer').hideLoading();
-							var status = response.response.status;
-							//console.log(status);
-							if(status==0 || status ==9999) {
-								
-								var data = response.response.data;
-								console.log(data);
 
-							} else {
-								console.log('Wrong status ' + status);
-							}
-					  },
-					    error: function(xhr, textStatus, errorThrown) {
-					    	$('#pageContainer').hideLoading();
-					  		alert('error ' + errorThrown);
-					  }
-
-				});
-				
+				initPayment(paymentSelection);
 				
 			} else {
 				//submit form
@@ -618,7 +635,7 @@ $(document).ready(function() {
 														<label><s:message code="label.generic.email" text="Email address"/></label>
 									    					<div class="controls">
 									    					<s:message code="NotEmpty.customer.emailAddress" text="Email address is required" var="msgEmail"/> 
-									    					<form:input id="customer.emailAddress" cssClass="input-large required" path="customer.emailAddress" title="${msgEmail}"/>
+									    					<form:input id="customer.emailAddress" cssClass="input-large required email" path="customer.emailAddress" title="${msgEmail}"/>
 									    					</div> 
 									  				   </div> 
 													</div>

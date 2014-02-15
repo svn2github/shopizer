@@ -70,7 +70,7 @@ $(document).ready(function() {
 			//if has class email
 			if($(this).hasClass('email')) {	
 				var emailValid = validateEmail($(this).val());
-				console.log('Email is valid ? ' + emailValid);
+				//console.log('Email is valid ? ' + emailValid);
 				if(!emailValid) {
 					if(firstErrorMessage==null) {
 						firstErrorMessage = '<s:message code="messages.invalid.email" text="Invalid email address"/>';
@@ -135,7 +135,7 @@ $(document).ready(function() {
 				return true;
 			}
 		}
-		if(value!='') {
+		if(!emptyString(value)) {
 			field.css('background-color', '#FFF');
 			return true;
 		} else {

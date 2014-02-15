@@ -61,6 +61,10 @@ function validateEmail($email) {
 	  }
 }
 
+function emptyString($value) {
+	return !$value || !/[^\s]+/.test($value);
+}
+
 
 function loadProducts(url,divProductsContainer, ref) {
 		$(divProductsContainer).showLoading();

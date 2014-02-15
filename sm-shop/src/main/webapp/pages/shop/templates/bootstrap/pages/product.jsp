@@ -23,7 +23,7 @@ response.setDateHeader ("Expires", -1);
             
             <div class="row-fluid">
 
-                <div class="span12" itemscope itemtype="http://data-vocabulary.org/Product">
+                <div itemscope class="span12" itemtype="http://data-vocabulary.org/Product">
                     	<!-- Image column -->
 						<div id="img" class="span4">
 							<c:if test="${product.image!=null}">

@@ -45,6 +45,7 @@
 	<http pattern="/admin/**" auto-config="true" use-expressions="true" authentication-manager-ref="userAuthenticationManager">
 		<intercept-url pattern="/admin/logon.html*" access="permitAll" />
 		<intercept-url pattern="/admin/denied.html" access="permitAll"/>
+		<intercept-url pattern="/admin/unauthorized.html" access="permitAll"/>
 		<intercept-url pattern="/admin/users/resetPassword.html*" access="permitAll" />
 		<intercept-url pattern="/admin/users/resetPasswordSecurityQtn.html*" access="permitAll" /> 
 		<intercept-url pattern="/admin" access="hasRole('AUTH')" />

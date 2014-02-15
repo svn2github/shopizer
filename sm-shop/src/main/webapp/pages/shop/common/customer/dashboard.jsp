@@ -26,7 +26,6 @@ $(document).ready(function() {
 	$('.textAttribute').alphanumeric({ichars:'&=?'});
 	
 	$('#attributes').on('submit',function (event) {
-		alert('submit');
 		$('#attributesBox').showLoading();
 		$("#attributesError").hide();
 		$("#attributesSuccess").hide();
