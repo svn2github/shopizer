@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.web.client.RestTemplate;
 
+import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.entity.customer.Customer;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.customer.attribute.CustomerOptionValueDescription;
@@ -28,26 +29,7 @@ public class CustomerRESTControllerTest {
 	
 	private Long testCustmerID;
 	
-	@Test
-	@Ignore
-	public void customerRESTTest() throws Exception {
-		
-		//create customer
-		//postCustomer();
-		
-		//get All customers
-		//getCustomers();
-		
-		//get a single customer
-		//getCustomer();
-		
-		//update customer
-		//putCustomer();
-		
-		//delete customer
-		//deleteCustomer();
-		
-	}
+
 	
 	public HttpHeaders getHeader(){
 		HttpHeaders headers = new HttpHeaders();
@@ -92,22 +74,7 @@ public class CustomerRESTControllerTest {
 
 	}
 	
-	public void postCustomer() throws Exception {
-		restTemplate = new RestTemplate();
 
-		PersistableCustomer customer = new PersistableCustomer();
-
-		ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-		String json = writer.writeValueAsString(customer);
-		
-		HttpEntity<String> entity = new HttpEntity<String>(json, getHeader());
-
-		ResponseEntity response = restTemplate.postForEntity("http://localhost:8080/sm-shop/shop/services/rest/customers/DEFAULT", entity, Customer.class);
-
-		Customer cust = (Customer) response.getBody();
-		System.out.println("New Customer ID : " + cust.getId());
-		testCustmerID = cust.getId();
-	}
 	
 	public void getCustomers() throws Exception {
 		restTemplate = new RestTemplate();
@@ -122,50 +89,41 @@ public class CustomerRESTControllerTest {
 			System.out.println(response.getBody().length + " Customer records found.");
 		}
 	}
-	
-/*	public void getCustomer() throws Exception {
+
+	@Test
+	@Ignore
+	public void postCustomer() throws Exception {
 		restTemplate = new RestTemplate();
 		
-		HttpEntity<String> httpEntity = new HttpEntity<String>(getHeader());
 		
-		ResponseEntity<Customer> response = restTemplate.exchange("http://localhost:8080/sm-shop/shop/services/rest/customers/DEFAULT/"+testCustmerID, HttpMethod.GET, httpEntity, Customer.class);
+		PersistableCustomer customer = new PersistableCustomer();
+		customer.setEmailAddress("test@shopizer.com");
+		customer.setGender("M");
+		customer.setLanguage("en");
+		customer.setPassword("5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8");
+		customer.setUserName("testuser");
 		
-		if(response.getStatusCode() != HttpStatus.OK){
-			throw new Exception();
-		}else{
-			System.out.println("Returned username is : " + response.getBody().getUserName());
-		}
-	}*/
-	
-	public void putCustomer() throws Exception {
-		restTemplate = new RestTemplate();
+		Address address = new Address();
+		address.setAddress("123 my street");
+		address.setCity("Boucherville");
+		address.setPostalCode("H2H 2H2");
+		address.setFirstName("Johny");
+		address.setLastName("BGood");
+		address.setCountry("CA");
+		address.setZone("QC");
 		
-		String jsonString = ("{"+
-				   " \"password\": \"5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8\","+
-				   " \"firstname\": \"Tapas\","+
-				   " \"lastname\": \"22222\","+
-				   " \"emailAddress\": \"tapasfs.friends@gmail.com\","+
-				   " \"telephone\": \"9703517026\","+
-				   " \"streetAddress\": \"Hitech City\","+
-				   " \"postalCode\": \"500008\","+
-				   " \"city\": \"Hyderabad123\","+
-				   " \"country\": \"IN\","+
-				   " \"billing\": {"+
-				   "     \"country\":\"US\""+
-				   " },"+
-				   " \"delivery\": {"+
-				   "     \"country\": \"IN\","+
-				   "     \"state\":\"a state\""+
-				   " },"+
-				   " \"zone\": {"+
-				   "	\"country\": \"IN\""+
-				   " }"+
-				"}");
+		customer.setBilling(address);
 		
-		HttpEntity<String> entity = new HttpEntity<String>(jsonString, getHeader());
-		
-		restTemplate.put("http://localhost:8080/sm-shop/shop/services/rest/customers/DEFAULT/"+testCustmerID, entity);
-		System.out.println("Customer "+testCustmerID+" Updated.");
+		ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+		String json = writer.writeValueAsString(customer);
+
+		HttpEntity<String> entity = new HttpEntity<String>(json, getHeader());
+
+		ResponseEntity response = restTemplate.postForEntity("http://localhost:8080/sm-shop/shop/services/rest/customers/DEFAULT", entity, Customer.class);
+
+		Customer cust = (Customer) response.getBody();
+		System.out.println("New Customer ID : " + cust.getId());
+		testCustmerID = cust.getId();
 	}
 	
 	public void deleteCustomer() throws Exception {
