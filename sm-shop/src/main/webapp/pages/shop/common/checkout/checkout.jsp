@@ -380,24 +380,24 @@ function shippingQuotes(){
 }
 
 function initPayment(paymentSelection) {
-	
 	var url = '<c:url value="/shop/order/payment/init/"/>' + paymentSelection + '.html';
-	//alert(url);
+	alert(url);
 	var data = $(checkoutFormId).serialize();
 	$.ajax({
 		  type: 'POST',
 		  url: url,
 		  data: data,
+		  cache: false,
 		  dataType: 'json',
 		  success: function(response){
 			    $('#pageContainer').hideLoading();
-				var status = response.response.status;
-				//console.log(status);
+				var status = response.status;
+				console.log(status);
 				if(status==0 || status ==9999) {
 					
-					var data = response.response.data;
-					console.log(data.url);
-					location.href='data.url';
+					var data = response.dataMap.url;
+					console.log(response.dataMap.url);
+					//location.href=response.dataMap.url;
 
 				} else {
 					console.log('Wrong status ' + status);

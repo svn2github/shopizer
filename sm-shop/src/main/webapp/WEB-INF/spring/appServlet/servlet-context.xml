@@ -9,16 +9,14 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
-	
 
-	
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven>
-		<!--
+
+		<!-- Device object in controller method -->
 		<argument-resolvers>
-			<beans:bean class="org.springframework.samples.mvc.data.custom.CustomArgumentResolver"/>
-		</argument-resolvers>
-		-->
+        	<beans:bean class="org.springframework.mobile.device.DeviceWebArgumentResolver" />
+    	</argument-resolvers>
 		
 		<message-converters >
 	        <beans:bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter">
@@ -33,9 +31,6 @@
     	</message-converters>
 
 	</annotation-driven>
-	<!-- <annotation-driven validator="validator" /> -->
-
-
 
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources/ directory -->
 	<resources mapping="/resources/**" location="/resources/" />

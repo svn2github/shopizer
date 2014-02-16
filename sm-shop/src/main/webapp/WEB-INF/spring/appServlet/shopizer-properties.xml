@@ -39,6 +39,8 @@
 				<!-- express checkout url -->
 				<prop key="PAYPAL_EXPRESSCHECKOUT_SANDBOX"><![CDATA[https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=]]></prop>
 				<prop key="PAYPAL_EXPRESSCHECKOUT_PRODUCTION"><![CDATA[https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=]]></prop>
+				<prop key="PAYPAL_EXPRESSCHECKOUT_REGULAR"><![CDATA[_express-checkout&token=]]></prop>
+				<prop key="PAYPAL_EXPRESSCHECKOUT_MOBILE"><![CDATA[_express-checkout-mobile&token=]]></prop>
 	</util:properties>
 	
 	
