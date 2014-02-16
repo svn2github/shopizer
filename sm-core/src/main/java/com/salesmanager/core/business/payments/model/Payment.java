@@ -1,10 +1,13 @@
 package com.salesmanager.core.business.payments.model;
 
+import com.salesmanager.core.business.reference.currency.model.Currency;
+
 public abstract class Payment {
 	
 	private PaymentType paymentType;
 	private TransactionType transactionType = TransactionType.CAPTURE;
 	private String moduleName;
+	private Currency currency;
 
 	public void setPaymentType(PaymentType paymentType) {
 		this.paymentType = paymentType;
@@ -28,6 +31,14 @@ public abstract class Payment {
 
 	public String getModuleName() {
 		return moduleName;
+	}
+
+	public Currency getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
 	}
 
 }

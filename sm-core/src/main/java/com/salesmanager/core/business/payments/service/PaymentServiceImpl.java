@@ -299,6 +299,8 @@ public class PaymentServiceImpl implements PaymentService {
 		Validate.notNull(amount);
 		Validate.notNull(payment.getTransactionType());
 		
+		payment.setCurrency(store.getCurrency());
+		
 		if(payment.getTransactionType().name().equals(TransactionType.CAPTURE.name())) {
 			throw new ServiceException("This method does not allow to process capture transaction. Use processCapturePayment");
 		}
@@ -372,6 +374,8 @@ public class PaymentServiceImpl implements PaymentService {
 		Validate.notNull(order);
 		Validate.notNull(payment.getTransactionType());
 		
+		payment.setCurrency(store.getCurrency());
+		
 		if(!payment.getTransactionType().name().equals(TransactionType.CAPTURE.name())) {
 			throw new ServiceException("This method is for capture transaction only");
 		}
@@ -439,6 +443,7 @@ public class PaymentServiceImpl implements PaymentService {
 		Validate.notNull(store);
 		Validate.notNull(amount);
 		Validate.notNull(order);
+		
 		
 		BigDecimal orderTotal = order.getTotal();
 		
