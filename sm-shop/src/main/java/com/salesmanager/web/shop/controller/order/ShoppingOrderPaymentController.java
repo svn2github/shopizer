@@ -12,6 +12,7 @@ import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mobile.device.Device;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,7 +55,7 @@ import com.salesmanager.web.shop.controller.shoppingCart.facade.ShoppingCartFaca
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
-@RequestMapping(Constants.SHOP_URI+"/order")
+@RequestMapping(Constants.SHOP_URI)
 public class ShoppingOrderPaymentController extends AbstractController {
 	
 	private static final Logger LOGGER = LoggerFactory
@@ -114,8 +115,9 @@ public class ShoppingOrderPaymentController extends AbstractController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value={"/payment/{action}/{paymentmethod}.html"}, method=RequestMethod.POST)
-	public @ResponseBody AjaxResponse paymentAction(@ModelAttribute(value="order") ShopOrder order, @PathVariable String action, @PathVariable String paymentmethod, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	@RequestMapping(value={"/order/payment/{action}/{paymentmethod}.html"}, method=RequestMethod.POST)
+	public @ResponseBody AjaxResponse paymentAction(@ModelAttribute(value="order") ShopOrder order, @PathVariable String action, @PathVariable String paymentmethod, Device device, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
 		
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
@@ -164,20 +166,41 @@ public class ShoppingOrderPaymentController extends AbstractController {
 						PaymentModule module = paymentService.getPaymentModule("paypal-express-checkout");
 						PayPalExpressCheckoutPayment p = (PayPalExpressCheckoutPayment)module;
 						PaypalPayment payment = new PaypalPayment();
+						payment.setCurrency(store.getCurrency());
 						Transaction transaction = p.initPaypalTransaction(store, customer, cartItems, orderTotalSummary.getTotal(), payment, config, integrationModule);
 						transactionService.create(transaction);
 						
 						super.setSessionAttribute(INIT_TRANSACTION_KEY, transaction, request);
 						
-						if(config.getEnvironment().equals(com.salesmanager.core.constants.Constants.PRODUCTION_ENVIRONMENT)) {
-							ajaxResponse.addEntry("url", coreConfiguration.getProperty("PAYPAL_EXPRESSCHECKOUT_PRODUCTION"));
-						} else {
-							ajaxResponse.addEntry("url", coreConfiguration.getProperty("PAYPAL_EXPRESSCHECKOUT_SANDBOX"));
+						//https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout-mobile&token=tokenValueReturnedFromSetExpressCheckoutCall
+						//For Desktop use
+						//https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=tokenValueReturnedFromSetExpressCheckoutCall
+						
+						StringBuilder urlAppender = new StringBuilder();
+						if(device.isNormal()) {
+							urlAppender.append(coreConfiguration.getProperty("PAYPAL_EXPRESSCHECKOUT_REGULAR"));
+						}
+						if(device.isTablet()) {
+							urlAppender.append(coreConfiguration.getProperty("PAYPAL_EXPRESSCHECKOUT_REGULAR"));
+						}
+						if(device.isMobile()) {
+							urlAppender.append(coreConfiguration.getProperty("PAYPAL_EXPRESSCHECKOUT_MOBILE"));
 						}
 						
-						//build url
-						//https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=EC-5LL13394G30048922
+						urlAppender.append(transaction.getTransactionDetails().get("TOKEN"));
 						
+						
+						
+						if(config.getEnvironment().equals(com.salesmanager.core.constants.Constants.PRODUCTION_ENVIRONMENT)) {
+							StringBuilder url = new StringBuilder().append(coreConfiguration.getProperty("PAYPAL_EXPRESSCHECKOUT_PRODUCTION")).append(urlAppender.toString());
+							ajaxResponse.addEntry("url", url.toString());
+						} else {
+							StringBuilder url = new StringBuilder().append(coreConfiguration.getProperty("PAYPAL_EXPRESSCHECKOUT_SANDBOX")).append(urlAppender.toString());
+							ajaxResponse.addEntry("url", url.toString());
+						}
+
+						//keep order in session when user comes back from pp
+						super.setSessionAttribute(Constants.ORDER, order, request);
 						ajaxResponse.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
 					
 					} catch(Exception e) {
@@ -196,6 +219,17 @@ public class ShoppingOrderPaymentController extends AbstractController {
 		}
 		
 		return ajaxResponse;
+	}
+	
+	//cancel - success paypal order
+	@RequestMapping(value={"/paypal/checkout.html/{code}"}, method=RequestMethod.GET)
+	public  String returnPayPalPayment(@PathVariable String code, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		if(Constants.SUCCESS.equals(code)) {
+			
+			return "redirect:" + Constants.SHOP_URI + "/order/commit.html";
+		} else {//process as cancel
+			return "redirect:" + Constants.SHOP_URI + "/order/checkout.html";
+		}	
 	}
 
 }

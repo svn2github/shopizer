@@ -108,41 +108,51 @@ public class ShoppingOrderController extends AbstractController {
 		 * Else -> Nothing to display
 		 */
 		
-		//Get the cart from the DB
+		//check if an existing order exist
+		ShopOrder order = null;
 		
+		order = super.getSessionAttribute(Constants.ORDER, request);
+		
+
+		
+		//Get the cart from the DB
 		String shoppingCartCode  = (String)request.getSession().getAttribute(Constants.SHOPPING_CART);
 		com.salesmanager.core.business.shoppingcart.model.ShoppingCart cart = null;
-
-		if(!StringUtils.isBlank(shoppingCartCode)) {
-			cart = shoppingCartFacade.getShoppingCartModel(shoppingCartCode, store);
-		}
-
-		if(cart==null && customer!=null) {
-			cart=shoppingCartFacade.getShoppingCartModel(customer, store);
-		}
-		
-
-		
-		if(shoppingCartCode==null && cart==null) {//error
-			return "redirect:/shop/cart/shoppingCart.html";
-		}
-		
-
-		if(customer!=null) {
+	
+	    if(!StringUtils.isBlank(shoppingCartCode)) {
+				cart = shoppingCartFacade.getShoppingCartModel(shoppingCartCode, store);
+	    }
+	
+	    if(cart==null && customer!=null) {
+				cart=shoppingCartFacade.getShoppingCartModel(customer, store);
+	    }
+			
+	
+			
+	    if(shoppingCartCode==null && cart==null) {//error
+				return "redirect:/shop/cart/shoppingCart.html";
+	    }
+			
+	
+	    if(customer!=null) {
 			if(cart.getCustomerId()!=customer.getId().longValue()) {
-				return "redirect:/shop/shoppingCart.html";
+					return "redirect:/shop/shoppingCart.html";
 			}
-		} else {
-			customer = orderFacade.initEmptyCustomer(store);
-		}
-
-		Set<ShoppingCartItem> items = cart.getLineItems();
-		if(CollectionUtils.isEmpty(items)) {
-			return "redirect:/shop/shoppingCart.html";
-		}
-
-
-		ShopOrder order = orderFacade.initializeOrder(store, customer, cart, language);
+	     } else {
+				customer = orderFacade.initEmptyCustomer(store);
+	     }
+	
+	     Set<ShoppingCartItem> items = cart.getLineItems();
+	     if(CollectionUtils.isEmpty(items)) {
+				return "redirect:/shop/shoppingCart.html";
+	     }
+		
+	     if(order==null) {
+	
+	
+			order = orderFacade.initializeOrder(store, customer, cart, language);
+		
+		  }
 
 		boolean freeShoppingCart = shoppingCartService.isFreeShoppingCart(cart);
 		
