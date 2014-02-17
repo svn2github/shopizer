@@ -166,7 +166,9 @@ public class ShoppingOrderController extends AbstractController {
 			
 				ShippingSummary summary = orderFacade.getShippingSummary(quote, store, language);
 				order.setShippingSummary(summary);
-				order.setSelectedShippingOption(quote.getSelectedShippingOption());
+				if(order.getSelectedShippingOption()==null) {
+					order.setSelectedShippingOption(quote.getSelectedShippingOption());
+				}
 				
 				//save quotes in HttpSession
 				List<ShippingOption> options = quote.getShippingOptions();

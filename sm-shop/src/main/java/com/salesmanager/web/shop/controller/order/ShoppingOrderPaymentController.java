@@ -177,14 +177,19 @@ public class ShoppingOrderPaymentController extends AbstractController {
 						//https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout&token=tokenValueReturnedFromSetExpressCheckoutCall
 						
 						StringBuilder urlAppender = new StringBuilder();
-						if(device.isNormal()) {
+						
+						if(device!=null) {
+							if(device.isNormal()) {
+								urlAppender.append(coreConfiguration.getProperty("PAYPAL_EXPRESSCHECKOUT_REGULAR"));
+							}
+							if(device.isTablet()) {
+								urlAppender.append(coreConfiguration.getProperty("PAYPAL_EXPRESSCHECKOUT_REGULAR"));
+							}
+							if(device.isMobile()) {
+								urlAppender.append(coreConfiguration.getProperty("PAYPAL_EXPRESSCHECKOUT_MOBILE"));
+							}
+						} else {
 							urlAppender.append(coreConfiguration.getProperty("PAYPAL_EXPRESSCHECKOUT_REGULAR"));
-						}
-						if(device.isTablet()) {
-							urlAppender.append(coreConfiguration.getProperty("PAYPAL_EXPRESSCHECKOUT_REGULAR"));
-						}
-						if(device.isMobile()) {
-							urlAppender.append(coreConfiguration.getProperty("PAYPAL_EXPRESSCHECKOUT_MOBILE"));
 						}
 						
 						urlAppender.append(transaction.getTransactionDetails().get("TOKEN"));

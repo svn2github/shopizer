@@ -1,10 +1,17 @@
 package com.salesmanager.web.entity.customer;
 
+import java.io.Serializable;
+
 import org.hibernate.validator.constraints.NotEmpty;
 
 
-public class Address {
+public class Address implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@NotEmpty(message="{NotEmpty.customer.firstName}")
 	private String firstName;
 	
