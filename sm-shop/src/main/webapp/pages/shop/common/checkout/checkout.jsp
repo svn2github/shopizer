@@ -381,7 +381,6 @@ function shippingQuotes(){
 
 function initPayment(paymentSelection) {
 	var url = '<c:url value="/shop/order/payment/init/"/>' + paymentSelection + '.html';
-	alert(url);
 	var data = $(checkoutFormId).serialize();
 	$.ajax({
 		  type: 'POST',
@@ -397,7 +396,7 @@ function initPayment(paymentSelection) {
 					
 					var data = response.dataMap.url;
 					console.log(response.dataMap.url);
-					//location.href=response.dataMap.url;
+					location.href=response.dataMap.url;
 
 				} else {
 					console.log('Wrong status ' + status);
@@ -843,7 +842,7 @@ $(document).ready(function() {
 							 					</label> 
 							 					<div class="controls"> 
 							 						<c:forEach items="${shippingQuote.shippingOptions}" var="option" varStatus="status">
-														<label class="radio"> 
+														<label class="radio">
 															<input type="radio" name="selectedShippingOption.optionId" class="shippingOption" id="${option.optionCode}" value="${option.optionCode}" <c:if test="${order.selectedShippingOption!=null && order.selectedShippingOption.optionCode==option.optionCode}">checked="checked"</c:if>> 
 															${option.optionName} - ${option.optionPriceText}
 														</label> 
