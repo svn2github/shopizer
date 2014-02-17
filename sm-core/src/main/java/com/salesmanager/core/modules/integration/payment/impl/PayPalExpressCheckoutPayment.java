@@ -188,8 +188,11 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 
 
 			SetExpressCheckoutRequestDetailsType setExpressCheckoutRequestDetails = new SetExpressCheckoutRequestDetailsType();
-			setExpressCheckoutRequestDetails.setReturnURL(RETURN_URL.append(Constants.SHOP_URI).append("/paypal/checkout").append(coreConfiguration.getProperty("URL_EXTENSION", ".html")).append("/success").toString());
-			setExpressCheckoutRequestDetails.setCancelURL(RETURN_URL.append(Constants.SHOP_URI).append("/paypal/checkout").append(coreConfiguration.getProperty("URL_EXTENSION", ".html")).append("/cancel").toString());
+			String returnUrl = RETURN_URL.toString() + new StringBuilder().append(Constants.SHOP_URI).append("/paypal/checkout").append(coreConfiguration.getProperty("URL_EXTENSION", ".html")).append("/success").toString();
+			String cancelUrl = RETURN_URL.toString() + new StringBuilder().append(Constants.SHOP_URI).append("/paypal/checkout").append(coreConfiguration.getProperty("URL_EXTENSION", ".html")).append("/cancel").toString();
+			
+			setExpressCheckoutRequestDetails.setReturnURL(returnUrl);
+			setExpressCheckoutRequestDetails.setCancelURL(cancelUrl);
 
 			
 			setExpressCheckoutRequestDetails.setPaymentDetails(paymentDetailsList);
