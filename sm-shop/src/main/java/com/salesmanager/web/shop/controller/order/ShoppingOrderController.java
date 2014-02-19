@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.Validate;
@@ -16,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -260,7 +263,7 @@ public class ShoppingOrderController extends AbstractController {
 	 * @throws Exception
 	 */
 	@RequestMapping("/commit.html")
-	public String commitOrder(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	public String commitOrder(Model model, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
 		
 		ShopOrder order = super.getSessionAttribute(Constants.ORDER, request);
@@ -270,7 +273,7 @@ public class ShoppingOrderController extends AbstractController {
 		
 		try {
 			
-			return this.commitOrder(order, model, request, response, locale);
+			return this.commitOrder(order, bindingResult, model, request, response, locale);
 			
 		} catch(Exception e) {
 			LOGGER.error("Error while commiting order",e);
@@ -283,12 +286,21 @@ public class ShoppingOrderController extends AbstractController {
 	}
 	
 	@RequestMapping("/commitShopOrder.html")
-	public String commitShopOrder(@ModelAttribute(value="order") ShopOrder order, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	public String commitShopOrder(@Valid @ModelAttribute(value="order") ShopOrder order, BindingResult bindingResult, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
-
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		try {
 			
-			return this.commitOrder(order, model, request, response, locale);
+	        if ( bindingResult.hasErrors() )
+	        {
+	            LOGGER.info( "found {} validation error while validating in customer registration ",
+	                         bindingResult.getErrorCount() );
+	    		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Checkout.checkout).append(".").append(store.getStoreTemplate());
+	    		return template.toString();
+
+	        }
+			
+			return this.commitOrder(order, bindingResult, model, request, response, locale);
 			
 		} catch(Exception e) {
 			LOGGER.error("Error while commiting order",e);
@@ -299,20 +311,69 @@ public class ShoppingOrderController extends AbstractController {
 	}
 	
 	
-	private String commitOrder(ShopOrder order, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	private String commitOrder(ShopOrder order, BindingResult bindingResult, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 
 			
-			Language language = (Language)request.getAttribute("LANGUAGE");
-			MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-			Customer customer = (Customer)request.getSession().getAttribute(Constants.CUSTOMER);
-	
-			//session ?
-			//if(order==null) {
-				//redirect
-			//}
 
-			//transform ShoppingCartItem to OrderProduct
+			MerchantStore store = super.getSessionAttribute(Constants.MERCHANT_STORE, request);
+
+			//validate order shipping and billing
+			if(StringUtils.isBlank(order.getCustomer().getBilling().getFirstName())) {
+				FieldError error = new FieldError("customer.billing.firstName","customer.billing.firstName",messages.getMessage("NotEmpty.customer.firstName", locale));
+            	bindingResult.addError(error);
+			}
+			
+			if(StringUtils.isBlank(order.getCustomer().getBilling().getLastName())) {
+				FieldError error = new FieldError("customer.billing.lastName","customer.billing.lastName",messages.getMessage("NotEmpty.customer.lastName", locale));
+            	bindingResult.addError(error);
+			}
+			
+			if(StringUtils.isBlank(order.getCustomer().getEmailAddress())) {
+				FieldError error = new FieldError("customer.emailAddress","customer.emailAddress",messages.getMessage("NotEmpty.customer.emailAddress", locale));
+            	bindingResult.addError(error);
+			}
+			
+			if(StringUtils.isBlank(order.getCustomer().getBilling().getAddress())) {
+				
+			}
+			
+			if(StringUtils.isBlank(order.getCustomer().getBilling().getCity())) {
+				
+			}
+			
+			if(StringUtils.isBlank(order.getCustomer().getBilling().getCountry())) {
+				
+			}
+			
+			if(StringUtils.isBlank(order.getCustomer().getBilling().getZone()) && StringUtils.isBlank(order.getCustomer().getBilling().getStateProvince())) {
+				
+			}
+			
+			if(StringUtils.isBlank(order.getCustomer().getBilling().getPhone())) {
+				
+			}
+			
+			if(StringUtils.isBlank(order.getCustomer().getBilling().getPostalCode())) {
+				
+			}
+			
+			//validate payment
+			
+			//validate shipping
+			
+			//validate credit card
+	
+			//validate additional fields
+			
+	        if ( bindingResult.hasErrors() )
+	        {
+	            LOGGER.info( "found {} validation error while validating in customer registration ",
+	                         bindingResult.getErrorCount() );
+	    		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Checkout.checkout).append(".").append(store.getStoreTemplate());
+	    		return template.toString();
+
+	        }
 			
 			return null;
 

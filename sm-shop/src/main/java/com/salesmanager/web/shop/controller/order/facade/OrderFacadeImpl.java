@@ -21,16 +21,20 @@ import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionValueService;
 import com.salesmanager.core.business.generic.exception.ConversionException;
+import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.model.OrderSummary;
 import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
+import com.salesmanager.core.business.order.model.payment.CreditCard;
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.payments.model.CreditCardPayment;
+import com.salesmanager.core.business.payments.model.CreditCardType;
 import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.PaymentType;
+import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -207,88 +211,154 @@ public class OrderFacadeImpl implements OrderFacade {
 	}
 
 
-
+	/**
+	 * Submitted object must be valided prior to the invocation of this method
+	 */
 	@Override
-	public void saveOrder(ShopOrder order, MerchantStore store,
+	public void processOrder(ShopOrder order, MerchantStore store,
 			Language language) throws Exception {
-		
-		
-		
-		Customer customer = this.toCustomerModel(order.getCustomer(), store, language);
-		if(customer!=null && customer.getId()==null || customer.getId()==0) {
-			customerService.saveOrUpdate(customer);
-		}
-		
-		Order modelOrder = new Order();
-		modelOrder.setBilling(customer.getBilling());
-		modelOrder.setDelivery(customer.getDelivery());
+				
+		this.processOrderModel(order, null, store, language);
 
-		List<ShoppingCartItem> shoppingCartItems = order.getShoppingCartItems();
-		Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
+	}
+	
+	@Override
+	public void processOrder(ShopOrder order, Transaction transaction, MerchantStore store,
+			Language language) throws Exception {
+				
+		this.processOrderModel(order, transaction, store, language);
+
+	}
+	
+	private Order processOrderModel(ShopOrder order, Transaction transaction, MerchantStore store,
+			Language language) throws ServiceException {
 		
-		OrderProductPopulator orderProductPopulator = new OrderProductPopulator();
-		orderProductPopulator.setDigitalProductService(digitalProductService);
-		orderProductPopulator.setProductAttributeService(productAttributeService);
-		orderProductPopulator.setProductService(productService);
-		
-		for(ShoppingCartItem item : shoppingCartItems) {
-			OrderProduct orderProduct = new OrderProduct();
-			orderProduct = orderProductPopulator.populate(item, orderProduct , store, language);
-			orderProduct.setOrder(modelOrder);
-			orderProducts.add(orderProduct);
+		try {
+
+			Customer customer = this.toCustomerModel(order.getCustomer(), store, language);
 			
+			//if(customer!=null && customer.getId()==null || customer.getId()==0) {
+			//	customerService.saveOrUpdate(customer);
+			//}
+			
+			Order modelOrder = new Order();
+			modelOrder.setBilling(customer.getBilling());
+			modelOrder.setDelivery(customer.getDelivery());
+	
+			List<ShoppingCartItem> shoppingCartItems = order.getShoppingCartItems();
+			Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
+			
+			OrderProductPopulator orderProductPopulator = new OrderProductPopulator();
+			orderProductPopulator.setDigitalProductService(digitalProductService);
+			orderProductPopulator.setProductAttributeService(productAttributeService);
+			orderProductPopulator.setProductService(productService);
+			
+			for(ShoppingCartItem item : shoppingCartItems) {
+				OrderProduct orderProduct = new OrderProduct();
+				orderProduct = orderProductPopulator.populate(item, orderProduct , store, language);
+				orderProduct.setOrder(modelOrder);
+				orderProducts.add(orderProduct);
+			}
+			
+			modelOrder.setOrderProducts(orderProducts);
+			
+			OrderTotalSummary summary = order.getOrderTotalSummary();
+			List<com.salesmanager.core.business.order.model.OrderTotal> totals = summary.getTotals();
+			Set<com.salesmanager.core.business.order.model.OrderTotal> modelTotals = new HashSet<com.salesmanager.core.business.order.model.OrderTotal>();
+			for(com.salesmanager.core.business.order.model.OrderTotal total : totals) {
+				total.setOrder(modelOrder);
+				modelTotals.add(total);
+			}
+			
+			modelOrder.setOrderTotal(modelTotals);
+			modelOrder.setTotal(order.getOrderTotalSummary().getTotal());
+	
+			//order misc objects
+			modelOrder.setCurrency(store.getCurrency());
+			modelOrder.setMerchant(store);
+			OrderStatus status = OrderStatus.ORDERED;
+			modelOrder.setStatus(status);
+			//do not care about previous status
+			
+			
+			//customer object
+			orderCustomer(customer, modelOrder, language);
+			
+			//populate shipping information
+			if(!StringUtils.isBlank(order.getShippingModule())) {
+				modelOrder.setShippingModuleCode(order.getShippingModule());
+			}
+			
+			String paymentType = order.getPaymentMethodType();
+			Payment payment = null;
+			if(PaymentType.CREDITCARD.name().equals(paymentType)) {
+				payment = new CreditCardPayment();
+				((CreditCardPayment)payment).setCardOwner(order.getPayment().get("creditcard_card_holder"));
+				((CreditCardPayment)payment).setCredidCardValidationNumber(order.getPayment().get("creditcard_card_cvv"));
+				((CreditCardPayment)payment).setCreditCardNumber(order.getPayment().get("creditcard_card_number"));
+				((CreditCardPayment)payment).setExpirationMonth(order.getPayment().get("creditcard_card_expirationmonth"));
+				((CreditCardPayment)payment).setExpirationYear(order.getPayment().get("creditcard_card_expirationyear"));
+				
+				CreditCardType creditCardType =null;
+				String cardType = order.getPayment().get("creditcard_card_type");
+				
+				if(cardType.equalsIgnoreCase(CreditCardType.AMEX.name())) {
+					creditCardType = CreditCardType.AMEX;
+				} else if(cardType.equalsIgnoreCase(CreditCardType.VISA.name())) {
+					creditCardType = CreditCardType.VISA;
+				} else if(cardType.equalsIgnoreCase(CreditCardType.MASTERCARD.name())) {
+					creditCardType = CreditCardType.MASTERCARD;
+				} else if(cardType.equalsIgnoreCase(CreditCardType.DINERS.name())) {
+					creditCardType = CreditCardType.DINERS;
+				} else if(cardType.equalsIgnoreCase(CreditCardType.DISCOVERY.name())) {
+					creditCardType = CreditCardType.DISCOVERY;
+				}
+				
+				
+				((CreditCardPayment)payment).setCreditCard(creditCardType);
+			
+				CreditCard cc = new CreditCard();
+				cc.setCardType(creditCardType);
+				cc.setCcCvv(((CreditCardPayment)payment).getCredidCardValidationNumber());
+				cc.setCcOwner(((CreditCardPayment)payment).getCardOwner());
+				cc.setCcExpires(((CreditCardPayment)payment).getExpirationMonth() + "-" + ((CreditCardPayment)payment).getExpirationYear());
+			
+				//hash credit card number
+				String maskedNumber = CreditCardUtils.maskCardNumber(order.getPayment().get("creditcard_card_holder"));
+				order.getCreditCard().setCcNumber(maskedNumber);
+	
+				modelOrder.setCreditCard(order.getCreditCard());
+			}
+			
+			if(PaymentType.PAYPAL.name().equals(paymentType)) {
+				
+				//check for previous transaction
+				if(transaction==null) {
+					throw new ServiceException("payment.error");
+				}
+				
+				payment = new com.salesmanager.core.business.payments.model.PaypalPayment();
+				
+				((com.salesmanager.core.business.payments.model.PaypalPayment)payment).setPayerId(transaction.getTransactionDetails().get("PAYERID"));
+				((com.salesmanager.core.business.payments.model.PaypalPayment)payment).setPaymentToken(transaction.getTransactionDetails().get("TOKEN"));
+				
+				
+			}
+			
+			if(!StringUtils.isBlank(order.getPaymentModule())) {
+				modelOrder.setPaymentModuleCode(order.getPaymentModule());
+			}
+	
+			
+			orderService.processOrder(modelOrder, customer, order.getShoppingCartItems(), summary, payment, store);
+			return modelOrder;
+		
+		} catch(ServiceException se) {
+			throw se;
+		} catch(Exception e) {
+			throw new ServiceException(e);
 		}
 		
-		modelOrder.setOrderProducts(orderProducts);
-		
-		OrderTotalSummary summary = order.getOrderTotalSummary();
-		List<com.salesmanager.core.business.order.model.OrderTotal> totals = summary.getTotals();
-		Set<com.salesmanager.core.business.order.model.OrderTotal> modelTotals = new HashSet<com.salesmanager.core.business.order.model.OrderTotal>();
-		for(com.salesmanager.core.business.order.model.OrderTotal total : totals) {
-			total.setOrder(modelOrder);
-			modelTotals.add(total);
-		}
-		
-		modelOrder.setOrderTotal(modelTotals);
-		modelOrder.setTotal(order.getOrderTotalSummary().getTotal());
-
-		//order misc objects
-		modelOrder.setCurrency(store.getCurrency());
-		modelOrder.setMerchant(store);
-		OrderStatus status = OrderStatus.ORDERED;
-		modelOrder.setStatus(status);
-		//do not care about previous status
-		
-		
-		//customer object
-		orderCustomer(customer, modelOrder, language);
-		
-		//populate shipping information
-		if(!StringUtils.isBlank(order.getShippingModule())) {
-			modelOrder.setShippingModuleCode(order.getShippingModule());
-		}
-		
-		String paymentType = order.getPaymentMethodType();
-		Payment payment = null;
-		if(PaymentType.CREDITCARD.name().equals(paymentType)) {
-			payment = new CreditCardPayment();
-			((CreditCardPayment)payment).setCardOwner(order.getPayment().get("creditcard_card_holder"));
-		
-			//hash credit card number
-			String maskedNumber = CreditCardUtils.maskCardNumber(order.getPayment().get("creditcard_card_holder"));
-			order.getCreditCard().setCcNumber(maskedNumber);
-			modelOrder.setCreditCard(order.getCreditCard());
-		}
-		
-		if(!StringUtils.isBlank(order.getPaymentModule())) {
-			modelOrder.setPaymentModuleCode(order.getPaymentModule());
-		}
-
-		
-		orderService.create(modelOrder);
-		
-		
-
 	}
 	
 	private void orderCustomer(Customer customer, Order order, Language language) throws Exception {
@@ -364,7 +434,7 @@ public class OrderFacadeImpl implements OrderFacade {
 		
 		Delivery delivery = new Delivery();
 		
-		//ajust shipping and billing
+		//adjust shipping and billing
 		if(order.isShipToBillingAdress()) {
 			Billing billing = customer.getBilling();
 			delivery.setAddress(billing.getAddress());

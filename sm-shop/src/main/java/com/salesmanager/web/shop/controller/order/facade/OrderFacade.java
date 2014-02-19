@@ -5,6 +5,7 @@ import java.util.List;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.OrderTotalSummary;
+import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shipping.model.ShippingQuote;
@@ -23,8 +24,10 @@ public interface OrderFacade {
 	/** used in the API **/
 	OrderTotalSummary calculateOrderTotal(MerchantStore store, PersistableOrder order, Language language) throws Exception;
 
-	/** saves a valid order **/
-	void saveOrder(ShopOrder order, MerchantStore store, Language language) throws Exception;
+	/** process a valid order **/
+	void processOrder(ShopOrder order, MerchantStore store, Language language) throws Exception;
+	/** process a valid order against an initial transaction **/
+	void processOrder(ShopOrder order, Transaction transaction, MerchantStore store, Language language) throws Exception;
 	
 	/** creates a working copy of customer when the user is anonymous **/
 	Customer initEmptyCustomer(MerchantStore store);
