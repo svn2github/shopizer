@@ -59,6 +59,7 @@ response.setDateHeader ("Expires", -1);
 		function validCreditCardNumber(div, creditCard) {
 			$(div).addClass("valid");
 			$(div).css('background-color', '#FFF');
+			$('#creditcard_type').val(creditCard.card_type);
 			$('#creditcard_card_image').html('<img src="<c:url value="/resources/img/payment/icons/'+ creditCard.card_type.name +'-straight-32px.png" />"/>');
 			ccValid = true;
 		}
@@ -142,3 +143,4 @@ response.setDateHeader ("Expires", -1);
             </div>
           </div>
 
+		<input type="hidden" name="payment['creditcard_type']" id="creditcard_type" value="" />
