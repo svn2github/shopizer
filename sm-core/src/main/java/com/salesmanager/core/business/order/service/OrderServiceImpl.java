@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -29,6 +30,10 @@ import com.salesmanager.core.business.order.model.OrderTotalType;
 import com.salesmanager.core.business.order.model.OrderValueType;
 import com.salesmanager.core.business.order.model.Order_;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
+import com.salesmanager.core.business.payments.model.Payment;
+import com.salesmanager.core.business.payments.model.Transaction;
+import com.salesmanager.core.business.payments.service.PaymentService;
+import com.salesmanager.core.business.payments.service.TransactionService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shipping.model.ShippingConfiguration;
 import com.salesmanager.core.business.shipping.service.ShippingService;
@@ -50,9 +55,18 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 
     @Autowired
     private ShippingService shippingService;
+    
+    @Autowired
+    private PaymentService paymentService;
 
     @Autowired
     private TaxService taxService;
+    
+    @Autowired
+    private CustomerService customerService;
+    
+    @Autowired
+    private TransactionService transactionService;
 
     private final OrderDao orderDao;
 
@@ -67,6 +81,52 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
         order.getOrderHistory().add(history);
         history.setOrder(order);
         update(order);
+    }
+    
+    @Override
+    public Order processOrder(Order order, Customer customer, List<ShoppingCartItem> items, OrderTotalSummary summary, Payment payment, MerchantStore store) throws ServiceException {
+    	
+    	return this.process(order, customer, items, summary, payment, null, store);
+    }
+    
+    @Override
+    public Order processOrder(Order order, Customer customer, List<ShoppingCartItem> items, OrderTotalSummary summary, Payment payment, Transaction transaction, MerchantStore store) throws ServiceException {
+    	
+    	return this.process(order, customer, items, summary, payment, transaction, store);
+    }
+    
+    private Order process(Order order, Customer customer, List<ShoppingCartItem> items, OrderTotalSummary summary, Payment payment, Transaction transaction, MerchantStore store) throws ServiceException {
+    	
+    	
+    	Validate.notNull(order, "Order cannot be null");
+    	Validate.notNull(customer, "Customer cannot be null (even if anonymous order)");
+    	Validate.notEmpty(items, "ShoppingCart items cannot be null");
+    	Validate.notNull(payment, "Payment cannot be null");
+    	Validate.notNull(store, "MerchantStore cannot be null");
+    	Validate.notNull(summary, "Order total Summary cannot be null");
+    	
+    	//first process payment
+    	Transaction processTransaction = paymentService.processPayment(customer, store, payment, items, order.getTotal());
+    	transactionService.save(processTransaction);
+    	
+    	this.create(order);
+    	
+    	if(customer.getId()==null || customer.getId()==0) {
+    		customerService.create(customer);
+    	} 
+    	
+    	if(transaction!=null) {
+    		transaction.setOrder(order);
+    		if(transaction.getId()==null || transaction.getId()==0) {
+    			transactionService.create(transaction);
+    		} else {
+    			transactionService.update(transaction);
+    		}
+    	}
+    	
+    	return order;
+    	
+    	
     }
 
     private OrderTotalSummary caculateOrder(final OrderSummary summary, final Customer customer, final MerchantStore store, final Language language) throws Exception {

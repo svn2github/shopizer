@@ -13,8 +13,11 @@ import com.salesmanager.core.business.order.model.OrderList;
 import com.salesmanager.core.business.order.model.OrderSummary;
 import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
+import com.salesmanager.core.business.payments.model.Payment;
+import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
+import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 
 public interface OrderService extends SalesManagerEntityService<Long, Order> {
 
@@ -80,6 +83,15 @@ public interface OrderService extends SalesManagerEntityService<Long, Order> {
     public OrderList listByStore(MerchantStore store, OrderCriteria criteria);
 
     void saveOrUpdate(Order order) throws ServiceException;
+
+	Order processOrder(Order order, Customer customer,
+			List<ShoppingCartItem> items, OrderTotalSummary summary,
+			Payment payment, MerchantStore store) throws ServiceException;
+
+	Order processOrder(Order order, Customer customer,
+			List<ShoppingCartItem> items, OrderTotalSummary summary,
+			Payment payment, Transaction transaction, MerchantStore store)
+			throws ServiceException;
 
 
 
