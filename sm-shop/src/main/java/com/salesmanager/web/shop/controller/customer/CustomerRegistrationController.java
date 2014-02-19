@@ -2,7 +2,6 @@ package com.salesmanager.web.shop.controller.customer;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -32,8 +31,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.customer.CustomerRegistrationException;
 import com.salesmanager.core.business.customer.model.Customer;
@@ -48,7 +45,6 @@ import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.system.service.EmailService;
 import com.salesmanager.core.modules.email.Email;
 import com.salesmanager.core.utils.CoreConfiguration;
-import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.constants.EmailConstants;
 import com.salesmanager.web.entity.customer.AnonymousCustomer;
@@ -58,7 +54,6 @@ import com.salesmanager.web.entity.customer.ShopPersistableCustomer;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
-import com.salesmanager.web.shop.controller.data.CountryData;
 import com.salesmanager.web.utils.EmailUtils;
 import com.salesmanager.web.utils.FilePathUtils;
 import com.salesmanager.web.utils.LabelUtils;
@@ -262,7 +257,7 @@ public class CustomerRegistrationController extends AbstractController {
 	
 	
 	@ModelAttribute("countryList")
-	public List<CountryData> getCountries(final HttpServletRequest request){
+	public List<Country> getCountries(final HttpServletRequest request){
 	    
         Language language = (Language) request.getAttribute( "LANGUAGE" );
         try
@@ -278,18 +273,7 @@ public class CustomerRegistrationController extends AbstractController {
             }
             
             List<Country> countryList=countryService.getCountries( language );
-            if(CollectionUtils.isNotEmpty( countryList )){
-                List<CountryData> countryDataList=new ArrayList<CountryData>();
-                LOGGER.info( "Creating country list data " );
-                for(Country country:countryList){
-                    CountryData countryData=new CountryData();
-                    countryData.setName( country.getName() );
-                    countryData.setIsoCode( country.getIsoCode() );
-                    countryData.setId( country.getId() );
-                    countryDataList.add( countryData );
-                }
-                return countryDataList;
-            }
+            return countryList;
         }
         catch ( ServiceException e )
         {
@@ -305,62 +289,7 @@ public class CustomerRegistrationController extends AbstractController {
 	}
 	
 	
-	/**
-	 * <p>Method responsible for fetching list of zones for a given country.
-	 * It will be used for registration page where customer will be able to 
-	 * choose zone based on his country of choice. </p>
-	 * @param request
-	 * @param country
-	 * @return list of zones for a given country
-	 */
-    @RequestMapping( value = "/getZonesByCountry.html", method = RequestMethod.GET ,produces="application/json")
-    public @ResponseBody
-    String getZones( final HttpServletRequest request, @RequestParam
-    final String countryCode )
-    {
-        AjaxResponse resp = new AjaxResponse();
-        Language language = (Language) request.getAttribute( "LANGUAGE" );
-        try
-        {
-            if ( language == null )
-            {
-                language = (Language) request.getAttribute( "LANGUAGE" );
-            }
 
-            if ( language == null )
-            {
-                language = languageService.getByCode( Constants.DEFAULT_LANGUAGE );
-            }
-
-            Map<String, Country> countriesMap = countryService.getCountriesMap( language );
-            Country country = countriesMap.get( countryCode );
-            List<Zone> zones = zoneService.getZones( country, language );
-            if(zones!=null && zones.size()>0) {
-                for(Zone zone : zones) {
-                    Map <String, String> entry = new HashMap<String, String>();
-                    entry.put("name", zone.getName());
-                    entry.put("code", zone.getCode());
-                    //entry.put("id", zone.getId());
-                    resp.addDataEntry(entry);
-                }
-                LOGGER.info( "Setting response to success" );
-                resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
-            }
-            else{
-                resp.setStatus( AjaxResponse.RESPONSE_STATUS_FAIURE );
-            }
-           
-        }
-        catch ( ServiceException e )
-        {
-            LOGGER.info( "Error while fetching zones for county {} ", countryCode );
-            LOGGER.error( "Error while fetching zones for county ", e );
-            resp.setStatus( AjaxResponse.RESPONSE_STATUS_FAIURE );
-
-        }
-        String responseData = resp.toJSONString();
-        return responseData;
-    }
 	
 
     private void sendRegistrationEmail(final HttpServletRequest request,final PersistableCustomer customer,final MerchantStore merchantStore, final Locale customerLocale){

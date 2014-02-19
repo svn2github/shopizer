@@ -28,6 +28,9 @@ import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
 import com.salesmanager.core.business.order.service.OrderService;
+import com.salesmanager.core.business.payments.model.CreditCardPayment;
+import com.salesmanager.core.business.payments.model.Payment;
+import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -212,7 +215,7 @@ public class OrderFacadeImpl implements OrderFacade {
 		
 		
 		Customer customer = this.toCustomerModel(order.getCustomer(), store, language);
-		if(customer.getId()==null || customer.getId()==0) {
+		if(customer!=null && customer.getId()==null || customer.getId()==0) {
 			customerService.saveOrUpdate(customer);
 		}
 		
@@ -265,10 +268,14 @@ public class OrderFacadeImpl implements OrderFacade {
 			modelOrder.setShippingModuleCode(order.getShippingModule());
 		}
 		
-		//populate payment information
-		if(order.getCreditCard()!=null) {
+		String paymentType = order.getPaymentMethodType();
+		Payment payment = null;
+		if(PaymentType.CREDITCARD.name().equals(paymentType)) {
+			payment = new CreditCardPayment();
+			((CreditCardPayment)payment).setCardOwner(order.getPayment().get("creditcard_card_holder"));
+		
 			//hash credit card number
-			String maskedNumber = CreditCardUtils.maskCardNumber(order.getCreditCard().getCcNumber());
+			String maskedNumber = CreditCardUtils.maskCardNumber(order.getPayment().get("creditcard_card_holder"));
 			order.getCreditCard().setCcNumber(maskedNumber);
 			modelOrder.setCreditCard(order.getCreditCard());
 		}

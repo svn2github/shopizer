@@ -263,8 +263,45 @@ public class ShoppingOrderController extends AbstractController {
 	public String commitOrder(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
 		
+		ShopOrder order = super.getSessionAttribute(Constants.ORDER, request);
+		if(order==null) {
+			throw new Exception("Time out in transaction order is null");
+		}
 		
 		try {
+			
+			return this.commitOrder(order, model, request, response, locale);
+			
+		} catch(Exception e) {
+			LOGGER.error("Error while commiting order",e);
+			throw e;		
+			
+		}
+		
+
+		
+	}
+	
+	@RequestMapping("/commitShopOrder.html")
+	public String commitShopOrder(@ModelAttribute(value="order") ShopOrder order, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+
+
+		try {
+			
+			return this.commitOrder(order, model, request, response, locale);
+			
+		} catch(Exception e) {
+			LOGGER.error("Error while commiting order",e);
+			throw e;		
+			
+		}
+		
+	}
+	
+	
+	private String commitOrder(ShopOrder order, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+
 			
 			Language language = (Language)request.getAttribute("LANGUAGE");
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
@@ -277,12 +314,8 @@ public class ShoppingOrderController extends AbstractController {
 
 			//transform ShoppingCartItem to OrderProduct
 			
-		} catch (Exception e) {
-			LOGGER.error("An error occured while commiting the order",e);
-		}
-		
-		return null;
-		
+			return null;
+
 	}
 	
 	/**
