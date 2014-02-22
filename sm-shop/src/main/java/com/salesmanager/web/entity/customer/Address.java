@@ -30,7 +30,7 @@ public class Address implements Serializable {
 	
 
 	private String stateProvince;
-	
+	private boolean billingAddress;
 	
 	private String zone;//code
 	
@@ -118,6 +118,16 @@ public class Address implements Serializable {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+
+    public boolean isBillingAddress()
+    {
+        return billingAddress;
+    }
+
+    public void setBillingAddress( boolean billingAddress )
+    {
+        this.billingAddress = billingAddress;
+    }
 
 
 }

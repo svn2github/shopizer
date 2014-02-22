@@ -35,6 +35,7 @@ public class CustomerEntityPopulator
         {
 
             
+            target.setId( source.getId() );
             if(StringUtils.isNotBlank( source.getEmailAddress() )){
                 target.setEmailAddress( source.getEmailAddress() );
             }

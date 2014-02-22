@@ -1,5 +1,7 @@
 package com.salesmanager.web.shop.controller.customer;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -8,15 +10,20 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.customer.model.Customer;
@@ -27,11 +34,21 @@ import com.salesmanager.core.business.customer.service.attribute.CustomerAttribu
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionSetService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionValueService;
+import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.reference.country.model.Country;
+import com.salesmanager.core.business.reference.country.service.CountryService;
+import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.language.service.LanguageService;
+import com.salesmanager.core.business.reference.zone.model.Zone;
+import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
+import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
+import com.salesmanager.web.shop.controller.data.CountryData;
 
 /**
  * Entry point for logged in customers
@@ -43,7 +60,7 @@ import com.salesmanager.web.shop.controller.ControllerConstants;
 public class CustomerAccountController extends AbstractController {
 	
 	private static final String CUSTOMER_ID_PARAMETER = "customer";
-	
+    private static final String BILLING_SECTION="/shop/customer//billing.html";
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerAccountController.class);
 	
@@ -61,6 +78,21 @@ public class CustomerAccountController extends AbstractController {
 	
 	@Autowired
 	private CustomerAttributeService customerAttributeService;
+	
+    @Autowired
+    private LanguageService languageService;
+
+
+    @Autowired
+    private CountryService countryService;
+
+    
+    @Autowired
+    private ZoneService zoneService;
+    
+    @Autowired
+    private CustomerFacade customerFacade;
+
 
 	
 	/**
@@ -104,19 +136,7 @@ public class CustomerAccountController extends AbstractController {
 	}
 	
 	
-	@RequestMapping(value="/billing.html", method=RequestMethod.GET)
-	public String displayCustomerBillingAddress(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		
 
-	    MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
-
-		
-		/** template **/
-		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.customer).append(".").append(store.getStoreTemplate());
-
-		return template.toString();
-		
-	}
 	
 	/**
 	 * Manage the edition of customer attributes
@@ -258,5 +278,108 @@ public class CustomerAccountController extends AbstractController {
 
 	}
 
+	
+	@RequestMapping(value="/billing.html", method=RequestMethod.GET)
+    public String displayCustomerBillingAddress(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        
+
+        MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+        Language language = getSessionAttribute(Constants.LANGUAGE, request);
+        Customer customer=getSessionAttribute( Constants.CUSTOMER, request );
+        if(customer !=null){
+           model.addAttribute( "customer", customerFacade.getCustomerDataByUserName( customer.getNick(), store, language ) );
+        }
+        
+        
+        /** template **/
+        StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.Billing).append(".").append(store.getStoreTemplate());
+
+        return template.toString();
+        
+    }
+    
+    @RequestMapping(value="/editAddress.html", method={RequestMethod.GET,RequestMethod.POST})
+    public String editAddress(final Model model, final HttpServletRequest request,@RequestParam(value = "customerId", required = false) Long customerId,
+                              @RequestParam(value = "billingAddress", required = false) Boolean billingAddress) throws Exception {
+        MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+       
+       
+        final Address address=customerFacade.getAddress( customerId, store, billingAddress );
+        model.addAttribute( "address", address);
+        model.addAttribute( "customerId", customerId );
+        StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.EditAddress).append(".").append(store.getStoreTemplate());
+        return template.toString();
+    }
+    
+    
+    @RequestMapping(value="/updateAddress.html", method={RequestMethod.GET,RequestMethod.POST})
+    public String updateCustomerAddress(@Valid
+                                        @ModelAttribute("address") Address address,BindingResult bindingResult,final Model model, final HttpServletRequest request,@RequestParam(value = "customerId", required = false) Long customerId,
+                              @RequestParam(value = "billingAddress", required = false) Boolean billingAddress) throws Exception {
+       
+        MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+        if(bindingResult.hasErrors()){
+            LOGGER.info( "found {} error(s) while validating  customer address ",
+                         bindingResult.getErrorCount() );
+            StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.EditAddress).append(".").append(store.getStoreTemplate());
+            model.addAttribute( "address", address);
+            model.addAttribute( "customerId", customerId );
+            return template.toString();
+        }
+        
+       
+        Language language = getSessionAttribute(Constants.LANGUAGE, request);
+        customerFacade.updateAddress( customerId, store, address, language);
+      
+        return ControllerConstants.REDIRECT+BILLING_SECTION;
+    }
+    
+    
+    /** move this common section out */
+    
+    @ModelAttribute("countries")
+    public List<CountryData> getCountries(final HttpServletRequest request){
+        
+        Language language = (Language) request.getAttribute( "LANGUAGE" );
+        try
+        {
+            if ( language == null )
+            {
+                language = (Language) request.getAttribute( "LANGUAGE" );
+            }
+
+            if ( language == null )
+            {
+                language = languageService.getByCode( Constants.DEFAULT_LANGUAGE );
+            }
+            
+            List<Country> countryList=countryService.getCountries( language );
+            if(CollectionUtils.isNotEmpty( countryList )){
+                List<CountryData> countryDataList=new ArrayList<CountryData>();
+                LOGGER.info( "Creating country list data " );
+                for(Country country:countryList){
+                    CountryData countryData=new CountryData();
+                    countryData.setName( country.getName() );
+                    countryData.setIsoCode( country.getIsoCode() );
+                    countryData.setId( country.getId() );
+                    countryDataList.add( countryData );
+                }
+                return countryDataList;
+            }
+        }
+        catch ( ServiceException e )
+        {
+            LOGGER.error( "Error while fetching country list ", e );
+
+        }
+        return Collections.emptyList();
+    }
+    
+    //@ModelAttribute("zones")
+    @ModelAttribute("zones")
+    public List<Zone> getZones(final HttpServletRequest request){
+        return zoneService.list();
+    }
+ 
 
 }

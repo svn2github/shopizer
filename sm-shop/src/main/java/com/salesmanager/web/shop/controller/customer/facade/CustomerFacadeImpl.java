@@ -4,6 +4,7 @@
 package com.salesmanager.web.shop.controller.customer.facade;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.jfree.util.Log;
@@ -16,6 +17,7 @@ import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
 import com.salesmanager.core.business.customer.CustomerRegistrationException;
+import com.salesmanager.core.business.customer.exception.CustomerNotFoundException;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
@@ -23,9 +25,11 @@ import com.salesmanager.core.business.customer.service.attribute.CustomerOptionV
 import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
+import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartCalculationService;
@@ -33,11 +37,16 @@ import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.business.user.model.GroupType;
 import com.salesmanager.core.business.user.service.GroupService;
+import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.entity.customer.CustomerEntity;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
+import com.salesmanager.web.populator.customer.CustomerBillingAddressPopulator;
+import com.salesmanager.web.populator.customer.CustomerDeliveryAddressPopulator;
 import com.salesmanager.web.populator.customer.CustomerEntityPopulator;
 import com.salesmanager.web.populator.customer.CustomerPopulator;
+import com.salesmanager.web.populator.customer.PersistableCustomerBillingAddressPopulator;
+import com.salesmanager.web.populator.customer.PersistableCustomerShippingAddressPopulator;
 import com.salesmanager.web.populator.shoppingCart.ShoppingCartDataPopulator;
 
 
@@ -326,6 +335,87 @@ public class CustomerFacadeImpl implements CustomerFacade
         return null;
     }
 
+    @Override
+    public Address getAddress( Long userId, final MerchantStore merchantStore,boolean isBillingAddress)
+        throws Exception
+    {
+        LOG.info( "Fetching customer for id {} ", userId);
+        Address address=null;
+        final Customer customerModel=customerService.getById( userId );
+        
+        if(customerModel == null){
+            LOG.error( "Customer with ID {} does not exists..", userId);
+            throw new CustomerNotFoundException( "customer with given id does not exists" ); 
+        }
+        
+       if(isBillingAddress){
+            LOG.info( "getting billing address.." );
+            CustomerBillingAddressPopulator billingAddressPopulator=new CustomerBillingAddressPopulator();
+            address =billingAddressPopulator.populate( customerModel, merchantStore, merchantStore.getDefaultLanguage() );
+            address.setBillingAddress( true );
+            return address;
+        }
+        
+        LOG.info( "getting Delivery address.." );
+        CustomerDeliveryAddressPopulator deliveryAddressPopulator=new CustomerDeliveryAddressPopulator();
+        return deliveryAddressPopulator.populate( customerModel, merchantStore, merchantStore.getDefaultLanguage() );
+      
+    }
+
+
+    @Override
+    public void updateAddress( Long userId, MerchantStore merchantStore, Address address, final Language language )
+        throws Exception
+    {
+       
+       Customer customerModel=customerService.getById( userId );
+       Map<String, Country> countriesMap = countryService.getCountriesMap( language );
+       Country country = countriesMap.get( address.getCountry() );
+      
+      if(customerModel ==null){
+           LOG.error( "Customer with ID {} does not exists..", userId);
+           throw new CustomerNotFoundException( "customer with given id does not exists" );
+           
+       }
+       if(address.isBillingAddress()){
+           LOG.info( "updating customer billing address..");
+           PersistableCustomerBillingAddressPopulator billingAddressPopulator=new PersistableCustomerBillingAddressPopulator();
+           customerModel= billingAddressPopulator.populate( address, customerModel, merchantStore, merchantStore.getDefaultLanguage() );
+           customerModel.getBilling().setCountry( country );
+           if(StringUtils.isNotBlank( address.getZone() )){
+               Zone zone = zoneService.getByCode(address.getZone());
+               if(zone==null) {
+                   //throw new ConversionException("Unsuported zone code " + address.getZone());
+               }
+               else{
+                   customerModel.getBilling().setZone( zone );
+               }
+               
+           }
+          
+       }
+       else{
+           LOG.info( "updating customer shipping address..");
+           PersistableCustomerShippingAddressPopulator shippingAddressPopulator=new PersistableCustomerShippingAddressPopulator();
+           customerModel= shippingAddressPopulator.populate( address, customerModel, merchantStore, merchantStore.getDefaultLanguage() );
+           customerModel.getDelivery().setCountry( country );
+           if(StringUtils.isNotBlank( address.getZone() )){
+               Zone zone = zoneService.getByCode(address.getZone());
+               if(zone==null) {
+                   //throw new ConversionException("Unsuported zone code " + address.getZone());
+               }
+               else{
+                   customerModel.getDelivery().setZone( zone );
+               }
+              
+           }
+           
+       }
+  
+      // same update address with customer model
+       this.customerService.saveOrUpdate( customerModel );
+       
+    }
   
 
 }

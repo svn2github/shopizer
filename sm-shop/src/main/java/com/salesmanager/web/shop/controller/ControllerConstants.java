@@ -13,6 +13,8 @@ package com.salesmanager.web.shop.controller;
 public interface ControllerConstants
 {
 
+    final static String REDIRECT="redirect:";
+    
     interface Tiles{
         interface ShoppingCart{
             final static String shoppingCart="maincart";
@@ -32,6 +34,8 @@ public interface ControllerConstants
             final static String review="review";
             final static String register="register";
             final static String registerConfirmation="registerConfirmation";
+            final static String Billing="customerAddress";
+            final static String EditAddress="editCustomerAddress";
         }
         
         interface Content{
