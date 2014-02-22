@@ -130,6 +130,13 @@
   		<put-attribute name="footer" value="/pages/shop/templates/{1}/sections/footer.jsp" />
   	</definition>
   	
+  	<definition name="editCustomerAddress.*" template="/pages/shop/templates/{1}/catalogLayout.jsp">
+  	  	<put-attribute name="header" value="/pages/shop/templates/{1}/sections/header.jsp" />
+  		<put-attribute name="navbar" value="/pages/shop/templates/{1}/sections/navbar.jsp" />
+  		<put-attribute name="body" value="/pages/shop/common/customer/editAddress.jsp" />
+  		<put-attribute name="footer" value="/pages/shop/templates/{1}/sections/footer.jsp" />
+  	</definition>
+  	
   	<definition name="customerOrders.*" template="/pages/shop/templates/{1}/catalogLayout.jsp">
   	  	<put-attribute name="header" value="/pages/shop/templates/{1}/sections/header.jsp" />
   		<put-attribute name="navbar" value="/pages/shop/templates/{1}/sections/navbar.jsp" />
