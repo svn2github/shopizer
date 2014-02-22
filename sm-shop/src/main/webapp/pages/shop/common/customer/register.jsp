@@ -14,7 +14,7 @@ response.setDateHeader ("Expires", -1);
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 
-<script src="<c:url value="/resources/js/registration.js" />"></script>
+<script src="<c:url value="/resources/js/address.js" />"></script>
 
 <script type="text/javascript">
 
