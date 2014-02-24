@@ -62,21 +62,21 @@
 					<address>
 					
 						<div class="controls">
-		              		<label><s:message code="label.customer.billing.company" text="Company"/></label>
+		              		<label><s:message code="label.customer.company" text="Company"/></label>
 		              		<form:input  cssClass="input-large"  maxlength="100" path="company"/>	
 			            </div>
 
 			            <div class="controls">
-			            	<label><s:message code="label.customer.billing.streetaddress" text="Street Address"/></label>
+			            	<label><s:message code="label.customer.streetaddress" text="Street Address"/></label>
 				 			<form:input  cssClass="input-large highlight"  maxlength="256"  path="address"/>		 				
 			            </div>
 			            <div class="controls">
-			            	<label><s:message code="label.customer.billing.city" text="City"/></label>
+			            	<label><s:message code="label.customer.city" text="City"/></label>
 				 			<form:input  cssClass="input-large highlight"  maxlength="100" path="city"/>
 			            </div>
 		            
  	 		            <div class="control-group">
-	                        <label><s:message code="label.customer.billing.country" text="Country"/></label>
+	                        <label><s:message code="label.customer.country" text="Country"/></label>
 	                        <div class="controls"> 				       							
 	       							<form:select cssClass="billing-country-list" path="country" id="registration_country">
 		  								<form:options items="${countries}" itemValue="isoCode" itemLabel="name"/>
@@ -86,7 +86,7 @@
 	                    </div> 
 	                 
 	                    <div class="control-group"> 
-	                        <label><s:message code="label.customer.billing.zone" text="State / Province"/></label>
+	                        <label><s:message code="label.customer.zone" text="State / Province"/></label>
 	                        <div class="controls">		       							
 	       							<form:select cssClass="billing-zone-list" path="zone" id="registration_zones"/>
                       				<form:input  class="input-large highlight" id="hidden_registration_zones" maxlength="100"  name="bilstateOther" path="zone" />		       							
@@ -95,7 +95,7 @@
 	                    </div>  
 	                  
 	                    <div class="controls">
-	                   		<label><s:message code="label.customer.billing.postalcode" text="Postal code"/></label>
+	                   		<label><s:message code="label.customer.postalcode" text="Postal code"/></label>
 			 				<form:input id="billingPostalCode" cssClass="input-large highlight" maxlength="20"  path="postalCode"/>
 			 				<span class="help-inline"><form:errors path="postalCode" cssClass="error" /></span>
 			            </div>	     
