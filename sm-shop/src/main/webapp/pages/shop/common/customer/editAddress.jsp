@@ -47,7 +47,7 @@
 	                        <label><s:message code="label.customer.firstname" text="First Name"/></label>
 	                        <div class="controls">
 	                        		<form:input  cssClass="input-large highlight"  maxlength="64"  path="firstName"/>
-	                                <span class="help-inline"><form:errors path="FirstName" cssClass="error" /></span>
+	                                <span class="help-inline"><form:errors path="firstName" cssClass="error" /></span>
 	                        </div>
 	                </div>
 	                <div class="control-group">
