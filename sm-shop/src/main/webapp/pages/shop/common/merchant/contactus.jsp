@@ -18,15 +18,16 @@ response.setDateHeader ("Expires", -1);
 <div class="row show-grid">
 <!-- START LEFT-SIDE CONTACT FORM AREA -->
                             <div class="contact-form span8">
-                                <div id="result">
 
-                                </div>
-                                <form action="send-form-email.php" method="POST" id="validForm" name="contactForm">
+								<c:set var="contact_url" value="${pageContext.request.contextPath}/shop/submitContactUs.html"/>
+                                <form:form action="${contact_url}" method="POST" id="validForm" name="contactForm" command="contact">
+                                    <form:errors path="*" cssClass="alert alert-error" element="div" />
                                     <div class="control-group">
                                         <label for="inputName" class="control-label">NAME<sup>*</sup></label>
                                         <div class="controls">
-                                            <input type="text" placeholder="Name" id="inputName" class="span4" name="name">
-                                            <span class="help-inline" style="display: none;">Please fill your name</span>
+										   <s:message code="NotEmpty.customer.name" text="Name is required" var="msgName"/>
+										   <form:input path="name" cssClass="required" id="name" title="${msgName}"/>
+										   <form:errors path="name" cssClass="error" />
                                         </div>
                                     </div>
                                     <div class="control-group">
@@ -43,13 +44,7 @@ response.setDateHeader ("Expires", -1);
                                             <span class="help-inline" style="display: none;">Please write a comment</span>
                                         </div>
                                     </div>
-                                    <!--?php
-                                            require_once('config.php');
-                                            require_once('recaptchalib.php');
-                                            if($use_recaptcha === true){
-                                                echo recaptcha_get_html($publickey);
-                                            }
-                                        ?-->
+
                                     <div class="control-group form-button-offset">
                                         <input type="submit" value="Send Message" class="btn">
                                     </div>
@@ -59,7 +54,7 @@ response.setDateHeader ("Expires", -1);
 
 <!-- BEGIN RIGHT-SIDE CONTACT FORM AREA -->
                                 <div class="contact-info span4">
-                                    <h2>bizstrap</h2>
+                                    <h2>//STORE NAME</h2>
 <!-- COMPANY ADDRESS -->                                    
                                     <address>
                                         1234 Main Street,<br>
