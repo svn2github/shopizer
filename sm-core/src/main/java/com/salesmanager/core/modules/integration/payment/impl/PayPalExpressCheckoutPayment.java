@@ -33,6 +33,8 @@ import urn.ebay.apis.eBLBaseComponents.SetExpressCheckoutRequestDetailsType;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.order.model.OrderTotal;
+import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.payments.model.Transaction;
@@ -134,7 +136,7 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 	}
 	
 	public Transaction initPaypalTransaction(MerchantStore store,
-			Customer customer, List<ShoppingCartItem> items, BigDecimal amount, Payment payment,
+			Customer customer, List<ShoppingCartItem> items, OrderTotalSummary summary, Payment payment,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
 		
@@ -159,8 +161,7 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 				PaymentDetailsItemType item = new PaymentDetailsItemType();
 				BasicAmountType amt = new BasicAmountType();
 				amt.setCurrencyID(urn.ebay.apis.eBLBaseComponents.CurrencyCodeType.fromValue(payment.getCurrency().getCode()));
-				amt.setValue(pricingService.getStringAmount(amount, store));
-				//amt.setValue(itemAmount);
+				amt.setValue(pricingService.getStringAmount(cartItem.getSubTotal(), store));
 				int itemQuantity = cartItem.getQuantity();
 				item.setQuantity(itemQuantity);
 				item.setName(cartItem.getProduct().getProductDescription().getName());
@@ -169,12 +170,42 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 				lineItems.add(item);
 			
 			}
+			
+			
+			List<OrderTotal> orderTotals = summary.getTotals();
+			for(OrderTotal total : orderTotals) {
 				
-
+				if(total.getModule().equals(Constants.OT_SHIPPING_MODULE_CODE)) {
+					BasicAmountType shipping = new BasicAmountType();
+					shipping.setCurrencyID(urn.ebay.apis.eBLBaseComponents.CurrencyCodeType.fromValue(store.getCurrency().getCode()));
+					shipping.setValue(String.valueOf(total.getValue().doubleValue()));
+					paymentDetails.setShippingTotal(shipping);
+				}
+				
+				if(total.getModule().equals(Constants.OT_HANDLING_MODULE_CODE)) {
+					BasicAmountType handling = new BasicAmountType();
+					handling.setCurrencyID(urn.ebay.apis.eBLBaseComponents.CurrencyCodeType.fromValue(store.getCurrency().getCode()));
+					handling.setValue(String.valueOf(total.getValue().doubleValue()));
+					paymentDetails.setHandlingTotal(handling);
+				}
+				
+				if(total.getModule().equals(Constants.OT_TAX_MODULE_CODE)) {
+					BasicAmountType tax = new BasicAmountType();
+					tax.setCurrencyID(urn.ebay.apis.eBLBaseComponents.CurrencyCodeType.fromValue(store.getCurrency().getCode()));
+					tax.setValue(String.valueOf(total.getValue().doubleValue()));
+					paymentDetails.setTaxTotal(tax);
+				}
+				
+			}
+			//BasicAmountType handling = new BasicAmountType() paymentDetails.getHandlingTotal();
+			//BasicAmountType tax = new BasicAmountType();
+			//tax.setCurrencyID(currencyID)
+			//tax.setValue(value)
+			
 			paymentDetails.setPaymentDetailsItem(lineItems);
 			BasicAmountType orderTotal = new BasicAmountType();
 			orderTotal.setCurrencyID(urn.ebay.apis.eBLBaseComponents.CurrencyCodeType.fromValue(store.getCurrency().getCode()));
-			orderTotal.setValue(String.valueOf(amount.doubleValue())); 
+			orderTotal.setValue(String.valueOf(summary.getTotal().doubleValue())); 
 			paymentDetails.setOrderTotal(orderTotal);
 			List<PaymentDetailsType> paymentDetailsList = new ArrayList<PaymentDetailsType>();
 			paymentDetailsList.add(paymentDetails);
@@ -182,8 +213,7 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 			StringBuilder RETURN_URL = new StringBuilder().append(
 					coreConfiguration.getProperty("ORDER_SCHEME", "http")).append("://")
 					.append(store.getDomainName()).append("/")
-					.append(coreConfiguration.getProperty("CONTEXT_PATH", "sm-shop"))
-					;
+					.append(coreConfiguration.getProperty("CONTEXT_PATH", "sm-shop"));
 					
 
 
@@ -229,7 +259,7 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 			}
 			
 			Transaction transaction = new Transaction();
-			transaction.setAmount(amount);
+			transaction.setAmount(summary.getTotal());
 			//transaction.setOrder(order);
 			transaction.setTransactionDate(new Date());
 			transaction.setTransactionType(TransactionType.INIT);
