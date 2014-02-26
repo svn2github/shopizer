@@ -219,6 +219,14 @@ function showErrorMessage(message) {
 	
 }
 
+function showResponseErrorMessage(message) {
+	
+	$('#checkoutError').addClass('alert');
+	$('#checkoutError').addClass('alert-error');
+	$('#checkoutError').html(message);
+	
+}
+
 function resetErrorMessage() {
 	
 	$('#checkoutError').html('');
@@ -380,6 +388,7 @@ function shippingQuotes(){
 }
 
 function initPayment(paymentSelection) {
+	resetErrorMessage();
 	var url = '<c:url value="/shop/order/payment/init/"/>' + paymentSelection + '.html';
 	var data = $(checkoutFormId).serialize();
 	$.ajax({
@@ -395,11 +404,13 @@ function initPayment(paymentSelection) {
 				if(status==0 || status ==9999) {
 					
 					var data = response.dataMap.url;
-					console.log(response.dataMap.url);
+					//console.log(response.dataMap.url);
 					location.href=response.dataMap.url;
 
 				} else {
 					console.log('Wrong status ' + status);
+					showResponseErrorMessage('<s:message code="error.code.99" text="An error message occured while trying to process the payment (99)"/>');
+					
 				}
 		  },
 		    error: function(xhr, textStatus, errorThrown) {
@@ -564,6 +575,7 @@ $(document).ready(function() {
 			} else {
 				//submit form
 				$('#pageContainer').hideLoading();
+				
 			}
 	    });
 		
@@ -575,7 +587,7 @@ $(document).ready(function() {
 </script>
 
 
-
+   
    <form:form id="checkoutForm" method="POST" enctype="multipart/form-data" commandName="order" action="#">
 	   
 
@@ -735,7 +747,7 @@ $(document).ready(function() {
 									  				   <div class="control-group"> 
 														<label><s:message code="label.customer.shipping.firtsname" text="Shipping first name"/></label>
 									    					<div class="controls"> 
-									    					<s:message code="NotEmpty.customer.shipping.name" text="Shipping name should not be empty" var="msgShippingFirstName"/>
+									    					<s:message code="NotEmpty.customer.shipping.firstName" text="Shipping first name should not be empty" var="msgShippingFirstName"/>
 									      					<form:input id="customer.delivery.name" cssClass="input-xxlarge required" path="customer.delivery.firstName" title="${msgShippingFirstName}"/>
 									    					</div> 
 									  				   </div> 
@@ -747,7 +759,7 @@ $(document).ready(function() {
 									  				   <div class="control-group"> 
 														<label><s:message code="label.customer.shipping.lastname" text="Shipping last name"/></label>
 									    					<div class="controls"> 
-									    					<s:message code="NotEmpty.customer.shipping.name" text="Shipping name should not be empty" var="msgShippingLastName"/>
+									    					<s:message code="NotEmpty.customer.shipping.lastName" text="Shipping last name should not be empty" var="msgShippingLastName"/>
 									      					<form:input id="customer.delivery.name" cssClass="input-xxlarge required" path="customer.delivery.lastName" title="${msgShippingLastName}"/>
 									    					</div> 
 									  				   </div> 
@@ -823,6 +835,9 @@ $(document).ready(function() {
 									</div>
 									 <br/>
 									
+									
+									
+									
 									<!-- Shipping box -->
 									<c:if test="${shippingQuote!=null}">
 									<!-- Shipping -->
@@ -843,7 +858,7 @@ $(document).ready(function() {
 							 					<div class="controls"> 
 							 						<c:forEach items="${shippingQuote.shippingOptions}" var="option" varStatus="status">
 														<label class="radio">
-															<input type="radio" name="selectedShippingOption.optionId" class="shippingOption" id="${option.optionCode}" value="${option.optionCode}" <c:if test="${order.selectedShippingOption!=null && order.selectedShippingOption.optionCode==option.optionCode}">checked="checked"</c:if>> 
+															<input type="radio" name="selectedShippingOption.optionId" class="shippingOption" id="${option.optionId}" value="${option.optionId}" <c:if test="${order.selectedShippingOption!=null && order.selectedShippingOption.optionId==option.optionId}">checked="checked"</c:if>> 
 															${option.optionName} - ${option.optionPriceText}
 														</label> 
 													</c:forEach>
