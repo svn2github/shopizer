@@ -502,4 +502,14 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
               }
 
 
+	@Override
+	public boolean isFreeShoppingCart(List<ShoppingCartItem> items)
+			throws ServiceException {
+		ShoppingCart cart = new ShoppingCart();
+		Set<ShoppingCartItem> cartItems = new HashSet<ShoppingCartItem>(items);
+		cart.setLineItems(cartItems);
+		return this.isFreeShoppingCart(cart);
+	}
+
+
 }

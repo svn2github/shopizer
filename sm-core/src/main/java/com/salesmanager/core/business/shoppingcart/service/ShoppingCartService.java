@@ -1,7 +1,6 @@
 package com.salesmanager.core.business.shoppingcart.service;
 
 import java.util.List;
-import java.util.Set;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.customer.model.Customer;
@@ -45,6 +44,8 @@ public interface ShoppingCartService extends SalesManagerEntityService<Long, Sho
 	 * @throws ServiceException
 	 */
 	boolean isFreeShoppingCart(ShoppingCart cart) throws ServiceException;
+	
+	boolean isFreeShoppingCart(List<ShoppingCartItem> items) throws ServiceException;
 
 	/**
 	 * Populates a ShoppingCartItem from a Product and attributes if any

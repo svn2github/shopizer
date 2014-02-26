@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.common.model.Delivery;
@@ -38,6 +40,7 @@ import com.salesmanager.core.business.shipping.model.ShippingProduct;
 import com.salesmanager.core.business.shipping.model.ShippingQuote;
 import com.salesmanager.core.business.shipping.model.ShippingSummary;
 import com.salesmanager.core.business.shipping.model.ShippingType;
+import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.system.model.CustomIntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
@@ -743,6 +746,21 @@ public class ShippingServiceImpl implements ShippingService {
 		
 		return packages;
 		
+	}
+
+	@Override
+	public boolean requiresShipping(List<ShoppingCartItem> items,
+			MerchantStore store) throws ServiceException {
+
+		boolean requiresShipping = false;
+		for(ShoppingCartItem item : items) {
+			Product product = item.getProduct();
+			if(!product.isProductVirtual() && product.isProductShipeable()) {
+				requiresShipping = true;
+			}
+		}
+
+		return requiresShipping;		
 	}
 	
 

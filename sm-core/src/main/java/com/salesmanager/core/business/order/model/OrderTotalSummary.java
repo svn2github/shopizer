@@ -17,6 +17,7 @@ public class OrderTotalSummary implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private BigDecimal subTotal;//one time price for items
 	private BigDecimal total;//final price
+	private BigDecimal taxTotal;//total of taxes
 	
 	private List<OrderTotal> totals;//all other fees (tax, shipping ....)
 
@@ -42,6 +43,14 @@ public class OrderTotalSummary implements Serializable {
 
 	public void setTotals(List<OrderTotal> totals) {
 		this.totals = totals;
+	}
+
+	public BigDecimal getTaxTotal() {
+		return taxTotal;
+	}
+
+	public void setTaxTotal(BigDecimal taxTotal) {
+		this.taxTotal = taxTotal;
 	}
 
 }

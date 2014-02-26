@@ -241,7 +241,7 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
         //tax
         List<TaxItem> taxes = taxService.calculateTax(summary, customer, store, language);
         if(taxes!=null && taxes.size()>0) {
-
+        	BigDecimal totalTaxes = new BigDecimal(0);
             int taxCount = 20;
             for(TaxItem tax : taxes) {
 
@@ -253,12 +253,15 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
                 taxLine.setText(tax.getLabel());
                 taxLine.setValue(tax.getItemPrice());
 
+                totalTaxes = totalTaxes.add(tax.getItemPrice());
                 orderTotals.add(taxLine);
                 grandTotal=grandTotal.add(tax.getItemPrice());
 
                 taxCount ++;
 
             }
+            
+            totalSummary.setTaxTotal(totalTaxes);
         }
 
         // grand total

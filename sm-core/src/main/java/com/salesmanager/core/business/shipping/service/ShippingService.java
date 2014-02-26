@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.salesmanager.core.business.common.model.Delivery;
-import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
@@ -15,6 +14,7 @@ import com.salesmanager.core.business.shipping.model.ShippingOption;
 import com.salesmanager.core.business.shipping.model.ShippingProduct;
 import com.salesmanager.core.business.shipping.model.ShippingQuote;
 import com.salesmanager.core.business.shipping.model.ShippingSummary;
+import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.system.model.CustomIntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
@@ -182,6 +182,15 @@ public interface ShippingService {
 	 */
 	List<Country> getShipToCountryList(MerchantStore store, Language language)
 			throws ServiceException;
+	
+	/**
+	 * Determines if Shipping should be proposed to the customer
+	 * @param items
+	 * @param store
+	 * @return
+	 * @throws ServiceException
+	 */
+	boolean requiresShipping(List<ShoppingCartItem> items, MerchantStore store) throws ServiceException;
 
 
 
