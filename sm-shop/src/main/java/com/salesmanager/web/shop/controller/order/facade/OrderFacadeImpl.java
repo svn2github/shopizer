@@ -3,13 +3,27 @@ package com.salesmanager.web.shop.controller.order.facade;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.Validate;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
@@ -49,6 +63,8 @@ import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.utils.CreditCardUtils;
+import com.salesmanager.web.admin.entity.userpassword.UserReset;
+import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.order.OrderEntity;
 import com.salesmanager.web.entity.order.OrderTotal;
@@ -59,9 +75,15 @@ import com.salesmanager.web.populator.customer.CustomerPopulator;
 import com.salesmanager.web.populator.customer.PersistableCustomerPopulator;
 import com.salesmanager.web.populator.order.OrderProductPopulator;
 import com.salesmanager.web.populator.order.ShoppingCartItemPopulator;
+import com.salesmanager.web.shop.controller.ControllerConstants;
+import com.salesmanager.web.shop.controller.order.ShoppingOrderPaymentController;
+import com.salesmanager.web.utils.LabelUtils;
 
 @Service("orderFacade")
 public class OrderFacadeImpl implements OrderFacade {
+	
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(OrderFacadeImpl.class);
 
 
 	@Autowired
@@ -88,6 +110,9 @@ public class OrderFacadeImpl implements OrderFacade {
 	private LanguageService languageService;
 	@Autowired
 	private ShippingService shippingService;
+	
+	@Autowired
+	private LabelUtils messages;
 
 
 	@Override
@@ -215,18 +240,18 @@ public class OrderFacadeImpl implements OrderFacade {
 	 * Submitted object must be valided prior to the invocation of this method
 	 */
 	@Override
-	public void processOrder(ShopOrder order, MerchantStore store,
-			Language language) throws Exception {
+	public Order processOrder(ShopOrder order, MerchantStore store,
+			Language language) throws ServiceException {
 				
-		this.processOrderModel(order, null, store, language);
+		return this.processOrderModel(order, null, store, language);
 
 	}
 	
 	@Override
-	public void processOrder(ShopOrder order, Transaction transaction, MerchantStore store,
-			Language language) throws Exception {
+	public Order processOrder(ShopOrder order, Transaction transaction, MerchantStore store,
+			Language language) throws ServiceException {
 				
-		this.processOrderModel(order, transaction, store, language);
+		return this.processOrderModel(order, transaction, store, language);
 
 	}
 	
@@ -498,5 +523,203 @@ public class OrderFacadeImpl implements OrderFacade {
 			return null;
 		}
 	}
+	
+	
+	@Override
+	public void validateOrder(ShopOrder order, BindingResult bindingResult, Map<String,String> messagesResult, MerchantStore store,  Locale locale) throws ServiceException {
+
+
+		Validate.notNull(messagesResult,"messagesResult should not be null");
+	
+	
+		try {
+	
+
+			//Language language = (Language)request.getAttribute("LANGUAGE");
+
+			//validate order shipping and billing
+			if(StringUtils.isBlank(order.getCustomer().getBilling().getFirstName())) {
+				FieldError error = new FieldError("customer.billing.firstName","customer.billing.firstName",messages.getMessage("NotEmpty.customer.firstName", locale));
+            	bindingResult.addError(error);
+            	messagesResult.put("customer.billing.firstName",messages.getMessage("NotEmpty.customer.firstName", locale));
+			}
+			
+			if(StringUtils.isBlank(order.getCustomer().getBilling().getLastName())) {
+				FieldError error = new FieldError("customer.billing.lastName","customer.billing.lastName",messages.getMessage("NotEmpty.customer.lastName", locale));
+            	bindingResult.addError(error);
+            	messagesResult.put("customer.billing.lastName",messages.getMessage("NotEmpty.customer.lastName", locale));
+			}
+			
+			if(StringUtils.isBlank(order.getCustomer().getEmailAddress())) {
+				FieldError error = new FieldError("customer.emailAddress","customer.emailAddress",messages.getMessage("NotEmpty.customer.emailAddress", locale));
+            	bindingResult.addError(error);
+            	messagesResult.put("customer.emailAddress",messages.getMessage("NotEmpty.customer.emailAddress", locale));
+			}
+			
+			if(StringUtils.isBlank(order.getCustomer().getBilling().getAddress())) {
+				FieldError error = new FieldError("customer.billing.address","customer.billing.address",messages.getMessage("NotEmpty.customer.billing.address", locale));
+            	bindingResult.addError(error);
+            	messagesResult.put("customer.billing.address",messages.getMessage("NotEmpty.customer.billing.address", locale));
+			}
+			
+			if(StringUtils.isBlank(order.getCustomer().getBilling().getCity())) {
+				FieldError error = new FieldError("customer.billing.city","customer.billing.city",messages.getMessage("NotEmpty.customer.billing.city", locale));
+            	bindingResult.addError(error);
+            	messagesResult.put("customer.billing.city",messages.getMessage("NotEmpty.customer.billing.city", locale));
+			}
+			
+			if(StringUtils.isBlank(order.getCustomer().getBilling().getCountry())) {
+				FieldError error = new FieldError("customer.billing.country","customer.billing.country",messages.getMessage("NotEmpty.customer.billing.country", locale));
+            	bindingResult.addError(error);
+            	messagesResult.put("customer.billing.country",messages.getMessage("NotEmpty.customer.billing.country", locale));
+			}
+			
+			if(StringUtils.isBlank(order.getCustomer().getBilling().getZone()) && StringUtils.isBlank(order.getCustomer().getBilling().getStateProvince())) {
+				FieldError error = new FieldError("customer.billing.stateProvince","customer.billing.stateProvince",messages.getMessage("NotEmpty.customer.billing.stateProvince", locale));
+            	bindingResult.addError(error);
+            	messagesResult.put("customer.billing.stateProvince",messages.getMessage("NotEmpty.customer.billing.stateProvince", locale));
+			}
+			
+			if(StringUtils.isBlank(order.getCustomer().getBilling().getPhone())) {
+				FieldError error = new FieldError("customer.billing.phone","customer.billing.phone",messages.getMessage("NotEmpty.customer.billing.phone", locale));
+            	bindingResult.addError(error);
+            	messagesResult.put("customer.billing.phone",messages.getMessage("NotEmpty.customer.billing.phone", locale));
+			}
+			
+			if(StringUtils.isBlank(order.getCustomer().getBilling().getPostalCode())) {
+				FieldError error = new FieldError("customer.billing.postalCode","customer.billing.postalCode",messages.getMessage("NotEmpty.customer.billing.postalCode", locale));
+            	bindingResult.addError(error);
+            	messagesResult.put("customer.billing.postalCode",messages.getMessage("NotEmpty.customer.billing.postalCode", locale));
+			}
+			
+			if(!order.isShipToBillingAdress()) {
+				
+				if(StringUtils.isBlank(order.getCustomer().getDelivery().getFirstName())) {
+					FieldError error = new FieldError("customer.delivery.firstName","customer.delivery.firstName",messages.getMessage("NotEmpty.customer.shipping.firstName", locale));
+	            	bindingResult.addError(error);
+	            	messagesResult.put("customer.delivery.firstName",messages.getMessage("NotEmpty.customer.shipping.firstName", locale));
+				}
+				
+				if(StringUtils.isBlank(order.getCustomer().getDelivery().getLastName())) {
+					FieldError error = new FieldError("customer.delivery.lastName","customer.delivery.lastName",messages.getMessage("NotEmpty.customer.shipping.lastName", locale));
+	            	bindingResult.addError(error);
+	            	messagesResult.put("customer.delivery.lastName",messages.getMessage("NotEmpty.customer.shipping.lastName", locale));
+				}
+				
+				if(StringUtils.isBlank(order.getCustomer().getDelivery().getAddress())) {
+					FieldError error = new FieldError("customer.delivery.address","customer.delivery.address",messages.getMessage("NotEmpty.customer.shipping.address", locale));
+	            	bindingResult.addError(error);
+	            	messagesResult.put("customer.delivery.address",messages.getMessage("NotEmpty.customer.shipping.address", locale));
+				}
+				
+				if(StringUtils.isBlank(order.getCustomer().getDelivery().getCity())) {
+					FieldError error = new FieldError("customer.delivery.city","customer.delivery.city",messages.getMessage("NotEmpty.customer.shipping.city", locale));
+	            	bindingResult.addError(error);
+	            	messagesResult.put("customer.delivery.city",messages.getMessage("NotEmpty.customer.shipping.city", locale));
+				}
+				
+				if(StringUtils.isBlank(order.getCustomer().getDelivery().getCountry())) {
+					FieldError error = new FieldError("customer.delivery.country","customer.delivery.country",messages.getMessage("NotEmpty.customer.shipping.country", locale));
+	            	bindingResult.addError(error);
+	            	messagesResult.put("customer.delivery.country",messages.getMessage("NotEmpty.customer.shipping.country", locale));
+				}
+				
+				if(StringUtils.isBlank(order.getCustomer().getDelivery().getZone()) && StringUtils.isBlank(order.getCustomer().getDelivery().getStateProvince())) {
+					FieldError error = new FieldError("customer.delivery.stateProvince","customer.delivery.stateProvince",messages.getMessage("NotEmpty.customer.shipping.stateProvince", locale));
+	            	bindingResult.addError(error);
+	            	messagesResult.put("customer.delivery.stateProvince",messages.getMessage("NotEmpty.customer.shipping.stateProvince", locale));
+				}
+				
+				
+				if(StringUtils.isBlank(order.getCustomer().getDelivery().getPostalCode())) {
+					FieldError error = new FieldError("customer.delivery.postalCode","customer.delivery.postalCode",messages.getMessage("NotEmpty.customer.shipping.postalCode", locale));
+	            	bindingResult.addError(error);
+	            	messagesResult.put("customer.delivery.postalCode",messages.getMessage("NotEmpty.customer.shipping.postalCode", locale));
+				}
+				
+			}
+			
+	        if ( bindingResult.hasErrors() )
+	        {
+	            //LOGGER.info( "found {} validation error while validating in customer registration ",
+	            //             bindingResult.getErrorCount() );
+	    		//StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Checkout.checkout).append(".").append(store.getStoreTemplate());
+	    		//return template.toString();
+
+	        }
+			
+			String paymentType = order.getPaymentMethodType();
+			
+			if(!shoppingCartService.isFreeShoppingCart(order.getShoppingCartItems()) && paymentType==null) {
+				
+			}
+			
+			//validate payment
+			if(paymentType==null) {
+				ServiceException serviceException = new ServiceException(ServiceException.EXCEPTION_VALIDATION,"payment.required");
+				throw serviceException;
+			}
+			
+			//validate shipping
+			if(shippingService.requiresShipping(order.getShoppingCartItems(), store) && order.getSelectedShippingOption()==null) {
+				ServiceException serviceException = new ServiceException(ServiceException.EXCEPTION_VALIDATION,"shipping.required");
+				throw serviceException;
+			}
+			
+			//pre-validate credit card
+			if(PaymentType.CREDITCARD.name().equals(paymentType)) {
+				String cco = order.getPayment().get("creditcard_card_holder");
+				String cvv = order.getPayment().get("creditcard_card_cvv");
+				String ccn = order.getPayment().get("creditcard_card_number");
+				String ccm = order.getPayment().get("creditcard_card_expirationmonth");
+				String ccd = order.getPayment().get("creditcard_card_expirationyear");
+				
+				if(StringUtils.isBlank(cco) || StringUtils.isBlank(cvv) || StringUtils.isBlank(ccn) ||
+					StringUtils.isBlank(ccm) || StringUtils.isBlank(ccd)) {
+					ObjectError error = new ObjectError("creditcard_card_holder",messages.getMessage("NotEmpty.customer.shipping.stateProvince", locale));
+	            	bindingResult.addError(error);
+	            	messagesResult.put("creditcard_card_holder",messages.getMessage("NotEmpty.customer.shipping.stateProvince", locale));
+				}
+				
+				CreditCardType creditCardType =null;
+				String cardType = order.getPayment().get("creditcard_card_type");
+				
+				if(cardType.equalsIgnoreCase(CreditCardType.AMEX.name())) {
+					creditCardType = CreditCardType.AMEX;
+				} else if(cardType.equalsIgnoreCase(CreditCardType.VISA.name())) {
+					creditCardType = CreditCardType.VISA;
+				} else if(cardType.equalsIgnoreCase(CreditCardType.MASTERCARD.name())) {
+					creditCardType = CreditCardType.MASTERCARD;
+				} else if(cardType.equalsIgnoreCase(CreditCardType.DINERS.name())) {
+					creditCardType = CreditCardType.DINERS;
+				} else if(cardType.equalsIgnoreCase(CreditCardType.DISCOVERY.name())) {
+					creditCardType = CreditCardType.DISCOVERY;
+				}
+				
+				if(creditCardType==null) {
+					ServiceException serviceException = new ServiceException(ServiceException.EXCEPTION_VALIDATION,"cc.type");
+					throw serviceException;
+				}
+
+			}
+			
+			
+			
+
+      
+	        
+        
+		} catch(ServiceException se) {
+			LOGGER.error("Error while commiting order",se);
+			throw se;
+		}
+
+		///sm-shop/WEB-INF/views/error/generic_error.jsp
+
+
+}
+	
+	
+	
 
 }

@@ -218,7 +218,7 @@ public class CustomerRegistrationController extends AbstractController {
         /**
          * Send registration email
          */
-        sendRegistrationEmail( request, customer, merchantStore, locale );
+        customerFacade.sendRegistrationEmail( request, customer, merchantStore, locale );
 
         /**
          * Login user
@@ -292,34 +292,5 @@ public class CustomerRegistrationController extends AbstractController {
 
 	
 
-    private void sendRegistrationEmail(final HttpServletRequest request,final PersistableCustomer customer,final MerchantStore merchantStore, final Locale customerLocale){
-       LOGGER.info( "Sending welcome email to customer" );
-       try {
 
-           Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, merchantStore, messages, customerLocale);
-           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_FIRSTNAME, customer.getBilling().getFirstName());
-           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_LASTNAME, customer.getBilling().getLastName());
-           String[] greetingMessage = {merchantStore.getStorename(),FilePathUtils.buildCustomerUri(merchantStore, request),merchantStore.getStoreEmailAddress()};
-           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_GREETING, messages.getMessage("email.customer.greeting", greetingMessage, customerLocale));
-           templateTokens.put(EmailConstants.EMAIL_USERNAME_LABEL, messages.getMessage("label.generic.username",customerLocale));
-           templateTokens.put(EmailConstants.EMAIL_PASSWORD_LABEL, messages.getMessage("label.generic.password",customerLocale));
-           templateTokens.put(EmailConstants.EMAIL_USER_NAME, customer.getUserName());
-           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_PASSWORD, customer.getPassword());
-
-
-           Email email = new Email();
-           email.setFrom(merchantStore.getStorename());
-           email.setFromEmail(merchantStore.getStoreEmailAddress());
-           email.setSubject(messages.getMessage("email.newuser.title",customerLocale));
-           email.setTo(customer.getEmailAddress());
-           email.setTemplateName(EmailConstants.EMAIL_CUSTOMER_TPL);
-           email.setTemplateTokens(templateTokens);
-
-           LOGGER.info( "Sending email to {} on their  registered email id {} ",customer.getBilling().getFirstName(),customer.getEmailAddress() );
-           emailService.sendHtmlEmail(merchantStore, email);
-
-       } catch (Exception e) {
-           LOGGER.error("Error occured while sending welcome email ",e);
-       }
-    }
 }

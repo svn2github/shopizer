@@ -4,7 +4,10 @@
 package com.salesmanager.web.shop.controller.customer.facade;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.jfree.util.Log;
@@ -12,12 +15,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
 import com.salesmanager.core.business.customer.CustomerRegistrationException;
-import com.salesmanager.core.business.customer.exception.CustomerNotFoundException;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
@@ -25,29 +28,28 @@ import com.salesmanager.core.business.customer.service.attribute.CustomerOptionV
 import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
-import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartCalculationService;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
+import com.salesmanager.core.business.system.service.EmailService;
 import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.business.user.model.GroupType;
 import com.salesmanager.core.business.user.service.GroupService;
-import com.salesmanager.web.entity.customer.Address;
+import com.salesmanager.core.modules.email.Email;
+import com.salesmanager.web.constants.EmailConstants;
 import com.salesmanager.web.entity.customer.CustomerEntity;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
-import com.salesmanager.web.populator.customer.CustomerBillingAddressPopulator;
-import com.salesmanager.web.populator.customer.CustomerDeliveryAddressPopulator;
 import com.salesmanager.web.populator.customer.CustomerEntityPopulator;
 import com.salesmanager.web.populator.customer.CustomerPopulator;
-import com.salesmanager.web.populator.customer.PersistableCustomerBillingAddressPopulator;
-import com.salesmanager.web.populator.customer.PersistableCustomerShippingAddressPopulator;
 import com.salesmanager.web.populator.shoppingCart.ShoppingCartDataPopulator;
+import com.salesmanager.web.utils.EmailUtils;
+import com.salesmanager.web.utils.FilePathUtils;
+import com.salesmanager.web.utils.LabelUtils;
 
 
 /**
@@ -57,7 +59,7 @@ import com.salesmanager.web.populator.shoppingCart.ShoppingCartDataPopulator;
  *
  */
 
-//@Service("customerFacade")
+@Service("customerFacade")
 //// http://stackoverflow.com/questions/17444258/how-to-use-new-passwordencoder-from-spring-security
 public class CustomerFacadeImpl implements CustomerFacade
 {
@@ -71,7 +73,7 @@ public class CustomerFacadeImpl implements CustomerFacade
      private ShoppingCartService shoppingCartService;
 
      @Autowired
-     ShoppingCartCalculationService shoppingCartCalculationService;
+     private ShoppingCartCalculationService shoppingCartCalculationService;
 
      @Autowired
      private PricingService pricingService;
@@ -104,6 +106,12 @@ public class CustomerFacadeImpl implements CustomerFacade
      @SuppressWarnings( "deprecation" )
      @Autowired
      private PasswordEncoder passwordEncoder;
+     
+ 	@Autowired
+ 	private EmailService emailService;
+
+ 	//@Autowired
+ 	//private LabelUtils messages;
 
 
     /**
@@ -335,87 +343,42 @@ public class CustomerFacadeImpl implements CustomerFacade
         return null;
     }
 
-    @Override
-    public Address getAddress( Long userId, final MerchantStore merchantStore,boolean isBillingAddress)
-        throws Exception
-    {
-        LOG.info( "Fetching customer for id {} ", userId);
-        Address address=null;
-        final Customer customerModel=customerService.getById( userId );
-        
-        if(customerModel == null){
-            LOG.error( "Customer with ID {} does not exists..", userId);
-            throw new CustomerNotFoundException( "customer with given id does not exists" ); 
-        }
-        
-       if(isBillingAddress){
-            LOG.info( "getting billing address.." );
-            CustomerBillingAddressPopulator billingAddressPopulator=new CustomerBillingAddressPopulator();
-            address =billingAddressPopulator.populate( customerModel, merchantStore, merchantStore.getDefaultLanguage() );
-            address.setBillingAddress( true );
-            return address;
-        }
-        
-        LOG.info( "getting Delivery address.." );
-        CustomerDeliveryAddressPopulator deliveryAddressPopulator=new CustomerDeliveryAddressPopulator();
-        return deliveryAddressPopulator.populate( customerModel, merchantStore, merchantStore.getDefaultLanguage() );
-      
-    }
+
+	@Override
+	public void sendRegistrationEmail(HttpServletRequest request,
+			PersistableCustomer customer, MerchantStore merchantStore,
+			Locale customerLocale) {
+/*	       LOG.info( "Sending welcome email to customer" );
+	       try {
+
+	           Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, merchantStore, messages, customerLocale);
+	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_FIRSTNAME, customer.getBilling().getFirstName());
+	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_LASTNAME, customer.getBilling().getLastName());
+	           String[] greetingMessage = {merchantStore.getStorename(),FilePathUtils.buildCustomerUri(merchantStore, request),merchantStore.getStoreEmailAddress()};
+	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_GREETING, messages.getMessage("email.customer.greeting", greetingMessage, customerLocale));
+	           templateTokens.put(EmailConstants.EMAIL_USERNAME_LABEL, messages.getMessage("label.generic.username",customerLocale));
+	           templateTokens.put(EmailConstants.EMAIL_PASSWORD_LABEL, messages.getMessage("label.generic.password",customerLocale));
+	           templateTokens.put(EmailConstants.EMAIL_USER_NAME, customer.getUserName());
+	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_PASSWORD, customer.getPassword());
 
 
-    @Override
-    public void updateAddress( Long userId, MerchantStore merchantStore, Address address, final Language language )
-        throws Exception
-    {
-       
-       Customer customerModel=customerService.getById( userId );
-       Map<String, Country> countriesMap = countryService.getCountriesMap( language );
-       Country country = countriesMap.get( address.getCountry() );
-      
-      if(customerModel ==null){
-           LOG.error( "Customer with ID {} does not exists..", userId);
-           throw new CustomerNotFoundException( "customer with given id does not exists" );
-           
-       }
-       if(address.isBillingAddress()){
-           LOG.info( "updating customer billing address..");
-           PersistableCustomerBillingAddressPopulator billingAddressPopulator=new PersistableCustomerBillingAddressPopulator();
-           customerModel= billingAddressPopulator.populate( address, customerModel, merchantStore, merchantStore.getDefaultLanguage() );
-           customerModel.getBilling().setCountry( country );
-           if(StringUtils.isNotBlank( address.getZone() )){
-               Zone zone = zoneService.getByCode(address.getZone());
-               if(zone==null) {
-                   //throw new ConversionException("Unsuported zone code " + address.getZone());
-               }
-               else{
-                   customerModel.getBilling().setZone( zone );
-               }
-               
-           }
-          
-       }
-       else{
-           LOG.info( "updating customer shipping address..");
-           PersistableCustomerShippingAddressPopulator shippingAddressPopulator=new PersistableCustomerShippingAddressPopulator();
-           customerModel= shippingAddressPopulator.populate( address, customerModel, merchantStore, merchantStore.getDefaultLanguage() );
-           customerModel.getDelivery().setCountry( country );
-           if(StringUtils.isNotBlank( address.getZone() )){
-               Zone zone = zoneService.getByCode(address.getZone());
-               if(zone==null) {
-                   //throw new ConversionException("Unsuported zone code " + address.getZone());
-               }
-               else{
-                   customerModel.getDelivery().setZone( zone );
-               }
-              
-           }
-           
-       }
-  
-      // same update address with customer model
-       this.customerService.saveOrUpdate( customerModel );
-       
-    }
+	           Email email = new Email();
+	           email.setFrom(merchantStore.getStorename());
+	           email.setFromEmail(merchantStore.getStoreEmailAddress());
+	           email.setSubject(messages.getMessage("email.newuser.title",customerLocale));
+	           email.setTo(customer.getEmailAddress());
+	           email.setTemplateName(EmailConstants.EMAIL_CUSTOMER_TPL);
+	           email.setTemplateTokens(templateTokens);
+
+	           LOG.info( "Sending email to {} on their  registered email id {} ",customer.getBilling().getFirstName(),customer.getEmailAddress() );
+	           emailService.sendHtmlEmail(merchantStore, email);
+
+	       } catch (Exception e) {
+	           LOG.error("Error occured while sending welcome email ",e);
+	       }*/
+		
+	}
+
   
 
 }

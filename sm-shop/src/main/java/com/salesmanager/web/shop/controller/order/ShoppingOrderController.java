@@ -1,6 +1,7 @@
 package com.salesmanager.web.shop.controller.order;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -15,10 +16,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,11 +34,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.model.OrderTotal;
 import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.order.service.OrderService;
+import com.salesmanager.core.business.payments.model.CreditCardType;
 import com.salesmanager.core.business.payments.model.PaymentMethod;
+import com.salesmanager.core.business.payments.model.PaymentType;
+import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.payments.service.PaymentService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
@@ -40,9 +52,12 @@ import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.shipping.model.ShippingOption;
 import com.salesmanager.core.business.shipping.model.ShippingQuote;
 import com.salesmanager.core.business.shipping.model.ShippingSummary;
+import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
+import com.salesmanager.web.admin.entity.userpassword.UserReset;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.order.ReadableOrderTotal;
 import com.salesmanager.web.entity.order.ReadableShippingSummary;
 import com.salesmanager.web.entity.order.ReadableShopOrder;
@@ -53,6 +68,7 @@ import com.salesmanager.web.populator.order.ReadableShippingSummaryPopulator;
 import com.salesmanager.web.populator.order.ReadableShopOrderPopulator;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
+import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
 import com.salesmanager.web.shop.controller.order.facade.OrderFacade;
 import com.salesmanager.web.shop.controller.shoppingCart.facade.ShoppingCartFacade;
 import com.salesmanager.web.utils.LabelUtils;
@@ -75,6 +91,9 @@ public class ShoppingOrderController extends AbstractController {
 	@Autowired
 	private PaymentService paymentService;
 	
+	@Autowired
+	private ShippingService shippingService;
+	
 
 	@Autowired
 	private OrderService orderService;
@@ -93,6 +112,15 @@ public class ShoppingOrderController extends AbstractController {
 	
 	@Autowired
 	private PricingService pricingService;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+    @Autowired
+    private  CustomerFacade customerFacade;
+	
+	@Autowired
+    private AuthenticationManager customerAuthenticationManager;
 	
 	@RequestMapping("/checkout.html")
 	public String displayCheckout(@CookieValue("cart") String cookie, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
@@ -167,16 +195,18 @@ public class ShoppingOrderController extends AbstractController {
 
 			if(StringUtils.isBlank(quote.getShippingReturnCode())) {
 			
-				ShippingSummary summary = orderFacade.getShippingSummary(quote, store, language);
-				order.setShippingSummary(summary);
+				if(order.getShippingSummary()==null) {
+					ShippingSummary summary = orderFacade.getShippingSummary(quote, store, language);
+					order.setShippingSummary(summary);
+					request.getSession().setAttribute(Constants.SHIPPING_SUMMARY, summary);
+				}
 				if(order.getSelectedShippingOption()==null) {
 					order.setSelectedShippingOption(quote.getSelectedShippingOption());
 				}
 				
 				//save quotes in HttpSession
 				List<ShippingOption> options = quote.getShippingOptions();
-				request.getSession().setAttribute("SHIPPING_SUMMARY", summary);
-				request.getSession().setAttribute("SHIPPING_OPTIONS", options);
+				request.getSession().setAttribute(Constants.SHIPPING_OPTIONS, options);
 			
 			}
 			
@@ -253,18 +283,8 @@ public class ShoppingOrderController extends AbstractController {
 	}
 	
 	
-	/**
-	 * Method that saves the order to the database
-	 * @param model
-	 * @param request
-	 * @param response
-	 * @param locale
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/commit.html")
-	public String commitOrder(Model model, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
-
+	@RequestMapping("/commitPreAuthorized.html")
+	public String commitPreAuthorizedOrder(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		ShopOrder order = super.getSessionAttribute(Constants.ORDER, request);
 		if(order==null) {
@@ -273,34 +293,96 @@ public class ShoppingOrderController extends AbstractController {
 		
 		try {
 			
-			return this.commitOrder(order, bindingResult, model, request, response, locale);
+			//already validated
+			
 			
 		} catch(Exception e) {
 			LOGGER.error("Error while commiting order",e);
 			throw e;		
 			
 		}
+		return "redirect:" + Constants.SHOP_URI + "/order/checkout.html";
 		
-
 		
 	}
+
 	
-	@RequestMapping("/commitShopOrder.html")
-	public String commitShopOrder(@Valid @ModelAttribute(value="order") ShopOrder order, BindingResult bindingResult, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+
+	
+	@RequestMapping("/commitOrder.html")
+	public String commitOrder(@Valid @ModelAttribute(value="order") ShopOrder order, BindingResult bindingResult, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+		Language language = (Language)request.getAttribute("LANGUAGE");
 		try {
 			
-	        if ( bindingResult.hasErrors() )
-	        {
-	            LOGGER.info( "found {} validation error while validating in customer registration ",
-	                         bindingResult.getErrorCount() );
-	    		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Checkout.checkout).append(".").append(store.getStoreTemplate());
-	    		return template.toString();
-
-	        }
+			try {
 			
-			return this.commitOrder(order, bindingResult, model, request, response, locale);
+				orderFacade.validateOrder(order, bindingResult, new HashMap<String,String>(), store, locale);
+		        
+		        if ( bindingResult.hasErrors() )
+		        {
+		            LOGGER.info( "found {} validation error while validating in customer registration ",
+		                         bindingResult.getErrorCount() );
+		    		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Checkout.checkout).append(".").append(store.getStoreTemplate());
+		    		return template.toString();
+	
+		        }
+	        
+			} catch(ServiceException se) {
+				
+				ObjectError error = new ObjectError("",messages.getMessage(se.getMessageCode(), locale));
+            	bindingResult.addError(error);
+            	
+            	StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Checkout.checkout).append(".").append(store.getStoreTemplate());
+	    		return template.toString();
+				
+			}
+			
+			
+	        //if the customer is new, generate a password
+	        PersistableCustomer customer = order.getCustomer();
+	        String password = null;
+	        if(customer.getId()==null || customer.getId()==0) {
+	        	password = UserReset.generateRandomString();
+	        	String encodedPassword = passwordEncoder.encodePassword(password, null);
+	        	customer.setPassword(encodedPassword);
+	        }
+	        
+	        Order modelOrder = null;
+	        Transaction initialTransaction = (Transaction)super.getSessionAttribute(Constants.INIT_TRANSACTION_KEY, request);
+	        if(initialTransaction!=null) {
+	        	modelOrder=orderFacade.processOrder(order, initialTransaction, store, language);
+	        } else {
+	        	modelOrder=orderFacade.processOrder(order, store, language);
+	        }
+	        
+	        //save order id in session
+	        super.setSessionAttribute(Constants.ORDER_ID, modelOrder.getId(), request);
+	        
+	        //send email for new customer
+	        customerFacade.sendRegistrationEmail( request, customer, store, locale );
+	        
+	        
+	        //cleanup the rest
+	        super.removeAttribute(Constants.ORDER, request);
+	        super.removeAttribute(Constants.INIT_TRANSACTION_KEY, request);
+	        super.removeAttribute(Constants.SHIPPING_OPTIONS, request);
+	        super.removeAttribute(Constants.SHIPPING_SUMMARY, request);
+	        
+	        if(SecurityContextHolder.getContext().getAuthentication() != null &&
+	        		 SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+	        	
+	        } else {
+		        //authenticate user
+	        	Authentication authenticationToken =
+	                    new UsernamePasswordAuthenticationToken(customer.getUserName(), customer.getPassword());
+	        	Authentication authentication = customerAuthenticationManager.authenticate(authenticationToken);
+	        	SecurityContextHolder.getContext().setAuthentication(authentication);
+	        }
+	        
+
+	  
 			
 		} catch(Exception e) {
 			LOGGER.error("Error while commiting order",e);
@@ -308,76 +390,12 @@ public class ShoppingOrderController extends AbstractController {
 			
 		}
 		
-	}
-	
-	
-	private String commitOrder(ShopOrder order, BindingResult bindingResult, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		return null;
 		
-
-			
-
-			MerchantStore store = super.getSessionAttribute(Constants.MERCHANT_STORE, request);
-
-			//validate order shipping and billing
-			if(StringUtils.isBlank(order.getCustomer().getBilling().getFirstName())) {
-				FieldError error = new FieldError("customer.billing.firstName","customer.billing.firstName",messages.getMessage("NotEmpty.customer.firstName", locale));
-            	bindingResult.addError(error);
-			}
-			
-			if(StringUtils.isBlank(order.getCustomer().getBilling().getLastName())) {
-				FieldError error = new FieldError("customer.billing.lastName","customer.billing.lastName",messages.getMessage("NotEmpty.customer.lastName", locale));
-            	bindingResult.addError(error);
-			}
-			
-			if(StringUtils.isBlank(order.getCustomer().getEmailAddress())) {
-				FieldError error = new FieldError("customer.emailAddress","customer.emailAddress",messages.getMessage("NotEmpty.customer.emailAddress", locale));
-            	bindingResult.addError(error);
-			}
-			
-			if(StringUtils.isBlank(order.getCustomer().getBilling().getAddress())) {
-				
-			}
-			
-			if(StringUtils.isBlank(order.getCustomer().getBilling().getCity())) {
-				
-			}
-			
-			if(StringUtils.isBlank(order.getCustomer().getBilling().getCountry())) {
-				
-			}
-			
-			if(StringUtils.isBlank(order.getCustomer().getBilling().getZone()) && StringUtils.isBlank(order.getCustomer().getBilling().getStateProvince())) {
-				
-			}
-			
-			if(StringUtils.isBlank(order.getCustomer().getBilling().getPhone())) {
-				
-			}
-			
-			if(StringUtils.isBlank(order.getCustomer().getBilling().getPostalCode())) {
-				
-			}
-			
-			//validate payment
-			
-			//validate shipping
-			
-			//validate credit card
-	
-			//validate additional fields
-			
-	        if ( bindingResult.hasErrors() )
-	        {
-	            LOGGER.info( "found {} validation error while validating in customer registration ",
-	                         bindingResult.getErrorCount() );
-	    		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Checkout.checkout).append(".").append(store.getStoreTemplate());
-	    		return template.toString();
-
-	        }
-			
-			return null;
-
 	}
+	
+	
+
 	
 	/**
 	 * Recalculates shipping and tax following a change in country or province
@@ -428,8 +446,8 @@ public class ShoppingOrderController extends AbstractController {
 					readableSummary.setShippingOptions(options);
 					
 					readableOrder.setShippingSummary(readableSummary);
-					request.getSession().setAttribute("SHIPPING_SUMMARY", summary);
-					request.getSession().setAttribute("SHIPPING_OPTIONS", options);
+					request.getSession().setAttribute(Constants.SHIPPING_SUMMARY, summary);
+					request.getSession().setAttribute(Constants.SHIPPING_OPTIONS, options);
 				
 				}
 
@@ -520,9 +538,9 @@ public class ShoppingOrderController extends AbstractController {
 			//if(quote!=null) {
 					//if(StringUtils.isBlank(quote.getShippingReturnCode())) {
 			if(order.getSelectedShippingOption()!=null) {
-						ShippingSummary summary = (ShippingSummary)request.getSession().getAttribute("SHIPPING_SUMMARY");
+						ShippingSummary summary = (ShippingSummary)request.getSession().getAttribute(Constants.SHIPPING_SUMMARY);
 						@SuppressWarnings("unchecked")
-						List<ShippingOption> options = (List<ShippingOption>)request.getSession().getAttribute("SHIPPING_OPTIONS");
+						List<ShippingOption> options = (List<ShippingOption>)request.getSession().getAttribute(Constants.SHIPPING_OPTIONS);
 						
 						
 						order.setShippingSummary(summary);//for total calculation

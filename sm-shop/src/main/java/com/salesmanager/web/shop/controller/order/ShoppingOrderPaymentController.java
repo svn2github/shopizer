@@ -1,12 +1,15 @@
 package com.salesmanager.web.shop.controller.order;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
@@ -14,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mobile.device.Device;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,7 +51,6 @@ import com.salesmanager.core.modules.integration.payment.model.PaymentModule;
 import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.order.ShopOrder;
 import com.salesmanager.web.populator.customer.CustomerPopulator;
 import com.salesmanager.web.shop.controller.AbstractController;
@@ -62,7 +66,7 @@ public class ShoppingOrderPaymentController extends AbstractController {
 	.getLogger(ShoppingOrderPaymentController.class);
 	
 	private final static String INIT_ACTION = "init";
-	private final static String INIT_TRANSACTION_KEY = "init_transaction";
+	
 	
 	@Autowired
 	private ShoppingCartFacade shoppingCartFacade;
@@ -116,7 +120,8 @@ public class ShoppingOrderPaymentController extends AbstractController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value={"/order/payment/{action}/{paymentmethod}.html"}, method=RequestMethod.POST)
-	public @ResponseBody AjaxResponse paymentAction(@ModelAttribute(value="order") ShopOrder order, @PathVariable String action, @PathVariable String paymentmethod, Device device, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	public @ResponseBody AjaxResponse paymentAction(@Valid @ModelAttribute(value="order") ShopOrder order, @PathVariable String action, @PathVariable String paymentmethod, Device device, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
 		
 		
 		Language language = (Language)request.getAttribute("LANGUAGE");
@@ -127,6 +132,10 @@ public class ShoppingOrderPaymentController extends AbstractController {
 		AjaxResponse ajaxResponse = new AjaxResponse();
 
 		try {
+			
+			//validate order first
+			Map<String,String> messages = new HashMap<String,String>();
+			orderFacade.validateOrder(order, new BeanPropertyBindingResult(order,"order"), messages, store, locale);
 			
 			IntegrationConfiguration config = paymentService.getPaymentConfiguration(paymentmethod, store);
 			IntegrationModule integrationModule = paymentService.getPaymentMethodByCode(store, paymentmethod);
@@ -149,7 +158,7 @@ public class ShoppingOrderPaymentController extends AbstractController {
 			}
 			
 			Customer customer = null;
-			PersistableCustomer persistableCustomer = order.getCustomer();
+			//PersistableCustomer persistableCustomer = order.getCustomer();
 			CustomerPopulator customerPopulator = new CustomerPopulator();
 			customerPopulator.setCountryService(countryService);
 			customerPopulator.setCustomerOptionService(customerOptionService);
@@ -167,10 +176,10 @@ public class ShoppingOrderPaymentController extends AbstractController {
 						PayPalExpressCheckoutPayment p = (PayPalExpressCheckoutPayment)module;
 						PaypalPayment payment = new PaypalPayment();
 						payment.setCurrency(store.getCurrency());
-						Transaction transaction = p.initPaypalTransaction(store, customer, cartItems, orderTotalSummary.getTotal(), payment, config, integrationModule);
+						Transaction transaction = p.initPaypalTransaction(store, customer, cartItems, orderTotalSummary, payment, config, integrationModule);
 						transactionService.create(transaction);
 						
-						super.setSessionAttribute(INIT_TRANSACTION_KEY, transaction, request);
+						super.setSessionAttribute(Constants.INIT_TRANSACTION_KEY, transaction, request);
 						
 						//https://www.paypal.com/cgi-bin/webscr?cmd=_express-checkout-mobile&token=tokenValueReturnedFromSetExpressCheckoutCall
 						//For Desktop use
@@ -212,7 +221,7 @@ public class ShoppingOrderPaymentController extends AbstractController {
 						ajaxResponse.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 					}
 							
-					ajaxResponse.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+					
 				}
 			}
 		
@@ -230,8 +239,7 @@ public class ShoppingOrderPaymentController extends AbstractController {
 	@RequestMapping(value={"/paypal/checkout.html/{code}"}, method=RequestMethod.GET)
 	public  String returnPayPalPayment(@PathVariable String code, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		if(Constants.SUCCESS.equals(code)) {
-			
-			return "redirect:" + Constants.SHOP_URI + "/order/commit.html";
+			return "redirect:" + Constants.SHOP_URI + "/order/preCommit.html";
 		} else {//process as cancel
 			return "redirect:" + Constants.SHOP_URI + "/order/checkout.html";
 		}	

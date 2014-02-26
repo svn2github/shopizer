@@ -3,11 +3,14 @@
  */
 package com.salesmanager.web.shop.controller.customer.facade;
 
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
-import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.entity.customer.CustomerEntity;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
@@ -59,9 +62,6 @@ public interface CustomerFacade
     
     public CustomerEntity  registerCustomer( final PersistableCustomer customer,final MerchantStore merchantStore) throws Exception;
     
-    public Address getAddress(final Long userId, final MerchantStore merchantStore,boolean isBillingAddress) throws Exception;
-  
-    public void updateAddress( Long userId, MerchantStore merchantStore, Address address, final Language language )throws Exception;
-    
+    public void sendRegistrationEmail(final HttpServletRequest request,final PersistableCustomer customer,final MerchantStore merchantStore, final Locale customerLocale);
 
 }

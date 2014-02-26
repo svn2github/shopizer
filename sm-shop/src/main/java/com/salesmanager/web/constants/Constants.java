@@ -24,6 +24,9 @@ public class Constants {
 	public final static String SHOPPING_CART = "SHOPPING_CART";
 	public final static String CUSTOMER = "CUSTOMER";
 	public final static String ORDER = "ORDER";
+	public final static String ORDER_ID = "ORDER_ID";
+	public final static String SHIPPING_SUMMARY = "SHIPPING_SUMMARY";
+	public final static String SHIPPING_OPTIONS = "SHIPPING_OPTIONS";
 
 
 	public final static String GROUP_ADMIN = "ADMIN";
@@ -81,5 +84,7 @@ public class Constants {
 	
 	public final static String CREDIT_CARD_YEARS_CACHE_KEY = "CREDIT_CARD_YEARS_CACHE_KEY";
 	public final static String MONTHS_OF_YEAR_CACHE_KEY = "MONTHS_OF_YEAR_CACHE_KEY";
+	
+	public final static String INIT_TRANSACTION_KEY = "init_transaction";
 
 }

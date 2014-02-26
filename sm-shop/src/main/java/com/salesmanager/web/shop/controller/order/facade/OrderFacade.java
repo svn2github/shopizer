@@ -1,9 +1,15 @@
 package com.salesmanager.web.shop.controller.order.facade;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.springframework.validation.BindingResult;
 
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.reference.country.model.Country;
@@ -25,9 +31,9 @@ public interface OrderFacade {
 	OrderTotalSummary calculateOrderTotal(MerchantStore store, PersistableOrder order, Language language) throws Exception;
 
 	/** process a valid order **/
-	void processOrder(ShopOrder order, MerchantStore store, Language language) throws Exception;
+	Order processOrder(ShopOrder order, MerchantStore store, Language language) throws ServiceException;
 	/** process a valid order against an initial transaction **/
-	void processOrder(ShopOrder order, Transaction transaction, MerchantStore store, Language language) throws Exception;
+	Order processOrder(ShopOrder order, Transaction transaction, MerchantStore store, Language language) throws ServiceException;
 	
 	/** creates a working copy of customer when the user is anonymous **/
 	Customer initEmptyCustomer(MerchantStore store);
@@ -54,4 +60,7 @@ public interface OrderFacade {
 	 * @return
 	 */
 	ShippingSummary getShippingSummary(ShippingQuote quote, MerchantStore store, Language language);
+	void validateOrder(ShopOrder order, BindingResult bindingResult,
+			Map<String, String> messagesResult, MerchantStore store,
+			Locale locale) throws ServiceException;
 }

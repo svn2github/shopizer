@@ -31,6 +31,11 @@ public abstract class AbstractController {
     	com.salesmanager.web.utils.SessionUtil.setSessionAttribute(key, value, request);
 	}
     
+    
+    public void removeAttribute(final String key, HttpServletRequest request) {
+    	com.salesmanager.web.utils.SessionUtil.removeSessionAttribute(key, request);
+	}
+    
 	@ExceptionHandler(Exception.class)
 	public ModelAndView handleException(Exception ex) {
  
