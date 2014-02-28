@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 
@@ -13,12 +14,20 @@ public class AjaxResponse implements JSONAware {
 	
 	public final static int RESPONSE_STATUS_SUCCESS=0;
 	public final static int RESPONSE_STATUS_FAIURE=-1;
+	public final static int RESPONSE_STATUS_VALIDATION_FAILED=-2;
 	public final static int RESPONSE_OPERATION_COMPLETED=9999;
 	public final static int CODE_ALREADY_EXIST=9998;
 	
 	private int status;
 	private List<Map<String,String>> data = new ArrayList<Map<String,String>>();
 	private Map<String,String> dataMap = new HashMap<String,String>();
+	private Map<String,String> validationMessages = new HashMap<String,String>();
+	public Map<String, String> getValidationMessages() {
+		return validationMessages;
+	}
+	public void setValidationMessages(Map<String, String> validationMessages) {
+		this.validationMessages = validationMessages;
+	}
 	public int getStatus() {
 		return status;
 	}
@@ -46,7 +55,9 @@ public class AjaxResponse implements JSONAware {
 		this.setStatusMessage(t);
 	}
 	
-
+	public void addValidationMessage(String fieldName, String message) {
+		this.validationMessages.put(fieldName, message);
+	}
 	
 	private String statusMessage = null;
 	
@@ -119,7 +130,7 @@ public class AjaxResponse implements JSONAware {
 				dataEntries.append(":");
 				dataEntries.append("\"").append(this.getDataMap().get(key)).append("\"");
 
-				if(count<this.data.size()-1) {
+				if(count<this.getDataMap().size()-1) {
 					dataEntries.append(",");
 				}
 				count ++;
@@ -128,6 +139,33 @@ public class AjaxResponse implements JSONAware {
 			if(dataEntries!=null) {
 				returnString.append(",").append(dataEntries.toString());
 			}
+		}
+		
+		if(CollectionUtils.isNotEmpty(this.getValidationMessages().values())) {
+			StringBuilder dataEntries = null;
+			int count = 0;
+			for(String key : this.getValidationMessages().keySet()) {
+				if(dataEntries == null) {
+					dataEntries = new StringBuilder();
+				}
+				dataEntries.append("{");
+				dataEntries.append("\"field\":\"").append(key).append("\"");
+				dataEntries.append(",");
+				dataEntries.append("\"message\":\"").append(this.getValidationMessages().get(key)).append("\"");
+				dataEntries.append("}");
+
+				if(count<this.getValidationMessages().size()-1) {
+					dataEntries.append(",");
+				}
+				count ++;
+			}
+			
+			returnString.append(",").append("\"validations\"").append(":[");
+			if(dataEntries!=null) {
+				returnString.append(dataEntries.toString());
+			}
+			returnString.append("]");
+
 		}
 		
 		returnString.append("}}");
