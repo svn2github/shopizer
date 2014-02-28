@@ -2,6 +2,7 @@ package com.salesmanager.web.shop.controller.customer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -19,6 +20,7 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.catalog.product.PersistableProductReview;
 import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.entity.catalog.product.ReadableProductReview;
 import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
@@ -47,7 +49,7 @@ public class CustomerProductReviewController extends AbstractController {
 
 	@Secured("AUTH_CUSTOMER")
 	@RequestMapping(value="/review.html", method=RequestMethod.GET)
-	public String displayCustomerAccount(@RequestParam Long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String displayProductReview(@RequestParam Long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 
 	    MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
@@ -85,6 +87,29 @@ public class CustomerProductReviewController extends AbstractController {
         reviewPopulator.populate(review,  productReview, store, language);
         
         model.addAttribute("review", productReview);
+		
+		
+		/** template **/
+		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.review).append(".").append(store.getStoreTemplate());
+
+		return template.toString();
+		
+	}
+	
+	
+	@Secured("AUTH_CUSTOMER")
+	@RequestMapping(value="/review/submit.html", method=RequestMethod.GET)
+	public String submitProductReview(@Valid @RequestParam("review") PersistableProductReview review, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+
+	    MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+	    Language language = (Language)request.getAttribute(Constants.LANGUAGE);
+
+        
+        //check if customer has already evaluated the product
+
+        
+        model.addAttribute("review", review);
 		
 		
 		/** template **/

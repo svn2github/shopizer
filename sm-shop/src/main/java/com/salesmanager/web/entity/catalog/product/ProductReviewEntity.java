@@ -2,6 +2,10 @@ package com.salesmanager.web.entity.catalog.product;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.salesmanager.web.entity.ShopEntity;
@@ -17,6 +21,9 @@ public class ProductReviewEntity extends ShopEntity implements Serializable {
 	private Long productId;
 	private String date;
 	
+	@NotNull
+	@Min(1)
+	@Max(5)
 	private Double rating;
 	public String getDescription() {
 		return description;

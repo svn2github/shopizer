@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,7 +122,7 @@ public class ShoppingOrderPaymentController extends AbstractController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value={"/order/payment/{action}/{paymentmethod}.html"}, method=RequestMethod.POST)
-	public @ResponseBody AjaxResponse paymentAction(@Valid @ModelAttribute(value="order") ShopOrder order, @PathVariable String action, @PathVariable String paymentmethod, Device device, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+	public @ResponseBody String paymentAction(@Valid @ModelAttribute(value="order") ShopOrder order, @PathVariable String action, @PathVariable String paymentmethod, Device device, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		
 		
@@ -133,26 +135,34 @@ public class ShoppingOrderPaymentController extends AbstractController {
 
 		try {
 			
-			//validate order first
-			Map<String,String> messages = new HashMap<String,String>();
-			orderFacade.validateOrder(order, new BeanPropertyBindingResult(order,"order"), messages, store, locale);
-			
-			IntegrationConfiguration config = paymentService.getPaymentConfiguration(paymentmethod, store);
-			IntegrationModule integrationModule = paymentService.getPaymentMethodByCode(store, paymentmethod);
-			
 			com.salesmanager.core.business.shoppingcart.model.ShoppingCart cart = shoppingCartFacade.getShoppingCartModel(shoppingCartCode, store);
 			
 			Set<ShoppingCartItem> items = cart.getLineItems();
 			List<ShoppingCartItem> cartItems = new ArrayList<ShoppingCartItem>(items);
 			order.setShoppingCartItems(cartItems);
 			
+			//validate order first
+			Map<String,String> messages = new TreeMap<String,String>();
+			orderFacade.validateOrder(order, new BeanPropertyBindingResult(order,"order"), messages, store, locale);
+			
+			if(CollectionUtils.isNotEmpty(messages.values())) {
+				for(String key : messages.keySet()) {
+					String value = messages.get(key);
+					ajaxResponse.addValidationMessage(key, value);
+				}
+				ajaxResponse.setStatus(AjaxResponse.RESPONSE_STATUS_VALIDATION_FAILED);
+				return ajaxResponse.toJSONString();
+			}
+			
+			
+			IntegrationConfiguration config = paymentService.getPaymentConfiguration(paymentmethod, store);
+			IntegrationModule integrationModule = paymentService.getPaymentMethodByCode(store, paymentmethod);
+
 			
 			OrderTotalSummary orderTotalSummary = orderFacade.calculateOrderTotal(store, order, language);
 			
 			ShippingSummary summary = (ShippingSummary)request.getSession().getAttribute("SHIPPING_SUMMARY");
-			@SuppressWarnings("unchecked")
-			List<ShippingOption> options = (List<ShippingOption>)request.getSession().getAttribute("SHIPPING_OPTIONS");
-			
+
 			if(summary!=null) {
 				order.setShippingSummary(summary);
 			}
@@ -232,7 +242,7 @@ public class ShoppingOrderPaymentController extends AbstractController {
 
 		}
 		
-		return ajaxResponse;
+		return ajaxResponse.toJSONString();
 	}
 	
 	//cancel - success paypal order
