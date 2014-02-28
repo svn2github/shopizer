@@ -102,7 +102,6 @@ function isFormValid() {
 	
 	//console.log('Form is valid ? ' + valid);
 	if(valid==false) {//disable submit button
-		//alert(firstErrorMessage);
 		if(firstErrorMessage!=null) {
 			$(formErrorMessageId).addClass('alert-error');
 			$(formErrorMessageId).removeClass('alert-success');
@@ -122,6 +121,7 @@ function isFormValid() {
 }
 
 function isFieldValid(field) {
+	return true;
 	var validateField = true;
 	var fieldId = field.prop('id');
 	var value = field.val();
@@ -206,9 +206,8 @@ $.fn.serializeObject = function()
 
 function showErrorMessage(message) {
 	
-	$('#checkoutError').addClass('alert');
-	$('#checkoutError').addClass('alert-error');
-	$('#checkoutError').html(message);
+	
+	showResponseErrorMessage(message);
 	$('#submitOrder').addClass('btn-disabled');
 	$('#submitOrder').prop('disabled', true);
 	
@@ -342,7 +341,7 @@ function shippingQuotes(){
 		  		return;
 		  	}
 
-			console.log(response);
+			//console.log(response);
 			
 			$('#summary-table tr.subt').remove();
 			$('#totalRow').html('');
@@ -368,12 +367,10 @@ function shippingQuotes(){
 				//render summary
 				$('#shippingSection').html('');
 				var quotesRendered = quotesTemplate.render(response.shippingSummary);
-				console.log(quotesRendered);
+				//console.log(quotesRendered);
 				$('#shippingSection').html(quotesRendered);
 				bindActions();
-				//alert('end');
 			} 
-			//console.log(rendered);
 			$('#summaryRows').append(subTotalsRendered);
 			$('#totalRow').html(totalRendred);
 			isFormValid();
@@ -389,6 +386,7 @@ function shippingQuotes(){
 
 function initPayment(paymentSelection) {
 	resetErrorMessage();
+	$('.error').html('');
 	var url = '<c:url value="/shop/order/payment/init/"/>' + paymentSelection + '.html';
 	var data = $(checkoutFormId).serialize();
 	$.ajax({
@@ -399,7 +397,8 @@ function initPayment(paymentSelection) {
 		  dataType: 'json',
 		  success: function(response){
 			    $('#pageContainer').hideLoading();
-				var status = response.status;
+				var resp = response.response;
+				var status = resp.status;
 				console.log(status);
 				if(status==0 || status ==9999) {
 					
@@ -407,6 +406,26 @@ function initPayment(paymentSelection) {
 					//console.log(response.dataMap.url);
 					location.href=response.dataMap.url;
 
+				} else if(status==-2) {//validation issues
+					
+					console.log(resp.validations);
+				    var globalMessage = '';
+					for(var i = 0; i< resp.validations.length; i++) {
+						var fieldName = resp.validations[i].field;
+						var message = resp.validations[i].message;
+						console.log(fieldName +  ' - ' + message);
+						//query for the field
+						var f = $(document.getElementById('error-'+fieldName));
+						if(f) {
+							f.html(message);
+						}
+						globalMessage = globalMessage + message + '<br/>';
+						
+					}
+					
+					showResponseErrorMessage(globalMessage);
+					
+					
 				} else {
 					console.log('Wrong status ' + status);
 					showResponseErrorMessage('<s:message code="error.code.99" text="An error message occured while trying to process the payment (99)"/>');
@@ -622,8 +641,10 @@ $(document).ready(function() {
 									  				   <div class="control-group"> 
 														<label><s:message code="label.generic.firstname" text="First Name"/></label>
 									    					<div class="controls"> 
-									    					<s:message code="NotEmpty.customer.firstName" text="First name is required" var="msgFirstName"/>
-									      					<form:input id="customer.firstName" cssClass="input-large required" path="customer.billing.firstName" title="${msgFirstName}"/>
+										    					<s:message code="NotEmpty.customer.firstName" text="First name is required" var="msgFirstName"/>
+										      					<form:input id="customer.firstName" cssClass="input-large required" path="customer.billing.firstName" title="${msgFirstName}"/>
+										    					<form:errors path="customer.billing.firstName" cssClass="error" />
+										    					<span id="error-customer.billing.firstName" class="error"></span>
 									    					</div> 
 									  				   </div> 
 													</div>
@@ -631,8 +652,10 @@ $(document).ready(function() {
 									  				   <div class="control-group"> 
 														<label><s:message code="label.generic.lastname" text="Last Name"/></label>
 									    					<div class="controls"> 
-									    					<s:message code="NotEmpty.customer.lastName" text="Last name is required" var="msgLastName"/>
-									    					<form:input id="customer.lastName" cssClass="input-large required"  maxlength="32" path="customer.billing.lastName" title="${msgLastName}" />
+										    					<s:message code="NotEmpty.customer.lastName" text="Last name is required" var="msgLastName"/>
+										    					<form:input id="customer.lastName" cssClass="input-large required"  maxlength="32" path="customer.billing.lastName" title="${msgLastName}" />
+										    					<form:errors path="customer.billing.lastName" cssClass="error" />
+										    					<span id="error-customer.billing.lastName" class="error"></span>
 									    					</div> 
 									  				   </div> 
 													</div>
@@ -645,8 +668,10 @@ $(document).ready(function() {
 									  				   <div class="control-group"> 
 														<label><s:message code="label.generic.email" text="Email address"/></label>
 									    					<div class="controls">
-									    					<s:message code="NotEmpty.customer.emailAddress" text="Email address is required" var="msgEmail"/> 
-									    					<form:input id="customer.emailAddress" cssClass="input-large required email" path="customer.emailAddress" title="${msgEmail}"/>
+										    					<s:message code="NotEmpty.customer.emailAddress" text="Email address is required" var="msgEmail"/> 
+										    					<form:input id="customer.emailAddress" cssClass="input-large required email" path="customer.emailAddress" title="${msgEmail}"/>
+										    					<form:errors path="customer.emailAddress" cssClass="error" />
+											    				<span id="error-customer.emailAddress" class="error"></span>
 									    					</div> 
 									  				   </div> 
 													</div>
@@ -654,7 +679,9 @@ $(document).ready(function() {
 									  				   <div class="control-group"> 
 														<label><s:message code="label.customer.billing.company" text="Billing company"/></label>
 									    					<div class="controls"> 
-									      					<form:input id="customer.billing.company" cssClass="input-large" path="customer.billing.company"/>
+										      					<form:input id="customer.billing.company" cssClass="input-large" path="customer.billing.company"/>
+										      					<form:errors path="customer.billing.company" cssClass="error" />
+												    			<span id="error-customer.billing.company" class="error"></span>
 									    					</div> 
 									  				   </div> 
 													</div>
@@ -667,6 +694,8 @@ $(document).ready(function() {
 										    				<div class="controls"> 
 										    					<s:message code="NotEmpty.customer.billing.address" text="Address is required" var="msgAddress"/>
 										      					<form:input id="customer.billing.address" cssClass="input-xxlarge required" path="customer.billing.address" title="${msgAddress}"/>
+										      					<form:errors path="customer.billing.address" cssClass="error" />
+												    			<span id="error-customer.billing.address" class="error"></span>
 										    				</div> 
 										  			</div> 
 											</div>
@@ -679,6 +708,8 @@ $(document).ready(function() {
 											    				<div class="controls"> 
 											    					<s:message code="NotEmpty.customer.billing.city" text="City is required" var="msgCity"/>
 											      					<form:input id="customer.billing.city" cssClass="input-large required" path="customer.billing.city" title="${msgCity}"/>
+											      					<form:errors path="customer.billing.city" cssClass="error" />
+												    				<span id="error-customer.billing.city" class="error"></span>
 											    				</div> 
 											  			</div>
 													</div>
@@ -688,6 +719,8 @@ $(document).ready(function() {
 											    				<div class="controls"> 
 											    					<s:message code="NotEmpty.customer.billing.postalCode" text="Postal code is required" var="msgPostalCode"/>
 											      					<form:input id="billingPostalCode" cssClass="input-large required billing-postalCode" path="customer.billing.postalCode" title="${msgPostalCode}"/>
+																	<form:errors path="customer.billing.postalCode" cssClass="error" />
+												    				<span id="error-customer.billing.postalCode" class="error"></span>
 											    				</div> 
 											  			</div>
 													</div>
@@ -700,7 +733,9 @@ $(document).ready(function() {
 											    		<div class="controls"> 
 												       			<form:select cssClass="zone-list" id="billingStateList" path="customer.billing.zone"/>
 											                    <s:message code="NotEmpty.customer.billing.stateProvince" text="State / Province is required" var="msgStateProvince"/>
-											                    <form:input  class="input-large required" id="billingStateProvince"  maxlength="100" name="billingStateProvince" path="customer.billing.stateProvince" title="${msgStateProvince}"/> 
+											                    <form:input  class="input-large required" id="billingStateProvince"  maxlength="100" name="billingStateProvince" path="customer.billing.stateProvince" title="${msgStateProvince}"/>
+											                    <form:errors path="customer.billing.stateProvince" cssClass="error" />
+												    			<span id="error-customer.billing.stateProvince" class="error"></span> 
 											    		</div> 
 											  		</div>
 										   </div>
@@ -721,6 +756,8 @@ $(document).ready(function() {
 										    				<div class="controls"> 
 										    					<s:message code="NotEmpty.customer.billing.phone" text="Phone number is required" var="msgPhone"/>
 										      					<form:input id="customer.billing.phone" cssClass="input-large required billing-phone" path="customer.billing.phone" title="${msgPhone}"/>
+										      					<form:errors path="customer.billing.phone" cssClass="error" />
+												    			<span id="error-customer.billing.phone" class="error"></span> 
 										    				</div> 
 										  			</div>
 													

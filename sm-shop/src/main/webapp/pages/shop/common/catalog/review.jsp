@@ -17,7 +17,7 @@ response.setDateHeader ("Expires", -1);
 
 					<div id="review" class="row-fluid">
 
-					<h3>Rate item</h3>
+					<h3><s:message code="label.product.rate"/></h3>
 					
 					<div class="span12 no_margin">
 					<div class="span6">
@@ -45,10 +45,10 @@ response.setDateHeader ("Expires", -1);
 				    	<form:hidden path="rating"/>
 				    	<form:hidden path="customer.id"/>
 				    	<form:hidden path="productId"/>
-						    <label>Your opinion</label>
+						    <label><s:message code="label.generic.youropinion" text="Your opinion" /></label>
 						    <textarea name="" rows="6" class="span6" path="description"></textarea>
 							<label>&nbsp;</label>
-						    <span class="help-block">Product rating (click on the stars to activate rating)</span>
+						    <span class="help-block"><s:message code="label.product.clickrate" text="Product rating (click on the stars to activate rating)" /></span>
 						    <div id="productRating" style="width: 100px;"></div>
 									<script>
 									$(function() {
@@ -64,7 +64,7 @@ response.setDateHeader ("Expires", -1);
 									});	
 									</script>
 							<br/>
-						    <button type="submit" class="btn">Submit</button>
+						    <button type="submit" class="btn"><s:message code="button.label.submit" text="Submit"/></button>
 				    </form:form>
 					</div>
 					<div class="span6">&nbsp;</div>
