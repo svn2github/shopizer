@@ -190,6 +190,11 @@
 		<property name="secretKey" ref="secretKey"/>
 	</bean>
 	
+	<!-- Geo Location -->
+	<bean id="geoLocation"
+		class="com.salesmanager.core.modules.utils.GeoLocationImpl" factory-method="getInstance">
+	</bean>
+	
 	<!-- Email -->
 	<bean id="freemarkerMailConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
                  <!-- Uses HTML with templates and freemarker template engine -->
