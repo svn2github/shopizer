@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.salesmanager.core.business.common.model.Address;
 import com.salesmanager.core.business.customer.dao.CustomerDAO;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.CustomerCriteria;
@@ -16,6 +17,7 @@ import com.salesmanager.core.business.customer.service.attribute.CustomerAttribu
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.modules.utils.GeoLocation;
 
 @Service("customerService")
 public class CustomerServiceImpl extends SalesManagerEntityServiceImpl<Long, Customer> implements CustomerService {
@@ -26,6 +28,9 @@ public class CustomerServiceImpl extends SalesManagerEntityServiceImpl<Long, Cus
 	
 	@Autowired
 	private CustomerAttributeService customerAttributeService;
+	
+	@Autowired
+	private GeoLocation geoLocation;
 
 	
 	@Autowired
@@ -62,6 +67,17 @@ public class CustomerServiceImpl extends SalesManagerEntityServiceImpl<Long, Cus
 	@Override
 	public CustomerList listByStore(MerchantStore store, CustomerCriteria criteria) {
 		return customerDAO.listByStore(store,criteria);
+	}
+	
+	@Override
+	public Address getCustomerAddress(MerchantStore store, String ipAddress) throws ServiceException {
+		
+		try {
+			return geoLocation.getAddress(ipAddress);
+		} catch(Exception e) {
+			throw new ServiceException(e);
+		}
+		
 	}
 
 	@Override	
