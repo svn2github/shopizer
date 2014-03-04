@@ -79,18 +79,6 @@
 
 </style>
 
-		<script src="<c:url value="/resources/js/bootstrap/jquery.js" />"></script>
-		<script type="text/javascript" src="<c:url value="/resources/js/jquery-cookie.js"/>"></script>
-		<script src="<c:url value="/resources/js/bootstrap/bootstrap-modal.js" />"></script>
-
-
-
-    <script SRC="<c:url value="/resources/smart-client/system/modules/ISC_Core.js" />"></script>
-    <script SRC="<c:url value="/resources/smart-client/system/modules/ISC_Foundation.js" />"></script>
-    <script SRC="<c:url value="/resources/smart-client/system/modules/ISC_Containers.js" />"></script>
-    <script SRC="<c:url value="/resources/smart-client/system/modules/ISC_Grids.js" />"></script>
-    <script SRC="<c:url value="/resources/smart-client/system/modules/ISC_DataBinding.js" />"></script>
-
 
 	</head>
 

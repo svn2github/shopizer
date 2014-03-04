@@ -231,6 +231,7 @@ function resetErrorMessage() {
 	$('#checkoutError').html('');
 	$('#checkoutError').removeClass('alert');
 	$('#checkoutError').removeClass('alert-error');
+	$('.error').html('');
 	
 }
 
@@ -385,8 +386,6 @@ function shippingQuotes(){
 }
 
 function initPayment(paymentSelection) {
-	resetErrorMessage();
-	$('.error').html('');
 	var url = '<c:url value="/shop/order/payment/init/"/>' + paymentSelection + '.html';
 	var data = $(checkoutFormId).serialize();
 	$.ajax({
@@ -402,9 +401,9 @@ function initPayment(paymentSelection) {
 				console.log(status);
 				if(status==0 || status ==9999) {
 					
-					var data = response.dataMap.url;
-					//console.log(response.dataMap.url);
-					location.href=response.dataMap.url;
+					var data = resp.url;
+					console.log(resp.url);
+					location.href=resp.url;
 
 				} else if(status==-2) {//validation issues
 					
@@ -594,6 +593,7 @@ $(document).ready(function() {
 			} else {
 				//submit form
 				$('#pageContainer').hideLoading();
+				$('#checkoutForm').submit();
 				
 			}
 	    });
@@ -606,8 +606,8 @@ $(document).ready(function() {
 </script>
 
 
-   
-   <form:form id="checkoutForm" method="POST" enctype="multipart/form-data" commandName="order" action="#">
+   <c:set var="commitUrl" value="${pageContext.request.contextPath}/shop/order/commitOrder.html"/>
+   <form:form id="checkoutForm" method="POST" enctype="multipart/form-data" commandName="order" action="${commitUrl}">
 	   
 
 		<div class="row-fluid" id="checkout">

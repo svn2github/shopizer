@@ -19,7 +19,7 @@ response.setDateHeader ("Expires", -1);
 		<table>
 			<tr>
 				<td><img src="<c:url value="/resources/img/important-icon.png"/>" width="50"></td>
-				<td><h3><s:message code="message.resource.notfound" text="Page not found"/></h3></td>
+				<td><h3><s:message code="message.timeout" text="The request timed out"/></h3></td>
 			</tr>
 		</table>
 					
