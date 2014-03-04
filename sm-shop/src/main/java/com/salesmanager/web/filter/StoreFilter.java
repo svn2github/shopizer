@@ -28,6 +28,7 @@ import com.salesmanager.core.business.content.model.ContentDescription;
 import com.salesmanager.core.business.content.model.ContentType;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -73,6 +74,9 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 
 	@Autowired
 	private MerchantStoreService merchantService;
+	
+	@Autowired
+	private CustomerService customerService;
 	
 	@Autowired
 	private MerchantConfigurationService merchantConfigurationService;
@@ -154,17 +158,34 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 					}
 					request.setAttribute(Constants.CUSTOMER, customer);
 				}
+				
 				AnonymousCustomer anonymousCustomer =  (AnonymousCustomer)request.getSession().getAttribute(Constants.ANONYMOUS_CUSTOMER);
 				if(anonymousCustomer==null) {
-					anonymousCustomer = new AnonymousCustomer();
-					Address address = new Address();
-					address.setCountry(store.getCountry().getIsoCode());
-					if(store.getZone()!=null) {
-						address.setZone(store.getZone().getCode());
-					} else {
-						address.setStateProvince(store.getStorestateprovince());
+					
+					Address address = null;
+					try {
+						address = new Address();
+						com.salesmanager.core.business.common.model.Address geoAddress = customerService.getCustomerAddress(store, request.getRemoteAddr());
+						address.setCountry(geoAddress.getCountry());
+						address.setCity(geoAddress.getCity());
+						address.setZone(geoAddress.getZone());
+						address.setPostalCode(geoAddress.getPostalCode());
+					} catch(Exception ce) {
+						LOGGER.error("Cannot get geo ip component ", ce);
 					}
-					address.setPostalCode(store.getStorepostalcode());
+					
+					if(address==null) {
+						address = new Address();
+						address.setCountry(store.getCountry().getIsoCode());
+						if(store.getZone()!=null) {
+							address.setZone(store.getZone().getCode());
+						} else {
+							address.setStateProvince(store.getStorestateprovince());
+						}
+						address.setPostalCode(store.getStorepostalcode());
+					}
+					
+					anonymousCustomer = new AnonymousCustomer();
 					anonymousCustomer.setBilling(address);
 					request.getSession().setAttribute(Constants.ANONYMOUS_CUSTOMER, anonymousCustomer);
 				} else {

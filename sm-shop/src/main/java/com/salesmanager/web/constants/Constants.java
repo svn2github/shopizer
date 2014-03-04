@@ -27,6 +27,7 @@ public class Constants {
 	public final static String ORDER_ID = "ORDER_ID";
 	public final static String SHIPPING_SUMMARY = "SHIPPING_SUMMARY";
 	public final static String SHIPPING_OPTIONS = "SHIPPING_OPTIONS";
+	public final static String ORDER_SUMMARY = "ORDER_SIMMARY";
 
 
 	public final static String GROUP_ADMIN = "ADMIN";

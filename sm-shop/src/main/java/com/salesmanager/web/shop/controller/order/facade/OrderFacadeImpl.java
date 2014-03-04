@@ -512,8 +512,7 @@ public class OrderFacadeImpl implements OrderFacade {
 			return null;
 		}
 	}
-	
-	
+
 	@Override
 	public void validateOrder(ShopOrder order, BindingResult bindingResult, Map<String,String> messagesResult, MerchantStore store,  Locale locale) throws ServiceException {
 
@@ -630,10 +629,7 @@ public class OrderFacadeImpl implements OrderFacade {
 			
 	        if ( bindingResult.hasErrors() )
 	        {
-	            //LOGGER.info( "found {} validation error while validating in customer registration ",
-	            //             bindingResult.getErrorCount() );
-	    		//StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Checkout.checkout).append(".").append(store.getStoreTemplate());
-	    		//return template.toString();
+	            return;
 
 	        }
 			

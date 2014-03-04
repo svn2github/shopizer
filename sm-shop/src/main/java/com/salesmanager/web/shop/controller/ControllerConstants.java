@@ -44,6 +44,7 @@ public interface ControllerConstants
         
         interface Pages{
             final static String notFound="404";
+            final static String timeout="timeout";
         }
         
         interface Merchant{
@@ -52,6 +53,7 @@ public interface ControllerConstants
         
         interface Checkout{
             final static String checkout="checkout";
+            final static String confirmation="confirmation";
         }
         
         interface Search{

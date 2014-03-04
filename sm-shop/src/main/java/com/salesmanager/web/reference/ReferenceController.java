@@ -181,13 +181,14 @@ public class ReferenceController {
 			
 				years = new ArrayList<String>();
 				//current year
-				Calendar localCalendar = Calendar.getInstance(TimeZone.getDefault());
-				for(int i = 1 ; i < 20 ; i++) {
+				
+				for(int i = 0 ; i < 10 ; i++) {
+					Calendar localCalendar = Calendar.getInstance(TimeZone.getDefault());
 					localCalendar.add(Calendar.YEAR, i);
 					String dt = DateUtil.formatYear(localCalendar.getTime());
 					years.add(dt);
 				}
-				//up to year + 20
+				//up to year + 10
 				
 				cache.putInCache(years, Constants.CREDIT_CARD_YEARS_CACHE_KEY);
 			

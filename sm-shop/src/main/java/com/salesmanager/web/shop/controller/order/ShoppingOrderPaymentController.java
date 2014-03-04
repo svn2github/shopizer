@@ -1,7 +1,6 @@
 package com.salesmanager.web.shop.controller.order;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -20,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mobile.device.Device;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +40,6 @@ import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
-import com.salesmanager.core.business.shipping.model.ShippingOption;
 import com.salesmanager.core.business.shipping.model.ShippingSummary;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
@@ -159,7 +156,11 @@ public class ShoppingOrderPaymentController extends AbstractController {
 			IntegrationModule integrationModule = paymentService.getPaymentMethodByCode(store, paymentmethod);
 
 			
-			OrderTotalSummary orderTotalSummary = orderFacade.calculateOrderTotal(store, order, language);
+			//OrderTotalSummary orderTotalSummary = orderFacade.calculateOrderTotal(store, order, language);
+			OrderTotalSummary orderTotalSummary = super.getSessionAttribute(Constants.ORDER_SUMMARY, request);
+			if(orderTotalSummary==null) {
+				//TODO recalculate
+			}
 			
 			ShippingSummary summary = (ShippingSummary)request.getSession().getAttribute("SHIPPING_SUMMARY");
 
@@ -249,7 +250,7 @@ public class ShoppingOrderPaymentController extends AbstractController {
 	@RequestMapping(value={"/paypal/checkout.html/{code}"}, method=RequestMethod.GET)
 	public  String returnPayPalPayment(@PathVariable String code, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		if(Constants.SUCCESS.equals(code)) {
-			return "redirect:" + Constants.SHOP_URI + "/order/preCommit.html";
+			return "redirect:" + Constants.SHOP_URI + "/order/commitPreAuthorized.html";
 		} else {//process as cancel
 			return "redirect:" + Constants.SHOP_URI + "/order/checkout.html";
 		}	
