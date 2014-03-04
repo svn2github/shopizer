@@ -155,57 +155,78 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 
 			List<PaymentDetailsItemType> lineItems = new ArrayList<PaymentDetailsItemType>();
 			
-			
+			BigDecimal itemsTotal = new BigDecimal("0");
 			for(ShoppingCartItem cartItem : items) {
 			
 				PaymentDetailsItemType item = new PaymentDetailsItemType();
 				BasicAmountType amt = new BasicAmountType();
 				amt.setCurrencyID(urn.ebay.apis.eBLBaseComponents.CurrencyCodeType.fromValue(payment.getCurrency().getCode()));
 				amt.setValue(pricingService.getStringAmount(cartItem.getSubTotal(), store));
+				itemsTotal = itemsTotal.add(cartItem.getSubTotal());
 				int itemQuantity = cartItem.getQuantity();
 				item.setQuantity(itemQuantity);
 				item.setName(cartItem.getProduct().getProductDescription().getName());
 				item.setAmount(amt);
-				
+				System.out.println(pricingService.getStringAmount(cartItem.getSubTotal(), store));
 				lineItems.add(item);
 			
 			}
 			
 			
 			List<OrderTotal> orderTotals = summary.getTotals();
+			BigDecimal tax = null;
 			for(OrderTotal total : orderTotals) {
 				
 				if(total.getModule().equals(Constants.OT_SHIPPING_MODULE_CODE)) {
 					BasicAmountType shipping = new BasicAmountType();
 					shipping.setCurrencyID(urn.ebay.apis.eBLBaseComponents.CurrencyCodeType.fromValue(store.getCurrency().getCode()));
-					shipping.setValue(String.valueOf(total.getValue().doubleValue()));
+					shipping.setValue(pricingService.getStringAmount(total.getValue(), store));
+					System.out.println(pricingService.getStringAmount(total.getValue(), store));
 					paymentDetails.setShippingTotal(shipping);
 				}
 				
 				if(total.getModule().equals(Constants.OT_HANDLING_MODULE_CODE)) {
 					BasicAmountType handling = new BasicAmountType();
 					handling.setCurrencyID(urn.ebay.apis.eBLBaseComponents.CurrencyCodeType.fromValue(store.getCurrency().getCode()));
-					handling.setValue(String.valueOf(total.getValue().doubleValue()));
+					handling.setValue(pricingService.getStringAmount(total.getValue(), store));
+					System.out.println(pricingService.getStringAmount(total.getValue(), store));
 					paymentDetails.setHandlingTotal(handling);
 				}
 				
 				if(total.getModule().equals(Constants.OT_TAX_MODULE_CODE)) {
-					BasicAmountType tax = new BasicAmountType();
-					tax.setCurrencyID(urn.ebay.apis.eBLBaseComponents.CurrencyCodeType.fromValue(store.getCurrency().getCode()));
-					tax.setValue(String.valueOf(total.getValue().doubleValue()));
-					paymentDetails.setTaxTotal(tax);
+					if(tax==null) {
+						tax = new BigDecimal("0");
+					}
+					tax = tax.add(total.getValue());
 				}
 				
 			}
+			
+			if(tax!=null) {
+				BasicAmountType taxAmnt = new BasicAmountType();
+				taxAmnt.setCurrencyID(urn.ebay.apis.eBLBaseComponents.CurrencyCodeType.fromValue(store.getCurrency().getCode()));
+				taxAmnt.setValue(pricingService.getStringAmount(tax, store));
+				System.out.println(pricingService.getStringAmount(tax, store));
+				paymentDetails.setTaxTotal(taxAmnt);
+			}
+			
+			
 			//BasicAmountType handling = new BasicAmountType() paymentDetails.getHandlingTotal();
 			//BasicAmountType tax = new BasicAmountType();
 			//tax.setCurrencyID(currencyID)
 			//tax.setValue(value)
 			
+			BasicAmountType itemTotal = new BasicAmountType();
+			itemTotal.setCurrencyID(urn.ebay.apis.eBLBaseComponents.CurrencyCodeType.fromValue(store.getCurrency().getCode()));
+			itemTotal.setValue(pricingService.getStringAmount(itemsTotal, store));
+			paymentDetails.setItemTotal(itemTotal);
+			
 			paymentDetails.setPaymentDetailsItem(lineItems);
 			BasicAmountType orderTotal = new BasicAmountType();
 			orderTotal.setCurrencyID(urn.ebay.apis.eBLBaseComponents.CurrencyCodeType.fromValue(store.getCurrency().getCode()));
-			orderTotal.setValue(String.valueOf(summary.getTotal().doubleValue())); 
+			orderTotal.setValue(pricingService.getStringAmount(summary.getTotal(), store));
+			//orderTotal.setValue(pricingService.getStringAmount(itemsTotal, store));
+			System.out.println(pricingService.getStringAmount(itemsTotal, store));
 			paymentDetails.setOrderTotal(orderTotal);
 			List<PaymentDetailsType> paymentDetailsList = new ArrayList<PaymentDetailsType>();
 			paymentDetailsList.add(paymentDetails);

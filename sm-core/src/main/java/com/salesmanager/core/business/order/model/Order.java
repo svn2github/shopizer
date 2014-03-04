@@ -120,7 +120,7 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@JoinColumn(name = "CURRENCY_ID")
 	private Currency currency;
 	
-	@NotEmpty
+	
 	@ManyToOne(targetEntity = MerchantStore.class)
 	@JoinColumn(name="MERCHANTID")
 	private MerchantStore merchant;

@@ -39,6 +39,7 @@ public class TaxServiceImpl
 		implements TaxService {
 	
 	private final static String TAX_CONFIGURATION = "TAX_CONFIG";
+	private final static String DEFAULT_TAX_CLASS = "DEFAULT";
 	
 	@Autowired
 	private MerchantConfigurationService merchantConfigurationService;
@@ -57,6 +58,8 @@ public class TaxServiceImpl
 	
 	@Override
 	public TaxConfiguration getTaxConfiguration(MerchantStore store) throws ServiceException {
+		
+		
 		
 		MerchantConfiguration configuration = merchantConfigurationService.getMerchantConfiguration(TAX_CONFIGURATION, store);
 		TaxConfiguration taxConfiguration = null;
@@ -178,16 +181,17 @@ public class TaxServiceImpl
 				TaxClass taxClass = item.getProduct().getTaxClass();
 				int quantity = item.getQuantity();
 				itemPrice = itemPrice.multiply(new BigDecimal(quantity));
-				if(taxClass!=null) {
-					BigDecimal subTotal = taxClassAmountMap.get(taxClass.getId());
-					if(subTotal==null) {
-						subTotal = new BigDecimal(0);
-					}
-					
-					subTotal = subTotal.add(itemPrice);
-					taxClassAmountMap.put(taxClass.getId(), subTotal);
-					taxClasses.put(taxClass.getId(), taxClass);
+				if(taxClass==null) {
+					taxClass = taxClassService.getByCode(DEFAULT_TAX_CLASS);
 				}
+				BigDecimal subTotal = taxClassAmountMap.get(taxClass.getId());
+				if(subTotal==null) {
+					subTotal = new BigDecimal(0);
+				}
+					
+				subTotal = subTotal.add(itemPrice);
+				taxClassAmountMap.put(taxClass.getId(), subTotal);
+				taxClasses.put(taxClass.getId(), taxClass);
 				
 		}
 		
@@ -202,18 +206,16 @@ public class TaxServiceImpl
 				//taxClasses.put(defaultTaxClass.getId(), defaultTaxClass);
 				BigDecimal amnt = taxClassAmountMap.get(defaultTaxClass.getId());
 				if(amnt==null) {
-					amnt = new BigDecimal(0);
-					taxClassAmountMap.put(defaultTaxClass.getId(), amnt);
+					amnt = new BigDecimal(0);	
 				}
 				ShippingSummary shippingSummary = orderSummary.getShippingSummary();
 				if(shippingSummary!=null && shippingSummary.getShipping()!=null && shippingSummary.getShipping().doubleValue()>0) {
 					amnt = amnt.add(shippingSummary.getShipping());
-					taxClassAmountMap.put(defaultTaxClass.getId(), amnt);
 					if(shippingSummary.getHandling()!=null && shippingSummary.getHandling().doubleValue()>0) {
 						amnt = amnt.add(shippingSummary.getHandling());
-						taxClassAmountMap.put(defaultTaxClass.getId(), amnt);
 					}
 				}
+				taxClassAmountMap.put(defaultTaxClass.getId(), amnt);
 			//}
 		//}
 		
