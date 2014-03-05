@@ -152,8 +152,8 @@ public class ShoppingOrderPaymentController extends AbstractController {
 			}
 			
 			
-			IntegrationConfiguration config = paymentService.getPaymentConfiguration(paymentmethod, store);
-			IntegrationModule integrationModule = paymentService.getPaymentMethodByCode(store, paymentmethod);
+			IntegrationConfiguration config = paymentService.getPaymentConfiguration(order.getPaymentModule(), store);
+			IntegrationModule integrationModule = paymentService.getPaymentMethodByCode(store, order.getPaymentModule());
 
 			
 			//OrderTotalSummary orderTotalSummary = orderFacade.calculateOrderTotal(store, order, language);
@@ -178,7 +178,7 @@ public class ShoppingOrderPaymentController extends AbstractController {
 			customerPopulator.setZoneService(zoneService);
 			
 			if(action.equals(INIT_ACTION)) {
-				if(paymentmethod.equals("paypal-express-checkout")) {
+				if(paymentmethod.equals("PAYPAL")) {
 					try {
 						
 

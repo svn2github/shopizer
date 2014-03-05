@@ -293,13 +293,26 @@ public class ShoppingOrderController extends AbstractController {
 	public String commitPreAuthorizedOrder(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+		Language language = (Language)request.getAttribute("LANGUAGE");
 		ShopOrder order = super.getSessionAttribute(Constants.ORDER, request);
 		if(order==null) {
 			StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Pages.timeout).append(".").append(store.getStoreTemplate());
 			return template.toString();	
 		}
 		
+
+		
 		try {
+			
+			OrderTotalSummary totalSummary = super.getSessionAttribute(Constants.ORDER_SUMMARY, request);
+			
+			if(totalSummary==null) {
+				totalSummary = orderFacade.calculateOrderTotal(store, order, language);
+				super.setSessionAttribute(Constants.ORDER_SUMMARY, totalSummary, request);
+			}
+			
+			
+			order.setOrderTotalSummary(totalSummary);
 			
 			//already validated, proceed with commit
 			Order orderModel = this.commitOrder(order, request, locale);

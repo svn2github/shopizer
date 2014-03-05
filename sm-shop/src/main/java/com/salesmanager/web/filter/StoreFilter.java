@@ -45,6 +45,7 @@ import com.salesmanager.web.entity.shop.Breadcrumb;
 import com.salesmanager.web.entity.shop.BreadcrumbItem;
 import com.salesmanager.web.entity.shop.BreadcrumbItemType;
 import com.salesmanager.web.entity.shop.PageInformation;
+import com.salesmanager.web.utils.GeoLocationUtils;
 import com.salesmanager.web.utils.LabelUtils;
 
 
@@ -164,12 +165,16 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 					
 					Address address = null;
 					try {
-						address = new Address();
-						com.salesmanager.core.business.common.model.Address geoAddress = customerService.getCustomerAddress(store, request.getRemoteAddr());
-						address.setCountry(geoAddress.getCountry());
-						address.setCity(geoAddress.getCity());
-						address.setZone(geoAddress.getZone());
-						address.setPostalCode(geoAddress.getPostalCode());
+						
+						String ipAddress = GeoLocationUtils.getClientIpAddress(request);
+						com.salesmanager.core.business.common.model.Address geoAddress = customerService.getCustomerAddress(store, ipAddress);
+						if(geoAddress!=null) {
+							address = new Address();
+							address.setCountry(geoAddress.getCountry());
+							address.setCity(geoAddress.getCity());
+							address.setZone(geoAddress.getZone());
+							address.setPostalCode(geoAddress.getPostalCode());
+						}
 					} catch(Exception ce) {
 						LOGGER.error("Cannot get geo ip component ", ce);
 					}

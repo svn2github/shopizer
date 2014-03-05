@@ -2,7 +2,7 @@ package com.salesmanager.web.utils;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class GeoLocationUtile {
+public class GeoLocationUtils {
 	
 	
 	private static final String[] HEADERS_TO_TRY = { 
