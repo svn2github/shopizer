@@ -18,10 +18,11 @@ response.setDateHeader ("Expires", -1);
           <div class="control-group">
             <label class="control-label"><s:message code="label.payment.paypal.usepaypal" text="Use PayPal"/></label>
             <div class="controls">
-               <input type="radio" name="paymentMethodType" value="<c:out value="${requestScope.paymentMethod.paymentMethodCode}"/>" <c:if test="${requestScope.paymentMethod.defaultSelected==true}"> checked</c:if>/>
+               <input type="radio" name="paymentMethodType" value="<c:out value="${requestScope.paymentMethod.paymentType}"/>" <c:if test="${requestScope.paymentMethod.defaultSelected==true}"> checked</c:if>/>
+               <input type="hidden" name="paymentModule" value="${requestScope.paymentMethod.paymentMethodCode}"/>
             </div>
           </div>
-
+		 
 		 <div class="control-group">
 		 	<!-- PayPal Logo -->
 		 	<a href="https://www.paypal.com/webapps/mpp/paypal-popup" title="How PayPal Works" onclick="javascript:window.open('https://www.paypal.com/webapps/mpp/paypal-popup','WIPaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700'); return false;"><img src="https://www.paypalobjects.com/webstatic/mktg/logo/AM_mc_vs_dc_ae.jpg" width="200" border="0" alt="PayPal Acceptance Mark"></a>

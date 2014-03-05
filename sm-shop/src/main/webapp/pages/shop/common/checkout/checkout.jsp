@@ -586,10 +586,8 @@ $(document).ready(function() {
 			resetErrorMessage();
 			$('#pageContainer').showLoading();
 			var paymentSelection = $('input[name=paymentMethodType]:checked', checkoutFormId).val();
-			if(paymentSelection.contains('paypal')) {
-
+			if(paymentSelection.contains('PAYPAL')) {
 				initPayment(paymentSelection);
-				
 			} else {
 				//submit form
 				$('#pageContainer').hideLoading();
