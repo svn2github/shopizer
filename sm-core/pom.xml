@@ -15,7 +15,7 @@
 		<jdk.version>1.6</jdk.version>
 		
 		
-		<jackson-version>1.8.1</jackson-version>
+		<jackson-version>1.9.13</jackson-version>
 		<axis-version>1.4</axis-version>
 		<jaxws.api.version>2.1</jaxws.api.version>
 		<jaxws.version>2.1.4</jaxws.version>
@@ -380,8 +380,15 @@
 			<artifactId>merchantsdk</artifactId>
 			<version>2.6.109</version>
 		</dependency>
-			
+		
+	    <dependency>
+	        <groupId>com.maxmind.geoip2</groupId>
+	        <artifactId>geoip2</artifactId>
+	        <version>0.7.0</version>
+	    </dependency>
+	    
 
+			
 		<!-- Test dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
