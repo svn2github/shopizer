@@ -301,11 +301,7 @@ public class PaymentServiceImpl implements PaymentService {
 		
 		payment.setCurrency(store.getCurrency());
 		
-		if(payment.getTransactionType().name().equals(TransactionType.CAPTURE.name())) {
-			throw new ServiceException("This method does not allow to process capture transaction. Use processCapturePayment");
-		}
-		
-		
+
 		//must have a shipping module configured
 		Map<String, IntegrationConfiguration> modules = this.getPaymentModulesConfigured(store);
 		if(modules==null){
@@ -322,6 +318,8 @@ public class PaymentServiceImpl implements PaymentService {
 			throw new ServiceException("Payment module " + payment.getModuleName() + " is not active");
 		}
 		
+		String sTransactionType = configuration.getIntegrationKeys().get("transaction");
+		
 		
 		PaymentModule module = this.paymentModules.get(payment.getModuleName());
 		
@@ -335,8 +333,14 @@ public class PaymentServiceImpl implements PaymentService {
 		}
 		
 		IntegrationModule integrationModule = getPaymentMethodByCode(store,payment.getModuleName());
+		TransactionType transactionType = TransactionType.valueOf(sTransactionType);
+		if(transactionType==null) {
+			transactionType = payment.getTransactionType();
+			if(transactionType.equals(TransactionType.CAPTURE.name())) {
+				throw new ServiceException("This method does not allow to process capture transaction. Use processCapturePayment");
+			}
+		}
 		
-		TransactionType transactionType = payment.getTransactionType();
 		Transaction transaction = null;
 		if(transactionType == TransactionType.AUTHORIZE)  {
 			transaction = module.authorize(store, customer, items, amount, payment, configuration, integrationModule);

@@ -1,12 +1,9 @@
 package com.salesmanager.core.modules.utils;
 
-import java.io.File;
 import java.net.InetAddress;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.model.CityResponse;
@@ -17,8 +14,8 @@ public class GeoLocationImpl implements GeoLocation {
 	
 	private DatabaseReader reader = null;
 	private static final Logger LOGGER = LoggerFactory.getLogger( GeoLocationImpl.class );
-	@Value("${dbPath:classpath:/reference/GeoLite2-Country.mmdb}")
-	private Resource db;
+	//@Value("${dbPath:classpath:/reference/GeoLite2-Country.mmdb}")
+	//private Resource db;
 
 	
 
@@ -27,14 +24,15 @@ public class GeoLocationImpl implements GeoLocation {
 	public Address getAddress(String ipAddress) throws Exception {
 		
 			if(reader==null) {
-				if(db!=null) {
-					File file = db.getFile();
+				//if(db!=null) {
+					//File file = db.getFile();
 					try {
-						reader = new DatabaseReader.Builder(file).build();
+						java.io.InputStream inputFile = GeoLocationImpl.class.getClassLoader().getResourceAsStream("reference/GeoLite2-Country.mmdb");
+						reader = new DatabaseReader.Builder(inputFile).build();
 					} catch(Exception e) {
 						LOGGER.error("Cannot instantiate IP database",e);
 					}
-				}
+				//}
 			}
 		
 			Address address = new Address();

@@ -5,7 +5,7 @@ import com.salesmanager.core.business.reference.currency.model.Currency;
 public abstract class Payment {
 	
 	private PaymentType paymentType;
-	private TransactionType transactionType = TransactionType.CAPTURE;
+	private TransactionType transactionType = TransactionType.AUTHORIZECAPTURE;
 	private String moduleName;
 	private Currency currency;
 
