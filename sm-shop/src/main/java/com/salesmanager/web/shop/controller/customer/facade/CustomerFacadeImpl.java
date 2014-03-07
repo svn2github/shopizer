@@ -4,10 +4,6 @@
 package com.salesmanager.web.shop.controller.customer.facade;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.jfree.util.Log;
@@ -39,17 +35,12 @@ import com.salesmanager.core.business.system.service.EmailService;
 import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.business.user.model.GroupType;
 import com.salesmanager.core.business.user.service.GroupService;
-import com.salesmanager.core.modules.email.Email;
-import com.salesmanager.web.constants.EmailConstants;
 import com.salesmanager.web.entity.customer.CustomerEntity;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.populator.customer.CustomerEntityPopulator;
 import com.salesmanager.web.populator.customer.CustomerPopulator;
 import com.salesmanager.web.populator.shoppingCart.ShoppingCartDataPopulator;
-import com.salesmanager.web.utils.EmailUtils;
-import com.salesmanager.web.utils.FilePathUtils;
-import com.salesmanager.web.utils.LabelUtils;
 
 
 /**
@@ -66,8 +57,8 @@ public class CustomerFacadeImpl implements CustomerFacade
 
 	private static final Logger LOG = LoggerFactory.getLogger(CustomerFacadeImpl.class);
 
-     @Autowired
-     CustomerService customerService;
+	 @Autowired
+     private CustomerService customerService;
 
      @Autowired
      private ShoppingCartService shoppingCartService;
@@ -107,11 +98,10 @@ public class CustomerFacadeImpl implements CustomerFacade
      @Autowired
      private PasswordEncoder passwordEncoder;
      
- 	@Autowired
- 	private EmailService emailService;
+ 	 @Autowired
+ 	 private EmailService emailService;
 
- 	//@Autowired
- 	//private LabelUtils messages;
+
 
 
     /**
@@ -344,40 +334,7 @@ public class CustomerFacadeImpl implements CustomerFacade
     }
 
 
-	@Override
-	public void sendRegistrationEmail(HttpServletRequest request,
-			PersistableCustomer customer, MerchantStore merchantStore,
-			Locale customerLocale) {
-/*	       LOG.info( "Sending welcome email to customer" );
-	       try {
 
-	           Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, merchantStore, messages, customerLocale);
-	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_FIRSTNAME, customer.getBilling().getFirstName());
-	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_LASTNAME, customer.getBilling().getLastName());
-	           String[] greetingMessage = {merchantStore.getStorename(),FilePathUtils.buildCustomerUri(merchantStore, request),merchantStore.getStoreEmailAddress()};
-	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_GREETING, messages.getMessage("email.customer.greeting", greetingMessage, customerLocale));
-	           templateTokens.put(EmailConstants.EMAIL_USERNAME_LABEL, messages.getMessage("label.generic.username",customerLocale));
-	           templateTokens.put(EmailConstants.EMAIL_PASSWORD_LABEL, messages.getMessage("label.generic.password",customerLocale));
-	           templateTokens.put(EmailConstants.EMAIL_USER_NAME, customer.getUserName());
-	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_PASSWORD, customer.getPassword());
-
-
-	           Email email = new Email();
-	           email.setFrom(merchantStore.getStorename());
-	           email.setFromEmail(merchantStore.getStoreEmailAddress());
-	           email.setSubject(messages.getMessage("email.newuser.title",customerLocale));
-	           email.setTo(customer.getEmailAddress());
-	           email.setTemplateName(EmailConstants.EMAIL_CUSTOMER_TPL);
-	           email.setTemplateTokens(templateTokens);
-
-	           LOG.info( "Sending email to {} on their  registered email id {} ",customer.getBilling().getFirstName(),customer.getEmailAddress() );
-	           emailService.sendHtmlEmail(merchantStore, email);
-
-	       } catch (Exception e) {
-	           LOG.error("Error occured while sending welcome email ",e);
-	       }*/
-		
-	}
 
   
 

@@ -14,7 +14,7 @@ import com.salesmanager.web.constants.Constants;
 public class FilePathUtils {
 	
 	
-	private final static String CUSTOMER_ACCESS_LINK = "/store//customer/dashboard.html";
+	private final static String CUSTOMER_ACCESS_LINK = "/store/customer/dashboard.html";
 	
 	
 	/**

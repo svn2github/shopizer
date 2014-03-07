@@ -61,7 +61,5 @@ public interface CustomerFacade
     public boolean checkIfUserExists(final String userName,final MerchantStore store) throws Exception;
     
     public CustomerEntity  registerCustomer( final PersistableCustomer customer,final MerchantStore merchantStore) throws Exception;
-    
-    public void sendRegistrationEmail(final HttpServletRequest request,final PersistableCustomer customer,final MerchantStore merchantStore, final Locale customerLocale);
 
 }

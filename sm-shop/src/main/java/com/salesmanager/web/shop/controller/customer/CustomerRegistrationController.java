@@ -1,6 +1,5 @@
 package com.salesmanager.web.shop.controller.customer;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -13,7 +12,6 @@ import javax.validation.Valid;
 import net.tanesha.recaptcha.ReCaptchaImpl;
 import net.tanesha.recaptcha.ReCaptchaResponse;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -218,7 +216,7 @@ public class CustomerRegistrationController extends AbstractController {
         /**
          * Send registration email
          */
-        customerFacade.sendRegistrationEmail( request, customer, merchantStore, locale );
+        this.sendRegistrationEmail( request, customer, merchantStore, locale );
 
         /**
          * Login user
@@ -286,6 +284,50 @@ public class CustomerRegistrationController extends AbstractController {
 	@ModelAttribute("zoneList")
     public List<Zone> getZones(final HttpServletRequest request){
 	    return zoneService.list();
+	}
+	
+	
+	
+
+	public void sendRegistrationEmail(HttpServletRequest request,
+		PersistableCustomer customer, MerchantStore merchantStore,
+			Locale customerLocale) {
+		   /** issue with putting that elsewhere **/ 
+	       LOGGER.info( "Sending welcome email to customer" );
+	       try {
+
+	           Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, merchantStore, messages, customerLocale);
+	           templateTokens.put(EmailConstants.LABEL_HI, messages.getMessage("label.generic.hi", customerLocale));
+	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_FIRSTNAME, customer.getBilling().getFirstName());
+	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_LASTNAME, customer.getBilling().getLastName());
+	           String[] greetingMessage = {merchantStore.getStorename(),FilePathUtils.buildCustomerUri(merchantStore, request),merchantStore.getStoreEmailAddress()};
+	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_GREETING, messages.getMessage("email.customer.greeting", greetingMessage, customerLocale));
+	           templateTokens.put(EmailConstants.EMAIL_USERNAME_LABEL, messages.getMessage("label.generic.username",customerLocale));
+	           templateTokens.put(EmailConstants.EMAIL_PASSWORD_LABEL, messages.getMessage("label.generic.password",customerLocale));
+	           templateTokens.put(EmailConstants.CUSTOMER_ACCESS_LABEL, messages.getMessage("label.customer.accessportal",customerLocale));
+	           templateTokens.put(EmailConstants.ACCESS_NOW_LABEL, messages.getMessage("label.customer.accessnow",customerLocale));
+	           templateTokens.put(EmailConstants.EMAIL_USER_NAME, customer.getUserName());
+	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_PASSWORD, customer.getPassword());
+
+	           //shop url
+	           String customerUrl = FilePathUtils.buildStoreUri(merchantStore, request);
+	           templateTokens.put(EmailConstants.CUSTOMER_ACCESS_URL, customerUrl);
+
+	           Email email = new Email();
+	           email.setFrom(merchantStore.getStorename());
+	           email.setFromEmail(merchantStore.getStoreEmailAddress());
+	           email.setSubject(messages.getMessage("email.newuser.title",customerLocale));
+	           email.setTo(customer.getEmailAddress());
+	           email.setTemplateName(EmailConstants.EMAIL_CUSTOMER_TPL);
+	           email.setTemplateTokens(templateTokens);
+
+	           LOGGER.info( "Sending email to {} on their  registered email id {} ",customer.getBilling().getFirstName(),customer.getEmailAddress() );
+	           emailService.sendHtmlEmail(merchantStore, email);
+
+	       } catch (Exception e) {
+	           LOGGER.error("Error occured while sending welcome email ",e);
+	       }
+		
 	}
 	
 	

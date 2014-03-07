@@ -40,6 +40,11 @@ public class EmailConstants {
 	public static final String EMAIL_ADMIN_URL_LABEL = "EMAIL_ADMIN_URL_LABEL";
 	public static final String EMAIL_ADMIN_URL = "EMAIL_ADMIN_URL";
 	
+	public final static String LABEL_HI = "LABEL_HI";
+	public final static String CUSTOMER_ACCESS_LABEL = "CUSTOMER_ACCESS_LABEL";
+	public final static String CUSTOMER_ACCESS_URL = "CUSTOMER_ACCESS_URL";
+	public final static String ACCESS_NOW_LABEL = "ACCESS_NOW_LABEL";
+	
 	public static final String EMAIL_CUSTOMER_TPL = "email_template_customer.ftl";
 	
 	

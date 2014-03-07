@@ -66,6 +66,7 @@ import com.salesmanager.web.populator.customer.CustomerPopulator;
 import com.salesmanager.web.populator.customer.PersistableCustomerPopulator;
 import com.salesmanager.web.populator.order.OrderProductPopulator;
 import com.salesmanager.web.populator.order.ShoppingCartItemPopulator;
+import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Service("orderFacade")
@@ -99,6 +100,9 @@ public class OrderFacadeImpl implements OrderFacade {
 	private LanguageService languageService;
 	@Autowired
 	private ShippingService shippingService;
+	@Autowired
+	private CustomerFacade customerFacade;
+
 	
 	@Autowired
 	private LabelUtils messages;
@@ -251,6 +255,8 @@ public class OrderFacadeImpl implements OrderFacade {
 
 			Customer customer = this.toCustomerModel(order.getCustomer(), store, language);
 			
+			
+			
 			//if(customer!=null && customer.getId()==null || customer.getId()==0) {
 			//	customerService.saveOrUpdate(customer);
 			//}
@@ -369,6 +375,9 @@ public class OrderFacadeImpl implements OrderFacade {
 	
 			
 			orderService.processOrder(modelOrder, customer, order.getShoppingCartItems(), summary, payment, store);
+			
+
+			
 			return modelOrder;
 		
 		} catch(ServiceException se) {
