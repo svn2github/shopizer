@@ -192,7 +192,7 @@
 	
 	<!-- Geo Location -->
 	<bean id="geoLocation"
-		class="com.salesmanager.core.modules.utils.GeoLocationImpl" factory-method="getInstance">
+		class="com.salesmanager.core.modules.utils.GeoLocationImpl">
 	</bean>
 	
 	<!-- Email -->
