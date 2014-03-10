@@ -62,4 +62,8 @@ public interface CustomerFacade
     
     public CustomerEntity  registerCustomer( final PersistableCustomer customer,final MerchantStore merchantStore) throws Exception;
 
+
+	Customer populateCustomerModel(PersistableCustomer customer,
+			MerchantStore merchantStore);
+
 }

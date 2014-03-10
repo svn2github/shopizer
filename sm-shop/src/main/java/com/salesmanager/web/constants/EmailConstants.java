@@ -27,6 +27,10 @@ public class EmailConstants {
 	public static final String EMAIL_TEXT_DATE_ORDERED = "EMAIL_TEXT_DATE_ORDERED";
 	public static final String EMAIL_TEXT_STATUS_COMMENTS = "EMAIL_TEXT_STATUS_COMMENTS";
 	public static final String EMAIL_TEXT_DATE_UPDATED = "EMAIL_TEXT_DATE_UPDATED";
+	public static final String EMAIL_ORDER_DETAILS_TITLE = "EMAIL_ORDER_DETAILS_TITLE";
+	public static final String ORDER_PRODUCTS_DETAILS = "ORDER_PRODUCTS_DETAILS";
+	public static final String ORDER_TOTALS = "ORDER_TOTALS";
+	public static final String ORDER_STATUS = "ORDER_STATUS";
 
 	public static final String EMAIL_NEW_STORE_TEXT = "EMAIL_NEW_STORE_TEXT";
 	public static final String EMAIL_STORE_NAME = "EMAIL_STORE_NAME";
@@ -40,12 +44,26 @@ public class EmailConstants {
 	public static final String EMAIL_ADMIN_URL_LABEL = "EMAIL_ADMIN_URL_LABEL";
 	public static final String EMAIL_ADMIN_URL = "EMAIL_ADMIN_URL";
 	
+	public static final String EMAIL_ORDER_CONFIRMATION_TITLE ="EMAIL_ORDER_CONFIRMATION_TITLE";
+	public static final String EMAIL_ORDER_NUMBER ="EMAIL_ORDER_NUMBER";
+	public static final String EMAIL_ORDER_DATE ="EMAIL_ORDER_DATE";
+	public static final String EMAIL_ORDER_THANKS ="EMAIL_ORDER_THANKS";
+	public static final String ADDRESS_BILLING_TITLE ="ADDRESS_BILLING_TITLE";
+	public static final String ADDRESS_BILLING ="ADDRESS_BILLING";
+	public static final String ADDRESS_SHIPPING ="ADDRESS_SHIPPING";
+	public static final String ADDRESS_SHIPPING_TITLE ="ADDRESS_SHIPPING_TITLE";
+	public static final String PAYMENT_METHOD_TITLE ="PAYMENT_METHOD_TITLE";
+	public static final String ADDRESS_DELIVERY_TITLE ="ADDRESS_DELIVERY_TITLE";
+	
+	
+	
 	public final static String LABEL_HI = "LABEL_HI";
 	public final static String CUSTOMER_ACCESS_LABEL = "CUSTOMER_ACCESS_LABEL";
 	public final static String CUSTOMER_ACCESS_URL = "CUSTOMER_ACCESS_URL";
 	public final static String ACCESS_NOW_LABEL = "ACCESS_NOW_LABEL";
 	
 	public static final String EMAIL_CUSTOMER_TPL = "email_template_customer.ftl";
+	public static final String EMAIL_ORDER_TPL = "email_template_order.ftl";
 	
 	
 }

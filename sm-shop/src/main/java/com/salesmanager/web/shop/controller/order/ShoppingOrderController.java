@@ -72,6 +72,7 @@ import com.salesmanager.web.shop.controller.customer.CustomerRegistrationControl
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
 import com.salesmanager.web.shop.controller.order.facade.OrderFacade;
 import com.salesmanager.web.shop.controller.shoppingCart.facade.ShoppingCartFacade;
+import com.salesmanager.web.utils.EmailTemplatesUtils;
 import com.salesmanager.web.utils.EmailUtils;
 import com.salesmanager.web.utils.FilePathUtils;
 import com.salesmanager.web.utils.LabelUtils;
@@ -111,6 +112,9 @@ public class ShoppingOrderController extends AbstractController {
 	private OrderFacade orderFacade;
 	
 	@Autowired
+	private CustomerFacade customerFacade;
+	
+	@Autowired
 	private LabelUtils messages;
 	
 	@Autowired
@@ -124,6 +128,9 @@ public class ShoppingOrderController extends AbstractController {
 	
 	@Autowired
     private AuthenticationManager customerAuthenticationManager;
+	
+	@Autowired
+	private EmailTemplatesUtils emailTemplatesUtils;
 	
 	@SuppressWarnings("unused")
 	@RequestMapping("/checkout.html")
@@ -367,7 +374,8 @@ public class ShoppingOrderController extends AbstractController {
 			}
 			
 			//send order confirmation email
-	        
+			Customer modelCustomer = customerFacade.populateCustomerModel(customer, store);
+			emailTemplatesUtils.sendOrderEmail(request, modelCustomer, modelOrder, locale);
 	        
 	        //cleanup the order objects
 	        super.removeAttribute(Constants.ORDER, request);

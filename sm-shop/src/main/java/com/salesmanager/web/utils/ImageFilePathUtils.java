@@ -72,6 +72,8 @@ public class ImageFilePathUtils {
 				.append(sku).append("/").append(imageName).toString();
 	}
 
+
+	
 	/**
 	 * Builds a merchant store logo path
 	 * @param store

@@ -267,8 +267,8 @@ public class CustomerFacadeImpl implements CustomerFacade
        return customerEntityPoulator(customerModel,merchantStore);
      }
     
-    @SuppressWarnings( "deprecation" )
-    private Customer populateCustomerModel(final PersistableCustomer customer,final MerchantStore merchantStore){
+    @Override
+    public Customer populateCustomerModel(final PersistableCustomer customer,final MerchantStore merchantStore){
         
         LOG.info( "Starting to populate customer model from customer data" );
         Customer customerModel=null;
