@@ -248,7 +248,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 		<td></td>
 		<td class="header container" >
 				
-				<div class="content">
+				<p>
 				<table>
 					<tr>
 						<td>
@@ -256,7 +256,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 						</td>
 					</tr>
 				</table>
-				</div>
+				</p>
 				
 		</td>
 		<td></td>
@@ -317,7 +317,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 							${EMAIL_SPAM_DISCLAIMER}
 						</p>
 						<p>
-						${EMAIL_FOOTER_COPYRIGHT}
+							${EMAIL_FOOTER_COPYRIGHT}
 						</p>
 					</td>
 				</tr>

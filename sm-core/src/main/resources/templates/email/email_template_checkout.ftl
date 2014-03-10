@@ -246,7 +246,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 		<td></td>
 		<td class="header container" >
 				
-				<div class="content">
+				<p>
 				<table>
 					<tr>
 						<td>
@@ -254,7 +254,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 						</td>
 					</tr>
 				</table>
-				</div>
+				</p>
 				
 		</td>
 		<td></td>
@@ -299,47 +299,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 						<p>
 							<h4>${EMAIL_ORDER_DETAILS_TITLE}</h4> 
 						</p>
-							//${PRODUCTS_DETAILS}
-							<table>
-							<tr>
-								<td valign="top">
-									<img src="http://placehold.it/100x50/" />
-								</td>
-								<td valign="top">
-									<table>
-										<tr>
-											<td valign="top">Item name 1</td>
-										</tr>
-										<tr>
-											<td valign="top">Quantity: 1</td>
-										</tr>
-										<tr>
-											<td valign="top">Price: $29.99</td>
-										</tr>
-									</table>
-								</td>
-							</tr>
-							<tr>
-								<td valign="top">
-									<img src="http://placehold.it/100x50/" />
-								</td>
-								<td>
-									<table>
-										<tr>
-											<td>Item name 2</td>
-										</tr>
-										<tr>
-											<td>Quantity: 1</td>
-										</tr>
-										<tr>
-											<td>Price: $39.99</td>
-										</tr>
-									</table>
-								</td>
-							</tr>
-							</table>
-							//${ORDER_TOTALS}
-
+							${ORDER_PRODUCTS_DETAILS}
 					</td>
 				</tr>
 			</table>
@@ -348,27 +308,22 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 				<div class="column">
 				<table>
 				<tr>
-					<td>				
-													
+					<td>											
 						<ul class="sidebar">
 							<li>
 								<a>
 									<h5>${ADDRESS_BILLING_TITLE} &raquo;</h5>
 									<p>
-										Carl Samson<br/>
-										358 du Languedoc est du calife<br/>
-										Boucherville, Quebec<br/>
-										Canada<br/>
-										J4B-8J9
-
+										${ADDRESS_BILLING}
 									</p>
 								</a>
 							</li>
 							<li>
-								
 								<a>
-								${PAYMENT_METHOD_TITLE}<br>
-								${PAYMENT_METHOD_DETAILS}
+									<p>
+										${PAYMENT_METHOD_TITLE}<br/>
+										${PAYMENT_METHOD_DETAILS}
+									</p>
 								</a>
 								
 							</li>
@@ -379,19 +334,16 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 								<a>
 									<h5>${ADDRESS_DELIVERY_TITLE} &raquo;</h5>
 									<p>
-										Carl Samson<br/>
-										358 du Languedoc est du calife<br/>
-										Boucherville, Quebec<br/>
-										Canada<br/>
-										J4B-8J9
-
+										${ADDRESS_DELIVERY}
 									</p>
 								</a>
 							</li>
 							<li>	
 								<a>
-								${SHIPPING_METHOD_TITLE}<br>
-								${SHIPPING_METHOD_DETAILS}
+									<p>
+										${SHIPPING_METHOD_TITLE}<br/>
+										${SHIPPING_METHOD_DETAILS}
+									</p>
 								</a>
 								
 							</li>
@@ -413,7 +365,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 			<div class="content">
 						<!-- Callout Panel -->
 						<p class="callout">
-							${EMAIL_CONTACT_OWNER}
+							${ORDER_STATUS}
 						</p><!-- /Callout Panel -->
 			</div><!-- /content -->
 		</td>
