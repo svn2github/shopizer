@@ -24,7 +24,6 @@ import javax.persistence.TemporalType;
 import javax.validation.Valid;
 
 import org.hibernate.annotations.OrderBy;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.common.model.Delivery;

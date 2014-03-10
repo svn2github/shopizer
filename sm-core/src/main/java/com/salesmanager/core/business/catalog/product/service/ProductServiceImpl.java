@@ -192,6 +192,11 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	public List<Product> listByTaxClass(TaxClass taxClass) {
 		return productDao.listByTaxClass(taxClass);
 	}
+	
+	@Override
+	public Product getByCode(String productCode, Language language) {
+		return productDao.getByCode(productCode, language);
+	}
 		
 
 	//@Override

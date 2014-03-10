@@ -25,18 +25,6 @@ public interface ProductService extends SalesManagerEntityService<Long, Product>
 	Product getProductForLocale(long productId, Language language, Locale locale) throws ServiceException;
 	
 	List<Product> getProductsForLocale(Category category, Language language, Locale locale) throws ServiceException;
-	
-	/**
-	 * Returns a List o product for pagination
-	 * @param category
-	 * @param language
-	 * @param locale
-	 * @param startIndex
-	 * @param maxCount
-	 * @return
-	 * @throws ServiceException
-	 */
-	//ProductList getProductsForLocale(Category category, Language language, Locale locale, int startIndex, int maxCount) throws ServiceException;
 
 	List<Product> getProducts(List<Long> categoryIds) throws ServiceException;
 
@@ -56,10 +44,15 @@ public interface ProductService extends SalesManagerEntityService<Long, Product>
 	List<Product> getProducts(List<Long> categoryIds, Language language)
 			throws ServiceException;
 
-	//ProductList getProductList(ProductCriteria criteria,
-	//		List<Long> categoryIds, Language language) throws ServiceException;
-
 	Product getBySeUrl(MerchantStore store, String seUrl, Locale locale);
+
+	/**
+	 * Get a product by sku (code) field  and the language
+	 * @param productCode
+	 * @param language
+	 * @return
+	 */
+	Product getByCode(String productCode, Language language);
 	
 }
 	

@@ -40,10 +40,10 @@ public class OrderTotal extends SalesManagerEntity<Long, OrderTotal> {
 	@Column (name ="CODE", nullable=false)
 	private String orderTotalCode;//SHIPPING, TAX
 	
-	@Column (name ="TITLE", nullable=false)
+	@Column (name ="TITLE", nullable=true)
 	private String title;
 	
-	@Column (name ="TEXT", nullable=false)
+	@Column (name ="TEXT", nullable=true)
 	@Type(type = "org.hibernate.type.StringClobType")
 	private String text;
 	

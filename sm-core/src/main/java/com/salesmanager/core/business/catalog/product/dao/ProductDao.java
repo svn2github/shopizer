@@ -19,10 +19,6 @@ public interface ProductDao extends SalesManagerEntityDao<Long, Product> {
 	@SuppressWarnings("rawtypes")
 	List<Product> getProductsForLocale(MerchantStore store, Set categoryIds, Language language,
 			Locale locale);
-	
-	//@SuppressWarnings("rawtypes")
-	//ProductList getProductsForLocale(MerchantStore store, Set categoryIds, Language language,
-	//		Locale locale, int startIndex, int maxCount);
 
 	@SuppressWarnings("rawtypes")
 	List<Product> getProductsListByCategories(Set categoryIds);
@@ -44,9 +40,8 @@ public interface ProductDao extends SalesManagerEntityDao<Long, Product> {
 	List<Product> getProductsListByCategories(Set<Long> categoryIds,
 			Language language);
 
-	//ProductList getProductListByCategories(ProductCriteria criteria,
-	//		Set<Long> categoryIds, Language language);
-
 	Product getBySeUrl(MerchantStore store, String seUrl, Locale locale);
+
+	Product getByCode(String productCode, Language language);
 	
 }

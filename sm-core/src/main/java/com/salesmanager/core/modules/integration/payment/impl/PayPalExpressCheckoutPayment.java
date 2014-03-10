@@ -375,12 +375,17 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 			 /** IPN **/
 			 //paymentDetail.setNotifyURL("http://replaceIpnUrl.com");
 			 BasicAmountType orderTotal = new BasicAmountType();
-			 orderTotal.setValue(String.valueOf(amount));
+			 orderTotal.setValue(pricingService.getStringAmount(amount, store));
 			 orderTotal.setCurrencyID(urn.ebay.apis.eBLBaseComponents.CurrencyCodeType.fromValue(payment.getCurrency().getCode()));
 			 paymentDetail.setOrderTotal(orderTotal);
 			 paymentDetail.setButtonSource("Shopizer_Cart_AP");
 			 /** sale or pre-auth **/
-			 paymentDetail.setPaymentAction(urn.ebay.apis.eBLBaseComponents.PaymentActionCodeType.SALE);
+			 if(payment.getTransactionType().name().equals(TransactionType.AUTHORIZE.name())) {
+				 paymentDetail.setPaymentAction(urn.ebay.apis.eBLBaseComponents.PaymentActionCodeType.AUTHORIZATION);
+			 } else {
+				 paymentDetail.setPaymentAction(urn.ebay.apis.eBLBaseComponents.PaymentActionCodeType.SALE);
+			 }
+			 
 			 List<PaymentDetailsType> paymentDetails = new ArrayList<PaymentDetailsType>();
 			 paymentDetails.add(paymentDetail);
 								
