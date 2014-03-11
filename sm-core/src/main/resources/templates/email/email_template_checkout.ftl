@@ -89,8 +89,8 @@ a.ms { background-color: #000!important; }
 ------------------------------------- */
 table.head-wrap { width: 100%;}
 
-.header.container table td.logo { padding: 15px; }
-.header.container table td.label { padding: 15px; padding-left:0px;}
+.header.container table td.logo { padding: 2px; }
+.header.container table td.label { padding: 10fpx; padding-left:0px;}
 
 
 /* ------------------------------------- 
@@ -273,7 +273,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 					<td>
 						<h4>${LABEL_HI} ${EMAIL_CUSTOMER_FIRSTNAME} ${EMAIL_CUSTOMER_LASTNAME}<br/></h4>
 						<p class="lead">
-							${EMAIL_ORDER_CONFIRMATION_TITLE} - ${EMAIL_ORDER_NUMBER}
+							${EMAIL_ORDER_NUMBER}
 						</p>
 						<br>
 						<p>
@@ -362,12 +362,10 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 	</tr>
 	<tr>
 		<td colspan="2">
-			<div class="content">
 						<!-- Callout Panel -->
 						<p class="callout">
 							${ORDER_STATUS}
 						</p><!-- /Callout Panel -->
-			</div><!-- /content -->
 		</td>
 	</tr>
 </table><!-- /BODY -->
@@ -385,21 +383,13 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 				<tr>
 					<td align="center">
 						<p>
-						${EMAIL_FOOTER_COPYRIGHT}
-						</p>
-					</td>
-				</tr
-				</table>
-				</p>
-				<p>
-				<table>
-				<tr>
-					<td align="center">
-						<p>
 							${EMAIL_DISCLAIMER}
 						</p>
 						<p>
 							${EMAIL_SPAM_DISCLAIMER}
+						</p>
+						<p>
+							${EMAIL_FOOTER_COPYRIGHT}
 						</p>
 					</td>
 				</tr>
