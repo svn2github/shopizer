@@ -4,9 +4,12 @@ import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
@@ -30,6 +33,7 @@ import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.order.model.OrderTotalType;
 import com.salesmanager.core.business.order.model.OrderValueType;
 import com.salesmanager.core.business.order.model.Order_;
+import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
 import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.Transaction;
@@ -109,6 +113,22 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
     	//first process payment
     	Transaction processTransaction = paymentService.processPayment(customer, store, payment, items, order.getTotal());
     	transactionService.save(processTransaction);
+    	
+    	if(order.getOrderHistory()==null) {
+    		OrderStatus status = order.getStatus();
+    		if(status==null) {
+    			status = OrderStatus.ORDERED;
+    			order.setStatus(status);
+    		}
+    		Set<OrderStatusHistory> statusHistorySet = new HashSet<OrderStatusHistory>();
+    		OrderStatusHistory statusHistory = new OrderStatusHistory();
+    		statusHistory.setStatus(status);
+    		statusHistory.setDateAdded(new Date());
+    		statusHistory.setOrder(order);
+    		statusHistorySet.add(statusHistory);
+    		order.setOrderHistory(statusHistorySet);
+    		
+    	}
     	
     	this.create(order);
     	

@@ -532,7 +532,9 @@ public class ShippingServiceImpl implements ShippingService {
 			if(shippingOptions==null) {
 				shippingQuote.setShippingReturnCode(ShippingQuote.NO_SHIPPING_TO_SELECTED_COUNTRY);
 			}
-					
+			
+			
+			shippingQuote.setShippingModuleCode(moduleName);	
 			
 			//filter shipping options
 			ShippingOptionPriceType shippingOptionPriceType = shippingConfiguration.getShippingOptionPriceType();
