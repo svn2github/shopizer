@@ -880,9 +880,10 @@ $(document).ready(function() {
 										<span class="box-title">
 												<p class="p-title"><s:message code="label.shipping.fees" text="Shipping fees" /> </p>
 										</span>
-						
+								
 								        <c:choose>
 								        <c:when test="${fn:length(shippingQuote.shippingOptions)>0}">
+								        	<input type="hidden" name="shippingModule" value="${shippingQuote.shippingModuleCode}">
 									        <div id="shippingSection" class="control-group"> 
 							 					<label class="control-label">
 							 						<s:message code="label.shipping.options" text="Shipping options"/>
