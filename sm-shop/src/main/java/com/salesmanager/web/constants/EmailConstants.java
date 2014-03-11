@@ -51,8 +51,12 @@ public class EmailConstants {
 	public static final String ADDRESS_BILLING_TITLE ="ADDRESS_BILLING_TITLE";
 	public static final String ADDRESS_BILLING ="ADDRESS_BILLING";
 	public static final String ADDRESS_SHIPPING ="ADDRESS_SHIPPING";
+	public static final String ADDRESS_DELIVERY ="ADDRESS_DELIVERY";
 	public static final String ADDRESS_SHIPPING_TITLE ="ADDRESS_SHIPPING_TITLE";
 	public static final String PAYMENT_METHOD_TITLE ="PAYMENT_METHOD_TITLE";
+	public static final String PAYMENT_METHOD_DETAILS ="PAYMENT_METHOD_DETAILS";
+	public static final String SHIPPING_METHOD_DETAILS ="SHIPPING_METHOD_DETAILS";
+	public static final String SHIPPING_METHOD_TITLE ="SHIPPING_METHOD_TITLE";
 	public static final String ADDRESS_DELIVERY_TITLE ="ADDRESS_DELIVERY_TITLE";
 	
 	
@@ -63,7 +67,7 @@ public class EmailConstants {
 	public final static String ACCESS_NOW_LABEL = "ACCESS_NOW_LABEL";
 	
 	public static final String EMAIL_CUSTOMER_TPL = "email_template_customer.ftl";
-	public static final String EMAIL_ORDER_TPL = "email_template_order.ftl";
+	public static final String EMAIL_ORDER_TPL = "email_template_checkout.ftl";
 	
 	
 }

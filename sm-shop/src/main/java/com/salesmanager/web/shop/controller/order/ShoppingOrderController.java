@@ -375,7 +375,7 @@ public class ShoppingOrderController extends AbstractController {
 			
 			//send order confirmation email
 			Customer modelCustomer = customerFacade.populateCustomerModel(customer, store);
-			emailTemplatesUtils.sendOrderEmail(request, modelCustomer, modelOrder, locale);
+			emailTemplatesUtils.sendOrderEmail(request, modelCustomer, modelOrder, locale, language, store);
 	        
 	        //cleanup the order objects
 	        super.removeAttribute(Constants.ORDER, request);

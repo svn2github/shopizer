@@ -1,11 +1,14 @@
 package com.salesmanager.web.shop.controller.order.facade;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.Validate;
@@ -68,6 +71,8 @@ import com.salesmanager.web.populator.order.OrderProductPopulator;
 import com.salesmanager.web.populator.order.ShoppingCartItemPopulator;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
 import com.salesmanager.web.utils.LabelUtils;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 @Service("orderFacade")
 public class OrderFacadeImpl implements OrderFacade {
@@ -262,8 +267,12 @@ public class OrderFacadeImpl implements OrderFacade {
 			//}
 			
 			Order modelOrder = new Order();
+			modelOrder.setDatePurchased(new Date());
 			modelOrder.setBilling(customer.getBilling());
 			modelOrder.setDelivery(customer.getDelivery());
+			modelOrder.setPaymentModuleCode(order.getPaymentModule());
+			modelOrder.setPaymentType(PaymentType.valueOf(order.getPaymentMethodType()));
+			modelOrder.setShippingModuleCode(order.getShippingModule());
 	
 			List<ShoppingCartItem> shoppingCartItems = order.getShoppingCartItems();
 			Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
@@ -284,6 +293,19 @@ public class OrderFacadeImpl implements OrderFacade {
 			
 			OrderTotalSummary summary = order.getOrderTotalSummary();
 			List<com.salesmanager.core.business.order.model.OrderTotal> totals = summary.getTotals();
+
+			//re-order totals
+			Collections.sort(
+					totals,
+					new Comparator<com.salesmanager.core.business.order.model.OrderTotal>() {
+					       public int compare(com.salesmanager.core.business.order.model.OrderTotal x, com.salesmanager.core.business.order.model.OrderTotal y) {
+					            if(x.getSortOrder()==y.getSortOrder())
+					            	return 0;
+					            return x.getSortOrder() < y.getSortOrder() ? -1 : 1;
+					        }
+				
+			});
+			
 			Set<com.salesmanager.core.business.order.model.OrderTotal> modelTotals = new HashSet<com.salesmanager.core.business.order.model.OrderTotal>();
 			for(com.salesmanager.core.business.order.model.OrderTotal total : totals) {
 				total.setOrder(modelOrder);

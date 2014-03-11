@@ -65,11 +65,9 @@ public class EmailTemplatesUtils {
 	
 	
 	public void sendOrderEmail(HttpServletRequest request,
-			Customer customer, Order order, Locale customerLocale) {
+			Customer customer, Order order, Locale customerLocale, Language language, MerchantStore merchantStore) {
 			   /** issue with putting that elsewhere **/ 
 		       LOGGER.info( "Sending welcome email to customer" );
-		       MerchantStore merchantStore = (MerchantStore) request.getAttribute( Constants.MERCHANT_STORE );
-		       Language language = (Language)request.getAttribute(Constants.LANGUAGE);
 		       try {
 		    	   
 		    	   Map<String,Country> countries = countryService.getCountriesMap(language);
@@ -139,7 +137,7 @@ public class EmailTemplatesUtils {
 		    		   if(productModel!=null && productModel.getProductImage()!=null) {
 		    			   String productImage = new StringBuilder().append(storeUri).append(ImageFilePathUtils.buildProductImageFilePath(merchantStore, productModel, productModel.getProductImage().getProductImage())).toString();
 		    			   orderTable.append(TD);
-		    			   String imgSrc = new StringBuilder().append("<img src=\"").append(productImage).append("\" width=\"160\">").toString();
+		    			   String imgSrc = new StringBuilder().append("<img src=\"").append(productImage).append("\" width=\"80\">").toString();
 		    			   orderTable.append(imgSrc);
 		    		   } else {
 		    			   orderTable.append(TD).append("&nbsp;");
@@ -168,11 +166,23 @@ public class EmailTemplatesUtils {
 		    		   			if(total.getModule().equals("tax")) {
 		    		   				orderTable.append(total.getText()).append(": ");
 		    		   			} else {
+		    		   				if(total.getModule().equals("total")) {
+		    		   					orderTable.append("<strong>");
+		    		   				}
 		    		   				orderTable.append(messages.getMessage(total.getOrderTotalCode(), customerLocale)).append(": ");
+		    		   				if(total.getModule().equals("total")) {
+		    		   					orderTable.append("</strong>");
+		    		   				}
 		    		   			}
 		    		   		orderTable.append(CLOSING_TD);
 		    		   		orderTable.append(TD);
+    		   					if(total.getModule().equals("total")) {
+    		   						orderTable.append("<strong>");
+    		   					}
 		    		   			orderTable.append(pricingService.getDisplayAmount(total.getValue(), merchantStore));
+	    		   				if(total.getModule().equals("total")) {
+	    		   					orderTable.append("</strong>");
+	    		   				}
 		    		   		orderTable.append(CLOSING_TD);
 		    		   orderTable.append(CLOSING_TR);
 		    	   }
@@ -185,20 +195,32 @@ public class EmailTemplatesUtils {
 		           
 		           String[] params = {String.valueOf(order.getId())};
 		           String[] dt = {DateUtils.formatDate(order.getDatePurchased())};
-		           templateTokens.put(EmailConstants.EMAIL_ORDER_CONFIRMATION_TITLE, messages.getMessage("label.generic.username",customerLocale));
 		           templateTokens.put(EmailConstants.EMAIL_ORDER_NUMBER, messages.getMessage("email.order.confirmation", params, customerLocale));
 		           templateTokens.put(EmailConstants.EMAIL_ORDER_DATE, messages.getMessage("email.order.ordered", dt, customerLocale));
 		           templateTokens.put(EmailConstants.EMAIL_ORDER_THANKS, messages.getMessage("email.order.thanks",customerLocale));
 		           templateTokens.put(EmailConstants.ADDRESS_BILLING, billing.toString());
-		           templateTokens.put(EmailConstants.ADDRESS_SHIPPING, shipping.toString());
+		           
 		           templateTokens.put(EmailConstants.ORDER_PRODUCTS_DETAILS, orderTable.toString());
 		           templateTokens.put(EmailConstants.EMAIL_ORDER_DETAILS_TITLE, messages.getMessage("label.order.details",customerLocale));
 		           templateTokens.put(EmailConstants.ADDRESS_BILLING_TITLE, messages.getMessage("label.customer.billinginformation",customerLocale));
-		           templateTokens.put(EmailConstants.ADDRESS_SHIPPING_TITLE, messages.getMessage("label.order.shippingmethod",customerLocale));
 		           templateTokens.put(EmailConstants.PAYMENT_METHOD_TITLE, messages.getMessage("label.order.paymentmode",customerLocale));
-		           templateTokens.put(EmailConstants.ADDRESS_DELIVERY_TITLE, messages.getMessage("label.order.shippingmethod",customerLocale));
-		           String[] status = {messages.getMessage(order.getStatus().name(),customerLocale)};
-		           templateTokens.put(EmailConstants.ORDER_STATUS, messages.getMessage("label.order.shippingmethod", status, customerLocale));
+		           templateTokens.put(EmailConstants.PAYMENT_METHOD_DETAILS, messages.getMessage(new StringBuilder().append("payment.type.").append(order.getPaymentType().name()).toString(),customerLocale,order.getPaymentType().name()));
+		           
+		           if(StringUtils.isNotBlank(order.getShippingModuleCode())) {
+		        	   templateTokens.put(EmailConstants.SHIPPING_METHOD_DETAILS, messages.getMessage(new StringBuilder().append("module.shipping.").append(order.getShippingModuleCode()).toString(),customerLocale,order.getShippingModuleCode()));
+		        	   templateTokens.put(EmailConstants.ADDRESS_SHIPPING_TITLE, messages.getMessage("label.order.shippingmethod",customerLocale));
+		        	   templateTokens.put(EmailConstants.ADDRESS_DELIVERY_TITLE, messages.getMessage("label.customer.shippinginformation",customerLocale));
+		        	   templateTokens.put(EmailConstants.SHIPPING_METHOD_TITLE, messages.getMessage("label.customer.shippinginformation",customerLocale));
+		        	   templateTokens.put(EmailConstants.ADDRESS_DELIVERY, shipping.toString());
+		           } else {
+		        	   templateTokens.put(EmailConstants.SHIPPING_METHOD_DETAILS, "");
+		        	   templateTokens.put(EmailConstants.ADDRESS_SHIPPING_TITLE, "");
+		        	   templateTokens.put(EmailConstants.ADDRESS_DELIVERY_TITLE, "");
+		        	   templateTokens.put(EmailConstants.SHIPPING_METHOD_TITLE, "");
+		        	   templateTokens.put(EmailConstants.ADDRESS_DELIVERY, "");
+		           }
+		           String[] status = {messages.getMessage(new StringBuilder().append("label.order.").append(order.getStatus().name()).toString(),customerLocale)};
+		           templateTokens.put(EmailConstants.ORDER_STATUS, messages.getMessage("email.order.status", status, customerLocale));
 		           
 
 		           String[] title = {merchantStore.getStorename(), String.valueOf(order.getId())};
