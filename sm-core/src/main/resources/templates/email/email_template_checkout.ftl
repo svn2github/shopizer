@@ -147,7 +147,6 @@ ul li {
 		SIDEBAR 
 ------------------------------------- */
 ul.sidebar {
-	background:#ebebeb;
 	display:block;
 	list-style-type: none;
 }
@@ -160,8 +159,8 @@ ul.sidebar li a {
 	margin-right:10px;
 /* 	text-align:center; */
 	cursor:pointer;
-	border-bottom: 1px solid #777777;
-	border-top: 1px solid #FFFFFF;
+/**	border-bottom: 1px solid #777777;**/
+/**	border-top: 1px solid #FFFFFF;**/
 	display:block;
 	margin:0;
 }
@@ -216,6 +215,7 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 /* Be sure to place a .clear element after each set of columns, just to be safe */
 .clear { display: block; clear: both; }
 
+.border {border:1px solid}
 
 /* ------------------------------------------- 
 		PHONE
@@ -290,25 +290,23 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 		<td></td>
 		<td class="container" bgcolor="#FFFFFF">
 			
-			<div class="column-wrap">
 				
-				<div class="column">
-				<table>
-				<tr>
-					<td>				
 						<p>
 							<h4>${EMAIL_ORDER_DETAILS_TITLE}</h4> 
 						</p>
+						<p>
 							${ORDER_PRODUCTS_DETAILS}
-					</td>
-				</tr>
-			</table>
-			</div>
-			
-				<div class="column">
+						</p>
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td class="container" bgcolor="#FFFFFF">
+
 				<table>
 				<tr>
-					<td>											
+					<td valign="top">											
 						<ul class="sidebar">
 							<li>
 								<a>
@@ -318,17 +316,9 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 									</p>
 								</a>
 							</li>
-							<li>
-								<a>
-									<p>
-										${PAYMENT_METHOD_TITLE}<br/>
-										${PAYMENT_METHOD_DETAILS}
-									</p>
-								</a>
-								
-							</li>
-						</ul>
-						<br/>
+						  </ul>
+					  </td>
+					  <td valign="top">											
 						<ul class="sidebar">
 							<li>
 								<a>
@@ -338,37 +328,54 @@ ul.sidebar li a h1,ul.sidebar li a h2,ul.sidebar li a h3,ul.sidebar li a h4,ul.s
 									</p>
 								</a>
 							</li>
-							<li>	
+						  </ul>
+					  </td>
+				</tr>
+				<tr>
+					<td>
+						<ul class="sidebar">
+							<li>
 								<a>
-									<p>
-										${SHIPPING_METHOD_TITLE}<br/>
-										${SHIPPING_METHOD_DETAILS}
-									</p>
+								<strong>${PAYMENT_METHOD_TITLE}</strong><br>
+								${PAYMENT_METHOD_DETAILS}
 								</a>
-								
+							</li>
+
+						</ul>
+					</td>
+					<td>
+						<ul class="sidebar">
+							<li>
+								<a>
+								<strong>${SHIPPING_METHOD_TITLE}</strong><br>
+								${SHIPPING_METHOD_DETAILS}
+								</a>
 							</li>
 						</ul>
 					</td>
 				</tr>
-			</table>				
-			</div>
+				</table>
+				<div class="clear"></div>
 				
-				<div class="clear"></div>			
-			
-			</div>
-
 		</td>
 		<td></td>
 	</tr>
+</table><!-- /BODY -->
+
+<table class="body-wrap">
 	<tr>
-		<td colspan="2">
+		<td></td>
+		<td class="container" bgcolor="#FFFFFF">
+			<div class="content">
 						<!-- Callout Panel -->
 						<p class="callout">
 							${ORDER_STATUS}
 						</p><!-- /Callout Panel -->
+			</div>
 		</td>
+		<td></td>
 	</tr>
-</table><!-- /BODY -->
+</table>
 
 <!-- FOOTER -->
 <table class="footer-wrap">
