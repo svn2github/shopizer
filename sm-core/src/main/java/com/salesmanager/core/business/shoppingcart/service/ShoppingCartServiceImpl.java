@@ -198,7 +198,10 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 
 	@Override
 	public void delete(final ShoppingCart shoppingCart) throws ServiceException {
-		super.delete(shoppingCart);
+		ShoppingCart cart = this.getById(shoppingCart.getId());
+		if(cart!=null) {
+			super.delete(shoppingCart);
+		}
 	}
 
 

@@ -2,7 +2,7 @@ package com.salesmanager.core.business.payments.model;
 
 import com.salesmanager.core.business.reference.currency.model.Currency;
 
-public abstract class Payment {
+public class Payment {
 	
 	private PaymentType paymentType;
 	private TransactionType transactionType = TransactionType.AUTHORIZECAPTURE;

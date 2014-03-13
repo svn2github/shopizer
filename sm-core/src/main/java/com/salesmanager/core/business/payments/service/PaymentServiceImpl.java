@@ -319,6 +319,9 @@ public class PaymentServiceImpl implements PaymentService {
 		}
 		
 		String sTransactionType = configuration.getIntegrationKeys().get("transaction");
+		if(sTransactionType==null) {
+			sTransactionType = TransactionType.AUTHORIZECAPTURE.name();
+		}
 		
 		
 		PaymentModule module = this.paymentModules.get(payment.getModuleName());
