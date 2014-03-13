@@ -17,7 +17,7 @@ response.setDateHeader ("Expires", -1);
           <div class="control-group">
             <label class="control-label"><s:message code="label.payment.moneyorder.usemoneyorder" text="Use money order" /></label>
             <div class="controls">
-               <input type="radio" name="paymentMethodType" value="moneyorder" <c:if test="${requestScope.paymentMethod.defaultSelected==true}"> checked</c:if>/>
+               <input type="radio" onClick="setPaymentModule('${requestScope.paymentMethod.paymentMethodCode}');" name="paymentMethodType" value="MONEYORDER" <c:if test="${requestScope.paymentMethod.defaultSelected==true}"> checked</c:if>/>
             </div>
           </div>
           

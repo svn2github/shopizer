@@ -120,6 +120,11 @@ function isFormValid() {
 	}
 }
 
+function setPaymentModule(module) {
+	console.log('Module - ' + module);
+	$('#paymentModule').val(module);	
+}
+
 function isFieldValid(field) {
 	return true;
 	var validateField = true;
@@ -963,11 +968,15 @@ $(document).ready(function() {
 									    				<div class="tab-content">
 									    				<c:forEach items="${paymentMethods}" var="paymentMethod">
 													    		<div class="tab-pane <c:if test="${paymentMethod.defaultSelected==true}">active</c:if>" id="${paymentMethod.paymentType}">
+													    			<c:if test="${paymentMethod.defaultSelected==true}">
+													    				<c:set var="paymentModule" value="${paymentMethod.paymentMethodCode}" scope="request"/>
+													    			</c:if>
 													    			<c:set var="paymentMethod" value="${paymentMethod}" scope="request"/>
 													    			<c:set var="pageName" value="${fn:toLowerCase(paymentMethod.paymentType)}" />
 													    			<jsp:include page="/pages/shop/common/checkout/${pageName}.jsp" />
 													    		</div>
 									    				</c:forEach>
+									    				<input type="hidden" id="paymentModule" name="paymentModule" value="${paymentModule}"/>
 									    				</div>
 									 			</div>
 									</div>

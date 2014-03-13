@@ -27,8 +27,9 @@ response.setDateHeader ("Expires", -1);
  
      <head>
         	 	<meta charset="utf-8">
-    			<title>Error</title>
+    			<title><s:message code="message.error" text="An error occured !"/></title>
     			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    			<link href="<c:url value="/resources/templates/bootstrap/css/bootstrap.min.css" />" rel="stylesheet">
 
  	</head>
  
