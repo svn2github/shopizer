@@ -20,6 +20,7 @@ import com.salesmanager.core.business.order.model.orderproduct.OrderProductDownl
 import com.salesmanager.core.business.order.model.orderproduct.OrderProductPrice;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.utils.AbstractDataPopulator;
+import com.salesmanager.web.constants.ApplicationConstants;
 import com.salesmanager.web.entity.catalog.product.attribute.ProductAttribute;
 import com.salesmanager.web.entity.order.PersistableOrderProduct;
 
@@ -77,6 +78,8 @@ public class PersistableOrderProductPopulator extends
 				OrderProductDownload orderProductDownload = new OrderProductDownload();	
 				orderProductDownload.setOrderProductFilename(digitalProduct.getProductFileName());
 				orderProductDownload.setOrderProduct(target);
+				orderProductDownload.setDownloadCount(0);
+				orderProductDownload.setMaxdays(ApplicationConstants.MAX_DOWNLOAD_DAYS);
 				target.getDownloads().add(orderProductDownload);
 			}
 

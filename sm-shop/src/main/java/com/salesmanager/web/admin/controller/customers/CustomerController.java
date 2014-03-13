@@ -660,7 +660,7 @@ public class CustomerController {
 				String[] storeEmail = {store.getStoreEmailAddress()};
 				
 				
-				Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, store, messages, customerLocale);
+				Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request.getContextPath(), store, messages, customerLocale);
 				templateTokens.put(EmailConstants.LABEL_HI, messages.getMessage("label.generic.hi", customerLocale));
 		        templateTokens.put(EmailConstants.EMAIL_CUSTOMER_FIRSTNAME, customer.getBilling().getFirstName());
 		        templateTokens.put(EmailConstants.EMAIL_CUSTOMER_LASTNAME, customer.getBilling().getLastName());

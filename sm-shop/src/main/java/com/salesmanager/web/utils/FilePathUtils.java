@@ -61,6 +61,23 @@ public class FilePathUtils {
 		
 	}
 	
+	public static String buildStoreUri(MerchantStore store, String contextPath) {
+		StringBuilder resourcePath = new StringBuilder();
+		String scheme = Constants.HTTP_SCHEME;
+		
+		String domainName = store.getDomainName();
+		if(StringUtils.isBlank(domainName)) {
+			domainName = Constants.DEFAULT_DOMAIN_NAME;
+		}
+		
+		resourcePath.append(scheme).append("://")
+		.append(domainName)
+		.append(contextPath);
+		
+		return resourcePath.toString();
+		
+	}
+	
 	
 	/**
 	 * Access to the customer section

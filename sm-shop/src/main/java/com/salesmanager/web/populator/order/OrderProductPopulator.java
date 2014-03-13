@@ -25,6 +25,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartAttributeItem;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.utils.AbstractDataPopulator;
+import com.salesmanager.web.constants.ApplicationConstants;
 
 public class OrderProductPopulator extends
 		AbstractDataPopulator<ShoppingCartItem, OrderProduct> {
@@ -80,6 +81,8 @@ public class OrderProductPopulator extends
 				OrderProductDownload orderProductDownload = new OrderProductDownload();	
 				orderProductDownload.setOrderProductFilename(digitalProduct.getProductFileName());
 				orderProductDownload.setOrderProduct(target);
+				orderProductDownload.setDownloadCount(0);
+				orderProductDownload.setMaxdays(ApplicationConstants.MAX_DOWNLOAD_DAYS);
 				target.getDownloads().add(orderProductDownload);
 			}
 

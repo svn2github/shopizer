@@ -89,16 +89,13 @@ public class ShoppingOrderController extends AbstractController {
 	
     @Autowired
     private ShoppingCartService shoppingCartService;
-	
 
-	
 	@Autowired
 	private PaymentService paymentService;
 	
 	@Autowired
 	private ShippingService shippingService;
 	
-
 	@Autowired
 	private OrderService orderService;
 	
@@ -122,9 +119,6 @@ public class ShoppingOrderController extends AbstractController {
 	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
-    @Autowired
-    private  CustomerRegistrationController customerRegistrationController;
 	
 	@Autowired
     private AuthenticationManager customerAuthenticationManager;
@@ -352,6 +346,7 @@ public class ShoppingOrderController extends AbstractController {
 	        PersistableCustomer customer = order.getCustomer();
 	        String password = null;
 	        if(customer.getId()==null || customer.getId()==0) {
+	        	customer.setUserName(customer.getEmailAddress());
 	        	password = UserReset.generateRandomString();
 	        	String encodedPassword = passwordEncoder.encodePassword(password, null);
 	        	customer.setPassword(encodedPassword);
@@ -370,19 +365,32 @@ public class ShoppingOrderController extends AbstractController {
 	        
 			if(customer.getId()==null || customer.getId()==0) {
 				//send email for new customer
-				customerRegistrationController.sendRegistrationEmail( request, customer, store, locale );
+				customer.setPassword(password);//set clear password for email
+				emailTemplatesUtils.sendRegistrationEmail( request, customer, store, locale );
 			}
 			
 			//send order confirmation email
 			Customer modelCustomer = customerFacade.populateCustomerModel(customer, store);
-			emailTemplatesUtils.sendOrderEmail(request, modelCustomer, modelOrder, locale, language, store);
+			emailTemplatesUtils.sendOrderEmail(modelCustomer, modelOrder, locale, language, store, request.getContextPath());
 	        
+			//get cart
+			String cartCode = super.getSessionAttribute(Constants.SHOPPING_CART, request);
+			if(StringUtils.isNotBlank(cartCode)) {
+				try {
+					shoppingCartFacade.deleteShoppingCart(cartCode, store);
+				} catch(Exception e) {
+					throw new ServiceException(e);
+				}
+			}
+
+			
 	        //cleanup the order objects
 	        super.removeAttribute(Constants.ORDER, request);
 	        super.removeAttribute(Constants.ORDER_SUMMARY, request);
 	        super.removeAttribute(Constants.INIT_TRANSACTION_KEY, request);
 	        super.removeAttribute(Constants.SHIPPING_OPTIONS, request);
 	        super.removeAttribute(Constants.SHIPPING_SUMMARY, request);
+	        super.removeAttribute(Constants.SHOPPING_CART, request);
 	        
 	        if(SecurityContextHolder.getContext().getAuthentication() != null &&
 	        		 SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
@@ -437,7 +445,14 @@ public class ShoppingOrderController extends AbstractController {
 					return template.toString();	
 			    }
 			    cart = shoppingCartFacade.getShoppingCartModel(shoppingCartCode, store);
-			    
+
+				Set<ShoppingCartItem> items = cart.getLineItems();
+				List<ShoppingCartItem> cartItems = new ArrayList<ShoppingCartItem>(items);
+				order.setShoppingCartItems(cartItems);
+				
+				
+
+
 				//get payment methods
 				List<PaymentMethod> paymentMethods = paymentService.getAcceptedPaymentMethods(store);
 				boolean freeShoppingCart = shoppingCartService.isFreeShoppingCart(cart);
@@ -467,6 +482,15 @@ public class ShoppingOrderController extends AbstractController {
 				ShippingQuote quote = orderFacade.getShippingQuote(cart, order, store, language);
 				model.addAttribute("shippingQuote", quote);
 				model.addAttribute("paymentMethods", paymentMethods);
+				
+				if(quote!=null) {
+					List<Country> shippingCountriesList = orderFacade.getShipToCountry(store, language);
+					model.addAttribute("countries", shippingCountriesList);
+				} else {
+					//get all countries
+					List<Country> countries = countryService.getCountries(language);
+					model.addAttribute("countries", countries);
+				}
 				
 				//set shipping summary
 				if(order.getSelectedShippingOption()!=null) {
@@ -542,9 +566,11 @@ public class ShoppingOrderController extends AbstractController {
 		        super.setSessionAttribute(Constants.ORDER_ID, modelOrder.getId(), request);
 	        
 			} catch(ServiceException se) {
-				
-				ObjectError error = new ObjectError("",messages.getMessage(se.getMessageCode(), locale));
-            	bindingResult.addError(error);
+
+            	//TODO check credit card errors
+            	LOGGER.error("Error while creating an order ", se);
+            	
+            	model.addAttribute("errorMessages", messages.getMessage("message.error", locale));
             	
             	StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Checkout.checkout).append(".").append(store.getStoreTemplate());
 	    		return template.toString();
@@ -803,7 +829,7 @@ public class ShoppingOrderController extends AbstractController {
 		       LOGGER.info( "Sending confirmation email to customer" );
 		       try {
 
-		           Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, merchantStore, messages, customerLocale);
+		           Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request.getContextPath(), merchantStore, messages, customerLocale);
 		           templateTokens.put(EmailConstants.LABEL_HI, messages.getMessage("label.generic.hi", customerLocale));
 		           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_FIRSTNAME, customer.getBilling().getFirstName());
 		           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_LASTNAME, customer.getBilling().getLastName());

@@ -80,6 +80,14 @@ public class ShoppingCartFacadeImpl
     		shoppingCartService.delete(cart);
     	}
     }
+    
+    @Override
+    public void deleteShoppingCart(final String code, final MerchantStore store) throws Exception {
+    	ShoppingCart cart = shoppingCartService.getByCode(code, store);
+    	if(cart!=null) {
+    		shoppingCartService.delete(cart);
+    	}
+    }
 
     @Override
     public ShoppingCartData addItemsToShoppingCart( final ShoppingCartData shoppingCartData,

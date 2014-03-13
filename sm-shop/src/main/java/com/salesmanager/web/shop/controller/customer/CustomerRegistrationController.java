@@ -3,7 +3,6 @@ package com.salesmanager.web.shop.controller.customer;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,19 +40,15 @@ import com.salesmanager.core.business.reference.language.service.LanguageService
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.system.service.EmailService;
-import com.salesmanager.core.modules.email.Email;
 import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.constants.EmailConstants;
 import com.salesmanager.web.entity.customer.AnonymousCustomer;
 import com.salesmanager.web.entity.customer.CustomerEntity;
-import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.customer.ShopPersistableCustomer;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
-import com.salesmanager.web.utils.EmailUtils;
-import com.salesmanager.web.utils.FilePathUtils;
+import com.salesmanager.web.utils.EmailTemplatesUtils;
 import com.salesmanager.web.utils.LabelUtils;
 
 /**
@@ -100,6 +95,9 @@ public class CustomerRegistrationController extends AbstractController {
 	
 	@Autowired
     private AuthenticationManager customerAuthenticationManager;
+	
+	@Autowired
+	private EmailTemplatesUtils emailTemplatesUtils;
 
 
 
@@ -216,7 +214,7 @@ public class CustomerRegistrationController extends AbstractController {
         /**
          * Send registration email
          */
-        this.sendRegistrationEmail( request, customer, merchantStore, locale );
+        emailTemplatesUtils.sendRegistrationEmail( request, customer, merchantStore, locale );
 
         /**
          * Login user
@@ -289,46 +287,6 @@ public class CustomerRegistrationController extends AbstractController {
 	
 	
 
-	public void sendRegistrationEmail(HttpServletRequest request,
-		PersistableCustomer customer, MerchantStore merchantStore,
-			Locale customerLocale) {
-		   /** issue with putting that elsewhere **/ 
-	       LOGGER.info( "Sending welcome email to customer" );
-	       try {
-
-	           Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, merchantStore, messages, customerLocale);
-	           templateTokens.put(EmailConstants.LABEL_HI, messages.getMessage("label.generic.hi", customerLocale));
-	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_FIRSTNAME, customer.getBilling().getFirstName());
-	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_LASTNAME, customer.getBilling().getLastName());
-	           String[] greetingMessage = {merchantStore.getStorename(),FilePathUtils.buildCustomerUri(merchantStore, request),merchantStore.getStoreEmailAddress()};
-	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_GREETING, messages.getMessage("email.customer.greeting", greetingMessage, customerLocale));
-	           templateTokens.put(EmailConstants.EMAIL_USERNAME_LABEL, messages.getMessage("label.generic.username",customerLocale));
-	           templateTokens.put(EmailConstants.EMAIL_PASSWORD_LABEL, messages.getMessage("label.generic.password",customerLocale));
-	           templateTokens.put(EmailConstants.CUSTOMER_ACCESS_LABEL, messages.getMessage("label.customer.accessportal",customerLocale));
-	           templateTokens.put(EmailConstants.ACCESS_NOW_LABEL, messages.getMessage("label.customer.accessnow",customerLocale));
-	           templateTokens.put(EmailConstants.EMAIL_USER_NAME, customer.getUserName());
-	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_PASSWORD, customer.getPassword());
-
-	           //shop url
-	           String customerUrl = FilePathUtils.buildStoreUri(merchantStore, request);
-	           templateTokens.put(EmailConstants.CUSTOMER_ACCESS_URL, customerUrl);
-
-	           Email email = new Email();
-	           email.setFrom(merchantStore.getStorename());
-	           email.setFromEmail(merchantStore.getStoreEmailAddress());
-	           email.setSubject(messages.getMessage("email.newuser.title",customerLocale));
-	           email.setTo(customer.getEmailAddress());
-	           email.setTemplateName(EmailConstants.EMAIL_CUSTOMER_TPL);
-	           email.setTemplateTokens(templateTokens);
-
-	           LOGGER.info( "Sending email to {} on their  registered email id {} ",customer.getBilling().getFirstName(),customer.getEmailAddress() );
-	           emailService.sendHtmlEmail(merchantStore, email);
-
-	       } catch (Exception e) {
-	           LOGGER.error("Error occured while sending welcome email ",e);
-	       }
-		
-	}
 	
 	
 

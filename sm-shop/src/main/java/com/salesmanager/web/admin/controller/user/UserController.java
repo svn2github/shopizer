@@ -597,7 +597,7 @@ public class UserController {
 				String[] userNameArg = {userName};
 				
 				
-				Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, store, messages, userLocale);
+				Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request.getContextPath(), store, messages, userLocale);
 				templateTokens.put(EmailConstants.EMAIL_NEW_USER_TEXT, messages.getMessage("email.greeting", userNameArg, userLocale));
 				templateTokens.put(EmailConstants.EMAIL_USER_FIRSTNAME, user.getFirstName());
 				templateTokens.put(EmailConstants.EMAIL_USER_LASTNAME, user.getLastName());
@@ -815,7 +815,7 @@ public class UserController {
 					try {
 						String[] storeEmail = {store.getStoreEmailAddress()};						
 						
-						Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, store, messages, userLocale);
+						Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request.getContextPath(), store, messages, userLocale);
 						templateTokens.put(EmailConstants.EMAIL_RESET_PASSWORD_TXT, messages.getMessage("email.user.resetpassword.text", userLocale));
 						templateTokens.put(EmailConstants.EMAIL_CONTACT_OWNER, messages.getMessage("email.contactowner", storeEmail, userLocale));
 						templateTokens.put(EmailConstants.EMAIL_PASSWORD_LABEL, messages.getMessage("label.generic.password",userLocale));

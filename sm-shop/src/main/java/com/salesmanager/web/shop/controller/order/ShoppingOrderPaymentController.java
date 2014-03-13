@@ -159,7 +159,8 @@ public class ShoppingOrderPaymentController extends AbstractController {
 			//OrderTotalSummary orderTotalSummary = orderFacade.calculateOrderTotal(store, order, language);
 			OrderTotalSummary orderTotalSummary = super.getSessionAttribute(Constants.ORDER_SUMMARY, request);
 			if(orderTotalSummary==null) {
-				//TODO recalculate
+				orderTotalSummary = orderFacade.calculateOrderTotal(store, order, language);
+				super.setSessionAttribute(Constants.ORDER_SUMMARY, orderTotalSummary, request);
 			}
 			
 			ShippingSummary summary = (ShippingSummary)request.getSession().getAttribute("SHIPPING_SUMMARY");

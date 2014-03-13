@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.Validate;
@@ -275,7 +275,7 @@ public class OrderFacadeImpl implements OrderFacade {
 			modelOrder.setShippingModuleCode(order.getShippingModule());
 	
 			List<ShoppingCartItem> shoppingCartItems = order.getShoppingCartItems();
-			Set<OrderProduct> orderProducts = new HashSet<OrderProduct>();
+			Set<OrderProduct> orderProducts = new LinkedHashSet<OrderProduct>();
 			
 			OrderProductPopulator orderProductPopulator = new OrderProductPopulator();
 			orderProductPopulator.setDigitalProductService(digitalProductService);
@@ -306,7 +306,7 @@ public class OrderFacadeImpl implements OrderFacade {
 				
 			});
 			
-			Set<com.salesmanager.core.business.order.model.OrderTotal> modelTotals = new HashSet<com.salesmanager.core.business.order.model.OrderTotal>();
+			Set<com.salesmanager.core.business.order.model.OrderTotal> modelTotals = new LinkedHashSet<com.salesmanager.core.business.order.model.OrderTotal>();
 			for(com.salesmanager.core.business.order.model.OrderTotal total : totals) {
 				total.setOrder(modelOrder);
 				modelTotals.add(total);
@@ -332,7 +332,7 @@ public class OrderFacadeImpl implements OrderFacade {
 			}
 			
 			String paymentType = order.getPaymentMethodType();
-			Payment payment = null;
+			Payment payment = new Payment();
 			if(PaymentType.CREDITCARD.name().equals(paymentType)) {
 				payment = new CreditCardPayment();
 				((CreditCardPayment)payment).setCardOwner(order.getPayment().get("creditcard_card_holder"));
@@ -387,15 +387,10 @@ public class OrderFacadeImpl implements OrderFacade {
 				
 			}
 			
-			
-			
-			//if(!StringUtils.isBlank(order.getPaymentModule())) {
+
 			modelOrder.setPaymentModuleCode(order.getPaymentModule());
 			payment.setModuleName(order.getPaymentModule());
-			
-			//}
-	
-			
+
 			orderService.processOrder(modelOrder, customer, order.getShoppingCartItems(), summary, payment, store);
 			
 

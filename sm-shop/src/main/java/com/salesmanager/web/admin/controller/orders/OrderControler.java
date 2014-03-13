@@ -298,7 +298,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 				customerName.append(newOrder.getBilling().getFirstName()).append(" ").append(newOrder.getBilling().getLastName());
 				
 				
-				Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, store, messages, customerLocale);
+				Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request.getContextPath(), store, messages, customerLocale);
 				templateTokens.put(EmailConstants.EMAIL_CUSTOMER_NAME, customerName.toString());
 				templateTokens.put(EmailConstants.EMAIL_TEXT_ORDER_NUMBER, messages.getMessage("email.order.confirmation", new String[]{String.valueOf(newOrder.getId())}, customerLocale));
 				templateTokens.put(EmailConstants.EMAIL_TEXT_DATE_ORDERED, messages.getMessage("email.order.ordered", new String[]{entityOrder.getDatePurchased()}, customerLocale));

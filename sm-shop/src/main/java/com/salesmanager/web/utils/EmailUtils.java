@@ -26,7 +26,7 @@ public class EmailUtils {
 	 * @param locale
 	 * @return
 	 */
-	public static Map<String, String> createEmailObjectsMap(HttpServletRequest request, MerchantStore store, LabelUtils messages, Locale locale){
+	public static Map<String, String> createEmailObjectsMap(String contextPath, MerchantStore store, LabelUtils messages, Locale locale){
 		
 		Map<String, String> templateTokens = new HashMap<String, String>();
 		
@@ -43,7 +43,7 @@ public class EmailUtils {
 		if(store.getStoreLogo()!=null) {
 			StringBuilder logoPath = new StringBuilder();
 			String scheme = Constants.HTTP_SCHEME;
-			logoPath.append("<img src='").append(scheme).append("://").append(store.getDomainName()).append(request.getContextPath()).append("/").append(ImageFilePathUtils.buildStoreLogoFilePath(store)).append("'>");
+			logoPath.append("<img src='").append(scheme).append("://").append(store.getDomainName()).append(contextPath).append("/").append(ImageFilePathUtils.buildStoreLogoFilePath(store)).append("'>");
 			templateTokens.put(LOGOPATH, logoPath.toString());
 		} else {
 			templateTokens.put(LOGOPATH, store.getStorename());

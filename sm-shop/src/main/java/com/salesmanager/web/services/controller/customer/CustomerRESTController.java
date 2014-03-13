@@ -420,7 +420,7 @@ public class CustomerRESTController {
 
 
 			
-			Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request, merchantStore, messages, customerLocale);
+			Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request.getContextPath(), merchantStore, messages, customerLocale);
 			templateTokens.put(EmailConstants.EMAIL_CUSTOMER_FIRSTNAME, customer.getBilling().getFirstName());
 			templateTokens.put(EmailConstants.EMAIL_CUSTOMER_LASTNAME, customer.getBilling().getLastName());
 			
