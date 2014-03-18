@@ -10,10 +10,12 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.salesmanager.core.business.common.model.Address;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.core.business.reference.currency.service.CurrencyService;
 import com.salesmanager.core.modules.utils.Encryption;
+import com.salesmanager.core.modules.utils.GeoLocation;
 import com.salesmanager.core.utils.CacheUtils;
 import com.salesmanager.test.core.AbstractSalesManagerCoreTestCase;
 
@@ -34,9 +36,15 @@ public class UtilsTestCase extends AbstractSalesManagerCoreTestCase {
 	@Autowired
 	private CacheUtils cache;
 	
+	@Autowired
+	private GeoLocation geoLoaction;
+	
+
 	
 	@Test
 	public void testCache() throws Exception {
+		
+
 		
 		@SuppressWarnings("rawtypes")
 		List countries = countryService.list();
@@ -65,6 +73,16 @@ public class UtilsTestCase extends AbstractSalesManagerCoreTestCase {
 		numberFormat.setCurrency(c);
 		
 		System.out.println("Done");
+		
+	}
+	
+	@Test
+	public void testGeoLocation() throws Exception {
+		
+		Address address = geoLoaction.getAddress("127.0.0.1");
+		if(address!=null) {
+			System.out.println(address.getCountry());
+		}
 		
 	}
 	
