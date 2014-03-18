@@ -304,8 +304,9 @@ public class CustomerAccountController extends AbstractController {
         MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
        
        
-        final Address address=customerFacade.getAddress( customerId, store, billingAddress );
-        model.addAttribute( "address", address);
+        //TODO missing
+        //Address address=customerFacade.getAddress( customerId, store, billingAddress );
+       // model.addAttribute( "address", address);
         model.addAttribute( "customerId", customerId );
         StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.EditAddress).append(".").append(store.getStoreTemplate());
         return template.toString();
@@ -329,7 +330,8 @@ public class CustomerAccountController extends AbstractController {
         
        
         Language language = getSessionAttribute(Constants.LANGUAGE, request);
-        customerFacade.updateAddress( customerId, store, address, language);
+        //TODO Missing
+        //customerFacade.updateAddress( customerId, store, address, language);
       
         return ControllerConstants.REDIRECT+BILLING_SECTION;
     }

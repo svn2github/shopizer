@@ -3,10 +3,6 @@
  */
 package com.salesmanager.web.shop.controller.customer.facade;
 
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
