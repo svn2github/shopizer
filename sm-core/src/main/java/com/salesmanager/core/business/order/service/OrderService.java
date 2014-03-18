@@ -75,12 +75,12 @@ public interface OrderService extends SalesManagerEntityService<Long, Order> {
 
     Order getOrder(Long id);
 
-    public List<Order> listByStore(MerchantStore merchantStore);
+    List<Order> listByStore(MerchantStore merchantStore);
 
 
 
 
-    public OrderList listByStore(MerchantStore store, OrderCriteria criteria);
+    OrderList listByStore(MerchantStore store, OrderCriteria criteria);
 
     void saveOrUpdate(Order order) throws ServiceException;
 
@@ -94,6 +94,12 @@ public interface OrderService extends SalesManagerEntityService<Long, Order> {
 			throws ServiceException;
 
 
-
+	/**
+	 * Determines if an Order has download files
+	 * @param order
+	 * @return
+	 * @throws ServiceException
+	 */
+	boolean hasDownloadFiles(Order order) throws ServiceException;
 
 }

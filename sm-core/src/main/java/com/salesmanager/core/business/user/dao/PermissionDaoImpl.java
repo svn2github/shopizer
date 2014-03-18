@@ -50,7 +50,7 @@ public class PermissionDaoImpl extends SalesManagerEntityDaoImpl<Integer, Permis
 	@Override
 	public List<Permission> getPermissionsListByGroups(Set groupIds) {
 		StringBuilder qs = new StringBuilder();
-		qs.append("select p from Permission as p ");
+		qs.append("select distinct p from Permission as p ");
 		qs.append("join fetch p.groups grous ");
 		qs.append("where grous.id in (:cid)");
 

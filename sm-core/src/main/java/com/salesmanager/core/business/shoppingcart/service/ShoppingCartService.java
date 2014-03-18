@@ -55,6 +55,8 @@ public interface ShoppingCartService extends SalesManagerEntityService<Long, Sho
 	 */
 	ShoppingCartItem populateShoppingCartItem(Product product)
 			throws ServiceException;
+	
+	void deleteCart(ShoppingCart cart) throws ServiceException;
 
 
 	boolean removeShoppingCart(ShoppingCart cart) throws ServiceException;

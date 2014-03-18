@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,7 @@ import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.order.model.OrderTotalType;
 import com.salesmanager.core.business.order.model.OrderValueType;
 import com.salesmanager.core.business.order.model.Order_;
+import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
 import com.salesmanager.core.business.payments.model.Payment;
@@ -478,5 +480,24 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 
         }
     }
+
+	@Override
+	public boolean hasDownloadFiles(Order order) throws ServiceException {
+		
+		Validate.notNull(order,"Order cannot be null");
+		Validate.notNull(order.getOrderProducts(),"Order products cannot be null");
+		Validate.notEmpty(order.getOrderProducts(),"Order products cannot be empty");
+		
+		boolean hasDownloads = false;
+		for(OrderProduct orderProduct : order.getOrderProducts()) {
+			
+			if(CollectionUtils.isNotEmpty(orderProduct.getDownloads())) {
+				hasDownloads = true;
+				break;
+			}
+		}
+		
+		return hasDownloads;
+	}
 
 }

@@ -116,7 +116,8 @@ public class OrderDaoImpl  extends SalesManagerEntityDaoImpl<Long, Order> implem
 			.leftJoin(qOrderProduct.orderAttributes,qOrderProductAttribute).fetch()
 			.leftJoin(qOrderProduct.prices).fetch();
 			
-			query.where(qOrder.merchant.id.eq(store.getId()));
+			query.where(qOrder.merchant.id.eq(store.getId()))
+			.orderBy(qOrder.id.desc());
 			BooleanBuilder pBuilder = null;
 
 		if(!StringUtils.isBlank(criteria.getCustomerName())) {

@@ -2,7 +2,6 @@ package com.salesmanager.core.business.order.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -142,7 +141,6 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	public Order() {
 	}
 	
-	//@Email
 	@Column (name ="CUSTOMER_EMAIL_ADDRESS", length=50, nullable=false)
 	private String customerEmailAddress;
 
