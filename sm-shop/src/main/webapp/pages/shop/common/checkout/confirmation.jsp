@@ -12,7 +12,28 @@ response.setDateHeader ("Expires", -1);
 <%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %> 
  
 <%@page contentType="text/html"%>
-<%@page pageEncoding="UTF-8"%>   
+<%@page pageEncoding="UTF-8"%> 
 
 
-          Confirmation !
+	<div id="main-content" class="container clearfix">
+		<div class="row-fluid">
+			<div class="span12">  
+
+
+          Confirmation ! <strong><c:out value="${order.id}" /></strong>
+          
+          
+          <br/>
+          
+          <c:if test="${downloads!=null}">
+          	<c:forEach items="${downloads}" var="download">
+          		-- <c:out value="${download.fileName}" />
+          	</c:forEach>
+          </c:if>
+          
+          
+            </div>
+            
+          </div>
+          
+      </div>

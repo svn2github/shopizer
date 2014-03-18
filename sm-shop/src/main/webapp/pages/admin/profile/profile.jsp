@@ -110,7 +110,7 @@
                              <span class="help-inline"><form:errors path="adminEmail" cssClass="error" /></span>
 	                  </div>
 	       		  </div>
-	       		  
+
 	       		  <c:if test="${user.id==null || user.id==0}">
                   <div class="control-group">
 	                  <label><s:message code="label.user.password" text="Password"/></label>
@@ -121,6 +121,7 @@
 
 	       		  </div>
                   </c:if>
+
                   
                   <div class="control-group">
                       <label><s:message code="label.user.firstName" text="First name"/> </label>

@@ -11,7 +11,6 @@
 <script type="text/javascript">
 	
 	function removeFile(fileId){
-			alert('clicked');
 			$("#store.error").show();
 			$.ajax({
 			  type: 'POST',

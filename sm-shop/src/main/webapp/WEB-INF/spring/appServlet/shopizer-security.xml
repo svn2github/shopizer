@@ -7,7 +7,8 @@
 	http://www.springframework.org/schema/security
 	http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
-	<global-method-security jsr250-annotations="enabled"/>
+
+	<global-method-security secured-annotations="enabled" jsr250-annotations="enabled" pre-post-annotations="enabled"/>
 
 	<beans:bean id="customerFacade" class="com.salesmanager.web.shop.controller.customer.facade.CustomerFacadeImpl">
 	</beans:bean>
@@ -26,7 +27,10 @@
 		class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
 	</beans:bean>
 	
-
+	<beans:bean id="adminAccessDenied"
+		class="com.salesmanager.web.utils.AdminAccessDeniedHandler">
+		<beans:property name="accessDeniedUrl" value="/error/access_denied.jsp" />
+	</beans:bean>
 
 	
 	<!-- updates last user logon timestamp -->
@@ -66,7 +70,7 @@
 		<logout invalidate-session="true" 
 			logout-success-url="/admin/home.html" 
 			logout-url="/admin/j_spring_security_logout" />
-		<access-denied-handler error-page="/admin/denied.html"/>
+		<access-denied-handler ref="adminAccessDenied"/>
 	</http>
 	
 

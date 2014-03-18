@@ -126,7 +126,6 @@ function setPaymentModule(module) {
 }
 
 function isFieldValid(field) {
-	return true;
 	var validateField = true;
 	var fieldId = field.prop('id');
 	var value = field.val();

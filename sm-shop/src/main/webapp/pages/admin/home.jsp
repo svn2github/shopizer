@@ -62,6 +62,8 @@
 						
 					</div>
 					
+				<sec:authorize access="hasAnyRole('ADMIN', 'SUPERADMIN', 'ADMIN_ORDER')">
+					
 					<br/>
 					<h3><s:message code="label.order.recent" text="Recent orders"/></h3>
 					<br/><br/>
@@ -78,5 +80,7 @@
 
             	 <jsp:include page="/pages/admin/components/list.jsp"></jsp:include> 
 				 <!-- End listing grid include -->
+				 
+				 </sec:authorize>
 
 </div>
