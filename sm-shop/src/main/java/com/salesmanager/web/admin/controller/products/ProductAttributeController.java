@@ -16,7 +16,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -72,7 +72,7 @@ public class ProductAttributeController {
 	LabelUtils messages;
 	
 
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/attributes/list.html", method=RequestMethod.GET)
 	public String displayProductAttributes(@RequestParam("id") long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -98,7 +98,7 @@ public class ProductAttributeController {
 	
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/attributes/page.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageAttributes(HttpServletRequest request, HttpServletResponse response) {
 
@@ -179,14 +179,14 @@ public class ProductAttributeController {
 
 	}
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/attributes/editAttribute.html", method=RequestMethod.GET)
 	public String displayAttributeEdit(@RequestParam("productId") Long productId, @RequestParam("id") Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return displayAttribute(productId, id,model,request,response);
 
 	}
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/attribute/createAttribute.html", method=RequestMethod.GET)
 	public String displayAttributeCreate(@RequestParam("productId") Long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return displayAttribute(productId, null,model,request,response);
@@ -251,7 +251,7 @@ public class ProductAttributeController {
 		return "admin-products-attribute-details";
 	}
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/attributes/attribute/save.html", method=RequestMethod.POST)
 	public String saveAttribute(@Valid @ModelAttribute("attribute") ProductAttribute attribute, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
@@ -402,7 +402,7 @@ public class ProductAttributeController {
 		return "admin-products-attribute-details";
 	}
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/attributes/attribute/remove.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String deleteProductPrice(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String sAttributeid = request.getParameter("attributeId");
@@ -446,7 +446,7 @@ public class ProductAttributeController {
 	
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/attributes/getAttributeType.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String checkAttributeType(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 

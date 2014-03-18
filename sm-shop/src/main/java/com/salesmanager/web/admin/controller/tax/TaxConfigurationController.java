@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,7 +30,7 @@ public class TaxConfigurationController {
 	private TaxService taxService = null;
 	
 	
-	@Secured("TAX")
+	@PreAuthorize("hasRole('TAX')")
 	@RequestMapping(value={"/admin/tax/taxconfiguration/edit.html"}, method=RequestMethod.GET)
 	public String displayTaxConfiguration(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -50,7 +50,7 @@ public class TaxConfigurationController {
 		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Tax.taxConfiguration;
 	}
 	
-	@Secured("TAX")
+	@PreAuthorize("hasRole('TAX')")
 	@RequestMapping(value="/admin/tax/taxconfiguration/save.html", method=RequestMethod.POST)
 	public String saveTaxConfiguration(@Valid @ModelAttribute("taxConfiguration") TaxConfiguration taxConfiguration, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		

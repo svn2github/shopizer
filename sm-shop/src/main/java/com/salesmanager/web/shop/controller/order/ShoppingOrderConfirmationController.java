@@ -1,10 +1,13 @@
 package com.salesmanager.web.shop.controller.order;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.order.model.orderproduct.OrderProductDownload;
 import com.salesmanager.core.business.order.service.OrderService;
+import com.salesmanager.core.business.order.service.orderproduct.OrderProductDownloadService;
 import com.salesmanager.core.business.payments.service.PaymentService;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -24,6 +30,8 @@ import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.order.ReadableOrderProductDownload;
+import com.salesmanager.web.populator.order.ReadableOrderProductDownloadPopulator;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
@@ -76,21 +84,57 @@ public class ShoppingOrderConfirmationController extends AbstractController {
 	
 	@Autowired
     private AuthenticationManager customerAuthenticationManager;
+	
+	@Autowired
+	private OrderProductDownloadService orderProdctDownloadService;
 
+	/**
+	 * Invoked once the payment is complete and order is fulfilled
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @param locale
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping("/confirmation.html")
 	public String displayConfirmation(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-		Customer customer = (Customer)request.getSession().getAttribute(Constants.CUSTOMER);
 
-		
-
-		//check if an existing order exist
-		
 		Long orderId = super.getSessionAttribute(Constants.ORDER_ID, request);
-		//model.addAttribute("order",order);
-		//model.addAttribute("paymentMethods", paymentMethods);
+		if(orderId==null) {
+			return new StringBuilder().append("redirect:").append(Constants.SHOP_URI).toString();
+		}
+
+		//get the order
+		Order order = orderService.getById(orderId);
+		if(order == null) {
+			LOGGER.warn("Order id [" + orderId + "] does not exist");
+			throw new Exception("Order id [" + orderId + "] does not exist");
+		}
+		
+		if(order.getMerchant().getId().intValue()!=store.getId().intValue()) {
+			LOGGER.warn("Store id [" + store.getId() + "] differs from order.store.id [" + order.getMerchant().getId() + "]");
+			return new StringBuilder().append("redirect:").append(Constants.SHOP_URI).toString();
+		}
+		
+		model.addAttribute("order", order);
+		
+		//check if any downloads exist for this order
+		List<OrderProductDownload> orderProductDownloads = orderProdctDownloadService.getByOrderId(order.getId());
+		if(CollectionUtils.isNotEmpty(orderProductDownloads)) {
+			ReadableOrderProductDownloadPopulator populator = new ReadableOrderProductDownloadPopulator();
+			List<ReadableOrderProductDownload> downloads = new ArrayList<ReadableOrderProductDownload>();
+			for(OrderProductDownload download : orderProductDownloads) {
+				ReadableOrderProductDownload view = new ReadableOrderProductDownload();
+				populator.populate(download, view,  store, language);
+				downloads.add(view);
+			}
+			model.addAttribute("downloads", downloads);
+		}
+		
 		
 		/** template **/
 		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Checkout.confirmation).append(".").append(store.getStoreTemplate());

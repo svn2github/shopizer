@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +35,7 @@ public class CacheController {
 
 
 
-	@Secured("AUTH")
+	@PreAuthorize("hasRole('AUTH')")
 	@RequestMapping(value="/admin/cache/cacheManagement.html", method=RequestMethod.GET)
 	public String displayAccounts(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -53,7 +53,7 @@ public class CacheController {
 	}
 	
 	
-	@Secured("AUTH")
+	@PreAuthorize("hasRole('AUTH')")
 	@RequestMapping(value="/admin/cache/clear.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String clearCache(HttpServletRequest request, HttpServletResponse response) {
 		String cacheKey = request.getParameter("cacheKey");

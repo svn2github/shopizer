@@ -3,7 +3,6 @@ package com.salesmanager.web.shop.controller.order.facade;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -49,7 +48,6 @@ import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
-import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.shipping.model.ShippingProduct;
 import com.salesmanager.core.business.shipping.model.ShippingQuote;
@@ -59,6 +57,7 @@ import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.utils.CreditCardUtils;
+import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.order.OrderEntity;
 import com.salesmanager.web.entity.order.OrderTotal;
@@ -257,14 +256,15 @@ public class OrderFacadeImpl implements OrderFacade {
 			Language language) throws ServiceException {
 		
 		try {
+			
+			if(order.isShipToBillingAdress()) {//customer shipping is billing
+				PersistableCustomer orderCustomer = order.getCustomer();
+				Address billing = orderCustomer.getBilling();
+				orderCustomer.setDelivery(billing);
+			}
 
 			Customer customer = this.toCustomerModel(order.getCustomer(), store, language);
-			
-			
-			
-			//if(customer!=null && customer.getId()==null || customer.getId()==0) {
-			//	customerService.saveOrUpdate(customer);
-			//}
+
 			
 			Order modelOrder = new Order();
 			modelOrder.setDatePurchased(new Date());
@@ -397,7 +397,7 @@ public class OrderFacadeImpl implements OrderFacade {
 			
 			return modelOrder;
 		
-		} catch(ServiceException se) {
+		} catch(ServiceException se) {//may be invalid credit card
 			throw se;
 		} catch(Exception e) {
 			throw new ServiceException(e);
@@ -406,9 +406,7 @@ public class OrderFacadeImpl implements OrderFacade {
 	}
 	
 	private void orderCustomer(Customer customer, Order order, Language language) throws Exception {
-		
-		Map<String,Country> countriesMap = countryService.getCountriesMap(language);
-		Map<String,Zone> zonesMap = zoneService.getZones(language);
+
 		//populate customer
 		order.setBilling(customer.getBilling());
 		order.setDelivery(customer.getDelivery());

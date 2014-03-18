@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -64,7 +64,7 @@ public class ProductPriceController {
 	@Autowired
 	LabelUtils messages;
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/prices.html", method=RequestMethod.GET)
 	public String getProductPrices(@RequestParam("id") long productId,Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -97,7 +97,7 @@ public class ProductPriceController {
 		
 	}
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/prices/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pagePrices(HttpServletRequest request, HttpServletResponse response) {
 
@@ -206,7 +206,7 @@ public class ProductPriceController {
 	
 	
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/price/edit.html", method=RequestMethod.GET)
 	public String editProductPrice(@RequestParam("id") long productPriceId, @RequestParam("productId") long productId,Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
@@ -226,7 +226,7 @@ public class ProductPriceController {
 		
 	}
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/price/create.html", method=RequestMethod.GET)
 	public String displayCreateProductPrice(@RequestParam("productId") long productId,@RequestParam("availabilityId") long avilabilityId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -341,7 +341,7 @@ public class ProductPriceController {
 	
 	
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/price/save.html", method=RequestMethod.POST)
 	public String saveProductPrice(@Valid @ModelAttribute("price") com.salesmanager.web.admin.entity.catalog.ProductPrice price, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
@@ -448,7 +448,7 @@ public class ProductPriceController {
 		
 	}
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/price/remove.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String deleteProductPrice(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String sPriceid = request.getParameter("priceId");

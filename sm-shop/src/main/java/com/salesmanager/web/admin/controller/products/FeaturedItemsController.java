@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,7 +48,7 @@ public class FeaturedItemsController {
 	@Autowired
 	ProductRelationshipService productRelationshipService;
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/catalogue/featured/list.html", method=RequestMethod.GET)
 	public String displayFeaturedItems(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -67,7 +67,7 @@ public class FeaturedItemsController {
 	
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/catalogue/featured/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageProducts(HttpServletRequest request, HttpServletResponse response) {
 		
@@ -121,7 +121,7 @@ public class FeaturedItemsController {
 
 	}
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/catalogue/featured/addItem.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String addItem(HttpServletRequest request, HttpServletResponse response) {
 		
@@ -170,7 +170,7 @@ public class FeaturedItemsController {
 		
 	}
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/catalogue/featured/removeItem.html&removeEntity=FEATURED", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeItem(HttpServletRequest request, HttpServletResponse response) {
 		

@@ -3,7 +3,6 @@ package com.salesmanager.web.admin.controller.shipping;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -17,7 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,7 +35,6 @@ import com.salesmanager.core.business.shipping.model.ShippingType;
 import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.modules.integration.IntegrationException;
-import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuoteItem;
 import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuoteWeightItem;
 import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuotesConfiguration;
 import com.salesmanager.core.modules.integration.shipping.model.CustomShippingQuotesRegion;
@@ -69,7 +67,7 @@ public class CustomShippingMethodsController {
 	LabelUtils messages;
 	
 
-	@Secured("SHIPPING")
+	@PreAuthorize("hasRole('SHIPPING')")
 	@RequestMapping(value="/admin/shipping/weightBased.html", method=RequestMethod.GET)
 	public String getWeightBasedShippingMethod(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -84,7 +82,7 @@ public class CustomShippingMethodsController {
 	}
 	
 	
-	@Secured("SHIPPING")
+	@PreAuthorize("hasRole('SHIPPING')")
 	@RequestMapping(value="/admin/shipping/addCustomRegion.html", method=RequestMethod.POST)
 	public String addCustomRegion(@ModelAttribute("region") String region, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
@@ -129,7 +127,7 @@ public class CustomShippingMethodsController {
 	
 	}
 	
-	@Secured("SHIPPING")
+	@PreAuthorize("hasRole('SHIPPING')")
 	@RequestMapping(value="/admin/shipping/addCountryToRegion.html", method=RequestMethod.POST)
 	public String addCountryToCustomRegion(@ModelAttribute("customRegion") CustomShippingQuotesRegion customRegion, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
@@ -184,7 +182,7 @@ public class CustomShippingMethodsController {
 	
 	}
 	
-	@Secured("SHIPPING")
+	@PreAuthorize("hasRole('SHIPPING')")
 	@RequestMapping(value="/admin/shipping/saveweightBasedShippingMethod.html", method=RequestMethod.POST)
 	public String saveShippingMethod(@ModelAttribute("configuration") CustomShippingQuotesConfiguration configuration, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
@@ -242,7 +240,7 @@ public class CustomShippingMethodsController {
 		
 	}
 	
-	@Secured("SHIPPING")
+	@PreAuthorize("hasRole('SHIPPING')")
 	@RequestMapping(value="/admin/shipping/weightBased/removeCountry.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String deleteCountry(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String country = request.getParameter("regionCode");
@@ -287,7 +285,7 @@ public class CustomShippingMethodsController {
 	}
 	
 	
-	@Secured("SHIPPING")
+	@PreAuthorize("hasRole('SHIPPING')")
 	@RequestMapping(value="/admin/shipping/weightBased/removePrice.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String deletePrice(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String weight = request.getParameter("weight");
@@ -347,7 +345,7 @@ public class CustomShippingMethodsController {
 	}
 	
 
-	@Secured("SHIPPING")
+	@PreAuthorize("hasRole('SHIPPING')")
 	@RequestMapping(value="/admin/shipping/deleteWeightBasedShippingMethod.html", method=RequestMethod.POST)
 	public String deleteShippingMethod(BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
@@ -367,7 +365,7 @@ public class CustomShippingMethodsController {
 	 * @param locale
 	 * @return
 	 */
-	@Secured("SHIPPING")
+	@PreAuthorize("hasRole('SHIPPING')")
 	@RequestMapping(value="/admin/shipping/checkRegionCode.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String checkRegionCode(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String code = request.getParameter("code");
@@ -410,7 +408,7 @@ public class CustomShippingMethodsController {
 		return returnString;
 	}
 	
-	@Secured("SHIPPING")
+	@PreAuthorize("hasRole('SHIPPING')")
 	@RequestMapping(value = "/admin/shipping/weightBased/page.html", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	String pageCustomShipping(HttpServletRequest request,
@@ -464,7 +462,7 @@ public class CustomShippingMethodsController {
 	 * @return
 	 * @throws Exception
 	 */
-	@Secured("SHIPPING")
+	@PreAuthorize("hasRole('SHIPPING')")
 	@RequestMapping(value="/admin/shipping/weightBased/edit.html", method=RequestMethod.GET)
 	public String editCustomShipping(@ModelAttribute("customRegionName") String region, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
@@ -492,7 +490,7 @@ public class CustomShippingMethodsController {
 	}
 	
 	
-	@Secured("SHIPPING")
+	@PreAuthorize("hasRole('SHIPPING')")
 	@RequestMapping(value = "/admin/shipping/weightBasedDetails/page.html", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	String pageCustomShippingDetails(HttpServletRequest request,
@@ -549,7 +547,7 @@ public class CustomShippingMethodsController {
 	
 	
 	@SuppressWarnings("unchecked")
-	@Secured("SHIPPING")
+	@PreAuthorize("hasRole('SHIPPING')")
 	@RequestMapping(value="/admin/shipping/weightBased/addPrice.html", method=RequestMethod.POST)
 	public String addPrice(@ModelAttribute("region") String customRegion, @ModelAttribute("customQuote") CustomShippingQuoteWeightItem customQuote, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
@@ -644,7 +642,7 @@ public class CustomShippingMethodsController {
 	
 	}
 	
-	@Secured("SHIPPING")
+	@PreAuthorize("hasRole('SHIPPING')")
 	@RequestMapping(value="/admin/shipping/weightBased/deleteRegion.html", method=RequestMethod.POST)
 	public String deleteRegion(@ModelAttribute("customRegionName") String region, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		

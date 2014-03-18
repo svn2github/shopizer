@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -65,7 +65,7 @@ public class TaxRatesController {
 	@Autowired
 	private ZoneService zoneService;
 	
-	@Secured("TAX")
+	@PreAuthorize("hasRole('TAX')")
 	@RequestMapping(value={"/admin/tax/taxrates/list.html"}, method=RequestMethod.GET)
 	public String displayTaxRates(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -100,7 +100,7 @@ public class TaxRatesController {
 		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Tax.taxRates;
 	}
 	
-	@Secured("TAX")
+	@PreAuthorize("hasRole('TAX')")
 	@RequestMapping(value = "/admin/tax/taxrates/page.html", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	String pageTaxRates(HttpServletRequest request,
@@ -179,7 +179,7 @@ public class TaxRatesController {
 		return returnString;
 	}
 	
-	@Secured("TAX")
+	@PreAuthorize("hasRole('TAX')")
 	@RequestMapping(value="/admin/tax/taxrates/save.html", method=RequestMethod.POST)
 	public String saveTaxRate(@Valid @ModelAttribute("taxRate") TaxRate taxRate, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
@@ -214,7 +214,7 @@ public class TaxRatesController {
 	
 	
 	
-	@Secured("TAX")
+	@PreAuthorize("hasRole('TAX')")
 	@RequestMapping(value="/admin/tax/taxrates/update.html", method=RequestMethod.POST)
 	public String updateTaxRate(@Valid @ModelAttribute("taxRate") TaxRate taxRate, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
@@ -323,7 +323,7 @@ public class TaxRatesController {
 	}
 	
 
-	@Secured("TAX")
+	@PreAuthorize("hasRole('TAX')")
 	@RequestMapping(value="/admin/tax/taxrates/remove.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeTaxRate(HttpServletRequest request, Locale locale) throws Exception {
 		
@@ -389,7 +389,7 @@ public class TaxRatesController {
 		
 	}
 	
-	@Secured("TAX")
+	@PreAuthorize("hasRole('TAX')")
 	@RequestMapping(value="/admin/tax/taxrates/edit.html", method=RequestMethod.GET)
 	public String editTaxRate(@ModelAttribute("id") String id, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		

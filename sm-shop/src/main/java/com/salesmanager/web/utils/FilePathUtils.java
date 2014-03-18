@@ -14,7 +14,8 @@ import com.salesmanager.web.constants.Constants;
 public class FilePathUtils {
 	
 	
-	private final static String CUSTOMER_ACCESS_LINK = "/store/customer/dashboard.html";
+	private final static String CUSTOMER_ACCESS_LINK = Constants.SHOP_URI + "/customer/dashboard.html";
+	private final static String DOWNLOADS = "/downloads/";
 	
 	
 	/**
@@ -29,7 +30,7 @@ public class FilePathUtils {
 	}
 	
 	public static String buildAdminDownloadProductFilePath(MerchantStore store, DigitalProduct digitalProduct) {
-		return new StringBuilder().append(Constants.FILES_URI).append("/").append(store.getCode()).append("/").append(digitalProduct.getProductFileName()).toString();
+		return new StringBuilder().append(Constants.ADMIN_URI).append(Constants.FILES_URI).append(DOWNLOADS).append(store.getCode()).append("/").append(digitalProduct.getProductFileName()).toString();
 	}
 	
 	/**
@@ -85,15 +86,14 @@ public class FilePathUtils {
 	 * @param request
 	 * @return
 	 */
-	public static String buildCustomerUri(MerchantStore store, HttpServletRequest request) {
+	public static String buildCustomerUri(MerchantStore store,  String contextPath) {
 		StringBuilder resourcePath = new StringBuilder();
-		HttpSession session= request.getSession();
-		@SuppressWarnings("unchecked")
-		Map<String,String> configurations = (Map<String, String>)session.getAttribute(Constants.STORE_CONFIGURATION);
+		//@SuppressWarnings("unchecked")
+		//Map<String,String> configurations = (Map<String, String>)session.getAttribute(Constants.STORE_CONFIGURATION);
 		String scheme = Constants.HTTP_SCHEME;
-		if(configurations!=null) {
-			scheme = (String)configurations.get("scheme");
-		}
+		//if(configurations!=null) {
+		//	scheme = (String)configurations.get("scheme");
+		//}
 		
 		String domainName = store.getDomainName();
 		if(StringUtils.isBlank(domainName)) {
@@ -102,7 +102,7 @@ public class FilePathUtils {
 		
 		resourcePath.append(scheme).append("://")
 		.append(domainName)
-		.append(request.getContextPath())
+		.append(contextPath)
 		.append(CUSTOMER_ACCESS_LINK);
 		
 		return resourcePath.toString();
@@ -127,7 +127,7 @@ public class FilePathUtils {
 		resourcePath.append(scheme).append("://")
 		.append(domainName)
 		.append(request.getContextPath())
-		.append(Constants.ADMIN_URL);
+		.append(Constants.ADMIN_URI);
 		
 		return resourcePath.toString();
 		

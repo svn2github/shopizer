@@ -15,7 +15,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -59,7 +59,7 @@ public class ProductImagesController {
 	LabelUtils messages;
 	
 
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/images/list.html", method=RequestMethod.GET)
 	public String displayProductImages(@RequestParam("id") long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -85,7 +85,7 @@ public class ProductImagesController {
 	
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/images/page.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageProductImages(HttpServletRequest request, HttpServletResponse response) {
 
@@ -156,7 +156,7 @@ public class ProductImagesController {
 
 	
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/images/save.html", method=RequestMethod.POST)
 	public String saveProductImages(@ModelAttribute(value="productImages") @Valid final ProductImages productImages, final BindingResult bindingResult,final Model model, final HttpServletRequest request,Locale locale) throws Exception{
 	    
@@ -239,7 +239,7 @@ public class ProductImagesController {
 	
 
 		
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/images/remove.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String deleteImage(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String sImageId = request.getParameter("id");

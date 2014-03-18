@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOption;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionDescription;
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValue;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductOptionService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -53,7 +52,7 @@ public class OptionsController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OptionsController.class);
 	
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/options/options.html", method=RequestMethod.GET)
 	public String displayOptions(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -68,13 +67,13 @@ public class OptionsController {
 		
 	}
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/options/editOption.html", method=RequestMethod.GET)
 	public String displayOptionEdit(@RequestParam("id") long optionId, HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
 		return displayOption(optionId,request,response,model,locale);
 	}
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/options/createOption.html", method=RequestMethod.GET)
 	public String displayOption(HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
 		return displayOption(null,request,response,model,locale);
@@ -153,7 +152,7 @@ public class OptionsController {
 	}
 		
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/options/save.html", method=RequestMethod.POST)
 	public String saveOption(@Valid @ModelAttribute("option") ProductOption option, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
@@ -222,7 +221,7 @@ public class OptionsController {
 	
 	
 	@SuppressWarnings("unchecked")
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/options/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageOptions(HttpServletRequest request, HttpServletResponse response) {
 		

@@ -3,8 +3,6 @@ package com.salesmanager.web.utils;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.impl.cookie.DateUtils;
 import org.slf4j.Logger;
@@ -13,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.customer.model.Customer;
@@ -28,6 +25,7 @@ import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.system.service.EmailService;
 import com.salesmanager.core.modules.email.Email;
+import com.salesmanager.web.constants.ApplicationConstants;
 import com.salesmanager.web.constants.EmailConstants;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 
@@ -169,26 +167,26 @@ public class EmailTemplatesUtils {
 		    		   		orderTable.append(TD);
 		    		   		orderTable.append(CLOSING_TD);
 		    		   		orderTable.append(TD);
+		    		   		orderTable.append("<strong>");
 		    		   			if(total.getModule().equals("tax")) {
 		    		   				orderTable.append(total.getText()).append(": ");
+
 		    		   			} else {
 		    		   				//if(total.getModule().equals("total") || total.getModule().equals("subtotal")) {
-		    		   					orderTable.append("<strong>");
 		    		   				//}
 		    		   				orderTable.append(messages.getMessage(total.getOrderTotalCode(), customerLocale)).append(": ");
 		    		   				//if(total.getModule().equals("total") || total.getModule().equals("subtotal")) {
-		    		   					orderTable.append("</strong>");
+		    		   					
 		    		   				//}
 		    		   			}
+		    		   		orderTable.append("</strong>");
 		    		   		orderTable.append(CLOSING_TD);
 		    		   		orderTable.append(TD);
-    		   					if(total.getModule().equals("total")) {
-    		   						orderTable.append("<strong>");
-    		   					}
+		    		   			orderTable.append("<strong>");
+
 		    		   			orderTable.append(pricingService.getDisplayAmount(total.getValue(), merchantStore));
-	    		   				if(total.getModule().equals("total")) {
-	    		   					orderTable.append("</strong>");
-	    		   				}
+
+	    		   				orderTable.append("</strong>");
 		    		   		orderTable.append(CLOSING_TD);
 		    		   orderTable.append(CLOSING_TR);
 		    	   }
@@ -255,18 +253,18 @@ public class EmailTemplatesUtils {
 	 * @param customerLocale
 	 */
 	@Async
-	public void sendRegistrationEmail(HttpServletRequest request,
+	public void sendRegistrationEmail(
 		PersistableCustomer customer, MerchantStore merchantStore,
-			Locale customerLocale) {
+			Locale customerLocale, String contextPath) {
 		   /** issue with putting that elsewhere **/ 
 	       LOGGER.info( "Sending welcome email to customer" );
 	       try {
 
-	           Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request.getContextPath(), merchantStore, messages, customerLocale);
+	           Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(contextPath, merchantStore, messages, customerLocale);
 	           templateTokens.put(EmailConstants.LABEL_HI, messages.getMessage("label.generic.hi", customerLocale));
 	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_FIRSTNAME, customer.getBilling().getFirstName());
 	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_LASTNAME, customer.getBilling().getLastName());
-	           String[] greetingMessage = {merchantStore.getStorename(),FilePathUtils.buildCustomerUri(merchantStore, request),merchantStore.getStoreEmailAddress()};
+	           String[] greetingMessage = {merchantStore.getStorename(),FilePathUtils.buildCustomerUri(merchantStore,contextPath),merchantStore.getStoreEmailAddress()};
 	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_GREETING, messages.getMessage("email.customer.greeting", greetingMessage, customerLocale));
 	           templateTokens.put(EmailConstants.EMAIL_USERNAME_LABEL, messages.getMessage("label.generic.username",customerLocale));
 	           templateTokens.put(EmailConstants.EMAIL_PASSWORD_LABEL, messages.getMessage("label.generic.password",customerLocale));
@@ -276,7 +274,7 @@ public class EmailTemplatesUtils {
 	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_PASSWORD, customer.getPassword());
 
 	           //shop url
-	           String customerUrl = FilePathUtils.buildStoreUri(merchantStore, request);
+	           String customerUrl = FilePathUtils.buildStoreUri(merchantStore, contextPath);
 	           templateTokens.put(EmailConstants.CUSTOMER_ACCESS_URL, customerUrl);
 
 	           Email email = new Email();
@@ -292,6 +290,54 @@ public class EmailTemplatesUtils {
 
 	       } catch (Exception e) {
 	           LOGGER.error("Error occured while sending welcome email ",e);
+	       }
+		
+	}
+	
+	/**
+	 * Send an email to the customer with download instructions
+	 * @param request
+	 * @param customer
+	 * @param order
+	 * @param merchantStore
+	 * @param customerLocale
+	 */
+	@Async
+	public void sendOrderDownloadEmail(
+			Customer customer, Order order, MerchantStore merchantStore,
+			Locale customerLocale, String contextPath) {
+		   /** issue with putting that elsewhere **/ 
+	       LOGGER.info( "Sending download email to customer" );
+	       try {
+
+	           Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(contextPath, merchantStore, messages, customerLocale);
+	           templateTokens.put(EmailConstants.LABEL_HI, messages.getMessage("label.generic.hi", customerLocale));
+	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_FIRSTNAME, customer.getBilling().getFirstName());
+	           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_LASTNAME, customer.getBilling().getLastName());
+	           String[] downloadMessage = {String.valueOf(ApplicationConstants.MAX_DOWNLOAD_DAYS), String.valueOf(order.getId()), FilePathUtils.buildCustomerUri(merchantStore, contextPath), merchantStore.getStoreEmailAddress()};
+	           templateTokens.put(EmailConstants.EMAIL_ORDER_DOWNLOAD, messages.getMessage("email.order.download.text", downloadMessage, customerLocale));
+	           templateTokens.put(EmailConstants.CUSTOMER_ACCESS_LABEL, messages.getMessage("label.customer.accessportal",customerLocale));
+	           templateTokens.put(EmailConstants.ACCESS_NOW_LABEL, messages.getMessage("label.customer.accessnow",customerLocale));
+
+	           //shop url
+	           String customerUrl = FilePathUtils.buildStoreUri(merchantStore, contextPath);
+	           templateTokens.put(EmailConstants.CUSTOMER_ACCESS_URL, customerUrl);
+
+	           String[] orderInfo = {String.valueOf(order.getId())};
+	           
+	           Email email = new Email();
+	           email.setFrom(merchantStore.getStorename());
+	           email.setFromEmail(merchantStore.getStoreEmailAddress());
+	           email.setSubject(messages.getMessage("email.order.download.title", orderInfo, customerLocale));
+	           email.setTo(customer.getEmailAddress());
+	           email.setTemplateName(EmailConstants.EMAIL_ORDER_DOWNLOAD_TPL);
+	           email.setTemplateTokens(templateTokens);
+
+	           LOGGER.info( "Sending email to {} with download info",customer.getEmailAddress() );
+	           emailService.sendHtmlEmail(merchantStore, email);
+
+	       } catch (Exception e) {
+	           LOGGER.error("Error occured while sending order download email ",e);
 	       }
 		
 	}

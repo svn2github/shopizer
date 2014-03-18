@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.NoResultException;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -77,7 +76,7 @@ public class ShoppingCartFacadeImpl
     public void deleteShoppingCart(final Long id, final MerchantStore store) throws Exception {
     	ShoppingCart cart = shoppingCartService.getById(id, store);
     	if(cart!=null) {
-    		shoppingCartService.delete(cart);
+    		shoppingCartService.deleteCart(cart);
     	}
     }
     
@@ -85,7 +84,7 @@ public class ShoppingCartFacadeImpl
     public void deleteShoppingCart(final String code, final MerchantStore store) throws Exception {
     	ShoppingCart cart = shoppingCartService.getByCode(code, store);
     	if(cart!=null) {
-    		shoppingCartService.delete(cart);
+    		shoppingCartService.deleteCart(cart);
     	}
     }
 

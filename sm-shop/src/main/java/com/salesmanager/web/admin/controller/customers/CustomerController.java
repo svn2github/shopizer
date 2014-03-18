@@ -17,7 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -113,7 +113,7 @@ public class CustomerController {
 	 * @return
 	 * @throws Exception
 	 */
-	@Secured("CUSTOMER")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@RequestMapping(value="/admin/customers/customer.html", method=RequestMethod.GET)
 	public String displayCustomer(Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 			
@@ -219,7 +219,7 @@ public class CustomerController {
 		
 	}
 	
-	@Secured("CUSTOMER")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@RequestMapping(value="/admin/customers/save.html", method=RequestMethod.POST)
 	public String saveCustomer(@Valid @ModelAttribute("customer") Customer customer, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception{
 	
@@ -375,7 +375,7 @@ public class CustomerController {
 	 * @return
 	 * @throws Exception
 	 */
-	@Secured("CUSTOMER")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@RequestMapping(value={"/admin/customers/attributes/save.html"}, method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String saveCustomerAttributes(HttpServletRequest request, Locale locale) throws Exception {
 		
@@ -611,7 +611,7 @@ public class CustomerController {
 	}
 	
 	
-	@Secured("CUSTOMER")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@RequestMapping(value="/admin/customers/resetPassword.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody
 	String resetPassword(HttpServletRequest request,HttpServletResponse response) {

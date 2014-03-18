@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,7 +49,7 @@ public class ProductsController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProductsController.class);
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/products.html", method=RequestMethod.GET)
 	public String displayProducts(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -70,7 +70,7 @@ public class ProductsController {
 	
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageProducts(HttpServletRequest request, HttpServletResponse response) {
 		
@@ -200,7 +200,7 @@ public class ProductsController {
 
 	}
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/remove.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String deleteProduct(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String sid = request.getParameter("productId");

@@ -13,7 +13,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -61,7 +61,7 @@ public class CustomerOptionsSetController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerOptionsSetController.class);
 	
 	
-	@Secured("CUSTOMER")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@RequestMapping(value="/admin/customers/optionsset/list.html", method=RequestMethod.GET)
 	public String displayOptions(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
@@ -91,7 +91,7 @@ public class CustomerOptionsSetController {
 	}
 	
 	
-	@Secured("CUSTOMER")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@RequestMapping(value="/admin/customers/optionsset/save.html", method=RequestMethod.POST)
 	public String saveOptionSet(@Valid @ModelAttribute("optionSet") CustomerOptionSet optionSet, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
@@ -187,7 +187,7 @@ public class CustomerOptionsSetController {
 	
 	
 	@SuppressWarnings("unchecked")
-	@Secured("CUSTOMER")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@RequestMapping(value="/admin/customers/optionsset/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageOptionsSet(HttpServletRequest request, HttpServletResponse response) {
 
@@ -275,7 +275,7 @@ public class CustomerOptionsSetController {
 		
 	}
 	
-	@Secured("CUSTOMER")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@RequestMapping(value="/admin/customers/optionsset/remove.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String deleteOptionSet(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String sid = request.getParameter("id");
@@ -319,7 +319,7 @@ public class CustomerOptionsSetController {
 	
 	
 
-	@Secured("CUSTOMER")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@RequestMapping(value="/admin/customers/optionsset/update.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String updateOrder(HttpServletRequest request, HttpServletResponse response) {
 		String values = request.getParameter("_oldValues");

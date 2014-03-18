@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,7 +48,7 @@ public class CustomerDashboardController extends AbstractController {
 	private CustomerOptionSetService customerOptionSetService;
 	
 	
-	@Secured("AUTH_CUSTOMER")
+	//@PreAuthorize("hasRole('AUTH_CUSTOMER')")
 	@RequestMapping(value="/dashboard.html", method=RequestMethod.GET)
 	public String displayCustomerDashboard(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		

@@ -17,7 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -90,7 +90,7 @@ public class UserController {
 	private final static String RESET_PASSWORD_TPL = "email_template_password_reset_user.ftl";	
 	private final static String NEW_USER_TMPL = "email_template_new_user.ftl";
 	
-	@Secured("STORE_ADMIN")
+	@PreAuthorize("hasRole('STORE_ADMIN')")
 	@RequestMapping(value="/admin/users/list.html", method=RequestMethod.GET)
 	public String displayUsers(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
@@ -106,7 +106,7 @@ public class UserController {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	@Secured("STORE_ADMIN")
+	@PreAuthorize("hasRole('STORE_ADMIN')")
 	@RequestMapping(value = "/admin/users/paging.html", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	String pageUsers(HttpServletRequest request,
@@ -161,7 +161,7 @@ public class UserController {
 		return returnString;
 	}
 
-	@Secured("AUTH")
+	@PreAuthorize("hasRole('AUTH')")
 	@RequestMapping(value="/admin/users/password.html", method=RequestMethod.GET)
 	public String displayChangePassword(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		setMenu(model,request);
@@ -177,7 +177,7 @@ public class UserController {
 	}
 	
 	
-	@Secured("AUTH")
+	@PreAuthorize("hasRole('AUTH')")
 	@RequestMapping(value="/admin/users/savePassword.html", method=RequestMethod.POST)
 	public String changePassword(@ModelAttribute("password") Password password, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		setMenu(model,request);
@@ -242,7 +242,7 @@ public class UserController {
 		return ControllerConstants.Tiles.User.password;
 	}
 	
-	@Secured("STORE_ADMIN")
+	@PreAuthorize("hasRole('STORE_ADMIN')")
 	@RequestMapping(value="/admin/users/createUser.html", method=RequestMethod.GET)
 	public String displayUserCreate(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		return displayUser(null,model,request,response,locale);
@@ -259,7 +259,7 @@ public class UserController {
 	 * @return
 	 * @throws Exception
 	 */
-	@Secured("AUTH")
+	@PreAuthorize("hasRole('AUTH')")
 	@RequestMapping(value="/admin/users/displayStoreUser.html", method=RequestMethod.GET)
 	public String displayUserEdit(@ModelAttribute("id") Long id, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
@@ -284,7 +284,7 @@ public class UserController {
 	 * @return
 	 * @throws Exception
 	 */
-	@Secured("AUTH")
+	@PreAuthorize("hasRole('AUTH')")
 	@RequestMapping(value="/admin/users/displayUser.html", method=RequestMethod.GET)
 	public String displayUserEdit(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
@@ -410,7 +410,7 @@ public class UserController {
 		return ControllerConstants.Tiles.User.profile;
 	}
 	
-	@Secured("AUTH")
+	@PreAuthorize("hasRole('AUTH')")
 	@RequestMapping(value="/admin/users/checkUserCode.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String checkUserCode(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String code = request.getParameter("code");
@@ -467,7 +467,7 @@ public class UserController {
 		return returnString;
 	}
 	
-	@Secured("AUTH")
+	@PreAuthorize("hasRole('AUTH')")
 	@RequestMapping(value="/admin/users/save.html", method=RequestMethod.POST)
 	public String saveUser(@Valid @ModelAttribute("user") User user, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 
@@ -635,7 +635,7 @@ public class UserController {
 		return ControllerConstants.Tiles.User.profile;
 	}
 	
-	@Secured("AUTH")
+	@PreAuthorize("hasRole('AUTH')")
 	@RequestMapping(value="/admin/users/remove.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeUser(HttpServletRequest request, Locale locale) throws Exception {
 		

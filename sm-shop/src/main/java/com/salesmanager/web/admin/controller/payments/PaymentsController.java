@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -65,7 +65,7 @@ public class PaymentsController {
 
 	}
 	
-	@Secured("PAYMENT")
+	@PreAuthorize("hasRole('PAYMENT')")
 	@RequestMapping(value="/admin/payments/paymentMethod.html", method=RequestMethod.GET)
 	public String displayPaymentMethod(@RequestParam("code") String code, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -100,7 +100,7 @@ public class PaymentsController {
 		
 	}
 	
-	@Secured("PAYMENT")
+	@PreAuthorize("hasRole('PAYMENT')")
 	@RequestMapping(value="/admin/payments/savePaymentMethod.html", method=RequestMethod.POST)
 	public String savePaymentMethod(@ModelAttribute("configuration") IntegrationConfiguration configuration, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 

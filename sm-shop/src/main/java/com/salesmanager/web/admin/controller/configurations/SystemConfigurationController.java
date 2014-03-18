@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -38,7 +38,7 @@ public class SystemConfigurationController {
 	Environment env;
 	
 
-	@Secured("AUTH")
+	@PreAuthorize("hasRole('AUTH')")
 	@RequestMapping(value="/admin/configuration/system.html", method=RequestMethod.GET)
 	public String displaySysyemConfgurations(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -55,7 +55,7 @@ public class SystemConfigurationController {
 		return com.salesmanager.web.admin.controller.ControllerConstants.Tiles.Configuration.system;
 	}
 	
-	@Secured("AUTH")
+	@PreAuthorize("hasRole('AUTH')")
 	@RequestMapping(value="/admin/configuration/saveSystemConfiguration.html", method=RequestMethod.POST)
 	public String saveSystemConfigurations(@ModelAttribute("configuration") MerchantConfig merchantConfiguration, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception
 	{

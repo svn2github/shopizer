@@ -10,9 +10,11 @@ public class Constants {
 
 	public final static String HOME_MENU_KEY = "menu.home";
 	public final static String HOME_URL = "/shop";
-	public final static String ADMIN_URL = "/admin";
+	public final static String ADMIN_URI = "/admin";
 	public final static String SHOP_URI = "/shop";
 	public final static String SHOP = "shop";
+	
+	public final static String FILE_NOT_FOUND = "File not found";
 	
 
 

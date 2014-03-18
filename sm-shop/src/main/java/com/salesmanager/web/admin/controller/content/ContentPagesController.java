@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -48,7 +48,7 @@ public class ContentPagesController {
 	LanguageService languageService;
 	
 	
-	@Secured("CONTENT")
+	@PreAuthorize("hasRole('CONTENT')")
 	@RequestMapping(value="/admin/content/pages/list.html", method=RequestMethod.GET)
 	public String listContentPages(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -59,7 +59,7 @@ public class ContentPagesController {
 		
 	}
 	
-	@Secured("CONTENT")
+	@PreAuthorize("hasRole('CONTENT')")
 	@RequestMapping(value="/admin/content/pages/create.html", method=RequestMethod.GET)
 	public String createPage(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -90,7 +90,7 @@ public class ContentPagesController {
 		
 	}
 	
-	@Secured("CONTENT")
+	@PreAuthorize("hasRole('CONTENT')")
 	@RequestMapping(value="/admin/content/pages/details.html", method=RequestMethod.GET)
 	public String getContentDetails(@RequestParam("id") Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -137,7 +137,7 @@ public class ContentPagesController {
 	
 	
 	
-	@Secured("CONTENT")
+	@PreAuthorize("hasRole('CONTENT')")
 	@RequestMapping(value="/admin/content/remove.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeContent(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String id = request.getParameter("id");
@@ -182,7 +182,7 @@ public class ContentPagesController {
 	
 	
 	@SuppressWarnings({ "unchecked"})
-	@Secured("CONTENT")
+	@PreAuthorize("hasRole('CONTENT')")
 	@RequestMapping(value="/admin/content/page.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageStaticContent(@RequestParam("contentType") String contentType, HttpServletRequest request, HttpServletResponse response) {
 		AjaxResponse resp = new AjaxResponse();
@@ -241,7 +241,7 @@ public class ContentPagesController {
 	}
 	
 	
-	@Secured("CONTENT")
+	@PreAuthorize("hasRole('CONTENT')")
 	@RequestMapping(value="/admin/content/pages/save.html", method=RequestMethod.POST)
 	public String saveContent(@Valid @ModelAttribute Content content, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -286,7 +286,7 @@ public class ContentPagesController {
 	 * @param locale
 	 * @return
 	 */
-	@Secured("CONTENT")
+	@PreAuthorize("hasRole('CONTENT')")
 	@RequestMapping(value="/admin/content/checkContentCode.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String checkContentCode(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		

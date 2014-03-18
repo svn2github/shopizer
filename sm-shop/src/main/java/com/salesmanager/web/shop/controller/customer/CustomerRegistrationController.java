@@ -214,7 +214,7 @@ public class CustomerRegistrationController extends AbstractController {
         /**
          * Send registration email
          */
-        emailTemplatesUtils.sendRegistrationEmail( request, customer, merchantStore, locale );
+        emailTemplatesUtils.sendRegistrationEmail( customer, merchantStore, locale, request.getContextPath() );
 
         /**
          * Login user

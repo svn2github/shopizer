@@ -13,7 +13,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -58,7 +58,7 @@ public class ContentBoxesController {
 
 	
 	
-	@Secured("CONTENT")
+	@PreAuthorize("hasRole('CONTENT')")
 	@RequestMapping(value="/admin/content/boxes/list.html", method=RequestMethod.GET)
 	public String listContentBoxes(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -70,7 +70,7 @@ public class ContentBoxesController {
 		
 	}
 	
-	@Secured("CONTENT")
+	@PreAuthorize("hasRole('CONTENT')")
 	@RequestMapping(value="/admin/content/boxes/create.html", method=RequestMethod.GET)
 	public String createBox(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		model.addAttribute("boxes", true);
@@ -105,7 +105,7 @@ public class ContentBoxesController {
 		
 	}
 	
-	@Secured("CONTENT")
+	@PreAuthorize("hasRole('CONTENT')")
 	@RequestMapping(value="/admin/content/boxes/details.html", method=RequestMethod.GET)
 	public String getContentDetails(@RequestParam("id") Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		model.addAttribute("boxes", true);
@@ -159,7 +159,7 @@ public class ContentBoxesController {
 
 	
 	
-	@Secured("CONTENT")
+	@PreAuthorize("hasRole('CONTENT')")
 	@RequestMapping(value="/admin/content/boxes/save.html", method=RequestMethod.POST)
 	public String saveContent(@Valid @ModelAttribute Content content, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		model.addAttribute("boxes", true);

@@ -16,7 +16,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -47,7 +47,7 @@ public class StaticContentController {
 	private ContentService contentService;
 	
 
-	@Secured("CONTENT")
+	@PreAuthorize("hasRole('CONTENT')")
 	@RequestMapping(value={"/admin/content/static/contentFiles.html","/admin/content/static/contentManagement.html"}, method=RequestMethod.GET)
 	public String getContentImages(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -64,7 +64,7 @@ public class StaticContentController {
 	 * @return
 	 */
 	@SuppressWarnings({ "unchecked"})
-	@Secured("CONTENT")
+	@PreAuthorize("hasRole('CONTENT')")
 	@RequestMapping(value="/admin/content/static/page.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageStaticContent(HttpServletRequest request, HttpServletResponse response) {
 		AjaxResponse resp = new AjaxResponse();
@@ -143,7 +143,7 @@ public class StaticContentController {
 	 * @return
 	 * @throws Exception
 	 */
-	@Secured("CONTENT")
+	@PreAuthorize("hasRole('CONTENT')")
 	@RequestMapping(value="/admin/content/static/saveFiles.html", method=RequestMethod.POST)
 	public String saveFiles(@ModelAttribute(value="contentFiles") @Valid final ContentFiles contentFiles, final BindingResult bindingResult,final Model model, final HttpServletRequest request) throws Exception{
 	    
@@ -187,7 +187,7 @@ public class StaticContentController {
 	 * @param locale
 	 * @return
 	 */
-	@Secured("CONTENT")
+	@PreAuthorize("hasRole('CONTENT')")
 	@RequestMapping(value="/admin/content/static/removeFile.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeFile(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String fileName = request.getParameter("name");

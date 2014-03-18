@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,8 +29,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
-import com.salesmanager.core.business.catalog.product.model.attribute.ProductOptionValueDescription;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
@@ -63,7 +61,7 @@ public class ManufacturerController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerController.class);
 	
-	@Secured("MANUFACTURER")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/catalogue/manufacturer/list.html", method=RequestMethod.GET)
 	public String getManufacturers(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 	
@@ -73,14 +71,14 @@ public class ManufacturerController {
 	}
 	
 	
-	@Secured("MANUFACTURER")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/catalogue/manufacturer/create.html", method=RequestMethod.GET)
 	public String createManufacturer(  Model model,  HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		return displayManufacturer(null,model,request,response);		
 	}
 	
-	@Secured("MANUFACTURER")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/catalogue/manufacturer/edit.html", method=RequestMethod.GET)
 	public String editManufacturer(@RequestParam("id") long manufacturerId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -167,7 +165,7 @@ public class ManufacturerController {
 		return ControllerConstants.Tiles.Product.manufacturerDetails;
 	}
 		
-	@Secured("MANUFACTURER")  
+	@PreAuthorize("hasRole('PRODUCTS')")  
 	@RequestMapping(value="/admin/catalogue/manufacturer/save.html", method=RequestMethod.POST)
 	public String saveManufacturer( @Valid @ModelAttribute("manufacturer") com.salesmanager.web.admin.entity.catalog.Manufacturer manufacturer, BindingResult result, Model model,  HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
@@ -331,7 +329,7 @@ public class ManufacturerController {
 	
 	
 	@SuppressWarnings("unchecked")
-	@Secured("MANUFACTURER")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/catalogue/manufacturer/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageManufacturers(HttpServletRequest request, HttpServletResponse response) {
 		
@@ -372,7 +370,7 @@ public class ManufacturerController {
 		
 	}
 	
-	@Secured("MANUFACTURER")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/catalogue/manufacturer/remove.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String deleteManufacturer(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		Long sid =  Long.valueOf(request.getParameter("id") );

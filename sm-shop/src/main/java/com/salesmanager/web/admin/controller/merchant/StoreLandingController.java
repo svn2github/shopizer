@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -44,7 +44,7 @@ public class StoreLandingController {
 	@Autowired
 	ContentService contentService;
 	
-	@Secured("STORE")
+	@PreAuthorize("hasRole('STORE')")
 	@RequestMapping(value="/admin/store/storeLanding.html", method=RequestMethod.GET)
 	public String displayStoreLanding(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -96,7 +96,7 @@ public class StoreLandingController {
 		return "admin-store-landing";
 	}
 	
-	@Secured("STORE")
+	@PreAuthorize("hasRole('STORE')")
 	@RequestMapping(value="/admin/store/saveLanding.html", method=RequestMethod.POST)
 	public String saveStoreLanding(@Valid @ModelAttribute("storeLanding") StoreLanding storeLanding, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		

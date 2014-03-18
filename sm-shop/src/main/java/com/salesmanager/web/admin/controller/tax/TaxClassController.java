@@ -12,7 +12,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -48,7 +48,7 @@ public class TaxClassController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TaxClassController.class);
 
 	
-	@Secured("TAX")
+	@PreAuthorize("hasRole('TAX')")
 	@RequestMapping(value={"/admin/tax/taxclass/list.html"}, method=RequestMethod.GET)
 	public String displayTaxClasses(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -63,7 +63,7 @@ public class TaxClassController {
 	}
 	
 	
-	@Secured("TAX")
+	@PreAuthorize("hasRole('TAX')")
 	@RequestMapping(value = "/admin/tax/taxclass/paging.html", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	String pageTaxClasses(HttpServletRequest request,
@@ -97,7 +97,7 @@ public class TaxClassController {
 		return returnString;
 	}
 	
-	@Secured("TAX")
+	@PreAuthorize("hasRole('TAX')")
 	@RequestMapping(value="/admin/tax/taxclass/save.html", method=RequestMethod.POST)
 	public String saveTaxClass(@Valid @ModelAttribute("taxClass") TaxClass taxClass, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
@@ -136,7 +136,7 @@ public class TaxClassController {
 	}
 	
 	
-	@Secured("TAX")
+	@PreAuthorize("hasRole('TAX')")
 	@RequestMapping(value="/admin/tax/taxclass/update.html", method=RequestMethod.POST)
 	public String updateTaxClass(@Valid @ModelAttribute("taxClass") TaxClass taxClass, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
@@ -175,7 +175,7 @@ public class TaxClassController {
 	}
 	
 	
-	@Secured("TAX")
+	@PreAuthorize("hasRole('TAX')")
 	@RequestMapping(value="/admin/tax/taxclass/remove.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeTaxClass(HttpServletRequest request, Locale locale) throws Exception {
 		
@@ -248,7 +248,7 @@ public class TaxClassController {
 		
 	}
 	
-	@Secured("TAX")
+	@PreAuthorize("hasRole('TAX')")
 	@RequestMapping(value="/admin/tax/taxclass/edit.html", method=RequestMethod.GET)
 	public String editTaxClass(@ModelAttribute("id") String id, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		

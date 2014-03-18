@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -49,7 +49,7 @@ public class ShippingPackagingController {
 	 * @return
 	 * @throws Exception
 	 */
-	@Secured("SHIPPING")
+	@PreAuthorize("hasRole('SHIPPING')")
 	@RequestMapping(value="/admin/shipping/shippingPackaging.html", method=RequestMethod.GET)
 	public String displayShippingPackaging(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -83,7 +83,7 @@ public class ShippingPackagingController {
 	 * @return
 	 * @throws Exception
 	 */
-	@Secured("SHIPPING")
+	@PreAuthorize("hasRole('SHIPPING')")
 	@RequestMapping(value="/admin/shipping/saveShippingPackaging.html", method=RequestMethod.POST)
 	public String saveShippingPackaging(@ModelAttribute("configuration") ShippingConfiguration configuration, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 

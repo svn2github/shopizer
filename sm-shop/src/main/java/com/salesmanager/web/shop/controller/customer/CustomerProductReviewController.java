@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +47,7 @@ public class CustomerProductReviewController extends AbstractController {
 	@Autowired
 	private CustomerFacade customerFacade;
 
-	@Secured("AUTH_CUSTOMER")
+	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
 	@RequestMapping(value="/review.html", method=RequestMethod.GET)
 	public String displayProductReview(@RequestParam Long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -97,7 +97,7 @@ public class CustomerProductReviewController extends AbstractController {
 	}
 	
 	
-	@Secured("AUTH_CUSTOMER")
+	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
 	@RequestMapping(value="/review/submit.html", method=RequestMethod.GET)
 	public String submitProductReview(@Valid @RequestParam("review") PersistableProductReview review, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		

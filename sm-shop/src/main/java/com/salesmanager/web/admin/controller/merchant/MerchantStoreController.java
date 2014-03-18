@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -85,7 +86,7 @@ public class MerchantStoreController {
 	
 	private final static String NEW_STORE_TMPL = "email_template_new_store.ftl";
 	
-	@Secured("SUPERADMIN")
+	@PreAuthorize("hasRole('STORE_ADMIN')")
 	@RequestMapping(value="/admin/store/list.html", method=RequestMethod.GET)
 	public String displayStores(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
@@ -94,7 +95,7 @@ public class MerchantStoreController {
 		return ControllerConstants.Tiles.Store.stores;
 	}
 	
-	@Secured("SUPERADMIN")
+	@PreAuthorize("hasRole('STORE_ADMIN')")
 	@RequestMapping(value = "/admin/store/paging.html", method = RequestMethod.POST, produces = "application/json")
 	public @ResponseBody
 	String pageStores(HttpServletRequest request,
@@ -132,7 +133,7 @@ public class MerchantStoreController {
 		return returnString;
 	}
 	
-	@Secured("STORE")
+	@PreAuthorize("hasRole('STORE')")
 	@RequestMapping(value="/admin/store/storeCreate.html", method=RequestMethod.GET)
 	public String displayMerchantStoreCreate(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
@@ -154,7 +155,7 @@ public class MerchantStoreController {
 		return displayMerchantStore(store, model, request, response, locale);
 	}
 	
-	@Secured("STORE")
+	@PreAuthorize("hasRole('STORE')")
 	@RequestMapping(value="/admin/store/store.html", method=RequestMethod.GET)
 	public String displayMerchantStore(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
@@ -164,7 +165,7 @@ public class MerchantStoreController {
 	}
 		
 
-	@Secured("STORE")
+	@PreAuthorize("hasRole('STORE')")
 	@RequestMapping(value="/admin/store/editStore.html", method=RequestMethod.GET)
 	public String displayMerchantStore(@ModelAttribute("id") Integer id, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
@@ -215,7 +216,7 @@ public class MerchantStoreController {
 	}
 	
 
-	@Secured("STORE")
+	@PreAuthorize("hasRole('STORE')")
 	@RequestMapping(value="/admin/store/save.html", method=RequestMethod.POST)
 	public String saveMerchantStore(@Valid @ModelAttribute("store") MerchantStore store, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
@@ -366,7 +367,7 @@ public class MerchantStoreController {
 		return "admin-store";
 	}
 	
-	@Secured("AUTH")
+	@PreAuthorize("hasRole('AUTH')")
 	@RequestMapping(value="/admin/store/checkStoreCode.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String checkStoreCode(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String code = request.getParameter("code");
@@ -407,7 +408,7 @@ public class MerchantStoreController {
 	}
 	
 	
-	@Secured("SUPERADMIN")
+	@PreAuthorize("hasRole('STORE_ADMIN')")
 	@RequestMapping(value="/admin/store/remove.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeMerchantStore(HttpServletRequest request, Locale locale) throws Exception {
 

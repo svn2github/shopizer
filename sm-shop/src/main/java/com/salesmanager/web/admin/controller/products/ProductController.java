@@ -20,7 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -97,14 +97,14 @@ public class ProductController {
 	@Autowired
 	CategoryService categoryService;
 
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/editProduct.html", method=RequestMethod.GET)
 	public String displayProductEdit(@RequestParam("id") long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return displayProduct(productId,model,request,response);
 
 	}
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/createProduct.html", method=RequestMethod.GET)
 	public String displayProductCreate(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return displayProduct(null,model,request,response);
@@ -253,7 +253,7 @@ public class ProductController {
 	}
 	
 
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/save.html", method=RequestMethod.POST)
 	public String saveProduct(@Valid @ModelAttribute("product") com.salesmanager.web.admin.entity.catalog.Product  product, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
@@ -541,7 +541,7 @@ public class ProductController {
 	 * @return
 	 * @throws Exception
 	 */
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/product/duplicate.html", method=RequestMethod.POST)
 	public String duplicateProduct(@ModelAttribute("productId") Long  id, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
@@ -736,7 +736,7 @@ public class ProductController {
 	 * @param locale
 	 * @return
 	 */
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/product/removeImage.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeImage(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String iid = request.getParameter("imageId");
@@ -784,7 +784,7 @@ public class ProductController {
 	 * @return
 	 * @throws Exception
 	 */
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/displayProductToCategories.html", method=RequestMethod.GET)
 	public String displayAddProductToCategories(@RequestParam("id") long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 	
@@ -822,7 +822,7 @@ public class ProductController {
 	 * @return
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/product-categories/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageProductCategories(HttpServletRequest request, HttpServletResponse response) {
 
@@ -901,7 +901,7 @@ public class ProductController {
 	}
 	
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/product-categories/remove.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String deleteProductFromCategory(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String sCategoryid = request.getParameter("categoryId");
@@ -953,7 +953,7 @@ public class ProductController {
 	}
 	
 
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/addProductToCategories.html", method=RequestMethod.POST)
 	public String addProductToCategory(@RequestParam("productId") long productId, @RequestParam("id") long categoryId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		

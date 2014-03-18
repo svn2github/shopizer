@@ -15,7 +15,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -66,7 +66,7 @@ public class StoreBrandingController {
 	@Resource(name="templates")
 	List<String> templates;
 	
-	@Secured("STORE")
+	@PreAuthorize("hasRole('STORE')")
 	@RequestMapping(value="/admin/store/storeBranding.html", method=RequestMethod.GET)
 	public String displayStoreBranding(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -84,7 +84,7 @@ public class StoreBrandingController {
 		return "admin-store-branding";
 	}
 	
-	@Secured("STORE")
+	@PreAuthorize("hasRole('STORE')")
 	@RequestMapping(value="/admin/store/saveBranding.html", method=RequestMethod.POST)
 	public String saveStoreBranding(@ModelAttribute(value="contentImages") @Valid final ContentFiles contentImages, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -119,7 +119,7 @@ public class StoreBrandingController {
 		return "admin-store-branding";
 	}
 	
-	@Secured("STORE")
+	@PreAuthorize("hasRole('STORE')")
 	@RequestMapping(value="/admin/store/saveTemplate.html", method=RequestMethod.POST)
 	public String saveTemplate(@ModelAttribute(value="store") final MerchantStore store, BindingResult result, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -142,7 +142,7 @@ public class StoreBrandingController {
 		return "admin-store-branding";
 	}
 	
-	@Secured("STORE")
+	@PreAuthorize("hasRole('STORE')")
 	@RequestMapping(value="/admin/store/removeImage.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeImage(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 

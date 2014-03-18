@@ -363,22 +363,14 @@ public class ShoppingOrderController extends AbstractController {
 	        //save order id in session
 	        super.setSessionAttribute(Constants.ORDER_ID, modelOrder.getId(), request);
 	        
-			if(customer.getId()==null || customer.getId()==0) {
-				//send email for new customer
-				customer.setPassword(password);//set clear password for email
-				emailTemplatesUtils.sendRegistrationEmail( request, customer, store, locale );
-			}
-			
-			//send order confirmation email
-			Customer modelCustomer = customerFacade.populateCustomerModel(customer, store);
-			emailTemplatesUtils.sendOrderEmail(modelCustomer, modelOrder, locale, language, store, request.getContextPath());
-	        
+
 			//get cart
 			String cartCode = super.getSessionAttribute(Constants.SHOPPING_CART, request);
 			if(StringUtils.isNotBlank(cartCode)) {
 				try {
 					shoppingCartFacade.deleteShoppingCart(cartCode, store);
 				} catch(Exception e) {
+					LOGGER.error("Cannot delete cart " + cartCode, e);
 					throw new ServiceException(e);
 				}
 			}
@@ -403,6 +395,23 @@ public class ShoppingOrderController extends AbstractController {
 	        	SecurityContextHolder.getContext().setAuthentication(authentication);
 	        }
 	        
+
+			if(customer.getId()==null || customer.getId()==0) {
+				//send email for new customer
+				customer.setPassword(password);//set clear password for email
+				emailTemplatesUtils.sendRegistrationEmail( customer, store, locale, request.getContextPath() );
+			}
+			
+			//send order confirmation email
+			Customer modelCustomer = customerFacade.populateCustomerModel(customer, store);
+			emailTemplatesUtils.sendOrderEmail(modelCustomer, modelOrder, locale, language, store, request.getContextPath());
+	        
+	        if(orderService.hasDownloadFiles(modelOrder)) {
+	        	emailTemplatesUtils.sendOrderDownloadEmail(modelCustomer, modelOrder, store, locale, request.getContextPath());
+	        	
+	        }
+			
+			
 	        return modelOrder;
 		
 		
@@ -449,9 +458,6 @@ public class ShoppingOrderController extends AbstractController {
 				Set<ShoppingCartItem> items = cart.getLineItems();
 				List<ShoppingCartItem> cartItems = new ArrayList<ShoppingCartItem>(items);
 				order.setShoppingCartItems(cartItems);
-				
-				
-
 
 				//get payment methods
 				List<PaymentMethod> paymentMethods = paymentService.getAcceptedPaymentMethods(store);
@@ -821,47 +827,6 @@ public class ShoppingOrderController extends AbstractController {
 		
 		return readableOrder;
 	}
-	
-	public void sendOrderConfirmationEmail(HttpServletRequest request,
-			PersistableCustomer customer, Order order, MerchantStore merchantStore,
-				Locale customerLocale) {
-			   /** issue with putting that elsewhere **/ 
-		       LOGGER.info( "Sending confirmation email to customer" );
-		       try {
-
-		           Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request.getContextPath(), merchantStore, messages, customerLocale);
-		           templateTokens.put(EmailConstants.LABEL_HI, messages.getMessage("label.generic.hi", customerLocale));
-		           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_FIRSTNAME, customer.getBilling().getFirstName());
-		           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_LASTNAME, customer.getBilling().getLastName());
-		           String[] greetingMessage = {merchantStore.getStorename(),FilePathUtils.buildCustomerUri(merchantStore, request),merchantStore.getStoreEmailAddress()};
-		           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_GREETING, messages.getMessage("email.customer.greeting", greetingMessage, customerLocale));
-		           templateTokens.put(EmailConstants.EMAIL_USERNAME_LABEL, messages.getMessage("label.generic.username",customerLocale));
-		           templateTokens.put(EmailConstants.EMAIL_PASSWORD_LABEL, messages.getMessage("label.generic.password",customerLocale));
-		           templateTokens.put(EmailConstants.CUSTOMER_ACCESS_LABEL, messages.getMessage("label.customer.accessportal",customerLocale));
-		           templateTokens.put(EmailConstants.ACCESS_NOW_LABEL, messages.getMessage("label.customer.accessnow",customerLocale));
-		           templateTokens.put(EmailConstants.EMAIL_USER_NAME, customer.getUserName());
-		           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_PASSWORD, customer.getPassword());
-
-		           //shop url
-		           String customerUrl = FilePathUtils.buildStoreUri(merchantStore, request);
-		           templateTokens.put(EmailConstants.CUSTOMER_ACCESS_URL, customerUrl);
-
-		           Email email = new Email();
-		           email.setFrom(merchantStore.getStorename());
-		           email.setFromEmail(merchantStore.getStoreEmailAddress());
-		           email.setSubject(messages.getMessage("email.newuser.title",customerLocale));
-		           email.setTo(customer.getEmailAddress());
-		           email.setTemplateName(EmailConstants.EMAIL_CUSTOMER_TPL);
-		           email.setTemplateTokens(templateTokens);
-
-		           LOGGER.info( "Sending email to {} on their  registered email id {} ",customer.getBilling().getFirstName(),customer.getEmailAddress() );
-		           //emailService.sendHtmlEmail(merchantStore, email);
-
-		       } catch (Exception e) {
-		           LOGGER.error("Error occured while sending welcome email ",e);
-		       }
-			
-		}
 	
 
 

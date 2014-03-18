@@ -15,7 +15,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -50,7 +50,7 @@ public class DigitalProductController {
 	@Autowired
 	private DigitalProductService digitalProductService;
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value={"/admin/products/digitalProduct.html"}, method=RequestMethod.GET)
 	public String getDigitalProduct(@RequestParam("id") long productId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -72,7 +72,7 @@ public class DigitalProductController {
 		
 	}
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/product/saveDigitalProduct.html", method=RequestMethod.POST)
 	public String saveFile(@ModelAttribute(value="productFiles") @Valid final ProductFiles productFiles, final BindingResult bindingResult,final Model model, final HttpServletRequest request) throws Exception{
 	    
@@ -103,7 +103,7 @@ public class DigitalProductController {
                     ByteArrayInputStream inputStream = new ByteArrayInputStream( multipartFile.getBytes() );
                     InputContentFile cmsContentImage = new InputContentFile();
                     cmsContentImage.setFileName(multipartFile.getOriginalFilename() );
-                    cmsContentImage.setFileContentType( FileContentType.PRODUCT );
+                    cmsContentImage.setFileContentType( FileContentType.PRODUCT_DIGITAL );
                     cmsContentImage.setFile( inputStream );
                     contentFilesList.add( cmsContentImage);
                 }
@@ -125,7 +125,7 @@ public class DigitalProductController {
         return ControllerConstants.Tiles.Product.digitalProduct;
 	}
 	
-	@Secured("PRODUCTS")
+	@PreAuthorize("hasRole('PRODUCTS')")
 	@RequestMapping(value="/admin/products/product/removeDigitalProduct.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String removeFile(@RequestParam("fileId") long fileId, HttpServletRequest request, HttpServletResponse response, Locale locale) {
 

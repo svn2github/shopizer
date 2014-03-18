@@ -20,7 +20,7 @@ import org.apache.http.impl.cookie.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -88,7 +88,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 	private final static String ORDER_STATUS_TMPL = "email_template_order_status.ftl";
 	
 
-	@Secured("ORDER")
+	@PreAuthorize("hasRole('ORDER')")
 	@RequestMapping(value="/admin/orders/editOrder.html", method=RequestMethod.GET)
 	public String displayOrderEdit(@RequestParam("id") long orderId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -96,7 +96,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 
 	}
 
-	@Secured("ORDER")
+	@PreAuthorize("hasRole('ORDER')")
 	@SuppressWarnings("unused")
 	private String displayOrder(Long orderId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -151,7 +151,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 	}
 	
 
-	@Secured("ORDER")
+	@PreAuthorize("hasRole('ORDER')")
 	@RequestMapping(value="/admin/orders/save.html", method=RequestMethod.POST)
 	public String saveOrder(@Valid @ModelAttribute("order") com.salesmanager.web.admin.entity.orders.Order entityOrder, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
@@ -331,7 +331,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 	    /*	"admin-orders-edit";  */
 	}
 	
-	@Secured("ORDER")
+	@PreAuthorize("hasRole('ORDER')")
 	@RequestMapping(value="/admin/orders/refundOrder.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String refundOrder(@RequestBody Refund refund, HttpServletRequest request, HttpServletResponse response, Locale locale) {
 
@@ -408,7 +408,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		return returnString;
 	}
 	
-	@Secured("ORDER")
+	@PreAuthorize("hasRole('ORDER')")
 	@RequestMapping(value="/admin/orders/printInvoice.html", method=RequestMethod.GET, produces="application/json")
 	public void printInvoice(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		

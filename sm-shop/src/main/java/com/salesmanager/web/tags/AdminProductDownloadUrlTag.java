@@ -69,7 +69,7 @@ public class AdminProductDownloadUrlTag extends TagSupport {
 			
 			filePath.append(scheme).append("://")
 			.append(merchantStore.getDomainName())
-			.append("/")
+			//.append("/")
 			.append(request.getContextPath());
 			
 			filePath

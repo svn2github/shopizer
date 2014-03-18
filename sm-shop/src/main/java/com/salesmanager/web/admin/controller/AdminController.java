@@ -41,6 +41,12 @@ public class AdminController {
 		
 		model.addAttribute("activeMenus",activeMenus);
 		
+		//Principal principal = request.getUserPrincipal();
+		//SecurityContext context = SecurityContextHolder.getContext();
+        //for (GrantedAuthority auth : context.getAuthentication().getAuthorities()) {
+        //   System.out.println("********** " + auth.getAuthority());
+        //}
+		
 		//get store information
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		

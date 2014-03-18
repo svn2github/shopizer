@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -53,7 +53,7 @@ public class CustomerOptionsController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerOptionsController.class);
 	
 	
-	@Secured("CUSTOMER")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@RequestMapping(value="/admin/customers/options/list.html", method=RequestMethod.GET)
 	public String displayOptions(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -63,13 +63,13 @@ public class CustomerOptionsController {
 
 	}
 	
-	@Secured("CUSTOMER")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@RequestMapping(value="/admin/customers/options/edit.html", method=RequestMethod.GET)
 	public String displayOptionEdit(@RequestParam("id") long id, HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
 		return displayOption(id,request,response,model,locale);
 	}
 	
-	@Secured("CUSTOMER")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@RequestMapping(value="/admin/customers/options/create.html", method=RequestMethod.GET)
 	public String displayOptionCreate(HttpServletRequest request, HttpServletResponse response, Model model, Locale locale) throws Exception {
 		return displayOption(null,request,response,model,locale);
@@ -145,7 +145,7 @@ public class CustomerOptionsController {
 	}
 		
 	
-	@Secured("CUSTOMER")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@RequestMapping(value="/admin/customers/options/save.html", method=RequestMethod.POST)
 	public String saveOption(@Valid @ModelAttribute("option") CustomerOption option, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception {
 		
@@ -222,7 +222,7 @@ public class CustomerOptionsController {
 	
 	
 	@SuppressWarnings("unchecked")
-	@Secured("CUSTOMER")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@RequestMapping(value="/admin/customers/options/paging.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String pageOptions(HttpServletRequest request, HttpServletResponse response) {
 
@@ -299,7 +299,7 @@ public class CustomerOptionsController {
 		
 	}
 	
-	@Secured("CUSTOMER")
+	@PreAuthorize("hasRole('CUSTOMER')")
 	@RequestMapping(value="/admin/customers/options/remove.html", method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String deleteOption(HttpServletRequest request, HttpServletResponse response, Locale locale) {
 		String sid = request.getParameter("id");
