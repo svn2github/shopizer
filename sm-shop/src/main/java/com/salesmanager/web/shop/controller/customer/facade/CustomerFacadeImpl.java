@@ -3,14 +3,24 @@
  */
 package com.salesmanager.web.shop.controller.customer.facade;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.salesmanager.core.business.catalog.product.service.PricingService;
@@ -34,7 +44,11 @@ import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.business.system.service.EmailService;
 import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.business.user.model.GroupType;
+import com.salesmanager.core.business.user.model.Permission;
 import com.salesmanager.core.business.user.service.GroupService;
+import com.salesmanager.core.business.user.service.PermissionService;
+import com.salesmanager.web.admin.entity.userpassword.UserReset;
+import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.customer.CustomerEntity;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
@@ -56,6 +70,7 @@ public class CustomerFacadeImpl implements CustomerFacade
 {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CustomerFacadeImpl.class);
+	private final static int USERNAME_LENGTH=6;
 
 	 @Autowired
      private CustomerService customerService;
@@ -90,6 +105,9 @@ public class CustomerFacadeImpl implements CustomerFacade
 
      @Autowired
      private GroupService   groupService;
+     
+     @Autowired
+     private PermissionService   permissionService;
 
      @Autowired
      private ZoneService zoneService;
@@ -100,6 +118,9 @@ public class CustomerFacadeImpl implements CustomerFacade
      
  	 @Autowired
  	 private EmailService emailService;
+ 	 
+ 	 @Autowired
+     private AuthenticationManager customerAuthenticationManager;
 
 
 
@@ -283,9 +304,11 @@ public class CustomerFacadeImpl implements CustomerFacade
         {
             //populator.populate(customer, customerModel, merchantStore, merchantStore.getDefaultLanguage());
             customerModel= populator.populate( customer, merchantStore, merchantStore.getDefaultLanguage() );
-            List<Group> groups = groupService.listGroup(GroupType.CUSTOMER);
-            customerModel.setGroups( groups );
+			//set groups
+
             customerModel.setPassword(passwordEncoder.encodePassword(customer.getPassword(), null));
+			setCustomerModelDefaultProperties(customerModel, merchantStore);
+
             LOG.info( "About to persist customer to database." );
             customerService.saveOrUpdate( customerModel );
        }
@@ -297,6 +320,11 @@ public class CustomerFacadeImpl implements CustomerFacade
         catch ( ServiceException e )
         {
             LOG.error( "Unable to find any group ",e );
+            return null;
+        }
+        catch ( Exception ee )
+        {
+            LOG.error( "Unable to set default properties ",ee );
             return null;
         }
        
@@ -332,6 +360,70 @@ public class CustomerFacadeImpl implements CustomerFacade
         }
         return null;
     }
+
+
+	@Override
+	public void setCustomerModelDefaultProperties(Customer customer,
+			MerchantStore store) throws Exception {
+		Validate.notNull(customer, "Customer object cannot be null");
+		if(customer.getId()==null || customer.getId()==0) {
+			if(StringUtils.isBlank(customer.getNick())) {
+				String userName = UserReset.generateRandomString(USERNAME_LENGTH);
+				customer.setNick(userName);
+			}
+			if(StringUtils.isBlank(customer.getPassword())) {
+	        	String password = UserReset.generateRandomString();
+	        	String encodedPassword = passwordEncoder.encodePassword(password, null);
+	        	customer.setPassword(encodedPassword);
+			}
+		}
+		
+		if(CollectionUtils.isEmpty(customer.getGroups())) {
+			List<Group> groups = groupService.listGroup(GroupType.CUSTOMER);
+			for(Group group : groups) {
+				  if(group.getGroupName().equals(Constants.GROUP_CUSTOMER)) {
+					  customer.getGroups().add(group);
+				  }
+			}
+			
+		}
+		
+	}
+
+
+
+	
+	@SuppressWarnings("deprecation")
+	public void authenticate(Customer customer) throws Exception {
+		
+			Validate.notNull(customer, "Customer cannot be null");
+
+        	Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+			GrantedAuthority role = new GrantedAuthorityImpl(Constants.PERMISSION_CUSTOMER_AUTHENTICATED);//required to login
+			authorities.add(role); 
+			List<Integer> groupsId = new ArrayList<Integer>();
+			List<Group> groups = customer.getGroups();
+			if(groups!=null) {
+				for(Group group : groups) {
+					groupsId.add(group.getId());
+					
+				}
+
+		    	List<Permission> permissions = permissionService.getPermissions(groupsId);
+		    	for(Permission permission : permissions) {
+		    		GrantedAuthority auth = new GrantedAuthorityImpl(permission.getPermissionName());
+		    		authorities.add(auth);
+		    	}
+			}
+
+			Authentication authenticationToken =
+                new UsernamePasswordAuthenticationToken(customer.getNick(), customer.getPassword(), authorities);
+    	
+			Authentication authentication = customerAuthenticationManager.authenticate(authenticationToken);
+    
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+		
+	}
 
 
 

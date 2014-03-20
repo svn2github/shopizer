@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +24,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,10 +51,8 @@ import com.salesmanager.core.business.shipping.model.ShippingSummary;
 import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
-import com.salesmanager.core.modules.email.Email;
 import com.salesmanager.web.admin.entity.userpassword.UserReset;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.constants.EmailConstants;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.order.ReadableOrderTotal;
 import com.salesmanager.web.entity.order.ReadableShippingSummary;
@@ -68,13 +64,10 @@ import com.salesmanager.web.populator.order.ReadableShippingSummaryPopulator;
 import com.salesmanager.web.populator.order.ReadableShopOrderPopulator;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
-import com.salesmanager.web.shop.controller.customer.CustomerRegistrationController;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
 import com.salesmanager.web.shop.controller.order.facade.OrderFacade;
 import com.salesmanager.web.shop.controller.shoppingCart.facade.ShoppingCartFacade;
 import com.salesmanager.web.utils.EmailTemplatesUtils;
-import com.salesmanager.web.utils.EmailUtils;
-import com.salesmanager.web.utils.FilePathUtils;
 import com.salesmanager.web.utils.LabelUtils;
 
 @Controller
@@ -346,11 +339,12 @@ public class ShoppingOrderController extends AbstractController {
 	        PersistableCustomer customer = order.getCustomer();
 	        String password = null;
 	        if(customer.getId()==null || customer.getId()==0) {
-	        	customer.setUserName(customer.getEmailAddress());
 	        	password = UserReset.generateRandomString();
 	        	String encodedPassword = passwordEncoder.encodePassword(password, null);
 	        	customer.setPassword(encodedPassword);
 	        }
+	        
+           
 	        
 	        Order modelOrder = null;
 	        Transaction initialTransaction = (Transaction)super.getSessionAttribute(Constants.INIT_TRANSACTION_KEY, request);
@@ -384,15 +378,20 @@ public class ShoppingOrderController extends AbstractController {
 	        super.removeAttribute(Constants.SHIPPING_SUMMARY, request);
 	        super.removeAttribute(Constants.SHOPPING_CART, request);
 	        
-	        if(SecurityContextHolder.getContext().getAuthentication() != null &&
-	        		 SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
-	        	
-	        } else {
-		        //authenticate user
-	        	Authentication authenticationToken =
-	                    new UsernamePasswordAuthenticationToken(customer.getUserName(), customer.getPassword());
-	        	Authentication authentication = customerAuthenticationManager.authenticate(authenticationToken);
-	        	SecurityContextHolder.getContext().setAuthentication(authentication);
+	        Customer modelCustomer = null;
+	        try {
+		        //refresh customer
+		        customerFacade.getCustomerByUserName(customer.getUserName(), store);
+		        if(SecurityContextHolder.getContext().getAuthentication() != null &&
+		        		 SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+		        	
+		        } else {
+			        //authenticate
+			        customerFacade.authenticate(modelCustomer);
+			        super.setSessionAttribute(Constants.CUSTOMER, modelCustomer, request);
+		        }
+	        } catch(Exception e) {
+	        	throw new ServiceException(e);
 	        }
 	        
 
@@ -403,7 +402,6 @@ public class ShoppingOrderController extends AbstractController {
 			}
 			
 			//send order confirmation email
-			Customer modelCustomer = customerFacade.populateCustomerModel(customer, store);
 			emailTemplatesUtils.sendOrderEmail(modelCustomer, modelOrder, locale, language, store, request.getContextPath());
 	        
 	        if(orderService.hasDownloadFiles(modelOrder)) {

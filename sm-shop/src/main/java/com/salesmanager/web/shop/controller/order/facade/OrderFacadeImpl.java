@@ -264,6 +264,11 @@ public class OrderFacadeImpl implements OrderFacade {
 			}
 
 			Customer customer = this.toCustomerModel(order.getCustomer(), store, language);
+			try {//set groups
+				customerFacade.setCustomerModelDefaultProperties(customer, store);
+			} catch(Exception e) {
+				throw new ServiceException(e);
+			} 
 
 			
 			Order modelOrder = new Order();

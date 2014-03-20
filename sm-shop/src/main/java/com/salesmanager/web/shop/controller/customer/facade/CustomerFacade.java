@@ -58,8 +58,11 @@ public interface CustomerFacade
     
     public CustomerEntity  registerCustomer( final PersistableCustomer customer,final MerchantStore merchantStore) throws Exception;
 
-
-	Customer populateCustomerModel(PersistableCustomer customer,
+    public void setCustomerModelDefaultProperties(Customer customer, MerchantStore store) throws Exception; 
+	public Customer populateCustomerModel(PersistableCustomer customer,
 			MerchantStore merchantStore);
+	
+	public void authenticate(Customer customer) throws Exception;
+	
 
 }

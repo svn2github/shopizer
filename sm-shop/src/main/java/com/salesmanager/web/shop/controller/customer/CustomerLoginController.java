@@ -60,25 +60,19 @@ public class CustomerLoginController extends AbstractController {
 
         try {
 
-        	Authentication authenticationToken =
-                    new UsernamePasswordAuthenticationToken(securedCustomer.getUserName(), securedCustomer.getPassword());
-        	
         	LOG.debug("Authenticating user " + securedCustomer.getUserName());
         	
         	//user goes to shop filter first so store and language are set
         	MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
         	Language language = (Language)request.getAttribute("LANGUAGE");
-        	
-            Authentication authentication = customerAuthenticationManager.authenticate(authenticationToken);
-            
+
             //check if username is from the appropriate store
             Customer customerModel = customerFacade.getCustomerByUserName(securedCustomer.getUserName(), store);
             if(customerModel==null) {
             	jsonObject.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
             	return jsonObject.toJSONString();
             }
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            customerFacade.authenticate(customerModel);
             //set customer in the http session
             super.setSessionAttribute(Constants.CUSTOMER, customerModel, request);
             jsonObject.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);

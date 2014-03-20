@@ -41,7 +41,7 @@ public class ShoppingOrderDownloadController extends AbstractController {
 	 * @return
 	 * @throws Exception
 	 */
-	@PreAuthorize("hasRole('CUSTOMER_AUTH')")
+	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
 	@RequestMapping("/download/{orderId}/{id}.html")
 	public @ResponseBody byte[] downloadFile(@PathVariable Long orderId, @PathVariable Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		

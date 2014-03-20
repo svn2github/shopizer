@@ -222,17 +222,10 @@ public class CustomerRegistrationController extends AbstractController {
         
         try {
         	
-
-	        
-	    	Authentication authenticationToken =
-	                new UsernamePasswordAuthenticationToken(customer.getUserName(), customer.getPassword());
-	    	
-	        Authentication authentication = customerAuthenticationManager.authenticate(authenticationToken);
-	        SecurityContextHolder.getContext().setAuthentication(authentication);
-	        
 	        //refresh customer
 	        Customer c = customerFacade.getCustomerByUserName(customer.getUserName(), merchantStore);
-	        
+	        //authenticate
+	        customerFacade.authenticate(c);
 	        super.setSessionAttribute(Constants.CUSTOMER, c, request);
 	        
 	        return "redirect:/shop/customer/dashboard.html";

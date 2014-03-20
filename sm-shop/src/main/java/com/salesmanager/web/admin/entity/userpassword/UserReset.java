@@ -5,14 +5,26 @@ import java.util.Random;
 
 public class UserReset
 {
-  final static String CHAR_LIST = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+  final static String CHAR_LIST_WITHNUM = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+  final static String CHAR_LIST = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-";
 
-  final int RANDOM_STRING_LENGTH = 10;
+  final static int RANDOM_STRING_LENGTH = 10;
 
   public static String generateRandomString()
   {
     StringBuilder randStr = new StringBuilder();
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < RANDOM_STRING_LENGTH; i++) {
+      int number = getRandomNumber();
+      char ch = CHAR_LIST_WITHNUM.charAt(number);
+      randStr.append(ch);
+    }
+    return randStr.toString();
+  }
+  
+  public static String generateRandomString(int length)
+  {
+    StringBuilder randStr = new StringBuilder();
+    for (int i = 0; i < length; i++) {
       int number = getRandomNumber();
       char ch = CHAR_LIST.charAt(number);
       randStr.append(ch);
