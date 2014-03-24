@@ -7,6 +7,7 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.entity.customer.CustomerEntity;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
@@ -57,6 +58,11 @@ public interface CustomerFacade
     public boolean checkIfUserExists(final String userName,final MerchantStore store) throws Exception;
     
     public CustomerEntity  registerCustomer( final PersistableCustomer customer,final MerchantStore merchantStore) throws Exception;
+    
+    public Address getAddress(final Long userId, final MerchantStore merchantStore,boolean isBillingAddress) throws Exception;
+    
+    public void updateAddress( Long userId, MerchantStore merchantStore, Address address, final Language language )
+                    throws Exception;
 
     public void setCustomerModelDefaultProperties(Customer customer, MerchantStore store) throws Exception; 
 	public Customer populateCustomerModel(PersistableCustomer customer,
