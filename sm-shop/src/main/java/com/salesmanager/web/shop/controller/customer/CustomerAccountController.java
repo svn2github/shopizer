@@ -48,6 +48,7 @@ import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
+//import com.salesmanager.web.shop.controller.data.CountryData;
 import com.salesmanager.web.shop.controller.data.CountryData;
 
 /**
@@ -339,7 +340,7 @@ public class CustomerAccountController extends AbstractController {
     
     /** move this common section out */
     
-    @ModelAttribute("countries")
+   @ModelAttribute("countries")
     public List<CountryData> getCountries(final HttpServletRequest request){
         
         Language language = (Language) request.getAttribute( "LANGUAGE" );
