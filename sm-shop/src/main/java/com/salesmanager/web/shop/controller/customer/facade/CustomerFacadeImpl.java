@@ -6,7 +6,6 @@ package com.salesmanager.web.shop.controller.customer.facade;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -28,7 +27,6 @@ import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
 import com.salesmanager.core.business.customer.CustomerRegistrationException;
-import com.salesmanager.core.business.customer.exception.CustomerNotFoundException;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
@@ -36,11 +34,9 @@ import com.salesmanager.core.business.customer.service.attribute.CustomerOptionV
 import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
-import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
-import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartCalculationService;
@@ -57,12 +53,8 @@ import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.entity.customer.CustomerEntity;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
-import com.salesmanager.web.populator.customer.CustomerBillingAddressPopulator;
-import com.salesmanager.web.populator.customer.CustomerDeliveryAddressPopulator;
 import com.salesmanager.web.populator.customer.CustomerEntityPopulator;
 import com.salesmanager.web.populator.customer.CustomerPopulator;
-import com.salesmanager.web.populator.customer.PersistableCustomerBillingAddressPopulator;
-import com.salesmanager.web.populator.customer.PersistableCustomerShippingAddressPopulator;
 import com.salesmanager.web.populator.shoppingCart.ShoppingCartDataPopulator;
 
 
@@ -403,7 +395,7 @@ public class CustomerFacadeImpl implements CustomerFacade
 
 	
 	@SuppressWarnings("deprecation")
-	public void authenticate(Customer customer) throws Exception {
+	public void authenticate(Customer customer, String userName, String password) throws Exception {
 		
 			Validate.notNull(customer, "Customer cannot be null");
 
@@ -426,7 +418,7 @@ public class CustomerFacadeImpl implements CustomerFacade
 			}
 
 			Authentication authenticationToken =
-                new UsernamePasswordAuthenticationToken(customer.getNick(), customer.getPassword(), authorities);
+                new UsernamePasswordAuthenticationToken(userName, password, authorities);
     	
 			Authentication authentication = customerAuthenticationManager.authenticate(authenticationToken);
     
@@ -439,7 +431,7 @@ public class CustomerFacadeImpl implements CustomerFacade
     public Address getAddress( Long userId, final MerchantStore merchantStore,boolean isBillingAddress)
         throws Exception
     {
-        LOG.info( "Fetching customer for id {} ", userId);
+/*        LOG.info( "Fetching customer for id {} ", userId);
         Address address=null;
         final Customer customerModel=customerService.getById( userId );
         
@@ -459,7 +451,8 @@ public class CustomerFacadeImpl implements CustomerFacade
         LOG.info( "getting Delivery address.." );
         CustomerDeliveryAddressPopulator deliveryAddressPopulator=new CustomerDeliveryAddressPopulator();
         return deliveryAddressPopulator.populate( customerModel, merchantStore, merchantStore.getDefaultLanguage() );
-      
+      */
+		return null;
     }
 
 
@@ -468,7 +461,7 @@ public class CustomerFacadeImpl implements CustomerFacade
         throws Exception
     {
        
-       Customer customerModel=customerService.getById( userId );
+/*       Customer customerModel=customerService.getById( userId );
        Map<String, Country> countriesMap = countryService.getCountriesMap( language );
        Country country = countriesMap.get( address.getCountry() );
       
@@ -514,10 +507,11 @@ public class CustomerFacadeImpl implements CustomerFacade
   
      
       // same update address with customer model
-       this.customerService.saveOrUpdate( customerModel );
+       this.customerService.saveOrUpdate( customerModel );*/
        
     }
 
-  
+
+
 
 }
