@@ -147,7 +147,7 @@ function isFieldValid(field) {
 	<c:if test="${fn:length(paymentMethods)>0}">
 		//if any payment option need validation insert here
 		//console.log($('input[name=paymentMethodType]:checked', checkoutFormId).val());
-		if($('input[name=paymentMethodType]:checked', checkoutFormId).val()=='creditcard') {
+		if($('input[name=paymentMethodType]:checked', checkoutFormId).val()=='CREDITCARD') {
 			if (fieldId.indexOf("creditcard") >= 0) {
 				if(fieldId!='creditcard_card_number') {
 					validateField = true;// but validate credit card fields when credit card is selected
@@ -617,7 +617,7 @@ $(document).ready(function() {
 
 
 					<!-- If error messages -->
-					<div id="checkoutError"  class="<c:if test="${errorMessages!=null}">alert  alert-error</c:if>">
+					<div id="checkoutError"  class="<c:if test="${errorMessages!=null}">alert  alert-error </c:if>">
 						<c:if test="${errorMessages!=null}">
 						<c:out value="${errorMessages}" />
 						</c:if>
@@ -945,7 +945,7 @@ $(document).ready(function() {
 									    		<div class="tabbable"> 
 												    	<ul class="nav nav-tabs">
 												    		<c:forEach items="${paymentMethods}" var="paymentMethod">
-												    			<li class="<c:if test="${paymentMethod.defaultSelected==true}"> active</c:if>">
+												    			<li class="<c:choose><c:when test="${order.paymentMethodType!=null && order.paymentMethodType==paymentMethod.paymentType}">active</c:when><c:otherwise><c:if test="${order.paymentMethodType==null && paymentMethod.defaultSelected==true}">active</c:if></c:otherwise></c:choose>">
 												    				<a href="#${paymentMethod.paymentType}" data-toggle="tab">
 												    					<c:choose>
 												    						<c:when test="${paymentMethod.paymentType=='CREDITCARD' || paymentMethod.paymentType=='PAYPAL'}">
@@ -964,18 +964,31 @@ $(document).ready(function() {
 												    			</li>
 												            </c:forEach>
 												        </ul>
+												        
+											        		
+												        
+												        
 									    				<div class="tab-content">
 									    				<c:forEach items="${paymentMethods}" var="paymentMethod">
-													    		<div class="tab-pane <c:if test="${paymentMethod.defaultSelected==true}">active</c:if>" id="${paymentMethod.paymentType}">
-													    			<c:if test="${paymentMethod.defaultSelected==true}">
-													    				<c:set var="paymentModule" value="${paymentMethod.paymentMethodCode}" scope="request"/>
-													    			</c:if>
+													    		<div class="tab-pane <c:choose><c:when test="${order.paymentMethodType!=null && order.paymentMethodType==paymentMethod.paymentType}">active</c:when><c:otherwise><c:if test="${order.paymentMethodType==null && paymentMethod.defaultSelected==true}">active</c:if></c:otherwise></c:choose>" id="${paymentMethod.paymentType}">
+													    			<c:choose>
+													    				<c:when test="${order.paymentMethodType!=null && order.paymentMethodType==paymentMethod.paymentType}">
+													    						<c:set var="paymentModule" value="${order.paymentMethodType}" scope="request"/>
+													    				</c:when>
+													    				<c:otherwise>
+													    						<c:if test="${order.paymentMethodType==null && paymentMethod.defaultSelected==true}">
+													    							<c:set var="paymentModule" value="${paymentMethod.paymentMethodCode}" scope="request"/>
+													    						</c:if>
+													    				</c:otherwise>
+													    			</c:choose>
+													    			<c:set var="selectedPaymentMethod" value="${order.paymentMethodType}" scope="request"/>
 													    			<c:set var="paymentMethod" value="${paymentMethod}" scope="request"/>
 													    			<c:set var="pageName" value="${fn:toLowerCase(paymentMethod.paymentType)}" />
 													    			<jsp:include page="/pages/shop/common/checkout/${pageName}.jsp" />
 													    		</div>
 									    				</c:forEach>
-									    				<input type="hidden" id="paymentModule" name="paymentModule" value="${paymentModule}"/>
+									    				
+									    				<input type="hidden" id="paymentModule" name="paymentModule" value="<c:choose><c:when test="${order.paymentModule!=null}"><c:out value="${order.paymentModule}"/></c:when><c:otherwise><c:out value="${paymentModule}" /></c:otherwise></c:choose>"/>
 									    				</div>
 									 			</div>
 									</div>

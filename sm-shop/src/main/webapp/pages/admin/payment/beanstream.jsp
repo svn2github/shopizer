@@ -34,7 +34,7 @@
                    <div class="control-group">
                         <label class="required"><s:message code="module.payment.beanstream.password" text="Password"/></label>
 	                        <div class="controls">
-									<form:input cssClass="input-large highlight" path="integrationKeys['password']" />
+									<form:password cssClass="input-large highlight" path="integrationKeys['password']" />
 	                        </div>
 	                        <span class="help-inline">
 	                        	<c:if test="${password!=null}">

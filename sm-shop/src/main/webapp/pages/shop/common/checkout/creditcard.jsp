@@ -16,14 +16,17 @@ response.setDateHeader ("Expires", -1);
 
 <script src="<c:url value="/resources/js/jquery.creditCardValidator.js" />"></script>
 
-<script>$.ajax({url: "<c:url value="/shop/reference/creditCardDates.html"/>",type: "GET",success: function(data){populateData($('#creditCardYears'), data);	}})</script>
-<script>$.ajax({url: "<c:url value="/shop/reference/monthsOfYear.html"/>",type: "GET",success: function(data){populateData($('#creditCardDays'),data);	}})</script>
+<script>$.ajax({url: "<c:url value="/shop/reference/creditCardDates.html"/>",type: "GET",success: function(data){populateData($('#creditCardYears'), data, '${order.payment['creditcard_card_expirationyear']}');	}})</script>
+<script>$.ajax({url: "<c:url value="/shop/reference/monthsOfYear.html"/>",type: "GET",success: function(data){populateData($('#creditCardDays'),data, '${order.payment['creditcard_card_expirationmonth']}');	}})</script>
 
 <script type="text/javascript">
+
+		var img = '<img src="<c:url value="/resources/img/cvv.jpg"/>" width="180">';
 		var ccValid = false;
 
 
 		$(document).ready(function() {
+			    $("#cvvImage").popover({ title: '<s:message code="label.payment.creditcard.cardcvv" text="Card validation number" />', content: img });
 			    var creditCardDiv = '#creditcard_card_number';
 			    invalidCreditCardNumber(creditCardDiv);
 				$(creditCardDiv).validateCreditCard(function(result) {
@@ -59,7 +62,7 @@ response.setDateHeader ("Expires", -1);
 		function validCreditCardNumber(div, creditCard) {
 			$(div).addClass("valid");
 			$(div).css('background-color', '#FFF');
-			$('#creditcard_type').val(creditCard.card_type);
+			$('#creditcard_type').val(creditCard.card_type.name);
 			$('#creditcard_card_image').html('<img src="<c:url value="/resources/img/payment/icons/'+ creditCard.card_type.name +'-straight-32px.png" />"/>');
 			ccValid = true;
 		}
@@ -68,32 +71,22 @@ response.setDateHeader ("Expires", -1);
 			return ccValid;
 		}
 		
-		function populateData(div, data) {
+		function populateData(div, data, defaultValue) {
 			$.each(data, function() {
-			    div.append($("<option />").val(this).text(this));
+			    div.append($('<option/>').val(this).text(this));
 			});
+            if(defaultValue && (defaultValue!=null && defaultValue!='')) {
+            	div.val(defaultValue);
+            }
 		}
-		
-		$.fn.addData = function(div, data) {
-			alert(data);
-			var selector = div + ' > option';
-		    $(selector).remove();
-		        return this.each(function() {
-		            var list = this;
-		            $.each(data, function(index, itemData) {
-		                var option = new Option(itemData, itemData);
-		                list.add(option);
-		            });
-		     });
-		};
-</script>
 
+</script>
 
 		  
           <div class="control-group">
             <label class="control-label"><s:message code="label.payment.creditcard.usecredicard" text="Use your credit card" /></label>
             <div class="controls">
-               <input type="radio" onClick="setPaymentModule('${requestScope.paymentMethod.paymentMethodCode}');" name="paymentMethodType" value="CREDITCARD" <c:if test="${requestScope.paymentMethod.defaultSelected==true}"> checked</c:if>/>          
+               <jsp:include page="/pages/shop/common/checkout/selectedPayment.jsp" />          
             </div>
           </div>
 
@@ -101,7 +94,7 @@ response.setDateHeader ("Expires", -1);
             <label class="control-label"><s:message code="label.payment.creditcard.cardowner" text="Card Holder's Name" /></label>
             <div class="controls">
               <s:message code="NotEmpty.order.creditcard.name" text="Credit card holder's name is required" var="msgCardHolderName"/>
-              <input type="text" id="creditcard_card_holder" name="payment['creditcard_card_holder']" class="input-xlarge required" title="${msgCardHolderName}">
+              <input type="text" id="creditcard_card_holder" name="payment['creditcard_card_holder']" class="input-xlarge required" title="${msgCardHolderName}" value="${order.payment['creditcard_card_holder']}">
             </div>
           </div>
        
@@ -122,7 +115,7 @@ response.setDateHeader ("Expires", -1);
                   <select id="creditCardDays" name="payment['creditcard_card_expirationmonth']" class="input-small"></select>
                 </div>
                 <div class="span2">
-                  <select id="creditCardYears" name="payment['creditcard_card_expirationtear']" class="input-small"></select>
+                  <select id="creditCardYears" name="payment['creditcard_card_expirationyear']" class="input-small"></select>
                 </div>
               </div>
             </div>
@@ -137,10 +130,10 @@ response.setDateHeader ("Expires", -1);
                   <input type="text" id="creditcard_card_cvv" name="payment['creditcard_card_cvv']" class="input-small required" autocomplete="off" maxlength="3" pattern="\d{3}" title="${msgCardCvv}">
                 </div>
                 <div class="span4">
-                  <img src="<c:url value="/resources/img/cvv.jpg"/>" width="100">
+                  <a href="#" id="cvvImage" rel="popover"><s:message code="label.payment.creditcard.whatiscvv" text="What is a credit card validation number?" /></a>
                 </div>
               </div>
             </div>
           </div>
 
-		<input type="hidden" name="payment['creditcard_type']" id="creditcard_type" value="" />
+		<input type="hidden" name="payment['creditcard_card_type']" id="creditcard_type" value="" />

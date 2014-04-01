@@ -47,7 +47,7 @@ response.setDateHeader ("Expires", -1);
 						<!-- Google rich snippets (http://blog.hubspot.com/power-google-rich-snippets-ecommerce-seo-ht) -->
 						<!-- Product description column -->
 						<div class="span8">
-							<h1>${product.description.name}</h1>
+							<p class="lead"><strong>${product.description.name}</strong></p>
 							
 							
 							<!-- product rating -->

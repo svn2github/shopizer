@@ -168,6 +168,28 @@
 
 </tag>
 
+<tag>
+ 		 <!-- Builds the order product download URL -->
+         <name>orderProductDownload</name>
+         <tag-class>com.salesmanager.web.tags.OrderProductDownloadUrlTag</tag-class>
+         <body-content>scriptless</body-content>
+         
+         <attribute>
+                 <name>productDownload</name>
+                 <required>true</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>com.salesmanager.web.entity.order.ReadableOrderProductDownload</type>
+         </attribute>
+         <attribute>
+                 <name>orderId</name>
+                 <required>true</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>java.lang.Long</type>
+         </attribute>
+         
+
+</tag>
+
 
 <tag>
  		 <!-- Builds the store logo URL -->

@@ -24,6 +24,9 @@
     
     <!-- template css file -->
     <link href="<c:url value="/resources/templates/bootstrap/css/theme.css" />" rel="stylesheet">
+    
+    <script src="<c:url value="/resources/templates/bootstrap/js/bootstrap-tooltip.js" />"></script>
+    <script src="<c:url value="/resources/templates/bootstrap/js/bootstrap-popover.js" />"></script>
 
     
     <!-- mini shopping cart template -->

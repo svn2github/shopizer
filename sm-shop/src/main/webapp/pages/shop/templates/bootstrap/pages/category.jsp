@@ -165,7 +165,7 @@ response.setDateHeader ("Expires", -1);
         
         <!-- right column -->
         <div class="span9">
-        
+        <p class="lead"><c:out value="${category.description.name}" /></p>
         <div class="products-title row-fluid">
     		<div class="span6">
         		<p><div id="products-qty"></div></p>

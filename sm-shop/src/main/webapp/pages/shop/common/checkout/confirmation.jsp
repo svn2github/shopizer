@@ -31,7 +31,7 @@ response.setDateHeader ("Expires", -1);
           		<c:when test="${order.status.value=='processed'}">
           		    <strong><s:message code="label.checkout.downloads.completed" text="label.checkout.downloads.completed"/></strong><br/>
           			<c:forEach items="${downloads}" var="download">
-          				<c:out value="${download.fileName}" />
+          				<a href="<sm:orderProductDownload productDownload="${download}" orderId="${order.id}"/>"><c:out value="${download.fileName}" /></a>
           			</c:forEach>
           		</c:when>
           		<c:otherwise>

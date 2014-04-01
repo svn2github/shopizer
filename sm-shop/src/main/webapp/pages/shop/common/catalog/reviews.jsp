@@ -21,7 +21,7 @@ response.setDateHeader ("Expires", -1);
 								  			<a href="<c:url value="/shop/customer/review.html"/>?productId=${product.id}"><s:message code="label.product.reviews.write" text="Write a review" /></a>
 								  		</sec:authorize>
 								  		<sec:authorize access="!hasRole('AUTH_CUSTOMER') and !fullyAuthenticated">
-								  			<strong><s:message code="label.product.reviews.logon.write" text="You have to be authenticated to write a review" /></strong>
+								  			<p class="muted"><s:message code="label.product.reviews.logon.write" text="You have to be authenticated to write a review" /></p>
 								  		</sec:authorize>
 									
 									
