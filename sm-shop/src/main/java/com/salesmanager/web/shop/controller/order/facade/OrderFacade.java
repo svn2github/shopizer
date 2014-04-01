@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.validation.BindingResult;
 
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
@@ -17,6 +18,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shipping.model.ShippingQuote;
 import com.salesmanager.core.business.shipping.model.ShippingSummary;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
+import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.order.PersistableOrder;
 import com.salesmanager.web.entity.order.ShopOrder;
 
@@ -31,9 +33,9 @@ public interface OrderFacade {
 	OrderTotalSummary calculateOrderTotal(MerchantStore store, PersistableOrder order, Language language) throws Exception;
 
 	/** process a valid order **/
-	Order processOrder(ShopOrder order, MerchantStore store, Language language) throws ServiceException;
+	Order processOrder(ShopOrder order, Customer customer, MerchantStore store, Language language) throws ServiceException;
 	/** process a valid order against an initial transaction **/
-	Order processOrder(ShopOrder order, Transaction transaction, MerchantStore store, Language language) throws ServiceException;
+	Order processOrder(ShopOrder order, Customer customer, Transaction transaction, MerchantStore store, Language language) throws ServiceException;
 	
 	/** creates a working copy of customer when the user is anonymous **/
 	Customer initEmptyCustomer(MerchantStore store);
@@ -63,4 +65,6 @@ public interface OrderFacade {
 	void validateOrder(ShopOrder order, BindingResult bindingResult,
 			Map<String, String> messagesResult, MerchantStore store,
 			Locale locale) throws ServiceException;
+	Customer toCustomerModel(PersistableCustomer persistableCustomer,
+			MerchantStore store, Language language) throws ConversionException;
 }

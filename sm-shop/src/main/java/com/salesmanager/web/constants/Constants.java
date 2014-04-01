@@ -1,6 +1,8 @@
 package com.salesmanager.web.constants;
 
 public class Constants {
+	
+	public final static String SLASH = "/";
 
     public final static String RESPONSE_STATUS = "STATUS";
     public final static String RESPONSE_SUCCESS = "SUCCESS";
@@ -48,6 +50,7 @@ public class Constants {
 	public final static String PRODUCT_URI= "/product";
 	public final static String CATEGORY_URI = "/category";
 	public final static String PRODUCT_ID_URI= "/productid";
+	public final static String ORDER_DOWNLOAD_URI= "/order/download";
 
 	public final static String URL_EXTENSION= ".html";
 	public final static String REDIRECT_PREFIX ="redirect:";

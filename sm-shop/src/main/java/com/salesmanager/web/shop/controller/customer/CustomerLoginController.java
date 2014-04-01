@@ -72,7 +72,7 @@ public class CustomerLoginController extends AbstractController {
             	jsonObject.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
             	return jsonObject.toJSONString();
             }
-            customerFacade.authenticate(customerModel);
+            customerFacade.authenticate(customerModel, securedCustomer.getUserName(), securedCustomer.getPassword());
             //set customer in the http session
             super.setSessionAttribute(Constants.CUSTOMER, customerModel, request);
             jsonObject.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);

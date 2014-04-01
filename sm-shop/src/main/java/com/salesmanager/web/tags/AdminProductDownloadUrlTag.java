@@ -10,12 +10,10 @@ import javax.servlet.jsp.tagext.TagSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.file.DigitalProduct;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.FilePathUtils;
-import com.salesmanager.web.utils.ImageFilePathUtils;
 
 public class AdminProductDownloadUrlTag extends TagSupport {
 	

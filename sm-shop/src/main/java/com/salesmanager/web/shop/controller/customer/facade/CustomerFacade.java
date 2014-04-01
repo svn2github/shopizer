@@ -68,7 +68,7 @@ public interface CustomerFacade
 	public Customer populateCustomerModel(PersistableCustomer customer,
 			MerchantStore merchantStore);
 	
-	public void authenticate(Customer customer) throws Exception;
+	public void authenticate(Customer customer, String userName, String password) throws Exception;
 	
 
 }

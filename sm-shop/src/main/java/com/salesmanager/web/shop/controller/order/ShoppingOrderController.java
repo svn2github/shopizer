@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,7 +36,9 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.model.OrderTotal;
 import com.salesmanager.core.business.order.model.OrderTotalSummary;
+import com.salesmanager.core.business.order.model.orderproduct.OrderProductDownload;
 import com.salesmanager.core.business.order.service.OrderService;
+import com.salesmanager.core.business.order.service.orderproduct.OrderProductDownloadService;
 import com.salesmanager.core.business.payments.model.PaymentMethod;
 import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.payments.service.PaymentService;
@@ -119,6 +120,9 @@ public class ShoppingOrderController extends AbstractController {
 	@Autowired
 	private EmailTemplatesUtils emailTemplatesUtils;
 	
+	@Autowired
+	private OrderProductDownloadService orderProdctDownloadService;
+	
 	@SuppressWarnings("unused")
 	@RequestMapping("/checkout.html")
 	public String displayCheckout(@CookieValue("cart") String cookie, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
@@ -150,9 +154,9 @@ public class ShoppingOrderController extends AbstractController {
 			if(cookie==null) {//session expired and cookie null, nothing to do
 				return "redirect:/shop/cart/shoppingCart.html";
 			}
-			String merchantCookie[] = cookie.split("-");
-			int merchantStoreId = Integer.parseInt(merchantCookie[0]);
-			if(merchantStoreId!=store.getId().intValue()) {
+			String merchantCookie[] = cookie.split("_");
+			String merchantStoreCode = merchantCookie[0];
+			if(!merchantStoreCode.equals(store.getCode())) {
 				return "redirect:/shop/cart/shoppingCart.html";
 			}
 			shoppingCartCode = merchantCookie[1];
@@ -334,24 +338,36 @@ public class ShoppingOrderController extends AbstractController {
 		
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 			Language language = (Language)request.getAttribute("LANGUAGE");
+			
+			
+			String userName = null;
+			String password = null;
 		
 	        //if the customer is new, generate a password
 	        PersistableCustomer customer = order.getCustomer();
-	        String password = null;
 	        if(customer.getId()==null || customer.getId()==0) {
 	        	password = UserReset.generateRandomString();
 	        	String encodedPassword = passwordEncoder.encodePassword(password, null);
 	        	customer.setPassword(encodedPassword);
 	        }
 	        
+			Customer modelCustomer = null;
+			try {//set groups
+				modelCustomer = orderFacade.toCustomerModel(customer, store, language);
+				customerFacade.setCustomerModelDefaultProperties(modelCustomer, store);
+				userName = modelCustomer.getNick();
+			} catch(Exception e) {
+				throw new ServiceException(e);
+			}
+	        
            
 	        
 	        Order modelOrder = null;
 	        Transaction initialTransaction = (Transaction)super.getSessionAttribute(Constants.INIT_TRANSACTION_KEY, request);
 	        if(initialTransaction!=null) {
-	        	modelOrder=orderFacade.processOrder(order, initialTransaction, store, language);
+	        	modelOrder=orderFacade.processOrder(order, modelCustomer, initialTransaction, store, language);
 	        } else {
-	        	modelOrder=orderFacade.processOrder(order, store, language);
+	        	modelOrder=orderFacade.processOrder(order, modelCustomer, store, language);
 	        }
 	        
 	        //save order id in session
@@ -378,36 +394,49 @@ public class ShoppingOrderController extends AbstractController {
 	        super.removeAttribute(Constants.SHIPPING_SUMMARY, request);
 	        super.removeAttribute(Constants.SHOPPING_CART, request);
 	        
-	        Customer modelCustomer = null;
-	        try {
-		        //refresh customer
-		        customerFacade.getCustomerByUserName(customer.getUserName(), store);
-		        if(SecurityContextHolder.getContext().getAuthentication() != null &&
-		        		 SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
-		        	
-		        } else {
-			        //authenticate
-			        customerFacade.authenticate(modelCustomer);
-			        super.setSessionAttribute(Constants.CUSTOMER, modelCustomer, request);
-		        }
-	        } catch(Exception e) {
-	        	throw new ServiceException(e);
-	        }
-	        
 
-			if(customer.getId()==null || customer.getId()==0) {
-				//send email for new customer
-				customer.setPassword(password);//set clear password for email
-				emailTemplatesUtils.sendRegistrationEmail( customer, store, locale, request.getContextPath() );
-			}
-			
-			//send order confirmation email
-			emailTemplatesUtils.sendOrderEmail(modelCustomer, modelOrder, locale, language, store, request.getContextPath());
-	        
-	        if(orderService.hasDownloadFiles(modelOrder)) {
-	        	emailTemplatesUtils.sendOrderDownloadEmail(modelCustomer, modelOrder, store, locale, request.getContextPath());
+	        try {
+		        //refresh customer --
+	        	modelCustomer = customerFacade.getCustomerByUserName(modelCustomer.getNick(), store);
+		        
+	        	//if has downloads, authenticate
 	        	
+	        	//check if any downloads exist for this order6
+	    		List<OrderProductDownload> orderProductDownloads = orderProdctDownloadService.getByOrderId(modelOrder.getId());
+	    		if(CollectionUtils.isNotEmpty(orderProductDownloads)) {
+	        	
+		        	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		        	System.out.println(auth.isAuthenticated());
+		        	if(auth != null &&
+			        		 request.isUserInRole("AUTH_CUSTOMER")) {
+			        	
+			        } else {
+				        //authenticate
+				        customerFacade.authenticate(modelCustomer, userName, password);
+				        super.setSessionAttribute(Constants.CUSTOMER, modelCustomer, request);
+			        }
+		        	
+					if(order.getCustomer().getId().longValue()==0 || order.getCustomer().getId()==null) {
+						//send email for new customer
+						customer.setPassword(password);//set clear password for email
+						emailTemplatesUtils.sendRegistrationEmail( customer, store, locale, request.getContextPath() );
+					}
+	    		}
+	    		
+				//send order confirmation email
+				emailTemplatesUtils.sendOrderEmail(modelCustomer, modelOrder, locale, language, store, request.getContextPath());
+		        
+		        if(orderService.hasDownloadFiles(modelOrder)) {
+		        	emailTemplatesUtils.sendOrderDownloadEmail(modelCustomer, modelOrder, store, locale, request.getContextPath());
+		
+		        }
+	    		
+	    		
+	        } catch(Exception e) {
+	        	LOGGER.error("Error while post processing order",e);
 	        }
+
+
 			
 			
 	        return modelOrder;
@@ -437,9 +466,9 @@ public class ShoppingOrderController extends AbstractController {
 						StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Pages.timeout).append(".").append(store.getStoreTemplate());
 						return template.toString();
 					}
-					String merchantCookie[] = cookie.split("-");
-					int merchantStoreId = Integer.parseInt(merchantCookie[0]);
-					if(merchantStoreId!=store.getId().intValue()) {
+					String merchantCookie[] = cookie.split("_");
+					String merchantStoreCode = merchantCookie[0];
+					if(!merchantStoreCode.equals(store.getCode())) {
 						StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Pages.timeout).append(".").append(store.getStoreTemplate());
 						return template.toString();
 					}
@@ -571,10 +600,28 @@ public class ShoppingOrderController extends AbstractController {
 	        
 			} catch(ServiceException se) {
 
-            	//TODO check credit card errors
+
             	LOGGER.error("Error while creating an order ", se);
             	
-            	model.addAttribute("errorMessages", messages.getMessage("message.error", locale));
+            	String defaultMessage = messages.getMessage("message.error", locale);
+            	model.addAttribute("errorMessages", defaultMessage);
+            	
+            	if(se.getExceptionType()==ServiceException.EXCEPTION_VALIDATION) {
+            		if(!StringUtils.isBlank(se.getMessageCode())) {
+            			String messageLabel = messages.getMessage(se.getMessageCode(), locale, defaultMessage);
+            			model.addAttribute("errorMessages", messageLabel);
+            		}
+            	} else if(se.getExceptionType()==ServiceException.EXCEPTION_PAYMENT_DECLINED) {
+            		String paymentDeclinedMessage = messages.getMessage("message.payment.declined", locale);
+            		if(!StringUtils.isBlank(se.getMessageCode())) {
+            			String messageLabel = messages.getMessage(se.getMessageCode(), locale, paymentDeclinedMessage);
+            			model.addAttribute("errorMessages", messageLabel);
+            		} else {
+            			model.addAttribute("errorMessages", paymentDeclinedMessage);
+            		}
+            	}
+            	
+            	
             	
             	StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Checkout.checkout).append(".").append(store.getStoreTemplate());
 	    		return template.toString();

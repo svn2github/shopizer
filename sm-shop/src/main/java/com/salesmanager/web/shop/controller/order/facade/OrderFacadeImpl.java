@@ -237,22 +237,22 @@ public class OrderFacadeImpl implements OrderFacade {
 	 * Submitted object must be valided prior to the invocation of this method
 	 */
 	@Override
-	public Order processOrder(ShopOrder order, MerchantStore store,
+	public Order processOrder(ShopOrder order, Customer customer, MerchantStore store,
 			Language language) throws ServiceException {
 				
-		return this.processOrderModel(order, null, store, language);
+		return this.processOrderModel(order, customer, null, store, language);
 
 	}
 	
 	@Override
-	public Order processOrder(ShopOrder order, Transaction transaction, MerchantStore store,
+	public Order processOrder(ShopOrder order, Customer customer, Transaction transaction, MerchantStore store,
 			Language language) throws ServiceException {
 				
-		return this.processOrderModel(order, transaction, store, language);
+		return this.processOrderModel(order, customer, transaction, store, language);
 
 	}
 	
-	private Order processOrderModel(ShopOrder order, Transaction transaction, MerchantStore store,
+	private Order processOrderModel(ShopOrder order, Customer customer, Transaction transaction, MerchantStore store,
 			Language language) throws ServiceException {
 		
 		try {
@@ -263,12 +263,7 @@ public class OrderFacadeImpl implements OrderFacade {
 				orderCustomer.setDelivery(billing);
 			}
 
-			Customer customer = this.toCustomerModel(order.getCustomer(), store, language);
-			try {//set groups
-				customerFacade.setCustomerModelDefaultProperties(customer, store);
-			} catch(Exception e) {
-				throw new ServiceException(e);
-			} 
+ 
 
 			
 			Order modelOrder = new Order();
@@ -323,8 +318,8 @@ public class OrderFacadeImpl implements OrderFacade {
 			//order misc objects
 			modelOrder.setCurrency(store.getCurrency());
 			modelOrder.setMerchant(store);
-			OrderStatus status = OrderStatus.ORDERED;
-			modelOrder.setStatus(status);
+			//OrderStatus status = OrderStatus.ORDERED;
+			//modelOrder.setStatus(status);
 			//do not care about previous status
 			
 			
@@ -339,6 +334,9 @@ public class OrderFacadeImpl implements OrderFacade {
 			String paymentType = order.getPaymentMethodType();
 			Payment payment = new Payment();
 			if(PaymentType.CREDITCARD.name().equals(paymentType)) {
+				
+				
+				
 				payment = new CreditCardPayment();
 				((CreditCardPayment)payment).setCardOwner(order.getPayment().get("creditcard_card_holder"));
 				((CreditCardPayment)payment).setCredidCardValidationNumber(order.getPayment().get("creditcard_card_cvv"));
@@ -361,6 +359,8 @@ public class OrderFacadeImpl implements OrderFacade {
 					creditCardType = CreditCardType.DISCOVERY;
 				}
 				
+
+				
 				
 				((CreditCardPayment)payment).setCreditCard(creditCardType);
 			
@@ -371,10 +371,10 @@ public class OrderFacadeImpl implements OrderFacade {
 				cc.setCcExpires(((CreditCardPayment)payment).getExpirationMonth() + "-" + ((CreditCardPayment)payment).getExpirationYear());
 			
 				//hash credit card number
-				String maskedNumber = CreditCardUtils.maskCardNumber(order.getPayment().get("creditcard_card_holder"));
-				order.getCreditCard().setCcNumber(maskedNumber);
-	
-				modelOrder.setCreditCard(order.getCreditCard());
+				String maskedNumber = CreditCardUtils.maskCardNumber(order.getPayment().get("creditcard_card_number"));
+				cc.setCcNumber(maskedNumber);
+				modelOrder.setCreditCard(cc);
+
 			}
 			
 			if(PaymentType.PAYPAL.name().equals(paymentType)) {
@@ -510,7 +510,8 @@ public class OrderFacadeImpl implements OrderFacade {
 		
 	}
 	
-	private Customer toCustomerModel(PersistableCustomer persistableCustomer, MerchantStore store, Language language) throws ConversionException {
+	@Override
+	public Customer toCustomerModel(PersistableCustomer persistableCustomer, MerchantStore store, Language language) throws ConversionException {
 		
 		CustomerPopulator populator = new CustomerPopulator();
 		Customer customer = new Customer();
@@ -697,6 +698,7 @@ public class OrderFacadeImpl implements OrderFacade {
 					ObjectError error = new ObjectError("creditcard_card_holder",messages.getMessage("NotEmpty.customer.shipping.stateProvince", locale));
 	            	bindingResult.addError(error);
 	            	messagesResult.put("creditcard_card_holder",messages.getMessage("NotEmpty.customer.shipping.stateProvince", locale));
+	            	return;
 				}
 				
 				CreditCardType creditCardType =null;

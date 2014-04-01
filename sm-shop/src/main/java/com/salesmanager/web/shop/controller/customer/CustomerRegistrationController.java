@@ -137,7 +137,9 @@ public class CustomerRegistrationController extends AbstractController {
         reCaptcha.setPublicKey( coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
         reCaptcha.setPrivateKey( coreConfiguration.getProperty( RECAPATCHA_PRIVATE_KEY ) );
         
-
+        String userName = null;
+        String password = null;
+        
         model.addAttribute( "recapatcha_public_key", coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
         
         if ( StringUtils.isNotBlank( customer.getRecaptcha_challenge_field() )
@@ -163,6 +165,7 @@ public class CustomerRegistrationController extends AbstractController {
             	FieldError error = new FieldError("userName","userName",messages.getMessage("registration.username.already.exists", locale));
             	bindingResult.addError(error);
             }
+            userName = customer.getUserName();
         }
         
         
@@ -174,6 +177,7 @@ public class CustomerRegistrationController extends AbstractController {
             	bindingResult.addError(error);
 
             }
+            password = customer.getPassword();
         }
 
         if ( bindingResult.hasErrors() )
@@ -225,7 +229,7 @@ public class CustomerRegistrationController extends AbstractController {
 	        //refresh customer
 	        Customer c = customerFacade.getCustomerByUserName(customer.getUserName(), merchantStore);
 	        //authenticate
-	        customerFacade.authenticate(c);
+	        customerFacade.authenticate(c, userName, password);
 	        super.setSessionAttribute(Constants.CUSTOMER, c, request);
 	        
 	        return "redirect:/shop/customer/dashboard.html";
