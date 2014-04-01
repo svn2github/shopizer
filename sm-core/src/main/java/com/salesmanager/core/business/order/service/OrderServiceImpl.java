@@ -113,10 +113,10 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
     	Validate.notNull(summary, "Order total Summary cannot be null");
     	
     	//first process payment
-    	Transaction processTransaction = paymentService.processPayment(customer, store, payment, items, order.getTotal());
+    	Transaction processTransaction = paymentService.processPayment(customer, store, payment, items, order);
     	transactionService.save(processTransaction);
     	
-    	if(order.getOrderHistory()==null) {
+    	if(order.getOrderHistory()==null || order.getOrderHistory().size()==0 || order.getStatus()==null) {
     		OrderStatus status = order.getStatus();
     		if(status==null) {
     			status = OrderStatus.ORDERED;

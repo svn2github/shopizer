@@ -12,10 +12,15 @@ public class ServiceException extends Exception {
 
 
 	public final static int EXCEPTION_VALIDATION = 99;
+	public final static int EXCEPTION_PAYMENT_DECLINED = 100;
 	
 	private String messageCode = null;
 
 
+
+	public void setMessageCode(String messageCode) {
+		this.messageCode = messageCode;
+	}
 
 	public ServiceException() {
 		super();
@@ -52,6 +57,10 @@ public class ServiceException extends Exception {
 	
 	public int getExceptionType() {
 		return exceptionType;
+	}
+	
+	public void setExceptionType(int exceptionType) {
+		this.exceptionType = exceptionType;
 	}
 	
 	public String getMessageCode() {

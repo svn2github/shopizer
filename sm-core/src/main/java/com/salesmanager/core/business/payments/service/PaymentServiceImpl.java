@@ -289,18 +289,20 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Override
 	public Transaction processPayment(Customer customer,
-			MerchantStore store, Payment payment, List<ShoppingCartItem> items, BigDecimal amount)
+			MerchantStore store, Payment payment, List<ShoppingCartItem> items, Order order)
 			throws ServiceException {
 
 
 		Validate.notNull(customer);
 		Validate.notNull(store);
 		Validate.notNull(payment);
-		Validate.notNull(amount);
+		Validate.notNull(order);
+		Validate.notNull(order.getTotal());
 		Validate.notNull(payment.getTransactionType());
 		
 		payment.setCurrency(store.getCurrency());
 		
+		BigDecimal amount = order.getTotal();
 
 		//must have a shipping module configured
 		Map<String, IntegrationConfiguration> modules = this.getPaymentModulesConfigured(store);
@@ -355,6 +357,10 @@ public class PaymentServiceImpl implements PaymentService {
 		
 		if(transactionType != TransactionType.INIT) {
 			transactionService.create(transaction);
+		}
+		
+		if(transactionType == TransactionType.AUTHORIZECAPTURE)  {
+			order.setStatus(OrderStatus.PROCESSED);
 		}
 
 		return transaction;
@@ -433,6 +439,15 @@ public class PaymentServiceImpl implements PaymentService {
 		if(transactionType != TransactionType.INIT) {
 			transactionService.create(transaction);
 		}
+		
+		OrderStatusHistory orderHistory = new OrderStatusHistory();
+		orderHistory.setOrder(order);
+		orderHistory.setStatus(OrderStatus.ORDERED);
+		
+		orderService.addOrderStatusHistory(order, orderHistory);
+		
+		order.setStatus(OrderStatus.ORDERED);
+		orderService.saveOrUpdate(order);
 
 		return transaction;
 
@@ -499,6 +514,7 @@ public class PaymentServiceImpl implements PaymentService {
 		//update order total
 		orderTotal = orderTotal.subtract(amount);
 		order.setTotal(orderTotal);
+		order.setStatus(OrderStatus.REFUNDED);
 		
 		orderService.saveOrUpdate(order);
 		

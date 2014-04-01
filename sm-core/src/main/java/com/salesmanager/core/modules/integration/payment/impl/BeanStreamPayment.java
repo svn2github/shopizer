@@ -28,10 +28,15 @@ import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.payments.model.TransactionType;
+import com.salesmanager.core.business.reference.country.model.Country;
+import com.salesmanager.core.business.reference.country.service.CountryService;
+import com.salesmanager.core.business.reference.zone.model.Zone;
+import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
 import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.model.MerchantLog;
+import com.salesmanager.core.business.system.model.ModuleConfig;
 import com.salesmanager.core.business.system.service.MerchantLogService;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.payment.model.PaymentModule;
@@ -45,6 +50,12 @@ public class BeanStreamPayment implements PaymentModule {
 	
 	@Autowired
 	private MerchantLogService merchantLogService;
+	
+	@Autowired
+    private CountryService countryService;
+	
+	@Autowired
+	private ZoneService zoneService;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(BeanStreamPayment.class);
 
@@ -95,10 +106,10 @@ public class BeanStreamPayment implements PaymentModule {
 				
 				StringBuilder messageString = new StringBuilder();
 				messageString.append("requestType=BACKEND&");
-				messageString.append("merchant_id=").append(configuration.getIntegrationKeys().get("MERCHANT_ID")).append("&");
+				messageString.append("merchant_id=").append(configuration.getIntegrationKeys().get("merchantid")).append("&");
 				messageString.append("trnType=").append("PAC").append("&");
-				messageString.append("username=").append(configuration.getIntegrationKeys().get("USER_ID")).append("&");
-				messageString.append("password=").append(configuration.getIntegrationKeys().get("PASSWORD")).append("&");
+				messageString.append("username=").append(configuration.getIntegrationKeys().get("username")).append("&");
+				messageString.append("password=").append(configuration.getIntegrationKeys().get("password")).append("&");
 				messageString.append("trnAmount=").append(amnt).append("&");
 				messageString.append("adjId=").append(trnID).append("&");
 				messageString.append("trnID=").append(trnID);
@@ -107,7 +118,7 @@ public class BeanStreamPayment implements PaymentModule {
 		
 
 
-				Transaction response = this.sendTransaction(store, messageString.toString(), "PAC", TransactionType.CAPTURE, payment.getPaymentType(), amount, configuration, module);
+				Transaction response = this.sendTransaction(null, store, messageString.toString(), "PAC", TransactionType.CAPTURE, payment.getPaymentType(), amount, configuration, module);
 				
 				return response;
 				
@@ -158,18 +169,24 @@ public class BeanStreamPayment implements PaymentModule {
 			String server = "";
 
 
-			if (bSandbox == true) {
-				server = new StringBuffer().append(
-						module.getModuleConfigs().get("scheme")).append("://")
-						.append(module.getModuleConfigs().get("host")).append(
-								module.getModuleConfigs().get("uri")).toString();
-			} else {
+			ModuleConfig configs = module.getModuleConfigs().get("PROD");
 
-				server = new StringBuffer().append(
-						module.getModuleConfigs().get("scheme")).append("://")
-						.append(module.getModuleConfigs().get("host")).append(
-								module.getModuleConfigs().get("uri")).toString();
+			if (bSandbox == true) {
+				configs = module.getModuleConfigs().get("TEST");
+			} 
+			
+			if(configs==null) {
+				throw new IntegrationException("Module not configured for TEST or PROD");
 			}
+			
+
+			server = new StringBuffer().append(
+					
+					configs.getScheme()).append("://")
+					.append(configs.getHost())
+							.append(":")
+							.append(configs.getPort())
+							.append(configs.getUri()).toString();
 			
 			
 			//authorize a preauth 
@@ -190,10 +207,10 @@ public class BeanStreamPayment implements PaymentModule {
 
 
 			messageString.append("requestType=BACKEND&");
-			messageString.append("merchant_id=").append(configuration.getIntegrationKeys().get("MERCHANT_ID")).append("&");
+			messageString.append("merchant_id=").append(configuration.getIntegrationKeys().get("merchantid")).append("&");
 			messageString.append("trnType=").append("R").append("&");
-			messageString.append("username=").append(configuration.getIntegrationKeys().get("USER_ID")).append("&");
-			messageString.append("password=").append(configuration.getIntegrationKeys().get("PASSWORD")).append("&");
+			messageString.append("username=").append(configuration.getIntegrationKeys().get("username")).append("&");
+			messageString.append("password=").append(configuration.getIntegrationKeys().get("password")).append("&");
 			messageString.append("trnOrderNumber=").append(transaction.getTransactionDetails().get("TRNORDERNUMBER")).append("&");
 			messageString.append("trnAmount=").append(amnt).append("&");
 			messageString.append("adjId=").append(trnID);
@@ -209,7 +226,7 @@ public class BeanStreamPayment implements PaymentModule {
 
 
 			
-			Transaction response = this.sendTransaction(store, messageString.toString(), "R", TransactionType.REFUND, PaymentType.CREDITCARD, amount, configuration, module);
+			Transaction response = this.sendTransaction(null, store, messageString.toString(), "R", TransactionType.REFUND, PaymentType.CREDITCARD, amount, configuration, module);
 			
 			return response;
 			
@@ -237,6 +254,7 @@ public class BeanStreamPayment implements PaymentModule {
 	
 	
 	private Transaction sendTransaction(
+			String orderNumber,
 			MerchantStore store,
 			String transaction, 
 			String beanstreamType, 
@@ -256,27 +274,73 @@ public class BeanStreamPayment implements PaymentModule {
 		HttpURLConnection conn =null;
 		try {
 			
+			//transaction = "requestType=BACKEND&merchant_id=300200260&trnType=P&username=carlito&password=shopizer001&orderNumber=caa71106-7e3f-4975-a657-a35904dc32a0&trnCardOwner=Carl Samson&trnCardNumber=5100000020002000&trnExpMonth=10&trnExpYear=14&trnCardCvd=123&trnAmount=77.01&ordName=Carl S&ordAddress1=358 Du Languedoc&ordCity=Victoria&ordProvince=BC&ordPostalCode=V8T2E7&ordCountry=CA&ordPhoneNumber=(444) 555-6666&ordEmailAddress=csamson777@yahoo.com";
+			/**
+			requestType=BACKEND&merchant_id=300200260
+			&trnType=P
+			&username=carlito&password=shopizer001
+			&orderNumber=caa71106-7e3f-4975-a657-a35904dc32a0
+			&trnCardOwner=Carl Samson
+			&trnCardNumber=5100000020002000
+			&trnExpMonth=10
+			&trnExpYear=14
+			&trnCardCvd=123
+			&trnAmount=77.01
+			&ordName=Carl S
+			&ordAddress1=378 Du Languedoc
+			&ordCity=Boucherville
+			&ordProvince=QC
+			&ordPostalCode=J4B8J9
+			&ordCountry=CA
+			&ordPhoneNumber=(444) 555-6666
+			&ordEmailAddress=test@yahoo.com
+			**/
+			
+			/**
+			merchant_id=123456789&requestType=BACKEND
+			&trnType=P&trnOrderNumber=1234TEST&trnAmount=5.00&trnCardOwner=Joe+Test
+					&trnCardNumber=4030000010001234
+					&trnExpMonth=10
+					&trnExpYear=16
+					&ordName=Joe+Test
+					&ordAddress1=123+Test+Street
+					&ordCity=Victoria
+					&ordProvince=BC
+					&ordCountry=CA
+					&ordPostalCode=V8T2E7
+					&ordPhoneNumber=5555555555
+					&ordEmailAddress=joe%40testemail.com
+			**/
+			
+			
+			
 			boolean bSandbox = false;
 			if (configuration.getEnvironment().equals("TEST")) {// sandbox
 				bSandbox = true;
 			}
 
 			String server = "";
-
+			
+			ModuleConfig configs = module.getModuleConfigs().get("PROD");
 
 			if (bSandbox == true) {
-				server = new StringBuffer().append(
-						module.getModuleConfigs().get("scheme")).append("://")
-						.append(module.getModuleConfigs().get("host")).append(
-								module.getModuleConfigs().get("uri")).toString();
-			} else {
-
-				server = new StringBuffer().append(
-						module.getModuleConfigs().get("scheme")).append("://")
-						.append(module.getModuleConfigs().get("host")).append(
-								module.getModuleConfigs().get("uri")).toString();
+				configs = module.getModuleConfigs().get("TEST");
+			} 
+			
+			if(configs==null) {
+				throw new IntegrationException("Module not configured for TEST or PROD");
 			}
 			
+
+			server = new StringBuffer().append(
+					
+					configs.getScheme()).append("://")
+					.append(configs.getHost())
+							.append(":")
+							.append(configs.getPort())
+							.append(configs.getUri()).toString();
+			
+	
 			
 			URL postURL = new URL(server.toString());
 			conn = (HttpURLConnection) postURL.openConnection();
@@ -332,7 +396,9 @@ public class BeanStreamPayment implements PaymentModule {
 			String authCode = (String)nvp.get("AUTHCODE");
 			String errorType = (String)nvp.get("ERRORTYPE");
 			String errorFields = (String)nvp.get("ERRORFIELDS");
-			
+			if(!StringUtils.isBlank(orderNumber)) {
+				nvp.put("INTERNALORDERID", orderNumber);
+			}
 			
 			if(StringUtils.isBlank(transactionApproved)) {
 				throw new IntegrationException("Required field transactionApproved missing from BeanStream response");
@@ -348,8 +414,9 @@ public class BeanStreamPayment implements PaymentModule {
 	
 				IntegrationException te = new IntegrationException(
 						"Can't process BeanStream message " + messageText);
-				te
-				.setErrorCode(IntegrationException.TRANSACTION_EXCEPTION);
+				te.setExceptionType(IntegrationException.EXCEPTION_PAYMENT_DECLINED);
+				te.setMessageCode("message.payment.beanstream." + messageId);
+				te.setErrorCode(IntegrationException.TRANSACTION_EXCEPTION);
 				throw te;
 			}
 			
@@ -421,25 +488,30 @@ public class BeanStreamPayment implements PaymentModule {
 
 		String server = "";
 
+		ModuleConfig configs = module.getModuleConfigs().get("PROD");
 
 		if (bSandbox == true) {
-			server = new StringBuffer().append(
-					module.getModuleConfigs().get("scheme")).append("://")
-					.append(module.getModuleConfigs().get("host")).append(
-							module.getModuleConfigs().get("uri")).toString();
-		} else {
-
-			server = new StringBuffer().append(
-					module.getModuleConfigs().get("scheme")).append("://")
-					.append(module.getModuleConfigs().get("host")).append(
-							module.getModuleConfigs().get("uri")).toString();
+			configs = module.getModuleConfigs().get("TEST");
+		} 
+		
+		if(configs==null) {
+			throw new IntegrationException("Module not configured for TEST or PROD");
 		}
+		
+
+		server = new StringBuffer().append(
+				
+				configs.getScheme()).append("://")
+				.append(configs.getHost())
+						.append(":")
+						.append(configs.getPort())
+						.append(configs.getUri()).toString();
 		
 		HttpURLConnection conn = null;
 		
 		try {
 			
-		String uniqueId = UUID.randomUUID().toString();
+		String uniqueId = UUID.randomUUID().toString();//TODO
 			
 		String orderNumber = uniqueId;
 		
@@ -458,13 +530,15 @@ public class BeanStreamPayment implements PaymentModule {
 		CreditCardPayment creditCardPayment = (CreditCardPayment)payment;
 
 		messageString.append("requestType=BACKEND&");
-		messageString.append("merchant_id=").append(configuration.getIntegrationKeys().get("MERCHANT_ID")).append("&");
+		messageString.append("merchant_id=").append(configuration.getIntegrationKeys().get("merchantid")).append("&");
 		messageString.append("trnType=").append(transactionType).append("&");
+		messageString.append("username=").append(configuration.getIntegrationKeys().get("username")).append("&");
+		messageString.append("password=").append(configuration.getIntegrationKeys().get("password")).append("&");
 		messageString.append("orderNumber=").append(orderNumber).append("&");
 		messageString.append("trnCardOwner=").append(creditCardPayment.getCardOwner()).append("&");
 		messageString.append("trnCardNumber=").append(creditCardPayment.getCreditCardNumber()).append("&");
 		messageString.append("trnExpMonth=").append(creditCardPayment.getExpirationMonth()).append("&");
-		messageString.append("trnExpYear=").append(creditCardPayment.getExpirationYear()).append("&");
+		messageString.append("trnExpYear=").append(creditCardPayment.getExpirationYear().substring(2)).append("&");
 		messageString.append("trnCardCvd=").append(creditCardPayment.getCredidCardValidationNumber()).append("&");
 		messageString.append("trnAmount=").append(amnt).append("&");
 		
@@ -478,12 +552,14 @@ public class BeanStreamPayment implements PaymentModule {
 		
 		String stateProvince = customer.getBilling().getState();
 		if(customer.getBilling().getZone()!=null) {
-			stateProvince = customer.getBilling().getZone().getName();
+			stateProvince = customer.getBilling().getZone().getCode();
 		}
 		
+		String countryName = customer.getBilling().getCountry().getIsoCode();
+		
 		messageString.append("ordProvince=").append(stateProvince).append("&");
-		messageString.append("ordPostalCode=").append(customer.getBilling().getPostalCode()).append("&");
-		messageString.append("ordCountry=").append(customer.getBilling().getCountry().getName()).append("&");
+		messageString.append("ordPostalCode=").append(customer.getBilling().getPostalCode().replaceAll("\\s","")).append("&");
+		messageString.append("ordCountry=").append(countryName).append("&");
 		messageString.append("ordPhoneNumber=").append(customer.getBilling().getTelephone()).append("&");
 		messageString.append("ordEmailAddress=").append(customer.getEmailAddress());
 		
@@ -531,7 +607,7 @@ public class BeanStreamPayment implements PaymentModule {
 			
 			
 			messageLogString.append("requestType=BACKEND&");
-			messageLogString.append("merchant_id=").append(configuration.getIntegrationKeys().get("MERCHANT_ID")).append("&");
+			messageLogString.append("merchant_id=").append(configuration.getIntegrationKeys().get("merchantid")).append("&");
 			messageLogString.append("trnType=").append(type).append("&");
 			messageLogString.append("orderNumber=").append(orderNumber).append("&");
 			messageLogString.append("trnCardOwner=").append(creditCardPayment.getCardOwner()).append("&");
@@ -561,21 +637,13 @@ public class BeanStreamPayment implements PaymentModule {
 	
 			LOGGER.debug("REQUEST SENT TO BEANSTREAM -> " + messageLogString.toString());
 
-		
-
-		
-		
-		//DataOutputStream output = null;
-		//DataInputStream in = null;
-		//BufferedReader is = null;
-	
 			
 			URL postURL = new URL(server.toString());
 			conn = (HttpURLConnection) postURL.openConnection();
 			
 
 			
-			Transaction response = this.sendTransaction(store, messageString.toString(), transactionType, type, payment.getPaymentType(), amount, configuration, module);
+			Transaction response = this.sendTransaction(orderNumber, store, messageString.toString(), transactionType, type, payment.getPaymentType(), amount, configuration, module);
 			
 			return response;
 
@@ -593,9 +661,7 @@ public class BeanStreamPayment implements PaymentModule {
 			if (conn != null) {
 				try {
 					conn.disconnect();
-				} catch (Exception ignore) {
-					// TODO: handle exception
-				}
+				} catch (Exception ignore) {}
 			}
 		}
 
@@ -618,7 +684,9 @@ public class BeanStreamPayment implements PaymentModule {
 		transaction.getTransactionDetails().put("TRNAPPROVED", (String)nvp.get("TRNAPPROVED"));
 		transaction.getTransactionDetails().put("TRNORDERNUMBER", (String)nvp.get("TRNORDERNUMBER"));
 		transaction.getTransactionDetails().put("MESSAGETEXT", (String)nvp.get("MESSAGETEXT"));
-		
+		if(nvp.get("INTERNALORDERID")!=null) {
+			transaction.getTransactionDetails().put("INTERNALORDERID", (String)nvp.get("INTERNALORDERID"));
+		}
 		return transaction;
 		
 	}
