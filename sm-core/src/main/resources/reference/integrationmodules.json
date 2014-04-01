@@ -62,7 +62,7 @@
 		"version":"",
 		"regions": ["US","CA"],
 		"image":"beanstream.gif",
-		"configuration":[{"env":"TEST","scheme":"https","host":"sandbox.paypal.com","port":"443","uri":"/web-services"},{"env":"PROD","scheme":"https","host":"www.paypal.com","port":"443","uri":"/web-services"}]
+		"configuration":[{"env":"TEST","scheme":"https","host":"www.beanstream.com","port":"443","uri":"/scripts/process_transaction.asp"},{"env":"PROD","scheme":"https","host":"www.beanstream.com","port":"443","uri":"/scripts/process_transaction.asp"}]
 
 	}
 

@@ -31,6 +31,12 @@
 		<property name="dataSource" ref="datasource" />
 		<property name="persistenceXmlLocation" value="classpath:META-INF/sm-persistence.xml" />
 		
+		<!--
+		<property name="namingStrategy">
+      		<bean class="org.hibernate.cfg.ImprovedNamingStrategy" />
+    	</property>
+    	-->
+		
 
 		<property name="jpaVendorAdapter">
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
