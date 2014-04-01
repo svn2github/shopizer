@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.Map;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +39,7 @@ public class ImportIntegrationModule  {
 	 * Import an integration module 
 	 * @throws Exception
 	 */
-	@Test
-	//@Ignore
+	@Ignore
 	public void importIntegrationModule() throws Exception {
 		
 
@@ -68,7 +68,7 @@ public class ImportIntegrationModule  {
 	            	@SuppressWarnings("rawtypes")
 					Map o = objects[i];
 	            	//load that specific module
-	            	if(o.get("code").equals("paypal-express-checkout")) {
+	            	if(o.get("code").equals("beanstream")) {
 	            		//get module object
 	            		module = integrationModulesLoader.loadModule(o);
 	            		break;

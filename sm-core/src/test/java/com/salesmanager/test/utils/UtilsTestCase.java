@@ -79,49 +79,12 @@ public class UtilsTestCase extends AbstractSalesManagerCoreTestCase {
 	@Test
 	public void testGeoLocation() throws Exception {
 		
-		Address address = geoLoaction.getAddress("127.0.0.1");
+		Address address = geoLoaction.getAddress("96.21.132.0");
 		if(address!=null) {
 			System.out.println(address.getCountry());
 		}
 		
 	}
 	
-	@Test
-	public void testEncryption() throws Exception {
-		
-/*		MerchantStore store = merchantService.getByCode(MerchantStore.DEFAULT_STORE);
-		
-
-		IntegrationConfiguration paymentConfiguration = new IntegrationConfiguration();
-		
-		paymentConfiguration.setActive(true);
-		paymentConfiguration.setEnvironment(IntegrationConfiguration.TEST_ENVIRONMENT);
-		paymentConfiguration.setModuleCode("beanstream");
-		
-		Map<String,String> integrationKeys = new HashMap<String,String>();
-		integrationKeys.put("merchantid", "123456");
-		integrationKeys.put("username", "accnt");
-		integrationKeys.put("password", "pass123");
-		integrationKeys.put("transaction", "CAPTURE");
-		
-		paymentConfiguration.setIntegrationKeys(integrationKeys);
-		
-		System.out.println(paymentConfiguration.toJSONString());
-		
-		paymentService.savePaymentModuleConfiguration(paymentConfiguration, store);
-		
-		paymentConfiguration = paymentService.getPaymentConfiguration("beanstream", store);
-		
-		System.out.println(paymentConfiguration.toJSONString());*/
-		
-		String encr = encryption.encrypt("test0123456789");
-		
-		String decr = encryption.decrypt("397c67b54ddff878bd0baa9895b40c37");
-		
-		System.out.println(encr);
-		
-		System.out.println(decr);
-		
-	}
 
 }

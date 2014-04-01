@@ -13,6 +13,7 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.CustomerGender;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.payments.model.CreditCardType;
 import com.salesmanager.core.business.payments.model.CreditCardPayment;
 import com.salesmanager.core.business.payments.model.PaymentType;
@@ -98,8 +99,11 @@ public class PaymentTestCase extends AbstractSalesManagerCoreTestCase {
 		
 		paymentService.savePaymentModuleConfiguration(paymentConfiguration, store);
 		
+		Order order = new Order();
+		order.setTotal(new BigDecimal(20));
+		
 		//paypal requires item list List<ShoppinCartItem> for the rest i set null
-		paymentService.processPayment(customer, store, payment, null, new BigDecimal(20));
+		paymentService.processPayment(customer, store, payment, null, order);
 
 		
 		
