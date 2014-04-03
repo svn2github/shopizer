@@ -45,6 +45,8 @@ public class CustomerSalesManagerTestCase extends AbstractSalesManagerCoreTestCa
 	    
 	    
 	    Billing billing = new Billing();
+	    billing.setFirstName("John");
+	    billing.setLastName("Bossanova");
 	    billing.setAddress("Billing address");
 	    billing.setCountry(country);
 	    billing.setZone(zone);
