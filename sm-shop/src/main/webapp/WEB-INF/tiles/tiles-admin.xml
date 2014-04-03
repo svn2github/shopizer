@@ -279,8 +279,8 @@
   		<put-attribute name="body" value="/pages/admin/orders/order.jsp" /> 
   	</definition>
   	
-  		<definition name="admin-orders-edit" template="/layout/admin/layout.jsp">
-  		<put-attribute name="body" value="/pages/admin/orders/order.jsp" /> 
+    <definition name="admin-orders-transactions" template="/layout/admin/layout.jsp">
+  		<put-attribute name="body" value="/pages/admin/orders/transactions.jsp" /> 
   	</definition>
   	
   	<definition name="tax-classes" template="/layout/admin/layout.jsp">

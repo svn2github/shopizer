@@ -33,6 +33,35 @@
 		}); 
 		
 		
+		<c:if test="${order.billing.state!=null && order.billing.state!=''}">
+			$('.billing-zone-list').hide();          
+			$('#bilstateOther').show(); 
+			$("input[name='showBillingStateList']").val('no');
+			$('#bilstateOther').val('<c:out value="${order.billing.state}"/>');
+		</c:if>
+
+		<c:if test="${order.billing.state==null || order.billing.state==''}">  
+			$('.billing.zone-list').show();           
+			$('#bilstateOther').hide();
+			$("input[name='showBillingStateList']").val('yes');
+			getBillingZones('<c:out value="${order.billing.country.isoCode}" />'); 
+		</c:if>
+		
+		<c:if test="${order.delivery.state!=null && order.delivery.state!=''}">  
+			$('.delivery-zone-list').hide();  
+			$('#delstateOther').show(); 
+			$("input[name='showDeliveryStateList']").val('no');
+			$('#delstateOther').val('<c:out value="${order.delivery.state}"/>');
+		</c:if>
+		<c:if test="${order.delivery.state==null || order.delivery.state==''}"> 
+			$('.delivery-zone-list').show();			
+			$('#delstateOther').hide();
+			$("input[name='showDeliveryStateList']").val('yes');
+			getDeliveryZones('<c:out value="${order.delivery.country.isoCode}" />'); 
+		</c:if>
+		
+		
+		
 	}); 
 
 
@@ -99,7 +128,8 @@
 			<div class="control-group">
                       <div class="controls">
                      		 <s:message code="label.order.id2" text="Order ID"/> 
-                     		 <c:out value="${order.order.id}" /><br>
+                     		 <c:out value="${order.order.id}" /> - <span class="lead"><s:message code="label.order.${order.order.status.value}" text="${order.order.status.value}" /></span>
+                     		 <br>
                        </div>       
                   </div>
            </h3>
@@ -118,7 +148,7 @@
  			
  		<div class="span8"> 
  		
- 			<div class="span4"> 
+ 			<div class="span4" style="margin-left:0px;"> 
 			
 			<h6> <s:message code="label.customer.billinginformation" text="Billing information"/> </h6>
 			<address>			        
@@ -150,11 +180,24 @@
 				 				<form:input id="billingCity" cssClass="input-large highlight" path="order.billing.city"/>
 				 				<span class="help-inline"><form:errors path="order.billing.city" cssClass="error" /></span>
 			            </div>
+			            
+			            <!--
 			            <label><s:message code="label.customer.billing.zone" text="Billing state / province"/></label>
 			            <div class="controls">
 				 				<form:input id="billingState" cssClass="input-large highlight" path="order.billing.state"/>
 				 				<span class="help-inline"><form:errors path="order.billing.state" cssClass="error" /></span>
 			            </div>
+			            -->
+			            
+			            <div class="control-group"> 
+	                        <label><s:message code="label.customer.billing.zone" text="State / Province"/></label>
+	                        <div class="controls">		       							
+	       							<form:select cssClass="billing-zone-list" path="order.billing.zone.code"/>
+                      				<form:input  class="input-large highlight" id="bilstateOther" maxlength="100"  name="bilstateOther" path="order.billing.state" /> 				       							
+                                 	<span class="help-inline"><form:errors path="order.billing.zone.code" cssClass="error" /></span>
+	                        </div>
+	                    </div> 
+			            
 			            <label><s:message code="label.customer.billing.country" text="Country"/></label>
 			            <div class="controls">
 				 				<form:select cssClass="country-list" path="order.billing.country.isoCode">
@@ -202,6 +245,7 @@
 			            <div class="controls">
 				 				<form:input  cssClass="input-large" path="order.delivery.state"/>
 			            </div>
+ 
 			            <label><s:message code="label.customer.shipping.country" text="Country"/></label>
 			            <div class="controls">
 				 				<form:select cssClass="country-list" path="order.delivery.country.isoCode">
@@ -233,12 +277,12 @@
 
 	            <label><s:message code="label.order.paymentmode" text="Payment mode"/></label>
 	            <div class="controls">
-		 			 <c:out value="${order.order.paymentModuleCode}"/><form:hidden  path="order.paymentModuleCode"/><br/><br/>
+		 			 <strong><c:out value="${order.order.paymentType}"/> - <c:out value="${order.order.paymentModuleCode}"/></strong><form:hidden  path="order.paymentModuleCode"/><br/><br/>
 	            </div>	
 	            
 	            <label><s:message code="label.order.shippingmethod" text="Shipping method"/></label>
 	            <div class="controls">
-		 			 <c:out value="${order.order.shippingModuleCode}"/><form:hidden  path="order.shippingModuleCode"/>
+		 			 <strong><c:out value="${order.order.shippingModuleCode}"/></strong><form:hidden  path="order.shippingModuleCode"/>
 	            </div>	
 	
 				</dl>
@@ -246,12 +290,9 @@
 				</div> 
 						
 
-		
- 
+	
       
-      	  <br/>
-      
-      	  <div class="span8">
+      	  <div class="span8" style="margin-top:20px;">
 		      <table class="table table-bordered table-striped"> 
 					<thead> 
 						<tr> 
@@ -317,17 +358,27 @@
               
 	              <div class="form-actions">
 	              		<button  type="submit" class="btn btn-medium btn-primary" ><s:message code="button.label.save" text="Save"/></button>
-	              		<button id="refundButton" class="btn btn-medium btn-danger" type="button"><s:message code="label.order.refund" text="Apply refund"/></button>
+	              		<!--<button id="refundButton" class="btn btn-medium btn-danger" type="button"><s:message code="label.order.refund" text="Apply refund"/></button>-->
 	      		  </div>
       		</div> 
-            <br/>              
+            <br/>   
+            
+            <div class="span8">
+            <div class="btn-group">
+            	<c:if test="${capturableTransaction!=null}">
+            		 <a class="btn btn-primary" href="#">Capture transaction</a>
+            	</c:if>
+            	<c:if test="${refundableTransaction!=null}">
+            		 <a id="refundButton" class="btn btn-danger" href="#"><s:message code="label.order.refund" text="Apply refund"/></a>
+            	</c:if>
+            	<a class="btn" href="<c:url value="/admin/orders/printInvoice.html?id=${order.id}" />">List transactions</a>
+				<a class="btn" href="<c:url value="/admin/orders/printInvoice.html?id=${order.id}" />"><s:message code="label.order.printinvoice" text="Print invoice"/></a>
+			    <a class="btn" href="<c:url value="/admin/orders/printInvoice.html?id=${order.id}" />"><s:message code="label.order.sendinvoice" text="Send email invoice"/></a>
+			    <a class="btn" href="<c:url value="/admin/orders/printInvoice.html?id=${order.id}" />"><s:message code="label.order.packing" text="Print packing slip"/></a>
+		    </div> 
+		    </div>          
               
-             <ul class="nav nav-pills">
-             				<li><a href="<c:url value="/admin/orders/printInvoice.html?id=${order.id}" />"><s:message code="label.order.printinvoice" text="Print invoice"/></a></li>
-							<li class="disabled"><a href="#"><s:message code="label.order.sendinvoice" text="Send email invoice"/></a></li>
-							<li class="disabled"><a href="#"><s:message code="label.order.packing" text="Print packing slip"/></a></li>
-		    </ul> 
-    
+
     
     	  </div>
    
