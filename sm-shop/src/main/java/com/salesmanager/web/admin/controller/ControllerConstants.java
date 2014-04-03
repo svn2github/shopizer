@@ -86,6 +86,7 @@ public interface ControllerConstants
         interface Order{
             final String orders="admin-orders";
             final String ordersEdit="admin-orders-edit";
+            final String ordersTransactions="admin-orders-transactions";
         }
         
         interface Configuration{

@@ -40,7 +40,9 @@ import com.salesmanager.core.business.order.model.OrderTotal;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
 import com.salesmanager.core.business.order.service.OrderService;
+import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.payments.service.PaymentService;
+import com.salesmanager.core.business.payments.service.TransactionService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -68,7 +70,7 @@ public class OrderControler {
 private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.class);
 	
 	@Autowired
-	LabelUtils messages;
+	private LabelUtils messages;
 	
 	@Autowired
 	private OrderService orderService;
@@ -81,6 +83,9 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 	
 	@Autowired
 	CustomerService customerService;
+	
+	@Autowired
+	TransactionService transactionService;
 	
 	@Autowired
 	EmailService emailService;
@@ -97,7 +102,6 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 	}
 
 	@PreAuthorize("hasRole('ORDER')")
-	@SuppressWarnings("unused")
 	private String displayOrder(Long orderId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		//display menu
@@ -143,11 +147,26 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 			orderTotal = dbOrder.getOrderTotal();
 			orderHistory = dbOrder.getOrderHistory();
 			
+			//get capturable
+			Transaction capturableTransaction = transactionService.getCapturableTransaction(dbOrder);
+			if(capturableTransaction!=null) {
+				model.addAttribute("capturableTransaction",capturableTransaction);
+			}
+			
+			if(capturableTransaction==null) {
+				//get refundable
+				model.addAttribute("capturableTransaction",capturableTransaction);
+				Transaction refundableTransaction = transactionService.getRefundableTransaction(dbOrder);
+				if(refundableTransaction!=null) {
+					model.addAttribute("refundableTransaction",refundableTransaction);
+				}
+			}
+			
 		}	
 		
 		model.addAttribute("countries", countries);
 		model.addAttribute("order",order);
-		return "admin-orders-edit";
+		return  ControllerConstants.Tiles.Order.ordersEdit;
 	}
 	
 
@@ -276,6 +295,22 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		
 		orderService.saveOrUpdate(newOrder);
 		entityOrder.setOrder(newOrder);
+		
+		//get capturable
+		Transaction capturableTransaction = transactionService.getCapturableTransaction(newOrder);
+		if(capturableTransaction!=null) {
+			model.addAttribute("capturableTransaction",capturableTransaction);
+		}
+		
+		if(capturableTransaction==null) {
+			//get refundable
+			model.addAttribute("capturableTransaction",capturableTransaction);
+			Transaction refundableTransaction = transactionService.getRefundableTransaction(newOrder);
+			if(refundableTransaction!=null) {
+				model.addAttribute("refundableTransaction",refundableTransaction);
+			}
+		}
+		
 		
 		/** 
 		 * send email if admin posted orderHistoryComment
@@ -467,12 +502,59 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		
 	}
 	
+	@PreAuthorize("hasRole('ORDER')")
+	@RequestMapping(value="/admin/orders/listTransactions.html", method=RequestMethod.GET)
+	private String listTransactions(Long orderId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		//display menu
+		setMenu(model,request);
+		   
+		com.salesmanager.web.admin.entity.orders.Order order = new com.salesmanager.web.admin.entity.orders.Order();
+		Language language = (Language)request.getAttribute("LANGUAGE");
+
+		if(orderId==null || orderId==0) {
+			return "redirect:/admin/orders/list.html";
+		}
+
+			
+			
+			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+
+			Order dbOrder = orderService.getById(orderId);
+
+			if(dbOrder==null) {
+				return "redirect:/admin/orders/list.html";
+			}
+			
+			
+			if(dbOrder.getMerchant().getId().intValue()!=store.getId().intValue()) {
+				return "redirect:/admin/orders/list.html";
+			}
+			
+			
+			order.setId( orderId );
+		
+			if( dbOrder.getDatePurchased() !=null ){
+				order.setDatePurchased(DateUtil.formatDate(dbOrder.getDatePurchased()));
+			}
+			
+			order.setOrder( dbOrder );
+			order.setBilling( dbOrder.getBilling() );
+			order.setDelivery(dbOrder.getDelivery() );
+			
+			List<Transaction> transactions = transactionService.listTransactions(dbOrder);
+			
+			model.addAttribute("transactions",transactions);
+			model.addAttribute("order",order);
+			return  ControllerConstants.Tiles.Order.ordersTransactions;
+	}
 	
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {
 	
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("order", "order");
+		activeMenus.put("order-list", "order-list");
 		
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");

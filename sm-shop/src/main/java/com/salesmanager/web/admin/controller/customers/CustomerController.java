@@ -118,7 +118,7 @@ public class CustomerController {
 	public String displayCustomer(Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 			
 		//display menu
-		this.setMenu(model, request);
+		this.setMenuCreate(model, request);
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
@@ -223,7 +223,7 @@ public class CustomerController {
 	@RequestMapping(value="/admin/customers/save.html", method=RequestMethod.POST)
 	public String saveCustomer(@Valid @ModelAttribute("customer") Customer customer, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception{
 	
-		this.setMenu(model, request);
+		this.setMenuCreate(model, request);
 		
 		String email_regEx = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}\\b";
 		Pattern pattern = Pattern.compile(email_regEx);
@@ -701,6 +701,25 @@ public class CustomerController {
 	}
 	
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {
+		
+		//display menu
+		Map<String,String> activeMenus = new HashMap<String,String>();
+		activeMenus.put("customer", "customer");
+		activeMenus.put("customer-list", "customer-list");
+		
+		@SuppressWarnings("unchecked")
+		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
+		
+		Menu currentMenu = (Menu)menus.get("customer");
+		model.addAttribute("currentMenu",currentMenu);
+		model.addAttribute("activeMenus",activeMenus);
+
+
+		//
+		
+	}
+	
+	private void setMenuCreate(Model model, HttpServletRequest request) throws Exception {
 		
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();

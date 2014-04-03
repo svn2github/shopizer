@@ -164,6 +164,7 @@ public class OrdersController {
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
 		activeMenus.put("order", "order");
+		activeMenus.put("order-list", "order-list");
 
 		@SuppressWarnings("unchecked")
 		Map<String, Menu> menus = (Map<String, Menu>)request.getAttribute("MENUMAP");
