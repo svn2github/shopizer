@@ -114,7 +114,7 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
     	
     	//first process payment
     	Transaction processTransaction = paymentService.processPayment(customer, store, payment, items, order);
-    	transactionService.save(processTransaction);
+    	//transactionService.save(processTransaction);
     	
     	if(order.getOrderHistory()==null || order.getOrderHistory().size()==0 || order.getStatus()==null) {
     		OrderStatus status = order.getStatus();
@@ -136,7 +136,7 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
     	
     	if(customer.getId()==null || customer.getId()==0) {
     		customerService.create(customer);
-    	} 
+    	}
     	
     	if(transaction!=null) {
     		transaction.setOrder(order);
@@ -144,6 +144,15 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
     			transactionService.create(transaction);
     		} else {
     			transactionService.update(transaction);
+    		}
+    	}
+    	
+    	if(processTransaction!=null) {
+    		processTransaction.setOrder(order);
+    		if(processTransaction.getId()==null || processTransaction.getId()==0) {
+    			transactionService.create(processTransaction);
+    		} else {
+    			transactionService.update(processTransaction);
     		}
     	}
     	

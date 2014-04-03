@@ -355,6 +355,9 @@ public class PaymentServiceImpl implements PaymentService {
 			transaction = module.initTransaction(store, customer, amount, payment, configuration, integrationModule);
 		}
 		
+		transaction.setPaymentType(payment.getPaymentType());
+		
+
 		if(transactionType != TransactionType.INIT) {
 			transactionService.create(transaction);
 		}

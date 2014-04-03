@@ -77,7 +77,7 @@ public class MerchantStore extends SalesManagerEntity<Integer, MerchantStore> {
 	@JoinColumn(name="COUNTRY_ID", nullable=false, updatable=true)
 	private Country country;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, targetEntity = Zone.class)
 	@JoinColumn(name="ZONE_ID", nullable=true, updatable=true)
 	private Zone zone;
 

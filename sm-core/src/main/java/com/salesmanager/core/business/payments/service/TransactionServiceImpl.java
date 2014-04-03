@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.payments.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -91,24 +92,28 @@ public class TransactionServiceImpl  extends SalesManagerEntityServiceImpl<Long,
 	public Transaction getRefundableTransaction(Order order)
 		throws ServiceException {
 		List<Transaction> transactions = transactionDao.listByOrder(order);
+		Map<String,Transaction> finalTransactions = new HashMap<String,Transaction>();
 		Transaction finalTransaction = null;
 		for(Transaction transaction : transactions) {
 			if(transaction.getTransactionType().name().equals(TransactionType.AUTHORIZECAPTURE.name())) {
-				//if(finalTransaction.getTransactionType().name().equals(TransactionType.REFUND.name())) {
-				//	continue;
-				//}
-				finalTransaction = transaction;
+				finalTransactions.put(TransactionType.AUTHORIZECAPTURE.name(),transaction);
 			}
 			if(transaction.getTransactionType().name().equals(TransactionType.CAPTURE.name())) {
-				finalTransaction = transaction;
-				//if(finalTransaction.getTransactionType().name().equals(TransactionType.REFUND.name())) {
-				//	continue;
-				//}
+				finalTransactions.put(TransactionType.CAPTURE.name(),transaction);
 			}
-			//if(transaction.getTransactionType().name().equals(TransactionType.REFUND.name())) {
-			//	finalTransaction = transaction;
-			//}
+			if(transaction.getTransactionType().name().equals(TransactionType.REFUND.name())) {
+				finalTransactions.put(TransactionType.REFUND.name(),transaction);
+			}
 		}
+		
+		if(finalTransactions.containsKey(TransactionType.AUTHORIZECAPTURE.name())) {
+			finalTransaction = finalTransactions.get(TransactionType.AUTHORIZECAPTURE.name());
+		}
+		
+		if(finalTransactions.containsKey(TransactionType.CAPTURE.name())) {
+			finalTransaction = finalTransactions.get(TransactionType.CAPTURE.name());
+		}
+
 		
 		if(finalTransaction!=null && !StringUtils.isBlank(finalTransaction.getDetails())) {
 			try {

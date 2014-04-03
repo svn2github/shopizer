@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 import com.salesmanager.core.business.reference.country.model.Country;
@@ -42,11 +43,12 @@ public class Delivery {
 	@Column(name="DELIVERY_TELEPHONE", length=32)
 	private String telephone;
 	
-	@OneToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, targetEntity = Country.class)
 	@JoinColumn(name="DELIVERY_COUNTRY_ID", nullable=true)
 	private Country country;
 	
-	@OneToOne(fetch = FetchType.EAGER)
+
+	@ManyToOne(fetch = FetchType.EAGER, targetEntity = Zone.class)
 	@JoinColumn(name="DELIVERY_ZONE_ID", nullable=true)
 	private Zone zone;
 	

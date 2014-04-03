@@ -28,9 +28,7 @@ import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.payments.model.TransactionType;
-import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
-import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.system.model.IntegrationConfiguration;
@@ -679,7 +677,7 @@ public class BeanStreamPayment implements PaymentModule {
 		//transaction.setOrder(order);
 		transaction.setTransactionDate(new Date());
 		transaction.setTransactionType(transactionType);
-		transaction.setPaymentType(paymentType);
+		transaction.setPaymentType(PaymentType.CREDITCARD);
 		transaction.getTransactionDetails().put("TRANSACTIONID", (String)nvp.get("TRNID"));
 		transaction.getTransactionDetails().put("TRNAPPROVED", (String)nvp.get("TRNAPPROVED"));
 		transaction.getTransactionDetails().put("TRNORDERNUMBER", (String)nvp.get("TRNORDERNUMBER"));

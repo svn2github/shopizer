@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -44,11 +45,12 @@ public class Billing {
 	private String state;
 
 
-	@OneToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, targetEntity = Country.class)
 	@JoinColumn(name="BILLING_COUNTRY_ID", nullable=false)
 	private Country country;
 	
-	@OneToOne(fetch = FetchType.EAGER)
+	
+	@ManyToOne(fetch = FetchType.EAGER, targetEntity = Zone.class)
 	@JoinColumn(name="BILLING_ZONE_ID", nullable=true)
 	private Zone zone;
 
