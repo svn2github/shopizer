@@ -36,6 +36,7 @@ import com.salesmanager.core.business.customer.service.attribute.CustomerOptionS
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionValueService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -93,6 +94,9 @@ public class CustomerAccountController extends AbstractController {
     
     @Autowired
     private CustomerFacade customerFacade;
+    
+    @Autowired
+    private OrderService orderService;
 
 
 	
@@ -303,11 +307,8 @@ public class CustomerAccountController extends AbstractController {
     public String editAddress(final Model model, final HttpServletRequest request,@RequestParam(value = "customerId", required = false) Long customerId,
                               @RequestParam(value = "billingAddress", required = false) Boolean billingAddress) throws Exception {
         MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
-       
-       
-        //TODO missing
-        //Address address=customerFacade.getAddress( customerId, store, billingAddress );
-       // model.addAttribute( "address", address);
+        Address address=customerFacade.getAddress( customerId, store, billingAddress );
+        model.addAttribute( "address", address);
         model.addAttribute( "customerId", customerId );
         StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.EditAddress).append(".").append(store.getStoreTemplate());
         return template.toString();
@@ -329,11 +330,11 @@ public class CustomerAccountController extends AbstractController {
             return template.toString();
         }
         
-       
+        if(StringUtils.isNotEmpty( address.getBilstateOther() )){
+            address.setZone( address.getBilstateOther() );
+        }
         Language language = getSessionAttribute(Constants.LANGUAGE, request);
-        //TODO Missing
-        //customerFacade.updateAddress( customerId, store, address, language);
-      
+        customerFacade.updateAddress( customerId, store, address, language);
         return ControllerConstants.REDIRECT+BILLING_SECTION;
     }
     
@@ -384,5 +385,17 @@ public class CustomerAccountController extends AbstractController {
         return zoneService.list();
     }
  
+    
+    /**
+     * Fetch List of customer orders
+     * @param model
+     * @return view to show order
+     */
+    public String orders(final Model model){
+        
+        OrderService.
+        return null;
+        
+    }
 
 }

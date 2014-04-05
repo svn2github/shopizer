@@ -89,7 +89,8 @@
 	                        <label><s:message code="label.customer.zone" text="State / Province"/></label>
 	                        <div class="controls">		       							
 	       							<form:select cssClass="billing-zone-list" path="zone" id="registration_zones"/>
-                      				<form:input  class="input-large highlight" id="hidden_registration_zones" maxlength="100"  name="bilstateOther" path="zone" />		       							
+	       							<!-- <input type="text" name="bilstateOther" class="input-large highlight" id="hidden_registration_zones" maxlength="100"/> -->
+                      				<form:input  class="input-large highlight" id="hidden_registration_zones" maxlength="100"  name="bilstateOther" path="bilstateOther" />		       							
                                  	<span class="help-inline"><form:errors path="zone" cssClass="error" /></span>
 	                        </div>
 	                    </div>  

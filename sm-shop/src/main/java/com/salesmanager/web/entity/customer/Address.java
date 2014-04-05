@@ -17,7 +17,7 @@ public class Address implements Serializable {
 	
 	@NotEmpty(message="{NotEmpty.customer.lastName}")
 	private String lastName;
-	
+	private String bilstateOther;
 
 	private String company;
 
@@ -129,5 +129,15 @@ public class Address implements Serializable {
         this.billingAddress = billingAddress;
     }
 
+    public String getBilstateOther()
+    {
+        return bilstateOther;
+    }
 
+    public void setBilstateOther( String bilstateOther )
+    {
+        this.bilstateOther = bilstateOther;
+    }
+
+    
 }
