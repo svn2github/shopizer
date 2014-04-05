@@ -55,7 +55,11 @@ public class CustomerPopulator extends
 
 		try {
 			
-			if(!StringUtils.isBlank(source.getPassword())) {
+			if(source.getId() !=null){
+			    target.setId( source.getId() );
+			}
+		    
+		    if(!StringUtils.isBlank(source.getPassword())) {
 				target.setPassword(source.getPassword());
 				target.setAnonymous(false);
 			}
