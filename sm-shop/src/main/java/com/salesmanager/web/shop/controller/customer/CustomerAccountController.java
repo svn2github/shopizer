@@ -393,7 +393,7 @@ public class CustomerAccountController extends AbstractController {
      */
     public String orders(final Model model){
         
-        OrderService.
+        orderService.list();
         return null;
         
     }
