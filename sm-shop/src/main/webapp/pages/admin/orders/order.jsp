@@ -20,6 +20,70 @@
 <script>
 
 
+function getZones(listDiv, textDiv, countryCode, defaultValue){
+	//console.log('Default values ' + listDiv + ' ' + textDiv + ' ' + countryCode + ' ' + defaultValue)
+	$.ajax({
+	  type: 'POST',
+	  url: '<c:url value="/shop/reference/provinces.html"/>',
+	  data: 'countryCode=' + countryCode + '&lang=${requestScope.LANGUAGE.code}',
+	  dataType: 'json',
+	  success: function(response){
+			var status = response.response.status;
+			var data = response.response.data;
+			//console.log(status);
+			if((status==0 || status ==9999) && data) {
+				//console.log(data);
+				if(data && data.length>0) {
+					$(listDiv).show();  
+					$(textDiv).hide();
+					$(listDiv).addItems(listDiv, data, defaultValue);		
+				} else {
+					$(listDiv).hide();             
+					$(textDiv).show();
+					if(defaultValue!=null || defaultValue !='') {
+						$(textDiv).val(defaultValue);
+					}
+				}
+			} else {
+				$(listDiv).hide();             
+				$(textDiv).show();
+			}
+			//isFormValid();
+			//if(callBackFunction!=null) {
+			//	callBackFunction();
+			//}
+	  },
+	    error: function(xhr, textStatus, errorThrown) {
+	  	alert('error ' + errorThrown);
+	  }
+
+	});
+	
+}
+
+
+$.fn.addItems = function(div, data, defaultValue) {
+	//console.log('Populating div ' + div + ' defaultValue ' + defaultValue);
+	var selector = div + ' > option';
+	var defaultExist = false;
+    $(selector).remove();
+        return this.each(function() {
+            var list = this;
+            $.each(data, function(index, itemData) {
+            	//console.log(itemData.code + ' ' + defaultValue);
+            	if(itemData.code==defaultValue) {
+            		defaultExist = true;
+            	}
+                var option = new Option(itemData.name, itemData.code);
+                list.add(option);
+            });
+            if(defaultExist && (defaultValue!=null && defaultValue!='')) {
+           	 	$(div).val(defaultValue);
+            }
+     });
+};
+
+
 	$(document).ready(function(){ 
 	
 		$("#refundButton").click(function() {
@@ -32,32 +96,32 @@
 			 location.href="<c:url value="/admin/orders/editOrder.html" />?id=<c:out value="${order.order.id}"/>";
 		}); 
 		
+		$(".billing-country-list").change(function() {
+			getZones('#billingZoneList','#billingZoneText',$(this).val(),'<c:out value="${order.billing.zone.code}" />');
+	    })
+		
 		
 		<c:if test="${order.billing.state!=null && order.billing.state!=''}">
-			$('.billing-zone-list').hide();          
-			$('#bilstateOther').show(); 
-			$("input[name='showBillingStateList']").val('no');
-			$('#bilstateOther').val('<c:out value="${order.billing.state}"/>');
+			$('#billingZoneList').hide();          
+			$('#billingZoneText').show(); 
+			$('#billingZoneText').val('<c:out value="${order.billing.state}"/>');
 		</c:if>
 
 		<c:if test="${order.billing.state==null || order.billing.state==''}">  
-			$('.billing.zone-list').show();           
-			$('#bilstateOther').hide();
-			$("input[name='showBillingStateList']").val('yes');
-			getBillingZones('<c:out value="${order.billing.country.isoCode}" />'); 
+			$('billingZoneList').show();           
+			$('#billingZoneText').hide();
+			getZones('#billingZoneList','#billingZoneText','<c:out value="${order.billing.country.isoCode}" />','<c:out value="${order.billing.zone.code}" />'); 
 		</c:if>
 		
 		<c:if test="${order.delivery.state!=null && order.delivery.state!=''}">  
-			$('.delivery-zone-list').hide();  
-			$('#delstateOther').show(); 
-			$("input[name='showDeliveryStateList']").val('no');
-			$('#delstateOther').val('<c:out value="${order.delivery.state}"/>');
+			$('#shippingZoneList').hide();  
+			$('#shippingZoneList').show(); 
+			$('#shippingZoneText').val('<c:out value="${order.delivery.state}"/>');
 		</c:if>
 		<c:if test="${order.delivery.state==null || order.delivery.state==''}"> 
-			$('.delivery-zone-list').show();			
+			$('#shippingZoneList').show();			
 			$('#delstateOther').hide();
-			$("input[name='showDeliveryStateList']").val('yes');
-			getDeliveryZones('<c:out value="${order.delivery.country.isoCode}" />'); 
+			getZones('#shippingZoneList','#shippingZoneText','<c:out value="${order.delivery.country.isoCode}" />','<c:out value="${order.delivery.zone.code}" />');
 		</c:if>
 		
 		
@@ -181,26 +245,18 @@
 				 				<span class="help-inline"><form:errors path="order.billing.city" cssClass="error" /></span>
 			            </div>
 			            
-			            <!--
-			            <label><s:message code="label.customer.billing.zone" text="Billing state / province"/></label>
-			            <div class="controls">
-				 				<form:input id="billingState" cssClass="input-large highlight" path="order.billing.state"/>
-				 				<span class="help-inline"><form:errors path="order.billing.state" cssClass="error" /></span>
-			            </div>
-			            -->
-			            
 			            <div class="control-group"> 
 	                        <label><s:message code="label.customer.billing.zone" text="State / Province"/></label>
 	                        <div class="controls">		       							
-	       							<form:select cssClass="billing-zone-list" path="order.billing.zone.code"/>
-                      				<form:input  class="input-large highlight" id="bilstateOther" maxlength="100"  name="bilstateOther" path="order.billing.state" /> 				       							
+	       							<form:select id="billingZoneList" cssClass="billing-zone-list" path="order.billing.zone.code"/>
+                      				<form:input  class="input-large highlight" id="billingZoneText" maxlength="100"  name="billingZoneText" path="order.billing.state" /> 				       							
                                  	<span class="help-inline"><form:errors path="order.billing.zone.code" cssClass="error" /></span>
 	                        </div>
 	                    </div> 
 			            
 			            <label><s:message code="label.customer.billing.country" text="Country"/></label>
 			            <div class="controls">
-				 				<form:select cssClass="country-list" path="order.billing.country.isoCode">
+				 				<form:select cssClass="billing-country-list" path="order.billing.country.isoCode">
 					  					<form:options items="${countries}" itemValue="isoCode" itemLabel="name"/>
 				       			</form:select>
 			            </div>
@@ -241,10 +297,16 @@
 			            <div class="controls">
 				 				<form:input  cssClass="input-large" path="order.delivery.city"/>
 			            </div>
-			            <label><s:message code="label.customer.shipping.zone" text="State / province"/></label>
-			            <div class="controls">
-				 				<form:input  cssClass="input-large" path="order.delivery.state"/>
-			            </div>
+
+			            
+			            <div class="control-group"> 
+	                        <label><s:message code="label.customer.shipping.zone" text="State / Province"/></label>
+	                        <div class="controls">		       							
+	       							<form:select id="shippingZoneList" cssClass="shiiping-zone-list" path="order.delivery.zone.code"/>
+                      				<form:input  class="input-large highlight" id="shippingZoneText" maxlength="100"  name="shippingZoneText" path="order.delivery.state" /> 				       							
+                                 	<span class="help-inline"><form:errors path="order.delivery.zone.code" cssClass="error" /></span>
+	                        </div>
+	                    </div> 
  
 			            <label><s:message code="label.customer.shipping.country" text="Country"/></label>
 			            <div class="controls">
@@ -319,7 +381,7 @@
 					 	<c:forEach items="${order.order.orderTotal}" var="orderTotal" varStatus="counter">	
 							<tr class="subt"> 
 								<td colspan="2">&nbsp;</td> 
-								<td colspan="2" ><c:out value="${orderTotal.title}"  /></td> 
+								<td colspan="2" ><s:message code="${orderTotal.orderTotalCode}" text="${orderTotal.orderTotalCode}"/></td> 
 								<td ><strong><sm:monetary value="${orderTotal.value}" currency="${order.order.currency}"/></strong></td> 
 							</tr> 
 						</c:forEach> 	 

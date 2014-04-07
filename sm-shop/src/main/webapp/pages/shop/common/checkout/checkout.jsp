@@ -588,9 +588,11 @@ $(document).ready(function() {
 		$("#submitOrder").click(function(e) {
 			e.preventDefault();//do not submit form
 			resetErrorMessage();
+			setCountrySettings('billing',$('.billing-country-list').val());
+			setCountrySettings('delivery',$('.shipping-country-list').val());
 			$('#pageContainer').showLoading();
 			var paymentSelection = $('input[name=paymentMethodType]:checked', checkoutFormId).val();
-			if(paymentSelection.contains('PAYPAL')) {
+			if(paymentSelection.indexOf('PAYPAL')!=-1) {
 				initPayment(paymentSelection);
 			} else {
 				//submit form
