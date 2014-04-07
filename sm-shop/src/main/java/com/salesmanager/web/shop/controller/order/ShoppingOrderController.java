@@ -194,10 +194,14 @@ public class ShoppingOrderController extends AbstractController {
 		  }
 
 		boolean freeShoppingCart = shoppingCartService.isFreeShoppingCart(cart);
+		boolean requiresShipping = shoppingCartService.requiresShipping(cart);
 		
 		/** shipping **/
-		ShippingQuote quote = orderFacade.getShippingQuote(cart, order, store, language);
-		model.addAttribute("shippingQuote", quote);
+		ShippingQuote quote = null;
+		if(requiresShipping) {
+			quote = orderFacade.getShippingQuote(cart, order, store, language);
+			model.addAttribute("shippingQuote", quote);
+		}
 
 		if(quote!=null) {
 
@@ -349,6 +353,10 @@ public class ShoppingOrderController extends AbstractController {
 	        	password = UserReset.generateRandomString();
 	        	String encodedPassword = passwordEncoder.encodePassword(password, null);
 	        	customer.setPassword(encodedPassword);
+	        }
+	        
+	        if(order.isShipToBillingAdress()) {
+	        	customer.setDelivery(customer.getBilling());
 	        }
 	        
 			Customer modelCustomer = null;

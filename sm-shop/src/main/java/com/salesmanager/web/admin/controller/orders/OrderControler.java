@@ -239,9 +239,11 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 			 result.addError(error);
 		}
 		 
-		if( StringUtils.isBlank(entityOrder.getOrder().getBilling().getState())){
-			 ObjectError error = new ObjectError("billingState",messages.getMessage("NotEmpty.order.billingState", locale));
-			 result.addError(error);
+		if( entityOrder.getOrder().getBilling().getZone()==null){
+			if( StringUtils.isBlank(entityOrder.getOrder().getBilling().getState())){
+				 ObjectError error = new ObjectError("billingState",messages.getMessage("NotEmpty.order.billingState", locale));
+				 result.addError(error);
+			}
 		}
 		 
 		if( StringUtils.isBlank(entityOrder.getOrder().getBilling().getPostalCode() ) ){
