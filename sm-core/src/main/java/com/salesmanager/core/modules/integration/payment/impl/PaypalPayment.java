@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.payments.model.Transaction;
@@ -414,7 +415,7 @@ public class PaypalPayment implements PaymentModule {
 
 	@Override
 	public Transaction refund(boolean partial, MerchantStore store, Transaction transaction,
-			BigDecimal amount, 
+			Order order, BigDecimal amount, 
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
 		

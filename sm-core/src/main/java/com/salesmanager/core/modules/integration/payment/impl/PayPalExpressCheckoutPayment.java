@@ -20,6 +20,9 @@ import urn.ebay.api.PayPalAPI.GetExpressCheckoutDetailsReq;
 import urn.ebay.api.PayPalAPI.GetExpressCheckoutDetailsRequestType;
 import urn.ebay.api.PayPalAPI.GetExpressCheckoutDetailsResponseType;
 import urn.ebay.api.PayPalAPI.PayPalAPIInterfaceServiceService;
+import urn.ebay.api.PayPalAPI.RefundTransactionReq;
+import urn.ebay.api.PayPalAPI.RefundTransactionRequestType;
+import urn.ebay.api.PayPalAPI.RefundTransactionResponseType;
 import urn.ebay.api.PayPalAPI.SetExpressCheckoutReq;
 import urn.ebay.api.PayPalAPI.SetExpressCheckoutRequestType;
 import urn.ebay.api.PayPalAPI.SetExpressCheckoutResponseType;
@@ -28,11 +31,13 @@ import urn.ebay.apis.eBLBaseComponents.DoExpressCheckoutPaymentRequestDetailsTyp
 import urn.ebay.apis.eBLBaseComponents.PaymentDetailsItemType;
 import urn.ebay.apis.eBLBaseComponents.PaymentDetailsType;
 import urn.ebay.apis.eBLBaseComponents.PaymentInfoType;
+import urn.ebay.apis.eBLBaseComponents.RefundType;
 import urn.ebay.apis.eBLBaseComponents.SetExpressCheckoutRequestDetailsType;
 
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.model.OrderTotal;
 import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.payments.model.Payment;
@@ -155,7 +160,6 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 
 			List<PaymentDetailsItemType> lineItems = new ArrayList<PaymentDetailsItemType>();
 			
-			//BigDecimal itemsTotal = new BigDecimal("0");
 			for(ShoppingCartItem cartItem : items) {
 			
 				PaymentDetailsItemType item = new PaymentDetailsItemType();
@@ -221,7 +225,6 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 			BasicAmountType orderTotal = new BasicAmountType();
 			orderTotal.setCurrencyID(urn.ebay.apis.eBLBaseComponents.CurrencyCodeType.fromValue(store.getCurrency().getCode()));
 			orderTotal.setValue(pricingService.getStringAmount(summary.getTotal(), store));
-			//orderTotal.setValue(pricingService.getStringAmount(itemsTotal, store));
 			//System.out.println(pricingService.getStringAmount(itemsTotal, store));
 			paymentDetails.setOrderTotal(orderTotal);
 			List<PaymentDetailsType> paymentDetailsList = new ArrayList<PaymentDetailsType>();
@@ -314,11 +317,92 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 
 	@Override
 	public Transaction refund(boolean partial, MerchantStore store,
-			Transaction transaction, BigDecimal amount,
+			Transaction transaction, Order order, BigDecimal amount,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
-		// TODO Auto-generated method stub
-		return null;
+
+
+		try {
+			
+			
+			
+			Validate.notNull(transaction,"Transaction cannot be null");
+			Validate.notNull((String)transaction.getTransactionDetails().get("TRANSACTIONID"), "Transaction details must contain a TRANSACTIONID");
+			Validate.notNull(order,"Order must not be null");
+			Validate.notNull(order.getCurrency(),"Order nust contain Currency object");
+			
+			String mode = "sandbox";
+			String env = configuration.getEnvironment();
+			if(Constants.PRODUCTION_ENVIRONMENT.equals(env)) {
+				mode = "production";
+			}
+
+			
+			 RefundTransactionRequestType refundTransactionRequest = new RefundTransactionRequestType();
+			 refundTransactionRequest.setVersion("104.0");
+
+			 RefundTransactionReq refundRequest = new RefundTransactionReq();
+			 refundRequest.setRefundTransactionRequest(refundTransactionRequest);
+
+
+			 Map<String,String> configurationMap = new HashMap<String,String>();
+			 configurationMap.put("mode", mode);
+			 configurationMap.put("acct1.UserName", configuration.getIntegrationKeys().get("username"));
+			 configurationMap.put("acct1.Password", configuration.getIntegrationKeys().get("api"));
+			 configurationMap.put("acct1.Signature", configuration.getIntegrationKeys().get("signature"));
+				
+			 
+			 PayPalAPIInterfaceServiceService service = new PayPalAPIInterfaceServiceService(configurationMap);
+			 
+			 
+
+			 RefundType refundType = RefundType.FULL;
+			 if(partial) {
+				 refundType = RefundType.PARTIAL;
+			 }
+			 
+			 refundTransactionRequest.setRefundType(refundType);
+			 
+			 BasicAmountType refundAmount = new BasicAmountType();
+			 refundAmount.setValue(pricingService.getStringAmount(amount, store));
+			 refundAmount.setCurrencyID(urn.ebay.apis.eBLBaseComponents.CurrencyCodeType.fromValue(order.getCurrency().getCode()));
+
+			 refundTransactionRequest.setAmount(refundAmount);
+			 refundTransactionRequest.setTransactionID(transaction.getTransactionDetails().get("TRANSACTIONID"));
+			 
+			 RefundTransactionResponseType refundTransactionResponse = service.refundTransaction(refundRequest);
+			 
+			 String refundAck = refundTransactionResponse.getAck().getValue();
+			 
+			 
+			 if(!"Success".equals(refundAck)) {
+				LOGGER.error("Wrong value from transaction commit " + refundAck);
+				throw new IntegrationException("Wrong paypal ack from refund transaction " + refundAck);
+			 }
+
+			 
+			 Transaction newTransaction = new Transaction();
+			 newTransaction.setAmount(amount);
+			 newTransaction.setTransactionDate(new Date());
+			 newTransaction.setTransactionType(TransactionType.REFUND);
+			 newTransaction.setPaymentType(PaymentType.PAYPAL);
+			 newTransaction.getTransactionDetails().put("TRANSACTIONID", refundTransactionResponse.getRefundTransactionID());
+			 transaction.getTransactionDetails().put("CORRELATION", refundTransactionResponse.getCorrelationID());
+							
+			
+
+			return newTransaction;
+			
+			
+		} catch(Exception e) {
+			throw new IntegrationException(e);
+		}
+
+		
+		
+		
+		
+		
 	}
 	
 	private Transaction processTransaction(MerchantStore store,

@@ -398,12 +398,30 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		return true;
 
 	}
+	
+	@Override
+	public boolean requiresShipping(final ShoppingCart cart) throws ServiceException {
+		
+		Validate.notNull(cart,"Shopping cart cannot be null");
+		Validate.notNull(cart.getLineItems(),"ShoppingCart items cannot be null");
+		boolean hasRegulardGood = false;
+		for(ShoppingCartItem item : cart.getLineItems()) {
+			Product product = item.getProduct();
+			if(!product.isProductVirtual()) {
+				hasRegulardGood = true;
+				break;
+			}
+		}
+		
+		return hasRegulardGood;
+		
+	}
 
     @Override
-    public boolean removeShoppingCart( final ShoppingCart cart )
+    public void  removeShoppingCart( final ShoppingCart cart )
         throws ServiceException
     {
-        return shoppingCartDao.removeShoppingCart( cart );
+         shoppingCartDao.removeShoppingCart( cart );
     }
 
 

@@ -509,7 +509,7 @@ public class PaymentServiceImpl implements PaymentService {
 			throw new ServiceException("No refundable transaction for this order");
 		}
 		
-		Transaction transaction = paymentModule.refund(partial, store, refundable, amount, configuration, integrationModule);
+		Transaction transaction = paymentModule.refund(partial, store, refundable, order, amount, configuration, integrationModule);
 		transaction.setOrder(order);
 		transactionService.create(transaction);
 		

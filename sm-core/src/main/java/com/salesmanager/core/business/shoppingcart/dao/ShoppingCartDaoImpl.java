@@ -148,11 +148,10 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 	}
 
     @Override
-    public boolean removeShoppingCart( final ShoppingCart cart )
+    public void removeShoppingCart( final ShoppingCart cart )
     {
             ShoppingCart shoppingCart=getEntityManager().merge( cart );
             getEntityManager().remove( shoppingCart );
-            return true;
    }
 
 

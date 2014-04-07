@@ -277,6 +277,10 @@ public class ProductPriceUtils {
 		
 		Currency currency = store.getCurrency().getCurrency();
 		nf = NumberFormat.getInstance(DEFAULT_LOCALE);
+		nf.setMaximumFractionDigits(Integer.parseInt(Character
+				.toString(DECIMALCOUNT)));
+		nf.setMinimumFractionDigits(Integer.parseInt(Character
+				.toString(DECIMALCOUNT)));
 		nf.setCurrency(currency);
 
 
@@ -303,6 +307,10 @@ public class ProductPriceUtils {
 		
 		Currency curr = currency.getCurrency();
 		nf = NumberFormat.getInstance(DEFAULT_LOCALE);
+		nf.setMaximumFractionDigits(Integer.parseInt(Character
+				.toString(DECIMALCOUNT)));
+		nf.setMinimumFractionDigits(Integer.parseInt(Character
+				.toString(DECIMALCOUNT)));
 		nf.setCurrency(curr);
 
 
@@ -326,6 +334,10 @@ public class ProductPriceUtils {
 			
 			nf = NumberFormat.getInstance(DEFAULT_LOCALE);//TODO use locale
 			nf.setCurrency(currency);
+			nf.setMaximumFractionDigits(Integer.parseInt(Character
+					.toString(DECIMALCOUNT)));
+			nf.setMinimumFractionDigits(Integer.parseInt(Character
+					.toString(DECIMALCOUNT)));
 	
 
 	

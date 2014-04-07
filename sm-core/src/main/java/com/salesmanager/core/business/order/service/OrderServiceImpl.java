@@ -132,12 +132,14 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
     		
     	}
     	
-    	this.create(order);
-    	
     	if(customer.getId()==null || customer.getId()==0) {
     		customerService.create(customer);
     	}
     	
+    	order.setCustomerId(customer.getId());
+    	
+    	this.create(order);
+
     	if(transaction!=null) {
     		transaction.setOrder(order);
     		if(transaction.getId()==null || transaction.getId()==0) {

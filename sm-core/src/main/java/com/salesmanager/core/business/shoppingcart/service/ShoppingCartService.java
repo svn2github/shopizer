@@ -59,7 +59,7 @@ public interface ShoppingCartService extends SalesManagerEntityService<Long, Sho
 	void deleteCart(ShoppingCart cart) throws ServiceException;
 
 
-	boolean removeShoppingCart(ShoppingCart cart) throws ServiceException;
+	void removeShoppingCart(ShoppingCart cart) throws ServiceException;
 
 	/**
 	 *
@@ -70,6 +70,14 @@ public interface ShoppingCartService extends SalesManagerEntityService<Long, Sho
 	 * @throws Exception
 	 */
 	public ShoppingCart mergeShoppingCarts(final ShoppingCart userShoppingCart,final ShoppingCart sessionCart,final MerchantStore store  ) throws Exception;
+
+	/**
+	 * Determines if the shopping cart requires shipping
+	 * @param cart
+	 * @return
+	 * @throws ServiceException
+	 */
+	boolean requiresShipping(ShoppingCart cart) throws ServiceException;
 
 
 

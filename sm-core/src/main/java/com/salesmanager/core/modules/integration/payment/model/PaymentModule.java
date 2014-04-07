@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.payments.model.Payment;
 import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
@@ -41,7 +42,7 @@ public interface PaymentModule {
 			throws IntegrationException;
 	
 	public Transaction refund(
-			boolean partial, MerchantStore store, Transaction transaction, BigDecimal amount, IntegrationConfiguration configuration, IntegrationModule module)
+			boolean partial, MerchantStore store, Transaction transaction, Order order, BigDecimal amount, IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException;
 
 }

@@ -473,42 +473,6 @@ public class ShippingServiceImpl implements ShippingService {
 			//tax basis
 			shippingQuote.setApplyTaxOnShipping(shippingConfiguration.isTaxOnShipping());
 			
-			
-			//create delivery
-			//com.salesmanager.core.business.common.model.Delivery delivery = customer.getDelivery();
-			//com.salesmanager.core.business.common.model.Billing billing = customer.getBilling();
-			
-
-			//determine shipping basis
-/*			if(shippingConfiguration.getShippingBasisType().name().equals(ShippingBasisType.BILLING)) {
-					
-					delivery = new com.salesmanager.core.business.common.model.Delivery();
-					if(billing!=null) {
-						delivery.setAddress(billing.getAddress());
-						delivery.setCity(billing.getCity());
-						delivery.setCompany(billing.getCompany());
-//						delivery.setCountryCode(billing.getCountryCode());
-						delivery.setName(billing.getName());
-						delivery.setPostalCode(billing.getPostalCode());
-//						delivery.setState(billing.getState());
-						delivery.setZone(billing.getZone());
-						delivery.setCountry(billing.getCountry());
-					}
-
-			} 
-				
-			if(delivery==null) {
-				delivery = new com.salesmanager.core.business.common.model.Delivery();
-				delivery.setAddress(customer.getStreetAddress());
-				delivery.setCity(customer.getCity());
-				delivery.setCompany(customer.getCompany());
-				delivery.setName(customer.getFirstname() + " " + customer.getLastname());
-				delivery.setPostalCode(customer.getPostalCode());
-//				delivery.setState(customer.getState());
-				delivery.setZone(customer.getZone());
-				delivery.setCountry(customer.getCountry());
-			}*/
-						
 
 			Locale locale = languageService.toLocale(language);
 
