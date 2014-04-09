@@ -684,8 +684,14 @@ public class ShoppingOrderController extends AbstractController {
 			ReadableShopOrderPopulator populator = new ReadableShopOrderPopulator();
 			populator.populate(order, readableOrder, store, language);
 			
-			ShippingQuote quote = orderFacade.getShippingQuote(cart, order, store, language);
+			boolean requiresShipping = shoppingCartService.requiresShipping(cart);
 			
+			/** shipping **/
+			ShippingQuote quote = null;
+			if(requiresShipping) {
+				quote = orderFacade.getShippingQuote(cart, order, store, language);
+			}
+
 			if(quote!=null) {
 				if(StringUtils.isBlank(quote.getShippingReturnCode())) {
 					ShippingSummary summary = orderFacade.getShippingSummary(quote, store, language);
@@ -789,13 +795,7 @@ public class ShoppingOrderController extends AbstractController {
 
 			ReadableShopOrderPopulator populator = new ReadableShopOrderPopulator();
 			populator.populate(order, readableOrder, store, language);
-			
 
-			//re-create a quote
-			//ShippingQuote quote = orderFacade.getShippingQuote(cart, order, store, language);
-				
-			//if(quote!=null) {
-					//if(StringUtils.isBlank(quote.getShippingReturnCode())) {
 			if(order.getSelectedShippingOption()!=null) {
 						ShippingSummary summary = (ShippingSummary)request.getSession().getAttribute(Constants.SHIPPING_SUMMARY);
 						@SuppressWarnings("unchecked")

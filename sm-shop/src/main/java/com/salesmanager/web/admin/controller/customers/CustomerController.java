@@ -118,7 +118,7 @@ public class CustomerController {
 	public String displayCustomer(Long id, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 			
 		//display menu
-		this.setMenuCreate(model, request);
+		this.setMenu(model, request);
 		
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		
@@ -223,7 +223,7 @@ public class CustomerController {
 	@RequestMapping(value="/admin/customers/save.html", method=RequestMethod.POST)
 	public String saveCustomer(@Valid @ModelAttribute("customer") Customer customer, BindingResult result, Model model, HttpServletRequest request, Locale locale) throws Exception{
 	
-		this.setMenuCreate(model, request);
+		this.setMenu(model, request);
 		
 		String email_regEx = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}\\b";
 		Pattern pattern = Pattern.compile(email_regEx);
@@ -719,7 +719,7 @@ public class CustomerController {
 		
 	}
 	
-	private void setMenuCreate(Model model, HttpServletRequest request) throws Exception {
+/*	private void setMenuCreate(Model model, HttpServletRequest request) throws Exception {
 		
 		//display menu
 		Map<String,String> activeMenus = new HashMap<String,String>();
@@ -736,7 +736,7 @@ public class CustomerController {
 
 		//
 		
-	}
+	}*/
 	
 		
 

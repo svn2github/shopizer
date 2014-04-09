@@ -1,7 +1,5 @@
 package com.salesmanager.web.admin.controller.orders;
 
-import java.io.ByteArrayOutputStream;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,12 +24,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -46,11 +43,11 @@ import com.salesmanager.core.business.payments.service.TransactionService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.zone.model.Zone;
+import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.system.service.EmailService;
 import com.salesmanager.core.modules.email.Email;
-import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.controller.ControllerConstants;
-import com.salesmanager.web.admin.entity.orders.Refund;
 import com.salesmanager.web.admin.entity.web.Menu;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.constants.EmailConstants;
@@ -79,10 +76,16 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 	CountryService countryService;
 	
 	@Autowired
+	ZoneService zoneService;
+	
+	@Autowired
 	PaymentService paymentService;
 	
 	@Autowired
 	CustomerService customerService;
+	
+	@Autowired
+	PricingService pricingService;
 	
 	@Autowired
 	TransactionService transactionService;
@@ -137,6 +140,24 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		
 			if( dbOrder.getDatePurchased() !=null ){
 				order.setDatePurchased(DateUtil.formatDate(dbOrder.getDatePurchased()));
+			}
+			
+			Long customerId = dbOrder.getCustomerId();
+			
+			if(customerId!=null && customerId>0) {
+			
+				try {
+					
+					Customer customer = customerService.getById(customerId);
+					if(customer!=null) {
+						model.addAttribute("customer",customer);
+					}
+					
+					
+				} catch(Exception e) {
+					LOGGER.error("Error while getting customer for customerId " + customerId, e);
+				}
+			
 			}
 			
 			order.setOrder( dbOrder );
@@ -270,7 +291,15 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		
 		Country deliveryCountry = countryService.getByCode( entityOrder.getOrder().getDelivery().getCountry().getIsoCode()); 
 		Country billingCountry  = countryService.getByCode( entityOrder.getOrder().getBilling().getCountry().getIsoCode()) ;
+		Zone billingZone = null;
+		Zone deliveryZone = null;
+		if(entityOrder.getOrder().getBilling().getZone()!=null) {
+			billingZone = zoneService.getByCode(entityOrder.getOrder().getBilling().getZone().getCode());
+		}
 		
+		if(entityOrder.getOrder().getDelivery().getZone()!=null) {
+			deliveryZone = zoneService.getByCode(entityOrder.getOrder().getDelivery().getZone().getCode());
+		}
 
 		newOrder.setCustomerEmailAddress(entityOrder.getOrder().getCustomerEmailAddress() );
 		newOrder.setPaymentType(entityOrder.getOrder().getPaymentType() );
@@ -295,8 +324,37 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		newOrder.getDelivery().setCountry(deliveryCountry );
 		newOrder.getBilling().setCountry(billingCountry );	
 		
+		if(billingZone!=null) {
+			newOrder.getBilling().setZone(billingZone);
+		}
+		
+		if(deliveryZone!=null) {
+			newOrder.getDelivery().setZone(deliveryZone);
+		}
+		
 		orderService.saveOrUpdate(newOrder);
 		entityOrder.setOrder(newOrder);
+		entityOrder.setBilling(newOrder.getBilling());
+		entityOrder.setDelivery(newOrder.getDelivery());
+		model.addAttribute("order", entityOrder);
+		
+		Long customerId = newOrder.getCustomerId();
+		
+		if(customerId!=null && customerId>0) {
+		
+			try {
+				
+				Customer customer = customerService.getById(customerId);
+				if(customer!=null) {
+					model.addAttribute("customer",customer);
+				}
+				
+				
+			} catch(Exception e) {
+				LOGGER.error("Error while getting customer for customerId " + customerId, e);
+			}
+		
+		}
 		
 		//get capturable
 		Transaction capturableTransaction = transactionService.getCapturableTransaction(newOrder);
@@ -367,190 +425,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		return  ControllerConstants.Tiles.Order.ordersEdit;
 	    /*	"admin-orders-edit";  */
 	}
-	
-	@PreAuthorize("hasRole('ORDER')")
-	@RequestMapping(value="/admin/orders/refundOrder.html", method=RequestMethod.POST, produces="application/json")
-	public @ResponseBody String refundOrder(@RequestBody Refund refund, HttpServletRequest request, HttpServletResponse response, Locale locale) {
 
-
-		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		
-		
-		AjaxResponse resp = new AjaxResponse();
-
-		BigDecimal submitedAmount = null;
-		
-		try {
-			
-			Order order = orderService.getById(refund.getOrderId());
-			
-			if(order==null) {
-				
-				LOGGER.error("Order {0} does not exists", refund.getOrderId());
-				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-				return resp.toJSONString();
-			}
-			
-			if(order.getMerchant().getId().intValue()!=store.getId().intValue()) {
-				
-				LOGGER.error("Merchant store does not have order {0}",refund.getOrderId());
-				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-				return resp.toJSONString();
-			}
-		
-			//parse amount
-			try {
-				submitedAmount = new BigDecimal(refund.getAmount());
-				if(submitedAmount.doubleValue()==0) {
-					resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-					resp.setStatusMessage(messages.getMessage("message.invalid.amount", locale));
-					return resp.toJSONString();
-				}
-				
-			} catch (Exception e) {
-				LOGGER.equals("invalid refundAmount " + refund.getAmount());
-				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-				return resp.toJSONString();
-			}
-				
-				
-				BigDecimal orderTotal = order.getTotal();
-				if(submitedAmount.doubleValue()>orderTotal.doubleValue()) {
-					resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-					resp.setStatusMessage(messages.getMessage("message.invalid.amount", locale));
-					return resp.toJSONString();
-				}
-				
-				Customer customer = customerService.getById(order.getCustomerId());
-				
-				if(customer==null) {
-					resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-					resp.setStatusMessage(messages.getMessage("message.notexist.customer", locale));
-					return resp.toJSONString();
-				}
-				
-	
-				paymentService.processRefund(order, customer, store, submitedAmount);
-
-				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
-
-		} catch (Exception e) {
-			LOGGER.error("Error while getting category", e);
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
-			resp.setErrorMessage(e);
-		}
-		
-		String returnString = resp.toJSONString();
-		
-		return returnString;
-	}
-	
-	@PreAuthorize("hasRole('ORDER')")
-	@RequestMapping(value="/admin/orders/printInvoice.html", method=RequestMethod.GET, produces="application/json")
-	public void printInvoice(HttpServletRequest request, HttpServletResponse response, Locale locale) {
-		
-		String sId = request.getParameter("id");
-		
-		try {
-			
-		Long id = Long.parseLong(sId);
-		
-		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-		Order order = orderService.getById(id);
-		
-		if(order.getMerchant().getId().intValue()!=store.getId().intValue()) {
-			//return null;
-		}
-		
-		Long customerId = order.getCustomerId();
-		
-		if(customerId==null) {
-			LOGGER.error("Customer id is null in order object");
-			//return null;
-		}
-		
-		Customer customer = customerService.getById(customerId);
-		
-		Language lang = store.getDefaultLanguage();
-		if(customer!=null) {
-			lang = customer.getDefaultLanguage();
-		}
-		
-
-		ByteArrayOutputStream stream  = orderService.generateInvoice(store, order, lang);
-		StringBuilder attachment = new StringBuilder();
-		attachment.append("attachment; filename=");
-		attachment.append(order.getBilling().getFirstName() + "-" + order.getBilling().getLastName());
-		attachment.append(".pdf");
-		
-		String fileName = attachment.toString();
-		fileName = fileName.replaceAll("\\s+", "-");
-		
-		
-		response.setContentType("application/pdf");      
-		response.setHeader("Content-Disposition", fileName); 
-		
-		
-		
-		response.getOutputStream().write(stream.toByteArray());
-		
-		response.flushBuffer();
-			
-			
-		} catch(Exception e) {
-			LOGGER.error("Error while printing a report",e);
-		}
-			
-		
-	}
-	
-	@PreAuthorize("hasRole('ORDER')")
-	@RequestMapping(value="/admin/orders/listTransactions.html", method=RequestMethod.GET)
-	private String listTransactions(Long orderId, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-		//display menu
-		setMenu(model,request);
-		   
-		com.salesmanager.web.admin.entity.orders.Order order = new com.salesmanager.web.admin.entity.orders.Order();
-		Language language = (Language)request.getAttribute("LANGUAGE");
-
-		if(orderId==null || orderId==0) {
-			return "redirect:/admin/orders/list.html";
-		}
-
-			
-			
-			MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
-
-			Order dbOrder = orderService.getById(orderId);
-
-			if(dbOrder==null) {
-				return "redirect:/admin/orders/list.html";
-			}
-			
-			
-			if(dbOrder.getMerchant().getId().intValue()!=store.getId().intValue()) {
-				return "redirect:/admin/orders/list.html";
-			}
-			
-			
-			order.setId( orderId );
-		
-			if( dbOrder.getDatePurchased() !=null ){
-				order.setDatePurchased(DateUtil.formatDate(dbOrder.getDatePurchased()));
-			}
-			
-			order.setOrder( dbOrder );
-			order.setBilling( dbOrder.getBilling() );
-			order.setDelivery(dbOrder.getDelivery() );
-			
-			List<Transaction> transactions = transactionService.listTransactions(dbOrder);
-			
-			model.addAttribute("transactions",transactions);
-			model.addAttribute("order",order);
-			return  ControllerConstants.Tiles.Order.ordersTransactions;
-	}
-	
 	private void setMenu(Model model, HttpServletRequest request) throws Exception {
 	
 		//display menu

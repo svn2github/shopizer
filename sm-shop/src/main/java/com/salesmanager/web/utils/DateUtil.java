@@ -33,6 +33,7 @@ public class DateUtil {
 	private Date startDate = new Date(new Date().getTime());
 	private Date endDate = new Date(new Date().getTime());
 	private static final Logger LOGGER = LoggerFactory.getLogger(DateUtil.class);
+	private final static String LONGDATE_FORMAT = "EEE, d MMM yyyy HH:mm:ss Z";
 
 	
 	
@@ -68,6 +69,15 @@ public class DateUtil {
 		SimpleDateFormat format = new SimpleDateFormat(Constants.DEFAULT_DATE_FORMAT_YEAR);
 		return format.format(dt);
 
+	}
+	
+	public static String formatLongDate(Date date) {
+		
+		if (date == null)
+			return null;
+		SimpleDateFormat format = new SimpleDateFormat(LONGDATE_FORMAT);
+		return format.format(date);
+		
 	}
 
 	/**

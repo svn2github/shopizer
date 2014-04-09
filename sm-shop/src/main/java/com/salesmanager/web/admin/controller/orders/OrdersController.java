@@ -110,8 +110,7 @@ public class OrdersController {
 
 
 			OrderList orderList = orderService.listByStore(store, criteria);
-			//List<Order> orders = orderService.listByStore(store);
-					
+		
 			if(orderList.getOrders()!=null) {	
 			
 				for(Order order : orderList.getOrders()) {

@@ -396,7 +396,11 @@ public class OrderFacadeImpl implements OrderFacade {
 			modelOrder.setPaymentModuleCode(order.getPaymentModule());
 			payment.setModuleName(order.getPaymentModule());
 
-			orderService.processOrder(modelOrder, customer, order.getShoppingCartItems(), summary, payment, store);
+			if(transaction!=null) {
+				orderService.processOrder(modelOrder, customer, order.getShoppingCartItems(), summary, payment, store);
+			} else {
+				orderService.processOrder(modelOrder, customer, order.getShoppingCartItems(), summary, payment, transaction, store);
+			}
 			
 
 			
