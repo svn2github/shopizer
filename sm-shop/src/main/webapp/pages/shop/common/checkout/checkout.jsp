@@ -9,6 +9,7 @@ response.setDateHeader ("Expires", -1);
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %> 
  
 <%@page contentType="text/html"%>
@@ -121,7 +122,7 @@ function isFormValid() {
 }
 
 function setPaymentModule(module) {
-	console.log('Module - ' + module);
+	//console.log('Module - ' + module);
 	$('#paymentModule').val(module);	
 }
 
@@ -638,10 +639,15 @@ $(document).ready(function() {
 											</span>
 											
 											<form:hidden path="customer.id"/>
+											<sec:authorize access="!hasRole('AUTH_CUSTOMER') and !fullyAuthenticated">
+													  	<p class="muted"><s:message code="label.checkout.logon" text="Logon or signup to simplify your online purchases!"/></p>
+													  	
+											</sec:authorize>
 					
 											<!-- First name - Last name -->
 											<div class="row-fluid">
 													<div class="span4">
+													
 									  				   <div class="control-group"> 
 														<label><s:message code="label.generic.firstname" text="First Name"/></label>
 									    					<div class="controls"> 
@@ -775,6 +781,7 @@ $(document).ready(function() {
 									</div>
 									<!-- end billing box -->
 					
+									<c:if test="${shippingQuote!=null}">
 									<br/>
 									<!-- Shipping box -->
 									<div id="deliveryBox" class="box">
@@ -874,13 +881,15 @@ $(document).ready(function() {
 										  			</div>
 									  	  </div>
 									</div>
-									 <br/>
+									</c:if>
+									
 									
 									
 									
 									
 									<!-- Shipping box -->
 									<c:if test="${shippingQuote!=null}">
+									 <br/>
 									<!-- Shipping -->
 									<div class="box">
 										<span class="box-title">

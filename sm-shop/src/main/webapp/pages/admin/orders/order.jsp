@@ -12,6 +12,7 @@
 <script src="<c:url value="/resources/js/ckeditor/ckeditor.js" />"></script>
 <script src="<c:url value="/resources/js/jquery.formatCurrency-1.4.0.js" />"></script>
 <script src="<c:url value="/resources/js/jquery.alphanumeric.pack.js" />"></script>
+<script src="<c:url value="/resources/js/json2.js" />"></script>
 <script src="<c:url value="/resources/js/adminFunctions.js" />"></script>
 
 <script src="<c:url value="/resources/js/jquery.showLoading.min.js" />"></script>
@@ -21,7 +22,6 @@
 
 
 function getZones(listDiv, textDiv, countryCode, defaultValue){
-	//console.log('Default values ' + listDiv + ' ' + textDiv + ' ' + countryCode + ' ' + defaultValue)
 	$.ajax({
 	  type: 'POST',
 	  url: '<c:url value="/shop/reference/provinces.html"/>',
@@ -48,10 +48,6 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 				$(listDiv).hide();             
 				$(textDiv).show();
 			}
-			//isFormValid();
-			//if(callBackFunction!=null) {
-			//	callBackFunction();
-			//}
 	  },
 	    error: function(xhr, textStatus, errorThrown) {
 	  	alert('error ' + errorThrown);
@@ -83,6 +79,33 @@ $.fn.addItems = function(div, data, defaultValue) {
      });
 };
 
+function listTransactions(orderId){
+
+	$.ajax({
+		  type: 'GET',
+		  url: '<c:url value="/admin/orders/listTransactions.html"/>?id=' + orderId,
+		  dataType: 'json',
+		  success: function(response){
+				var status = response.response.status;
+				var data = response.response.data;
+				console.log(status);
+				if((status==0 || status ==9999) && data) {
+					console.log(data);
+					$('#transactionsModal').modal();
+					var transactions = data;
+					console.log(transactions);
+					for(i=0;i<transactions.length;i++) {
+						var tr = '<tr><td>' + transactions[i].transactionId + '</td><td>' + transactions[i].transactionDate + '</td><td>' + transactions[i].transactionType + '</td><td>' + transactions[i].transactionAmount + '</td><td>' + JSON.stringify(transactions[i].transactionDetails) + '</td>';
+						$('#transactionList').append(tr);
+					}
+				} 
+		  },
+		    error: function(xhr, textStatus, errorThrown) {
+		  	alert('error ' + errorThrown);
+		  }
+	
+	});
+}
 
 	$(document).ready(function(){ 
 	
@@ -90,6 +113,11 @@ $.fn.addItems = function(div, data, defaultValue) {
 			$('#refundModal').modal();
  			$(".alert-success").hide();
  			$(".alert-error").hide();
+		}); 
+		
+		$("#listTransactions").click(function() {
+			listTransactions('<c:out value="${order.order.id}"/>');
+
 		}); 
 		
 		$(".close-modal").click(function() {
@@ -107,20 +135,20 @@ $.fn.addItems = function(div, data, defaultValue) {
 			$('#billingZoneText').val('<c:out value="${order.billing.state}"/>');
 		</c:if>
 
-		<c:if test="${order.billing.state==null || order.billing.state==''}">  
-			$('billingZoneList').show();           
+		<c:if test="${order.billing.state==null || order.billing.state==''}"> 
+			$('#billingZoneList').show();           
 			$('#billingZoneText').hide();
 			getZones('#billingZoneList','#billingZoneText','<c:out value="${order.billing.country.isoCode}" />','<c:out value="${order.billing.zone.code}" />'); 
 		</c:if>
 		
 		<c:if test="${order.delivery.state!=null && order.delivery.state!=''}">  
 			$('#shippingZoneList').hide();  
-			$('#shippingZoneList').show(); 
+			$('#shippingZoneText').show(); 
 			$('#shippingZoneText').val('<c:out value="${order.delivery.state}"/>');
 		</c:if>
-		<c:if test="${order.delivery.state==null || order.delivery.state==''}"> 
+		<c:if test="${order.delivery.state==null || order.delivery.state==''}">
 			$('#shippingZoneList').show();			
-			$('#delstateOther').hide();
+			$('#shippingZoneText').hide();
 			getZones('#shippingZoneList','#shippingZoneText','<c:out value="${order.delivery.country.isoCode}" />','<c:out value="${order.delivery.zone.code}" />');
 		</c:if>
 		
@@ -342,12 +370,18 @@ $.fn.addItems = function(div, data, defaultValue) {
 		 			 <strong><c:out value="${order.order.paymentType}"/> - <c:out value="${order.order.paymentModuleCode}"/></strong><form:hidden  path="order.paymentModuleCode"/><br/><br/>
 	            </div>	
 	            
+	            <c:if test="${order.order.shippingModuleCode!=null}">
 	            <label><s:message code="label.order.shippingmethod" text="Shipping method"/></label>
 	            <div class="controls">
 		 			 <strong><c:out value="${order.order.shippingModuleCode}"/></strong><form:hidden  path="order.shippingModuleCode"/>
 	            </div>	
+				</c:if>
 	
 				</dl>
+				
+				<c:if test="${customer!=null}">
+					<a href="<c:url value="/admin/customers/customer.html?id=${customer.id}"/>"><s:message code="label.order.editcustomer" text="Edit customer"/></a>
+				</c:if>
 				
 				</div> 
 						
@@ -405,7 +439,9 @@ $.fn.addItems = function(div, data, defaultValue) {
                        <div class="controls">
 							 <dl class="dl-horizontal">
 								<c:forEach items="${order.order.orderHistory}" var="orderHistory" varStatus="counter">
-									<dd>- <c:out value="${orderHistory.comments}"/>                              
+									<c:if test="${orderHistory.comments!=null}">
+									<dd><fmt:formatDate type="both" dateStyle="long" value="${orderHistory.dateAdded}" /> - <c:out value="${orderHistory.comments}"/>   
+									</c:if>                           
 	              				</c:forEach> 
 							</dl> 
 					   </div>
@@ -433,7 +469,7 @@ $.fn.addItems = function(div, data, defaultValue) {
             	<c:if test="${refundableTransaction!=null}">
             		 <a id="refundButton" class="btn btn-danger" href="#"><s:message code="label.order.refund" text="Apply refund"/></a>
             	</c:if>
-            	<a class="btn" href="<c:url value="/admin/orders/printInvoice.html?id=${order.id}" />">List transactions</a>
+            	<a id="listTransactions" class="btn" href="#"><s:message code="label.order.transactions" text="Transactions list"/></a>
 				<a class="btn" href="<c:url value="/admin/orders/printInvoice.html?id=${order.id}" />"><s:message code="label.order.printinvoice" text="Print invoice"/></a>
 			    <a class="btn" href="<c:url value="/admin/orders/printInvoice.html?id=${order.id}" />"><s:message code="label.order.sendinvoice" text="Send email invoice"/></a>
 			    <a class="btn" href="<c:url value="/admin/orders/printInvoice.html?id=${order.id}" />"><s:message code="label.order.packing" text="Print packing slip"/></a>
@@ -452,6 +488,34 @@ $.fn.addItems = function(div, data, defaultValue) {
 
 
 
+
+<div id="transactionsModal"  class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width:900px;">
+  <div class="modal-header">
+          <button type="button" class="close close-modal" data-dismiss="modal" aria-hidden="true">X</button>
+          <h3 id="myModalLabel"><s:message code="label.order.transactions" text="List of transactions" /></h3>
+  </div>
+    <div class="modal-body">
+           <p>
+			<table class="table table-hover" style="font-size:10px;">
+			<thead>
+				<tr>
+				<th>id</th>
+				<th>Date</th>
+				<th>Type</th>
+				<th>Amount</th>
+				<th>Details</th>
+				</tr>
+			</thead>
+			<tbody id="transactionList">
+			</tbody>
+			</table>
+           </p>
+             
+    </div>  
+    <div class="modal-footer">
+           <button class="btn btn-primary close-modal" id="closeModal" data-dismiss="modal" aria-hidden="true"><s:message code="button.label.close" text="Close" /></button>
+    </div>
+</div>
 
 <div id="refundModal"  class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-header">
@@ -479,9 +543,11 @@ $.fn.addItems = function(div, data, defaultValue) {
     </div>  
     <div class="modal-footer">
            <button class="btn cancel-modal" data-dismiss="modal" aria-hidden="true"><s:message code="button.label.cancel" text="Cancel" /></button>
-           <button class="btn btn-success close-modal" id="closeModal" data-dismiss="modal" aria-hidden="true" style="display:none;"><s:message code="button.label.close" text="Close" /></button>
+           <button class="btn btn-primary close-modal" id="closeModal" data-dismiss="modal" aria-hidden="true" style="display:none;"><s:message code="button.label.close" text="Close" /></button>
     </div>
 </div>
+
+
 
 
      			     

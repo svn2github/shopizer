@@ -60,24 +60,25 @@ $(document).ready(function() {
 
 
             <!-- Start Navbar-->
-            <div class="row-fluid show-grid">
+            <div class="row-fluid">
 
-				<div class="span12">
-					<nav class="pull-left logo">
-						 <c:choose>
-                		<c:when test="${requestScope.MERCHANT_STORE.storeLogo!=null}">
-                			<img class="logoImage" src="<sm:storeLogo/>" />
-                		</c:when>
-                		<c:otherwise>
-                			<h1>
-                			<a href="<c:url value="/shop/"/>">
-                				<c:out value="${requestScope.MERCHANT_STORE.storename}"/>
-                			</a>  
-                			</h1>
-                		</c:otherwise>
-                	  </c:choose>  
-					</nav>
-
+				<div class="span4 pull-left">
+						<nav class="logo">
+							 <c:choose>
+	                		<c:when test="${requestScope.MERCHANT_STORE.storeLogo!=null}">
+	                			<img class="logoImage" src="<sm:storeLogo/>"/>
+	                		</c:when>
+	                		<c:otherwise>
+	                			<h1>
+	                			<a href="<c:url value="/shop/"/>">
+	                				<c:out value="${requestScope.MERCHANT_STORE.storename}"/>
+	                			</a>  
+	                			</h1>
+	                		</c:otherwise>
+	                	  </c:choose>  
+						</nav>
+				</div>
+				<div class="span8 pull-right">
 
 						<nav id="menu" class="pull-right">
                     					<ul id="mainMenu">
@@ -98,17 +99,19 @@ $(document).ready(function() {
 	    										</li> 
 											</c:forEach>
                     		            </ul>
+                    		            
+                    		            <div id="searchGroup" class="btn-group pull-right">
+											<form id="searchForm" class="form-inline" method="post" action="<c:url value="/shop/search/search.html"/>">
+												<input id="searchField" class="tt-query" name="q" type="text" placeholder="<s:message code="label.search.searchQuery" text="Search query" />" autocomplete="off" spellcheck="false" dir="auto" value="<c:out value="${q}"/>">
+												<button id="searchButton" class="btn" type="submit"><s:message code="label.generic.search" text="Search" /></button>
+											</form>
+										</div>
+                    		            
+                    		            
 						</nav>
+
 
 				</div>
             </div>
-            		
-			<div class="row-fluid">
-					<div id="searchGroup" class="btn-group pull-right">
-						<form id="searchForm" class="form-inline" method="post" action="<c:url value="/shop/search/search.html"/>">
-							<input id="searchField" class="tt-query" name="q" type="text" placeholder="<s:message code="label.search.searchQuery" text="Search query" />" autocomplete="off" spellcheck="false" dir="auto" value="<c:out value="${q}"/>">
-							<button id="searchButton" class="btn" type="submit"><s:message code="label.generic.search" text="Search" /></button>
-						</form>
-					</div>
-			</div>
+
 			<!-- End Navbar-->

@@ -320,9 +320,9 @@
 
 					<div class="row">
 						<div style="float: left; width: 180px;">
-							<h2>
+							<p class="lead">
 								<s:message code="button.label.logon" text="Logon" />
-							</h2>
+							</p>
 						</div>
 						<div style="float: right;">
 							<img alt="go to www.shopizer.com"
