@@ -404,16 +404,16 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 		
 		Validate.notNull(cart,"Shopping cart cannot be null");
 		Validate.notNull(cart.getLineItems(),"ShoppingCart items cannot be null");
-		boolean hasRegulardGood = false;
+		boolean requiresShipping = false;
 		for(ShoppingCartItem item : cart.getLineItems()) {
 			Product product = item.getProduct();
-			if(!product.isProductVirtual()) {
-				hasRegulardGood = true;
+			if(product.isProductShipeable()) {
+				requiresShipping = true;
 				break;
 			}
 		}
 		
-		return hasRegulardGood;
+		return requiresShipping;
 		
 	}
 

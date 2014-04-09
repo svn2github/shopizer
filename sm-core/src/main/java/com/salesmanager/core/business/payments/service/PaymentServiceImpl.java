@@ -298,7 +298,6 @@ public class PaymentServiceImpl implements PaymentService {
 		Validate.notNull(payment);
 		Validate.notNull(order);
 		Validate.notNull(order.getTotal());
-		Validate.notNull(payment.getTransactionType());
 		
 		payment.setCurrency(store.getCurrency());
 		
@@ -325,7 +324,14 @@ public class PaymentServiceImpl implements PaymentService {
 			sTransactionType = TransactionType.AUTHORIZECAPTURE.name();
 		}
 		
+
+		if(sTransactionType.equals(TransactionType.AUTHORIZE.name())) {
+			payment.setTransactionType(TransactionType.AUTHORIZE);
+		} else {
+			payment.setTransactionType(TransactionType.AUTHORIZECAPTURE);
+		} 
 		
+
 		PaymentModule module = this.paymentModules.get(payment.getModuleName());
 		
 		if(module==null) {

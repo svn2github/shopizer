@@ -508,7 +508,7 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 			 Transaction transaction = new Transaction();
 			 transaction.setAmount(amount);
 			 transaction.setTransactionDate(new Date());
-			 transaction.setTransactionType(TransactionType.AUTHORIZECAPTURE);
+			 transaction.setTransactionType(payment.getTransactionType());
 			 transaction.setPaymentType(PaymentType.PAYPAL);
 			 transaction.getTransactionDetails().put("TOKEN", token);
 			 transaction.getTransactionDetails().put("PAYERID", payerId);
