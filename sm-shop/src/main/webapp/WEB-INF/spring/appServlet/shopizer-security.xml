@@ -29,7 +29,7 @@
 	
 	<beans:bean id="adminAccessDenied"
 		class="com.salesmanager.web.utils.AdminAccessDeniedHandler">
-		<beans:property name="accessDeniedUrl" value="/shop/admin/denied.jsp" />
+		<beans:property name="accessDeniedUrl" value="/shop/admin/denied.html" />
 	</beans:bean>
 
 	

@@ -20,6 +20,10 @@
 
 <script>
 
+function displayErrorMessage(message) {
+	
+}
+
 
 function getZones(listDiv, textDiv, countryCode, defaultValue){
 	$.ajax({
@@ -90,10 +94,10 @@ function listTransactions(orderId){
 				var data = response.response.data;
 				console.log(status);
 				if((status==0 || status ==9999) && data) {
-					console.log(data);
+					//console.log(data);
 					$('#transactionsModal').modal();
 					var transactions = data;
-					console.log(transactions);
+					//console.log(transactions);
 					for(i=0;i<transactions.length;i++) {
 						var tr = '<tr><td>' + transactions[i].transactionId + '</td><td>' + transactions[i].transactionDate + '</td><td>' + transactions[i].transactionType + '</td><td>' + transactions[i].transactionAmount + '</td><td>' + JSON.stringify(transactions[i].transactionDetails) + '</td>';
 						$('#transactionList').append(tr);
@@ -107,18 +111,114 @@ function listTransactions(orderId){
 	});
 }
 
+function sendInvoice(orderId){
+
+	$.ajax({
+		  type: 'GET',
+		  url: '<c:url value="/admin/orders/sendInvoice.html"/>?id=' + orderId,
+		  dataType: 'json',
+		  success: function(response){
+				var status = response.response.status;
+				var data = response.response.data;
+				//console.log(status);
+				if(status==0 || status ==9999) {
+					$(".alert-success").show();
+				} else {
+					$(".alert-error").show();
+				}
+				$('.sm').hideLoading();
+		  },
+		    error: function(xhr, textStatus, errorThrown) {
+		  	alert('error ' + errorThrown);
+		  }
+	
+	});
+}
+
+function updateStatus(orderId){
+
+	$.ajax({
+		  type: 'GET',
+		  url: '<c:url value="/admin/orders/updateStatus.html"/>?id=' + orderId,
+		  dataType: 'json',
+		  success: function(response){
+				var status = response.response.status;
+				var data = response.response.data;
+				//console.log(status);
+				if(status==0 || status ==9999) {
+					$(".alert-success").show();
+				} else {
+					$(".alert-error").show();
+				}
+				$('.sm').hideLoading();
+		  },
+		    error: function(xhr, textStatus, errorThrown) {
+		  	alert('error ' + errorThrown);
+		  }
+	
+	});
+}
+
+function resetMessages() {
+	$(".alert-error").hide();
+	$(".alert-success").hide();
+}
+
+
+function sendDownloadEmail(orderId){
+
+	$.ajax({
+		  type: 'GET',
+		  url: '<c:url value="/admin/orders/sendDownloadEmail.html"/>?id=' + orderId,
+		  dataType: 'json',
+		  success: function(response){
+				var status = response.response.status;
+				var data = response.response.data;
+				//console.log(status);
+				if(status==0 || status ==9999) {
+					$(".alert-success").show();
+				} else {
+					$(".alert-error").show();
+				}
+				$('.sm').hideLoading();
+		  },
+		    error: function(xhr, textStatus, errorThrown) {
+		  	alert('error ' + errorThrown);
+		  }
+	
+	});
+}
+
 	$(document).ready(function(){ 
 	
-		$("#refundButton").click(function() {
+		$("#refundAction").click(function() {
 			$('#refundModal').modal();
  			$(".alert-success").hide();
  			$(".alert-error").hide();
 		}); 
 		
-		$("#listTransactions").click(function() {
+		$("#transactionsAction").click(function() {
+			resetMessages();
 			listTransactions('<c:out value="${order.order.id}"/>');
-
-		}); 
+		});
+		
+		$("#sendInvoiceAction").click(function() {
+			resetMessages();
+			$('.sm').showLoading();
+			sendInvoice('<c:out value="${order.order.id}"/>');
+		});
+		
+		$("#updateStatusAction").click(function() {
+			resetMessages();
+			$('.sm').showLoading();
+			updateStatus('<c:out value="${order.order.id}"/>');
+		});
+		
+		$("#updateDownloadsAction").click(function() {
+			resetMessages();
+			$('.sm').showLoading();
+			sendDownloadEmail('<c:out value="${order.order.id}"/>');
+		});
 		
 		$(".close-modal").click(function() {
 			 location.href="<c:url value="/admin/orders/editOrder.html" />?id=<c:out value="${order.order.id}"/>";
@@ -464,15 +564,20 @@ function listTransactions(orderId){
             <div class="span8">
             <div class="btn-group">
             	<c:if test="${capturableTransaction!=null}">
-            		 <a class="btn btn-primary" href="#">Capture transaction</a>
+            		 <a class="btn btn-primary btn-block" href="#"><s:message code="label.order.capture" text="Capture transaction"/></a>
             	</c:if>
             	<c:if test="${refundableTransaction!=null}">
-            		 <a id="refundButton" class="btn btn-danger" href="#"><s:message code="label.order.refund" text="Apply refund"/></a>
+            		 <a id="refundAction" class="btn btn-danger btn-block" href="#"><s:message code="label.order.refund" text="Apply refund"/></a>
             	</c:if>
-            	<a id="listTransactions" class="btn" href="#"><s:message code="label.order.transactions" text="Transactions list"/></a>
-				<a class="btn" href="<c:url value="/admin/orders/printInvoice.html?id=${order.id}" />"><s:message code="label.order.printinvoice" text="Print invoice"/></a>
-			    <a class="btn" href="<c:url value="/admin/orders/printInvoice.html?id=${order.id}" />"><s:message code="label.order.sendinvoice" text="Send email invoice"/></a>
-			    <a class="btn" href="<c:url value="/admin/orders/printInvoice.html?id=${order.id}" />"><s:message code="label.order.packing" text="Print packing slip"/></a>
+            	<a id="transactionsAction" class="btn btn-block" href="#"><s:message code="label.order.transactions" text="Transactions list"/></a>
+            	<a id="sendInvoiceAction" class="btn btn-block" href="#"><s:message code="label.order.sendinvoice" text="Send email invoice"/></a>
+				<a id="updateStatusAction" class="btn btn-block" href="#"><s:message code="label.order.updatestatus" text="Send order status email"/></a>
+				<c:if test="${downloads!=null}">
+					<a id="updateDownloadsAction" class="btn btn-block" href="#"><s:message code="label.order.downloademail" text="Send download email"/></a>
+				</c:if>
+				<a class="btn btn-block" href="<c:url value="/admin/orders/printInvoice.html?id=${order.id}" />"><s:message code="label.order.printinvoice" text="Print invoice"/></a>
+			    
+			    <a class="btn btn-block" href="<c:url value="/admin/orders/printShippingLabel.html?id=${order.id}" />"><s:message code="label.order.packing" text="Print packing slip"/></a>
 		    </div> 
 		    </div>          
               
@@ -489,7 +594,7 @@ function listTransactions(orderId){
 
 
 
-<div id="transactionsModal"  class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width:900px;">
+<div id="transactionsModal"  class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width:900px;z-index:500000;">
   <div class="modal-header">
           <button type="button" class="close close-modal" data-dismiss="modal" aria-hidden="true">X</button>
           <h3 id="myModalLabel"><s:message code="label.order.transactions" text="List of transactions" /></h3>
@@ -499,11 +604,11 @@ function listTransactions(orderId){
 			<table class="table table-hover" style="font-size:10px;">
 			<thead>
 				<tr>
-				<th>id</th>
-				<th>Date</th>
-				<th>Type</th>
-				<th>Amount</th>
-				<th>Details</th>
+				<th><s:message code="label.entity.id" text="Id" /></th>
+				<th><s:message code="label.generic.date" text="Date" /></th>
+				<th><s:message code="label.entity.type" text="Type" /></th>
+				<th><s:message code="label.entity.amount" text="Amount" /></th>
+				<th><s:message code="label.entity.details" text="Details" /></th>
 				</tr>
 			</thead>
 			<tbody id="transactionList">
@@ -517,7 +622,7 @@ function listTransactions(orderId){
     </div>
 </div>
 
-<div id="refundModal"  class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="refundModal"  class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="z-index:500000;">
   <div class="modal-header">
           <button type="button" class="close close-modal" data-dismiss="modal" aria-hidden="true">X</button>
           <h3 id="myModalLabel"><s:message code="label.order.refund" text="Apply refund"/></h3>
