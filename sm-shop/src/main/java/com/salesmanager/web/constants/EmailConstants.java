@@ -49,6 +49,8 @@ public class EmailConstants {
 	public static final String EMAIL_ORDER_NUMBER ="EMAIL_ORDER_NUMBER";
 	public static final String EMAIL_ORDER_DATE ="EMAIL_ORDER_DATE";
 	public static final String EMAIL_ORDER_THANKS ="EMAIL_ORDER_THANKS";
+	public static final String EMAIL_ORDER_STATUS_TEXT ="EMAIL_ORDER_STATUS_TEXT";
+	public static final String EMAIL_ORDER_STATUS ="EMAIL_ORDER_STATUS";
 	public static final String ADDRESS_BILLING_TITLE ="ADDRESS_BILLING_TITLE";
 	public static final String ADDRESS_BILLING ="ADDRESS_BILLING";
 	public static final String ADDRESS_SHIPPING ="ADDRESS_SHIPPING";
@@ -70,6 +72,7 @@ public class EmailConstants {
 	public static final String EMAIL_CUSTOMER_TPL = "email_template_customer.ftl";
 	public static final String EMAIL_ORDER_TPL = "email_template_checkout.ftl";
 	public static final String EMAIL_ORDER_DOWNLOAD_TPL = "email_template_checkout_download.ftl";
+	public static final String ORDER_STATUS_TMPL = "email_template_order_status.ftl";
 	
 	
 }

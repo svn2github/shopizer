@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.salesmanager.core.business.common.model.CriteriaOrderBy;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -41,11 +42,6 @@ public class AdminController {
 		
 		model.addAttribute("activeMenus",activeMenus);
 		
-		//Principal principal = request.getUserPrincipal();
-		//SecurityContext context = SecurityContextHolder.getContext();
-        //for (GrantedAuthority auth : context.getAuthentication().getAuthorities()) {
-        //   System.out.println("********** " + auth.getAuthority());
-        //}
 		
 		//get store information
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
@@ -67,6 +63,12 @@ public class AdminController {
 		orderCriteria.setOrderBy(CriteriaOrderBy.DESC);
 		
 		return ControllerConstants.Tiles.adminDashboard;
+	}
+	
+	@RequestMapping(value={"/admin/denied.html"}, method=RequestMethod.GET)
+	public ModelAndView accessDenied(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		return new ModelAndView("error/access_denied");
 	}
 	
 	

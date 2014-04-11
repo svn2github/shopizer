@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.impl.cookie.DateUtils;
 import org.slf4j.Logger;
@@ -35,8 +36,10 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.model.OrderTotal;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
+import com.salesmanager.core.business.order.model.orderproduct.OrderProductDownload;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
 import com.salesmanager.core.business.order.service.OrderService;
+import com.salesmanager.core.business.order.service.orderproduct.OrderProductDownloadService;
 import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.payments.service.PaymentService;
 import com.salesmanager.core.business.payments.service.TransactionService;
@@ -92,6 +95,9 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 	
 	@Autowired
 	EmailService emailService;
+	
+	@Autowired
+	OrderProductDownloadService orderProdctDownloadService;
 	
 	private final static String ORDER_STATUS_TMPL = "email_template_order_status.ftl";
 	
@@ -181,6 +187,11 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 				if(refundableTransaction!=null) {
 					model.addAttribute("refundableTransaction",refundableTransaction);
 				}
+			}
+			
+			List<OrderProductDownload> orderProductDownloads = orderProdctDownloadService.getByOrderId(order.getId());
+			if(CollectionUtils.isNotEmpty(orderProductDownloads)) {
+				model.addAttribute("downloads",orderProductDownloads);
 			}
 			
 		}	
@@ -369,6 +380,11 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 			if(refundableTransaction!=null) {
 				model.addAttribute("refundableTransaction",refundableTransaction);
 			}
+		}
+		
+		List<OrderProductDownload> orderProductDownloads = orderProdctDownloadService.getByOrderId(newOrder.getId());
+		if(CollectionUtils.isNotEmpty(orderProductDownloads)) {
+			model.addAttribute("downloads",orderProductDownloads);
 		}
 		
 		

@@ -92,7 +92,7 @@ public class FilePathUtils {
 	 * @return
 	 */
 	public static String buildCustomerUri(MerchantStore store,  String contextPath) {
-		StringBuilder resourcePath = new StringBuilder();
+/*		StringBuilder resourcePath = new StringBuilder();
 		//@SuppressWarnings("unchecked")
 		//Map<String,String> configurations = (Map<String, String>)session.getAttribute(Constants.STORE_CONFIGURATION);
 		String scheme = Constants.HTTP_SCHEME;
@@ -109,6 +109,20 @@ public class FilePathUtils {
 		.append(domainName)
 		.append(contextPath)
 		.append(CUSTOMER_ACCESS_LINK);
+		
+		return resourcePath.toString();*/
+		
+		StringBuilder resourcePath = new StringBuilder();
+		String scheme = Constants.HTTP_SCHEME;
+		
+		String domainName = store.getDomainName();
+		if(StringUtils.isBlank(domainName)) {
+			domainName = Constants.DEFAULT_DOMAIN_NAME;
+		}
+		
+		resourcePath.append(scheme).append("://")
+		.append(domainName)
+		.append(contextPath);
 		
 		return resourcePath.toString();
 		

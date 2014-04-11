@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +26,7 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.payments.service.PaymentService;
@@ -37,7 +39,9 @@ import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.orders.Refund;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.utils.DateUtil;
+import com.salesmanager.web.utils.EmailTemplatesUtils;
 import com.salesmanager.web.utils.LabelUtils;
+import com.salesmanager.web.utils.LocaleUtils;
 
 /**
  * Manage order details
@@ -75,6 +79,9 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderActionsControl
 	
 	@Autowired
 	EmailService emailService;
+	
+	@Autowired
+	EmailTemplatesUtils emailTemplatesUtils;
 	
 	private final static String ORDER_STATUS_TMPL = "email_template_order_status.ftl";
 	
@@ -191,7 +198,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderActionsControl
 		ByteArrayOutputStream stream  = orderService.generateInvoice(store, order, lang);
 		StringBuilder attachment = new StringBuilder();
 		attachment.append("attachment; filename=");
-		attachment.append(order.getBilling().getFirstName() + "-" + order.getBilling().getLastName());
+		attachment.append(order.getId());
 		attachment.append(".pdf");
 		
 		String fileName = attachment.toString();
@@ -289,6 +296,218 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderActionsControl
 		
 		
 	}
+	
+
+	@PreAuthorize("hasRole('ORDER')")
+	@RequestMapping(value="/admin/orders/sendInvoice.html", method=RequestMethod.GET, produces="application/json")
+	public @ResponseBody String sendInvoice(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		String sId = request.getParameter("id");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		
+		AjaxResponse resp = new AjaxResponse();
+		
+		if(sId==null) {
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			return resp.toJSONString();
+		}
+
+
+		
+		try {
+			
+			Long id = Long.parseLong(sId);
+			
+
+			Order dbOrder = orderService.getById(id);
+
+			if(dbOrder==null) {
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			
+			if(dbOrder.getMerchant().getId().intValue()!=store.getId().intValue()) {
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			//get customer
+			Customer customer = customerService.getById(dbOrder.getCustomerId());
+			
+			if(customer==null) {
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				resp.setErrorString("Customer does not exist");
+				return resp.toJSONString();
+			}
+			
+			Locale customerLocale = LocaleUtils.getLocale(customer.getDefaultLanguage());
+			
+			emailTemplatesUtils.sendOrderEmail(customer, dbOrder, customerLocale, customer.getDefaultLanguage(), store, request.getContextPath());
+			
+			
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+			
+		} catch(Exception e) {
+			LOGGER.error("Cannot get transactions for order id " + sId, e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		return resp.toJSONString();
+		
+		
+	}
+	
+	
+
+	@PreAuthorize("hasRole('ORDER')")
+	@RequestMapping(value="/admin/orders/updateStatus.html", method=RequestMethod.GET, produces="application/json")
+	public @ResponseBody String updateStatus(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		String sId = request.getParameter("id");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		
+		AjaxResponse resp = new AjaxResponse();
+		
+		if(sId==null) {
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			return resp.toJSONString();
+		}
+
+
+		
+		try {
+			
+			Long id = Long.parseLong(sId);
+			
+
+			Order dbOrder = orderService.getById(id);
+
+			if(dbOrder==null) {
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			
+			if(dbOrder.getMerchant().getId().intValue()!=store.getId().intValue()) {
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			//get customer
+			Customer customer = customerService.getById(dbOrder.getCustomerId());
+			
+			if(customer==null) {
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				resp.setErrorString("Customer does not exist");
+				return resp.toJSONString();
+			}
+			
+			Locale customerLocale = LocaleUtils.getLocale(customer.getDefaultLanguage());
+			
+			
+			Set<OrderStatusHistory> orderStatus = dbOrder.getOrderHistory();
+			OrderStatusHistory lastHistory = null;
+			if(orderStatus!=null) {
+				int count = 1;
+				for(OrderStatusHistory history : orderStatus) {
+					if(count==orderStatus.size()) {
+						lastHistory = history;
+						break;
+					}
+					count++;
+				}
+			}
+			
+			if(lastHistory==null) {
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				resp.setErrorString("No history");
+				return resp.toJSONString();
+			}
+			emailTemplatesUtils.sendUpdateOrderStatusEmail(customer, dbOrder, lastHistory, store, customerLocale, request.getContextPath());
+
+			
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+			
+		} catch(Exception e) {
+			LOGGER.error("Cannot get transactions for order id " + sId, e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorString(e.getMessage());
+			resp.setErrorMessage(e);
+		}
+		
+		return resp.toJSONString();
+		
+		
+	}
+	
+	@PreAuthorize("hasRole('ORDER')")
+	@RequestMapping(value="/admin/orders/sendDownloadEmail.html", method=RequestMethod.GET, produces="application/json")
+	public @ResponseBody String sendDownloadEmail(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		String sId = request.getParameter("id");
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		
+		AjaxResponse resp = new AjaxResponse();
+		
+		if(sId==null) {
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			return resp.toJSONString();
+		}
+
+
+		
+		try {
+			
+			Long id = Long.parseLong(sId);
+			
+
+			Order dbOrder = orderService.getById(id);
+
+			if(dbOrder==null) {
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			
+			if(dbOrder.getMerchant().getId().intValue()!=store.getId().intValue()) {
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			//get customer
+			Customer customer = customerService.getById(dbOrder.getCustomerId());
+			
+			if(customer==null) {
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				resp.setErrorString("Customer does not exist");
+				return resp.toJSONString();
+			}
+			
+			Locale customerLocale = LocaleUtils.getLocale(customer.getDefaultLanguage());
+			
+			
+			emailTemplatesUtils.sendOrderDownloadEmail(customer, dbOrder, store, customerLocale, request.getContextPath());
+			
+			
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+			
+		} catch(Exception e) {
+			LOGGER.error("Cannot get transactions for order id " + sId, e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorString(e.getMessage());
+			resp.setErrorMessage(e);
+		}
+		
+		return resp.toJSONString();
+		
+		
+	}
+
 	
 
 }

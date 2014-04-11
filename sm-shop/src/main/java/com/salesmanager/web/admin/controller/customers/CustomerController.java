@@ -681,12 +681,14 @@ public class CustomerController {
 	
 				
 				emailService.sendHtmlEmail(store, email);
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
 			
 			} catch (Exception e) {
 				LOGGER.error("Cannot send email to user",e);
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 			}
 			
-			resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
+			
 			
 			
 		} catch (Exception e) {

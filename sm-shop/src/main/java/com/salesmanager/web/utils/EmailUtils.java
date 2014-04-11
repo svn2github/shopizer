@@ -43,7 +43,7 @@ public class EmailUtils {
 		if(store.getStoreLogo()!=null) {
 			StringBuilder logoPath = new StringBuilder();
 			String scheme = Constants.HTTP_SCHEME;
-			logoPath.append("<img src='").append(scheme).append("://").append(store.getDomainName()).append(contextPath).append("/").append(ImageFilePathUtils.buildStoreLogoFilePath(store)).append("'>");
+			logoPath.append("<img src='").append(scheme).append("://").append(store.getDomainName()).append(contextPath).append("/").append(ImageFilePathUtils.buildStoreLogoFilePath(store)).append("' style='max-width:400px;'>");
 			templateTokens.put(LOGOPATH, logoPath.toString());
 		} else {
 			templateTokens.put(LOGOPATH, store.getStorename());

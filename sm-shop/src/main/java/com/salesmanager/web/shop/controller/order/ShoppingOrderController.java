@@ -424,9 +424,10 @@ public class ShoppingOrderController extends AbstractController {
 				        super.setSessionAttribute(Constants.CUSTOMER, modelCustomer, request);
 			        }
 		        	
-					if(order.getCustomer().getId().longValue()==0 || order.getCustomer().getId()==null) {
+					if(order.getCustomer().getId()==null || order.getCustomer().getId().longValue()==0) {
 						//send email for new customer
 						customer.setPassword(password);//set clear password for email
+						customer.setUserName(userName);
 						emailTemplatesUtils.sendRegistrationEmail( customer, store, locale, request.getContextPath() );
 					}
 	    		}
