@@ -85,7 +85,21 @@ public class ODSInvoiceModule implements InvoiceModule {
 				is = getClass().getClassLoader().getResourceAsStream(template);
 			} catch (Exception e) {
 				LOGGER.warn("Cannot open template " + template);
-				is = getClass().getClassLoader().getResourceAsStream(new StringBuilder().append(INVOICE_TEMPLATE).append(INVOICE_TEMPLATE_EXTENSION).toString());
+				throw new Exception("Cannot open " + template);
+			}
+			
+			if(is==null) {
+				try {
+					is = getClass().getClassLoader().getResourceAsStream(new StringBuilder().append(INVOICE_TEMPLATE).append(INVOICE_TEMPLATE_EXTENSION).toString());
+				} catch (Exception e) {
+					LOGGER.warn("Cannot open template " + template);
+					throw new Exception("Cannot open " + new StringBuilder().append(INVOICE_TEMPLATE).append(INVOICE_TEMPLATE_EXTENSION).toString());
+				}
+			}
+			
+			if(is==null) {
+				LOGGER.warn("Cannot open template " + template);
+				throw new Exception("Cannot open " + new StringBuilder().append(INVOICE_TEMPLATE).append(INVOICE_TEMPLATE_EXTENSION).toString());
 			}
 			
 			File file = new File(order.getId() + "_working");
