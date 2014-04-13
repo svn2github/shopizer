@@ -55,6 +55,7 @@ function getZones(listDiv, textDiv, countryCode, defaultValue){
 	  },
 	    error: function(xhr, textStatus, errorThrown) {
 	  	alert('error ' + errorThrown);
+	  	$('.sm').hideLoading();
 	  }
 
 	});
@@ -106,6 +107,7 @@ function listTransactions(orderId){
 		  },
 		    error: function(xhr, textStatus, errorThrown) {
 		  	alert('error ' + errorThrown);
+		  	$('.sm').hideLoading();
 		  }
 	
 	});
@@ -130,6 +132,7 @@ function sendInvoice(orderId){
 		  },
 		    error: function(xhr, textStatus, errorThrown) {
 		  	alert('error ' + errorThrown);
+		  	$('.sm').hideLoading();
 		  }
 	
 	});
@@ -154,6 +157,7 @@ function updateStatus(orderId){
 		  },
 		    error: function(xhr, textStatus, errorThrown) {
 		  	alert('error ' + errorThrown);
+		  	$('.sm').hideLoading();
 		  }
 	
 	});
@@ -184,6 +188,33 @@ function sendDownloadEmail(orderId){
 		  },
 		    error: function(xhr, textStatus, errorThrown) {
 		  	alert('error ' + errorThrown);
+		  	$('.sm').hideLoading();
+		  }
+	
+	});
+}
+
+function captureOrder(orderId){
+
+	$.ajax({
+		  type: 'POST',
+		  url: '<c:url value="/admin/orders/captureOrder.html"/>?id=' + orderId,
+		  dataType: 'json',
+		  success: function(response){
+				var status = response.response.status;
+				var data = response.response.data;
+				console.log(status);
+				if(status==0 || status ==9999) {
+					$(".alert-success").show();
+					window.location='<c:url value="/admin/orders/editOrder.html" />?id=' + orderId;
+				} else {
+					$(".alert-error").show();
+				}
+				$('.sm').hideLoading();
+		  },
+		    error: function(xhr, textStatus, errorThrown) {
+		  	alert('error ' + errorThrown);
+		  	$('.sm').hideLoading();
 		  }
 	
 	});
@@ -218,6 +249,12 @@ function sendDownloadEmail(orderId){
 			resetMessages();
 			$('.sm').showLoading();
 			sendDownloadEmail('<c:out value="${order.order.id}"/>');
+		});
+		
+		$("#captureAction").click(function() {
+			resetMessages();
+			$('.sm').showLoading();
+			captureOrder('<c:out value="${order.order.id}"/>');
 		});
 		
 		$(".close-modal").click(function() {
@@ -326,7 +363,37 @@ function sendDownloadEmail(orderId){
                   </div>
            </h3>
 		<br/>
-			<br/>
+		<br/>
+		    <div class="btn-group" style="z-index:400000;">
+                    <button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><s:message code="label.generic.moreoptions" text="More options"/> ... <span class="caret"></span></button>
+                     <ul class="dropdown-menu">
+				    	<li><a id="transactionsAction" href="#"><s:message code="label.order.transactions" text="Transactions list"/></a></li>
+				    	<li><a id="sendInvoiceAction" href="#"><s:message code="label.order.sendinvoice" text="Send email invoice"/></a></li>
+				    	<li><a id="updateStatusAction" href="#"><s:message code="label.order.updatestatus" text="Send order status email"/></a></li>
+				    	<li>
+				    		<c:if test="${downloads!=null}">
+								<a id="updateDownloadsAction" href="#"><s:message code="label.order.downloademail" text="Send download email"/></a>
+							</c:if>
+				    	</li>
+				    	
+				    	<li><a href="<c:url value="/admin/orders/printInvoice.html?id=${order.id}" />"><s:message code="label.order.printinvoice" text="Print invoice"/></a></li>
+				    	<li><a href="<c:url value="/admin/orders/printShippingLabel.html?id=${order.id}" />"><s:message code="label.order.packing" text="Print packing slip"/></a></li>
+				    	<li>
+				    		<c:if test="${customer!=null}">
+								<a href="<c:url value="/admin/customers/customer.html?id=${customer.id}"/>"><s:message code="label.order.editcustomer" text="Edit customer"/></a>
+							</c:if>
+						</li>
+                     </ul>
+                	&nbsp;
+	            	<c:if test="${capturableTransaction!=null}">
+	            		 <a id="captureAction" class="btn btn-primary btn-block" href="#"><s:message code="label.order.capture" text="Capture transaction"/></a>
+	            	</c:if>
+	            	<c:if test="${refundableTransaction!=null}">
+	            		 <a id="refundAction" class="btn btn-danger btn-block" href="#"><s:message code="label.order.refund" text="Apply refund"/></a>
+	            	</c:if>         
+                     
+              </div><!-- /btn-group -->
+			  <br/>
  	       	 	
 	     <c:url var="orderSave" value="/admin/orders/save.html"/>
          <form:form method="POST" enctype="multipart/form-data" commandName="order" action="${orderSave}">
@@ -392,7 +459,12 @@ function sendDownloadEmail(orderId){
 			            <div class="controls">
 				 				<form:input id="billingPostalCode" cssClass="input-large highlight" path="order.billing.postalCode"/>
 				 				<span class="help-inline"><form:errors path="order.billing.postalCode" cssClass="error" /></span>
-			            </div>	
+			            </div>
+			            <label><s:message code="label.customer.telephone" text="Customer phone"/></label>
+			            <div class="controls">
+				 				<form:input id="phoneNumber" cssClass="input-large highlight" path="order.billing.telephone"/>
+				 				<span class="help-inline"><form:errors path="order.billing.telephone" cssClass="error" /></span>
+			            </div>		
 			    </address>
 
 	            
@@ -479,9 +551,7 @@ function sendDownloadEmail(orderId){
 	
 				</dl>
 				
-				<c:if test="${customer!=null}">
-					<a href="<c:url value="/admin/customers/customer.html?id=${customer.id}"/>"><s:message code="label.order.editcustomer" text="Edit customer"/></a>
-				</c:if>
+
 				
 				</div> 
 						
@@ -560,28 +630,6 @@ function sendDownloadEmail(orderId){
 	      		  </div>
       		</div> 
             <br/>   
-            
-            <div class="span8">
-            <div class="btn-group">
-            	<c:if test="${capturableTransaction!=null}">
-            		 <a class="btn btn-primary btn-block" href="#"><s:message code="label.order.capture" text="Capture transaction"/></a>
-            	</c:if>
-            	<c:if test="${refundableTransaction!=null}">
-            		 <a id="refundAction" class="btn btn-danger btn-block" href="#"><s:message code="label.order.refund" text="Apply refund"/></a>
-            	</c:if>
-            	<a id="transactionsAction" class="btn btn-block" href="#"><s:message code="label.order.transactions" text="Transactions list"/></a>
-            	<a id="sendInvoiceAction" class="btn btn-block" href="#"><s:message code="label.order.sendinvoice" text="Send email invoice"/></a>
-				<a id="updateStatusAction" class="btn btn-block" href="#"><s:message code="label.order.updatestatus" text="Send order status email"/></a>
-				<c:if test="${downloads!=null}">
-					<a id="updateDownloadsAction" class="btn btn-block" href="#"><s:message code="label.order.downloademail" text="Send download email"/></a>
-				</c:if>
-				<a class="btn btn-block" href="<c:url value="/admin/orders/printInvoice.html?id=${order.id}" />"><s:message code="label.order.printinvoice" text="Print invoice"/></a>
-			    
-			    <a class="btn btn-block" href="<c:url value="/admin/orders/printShippingLabel.html?id=${order.id}" />"><s:message code="label.order.packing" text="Print packing slip"/></a>
-		    </div> 
-		    </div>          
-              
-
     
     	  </div>
    
