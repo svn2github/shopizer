@@ -83,8 +83,59 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderActionsControl
 	@Autowired
 	EmailTemplatesUtils emailTemplatesUtils;
 	
-	private final static String ORDER_STATUS_TMPL = "email_template_order_status.ftl";
 	
+	@PreAuthorize("hasRole('ORDER')")
+	@RequestMapping(value="/admin/orders/captureOrder.html", method=RequestMethod.POST, produces="application/json")
+	public @ResponseBody String captureOrder(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+
+
+		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
+		
+		String sId = request.getParameter("id");
+		
+		AjaxResponse resp = new AjaxResponse();
+
+		try {
+			Long id = Long.parseLong(sId);
+			
+			Order order = orderService.getById(id);
+			
+			if(order==null) {
+				
+				LOGGER.error("Order {0} does not exists", id);
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			if(order.getMerchant().getId().intValue()!=store.getId().intValue()) {
+				
+				LOGGER.error("Merchant store does not have order {0}",id);
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				return resp.toJSONString();
+			}
+			
+			Customer customer = customerService.getById(order.getCustomerId());
+			
+			if(customer==null) {
+				resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+				resp.setStatusMessage(messages.getMessage("message.notexist.customer", locale));
+				return resp.toJSONString();
+			}
+			
+			paymentService.processCapturePayment(order, customer, store);
+
+			resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
+
+		} catch (Exception e) {
+			LOGGER.error("Error while getting category", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorMessage(e);
+		}
+		
+		String returnString = resp.toJSONString();
+		
+		return returnString;
+	}
 	
 	@PreAuthorize("hasRole('ORDER')")
 	@RequestMapping(value="/admin/orders/refundOrder.html", method=RequestMethod.POST, produces="application/json")
@@ -165,7 +216,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderActionsControl
 	
 	@PreAuthorize("hasRole('ORDER')")
 	@RequestMapping(value="/admin/orders/printInvoice.html", method=RequestMethod.GET, produces="application/json")
-	public void printInvoice(HttpServletRequest request, HttpServletResponse response, Locale locale) {
+	public void printInvoice(HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		String sId = request.getParameter("id");
 		
@@ -177,38 +228,25 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderActionsControl
 		Order order = orderService.getById(id);
 		
 		if(order.getMerchant().getId().intValue()!=store.getId().intValue()) {
-			//return null;
+			throw new Exception("Invalid order");
 		}
 		
-		Long customerId = order.getCustomerId();
-		
-		if(customerId==null) {
-			LOGGER.error("Customer id is null in order object");
-			//return null;
-		}
-		
-		Customer customer = customerService.getById(customerId);
-		
+
 		Language lang = store.getDefaultLanguage();
-		if(customer!=null) {
-			lang = customer.getDefaultLanguage();
-		}
+		
 		
 
 		ByteArrayOutputStream stream  = orderService.generateInvoice(store, order, lang);
 		StringBuilder attachment = new StringBuilder();
-		attachment.append("attachment; filename=");
+		//attachment.append("attachment; filename=");
 		attachment.append(order.getId());
 		attachment.append(".pdf");
 		
-		String fileName = attachment.toString();
-		fileName = fileName.replaceAll("\\s+", "-");
-		
-		
-		response.setContentType("application/pdf");      
-		response.setHeader("Content-Disposition", fileName); 
-		
-		
+        response.setHeader("Content-disposition", "attachment;filename=" + attachment.toString());
+
+        //Set the mime type for the response
+        response.setContentType("application/pdf");
+
 		
 		response.getOutputStream().write(stream.toByteArray());
 		
