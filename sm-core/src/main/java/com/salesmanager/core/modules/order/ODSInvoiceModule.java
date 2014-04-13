@@ -119,6 +119,8 @@ public class ODSInvoiceModule implements InvoiceModule {
 			//Address
 			//count store address cell
 			int storeAddressCell = ADDRESS_ROW_START;
+			
+			Map<String,Zone> zns = zoneService.getZones(language);
 
 			
 			//3
@@ -240,12 +242,10 @@ public class ODSInvoiceModule implements InvoiceModule {
 			StringBuilder billToProvince = null;
 			if(order.getBilling().getZone()!=null) {
 				billToProvince = new StringBuilder();
-				List<Zone> zns = zoneService.getZones(order.getBilling().getCountry(), language);
-				for(Zone z : zns) {
-					if(z.getCode().equals(order.getBilling().getZone().getCode())) {
+				
+				Zone billingZone = zns.get(order.getBilling().getZone().getCode());
+				if(billingZone!=null) {
 						billToProvince.append(order.getBilling().getZone().getName());
-						break;
-					}
 				}
 				
 			} else {
@@ -316,6 +316,9 @@ public class ODSInvoiceModule implements InvoiceModule {
 			for(OrderTotal orderTotal : totals) {
 				
 				String totalName = orderTotal.getText();
+				if(totalName.contains(".")) {
+					totalName = orderTotal.getTitle();
+				}
 				String totalValue = priceUtil.getStoreFormatedAmountWithCurrency(store,orderTotal.getValue());
 				sheet.setValueAt(totalName, 2, productCell);
 				sheet.setValueAt(totalValue, 3, productCell);

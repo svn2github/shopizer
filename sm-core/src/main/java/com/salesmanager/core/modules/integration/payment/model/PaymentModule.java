@@ -33,8 +33,12 @@ public interface PaymentModule {
 			MerchantStore store, Customer customer, List<ShoppingCartItem> items, BigDecimal amount, Payment payment, IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException;
 	
-	public Transaction capture(
+/*	public Transaction capture(
 			MerchantStore store, Customer customer, List<ShoppingCartItem> items, BigDecimal amount, Payment payment, Transaction transaction, IntegrationConfiguration configuration, IntegrationModule module)
+			throws IntegrationException;*/
+	
+	public Transaction capture(
+			MerchantStore store, Customer customer, Order order, Transaction capturableTransaction, IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException;
 	
 	public Transaction authorizeAndCapture(

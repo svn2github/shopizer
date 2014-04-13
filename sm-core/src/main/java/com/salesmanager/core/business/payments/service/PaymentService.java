@@ -85,7 +85,7 @@ public interface PaymentService {
 			throws ServiceException;
 
 	Transaction processCapturePayment(Order order, Customer customer,
-			MerchantStore store, Payment payment, List<ShoppingCartItem> items, BigDecimal amount)
+			MerchantStore store)
 			throws ServiceException;
 
 	List<PaymentMethod> getAcceptedPaymentMethods(MerchantStore store)

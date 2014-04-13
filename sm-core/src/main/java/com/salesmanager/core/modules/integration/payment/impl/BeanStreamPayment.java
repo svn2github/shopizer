@@ -81,7 +81,7 @@ public class BeanStreamPayment implements PaymentModule {
 
 	@Override
 	public Transaction capture(MerchantStore store, Customer customer,
-			List<ShoppingCartItem> items, BigDecimal amount, Payment payment, Transaction transaction, 
+			Order order, Transaction capturableTransaction,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
 
@@ -93,9 +93,9 @@ public class BeanStreamPayment implements PaymentModule {
 				//authorize a preauth 
 
 		
-				String trnID = transaction.getTransactionDetails().get("TRANSACTIONID");
+				String trnID = capturableTransaction.getTransactionDetails().get("TRANSACTIONID");
 				
-				String amnt = productPriceUtils.getAdminFormatedAmount(store, amount);
+				String amnt = productPriceUtils.getAdminFormatedAmount(store, order.getTotal());
 				
 				/**
 				merchant_id=123456789&requestType=BACKEND
@@ -117,7 +117,7 @@ public class BeanStreamPayment implements PaymentModule {
 		
 
 
-				Transaction response = this.sendTransaction(null, store, messageString.toString(), "PAC", TransactionType.CAPTURE, payment.getPaymentType(), amount, configuration, module);
+				Transaction response = this.sendTransaction(null, store, messageString.toString(), "PAC", TransactionType.CAPTURE, PaymentType.CREDITCARD, order.getTotal(), configuration, module);
 				
 				return response;
 				

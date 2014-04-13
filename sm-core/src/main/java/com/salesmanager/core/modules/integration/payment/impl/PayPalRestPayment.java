@@ -211,14 +211,14 @@ public class PayPalRestPayment implements PaymentModule {
 		
 	}
 
-	@Override
+/*	@Override
 	public Transaction capture(MerchantStore store, Customer customer,
 			List<ShoppingCartItem> items, BigDecimal amount, Payment payment, Transaction transaction,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}*/
 
 	@Override
 	public Transaction authorizeAndCapture(MerchantStore store,
@@ -248,6 +248,15 @@ public class PayPalRestPayment implements PaymentModule {
 		return null;
 		//return new OAuthTokenCredential(clientID, clientSecret)
 		//		.getAccessToken();
+	}
+
+	@Override
+	public Transaction capture(MerchantStore store, Customer customer,
+			Order order, Transaction capturableTransaction,
+			IntegrationConfiguration configuration, IntegrationModule module)
+			throws IntegrationException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -2,6 +2,7 @@ package com.salesmanager.core.business.payments.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -360,9 +361,7 @@ public class PaymentServiceImpl implements PaymentService {
 		} else if(transactionType == TransactionType.INIT)  {
 			transaction = module.initTransaction(store, customer, amount, payment, configuration, integrationModule);
 		}
-		
-		transaction.setPaymentType(payment.getPaymentType());
-		
+
 
 		if(transactionType != TransactionType.INIT) {
 			transactionService.create(transaction);
@@ -385,77 +384,65 @@ public class PaymentServiceImpl implements PaymentService {
 	
 	@Override
 	public Transaction processCapturePayment(Order order, Customer customer,
-			MerchantStore store, Payment payment, List<ShoppingCartItem> items, BigDecimal amount)
+			MerchantStore store)
 			throws ServiceException {
 
 
 		Validate.notNull(customer);
 		Validate.notNull(store);
-		Validate.notNull(payment);
-		Validate.notNull(amount);
 		Validate.notNull(order);
-		Validate.notNull(payment.getTransactionType());
+
 		
-		payment.setCurrency(store.getCurrency());
-		
-		if(!payment.getTransactionType().name().equals(TransactionType.CAPTURE.name())) {
-			throw new ServiceException("This method is for capture transaction only");
-		}
-		
-		
+
 		//must have a shipping module configured
 		Map<String, IntegrationConfiguration> modules = this.getPaymentModulesConfigured(store);
 		if(modules==null){
 			throw new ServiceException("No payment module configured");
 		}
 		
-		IntegrationConfiguration configuration = modules.get(payment.getModuleName());
+		IntegrationConfiguration configuration = modules.get(order.getPaymentModuleCode());
 		
 		if(configuration==null) {
-			throw new ServiceException("Payment module " + payment.getModuleName() + " is not configured");
+			throw new ServiceException("Payment module " + order.getPaymentModuleCode() + " is not configured");
 		}
 		
 		if(!configuration.isActive()) {
-			throw new ServiceException("Payment module " + payment.getModuleName() + " is not active");
+			throw new ServiceException("Payment module " + order.getPaymentModuleCode() + " is not active");
 		}
 		
 		
-		PaymentModule module = this.paymentModules.get(payment.getModuleName());
+		PaymentModule module = this.paymentModules.get(order.getPaymentModuleCode());
 		
 		if(module==null) {
-			throw new ServiceException("Payment module " + payment.getModuleName() + " does not exist");
+			throw new ServiceException("Payment module " + order.getPaymentModuleCode() + " does not exist");
 		}
 		
-		if(payment instanceof CreditCardPayment) {
-			CreditCardPayment creditCardPayment = (CreditCardPayment)payment;
-			validateCreditCard(creditCardPayment.getCreditCardNumber(),creditCardPayment.getCreditCard(),creditCardPayment.getExpirationMonth(),creditCardPayment.getExpirationYear());
-		}
+
+		IntegrationModule integrationModule = getPaymentMethodByCode(store,order.getPaymentModuleCode());
 		
-		
-		IntegrationModule integrationModule = getPaymentMethodByCode(store,payment.getModuleName());
-		
-		TransactionType transactionType = payment.getTransactionType();
+		//TransactionType transactionType = payment.getTransactionType();
 
 			//get the previous transaction
 		Transaction trx = transactionService.getCapturableTransaction(order);
 		if(trx==null) {
 			throw new ServiceException("No capturable transaction for order id " + order.getId());
 		}
-		Transaction transaction = module.capture(store, customer, items, amount, payment, trx, configuration, integrationModule);
+		Transaction transaction = module.capture(store, customer, order, trx, configuration, integrationModule);
 		transaction.setOrder(order);
 		
 		
-		if(transactionType != TransactionType.INIT) {
-			transactionService.create(transaction);
-		}
+
+		transactionService.create(transaction);
+		
 		
 		OrderStatusHistory orderHistory = new OrderStatusHistory();
 		orderHistory.setOrder(order);
-		orderHistory.setStatus(OrderStatus.ORDERED);
+		orderHistory.setStatus(OrderStatus.PROCESSED);
+		orderHistory.setDateAdded(new Date());
 		
 		orderService.addOrderStatusHistory(order, orderHistory);
 		
-		order.setStatus(OrderStatus.ORDERED);
+		order.setStatus(OrderStatus.PROCESSED);
 		orderService.saveOrUpdate(order);
 
 		return transaction;
@@ -530,6 +517,7 @@ public class PaymentServiceImpl implements PaymentService {
 		OrderStatusHistory orderHistory = new OrderStatusHistory();
 		orderHistory.setOrder(order);
 		orderHistory.setStatus(OrderStatus.REFUNDED);
+		orderHistory.setDateAdded(new Date());
 		
 		//create an entry in history
 		orderService.addOrderStatusHistory(order, orderHistory);

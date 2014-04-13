@@ -69,6 +69,7 @@ public class TransactionServiceImpl  extends SalesManagerEntityServiceImpl<Long,
 			throws ServiceException {
 		List<Transaction> transactions = transactionDao.listByOrder(order);
 		ObjectMapper mapper = new ObjectMapper();
+		Transaction capturable = null;
 		for(Transaction transaction : transactions) {
 			if(transaction.getTransactionType().name().equals(TransactionType.AUTHORIZE.name())) {
 				if(!StringUtils.isBlank(transaction.getDetails())) {
@@ -76,16 +77,21 @@ public class TransactionServiceImpl  extends SalesManagerEntityServiceImpl<Long,
 						@SuppressWarnings("unchecked")
 						Map<String,String> objects = mapper.readValue(transaction.getDetails(), Map.class);
 						transaction.setTransactionDetails(objects);
+						capturable = transaction;
 					} catch (Exception e) {
 						throw new ServiceException(e);
 					}
 				}
-				
-				return transaction;
+			}
+			if(transaction.getTransactionType().name().equals(TransactionType.CAPTURE.name())) {
+				break;
+			}
+			if(transaction.getTransactionType().name().equals(TransactionType.REFUND.name())) {
+				break;
 			}
 		}
 		
-		return null;
+		return capturable;
 	}
 	
 	@Override
@@ -110,8 +116,8 @@ public class TransactionServiceImpl  extends SalesManagerEntityServiceImpl<Long,
 			finalTransaction = finalTransactions.get(TransactionType.AUTHORIZECAPTURE.name());
 		}
 		
-		if(finalTransactions.containsKey(TransactionType.CAPTURE.name())) {
-			finalTransaction = finalTransactions.get(TransactionType.CAPTURE.name());
+		if(finalTransactions.containsKey(TransactionType.AUTHORIZE.name())) {
+			finalTransaction = finalTransactions.get(TransactionType.AUTHORIZE.name());
 		}
 
 		

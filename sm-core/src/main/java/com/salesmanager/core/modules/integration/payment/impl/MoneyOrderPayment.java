@@ -70,14 +70,14 @@ public class MoneyOrderPayment implements PaymentModule {
 		return null;
 	}
 
-	@Override
+/*	@Override
 	public Transaction capture(MerchantStore store, Customer customer,
 			List<ShoppingCartItem> items, BigDecimal amount, Payment payment, Transaction transaction,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
 		//NOT REQUIRED
 		return null;
-	}
+	}*/
 
 	@Override
 	public Transaction authorizeAndCapture(MerchantStore store, Customer customer,
@@ -105,6 +105,15 @@ public class MoneyOrderPayment implements PaymentModule {
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
 		throw new IntegrationException("Transaction not supported");
+	}
+
+	@Override
+	public Transaction capture(MerchantStore store, Customer customer,
+			Order order, Transaction capturableTransaction,
+			IntegrationConfiguration configuration, IntegrationModule module)
+			throws IntegrationException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
