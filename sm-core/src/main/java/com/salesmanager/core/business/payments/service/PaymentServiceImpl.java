@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +21,8 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.order.model.OrderTotal;
+import com.salesmanager.core.business.order.model.OrderTotalType;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatus;
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
 import com.salesmanager.core.business.order.service.OrderService;
@@ -36,6 +39,7 @@ import com.salesmanager.core.business.system.model.IntegrationModule;
 import com.salesmanager.core.business.system.model.MerchantConfiguration;
 import com.salesmanager.core.business.system.service.MerchantConfigurationService;
 import com.salesmanager.core.business.system.service.ModuleConfigurationService;
+import com.salesmanager.core.constants.Constants;
 import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.modules.integration.payment.model.PaymentModule;
 import com.salesmanager.core.modules.utils.Encryption;
@@ -461,6 +465,7 @@ public class PaymentServiceImpl implements PaymentService {
 		Validate.notNull(store);
 		Validate.notNull(amount);
 		Validate.notNull(order);
+		Validate.notNull(order.getOrderTotal());
 		
 		
 		BigDecimal orderTotal = order.getTotal();
@@ -506,6 +511,18 @@ public class PaymentServiceImpl implements PaymentService {
 		transaction.setOrder(order);
 		transactionService.create(transaction);
 		
+        OrderTotal refund = new OrderTotal();
+        refund.setModule(Constants.OT_REFUND_MODULE_CODE);
+        refund.setText(Constants.OT_REFUND_MODULE_CODE);
+        refund.setTitle(Constants.OT_REFUND_MODULE_CODE);
+        refund.setOrderTotalCode(Constants.OT_REFUND_MODULE_CODE);
+        refund.setOrderTotalType(OrderTotalType.REFUND);
+        refund.setValue(amount);
+        refund.setSortOrder(100);
+        refund.setOrder(order);
+        
+        order.getOrderTotal().add(refund);
+
 		
 		//update order total
 		orderTotal = orderTotal.subtract(amount);

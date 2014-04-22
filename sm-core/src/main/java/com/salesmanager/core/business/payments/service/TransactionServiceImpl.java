@@ -9,6 +9,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.mysql.jdbc.log.Log;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.generic.service.SalesManagerEntityServiceImpl;
 import com.salesmanager.core.business.order.model.Order;
@@ -48,7 +49,6 @@ public class TransactionServiceImpl  extends SalesManagerEntityServiceImpl<Long,
 		List<Transaction> transactions = transactionDao.listByOrder(order);
 		ObjectMapper mapper = new ObjectMapper();
 		for(Transaction transaction : transactions) {
-			if(transaction.getTransactionType().name().equals(TransactionType.AUTHORIZE.name())) {
 				if(!StringUtils.isBlank(transaction.getDetails())) {
 					try {
 						@SuppressWarnings("unchecked")
@@ -58,7 +58,6 @@ public class TransactionServiceImpl  extends SalesManagerEntityServiceImpl<Long,
 						throw new ServiceException(e);
 					}
 				}
-			}
 		}
 		
 		return transactions;
@@ -101,14 +100,38 @@ public class TransactionServiceImpl  extends SalesManagerEntityServiceImpl<Long,
 		Map<String,Transaction> finalTransactions = new HashMap<String,Transaction>();
 		Transaction finalTransaction = null;
 		for(Transaction transaction : transactions) {
+			//System.out.println("Transaction type " + transaction.getTransactionType().name());
 			if(transaction.getTransactionType().name().equals(TransactionType.AUTHORIZECAPTURE.name())) {
 				finalTransactions.put(TransactionType.AUTHORIZECAPTURE.name(),transaction);
+				continue;
 			}
 			if(transaction.getTransactionType().name().equals(TransactionType.CAPTURE.name())) {
 				finalTransactions.put(TransactionType.CAPTURE.name(),transaction);
+				continue;
 			}
 			if(transaction.getTransactionType().name().equals(TransactionType.REFUND.name())) {
-				finalTransactions.put(TransactionType.REFUND.name(),transaction);
+				//check transaction id
+				Transaction previousRefund = finalTransactions.get(TransactionType.REFUND.name());
+				if(previousRefund!=null) {
+					String transactionId = previousRefund.getTransactionDetails().get("TRANSACTIONID");
+					String currentTransactionId = transaction.getTransactionDetails().get("TRANSACTIONID");
+					if(StringUtils.isBlank(transactionId) || StringUtils.isBlank(currentTransactionId)) {
+						throw new ServiceException("TRANSACTIONID does not exist in transaction");
+					}
+					try {
+							Long trxId = Long.parseLong(transactionId);
+							Long lcurrentTransactionId = Long.parseLong(currentTransactionId);
+							if(lcurrentTransactionId>trxId) {
+								finalTransactions.put(TransactionType.REFUND.name(),transaction);
+								continue;
+							}
+					} catch(Exception e) {
+							throw new ServiceException("Cannot parse TRANSACTIONID " + transactionId,e);
+					}
+				} else {
+					finalTransactions.put(TransactionType.REFUND.name(),transaction);
+					continue;
+				}
 			}
 		}
 		
@@ -116,8 +139,12 @@ public class TransactionServiceImpl  extends SalesManagerEntityServiceImpl<Long,
 			finalTransaction = finalTransactions.get(TransactionType.AUTHORIZECAPTURE.name());
 		}
 		
-		if(finalTransactions.containsKey(TransactionType.AUTHORIZE.name())) {
-			finalTransaction = finalTransactions.get(TransactionType.AUTHORIZE.name());
+		if(finalTransactions.containsKey(TransactionType.CAPTURE.name())) {
+			finalTransaction = finalTransactions.get(TransactionType.CAPTURE.name());
+		}
+		
+		if(finalTransactions.containsKey(TransactionType.REFUND.name())) {
+			finalTransaction = finalTransactions.get(TransactionType.REFUND.name());
 		}
 
 		

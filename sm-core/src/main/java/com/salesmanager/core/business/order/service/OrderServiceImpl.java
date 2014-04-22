@@ -318,7 +318,7 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
         orderTotal.setOrderTotalCode("order.total.total");
         orderTotal.setTitle(Constants.OT_TOTAL_MODULE_CODE);
         orderTotal.setText("order.total.total");
-        orderTotal.setSortOrder(30);
+        orderTotal.setSortOrder(300);
         orderTotal.setValue(grandTotal);
         orderTotals.add(orderTotal);
 
