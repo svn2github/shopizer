@@ -16,7 +16,7 @@ public class AdminAccessDeniedHandler implements AccessDeniedHandler {
 			HttpServletResponse response,
 			AccessDeniedException accessDeniedException) throws IOException,
 			ServletException {
-		response.sendRedirect(getAccessDeniedUrl());
+		response.sendRedirect(request.getContextPath() + getAccessDeniedUrl());
 
 	}
 	

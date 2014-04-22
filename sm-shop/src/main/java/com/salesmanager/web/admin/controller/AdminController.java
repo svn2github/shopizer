@@ -65,13 +65,7 @@ public class AdminController {
 		return ControllerConstants.Tiles.adminDashboard;
 	}
 	
-/*	@RequestMapping(value={"/admin/denied.html"}, method=RequestMethod.GET)
-	public ModelAndView accessDenied(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		return new ModelAndView("error/access_denied");
-	}*/
-	
-	
 
 
 }

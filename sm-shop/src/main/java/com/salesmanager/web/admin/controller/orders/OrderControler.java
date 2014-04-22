@@ -180,14 +180,14 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 				model.addAttribute("capturableTransaction",capturableTransaction);
 			}
 			
-			if(capturableTransaction==null) {
-				//get refundable
-				model.addAttribute("capturableTransaction",capturableTransaction);
-				Transaction refundableTransaction = transactionService.getRefundableTransaction(dbOrder);
-				if(refundableTransaction!=null) {
+			
+			//get refundable
+			Transaction refundableTransaction = transactionService.getRefundableTransaction(dbOrder);
+			if(refundableTransaction!=null) {
+					model.addAttribute("capturableTransaction",null);//remove capturable
 					model.addAttribute("refundableTransaction",refundableTransaction);
-				}
 			}
+
 			
 			List<OrderProductDownload> orderProductDownloads = orderProdctDownloadService.getByOrderId(order.getId());
 			if(CollectionUtils.isNotEmpty(orderProductDownloads)) {
