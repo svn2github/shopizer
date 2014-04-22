@@ -24,9 +24,7 @@
         	}
         	
         	$('#signinPane').showLoading();
-        	//var data = $(this).serialize();
 
-           
             $.ajax({
                  type: "POST",
                  //my version
@@ -47,8 +45,8 @@
        					  $.cookie('cart',cartCode, { expires: 1024, path:'/' });
           			      
                 	   }
+                	   //console.log('href -> ' + $(location).attr('href'));
                 	   location.href=  $(location).attr('href');
-                	   //location.href= getContextPath() + "/shop/customer/dashboard.html";
                     } else {
                         $("#loginError").html(getLoginErrorLabel());
                         $("#loginError").show();

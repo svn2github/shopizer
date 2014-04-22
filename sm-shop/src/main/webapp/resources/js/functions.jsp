@@ -118,8 +118,6 @@ function searchProducts(url,divProductsContainer,q,filter) {
 		var queryEnd = '}';
 		
 		query = queryStart + query + queryEnd;
-	
-		//alert(query);
 
 		$.ajax({
 	  			cache: false,

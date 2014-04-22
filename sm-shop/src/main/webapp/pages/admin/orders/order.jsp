@@ -203,7 +203,7 @@ function captureOrder(orderId){
 		  success: function(response){
 				var status = response.response.status;
 				var data = response.response.data;
-				console.log(status);
+				//console.log(status);
 				if(status==0 || status ==9999) {
 					$(".alert-success").show();
 					window.location='<c:url value="/admin/orders/editOrder.html" />?id=' + orderId;
@@ -223,9 +223,8 @@ function captureOrder(orderId){
 	$(document).ready(function(){ 
 	
 		$("#refundAction").click(function() {
+			resetMessages();
 			$('#refundModal').modal();
- 			$(".alert-success").hide();
- 			$(".alert-error").hide();
 		}); 
 		
 		$("#transactionsAction").click(function() {
@@ -298,8 +297,6 @@ function captureOrder(orderId){
 
         $("#refund").submit(function() {
  			$('#refundModal').showLoading();
- 			$(".alert-success").hide();
- 			$(".alert-error").hide();
             var data = $(this).serializeObject();
             $.ajax({
                 'type': 'POST',
@@ -311,12 +308,13 @@ function captureOrder(orderId){
                    $('#refundModal').hideLoading();
                    var response = result.response;
                    if (response.status==0) {
-                        $(".alert-success").show();
-                        $(".cancel-modal").hide();
-                        $(".close-modal").show();
+   						$(".alert-success").show();
+						window.location='<c:url value="/admin/orders/editOrder.html" />?id=<c:out value="${order.order.id}" />';
+                        $(".alert-success-modal").show();
+                        //$(".close-modal").show();
                    } else { 
-                        $(".alert-error").html(response.statusMessage);
-                        $(".alert-error").show();
+                        $(".alert-error-modal").html(response.statusMessage);
+                        $(".alert-error-modal").show();
                    }
                 }
             });
@@ -385,12 +383,14 @@ function captureOrder(orderId){
 						</li>
                      </ul>
                 	&nbsp;
+                	<c:if test="${order.order.total>0}">
 	            	<c:if test="${capturableTransaction!=null}">
 	            		 <a id="captureAction" class="btn btn-primary btn-block" href="#"><s:message code="label.order.capture" text="Capture transaction"/></a>
 	            	</c:if>
 	            	<c:if test="${refundableTransaction!=null}">
 	            		 <a id="refundAction" class="btn btn-danger btn-block" href="#"><s:message code="label.order.refund" text="Apply refund"/></a>
-	            	</c:if>         
+	            	</c:if>  
+	            	</c:if>       
                      
               </div><!-- /btn-group -->
 			  <br/>
@@ -626,7 +626,6 @@ function captureOrder(orderId){
               
 	              <div class="form-actions">
 	              		<button  type="submit" class="btn btn-medium btn-primary" ><s:message code="button.label.save" text="Save"/></button>
-	              		<!--<button id="refundButton" class="btn btn-medium btn-danger" type="button"><s:message code="label.order.refund" text="Apply refund"/></button>-->
 	      		  </div>
       		</div> 
             <br/>   
@@ -673,12 +672,15 @@ function captureOrder(orderId){
 <div id="refundModal"  class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="z-index:500000;">
   <div class="modal-header">
           <button type="button" class="close close-modal" data-dismiss="modal" aria-hidden="true">X</button>
-          <h3 id="myModalLabel"><s:message code="label.order.refund" text="Apply refund"/></h3>
+          <h3 id="myModalLabel"><s:message code="label.order.refund" text="Apply refund"/> - 
+          		<s:message code="label.order.id2" text="Order ID"/> 
+                <c:out value="${order.order.id}" />
+           </h3>
   </div>
     <div class="modal-body">
     
-    	  <div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>   
-	      <div id="store.error" class="alert alert-error" style="display:none;"><s:message code="message.error" text="An error occured"/></div>
+    	  <div id="store.success" class="alert alert-success alert-success-modal" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>   
+	      <div id="store.error" class="alert alert-error alert-error-modal" style="display:none;"><s:message code="message.error" text="An error occured"/></div>
 
            <p>
            		<s:message code="label.order.total" text="Total" />: <strong><c:out value="${order.order.total}"/></strong>
