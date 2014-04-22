@@ -35,16 +35,6 @@
 	},
 	{
 		"module": "PAYMENT",
-		"code": "paypal",
-		"type":"paypal",
-		"version":"0.7.1",
-		"regions": ["*"],
-		"image":"icon-paypal.png",
-		"configuration":[{"env":"TEST","scheme":"https","host":"api.sandbox.paypal.com","port":"443","uri":""},{"env":"PROD","scheme":"https","host":"api.paypal.com","port":"443","uri":""}]
-
-	},
-	{
-		"module": "PAYMENT",
 		"code": "paypal-express-checkout",
 		"type":"paypal",
 		"version":"104.0",
@@ -60,7 +50,7 @@
 		"code": "beanstream",
 		"type":"creditcard",
 		"version":"",
-		"regions": ["US","CA"],
+		"regions": ["US","CA","UK"],
 		"image":"beanstream.gif",
 		"configuration":[{"env":"TEST","scheme":"https","host":"www.beanstream.com","port":"443","uri":"/scripts/process_transaction.asp"},{"env":"PROD","scheme":"https","host":"www.beanstream.com","port":"443","uri":"/scripts/process_transaction.asp"}]
 
