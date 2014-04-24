@@ -1,5 +1,6 @@
 package com.salesmanager.core.business.payments.service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,20 +114,11 @@ public class TransactionServiceImpl  extends SalesManagerEntityServiceImpl<Long,
 				//check transaction id
 				Transaction previousRefund = finalTransactions.get(TransactionType.REFUND.name());
 				if(previousRefund!=null) {
-					String transactionId = previousRefund.getTransactionDetails().get("TRANSACTIONID");
-					String currentTransactionId = transaction.getTransactionDetails().get("TRANSACTIONID");
-					if(StringUtils.isBlank(transactionId) || StringUtils.isBlank(currentTransactionId)) {
-						throw new ServiceException("TRANSACTIONID does not exist in transaction");
-					}
-					try {
-							Long trxId = Long.parseLong(transactionId);
-							Long lcurrentTransactionId = Long.parseLong(currentTransactionId);
-							if(lcurrentTransactionId>trxId) {
-								finalTransactions.put(TransactionType.REFUND.name(),transaction);
-								continue;
-							}
-					} catch(Exception e) {
-							throw new ServiceException("Cannot parse TRANSACTIONID " + transactionId,e);
+					Date previousDate = previousRefund.getTransactionDate();
+					Date currentDate = transaction.getTransactionDate();
+					if(previousDate.before(currentDate)) {
+						finalTransactions.put(TransactionType.REFUND.name(),transaction);
+						continue;
 					}
 				} else {
 					finalTransactions.put(TransactionType.REFUND.name(),transaction);
@@ -143,9 +135,9 @@ public class TransactionServiceImpl  extends SalesManagerEntityServiceImpl<Long,
 			finalTransaction = finalTransactions.get(TransactionType.CAPTURE.name());
 		}
 		
-		if(finalTransactions.containsKey(TransactionType.REFUND.name())) {
-			finalTransaction = finalTransactions.get(TransactionType.REFUND.name());
-		}
+		//if(finalTransactions.containsKey(TransactionType.REFUND.name())) {
+		//	finalTransaction = finalTransactions.get(TransactionType.REFUND.name());
+		//}
 
 		
 		if(finalTransaction!=null && !StringUtils.isBlank(finalTransaction.getDetails())) {

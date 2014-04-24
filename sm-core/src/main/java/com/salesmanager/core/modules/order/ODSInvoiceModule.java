@@ -245,7 +245,7 @@ public class ODSInvoiceModule implements InvoiceModule {
 				
 				Zone billingZone = zns.get(order.getBilling().getZone().getCode());
 				if(billingZone!=null) {
-						billToProvince.append(order.getBilling().getZone().getName());
+						billToProvince.append(billingZone.getName());
 				}
 				
 			} else {

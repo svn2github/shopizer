@@ -522,23 +522,33 @@ public class PaymentServiceImpl implements PaymentService {
         refund.setOrder(order);
         
         order.getOrderTotal().add(refund);
-
-		
+        
 		//update order total
 		orderTotal = orderTotal.subtract(amount);
+        
+        //update ordertotal refund
+        Set<OrderTotal> totals = order.getOrderTotal();
+        for(OrderTotal total : totals) {
+        	if(total.getModule().equals(Constants.OT_TOTAL_MODULE_CODE)) {
+        		total.setValue(orderTotal);
+        	}
+        }
+
+		
+
 		order.setTotal(orderTotal);
 		order.setStatus(OrderStatus.REFUNDED);
 		
-		orderService.saveOrUpdate(order);
+		
 		
 		OrderStatusHistory orderHistory = new OrderStatusHistory();
 		orderHistory.setOrder(order);
 		orderHistory.setStatus(OrderStatus.REFUNDED);
 		orderHistory.setDateAdded(new Date());
-		
-		//create an entry in history
-		orderService.addOrderStatusHistory(order, orderHistory);
-		
+        order.getOrderHistory().add(orderHistory);
+        
+        orderService.saveOrUpdate(order);
+
 		return transaction;
 	}
 	
