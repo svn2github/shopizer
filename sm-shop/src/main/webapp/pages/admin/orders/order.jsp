@@ -195,7 +195,6 @@ function sendDownloadEmail(orderId){
 }
 
 function captureOrder(orderId){
-
 	$.ajax({
 		  type: 'POST',
 		  url: '<c:url value="/admin/orders/captureOrder.html"/>?id=' + orderId,
@@ -211,6 +210,7 @@ function captureOrder(orderId){
 					$(".alert-error").show();
 				}
 				$('.sm').hideLoading();
+				$('#captureAction').removeClass('disabled');
 		  },
 		    error: function(xhr, textStatus, errorThrown) {
 		  	alert('error ' + errorThrown);
@@ -252,6 +252,7 @@ function captureOrder(orderId){
 		
 		$("#captureAction").click(function() {
 			resetMessages();
+			$('#captureAction').addClass('disabled');
 			$('.sm').showLoading();
 			captureOrder('<c:out value="${order.order.id}"/>');
 		});
@@ -296,6 +297,7 @@ function captureOrder(orderId){
     $(function() {
 
         $("#refund").submit(function() {
+        	$('#refundButton').addClass('disabled');
  			$('#refundModal').showLoading();
             var data = $(this).serializeObject();
             $.ajax({
@@ -307,15 +309,15 @@ function captureOrder(orderId){
                 'success': function(result) {
                    $('#refundModal').hideLoading();
                    var response = result.response;
-                   if (response.status==0) {
-   						$(".alert-success").show();
-						window.location='<c:url value="/admin/orders/editOrder.html" />?id=<c:out value="${order.order.id}" />';
+                   if(status==0 || status ==9999) {
+						//window.location='<c:url value="/admin/orders/editOrder.html" />?id=<c:out value="${order.order.id}" />';
                         $(".alert-success-modal").show();
                         //$(".close-modal").show();
                    } else { 
                         $(".alert-error-modal").html(response.statusMessage);
                         $(".alert-error-modal").show();
                    }
+                   $('#refundButton').removeClass('disabled');
                 }
             });
  
@@ -375,7 +377,7 @@ function captureOrder(orderId){
 				    	</li>
 				    	
 				    	<li><a href="<c:url value="/admin/orders/printInvoice.html?id=${order.id}" />"><s:message code="label.order.printinvoice" text="Print invoice"/></a></li>
-				    	<li><a href="<c:url value="/admin/orders/printShippingLabel.html?id=${order.id}" />"><s:message code="label.order.packing" text="Print packing slip"/></a></li>
+				    	<!-- available soon <li><a href="<c:url value="/admin/orders/printShippingLabel.html?id=${order.id}" />"><s:message code="label.order.packing" text="Print packing slip"/></a></li>-->
 				    	<li>
 				    		<c:if test="${customer!=null}">
 								<a href="<c:url value="/admin/customers/customer.html?id=${customer.id}"/>"><s:message code="label.order.editcustomer" text="Edit customer"/></a>
@@ -539,7 +541,11 @@ function captureOrder(orderId){
 
 	            <label><s:message code="label.order.paymentmode" text="Payment mode"/></label>
 	            <div class="controls">
-		 			 <strong><c:out value="${order.order.paymentType}"/> - <c:out value="${order.order.paymentModuleCode}"/></strong><form:hidden  path="order.paymentModuleCode"/><br/><br/>
+		 			 <strong><c:out value="${order.order.paymentType}"/> - <c:out value="${order.order.paymentModuleCode}"/></strong>
+		 			 <c:if test="${order.order.paymentType=='CREDITCARD' && order.order.creditCard!=null}">
+		 			 	<br/><c:out value="${order.order.creditCard.cardType}"/> - <c:out value="${order.order.creditCard.ccNumber}"/>
+		 			 </c:if>
+		 			 <br/><br/>
 	            </div>	
 	            
 	            <c:if test="${order.order.shippingModuleCode!=null}">
@@ -585,8 +591,8 @@ function captureOrder(orderId){
 					 	<c:forEach items="${order.order.orderTotal}" var="orderTotal" varStatus="counter">	
 							<tr class="subt"> 
 								<td colspan="2">&nbsp;</td> 
-								<td colspan="2" ><s:message code="${orderTotal.orderTotalCode}" text="${orderTotal.orderTotalCode}"/></td> 
-								<td ><strong><sm:monetary value="${orderTotal.value}" currency="${order.order.currency}"/></strong></td> 
+								<td colspan="2" ><c:if test="${orderTotal.orderTotalCode=='refund'}"><font color="red"></c:if><s:message code="${orderTotal.orderTotalCode}" text="${orderTotal.orderTotalCode}"/><c:if test="${orderTotal.orderTotalCode=='refund'}"></font></c:if></td> 
+								<td ><strong><c:if test="${orderTotal.orderTotalCode=='refund'}"><font color="red"></c:if><sm:monetary value="${orderTotal.value}" currency="${order.order.currency}"/><c:if test="${orderTotal.orderTotalCode=='refund'}"></font></c:if></strong></td> 
 							</tr> 
 						</c:forEach> 	 
 					</tbody>    
@@ -665,7 +671,7 @@ function captureOrder(orderId){
              
     </div>  
     <div class="modal-footer">
-           <button class="btn btn-primary close-modal" id="closeModal" data-dismiss="modal" aria-hidden="true"><s:message code="button.label.close" text="Close" /></button>
+           <button class="btn btn-primary" id="closeModal" data-dismiss="modal" aria-hidden="true"><s:message code="button.label.close" text="Close" /></button>
     </div>
 </div>
 
@@ -697,8 +703,7 @@ function captureOrder(orderId){
              
     </div>  
     <div class="modal-footer">
-           <button class="btn cancel-modal" data-dismiss="modal" aria-hidden="true"><s:message code="button.label.cancel" text="Cancel" /></button>
-           <button class="btn btn-primary close-modal" id="closeModal" data-dismiss="modal" aria-hidden="true" style="display:none;"><s:message code="button.label.close" text="Close" /></button>
+           <button class="btn btn-primary close-modal" id="closeModal" data-dismiss="modal" aria-hidden="true"><s:message code="button.label.close" text="Close" /></button>
     </div>
 </div>
 
