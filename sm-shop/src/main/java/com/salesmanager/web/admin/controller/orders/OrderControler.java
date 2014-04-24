@@ -313,7 +313,6 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		}
 
 		newOrder.setCustomerEmailAddress(entityOrder.getOrder().getCustomerEmailAddress() );
-		newOrder.setPaymentType(entityOrder.getOrder().getPaymentType() );
 		newOrder.setStatus(entityOrder.getOrder().getStatus() );		
 		
 		newOrder.setDatePurchased(date);

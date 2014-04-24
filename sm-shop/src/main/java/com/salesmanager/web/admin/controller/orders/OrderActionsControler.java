@@ -190,7 +190,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderActionsControl
 					return resp.toJSONString();
 				}
 				
-				if(submitedAmount.doubleValue()<0) {
+				if(submitedAmount.doubleValue()<=0) {
 					resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 					resp.setStatusMessage(messages.getMessage("message.invalid.amount", locale));
 					return resp.toJSONString();

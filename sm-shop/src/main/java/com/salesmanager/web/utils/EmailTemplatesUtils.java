@@ -79,6 +79,8 @@ public class EmailTemplatesUtils {
 		       LOGGER.info( "Sending welcome email to customer" );
 		       try {
 		    	   
+		    	   Map<String,Zone> zones = zoneService.getZones(language);
+		    	   
 		    	   Map<String,Country> countries = countryService.getCountriesMap(language);
 		    	   
 		    	   //format Billing address
@@ -93,8 +95,13 @@ public class EmailTemplatesUtils {
 		    	   billing.append(order.getBilling().getCity()).append(", ");
 		    	   
 		    	   if(order.getBilling().getZone()!=null) {
-		    		   Zone zone = zoneService.getByCode(order.getBilling().getZone().getCode());
-		    		   billing.append(zone.getName()).append(LINE_BREAK);
+		    		   Zone zone = zones.get(order.getBilling().getZone().getCode());
+		    		   if(zone!=null) {
+		    			   billing.append(zone.getName());
+		    		   } else {
+		    			   billing.append(zone.getCode());
+		    		   }
+		    		   billing.append(LINE_BREAK);
 		    	   } else if(!StringUtils.isBlank(order.getBilling().getState())) {
 		    		   billing.append(order.getBilling().getState()).append(LINE_BREAK); 
 		    	   }
@@ -119,8 +126,13 @@ public class EmailTemplatesUtils {
 			    	   shipping.append(order.getDelivery().getCity()).append(", ");
 			    	   
 			    	   if(order.getDelivery().getZone()!=null) {
-			    		   Zone zone = zoneService.getByCode(order.getDelivery().getZone().getCode());
-			    		   shipping.append(zone.getName()).append(LINE_BREAK);
+			    		   Zone zone = zones.get(order.getDelivery().getZone().getCode());
+			    		   if(zone!=null) {
+			    			   shipping.append(zone.getName());
+			    		   } else {
+			    			   shipping.append(zone.getCode());
+			    		   }
+			    		   shipping.append(LINE_BREAK);
 			    	   } else if(!StringUtils.isBlank(order.getDelivery().getState())) {
 			    		   shipping.append(order.getDelivery().getState()).append(LINE_BREAK); 
 			    	   }
