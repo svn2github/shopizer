@@ -55,6 +55,7 @@ public class AjaxResponse implements JSONAware {
 		this.setStatusMessage(t);
 	}
 	
+
 	public void addValidationMessage(String fieldName, String message) {
 		this.validationMessages.put(fieldName, message);
 	}

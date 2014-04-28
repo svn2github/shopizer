@@ -275,6 +275,7 @@ public class ODSInvoiceModule implements InvoiceModule {
 			
 			//12
 			if(!StringUtils.isBlank(order.getBilling().getPostalCode())) {
+				billToCell ++;
 				sheet.setValueAt(order.getBilling().getPostalCode(), 0, billToCell);
 				billToCell ++;
 			}

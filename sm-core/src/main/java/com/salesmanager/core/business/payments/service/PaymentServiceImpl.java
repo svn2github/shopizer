@@ -372,7 +372,10 @@ public class PaymentServiceImpl implements PaymentService {
 		}
 		
 		if(transactionType == TransactionType.AUTHORIZECAPTURE)  {
-			order.setStatus(OrderStatus.PROCESSED);
+			order.setStatus(OrderStatus.ORDERED);
+			if(payment.getPaymentType().name()!=PaymentType.MONEYORDER.name()) {
+				order.setStatus(OrderStatus.PROCESSED);
+			}
 		}
 
 		return transaction;

@@ -13,6 +13,7 @@ public class ServiceException extends Exception {
 
 	public final static int EXCEPTION_VALIDATION = 99;
 	public final static int EXCEPTION_PAYMENT_DECLINED = 100;
+	public final static int EXCEPTION_TRANSACTION_DECLINED = 101;
 	
 	private String messageCode = null;
 

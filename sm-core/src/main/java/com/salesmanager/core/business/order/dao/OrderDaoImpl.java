@@ -72,7 +72,7 @@ public class OrderDaoImpl  extends SalesManagerEntityDaoImpl<Long, Order> implem
 		}
 		
 		if(!StringUtils.isBlank(criteria.getPaymentMethod())) {
-			countBuilderWhere.append(" and o.paymentMethod=:pm");
+			countBuilderWhere.append(" and o.paymentModuleCode like:pm");
 		}
 
 		Query countQ = super.getEntityManager().createQuery(
@@ -81,11 +81,11 @@ public class OrderDaoImpl  extends SalesManagerEntityDaoImpl<Long, Order> implem
 		countQ.setParameter("mId", store.getId());
 		
 		if(!StringUtils.isBlank(criteria.getCustomerName())) {
-			countQ.setParameter("nm", criteria.getCustomerName());
+			countQ.setParameter("nm",new StringBuilder().append("%").append(criteria.getCustomerName()).append("%").toString());
 		}
 		
 		if(!StringUtils.isBlank(criteria.getPaymentMethod())) {
-			countQ.setParameter("pm", criteria.getPaymentMethod());
+			countQ.setParameter("pm",new StringBuilder().append("%").append(criteria.getPaymentMethod()).append("%").toString());
 		}
 		
 
@@ -123,18 +123,19 @@ public class OrderDaoImpl  extends SalesManagerEntityDaoImpl<Long, Order> implem
 		if(!StringUtils.isBlank(criteria.getCustomerName())) {
 			if(pBuilder==null) {
 				pBuilder = new BooleanBuilder();
-			}
-			pBuilder.and(qOrder.billing.firstName.like(criteria.getCustomerName())
-					.or(qOrder.billing.lastName.like(criteria.getCustomerName())));
-
-
+			}			pBuilder.and(qOrder.billing.firstName.like(new StringBuilder().append("%").append(criteria.getCustomerName()).append("%").toString())
+					.or(qOrder.billing.lastName.like(new StringBuilder().append("%").append(criteria.getCustomerName()).append("%").toString())));
 		}
 		
 		if(!StringUtils.isBlank(criteria.getPaymentMethod())) {
 			if(pBuilder==null) {
 				pBuilder = new BooleanBuilder();
 			}
-			pBuilder.and(qOrder.paymentType.stringValue().like(criteria.getPaymentMethod()));
+			pBuilder.and(qOrder.paymentModuleCode.stringValue().like(new StringBuilder().append("%").append(criteria.getPaymentMethod()).append("%").toString()));
+		}
+		
+		if(pBuilder!=null) {
+			query.where(pBuilder);
 		}
 		
 		if(criteria.getOrderBy().name().equals(CriteriaOrderBy.ASC)) {

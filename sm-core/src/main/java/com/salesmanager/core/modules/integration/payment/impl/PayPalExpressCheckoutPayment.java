@@ -41,6 +41,7 @@ import urn.ebay.apis.eBLBaseComponents.SetExpressCheckoutRequestDetailsType;
 
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.model.OrderTotal;
@@ -382,7 +383,7 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 			 
 			 if(!"Success".equals(refundAck)) {
 				LOGGER.error("Wrong value from transaction commit " + refundAck);
-				throw new IntegrationException("Wrong paypal ack from refund transaction " + refundAck);
+				throw new IntegrationException(ServiceException.EXCEPTION_TRANSACTION_DECLINED,"Paypal refund transaction code [" + refundTransactionResponse.getErrors().get(0).getErrorCode() + "], message-> " + refundTransactionResponse.getErrors().get(0).getShortMessage());
 			 }
 
 			 
@@ -400,7 +401,11 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 			
 			
 		} catch(Exception e) {
-			throw new IntegrationException(e);
+			if(e instanceof IntegrationException) {
+				throw (IntegrationException)e;
+			} else {
+				throw new IntegrationException(e);
+			}
 		}
 
 		
@@ -634,7 +639,7 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 			 newTransaction.setTransactionType(TransactionType.CAPTURE);
 			 newTransaction.setPaymentType(PaymentType.PAYPAL);
 			 newTransaction.getTransactionDetails().put("AUTHORIZATIONID", doCaptureResponse.getDoCaptureResponseDetails().getAuthorizationID());
-			 
+			 newTransaction.getTransactionDetails().put("TRANSACTIONID", (String)capturableTransaction.getTransactionDetails().get("TRANSACTIONID"));
 
 			return newTransaction;
 			
