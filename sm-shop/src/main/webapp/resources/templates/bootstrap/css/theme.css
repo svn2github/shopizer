@@ -232,6 +232,13 @@ a:hover{
 	margin:25px 0
 }
 
+.logon-box {
+	list-style-type: none;
+	padding-top: 8px;
+	z-index:500000;	
+}
+
+
 .products-title {
     background-color: #FBFBFB;
     background-image: -moz-linear-gradient(center top , #FFFFFF, #F5F5F5);

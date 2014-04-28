@@ -309,8 +309,9 @@ function captureOrder(orderId){
                 'success': function(result) {
                    $('#refundModal').hideLoading();
                    var response = result.response;
+                   var status = response.status;
                    if(status==0 || status ==9999) {
-						//window.location='<c:url value="/admin/orders/editOrder.html" />?id=<c:out value="${order.order.id}" />';
+                	    //window.location='<c:url value="/admin/orders/editOrder.html" />?id=<c:out value="${order.order.id}" />';
                         $(".alert-success-modal").show();
                         //$(".close-modal").show();
                    } else { 

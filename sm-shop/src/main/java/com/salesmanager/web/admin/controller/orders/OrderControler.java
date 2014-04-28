@@ -40,6 +40,7 @@ import com.salesmanager.core.business.order.model.orderproduct.OrderProductDownl
 import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory;
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.order.service.orderproduct.OrderProductDownloadService;
+import com.salesmanager.core.business.payments.model.PaymentType;
 import com.salesmanager.core.business.payments.model.Transaction;
 import com.salesmanager.core.business.payments.service.PaymentService;
 import com.salesmanager.core.business.payments.service.TransactionService;
@@ -175,17 +176,21 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 			orderHistory = dbOrder.getOrderHistory();
 			
 			//get capturable
-			Transaction capturableTransaction = transactionService.getCapturableTransaction(dbOrder);
-			if(capturableTransaction!=null) {
-				model.addAttribute("capturableTransaction",capturableTransaction);
+			if(dbOrder.getPaymentType().name() != PaymentType.MONEYORDER.name()) {
+				Transaction capturableTransaction = transactionService.getCapturableTransaction(dbOrder);
+				if(capturableTransaction!=null) {
+					model.addAttribute("capturableTransaction",capturableTransaction);
+				}
 			}
 			
 			
 			//get refundable
-			Transaction refundableTransaction = transactionService.getRefundableTransaction(dbOrder);
-			if(refundableTransaction!=null) {
-					model.addAttribute("capturableTransaction",null);//remove capturable
-					model.addAttribute("refundableTransaction",refundableTransaction);
+			if(dbOrder.getPaymentType().name() != PaymentType.MONEYORDER.name()) {
+				Transaction refundableTransaction = transactionService.getRefundableTransaction(dbOrder);
+				if(refundableTransaction!=null) {
+						model.addAttribute("capturableTransaction",null);//remove capturable
+						model.addAttribute("refundableTransaction",refundableTransaction);
+				}
 			}
 
 			
@@ -282,6 +287,27 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 			 ObjectError error = new ObjectError("billingPostalCode", messages.getMessage("NotEmpty.order.billingPostCode", locale));
 			 result.addError(error);
 		}
+		
+		com.salesmanager.core.business.order.model.Order newOrder = orderService.getById(entityOrder.getOrder().getId() );
+		
+		
+		//get capturable
+		if(newOrder.getPaymentType().name() != PaymentType.MONEYORDER.name()) {
+			Transaction capturableTransaction = transactionService.getCapturableTransaction(newOrder);
+			if(capturableTransaction!=null) {
+				model.addAttribute("capturableTransaction",capturableTransaction);
+			}
+		}
+		
+		
+		//get refundable
+		if(newOrder.getPaymentType().name() != PaymentType.MONEYORDER.name()) {
+			Transaction refundableTransaction = transactionService.getRefundableTransaction(newOrder);
+			if(refundableTransaction!=null) {
+					model.addAttribute("capturableTransaction",null);//remove capturable
+					model.addAttribute("refundableTransaction",refundableTransaction);
+			}
+		}
 	
 	
 		if (result.hasErrors()) {
@@ -296,8 +322,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 		
 		OrderStatusHistory orderStatusHistory = new OrderStatusHistory();		
 
-		com.salesmanager.core.business.order.model.Order newOrder = orderService.getById(entityOrder.getOrder().getId() );
-	
+
 
 		
 		Country deliveryCountry = countryService.getByCode( entityOrder.getOrder().getDelivery().getCountry().getIsoCode()); 
@@ -365,22 +390,7 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderControler.clas
 			}
 		
 		}
-		
-		//get capturable
-		Transaction capturableTransaction = transactionService.getCapturableTransaction(newOrder);
-		if(capturableTransaction!=null) {
-			model.addAttribute("capturableTransaction",capturableTransaction);
-		}
-		
-		if(capturableTransaction==null) {
-			//get refundable
-			model.addAttribute("capturableTransaction",capturableTransaction);
-			Transaction refundableTransaction = transactionService.getRefundableTransaction(newOrder);
-			if(refundableTransaction!=null) {
-				model.addAttribute("refundableTransaction",refundableTransaction);
-			}
-		}
-		
+
 		List<OrderProductDownload> orderProductDownloads = orderProdctDownloadService.getByOrderId(newOrder.getId());
 		if(CollectionUtils.isNotEmpty(orderProductDownloads)) {
 			model.addAttribute("downloads",orderProductDownloads);

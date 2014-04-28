@@ -35,6 +35,7 @@ import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.system.service.EmailService;
+import com.salesmanager.core.modules.integration.IntegrationException;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.admin.entity.orders.Refund;
 import com.salesmanager.web.constants.Constants;
@@ -208,9 +209,12 @@ private static final Logger LOGGER = LoggerFactory.getLogger(OrderActionsControl
 				paymentService.processRefund(order, customer, store, submitedAmount);
 
 				resp.setStatus(AjaxResponse.RESPONSE_OPERATION_COMPLETED);
-
+		} catch (IntegrationException e) {
+			LOGGER.error("Error while processing refund", e);
+			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+			resp.setErrorString(e.getMessageCode());
 		} catch (Exception e) {
-			LOGGER.error("Error while getting category", e);
+			LOGGER.error("Error while processing refund", e);
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 			resp.setErrorMessage(e);
 		}

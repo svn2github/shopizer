@@ -48,11 +48,12 @@ response.setDateHeader ("Expires", -1);
 					</div>
 					</c:if>
 					
-					
+					<!-- If display customer section -->
+					<c:if test="${requestScope.CONFIGS['displayCustomerSection'] == true}">
 					<sec:authorize access="hasRole('AUTH_CUSTOMER') and fullyAuthenticated">
 						<!-- logged in user -->
 						<c:if test="${requestScope.CUSTOMER!=null}">
-							<ul class="pull-right" style="list-style-type: none;padding-top: 8px;z-index:500000;">
+							<ul class="logon-box pull-right">
 							<li id="fat-menu" class="dropdown">
 							<a class="dropdown-toggle noboxshadow" data-toggle="dropdown" href="#">
 							   <s:message code="label.generic.welcome" text="Welcome" /> 
@@ -75,7 +76,7 @@ response.setDateHeader ("Expires", -1);
 					</sec:authorize>
 					<sec:authorize access="!hasRole('AUTH_CUSTOMER') and fullyAuthenticated">
 						<!-- no dual login -->
-						<ul class="pull-right" style="list-style-type: none;padding-top: 8px;z-index:500000;">
+						<ul class="logon-box pull-right">
 							<li>
 								<s:message code="label.security.loggedinas" text="You are logged in as"/> [<sec:authentication property="principal.username"/>]. <s:message code="label.security.nologinacces.store" text="We can't display store logon box"/>
 							</li>
@@ -113,7 +114,7 @@ response.setDateHeader ("Expires", -1);
 					  </li>
 					</ul>
 					</sec:authorize>
-
+					</c:if>
 
 
 			</div>

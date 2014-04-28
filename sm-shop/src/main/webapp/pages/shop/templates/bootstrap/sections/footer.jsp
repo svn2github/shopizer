@@ -9,7 +9,8 @@ response.setDateHeader ("Expires", -1);
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %>  
+<%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %> 
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %> 
  
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
@@ -44,7 +45,19 @@ response.setDateHeader ("Expires", -1);
                     	<c:if test="${requestScope.CONFIGS['displayCustomerSection'] == true}">
                         <h4><s:message code="label.customer.myaccount" text="My Account" /></h4>
                         <ul class="footerLiks">
-							<li><a href="#" style="color: #fff;"><s:message code="button.label.login" text="Login" /></a></li>
+                        	<sec:authorize access="hasRole('AUTH_CUSTOMER') and fullyAuthenticated">
+                        		<li><a href="<c:url value="/shop/customer/account.html"/>" style="color: #fff;"><s:message code="menu.profile" text="Profile"/></a></li>
+                        		<li><a href="<c:url value="/shop/customer/billing.html"/>" style="color: #fff;"><s:message code="label.customer.billingshipping" text="Billing & shipping information"/></a></li>
+                        		<li><s:message code="label.order.recent" text="Recent orders"/></li>
+                        	</sec:authorize>
+                        	<sec:authorize access="!hasRole('AUTH_CUSTOMER') and fullyAuthenticated">
+                        		<li>
+									<s:message code="label.security.loggedinas" text="You are logged in as"/> [<sec:authentication property="principal.username"/>]. <s:message code="label.security.nologinacces.store" text="We can't display store logon box"/>
+								</li>
+                        	</sec:authorize>
+                        	<sec:authorize access="!hasRole('AUTH_CUSTOMER') and !fullyAuthenticated">
+								<li><a href="#" style="color: #fff;"><s:message code="button.label.login" text="Login" /></a></li>
+							</sec:authorize>
 						</ul>
 						</c:if>
                     </div>
