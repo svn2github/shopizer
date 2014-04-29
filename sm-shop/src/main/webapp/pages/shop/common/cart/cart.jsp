@@ -59,8 +59,10 @@
 								</c:if>
 						
 						</td>
-						<td><input type="text" class="input-small quantity" placeholder="<s:message code="label.quantity" text="Quantity"/>"
-							value="${shoppingCartItem.quantity}" name="quantity" id="${shoppingCartItem.id}"></td>
+						<td>
+							<input type="text" class="input-small quantity" placeholder="<s:message code="label.quantity" text="Quantity"/>"
+							value="${shoppingCartItem.quantity}" name="quantity" id="${shoppingCartItem.id}" <c:if test="${shoppingCartItem.productVirtual==true}">readonly</c:if>>
+						</td>
 						<td style="border-left:none;"><button class="close"
 								onclick="javascript:updateLineItem('${shoppingCartItem.id}','${removeShoppingCartItemUrl}');">&times;</button>
 						</td>

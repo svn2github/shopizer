@@ -71,9 +71,11 @@ response.setDateHeader ("Expires", -1);
 										</c:otherwise>
 									</c:choose>
 							</h3>
+							<c:if test="${not product.productVirtual}">
 							<address>
 								<strong><s:message code="label.product.available" text="Availability"/></strong> <span><c:choose><c:when test="${product.quantity>0}"><span itemprop="availability" content="in_stock">${product.quantity}</span></c:when><c:otherwise><span itemprop="availability" content="out_of_stock"><s:message code="label.product.outofstock" text="Out of stock" /></c:otherwise></c:choose></span><br>								
 							</address>
+							</c:if>
 							</span>
 							<p>
 								<jsp:include page="/pages/shop/common/catalog/addToCartProduct.jsp" />

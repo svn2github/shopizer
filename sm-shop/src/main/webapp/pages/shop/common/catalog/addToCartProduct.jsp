@@ -29,7 +29,7 @@ $(function(){
 								<!-- leave the form id as is -->
 								<form id="input-<c:out value="${product.id}" />">
 								<!-- select options -->
-								<c:if test="${options!=null}">
+								<c:if test="${options!=null && not product.productVirtual}">
 									<c:forEach items="${options}" var="option" varStatus="status">
 										<div class="control-group"> 
 	                        				<label><strong><c:out value="${option.name}"/></strong></label>
@@ -71,7 +71,7 @@ $(function(){
 								</c:if>
 								<br/>
 								<div class="form-inline">
-								<c:if test="${product.quantityOrderMaximum==-1 || product.quantityOrderMaximum>1}" >
+								<c:if test="${product.quantityOrderMaximum==-1 || product.quantityOrderMaximum>1 && not product.productVirtual}" >
 									<input id="qty-productId-<c:out value="${product.id}" />" class="input-mini" placeholder="1" type="text">
 								</c:if>
 									<button class="btn btn-success addToCart" type="button" productId="<c:out value="${product.id}" />"><s:message code="button.label.addToCart" text="Add to cart"/></button>

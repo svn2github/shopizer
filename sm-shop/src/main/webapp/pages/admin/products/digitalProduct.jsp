@@ -25,7 +25,7 @@
 						$("#productControlRemove").html('');
 						$("#fileLink").hide();
 						//add field
-						$("#fileControl").html('<input class=\"input-file\" id=\"productImage\" name=\"productImage\" type=\"file\">');
+						$("#fileControl").html('<input class=\"input-file\" id=\"file\" name=\"file\" type=\"file\">');
 						$(".alert-success").show();
 						
 					} else {

@@ -10,5 +10,5 @@
         							{title:"<s:message code="label.customer.firstname" text="First name"/>", name:"firstName",canFilter:false},
         							{title:"<s:message code="label.customer.lastname" text="Last name"/>", name:"lastName",canFilter:true},
         							{title:"<s:message code="label.generic.email" text="Email"/>", name:"email",canFilter:true},
-        							{title:"<s:message code="label.customer.country" text="Customer country"/>", name:"country",canFilter:true},
+        							{title:"<s:message code="label.customer.country" text="Customer country"/>", name:"country",canFilter:false},
         							{title:"<s:message code="label.entity.details" text="Details"/>", name: "buttonField", align: "center",canFilter:false}
