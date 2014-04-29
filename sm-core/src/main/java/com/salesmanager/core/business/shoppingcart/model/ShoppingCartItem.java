@@ -59,8 +59,9 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	@Column(name="PRODUCT_ID", nullable=false)
 	private Long productId;
 	
+	@Transient
+	private boolean productVirtual;
 
-	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true, mappedBy = "shoppingCartItem")
 	private Set<ShoppingCartAttributeItem> attributes = new HashSet<ShoppingCartAttributeItem>();
 	
@@ -215,4 +216,14 @@ public class ShoppingCartItem extends SalesManagerEntity<Long, ShoppingCartItem>
 	public void setObsolete(boolean obsolete) {
 		this.obsolete = obsolete;
 	}
+	
+
+	public boolean isProductVirtual() {
+		return productVirtual;
+	}
+
+	public void setProductVirtual(boolean productVirtual) {
+		this.productVirtual = productVirtual;
+	}
+
 }

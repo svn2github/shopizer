@@ -300,6 +300,8 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 
 		//	item.setAttributes(attributesList);
 		//}
+		
+		item.setProductVirtual(product.isProductVirtual());
 
 		//set item price
 		FinalPrice price = pricingService.calculateProductPrice(product);
@@ -324,6 +326,10 @@ public class ShoppingCartServiceImpl extends SalesManagerEntityServiceImpl<Long,
 
 
 		item.setProduct(product);
+		
+		if(product.isProductVirtual()) {
+			item.setProductVirtual(true);
+		}
 
 		Set<ShoppingCartAttributeItem> attributes = item.getAttributes();
 		Set<ProductAttribute> productAttributes = product.getAttributes();

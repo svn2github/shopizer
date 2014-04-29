@@ -92,9 +92,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 			.leftJoin(qCategory.merchantStore).fetch()
 			.where(qCategory.code.eq(code)
 			.and(qCategory.merchantStore.id.eq(store.getId())));
-			//.orderBy(qDescription._super.title.desc(), qDescription._super.name.desc(), qDescription.language.id.desc());
-			//.orderBy(qDescription.language.id.desc());
-		
+
 		return query.uniqueResult(qCategory);
 	}
 	
@@ -179,9 +177,7 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 			.leftJoin(qCategory.descriptions, qDescription).fetch()
 			.leftJoin(qCategory.merchantStore).fetch()
 			.where(qCategory.id.eq(id));
-			//.orderBy(qDescription.language.id.desc());
-			//.orderBy(qDescription._super.title.desc(), qDescription._super.name.desc(), qDescription.language.id.desc());
-		
+
 		return query.uniqueResult(qCategory);
 	}
 	
@@ -278,7 +274,6 @@ public class CategoryDaoImpl extends SalesManagerEntityDaoImpl<Long, Category> i
 
 	@Override
 	public List<Category> listByStoreAndParent(MerchantStore store, Category category) {
-		//TODO join descriptions and merchantstore
 		QCategory qCategory = QCategory.category;
 		JPQLQuery query = new JPAQuery (getEntityManager());
 		

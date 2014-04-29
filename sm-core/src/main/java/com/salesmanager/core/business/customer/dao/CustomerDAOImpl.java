@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import com.mysema.query.BooleanBuilder;
 import com.mysema.query.jpa.JPQLQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
-import com.salesmanager.core.business.common.model.QBilling;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.CustomerCriteria;
 import com.salesmanager.core.business.customer.model.CustomerList;
@@ -131,23 +130,23 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		
 
 		if(!StringUtils.isBlank(criteria.getName())) {
-			countQ.setParameter("nm", criteria.getName());
+			countQ.setParameter("nm",new StringBuilder().append("%").append(criteria.getName()).append("%").toString());
 		}
 		
 		if(!StringUtils.isBlank(criteria.getFirstName())) {
-			countQ.setParameter("fn", criteria.getFirstName());
+			countQ.setParameter("fn",new StringBuilder().append("%").append(criteria.getFirstName()).append("%").toString());
 		}
 		
 		if(!StringUtils.isBlank(criteria.getLastName())) {
-			countQ.setParameter("ln", criteria.getLastName());
+			countQ.setParameter("ln",new StringBuilder().append("%").append(criteria.getLastName()).append("%").toString());
 		}
 		
 		if(!StringUtils.isBlank(criteria.getEmail())) {
-			countQ.setParameter("email", criteria.getEmail());
+			countQ.setParameter("email",new StringBuilder().append("%").append(criteria.getEmail()).append("%").toString());
 		}
 		
 		if(!StringUtils.isBlank(criteria.getCountry())) {
-			countQ.setParameter("country", criteria.getCountry());
+			countQ.setParameter("country",new StringBuilder().append("%").append(criteria.getCountry()).append("%").toString());
 		}
 		
 
@@ -173,8 +172,6 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 		
 		query.from(qCustomer)
 			.join(qCustomer.merchantStore).fetch()
-			//.leftJoin(qCustomer.billing.country,qCountry).fetch()
-			//.leftJoin(qCustomer.billing.zone,qZone).fetch()
 			.leftJoin(qCustomer.defaultLanguage).fetch()
 			.leftJoin(qCustomer.attributes,qCustomerAttribute).fetch()
 			.leftJoin(qCustomerAttribute.customerOption, qCustomerOption).fetch()
@@ -182,8 +179,6 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			.leftJoin(qCustomerOption.descriptions).fetch()
 			.leftJoin(qCustomerOptionValue.descriptions).fetch();
 
-
-			
 			query.where(qCustomer.merchantStore.id.eq(store.getId()));
 			BooleanBuilder pBuilder = null;
 
@@ -191,8 +186,8 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			if(pBuilder==null) {
 				pBuilder = new BooleanBuilder();
 			}
-			pBuilder.and(qCustomer.billing.firstName.like(criteria.getName())
-					.or(qCustomer.billing.lastName.like(criteria.getName())));
+			pBuilder.and(qCustomer.billing.firstName.like(new StringBuilder().append("%").append(criteria.getName()).append("%").toString())
+					.or(qCustomer.billing.lastName.like(new StringBuilder().append("%").append(criteria.getName()).append("%").toString())));
 
 		}
 		
@@ -201,28 +196,32 @@ public class CustomerDAOImpl extends SalesManagerEntityDaoImpl<Long, Customer> i
 			if(pBuilder==null) {
 				pBuilder = new BooleanBuilder();
 			}
-			pBuilder.and(qCustomer.billing.firstName.like(criteria.getFirstName()));
+			pBuilder.and(qCustomer.billing.firstName.like(new StringBuilder().append("%").append(criteria.getFirstName()).append("%").toString()));
 		}
 		
 		if(!StringUtils.isBlank(criteria.getLastName())) {
 			if(pBuilder==null) {
 				pBuilder = new BooleanBuilder();
 			}
-			pBuilder.and(qCustomer.billing.lastName.like(criteria.getLastName()));
+			pBuilder.and(qCustomer.billing.lastName.like(new StringBuilder().append("%").append(criteria.getLastName()).append("%").toString()));
 		}
 		
 		if(!StringUtils.isBlank(criteria.getEmail())) {
 			if(pBuilder==null) {
 				pBuilder = new BooleanBuilder();
 			}
-			pBuilder.and(qCustomer.emailAddress.like(criteria.getEmail()));
+			pBuilder.and(qCustomer.emailAddress.like(new StringBuilder().append("%").append(criteria.getEmail()).append("%").toString()));
 		}
 		
 		if(!StringUtils.isBlank(criteria.getCountry())) {
 			if(pBuilder==null) {
 				pBuilder = new BooleanBuilder();
 			}
-			pBuilder.and(qCustomer.billing.country.isoCode.like(criteria.getCountry()));
+			pBuilder.and(qCustomer.billing.country.isoCode.like(new StringBuilder().append("%").append(criteria.getCountry()).append("%").toString()));
+		}
+		
+		if(pBuilder!=null) {
+			query.where(pBuilder);
 		}
 		
 

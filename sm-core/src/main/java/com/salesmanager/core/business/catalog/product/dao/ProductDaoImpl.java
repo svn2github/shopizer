@@ -466,7 +466,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 
 		if(!StringUtils.isBlank(criteria.getProductName())) {
 			countBuilderSelect.append(" INNER JOIN p.descriptions pd");
-			countBuilderWhere.append(" and pd.language.id=:lang and pd.name like:nm");
+			countBuilderWhere.append(" and pd.language.id=:lang and lower(pd.name) like:nm");
 		}
 		
 		
@@ -482,7 +482,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		
 		if(!StringUtils.isBlank(criteria.getCode())) {
 			
-			countBuilderWhere.append(" and p.sku like :sku");
+			countBuilderWhere.append(" and lower(p.sku) like :sku");
 		}
 		
 		if(!CollectionUtils.isEmpty(criteria.getAttributeCriteria())) {
@@ -528,7 +528,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		}
 		
 		if(!StringUtils.isBlank(criteria.getCode())) {
-			countQ.setParameter("sku", "%" + criteria.getCode() + "%");
+			countQ.setParameter("sku", new StringBuilder().append("%").append(criteria.getCode().toLowerCase()).append("%").toString());
 		}
 		
 		if(criteria.getManufacturerId()!=null) {
@@ -546,7 +546,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		}
 		
 		if(!StringUtils.isBlank(criteria.getProductName())) {
-			countQ.setParameter("nm", "%" + criteria.getProductName() + "%");
+			countQ.setParameter("nm", new StringBuilder().append("%").append(criteria.getProductName().toLowerCase()).append("%").toString());
 			countQ.setParameter("lang", language.getId());
 		}
 		
@@ -603,7 +603,6 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 
 		qs.append(" where merch.id=:mId");
 		qs.append(" and pd.language.id=:lang");
-		//qs.append(" and manufd.language.id=:lang");
 		
 		if(!CollectionUtils.isEmpty(criteria.getProductIds())) {
 			qs.append(" and p.id in (:pId)");
@@ -627,11 +626,11 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		}
 		
 		if(!StringUtils.isBlank(criteria.getProductName())) {
-			qs.append(" and pd.name like :nm");
+			qs.append(" and lower(pd.name) like :nm");
 		}
 		
 		if(!StringUtils.isBlank(criteria.getCode())) {
-			qs.append(" and p.sku like :sku");
+			qs.append(" and lower(p.sku) like :sku");
 		}
 		
 		if(!CollectionUtils.isEmpty(criteria.getAttributeCriteria())) {
@@ -670,7 +669,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		}
 		
 		if(!StringUtils.isBlank(criteria.getCode())) {
-			q.setParameter("sku", "%" + criteria.getCode() + "%");
+			q.setParameter("sku", new StringBuilder().append("%").append(criteria.getCode().toLowerCase()).append("%").toString());
 		}
 		
 		if(!CollectionUtils.isEmpty(criteria.getAttributeCriteria())) {
@@ -683,7 +682,7 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 		}
 		
 		if(!StringUtils.isBlank(criteria.getProductName())) {
-			q.setParameter("nm", "%" + criteria.getProductName() + "%");
+			q.setParameter("nm", new StringBuilder().append("%").append(criteria.getProductName().toLowerCase()).append("%").toString());
 		}
     	
     	if(criteria.getMaxCount()>0) {
@@ -692,11 +691,9 @@ public class ProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Product> imp
 	    	q.setFirstResult(criteria.getStartIndex());
 	    	if(criteria.getMaxCount()<count.intValue()) {
 	    		q.setMaxResults(criteria.getMaxCount());
-	    		//productList.setTotalCount(criteria.getMaxCount());
 	    	}
 	    	else {
 	    		q.setMaxResults(count.intValue());
-	    		//productList.setTotalCount(count.intValue());
 	    	}
     	}
     	
