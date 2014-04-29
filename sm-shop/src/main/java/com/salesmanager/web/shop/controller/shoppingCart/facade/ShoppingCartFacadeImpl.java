@@ -125,7 +125,9 @@ public class ShoppingCartFacadeImpl
         		if(cartItem.getProduct().getId().longValue()==shoppingCartItem.getProduct().getId().longValue()) {
         			if(CollectionUtils.isEmpty(cartItem.getAttributes())) {
         				if(!duplicateFound) {
-        					cartItem.setQuantity(cartItem.getQuantity() + shoppingCartItem.getQuantity());
+        					if(!shoppingCartItem.isProductVirtual()) {
+	        					cartItem.setQuantity(cartItem.getQuantity() + shoppingCartItem.getQuantity());
+        					}
         					duplicateFound = true;
         					break;
         				}

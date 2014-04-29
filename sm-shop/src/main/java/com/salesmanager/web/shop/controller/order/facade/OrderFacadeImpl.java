@@ -333,6 +333,7 @@ public class OrderFacadeImpl implements OrderFacade {
 			
 			String paymentType = order.getPaymentMethodType();
 			Payment payment = new Payment();
+			payment.setPaymentType(PaymentType.valueOf(paymentType));
 			if(PaymentType.CREDITCARD.name().equals(paymentType)) {
 				
 				

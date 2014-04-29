@@ -61,6 +61,7 @@ public class ReadableProductPopulator extends
 				double rating = Math.round(avg * 2) / 2.0f;
 				target.setRating(rating);
 			}
+			target.setProductVirtual(source.getProductVirtual());
 			if(source.getProductReviewCount()!=null) {
 				target.setRatingCount(source.getProductReviewCount().intValue());
 			}

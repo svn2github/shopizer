@@ -85,6 +85,7 @@ public class ShoppingCartDataPopulator extends AbstractDataPopulator<ShoppingCar
                     ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
                     shoppingCartItem.setCode(cart.getCode());
                     shoppingCartItem.setProductCode(item.getProduct().getSku());
+                    shoppingCartItem.setProductVirtual(item.isProductVirtual());
 
                     shoppingCartItem.setProductId(item.getProductId());
                     shoppingCartItem.setId(item.getId());

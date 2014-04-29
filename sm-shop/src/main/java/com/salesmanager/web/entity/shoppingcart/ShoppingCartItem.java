@@ -20,6 +20,7 @@ public class ShoppingCartItem extends ShopEntity implements Serializable {
 	private long productId;
 	private String productCode;
 	private String code;//shopping cart code
+	private boolean productVirtual;
 	
 	private String subTotal;
 	
@@ -86,6 +87,12 @@ public class ShoppingCartItem extends ShopEntity implements Serializable {
 	}
 	public String getSubTotal() {
 		return subTotal;
+	}
+	public boolean isProductVirtual() {
+		return productVirtual;
+	}
+	public void setProductVirtual(boolean productVirtual) {
+		this.productVirtual = productVirtual;
 	}
 
 
