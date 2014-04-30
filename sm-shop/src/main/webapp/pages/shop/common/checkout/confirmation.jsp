@@ -14,6 +14,16 @@ response.setDateHeader ("Expires", -1);
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%> 
 
+<script>
+
+$(document).ready(function() {
+	
+	removeCart();
+});
+
+
+</script>
+
 
 	<div id="main-content" class="container clearfix">
 		<div class="row-fluid">

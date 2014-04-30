@@ -17,6 +17,16 @@
 		
 	}
 	
+	function removeCart() {
+		
+		var cartCode = getCartCode();
+		if(cartCode!=null) {
+			emptyCartLabel();
+			$.cookie('cart',null, { expires: 1, path:'/' });
+		}
+		
+	}
+	
 	function initBindings() {
 		
 		/** add to cart **/

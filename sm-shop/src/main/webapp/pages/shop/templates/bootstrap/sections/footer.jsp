@@ -36,7 +36,7 @@ response.setDateHeader ("Expires", -1);
 							   <li><a href="<c:url value="/shop/pages/${content.seUrl}.html"/>" class="current" style="color: #fff;">${content.name}</a></li>
 							</c:forEach>
 							<c:if test="${requestScope.CONFIGS['displayContactUs']==true}">
-								<li><a href="<c:url value="/shop/contact/contactus.html"/>" style="color: #fff;"><s:message code="label.customer.contactus" text="Contact us"/></a></li>
+								<li><a href="<c:url value="/shop/store/contactus.html"/>" style="color: #fff;"><s:message code="label.customer.contactus" text="Contact us"/></a></li>
 							</c:if>
 						</ul>
                     </div>
