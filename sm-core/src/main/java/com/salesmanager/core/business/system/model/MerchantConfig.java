@@ -14,10 +14,10 @@ public class MerchantConfig implements Serializable, JSONAware {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private boolean displayCustomerSection =true;
+	private boolean displayCustomerSection =false;
 	private boolean displayContactUs =false;
-	private boolean displayStoreAddress = true;
-	private boolean displayAddToCartOnFeaturedItems = true;
+	private boolean displayStoreAddress = false;
+	private boolean displayAddToCartOnFeaturedItems = false;
 	
 	/** Store default search json config **/
 	private Map<String,Boolean> useDefaultSearchConfig= new HashMap<String,Boolean>();//language code | true or false
