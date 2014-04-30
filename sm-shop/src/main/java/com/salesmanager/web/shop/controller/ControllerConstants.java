@@ -40,6 +40,7 @@ public interface ControllerConstants
         
         interface Content{
             final static String content="content";
+            final static String contactus="contactus";
         }
         
         interface Pages{

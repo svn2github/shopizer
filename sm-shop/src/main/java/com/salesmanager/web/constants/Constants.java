@@ -44,6 +44,7 @@ public class Constants {
 
 	public final static String CONTENT_IMAGE = "CONTENT";
 	public final static String CONTENT_LANDING_PAGE = "LANDING_PAGE";
+	public final static String CONTENT_CONTACT_US = "contact";
 
 	public final static String STATIC_URI = "/static";
 	public final static String FILES_URI = "/files";

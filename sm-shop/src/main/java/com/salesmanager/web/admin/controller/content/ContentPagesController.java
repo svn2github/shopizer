@@ -317,7 +317,7 @@ public class ContentPagesController {
 			try {
 				Long lid = Long.parseLong(id);
 				
-				if(content.getCode().equals(code) && content.getId().longValue()==lid) {
+				if(content!=null && content.getCode().equals(code) && content.getId().longValue()==lid) {
 					resp.setStatus(AjaxResponse.RESPONSE_STATUS_SUCCESS);
 					return resp.toJSONString();
 				}
@@ -326,6 +326,11 @@ public class ContentPagesController {
 				return resp.toJSONString();
 			}
 
+		} else {
+			if(content!=null) {
+				resp.setStatus(AjaxResponse.CODE_ALREADY_EXIST);
+				return resp.toJSONString();
+			}
 		}
 
 			

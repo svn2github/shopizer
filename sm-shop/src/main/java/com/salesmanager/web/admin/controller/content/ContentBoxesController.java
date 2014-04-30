@@ -78,7 +78,7 @@ public class ContentBoxesController {
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.ADMIN_STORE);
 		Content content = new Content();
 		content.setMerchantStore(store);
-		content.setContentType(ContentType.PAGE);
+		content.setContentType(ContentType.BOX);
 		
 		
 		List<Language> languages = store.getLanguages();
@@ -122,17 +122,17 @@ public class ContentBoxesController {
 		
 		if(content==null) {
 			LOGGER.error("Content entity null for id " + id);
-			return "/admin/content/boxes/listContent.html";
+			return "redirect:/admin/content/boxes/listContent.html";
 		}
 		
 		if(content.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 			LOGGER.error("Content id " + id + " does not belong to merchant " + store.getId());
-			return "/admin/content/boxes/listContent.html";
+			return "redirect:/admin/content/boxes/listContent.html";
 		}
 		
-		if(!content.getContentType().name().equals(ContentType.PAGE)) {
+		if(!content.getContentType().name().equals(ContentType.BOX.name())) {
 			LOGGER.error("This controller does not handle content type " + content.getContentType().name());
-			return "/admin/content/boxes/listContent.html";
+			return "redirect:/admin/content/boxes/listContent.html";
 		}
 		
 		List<Language> languages = store.getLanguages();
