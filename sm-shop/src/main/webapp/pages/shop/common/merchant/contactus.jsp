@@ -14,16 +14,106 @@ response.setDateHeader ("Expires", -1);
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 
+<!--Set google map API key -->
+<script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&sensor=true">
+</script>
+
+<script type="text/javascript">
+
+var RecaptchaOptions = {
+	    theme : 'clean'
+};
+
+
+$(document).ready(function() {
+	
+	isFormValid();
+	$("input[type='text']").on("change keyup paste", function(){
+		isFormValid();
+	});
+	$("input[type='textarea']").on("change keyup paste", function(){
+		isFormValid();
+	});
+	
+	
+	
+});
+
+
+ 
+
+
+ function isFormValid() {
+		var $inputs = $('#contactForm').find(':input');
+		var valid = true;
+		var firstErrorMessage = null;
+		$inputs.each(function() {
+			if($(this).hasClass('required')) {				
+				var fieldValid = isFieldValid($(this));
+				if(!fieldValid) {
+					valid = false;
+				}
+			}
+			//if has class email
+			if($(this).hasClass('email')) {	
+				var emailValid = validateEmail($(this).val());
+				//console.log('Email is valid ? ' + emailValid);
+				if(!emailValid) {
+					if(firstErrorMessage==null) {
+						valid = false;
+					}
+				}
+			}
+					});
+		
+		//console.log('Form is valid ? ' + valid);
+		if(valid==false) {//disable submit button
+			$('#submitRegistration').addClass('btn-disabled');
+			$('#submitRegistration').prop('disabled', true);
+			$('#registrationError').html(firstErrorMessage);
+			$('#registrationError').show();
+		} else {
+			$('#submitRegistration').removeClass('btn-disabled');
+			$('#submitRegistration').prop('disabled', false);
+			$('#registrationError').hide();
+		}
+ }
+ 
+ 
+ function isFieldValid(field) {
+		var validateField = true;
+		var fieldId = field.prop('id');
+		var value = field.val();
+		if (fieldId.indexOf("hidden_registration_zones") >= 0) {
+			console.log(field.is(":hidden"));
+			if(field.is(":hidden")) {
+				return true;
+			}
+		}
+		if(!emptyString(value)) {
+			field.css('background-color', '#FFF');
+			return true;
+		} else {
+			field.css('background-color', '#FFC');
+			return false;
+		} 
+ }
+
+
+
+</script>
+
 
 	<div id="main-content" class="container clearfix">
 		<div class="row-fluid">
 			<div class="span7">  
 
-								<c:set var="contact_url" value="${pageContext.request.contextPath}/shop/submitContactUs.html"/>
-                                <form:form action="${contact_url}" method="POST" id="validForm" name="contactForm" commandName="contact">
+								
+                                <form:form action="#" method="POST" id="contactForm" name="contactForm" commandName="contact">
                                     <form:errors path="*" cssClass="alert alert-error" element="div" />
                                     <div class="control-group">
-                                        <label for="inputName" class="control-label">NAME<sup>*</sup></label>
+                                        <label for="inputName" class="control-label"><s:message code="label.entity.name" value="Name"/></label>
                                         <div class="controls">
 										   <s:message code="NotEmpty.customer.name" text="Name is required" var="msgName"/>
 										   <form:input path="name" cssClass="required" id="name" title="${msgName}"/>
@@ -31,24 +121,50 @@ response.setDateHeader ("Expires", -1);
                                         </div>
                                     </div>
                                     <div class="control-group">
-                                        <label for="inputEmail" class="control-label">EMAIL<sup>*</sup></label>
+                                        <label for="inputEmail" class="control-label"><s:message code="label.generic.email" value="Email address"/></label>
                                         <div class="controls">
-                                            <input type="text" placeholder="Email" id="inputEmail" class="span4" name="email">
-                                            <span class="help-inline" style="display: none;">Please correct your email</span>
+                                            <form:input path="email" cssClass="required" id="email"/>
+                                            <form:errors path="email" cssClass="error" />
                                         </div>
                                     </div>
                                     <div class="control-group">
-                                        <label class="control-label" for="textarea">COMMENT<sup>*</sup></label>
+                                        <label for="inputEmail" class="control-label"><s:message code="label.generic.subject" value="Subject"/></label>
                                         <div class="controls">
-                                            <textarea id="textarea" class="span8" rows="4" name="comment"></textarea>
-                                            <span class="help-inline" style="display: none;">Please write a comment</span>
+                                            <form:input path="subject" cssClass="required" id="subject"/>
+                                            <form:errors path="subject" cssClass="error" />
                                         </div>
                                     </div>
-
-                                    <div class="control-group form-button-offset">
-                                        <input type="submit" value="Send Message" class="btn">
+                                    <div class="control-group">
+                                        <label class="control-label" for="textarea"><s:message code="label.generic.comments" value="Comments"/></label>
+                                        <div class="controls">
+                                            <form:textarea path="comments" cssClass="required" cols="100" id="comments"/>
+                                        </div>
                                     </div>
-                                </form:form>
+									<div class="control-group">
+										<div class="controls">
+											<!--watch the white space in IOS!-->
+											<script type="text/javascript"
+												src="http://www.google.com/recaptcha/api/challenge?k=<c:out value="${recapatcha_public_key}"/>&hl=${requestScope.LANGUAGE.code}">
+												
+											</script>
+											<noscript>
+												<iframe
+													src="http://www.google.com/recaptcha/api/noscript?k=<c:out value="${recapatcha_public_key}"/>&hl=${requestScope.LANGUAGE.code}"
+													height="300" width="500" frameborder="0"> </iframe>
+												<br />
+												<form:textarea path="captchaResponseField" readonly="3"
+													cols="40" />
+												<form:errors path="captchaResponseField" cssClass="error" />
+					
+												<input type="hidden" name="captchaChallengeField"
+													value="manual_challenge">
+											</noscript>
+										</div>
+
+									<div class="form-actions">
+										<input id="submitContact" type="submit" value="<s:message code="label.generic.send" text="Send"/>" name="register" class="btn btn-primary btn-large">
+									</div>
+			</form:form>
               </div>
 <!-- END LEFT-SIDE CONTACT FORM AREA -->
 
@@ -88,7 +204,35 @@ response.setDateHeader ("Expires", -1);
 			</div>
 
 <!-- GOOGLE MAP -->  
-<c:if test="${requestScope.CONFIGS['displayStoreAddress'] == true}">                              
+<c:if test="${requestScope.CONFIGS['displayStoreAddress'] == true}">
+
+<div id="map_canvas" style="width: 430px; height: 320px; overflow:hidden;"></div>
+<script>
+
+if(address!=null && eventAddress!='') {
+	geocoder = new google.maps.Geocoder();
+		var mapOptions = {
+  			zoom: 9,
+  			mapTypeId: google.maps.MapTypeId.ROADMAP
+		}
+		map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+
+		geocoder.geocode( { 'address': address}, function(results, status) {
+  			if (status == google.maps.GeocoderStatus.OK) {
+    			map.setCenter(results[0].geometry.location);
+    			var marker = new google.maps.Marker({
+        				map: map,
+        				position: results[0].geometry.location
+    			});
+ 			} else {
+    			alert("Geocode was not successful for the following reason: " + status);
+  			}
+		});
+}
+
+</script>
+
+                              
 <iframe src="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=Mockingbird+Station,+Dallas,+TX&amp;aq=1&amp;oq=mockinStation,+Dallas,+TX&amp;sll=32.786144,-96.788897&amp;sspn=0.00929,0.018947&amp;ie=UTF8&amp;hq=&amp;hnear=Mockingbird+Station,+Dallas,+Texas+75206&amp;t=m&amp;ll=32.845774,-96.772385&amp;spn=0.043266,0.061712&amp;z=14&amp;iwloc=A&amp;output=embed" style="width: 100%; height: 380px; border: none;"></iframe><br><small><a style="color:#0000FF;text-align:left" href="http://maps.google.com/maps?f=q&amp;source=embed&amp;hl=en&amp;geocode=&amp;q=Mockingbird+Station,+Dallas,+TX&amp;aq=1&amp;oq=mockinStation,+Dallas,+TX&amp;sll=32.786144,-96.788897&amp;sspn=0.00929,0.018947&amp;ie=UTF8&amp;hq=&amp;hnear=Mockingbird+Station,+Dallas,+Texas+75206&amp;t=m&amp;ll=32.845774,-96.772385&amp;spn=0.043266,0.061712&amp;z=14&amp;iwloc=A">View Larger Map</a></small>
 </c:if>
  </div>
