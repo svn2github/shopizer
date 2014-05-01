@@ -94,5 +94,8 @@ public class Constants {
 	public final static String MONTHS_OF_YEAR_CACHE_KEY = "MONTHS_OF_YEAR_CACHE_KEY";
 	
 	public final static String INIT_TRANSACTION_KEY = "init_transaction";
+	
+	public static final String RECAPATCHA_PUBLIC_KEY="shopizer.recapatcha_public_key";
+    public static final String RECAPATCHA_PRIVATE_KEY="shopizer.recapatcha_private_key";
 
 }

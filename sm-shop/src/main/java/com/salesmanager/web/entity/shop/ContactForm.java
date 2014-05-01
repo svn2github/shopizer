@@ -7,10 +7,18 @@ public class ContactForm {
 	
 	@NotEmpty
 	private String name;
+	@NotEmpty
+	private String subject;
 	@Email
 	private String email;
 	@NotEmpty
 	private String comment;
+	
+	@NotEmpty
+	private String captchaResponseField;
+	
+	@NotEmpty
+	private String captchaChallengeField;
 	
 	
 	public String getName() {
@@ -31,5 +39,24 @@ public class ContactForm {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
+	public String getCaptchaResponseField() {
+		return captchaResponseField;
+	}
+	public void setCaptchaResponseField(String captchaResponseField) {
+		this.captchaResponseField = captchaResponseField;
+	}
+	public String getCaptchaChallengeField() {
+		return captchaChallengeField;
+	}
+	public void setCaptchaChallengeField(String captchaChallengeField) {
+		this.captchaChallengeField = captchaChallengeField;
+	}
+	public String getSubject() {
+		return subject;
+	}
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
 
 }

@@ -29,6 +29,7 @@ import com.salesmanager.core.modules.email.Email;
 import com.salesmanager.web.constants.ApplicationConstants;
 import com.salesmanager.web.constants.EmailConstants;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
+import com.salesmanager.web.entity.shop.ContactForm;
 
 
 @Component
@@ -251,7 +252,7 @@ public class EmailTemplatesUtils {
 		           email.setTemplateName(EmailConstants.EMAIL_ORDER_TPL);
 		           email.setTemplateTokens(templateTokens);
 
-		           LOGGER.info( "Sending email to {} for order id {} ",customer.getEmailAddress(), order.getId() );
+		           LOGGER.debug( "Sending email to {} for order id {} ",customer.getEmailAddress(), order.getId() );
 		           emailService.sendHtmlEmail(merchantStore, email);
 
 		       } catch (Exception e) {
@@ -300,7 +301,7 @@ public class EmailTemplatesUtils {
 	           email.setTemplateName(EmailConstants.EMAIL_CUSTOMER_TPL);
 	           email.setTemplateTokens(templateTokens);
 
-	           LOGGER.info( "Sending email to {} on their  registered email id {} ",customer.getBilling().getFirstName(),customer.getEmailAddress() );
+	           LOGGER.debug( "Sending email to {} on their  registered email id {} ",customer.getBilling().getFirstName(),customer.getEmailAddress() );
 	           emailService.sendHtmlEmail(merchantStore, email);
 
 	       } catch (Exception e) {
@@ -308,6 +309,44 @@ public class EmailTemplatesUtils {
 	       }
 		
 	}
+	
+	public void sendContactEmail(
+			ContactForm contact, MerchantStore merchantStore,
+				Locale storeLocale, String contextPath) {
+			   /** issue with putting that elsewhere **/ 
+		       LOGGER.info( "Sending welcome email to customer" );
+		       try {
+
+		           Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(contextPath, merchantStore, messages, storeLocale);
+		           
+		           templateTokens.put(EmailConstants.EMAIL_CONTACT_NAME, contact.getName());
+		           templateTokens.put(EmailConstants.EMAIL_CONTACT_EMAIL, contact.getEmail());
+		           templateTokens.put(EmailConstants.EMAIL_CONTACT_CONTENT, contact.getComment());
+		           
+		           String[] contactSubject = {contact.getSubject()};
+		           
+		           templateTokens.put(EmailConstants.EMAIL_CUSTOMER_CONTACT, messages.getMessage("email.contact",contactSubject, storeLocale));
+		           templateTokens.put(EmailConstants.EMAIL_CONTACT_NAME_LABEL, messages.getMessage("label.entity.name",storeLocale));
+		           templateTokens.put(EmailConstants.EMAIL_CONTACT_EMAIL_LABEL, messages.getMessage("label.entity.email",storeLocale));
+
+
+
+		           Email email = new Email();
+		           email.setFrom(merchantStore.getStorename());
+		           email.setFromEmail(contact.getEmail());
+		           email.setSubject(messages.getMessage("email.contact.title",storeLocale));
+		           email.setTo(merchantStore.getStoreEmailAddress());
+		           email.setTemplateName(EmailConstants.EMAIL_CONTACT_TMPL);
+		           email.setTemplateTokens(templateTokens);
+
+		           LOGGER.debug( "Sending contact email");
+		           emailService.sendHtmlEmail(merchantStore, email);
+
+		       } catch (Exception e) {
+		           LOGGER.error("Error occured while sending contact email ",e);
+		       }
+			
+		}
 	
 	/**
 	 * Send an email to the customer with last order status
@@ -403,7 +442,7 @@ public class EmailTemplatesUtils {
 	           email.setTemplateName(EmailConstants.EMAIL_ORDER_DOWNLOAD_TPL);
 	           email.setTemplateTokens(templateTokens);
 
-	           LOGGER.info( "Sending email to {} with download info",customer.getEmailAddress() );
+	           LOGGER.debug( "Sending email to {} with download info",customer.getEmailAddress() );
 	           emailService.sendHtmlEmail(merchantStore, email);
 
 	       } catch (Exception e) {

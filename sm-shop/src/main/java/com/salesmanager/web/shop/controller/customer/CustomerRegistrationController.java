@@ -16,10 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -64,8 +61,7 @@ import com.salesmanager.web.utils.LabelUtils;
 public class CustomerRegistrationController extends AbstractController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerRegistrationController.class);
-    public static final String RECAPATCHA_PUBLIC_KEY="shopizer.recapatcha_public_key";
-    public static final String RECAPATCHA_PRIVATE_KEY="shopizer.recapatcha_private_key";
+    
     
 	@Autowired
 	private CoreConfiguration coreConfiguration;
@@ -106,7 +102,7 @@ public class CustomerRegistrationController extends AbstractController {
 
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 
-		model.addAttribute( "recapatcha_public_key", coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
+		model.addAttribute( "recapatcha_public_key", coreConfiguration.getProperty( Constants.RECAPATCHA_PUBLIC_KEY ) );
 		
 		ShopPersistableCustomer customer = new ShopPersistableCustomer();
 		AnonymousCustomer anonymousCustomer = (AnonymousCustomer)request.getAttribute(Constants.ANONYMOUS_CUSTOMER);
@@ -131,16 +127,15 @@ public class CustomerRegistrationController extends AbstractController {
         throws Exception
     {
         MerchantStore merchantStore = (MerchantStore) request.getAttribute( Constants.MERCHANT_STORE );
-        Language language = (Language)request.getAttribute(Constants.LANGUAGE);
-        
+
         ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
-        reCaptcha.setPublicKey( coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
-        reCaptcha.setPrivateKey( coreConfiguration.getProperty( RECAPATCHA_PRIVATE_KEY ) );
+        reCaptcha.setPublicKey( coreConfiguration.getProperty( Constants.RECAPATCHA_PUBLIC_KEY ) );
+        reCaptcha.setPrivateKey( coreConfiguration.getProperty( Constants.RECAPATCHA_PRIVATE_KEY ) );
         
         String userName = null;
         String password = null;
         
-        model.addAttribute( "recapatcha_public_key", coreConfiguration.getProperty( RECAPATCHA_PUBLIC_KEY ) );
+        model.addAttribute( "recapatcha_public_key", coreConfiguration.getProperty( Constants.RECAPATCHA_PUBLIC_KEY ) );
         
         if ( StringUtils.isNotBlank( customer.getRecaptcha_challenge_field() )
             && StringUtils.isNotBlank( customer.getRecaptcha_response_field() ) )
@@ -150,7 +145,7 @@ public class CustomerRegistrationController extends AbstractController {
                                        customer.getRecaptcha_response_field() );
             if ( !reCaptchaResponse.isValid() )
             {
-                LOGGER.info( "Captcha response does not matched" );
+                LOGGER.debug( "Captcha response does not matched" );
     			FieldError error = new FieldError("recaptcha_challenge_field","recaptcha_challenge_field",messages.getMessage("validaion.recaptcha.not.matched", locale));
     			bindingResult.addError(error);
             }
@@ -161,7 +156,7 @@ public class CustomerRegistrationController extends AbstractController {
         {
             if ( customerFacade.checkIfUserExists( customer.getUserName(), merchantStore ) )
             {
-                LOGGER.info( "Customer with username {} already exists for this store ", customer.getUserName() );
+                LOGGER.debug( "Customer with username {} already exists for this store ", customer.getUserName() );
             	FieldError error = new FieldError("userName","userName",messages.getMessage("registration.username.already.exists", locale));
             	bindingResult.addError(error);
             }
@@ -182,7 +177,7 @@ public class CustomerRegistrationController extends AbstractController {
 
         if ( bindingResult.hasErrors() )
         {
-            LOGGER.info( "found {} validation error while validating in customer registration ",
+            LOGGER.debug( "found {} validation error while validating in customer registration ",
                          bindingResult.getErrorCount() );
             StringBuilder template =
                 new StringBuilder().append( ControllerConstants.Tiles.Customer.register ).append( "." ).append( merchantStore.getStoreTemplate() );
