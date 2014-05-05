@@ -47,4 +47,5 @@ public class OrderTotal extends Entity implements Serializable {
 		this.value = value;
 	}
 
+
 }

@@ -70,16 +70,25 @@ public class ConfigurationController {
 		{
 			merchantGoogleAnalyticsConfiguration = new MerchantConfiguration();
 			merchantGoogleAnalyticsConfiguration.setKey(Constants.KEY_GOOGLE_ANALYTICS_URL);
-			merchantFBConfiguration.setMerchantConfigurationType(MerchantConfigurationType.CONFIG);
+			merchantGoogleAnalyticsConfiguration.setMerchantConfigurationType(MerchantConfigurationType.CONFIG);
 		}
 		configs.add(merchantGoogleAnalyticsConfiguration);
+		
+		MerchantConfiguration merchantGoogleApiConfiguration = merchantConfigurationService.getMerchantConfiguration(Constants.KEY_GOOGLE_API_KEY,store);
+		if(null == merchantGoogleApiConfiguration)
+		{
+			merchantGoogleApiConfiguration = new MerchantConfiguration();
+			merchantGoogleApiConfiguration.setKey(Constants.KEY_GOOGLE_API_KEY);
+			merchantGoogleApiConfiguration.setMerchantConfigurationType(MerchantConfigurationType.CONFIG);
+		}
+		configs.add(merchantGoogleApiConfiguration);
 		
 		MerchantConfiguration twitterConfiguration = merchantConfigurationService.getMerchantConfiguration(Constants.KEY_TWITTER_HANDLE,store);
 		if(null == twitterConfiguration)
 		{
 			twitterConfiguration = new MerchantConfiguration();
 			twitterConfiguration.setKey(Constants.KEY_TWITTER_HANDLE);
-			merchantFBConfiguration.setMerchantConfigurationType(MerchantConfigurationType.CONFIG);
+			twitterConfiguration.setMerchantConfigurationType(MerchantConfigurationType.CONFIG);
 		}
 		configs.add(twitterConfiguration);
 		

@@ -1,9 +1,8 @@
-package com.salesmanager.web.shop.constraints.impl;
+package com.salesmanager.web.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.salesmanager.web.shop.constraints.FieldMatch;
 import com.salesmanager.web.shop.validation.BeanUtils;
 
 import javax.validation.ConstraintValidator;

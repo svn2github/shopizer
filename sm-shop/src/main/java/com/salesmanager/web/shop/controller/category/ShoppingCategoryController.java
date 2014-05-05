@@ -166,7 +166,7 @@ public class ShoppingCategoryController {
 				ids.add(Long.parseLong(sId));
 			}
 		}
-		//TODO difference between categories and subCategs
+
 		List<Category> categories = categoryService.listByIds(store, ids, language);
 		
 		/** Rebuild breadcrumb **/

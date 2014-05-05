@@ -16,9 +16,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
+import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProductDownload;
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.order.service.orderproduct.OrderProductDownloadService;
@@ -29,8 +32,15 @@ import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.catalog.product.ReadableProduct;
+import com.salesmanager.web.entity.customer.ReadableCustomer;
+import com.salesmanager.web.entity.order.ReadableOrder;
+import com.salesmanager.web.entity.order.ReadableOrderProduct;
 import com.salesmanager.web.entity.order.ReadableOrderProductDownload;
+import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
+import com.salesmanager.web.populator.order.ReadableOrderPopulator;
 import com.salesmanager.web.populator.order.ReadableOrderProductDownloadPopulator;
+import com.salesmanager.web.populator.order.ReadableOrderProductPopulator;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
@@ -62,6 +72,9 @@ public class ShoppingOrderConfirmationController extends AbstractController {
 
 	@Autowired
 	private OrderService orderService;
+	
+	@Autowired
+	private ProductService productService;
 	
 	@Autowired
 	private CountryService countryService;
@@ -119,7 +132,9 @@ public class ShoppingOrderConfirmationController extends AbstractController {
 			return new StringBuilder().append("redirect:").append(Constants.SHOP_URI).toString();
 		}
 		
-		model.addAttribute("order", order);
+		ReadableCustomer customer = customerFacade.getCustomerById(order.getCustomerId(), store, language);
+		
+		//model.addAttribute("order", order);
 		
         String[] orderMessageParams = {store.getStorename(), String.valueOf(order.getId())};
         String orderMessage = messages.getMessage("label.checkout.text", orderMessageParams, locale);
@@ -128,6 +143,39 @@ public class ShoppingOrderConfirmationController extends AbstractController {
         String[] orderEmailParams = {order.getCustomerEmailAddress()};
         String orderEmailMessage = messages.getMessage("label.checkout.email", orderEmailParams, locale);
 		model.addAttribute("orderemail", orderEmailMessage);
+		
+		ReadableOrderPopulator orderPopulator = new ReadableOrderPopulator();
+		ReadableOrder readableOrder = new ReadableOrder();
+		orderPopulator.populate(order, readableOrder,  store, language);
+		
+		List<ReadableOrderProduct> orderProducts = new ArrayList<ReadableOrderProduct>();
+		for(OrderProduct p : order.getOrderProducts()) {
+			ReadableOrderProductPopulator orderProductPopulator = new ReadableOrderProductPopulator();
+			orderProductPopulator.setLocale(locale);
+			ReadableOrderProduct orderProduct = new ReadableOrderProduct();
+			orderProductPopulator.populate(p, orderProduct, store, language);
+			
+			Product product = productService.getById(p.getId());
+			
+			if(product!=null) {
+				
+				ReadableProductPopulator productPopulator = new ReadableProductPopulator();
+				productPopulator.setPricingService(pricingService);
+				
+				ReadableProduct productProxy = productPopulator.populate(product, new ReadableProduct(), store, language);
+				orderProduct.setProduct(productProxy);
+				
+			}
+
+			orderProducts.add(orderProduct);
+		}
+		
+		readableOrder.setProducts(orderProducts);
+		
+		readableOrder.setCustomer(customer);
+		
+		
+		model.addAttribute("order",readableOrder);
 		
 		//check if any downloads exist for this order
 		List<OrderProductDownload> orderProductDownloads = orderProdctDownloadService.getByOrderId(order.getId());

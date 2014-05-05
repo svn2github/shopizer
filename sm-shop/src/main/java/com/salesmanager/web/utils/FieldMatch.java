@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.salesmanager.web.shop.constraints;
+package com.salesmanager.web.utils;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
@@ -14,7 +14,6 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import com.salesmanager.web.shop.constraints.impl.FieldMatchValidator;
 
 /**
  * 

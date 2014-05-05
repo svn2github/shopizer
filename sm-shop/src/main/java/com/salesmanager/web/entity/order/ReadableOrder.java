@@ -1,6 +1,7 @@
 package com.salesmanager.web.entity.order;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.salesmanager.web.entity.customer.ReadableCustomer;
 
@@ -11,6 +12,7 @@ public class ReadableOrder extends OrderEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private ReadableCustomer customer;
+	private List<ReadableOrderProduct> products;
 	public void setCustomer(ReadableCustomer customer) {
 		this.customer = customer;
 	}
@@ -23,6 +25,28 @@ public class ReadableOrder extends OrderEntity implements Serializable {
 	public void setTotal(OrderTotal total) {
 		this.total = total;
 	}
+	public OrderTotal getTax() {
+		return tax;
+	}
+	public void setTax(OrderTotal tax) {
+		this.tax = tax;
+	}
+	public OrderTotal getShipping() {
+		return shipping;
+	}
+	public void setShipping(OrderTotal shipping) {
+		this.shipping = shipping;
+	}
+
+	public List<ReadableOrderProduct> getProducts() {
+		return products;
+	}
+	public void setProducts(List<ReadableOrderProduct> products) {
+		this.products = products;
+	}
+
 	private OrderTotal total;
+	private OrderTotal tax;
+	private OrderTotal shipping;
 
 }

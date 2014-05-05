@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.web.constants.Constants;
+
 /**
  * @author Umesh A
  *
@@ -26,19 +29,23 @@ public abstract class AbstractController {
      * @return value stored in session corresponding to the key
      */
     @SuppressWarnings( "unchecked" )
-    public <T> T getSessionAttribute(final String key, HttpServletRequest request) {
+    protected <T> T getSessionAttribute(final String key, HttpServletRequest request) {
 	          return (T) com.salesmanager.web.utils.SessionUtil.getSessionAttribute(key, request);
 
-	  }
+	}
     
-    public void setSessionAttribute(final String key, final Object value, HttpServletRequest request) {
+    protected void setSessionAttribute(final String key, final Object value, HttpServletRequest request) {
     	com.salesmanager.web.utils.SessionUtil.setSessionAttribute(key, value, request);
 	}
     
     
-    public void removeAttribute(final String key, HttpServletRequest request) {
+    protected void removeAttribute(final String key, HttpServletRequest request) {
     	com.salesmanager.web.utils.SessionUtil.removeSessionAttribute(key, request);
 	}
+    
+    protected Language getLanguage(HttpServletRequest request) {
+    	return (Language)request.getAttribute(Constants.LANGUAGE);
+    }
     
 	@ExceptionHandler(Exception.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)

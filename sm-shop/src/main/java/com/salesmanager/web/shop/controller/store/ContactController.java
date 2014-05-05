@@ -99,7 +99,7 @@ public class ContactController extends AbstractController {
 	}
 
 	
-	@RequestMapping(value={"/shop/store/{storeCode}/email.html"}, method=RequestMethod.POST)
+	@RequestMapping(value={"/shop/store/{storeCode}/contact"}, method=RequestMethod.POST)
 	public @ResponseBody String sendEmail(@ModelAttribute(value="contact") ContactForm contact, BindingResult bindingResult, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 
 		AjaxResponse ajaxResponse = new AjaxResponse();

@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.salesmanager.web.shop.constraints.FieldMatch;
+import com.salesmanager.web.utils.FieldMatch;
 
 
 @FieldMatch.List({
