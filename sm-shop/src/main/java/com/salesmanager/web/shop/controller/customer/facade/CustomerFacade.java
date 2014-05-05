@@ -10,6 +10,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.entity.customer.CustomerEntity;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
+import com.salesmanager.web.entity.customer.ReadableCustomer;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 
 /**
@@ -38,7 +39,15 @@ public interface CustomerFacade
      */
     public CustomerEntity getCustomerDataByUserName(final String userName,final MerchantStore store, final Language language) throws Exception;
 
-
+    /**
+     * Creates a ReadableCustomer
+     * @param id
+     * @param merchantStore
+     * @param language
+     * @return
+     */
+    public ReadableCustomer getCustomerById(final Long id, final MerchantStore merchantStore, final Language language) throws Exception;
+    
     /**
      * <p>Method responsible for performing customer auto-login, Method will perform following operations
      * <li> Fetch customer based on userName and Store.</li>
