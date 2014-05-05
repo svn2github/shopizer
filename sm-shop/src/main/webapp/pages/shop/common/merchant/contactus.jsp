@@ -15,9 +15,11 @@ response.setDateHeader ("Expires", -1);
 <%@page pageEncoding="UTF-8"%>
 
 <!--Set google map API key -->
+<c:if test="${requestScope.CONFIGS['displayStoreAddress'] == true}">
 <script type="text/javascript"
-      src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&sensor=true">
+      src="https://maps.googleapis.com/maps/api/js?sensor=true">
 </script>
+</c:if>
 
 <script type="text/javascript">
 
@@ -32,13 +34,49 @@ $(document).ready(function() {
 	$("input[type='text']").on("change keyup paste", function(){
 		isFormValid();
 	});
-	$("input[type='textarea']").on("change keyup paste", function(){
+	$("#comment").on("change keyup paste", function(){
 		isFormValid();
 	});
 	
-	
-	
+    $("#submitContact").click(function() {
+    	sendContact();
+    });
+
 });
+
+
+function sendContact(){
+	$('#pageContainer').showLoading();
+	$(".alert-error").hide();
+	$(".alert-success").hide();
+	var data = $('#contactForm').serialize();
+	console.log(data);
+	$.ajax({
+	  type: 'POST',
+	  url: '<c:url value="/shop/store/${requestScope.MERCHANT_STORE.code}/contact"/>',
+	  data: data,
+	  cache: false,
+	  dataType: 'json',
+	  success: function(response){
+		  
+		    $('#pageContainer').hideLoading();
+		  	if(response.errorMessage!=null && response.errorMessage!='') {
+		  		$(".alert-error").show();
+				$(".alert-success").hide();
+		  		return;
+		  	}
+
+			$(".alert-error").hide();
+			$(".alert-success").show();
+	  },
+	  error: function(xhr, textStatus, errorThrown) {
+	    	$('#pageContainer').hideLoading();
+	  		alert('error ' + errorThrown);
+	  }
+
+	});
+	
+}
 
 
  
@@ -60,37 +98,29 @@ $(document).ready(function() {
 				var emailValid = validateEmail($(this).val());
 				//console.log('Email is valid ? ' + emailValid);
 				if(!emailValid) {
-					if(firstErrorMessage==null) {
-						valid = false;
-					}
+					valid = false;
 				}
 			}
-					});
+		});
 		
 		//console.log('Form is valid ? ' + valid);
 		if(valid==false) {//disable submit button
-			$('#submitRegistration').addClass('btn-disabled');
-			$('#submitRegistration').prop('disabled', true);
-			$('#registrationError').html(firstErrorMessage);
-			$('#registrationError').show();
+			$('#submitContact').addClass('btn-disabled');
+			$('#submitContact').prop('disabled', true);
 		} else {
-			$('#submitRegistration').removeClass('btn-disabled');
-			$('#submitRegistration').prop('disabled', false);
-			$('#registrationError').hide();
+			$('#submitContact').removeClass('btn-disabled');
+			$('#submitContact').prop('disabled', false);
 		}
  }
  
  
  function isFieldValid(field) {
 		var validateField = true;
+		
 		var fieldId = field.prop('id');
 		var value = field.val();
-		if (fieldId.indexOf("hidden_registration_zones") >= 0) {
-			console.log(field.is(":hidden"));
-			if(field.is(":hidden")) {
-				return true;
-			}
-		}
+		
+		console.log('Check id ' + fieldId + ' and value ' + value);
 		if(!emptyString(value)) {
 			field.css('background-color', '#FFF');
 			return true;
@@ -111,9 +141,11 @@ $(document).ready(function() {
 
 								
                                 <form:form action="#" method="POST" id="contactForm" name="contactForm" commandName="contact">
-                                    <form:errors path="*" cssClass="alert alert-error" element="div" />
+                                    <div id="store.success" class="alert alert-success" style="display:none;"><s:message code="message.email.success" text="Your message has been sent"/></div>   
+	                				<div id="store.error" class="alert alert-error" style="display:none;"><s:message code="message.email.success" text="An error occurred while sending your message, pleas try again later"/></div>
+                                    <form:errors id="contactForm" path="*" cssClass="alert alert-error" element="div" />
                                     <div class="control-group">
-                                        <label for="inputName" class="control-label"><s:message code="label.entity.name" value="Name"/></label>
+                                        <label for="inputName" class="control-label"><s:message code="label.entity.name" text="Name"/></label>
                                         <div class="controls">
 										   <s:message code="NotEmpty.customer.name" text="Name is required" var="msgName"/>
 										   <form:input path="name" cssClass="required" id="name" title="${msgName}"/>
@@ -121,23 +153,23 @@ $(document).ready(function() {
                                         </div>
                                     </div>
                                     <div class="control-group">
-                                        <label for="inputEmail" class="control-label"><s:message code="label.generic.email" value="Email address"/></label>
+                                        <label for="inputEmail" class="control-label"><s:message code="label.generic.email" text="Email address"/></label>
                                         <div class="controls">
                                             <form:input path="email" cssClass="required" id="email"/>
                                             <form:errors path="email" cssClass="error" />
                                         </div>
                                     </div>
                                     <div class="control-group">
-                                        <label for="inputEmail" class="control-label"><s:message code="label.generic.subject" value="Subject"/></label>
+                                        <label for="inputEmail" class="control-label"><s:message code="label.generic.subject" text="Subject"/></label>
                                         <div class="controls">
                                             <form:input path="subject" cssClass="required" id="subject"/>
                                             <form:errors path="subject" cssClass="error" />
                                         </div>
                                     </div>
                                     <div class="control-group">
-                                        <label class="control-label" for="textarea"><s:message code="label.generic.comments" value="Comments"/></label>
+                                        <label class="control-label" for="textarea"><s:message code="label.generic.comments" text="Comments"/></label>
                                         <div class="controls">
-                                            <form:textarea path="comments" cssClass="required" cols="100" id="comments"/>
+                                            <form:textarea path="comment" cssClass="span8 required" rows="10" id="comment"/>
                                         </div>
                                     </div>
 									<div class="control-group">
@@ -162,10 +194,11 @@ $(document).ready(function() {
 										</div>
 
 									<div class="form-actions">
-										<input id="submitContact" type="submit" value="<s:message code="label.generic.send" text="Send"/>" name="register" class="btn btn-primary btn-large">
+										<input id="submitContact" type="button" value="<s:message code="label.generic.send" text="Send"/>" name="register" class="btn btn-primary btn-large">
 									</div>
 			</form:form>
-              </div>
+            </div>
+            </div>
 <!-- END LEFT-SIDE CONTACT FORM AREA -->
 
 
@@ -206,10 +239,12 @@ $(document).ready(function() {
 <!-- GOOGLE MAP -->  
 <c:if test="${requestScope.CONFIGS['displayStoreAddress'] == true}">
 
-<div id="map_canvas" style="width: 430px; height: 320px; overflow:hidden;"></div>
+<div id="map_canvas" style="width: 430px; max-height: 320px; overflow:hidden;"></div>
 <script>
 
-if(address!=null && eventAddress!='') {
+var address = '<c:out value="${requestScope.MERCHANT_STORE.storeaddress}"/> <c:out value="${requestScope.MERCHANT_STORE.storecity}"/> <c:out value="${requestScope.MERCHANT_STORE.storepostalcode}"/>';
+
+if(address!=null) {
 	geocoder = new google.maps.Geocoder();
 		var mapOptions = {
   			zoom: 9,
@@ -232,7 +267,6 @@ if(address!=null && eventAddress!='') {
 
 </script>
 
-                              
-<iframe src="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=Mockingbird+Station,+Dallas,+TX&amp;aq=1&amp;oq=mockinStation,+Dallas,+TX&amp;sll=32.786144,-96.788897&amp;sspn=0.00929,0.018947&amp;ie=UTF8&amp;hq=&amp;hnear=Mockingbird+Station,+Dallas,+Texas+75206&amp;t=m&amp;ll=32.845774,-96.772385&amp;spn=0.043266,0.061712&amp;z=14&amp;iwloc=A&amp;output=embed" style="width: 100%; height: 380px; border: none;"></iframe><br><small><a style="color:#0000FF;text-align:left" href="http://maps.google.com/maps?f=q&amp;source=embed&amp;hl=en&amp;geocode=&amp;q=Mockingbird+Station,+Dallas,+TX&amp;aq=1&amp;oq=mockinStation,+Dallas,+TX&amp;sll=32.786144,-96.788897&amp;sspn=0.00929,0.018947&amp;ie=UTF8&amp;hq=&amp;hnear=Mockingbird+Station,+Dallas,+Texas+75206&amp;t=m&amp;ll=32.845774,-96.772385&amp;spn=0.043266,0.061712&amp;z=14&amp;iwloc=A">View Larger Map</a></small>
+<!--<iframe src="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=Mockingbird+Station,+Dallas,+TX&amp;aq=1&amp;oq=mockinStation,+Dallas,+TX&amp;sll=32.786144,-96.788897&amp;sspn=0.00929,0.018947&amp;ie=UTF8&amp;hq=&amp;hnear=Mockingbird+Station,+Dallas,+Texas+75206&amp;t=m&amp;ll=32.845774,-96.772385&amp;spn=0.043266,0.061712&amp;z=14&amp;iwloc=A&amp;output=embed" style="width: 100%; height: 380px; border: none;"></iframe><br><small><a style="color:#0000FF;text-align:left" href="http://maps.google.com/maps?f=q&amp;source=embed&amp;hl=en&amp;geocode=&amp;q=Mockingbird+Station,+Dallas,+TX&amp;aq=1&amp;oq=mockinStation,+Dallas,+TX&amp;sll=32.786144,-96.788897&amp;sspn=0.00929,0.018947&amp;ie=UTF8&amp;hq=&amp;hnear=Mockingbird+Station,+Dallas,+Texas+75206&amp;t=m&amp;ll=32.845774,-96.772385&amp;spn=0.043266,0.061712&amp;z=14&amp;iwloc=A">View Larger Map</a></small>-->
 </c:if>
  </div>

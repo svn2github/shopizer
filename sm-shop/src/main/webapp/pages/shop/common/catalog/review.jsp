@@ -9,6 +9,7 @@ response.setDateHeader ("Expires", -1);
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm"%>
 
 <%@page contentType="text/html"%>
@@ -17,7 +18,10 @@ response.setDateHeader ("Expires", -1);
 
 					<div id="review" class="row-fluid">
 
-					<h3><s:message code="label.product.rate"/></h3>
+					<p class="lead"><s:message code="label.product.rate"/></p>
+					<div id="store.success" class="alert alert-success"	style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>">
+						<s:message code="message.productreview.created" text="You have successfully created a product review" />
+					</div>
 					
 					<div class="span12 no_margin">
 					<div class="span6">
@@ -30,7 +34,18 @@ response.setDateHeader ("Expires", -1);
 								</td>
 								</c:if>
 								<td>
-									<c:out value="${product.description.name}"/>
+									<table>
+										<tr>
+											<td style="border-top: none;"><c:out value="${product.description.name}" /></td>
+										</tr>
+										<tr>
+											<td style="border-top: none;">
+												<c:set var="HIDEACTION" value="TRUE" scope="request" />
+												<!-- product rating -->
+												<jsp:include page="/pages/shop/common/catalog/rating.jsp" />
+											</td>
+										</tr>
+									</table>
 								</td>
 								<td>
 									<c:out value="${product.finalPrice}"/>
@@ -38,37 +53,72 @@ response.setDateHeader ("Expires", -1);
 								</tr>
 							</tbody>
 						</table>
+
 						<br/>
 
-					<c:url var="saveReview" value="/customer/review/save.html"/>
-				    <form:form method="POST" commandName="review" action="${saveReview}">
-				    	<form:hidden path="rating"/>
-				    	<form:hidden path="customer.id"/>
-				    	<form:hidden path="productId"/>
-						    <label><s:message code="label.generic.youropinion" text="Your opinion" /></label>
-						    <textarea name="" rows="6" class="span6" path="description"></textarea>
-							<label>&nbsp;</label>
-						    <span class="help-block"><s:message code="label.product.clickrate" text="Product rating (click on the stars to activate rating)" /></span>
-						    <div id="productRating" style="width: 100px;"></div>
-									<script>
-									$(function() {
-										$('#productRating').raty({ 
-											readOnly: false, 
-											half: true,
-											path : '<c:url value="/resources/img/stars/"/>',
-											score: 5,
-											click: function(score, evt) {
-												    $('#rating').val(score);
-										    }
-										});
-									});	
-									</script>
-							<br/>
-						    <button type="submit" class="btn"><s:message code="button.label.submit" text="Submit"/></button>
-				    </form:form>
-					</div>
-					<div class="span6">&nbsp;</div>
-					</div>
-					</div>
-					
+
+					<sec:authorize access="hasRole('AUTH_CUSTOMER') and fullyAuthenticated">
+						<c:choose>
+							<c:when test="${customerReview!=null}">
+								<p>
+									<s:message code="label.product.reviews.evaluated" text="You have evaluated this product"/>
+											<br/>
+											<div id="customerRating" style="width: 100px;"></div>
+											<br/>
+												<blockquote>
+    												<p><c:out value="${customerReview.description}" escapeXml="false" /></p>
+    												<small><c:out value="${customerReview.customer.firstName}" />&nbsp;<c:out value="${customerReview.customer.lastName}"/>&nbsp;<c:out value="${customerReview.date}" /></small>
+   	 											</blockquote>
+   	 											</p>
+   	 											<script>
+												  	$(function() {
+														$('#customerRating').raty({ 
+															readOnly: true, 
+															half: true,
+															path : '<c:url value="/resources/img/stars/"/>',
+															score: <c:out value="${customerReview.rating}" />
+														});
+												  	});
+								  			   </script>
+								
+								</p>
+							</c:when>
+							<c:otherwise>
+
+						<c:url var="submitReview" value="/customer/review/save.html"/>
+					    <form:form method="POST" commandName="review" action="${submitReview}">
+					    	<form:hidden id="rating" path="rating"/>
+					    	<form:hidden path="customer.id"/>
+					    	<form:hidden path="productId"/>
+							    <label><s:message code="label.generic.youropinion" text="Your opinion" /></label>
+							    <textarea name="" rows="6" class="span6" path="description"></textarea>
+								<label>&nbsp;</label>
+							    <span class="help-block"><s:message code="label.product.clickrate" text="Product rating (click on the stars to activate rating)" /></span>
+							    <div id="rateMe" style="width: 100px;"></div>
+										<script>
+										$(function() {
+											$('#rateMe').raty({ 
+												readOnly: false, 
+												half: true,
+												path : '<c:url value="/resources/img/stars/"/>',
+												score: 5,
+												click: function(score, evt) {
+													    $('#rating').val(score);
+											    }
+											});
+										});	
+										</script>
+								<br/>
+							    <button type="submit" class="btn"><s:message code="button.label.submit2" text="Submit"/></button>
+					    </form:form>
+						</div>
+						<div class="span6">&nbsp;</div>
+						</div>
+						</div>
+						</c:otherwise>
+						</c:choose>
+					</sec:authorize>
+					<sec:authorize access="!hasRole('AUTH_CUSTOMER') and !fullyAuthenticated">
+							<p class="muted"><s:message code="label.product.reviews.logon.write" text="You have to be authenticated to write a review" /></p>
+					</sec:authorize>
 

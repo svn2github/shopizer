@@ -34,6 +34,10 @@
 			addToCart($(this).attr("productId"));
 	    });
 		
+    	$("#open-cart").click(function(e) {
+    		displayMiniCart();
+    	});
+		
 	}
 	
 	/**
@@ -221,9 +225,15 @@ function updateCart(cartDiv) {
 
 function displayMiniCart(){
 	var cartCode = getCartCode();
+
 	if(cartCode==null) {
+		emptyCartLabel();
 		return;
 	}
+	
+	
+	
+	
 	$('#shoppingcartProducts').html('');
 	$('#cart-box').addClass('loading-indicator-overlay');/** manage manually cart loading**/
 	$('#cartShowLoading').show();

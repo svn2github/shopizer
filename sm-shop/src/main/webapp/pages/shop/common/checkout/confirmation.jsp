@@ -14,15 +14,80 @@ response.setDateHeader ("Expires", -1);
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%> 
 
-<script>
+<script type="text/javascript">
 
 $(document).ready(function() {
 	
 	removeCart();
 });
 
-
 </script>
+
+
+
+<c:if test="${requestScope.CONFIGS['google_analytics_url'] != null}">
+
+
+<script type="text/javascript">
+//<![CDATA[ 
+	//var _gaq = _gaq || [];
+	//_gaq.push(['_setAccount', '<c:out value="${requestScope.CONFIGS['google_analytics_url']}"/>']);
+	//_gaq.push(['_trackPageview']);
+
+	
+	if(_gaq) {
+		
+		
+	console.log('GAQ ');
+
+	_gaq.push(['_trackPageview']);
+	_gaq.push(['_addTrans', 
+		'<c:out value="${order.id}"/>', // order ID - required 
+		'<c:out value="${requestScope.MERCHANT_STORE.storename}"/>', //Store Name
+	    '<sm:monetary value="${order.total.value}"/>',  // total - required
+		'<sm:monetary value="${order.tax.value}"/>',  // tax 
+		<c:choose>
+		<c:when test="${order.shipping!=null}">
+		'<sm:monetary value="${order.shipping.value}"/>', // shipping 
+		</c:when>
+		<c:otherwise>
+		'',
+		</c:otherwise>
+		</c:choose>
+		'<c:out value="${order.customer.billing.city}"/>', // city
+		<c:choose>
+		<c:when test="${order.customer.billing.zone!=null}">
+		'<c:out value="${order.customer.billing.zone.name}"/>',// state or province 
+		</c:when>
+		<c:otherwise>
+		'<c:out value="${order.customer.billing.zone.stateProvince}"/>',// state or province 
+		</c:otherwise>
+		</c:choose>
+		'<c:out value="${order.customer.billing.country.name}"/>' // country
+		 ]);
+
+
+	<c:forEach items="${order.products}" var="product" varStatus="status">
+
+	_gaq.push(['_addItem', 
+		'<c:out value="${order.id}"/>', // order ID - required 
+		'<c:out value="${product.product.id}" />', // SKU/code - required 
+		'<c:out value="${product.product.description.name}" />', // product name 
+		'<sm:monetary value="${product.price}" />', // unit price - required 
+		'<c:out value="${product.orderedQuantity}" />' // quantity - required 
+		]); 
+
+	</s:iterator>
+
+	_gaq.push(['_trackTrans']); //submits transaction to the Analytics servers 
+
+	}
+
+
+	//]]> 
+</script>
+
+</s:if>
 
 
 	<div id="main-content" class="container clearfix">
@@ -38,7 +103,7 @@ $(document).ready(function() {
           <c:if test="${downloads!=null}">
           	<p>
           	<c:choose>
-          		<c:when test="${order.status.value=='processed'}">
+          		<c:when test="${order.orderStatus.value=='processed'}">
           		    <strong><s:message code="label.checkout.downloads.completed" text="label.checkout.downloads.completed"/></strong><br/>
           			<c:forEach items="${downloads}" var="download">
           				<a href="<sm:orderProductDownload productDownload="${download}" orderId="${order.id}"/>"><c:out value="${download.fileName}" /></a>

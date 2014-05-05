@@ -1,9 +1,5 @@
     $(function() {
-    	
-    	$("#open-cart").click(function(e) {
-    		displayMiniCart();
-    	});
-    	
+    	    	
     	$("#signinDrop").click(function(e){
     		$("#loginError").hide();
     		e.preventDefault();

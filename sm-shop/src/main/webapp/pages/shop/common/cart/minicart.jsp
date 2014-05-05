@@ -30,7 +30,7 @@ response.setDateHeader ("Expires", -1);
 			</table>
 			<div id="total-box" class="total-box"></div><!-- totals place holder -->
 			<br />
-			<button class="btn-success btn-large" style="width: 100%" type="button" onclick="viewShoppingCartPage();"><s:message code="label.checkout" text="Checkout"/></button>
+			<button class="btn btn-large" style="width: 100%" type="button" onclick="viewShoppingCartPage();"><s:message code="label.checkout" text="Checkout"/></button>
 		</div>
 	</div>
 </div>

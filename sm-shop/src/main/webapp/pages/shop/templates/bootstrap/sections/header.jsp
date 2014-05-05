@@ -106,7 +106,7 @@ response.setDateHeader ("Expires", -1);
 											</div>
 									</div>
 									<input id="storeCode" name="storeCode" type="hidden" value="<c:out value="${requestScope.MERCHANT_STORE.code}"/>"/>					 
-									<button type="submit" style="width:100%" class="btn" id="login-button"><s:message code="button.label.login" text="Login" /></button>
+									<button type="submit" style="width:100%" class="btn btn-large" id="login-button"><s:message code="button.label.login" text="Login" /></button>
 									
 								</form>
 								<a href="<c:url value="/shop/customer/registration.html" />" role="button" class="" data-toggle="modal"><s:message code="label.register.notyetregistered" text="Not yet registered ?" /></a>
