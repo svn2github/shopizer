@@ -56,6 +56,7 @@ import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.entity.customer.CustomerEntity;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
+import com.salesmanager.web.entity.customer.ReadableCustomer;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.populator.customer.CustomerBillingAddressPopulator;
 import com.salesmanager.web.populator.customer.CustomerDeliveryAddressPopulator;
@@ -63,6 +64,7 @@ import com.salesmanager.web.populator.customer.CustomerEntityPopulator;
 import com.salesmanager.web.populator.customer.CustomerPopulator;
 import com.salesmanager.web.populator.customer.PersistableCustomerBillingAddressPopulator;
 import com.salesmanager.web.populator.customer.PersistableCustomerShippingAddressPopulator;
+import com.salesmanager.web.populator.customer.ReadableCustomerPopulator;
 import com.salesmanager.web.populator.shoppingCart.ShoppingCartDataPopulator;
 
 
@@ -517,6 +519,21 @@ public class CustomerFacadeImpl implements CustomerFacade
        this.customerService.saveOrUpdate( customerModel );
        
     }
+    
+	@Override
+	public ReadableCustomer getCustomerById(final Long id, final MerchantStore merchantStore, final Language language) throws Exception {
+		Customer customerModel = customerService.getById(id);
+		if(customerModel==null) {
+			return null;
+		}
+		
+		ReadableCustomer readableCustomer = new ReadableCustomer();
+		
+		ReadableCustomerPopulator customerPopulator = new ReadableCustomerPopulator();
+		customerPopulator.populate(customerModel,readableCustomer, merchantStore, language);
+		
+		return readableCustomer;
+	}
 
 
 
