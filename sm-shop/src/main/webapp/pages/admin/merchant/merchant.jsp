@@ -319,7 +319,8 @@ function callBackCheckCode(msg,code) {
 	                  </div>
 	                  
 	                  <form:hidden path="id" />
-	                  
+	                  <form:hidden path="storeLogo" />
+	                  <form:hidden path="storeTemplate" />
 
 				      <div class="form-actions">
 	                  		<div class="pull-right">

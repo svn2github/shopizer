@@ -50,7 +50,7 @@ function sendContact(){
 	$(".alert-error").hide();
 	$(".alert-success").hide();
 	var data = $('#contactForm').serialize();
-	console.log(data);
+	//console.log(data);
 	$.ajax({
 	  type: 'POST',
 	  url: '<c:url value="/shop/store/${requestScope.MERCHANT_STORE.code}/contact"/>',
@@ -120,7 +120,7 @@ function sendContact(){
 		var fieldId = field.prop('id');
 		var value = field.val();
 		
-		console.log('Check id ' + fieldId + ' and value ' + value);
+		//console.log('Check id ' + fieldId + ' and value ' + value);
 		if(!emptyString(value)) {
 			field.css('background-color', '#FFF');
 			return true;
@@ -136,14 +136,16 @@ function sendContact(){
 
 
 	<div id="main-content" class="container clearfix">
+	<h1><s:message code="label.customer.contactus" text="Contact us"/></h1>
 		<div class="row-fluid">
-			<div class="span7">  
-
+			
+			<div class="span6">  
 								
-                                <form:form action="#" method="POST" id="contactForm" name="contactForm" commandName="contact">
+                                <form:form action="#" method="POST" id="contactForm" class="form-horizontal" name="contactForm" commandName="contact">
                                     <div id="store.success" class="alert alert-success" style="display:none;"><s:message code="message.email.success" text="Your message has been sent"/></div>   
 	                				<div id="store.error" class="alert alert-error" style="display:none;"><s:message code="message.email.success" text="An error occurred while sending your message, pleas try again later"/></div>
                                     <form:errors id="contactForm" path="*" cssClass="alert alert-error" element="div" />
+                                    <fieldset>
                                     <div class="control-group">
                                         <label for="inputName" class="control-label"><s:message code="label.entity.name" text="Name"/></label>
                                         <div class="controls">
@@ -196,8 +198,8 @@ function sendContact(){
 									<div class="form-actions">
 										<input id="submitContact" type="button" value="<s:message code="label.generic.send" text="Send"/>" name="register" class="btn btn-primary btn-large">
 									</div>
+									</fieldset>
 			</form:form>
-            </div>
             </div>
 <!-- END LEFT-SIDE CONTACT FORM AREA -->
 
@@ -208,7 +210,7 @@ function sendContact(){
 									<c:if test="${requestScope.CONFIGS['displayStoreAddress'] == true}">                                  
                                      <address>  
 									 	<div itemscope itemtype="http://schema.org/Organization"> 
-									 	<span itemprop="name" class="lead"><c:out value="${requestScope.MERCHANT_STORE.storename}"/></span><br/>  
+									 	<h2 itemprop="name"><c:out value="${requestScope.MERCHANT_STORE.storename}"/></h2><br/>  
 									 	<div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress"> 
 									 	<span itemprop="streetAddress"><c:out value="${requestScope.MERCHANT_STORE.storeaddress}"/> <c:out value="${requestScope.MERCHANT_STORE.storecity}"/></span><br/>
 									 	<span itemprop="addressLocality"><c:choose><c:when test="${not empty requestScope.MERCHANT_STORE.storestateprovince}"><c:out value="${requestScope.MERCHANT_STORE.storestateprovince}"/></c:when><c:otherwise><script>$.ajax({url: "<c:url value="/shop/reference/zoneName"/>",type: "GET",data: "zoneCode=${requestScope.MERCHANT_STORE.zone.code}",success: function(data){$('#storeZoneName').html(data)}})</script><span id="storeZoneName"><c:out value="${requestScope.MERCHANT_STORE.zone.code}"/></span></c:otherwise></c:choose>,

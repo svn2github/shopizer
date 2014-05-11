@@ -419,6 +419,26 @@ footer div.company {
 }
 
 
+/** fonts **/
+
+
+#main-content h1, h2, h3, h4, h5, h6 {
+  	color: #333333;
+  	font-weight: 300;
+  	margin: 0;
+}
+
+#main-content h1 {
+	font-size: 36px;
+    line-height: 43px;
+    margin: 0 0 10px;
+    padding: 0;
+}
+
+
+
+
+
 
 /*** to be revised **/
 

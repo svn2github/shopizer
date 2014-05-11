@@ -159,7 +159,6 @@ $(document).ready(function() {
 	
 	
 					   </div>
-					   <br/>
 					   <div class="span6">
 							<div class="box">
 								<span class="box-title">

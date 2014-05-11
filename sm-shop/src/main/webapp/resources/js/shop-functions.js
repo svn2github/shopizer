@@ -11,7 +11,7 @@ function emptyString($value) {
 	return !$value || !/[^\s]+/.test($value);
 }
 
-function loadProducts(url,divProductsContainer, ref) {
+function loadProducts(url,divProductsContainer) {
 	$(divProductsContainer).showLoading();
 
 	$.ajax({
@@ -20,7 +20,7 @@ function loadProducts(url,divProductsContainer, ref) {
 			url: url,
 			success: function(productList) {
 
-				buildProductsList(productList,divProductsContainer, ref);
+				buildProductsList(productList,divProductsContainer);
 				callBackLoadProducts(productList);
 
 

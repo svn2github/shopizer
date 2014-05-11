@@ -77,7 +77,7 @@ $(document).ready(function() {
 		'<c:out value="${product.orderedQuantity}" />' // quantity - required 
 		]); 
 
-	</s:iterator>
+	</c:forEach>
 
 	_gaq.push(['_trackTrans']); //submits transaction to the Analytics servers 
 
@@ -87,10 +87,11 @@ $(document).ready(function() {
 	//]]> 
 </script>
 
-</s:if>
+</c:if>
 
 
 	<div id="main-content" class="container clearfix">
+		<h1><s:message code="label.checkout.confirmation" text="Order completed" /></h1>
 		<div class="row-fluid">
 			<div class="span12">  
 

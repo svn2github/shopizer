@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %> 
 
 <%@ page session="false" %>
 
@@ -56,22 +57,22 @@ function cartSubTotal(cart) {
 /**
 * Builds the product container div from the product list
 **/
-function buildProductsList(productList, divProductsContainer, ref) {
+function buildProductsList(productList, divProductsContainer) {
 
 
 		for (var i = 0; i < productList.products.length; i++) {
 			var productHtml = '<li itemscope itemtype="http://schema.org/Enumeration" class="item listing-item" data-id="' + productList.products[i].id  + '" item-price="' +  productList.products[i].price +'" item-name="' +  productList.products[i].description.name +'" item-order="' +  productList.products[i].sortOrder +'">';
-			productHtml = productHtml + '<div class="product-box"><a href="<c:url value="/shop/product/" />' + productList.products[i].description.friendlyUrl + '.html">';
+			productHtml = productHtml + '<div class="product-box"><a href="<c:url value="/shop/product/" />' + productList.products[i].description.friendlyUrl + '.html<sm:breadcrumbParam/>">';
 			productHtml = productHtml + '<h4 class="name" itemprop="name">' + productList.products[i].description.name +'</h4></a>';
 			if(productList.products[i].discounted) {
 					   productHtml = productHtml + '<h3><del>' + productList.products[i].originalPrice +'</del>&nbsp;<span class="specialPrice">' + productList.products[i].finalPrice + '</span></h3>';
 			} else {
 					    productHtml = productHtml + '<h3>' + productList.products[i].finalPrice +'</h3>';
 			}
-			var productUrl = '<c:url value="/shop/product/" />' + productList.products[i].description.friendlyUrl + '.html';
-			if(ref!=null) {
-				productUrl = productUrl + '/ref=' + ref;
-			}
+			var productUrl = '<c:url value="/shop/product/" />' + productList.products[i].description.friendlyUrl + '.html<sm:breadcrumbParam/>';
+			//if(ref!=null) {
+			//productUrl = productUrl + '/ref=' + ref;
+			//}
 			if(productList.products[i].image!=null) {
 					    productHtml = productHtml + '<a href="' + productUrl + '"><img src="<c:url value="/"/>' + productList.products[i].image.imageUrl +'" itemprop="image"></a>';
 			}

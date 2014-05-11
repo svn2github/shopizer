@@ -17,7 +17,7 @@ response.setDateHeader ("Expires", -1);
 										<c:forEach items="${requestScope.ITEMS}" var="product">
 											<li class="span3" data-id="${product.id}" item-price="${product.price}" item-name="${product.description.name}" item-order="${product.sortOrder}">
 												<div class="product-box">                                        
-													<a href="<c:url value="/shop/product/" /><c:out value="${product.description.friendlyUrl}"/>.html"><h4><c:out value="${product.description.name}"/></h4></a>
+													<a href="<c:url value="/shop/product/" /><c:out value="${product.description.friendlyUrl}"/>.html<sm:breadcrumbParam productId="${product.id}"/>"><h4><c:out value="${product.description.name}"/></h4></a>
 													<h3>
 														<c:choose>
 															<c:when test="${product.discounted}">
@@ -30,7 +30,7 @@ response.setDateHeader ("Expires", -1);
 													</h3>
 													<c:if test="${product.image!=null}"><a href="<c:url value="/shop/product/" /><c:out value="${product.description.friendlyUrl}"/>.html"><img src="<sm:shopProductImage imageName="${product.image.imageName}" sku="${product.sku}"/>"/></a></c:if>
 													<div class="bottom">
-														<a href="<c:url value="/shop/product/" /><c:out value="${product.description.friendlyUrl}"/>.html"><s:message code="button.label.view" text="Details" /></a> <c:choose><c:when test="${requestScope.FEATURED==true}"><c:if test="${requestScope.CONFIGS['displayAddToCartOnFeaturedItems']==true}">/ <a class="addToCart" href="#" productId="${product.id}"><s:message code="button.label.addToCart" text="Add to cart" /></a></c:if></c:when><c:otherwise>/ <a class="addToCart" href="#" productId="${product.id}"><s:message code="button.label.addToCart" text="Add to cart" /></a></c:otherwise></c:choose>
+														<a href="<c:url value="/shop/product/" /><c:out value="${product.description.friendlyUrl}"/>.html<sm:breadcrumbParam productId="${product.id}"/>"><s:message code="button.label.view" text="Details" /></a> <c:choose><c:when test="${requestScope.FEATURED==true}"><c:if test="${requestScope.CONFIGS['displayAddToCartOnFeaturedItems']==true}">/ <a class="addToCart" href="#" productId="${product.id}"><s:message code="button.label.addToCart" text="Add to cart" /></a></c:if></c:when><c:otherwise>/ <a class="addToCart" href="#" productId="${product.id}"><s:message code="button.label.addToCart" text="Add to cart" /></a></c:otherwise></c:choose>
 													</div>
 												</div>
 										    </li>

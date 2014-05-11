@@ -20,7 +20,7 @@ response.setDateHeader ("Expires", -1);
 		
 		  <c:forEach items="${requestScope.BREADCRUMB.breadCrumbs}" var="breadcrumb" varStatus="count">
 			  <li class="active">
-			    <a href="${breadcrumb.url}">${breadcrumb.label}</a> <span class="divider">/</span>
+			    <a href="${breadcrumb.url}<sm:breadcrumbParam/>">${breadcrumb.label}</a> <span class="divider">/</span>
 			  </li>
 		  </c:forEach>
 		

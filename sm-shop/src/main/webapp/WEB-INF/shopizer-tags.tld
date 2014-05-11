@@ -200,6 +200,26 @@
 </tag>
 
 <tag>
+ 		 <!-- Builds breadcrumb parameter -->
+         <name>breadcrumbParam</name>
+         <tag-class>com.salesmanager.web.tags.StoreBreadcrumbsTag</tag-class>
+         <body-content>scriptless</body-content>
+         <attribute>
+                 <name>categoryId</name>
+                 <required>false</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>java.lang.Long</type>
+         </attribute>
+         <attribute>
+                 <name>productId</name>
+                 <required>false</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>java.lang.Long</type>
+         </attribute>
+
+</tag>
+
+<tag>
  		 <!-- Builds the copyright -->
          <name>storeCopy</name>
          <tag-class>com.salesmanager.web.tags.StoreFooterTag</tag-class>

@@ -610,6 +610,8 @@ $(document).ready(function() {
 
 </script>
 
+	<div id="main-content">
+	<h1><s:message code="label.checkout" text="Checkout" /></h1>
 
    <c:set var="commitUrl" value="${pageContext.request.contextPath}/shop/order/commitOrder.html"/>
    <form:form id="checkoutForm" method="POST" enctype="multipart/form-data" commandName="order" action="${commitUrl}">
@@ -1101,3 +1103,4 @@ $(document).ready(function() {
 		<!-- end row fluid -->
 			
 	</form:form>
+	</div>

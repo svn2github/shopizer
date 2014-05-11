@@ -77,7 +77,7 @@ response.setDateHeader ("Expires", -1);
  		if(filter!=null) {
  			url = url + '/filter=' + filter + '/filter-value=' + filterValue +'';
  		}
- 		loadProducts(url,'#productsContainer','<c:out value="${category.id}"/>');
+ 		loadProducts(url,'#productsContainer');
  	}
  	
  	
@@ -141,7 +141,7 @@ response.setDateHeader ("Expires", -1);
               </c:if>
               <c:forEach items="${subCategories}" var="subCategory">
               	<li>
-              		<a href="<c:url value="/shop/category/${subCategory.description.friendlyUrl}.html/ref=${parent.id}"/>"><c:out value="${subCategory.description.name}" />
+              		<a href="<c:url value="/shop/category/${subCategory.description.friendlyUrl}.html"/><sm:breadcrumbParam categoryId="${subCategory.id}"/>"><c:out value="${subCategory.description.name}" />
               			<c:if test="${subCategory.productCount>0}">&nbsp;<span class="countItems">(<c:out value="${subCategory.productCount}" />)</span></c:if></a></li>
               </c:forEach>
             </ul>
@@ -189,7 +189,7 @@ response.setDateHeader ("Expires", -1);
         
         
 
-          
+          	<!-- products are loaded by ajax -->
         	<ul id="productsContainer" class="thumbnails product-list"></ul>
 			
 			<nav id="button_nav" style="text-align:center;display:none;">

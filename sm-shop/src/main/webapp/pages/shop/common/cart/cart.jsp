@@ -12,11 +12,10 @@
 	var="removeShoppingCartItemUrl" />
 
 
-<br />
-<br />
-<div class="row-fluid show-grid">
 
-<p class="lead"><s:message code="label.cart.revieworder" text="Review your order" /></p>
+<div id="main-content" class="row-fluid show-grid">
+
+<h1><s:message code="label.cart.revieworder" text="Review your order" /></h1>
 <div id="store.error" class="alert alert-error" style="display:none;"><s:message code="message.error.shoppingcart.update" text="An error occurred while updating the shopping cart"/></div>
 <br/>
 <table id="mainCartTable" class="table table-bordered table-striped">

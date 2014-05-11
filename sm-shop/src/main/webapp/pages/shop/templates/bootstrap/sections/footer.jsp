@@ -17,7 +17,7 @@ response.setDateHeader ("Expires", -1);
 
 	  <!-- footer -->
             <footer>
-                <div class="row-fluid">  
+                <div id="footer" class="row-fluid">  
                 	<c:if test="${requestScope.CONFIGS['displayStoreAddress'] == true}">                 
                     <div class="span3">
 						<div class="company">
@@ -29,7 +29,7 @@ response.setDateHeader ("Expires", -1);
                     </c:if>
                      <c:if test="${not empty requestScope.CONTENT_PAGE}">
 					 <div class="span3 contentPages">   
-						<h4><s:message code="label.store.information.title" text="Informations"/></h4>
+						<p class="lead"><s:message code="label.store.information.title" text="Informations"/></p>
 						<!-- Pages -->
                         <ul class="footerLiks">
                         	<c:forEach items="${requestScope.CONTENT_PAGE}" var="content">
@@ -43,7 +43,7 @@ response.setDateHeader ("Expires", -1);
                     </c:if>
                     <div class="span3 customerSection">
                     	<c:if test="${requestScope.CONFIGS['displayCustomerSection'] == true}">
-                        <h4><s:message code="label.customer.myaccount" text="My Account" /></h4>
+                        <p class="lead"><s:message code="label.customer.myaccount" text="My Account" /></p>
                         <ul class="footerLiks">
                         	<sec:authorize access="hasRole('AUTH_CUSTOMER') and fullyAuthenticated">
                         		<li><a href="<c:url value="/shop/customer/account.html"/>" style="color: #fff;"><s:message code="menu.profile" text="Profile"/></a></li>
@@ -64,7 +64,7 @@ response.setDateHeader ("Expires", -1);
                     <div class="span3 socialLinksSection">
                     	<!-- Social links -->
                     	<c:if test="${requestScope.CONFIGS['facebook_page_url'] != null}">
-	                        <h4><s:message code="label.social.connect" text="Connect with us"/></h4>
+	                        <p class="lead"><s:message code="label.social.connect" text="Connect with us"/></p>
 	                        <c:if test="${requestScope.CONFIGS['facebook_page_url'] != null}">
 	                        	<a href="<c:out value="${requestScope.CONFIGS['facebook_page_url']}"/>"><img src="<c:url value="/resources/img/facebook-transparent.png" />" width="40"></a>
 	                        </c:if>

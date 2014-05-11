@@ -85,7 +85,7 @@ response.setDateHeader ("Expires", -1);
 							</c:when>
 							<c:otherwise>
 
-						<c:url var="submitReview" value="/customer/review/save.html"/>
+						<c:url var="submitReview" value="/shop/customer/review/submit.html"/>
 					    <form:form method="POST" commandName="review" action="${submitReview}">
 					    	<form:hidden id="rating" path="rating"/>
 					    	<form:hidden path="customer.id"/>
