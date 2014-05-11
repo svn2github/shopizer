@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -128,8 +129,8 @@ public class CustomerProductReviewController extends AbstractController {
 	
 	
 	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
-	@RequestMapping(value="/review/submit.html", method=RequestMethod.GET)
-	public String submitProductReview(@Valid @RequestParam("review") PersistableProductReview review, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	@RequestMapping(value="/review/submit.html", method=RequestMethod.POST)
+	public String submitProductReview(@Valid @ModelAttribute("review") PersistableProductReview review, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 
 	    MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);

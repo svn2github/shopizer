@@ -57,6 +57,7 @@ import com.salesmanager.web.populator.catalog.ReadableProductReviewPopulator;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.model.catalog.Attribute;
 import com.salesmanager.web.shop.model.catalog.AttributeValue;
+import com.salesmanager.web.utils.BreadcrumbsUtils;
 import com.salesmanager.web.utils.FilePathUtils;
 import com.salesmanager.web.utils.ImageFilePathUtils;
 import com.salesmanager.web.utils.LabelUtils;
@@ -96,6 +97,9 @@ public class ShopProductController {
 	
 	@Autowired
 	private CategoryService categoryService;
+	
+	@Autowired
+	private BreadcrumbsUtils breadcrumbsUtils;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ShopProductController.class);
 	
@@ -159,7 +163,12 @@ public class ShopProductController {
 		
 		request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
 		
-		/** Build breadcrumb **/
+		Breadcrumb breadCrumb = breadcrumbsUtils.buildProductBreadcrumb(reference, productProxy, store, language, request.getContextPath());
+		request.getSession().setAttribute(Constants.BREADCRUMB, breadCrumb);
+		request.setAttribute(Constants.BREADCRUMB, breadCrumb);
+		
+		
+/*		*//** Build breadcrumb **//*
 		BreadcrumbItem home = new BreadcrumbItem();
 		home.setItemType(BreadcrumbItemType.HOME);
 		home.setLabel(messages.getMessage(Constants.HOME_MENU_KEY, locale));
@@ -194,14 +203,14 @@ public class ShopProductController {
 		BreadcrumbItem productBreadcrump = new BreadcrumbItem();
 		productBreadcrump.setItemType(BreadcrumbItemType.PRODUCT);
 		productBreadcrump.setLabel(productProxy.getDescription().getName());
-		productBreadcrump.setUrl((FilePathUtils.buildProductUrl(store, request, productProxy.getDescription().getFriendlyUrl())));
+		productBreadcrump.setUrl((FilePathUtils.buildProductUrl(store, request.getContextPath(), productProxy.getDescription().getFriendlyUrl())));
 		items.add(productBreadcrump);
 
 		breadCrumb.setBreadCrumbs(items);
 		breadCrumb.setItemType(BreadcrumbItemType.PRODUCT);
 		request.getSession().setAttribute(Constants.BREADCRUMB, breadCrumb);
 		request.setAttribute(Constants.BREADCRUMB, breadCrumb);
-		/** **/
+		*//** **/
 		
 		StringBuilder relatedItemsCacheKey = new StringBuilder();
 		relatedItemsCacheKey

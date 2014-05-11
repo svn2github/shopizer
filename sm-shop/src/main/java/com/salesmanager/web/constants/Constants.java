@@ -3,6 +3,7 @@ package com.salesmanager.web.constants;
 public class Constants {
 	
 	public final static String SLASH = "/";
+	public final static String EQUALS = "=";
 
     public final static String RESPONSE_STATUS = "STATUS";
     public final static String RESPONSE_SUCCESS = "SUCCESS";
@@ -15,6 +16,8 @@ public class Constants {
 	public final static String ADMIN_URI = "/admin";
 	public final static String SHOP_URI = "/shop";
 	public final static String SHOP = "shop";
+	public final static String REF = "ref";
+	public final static String REF_C = "c:";
 	
 	public final static String FILE_NOT_FOUND = "File not found";
 	

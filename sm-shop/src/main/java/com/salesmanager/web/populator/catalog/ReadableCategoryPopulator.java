@@ -16,7 +16,7 @@ public class ReadableCategoryPopulator extends
 			MerchantStore store, Language language) throws ConversionException {
 		
 		
-		
+		target.setLineage(source.getLineage());
 		if(source.getDescriptions()!=null && source.getDescriptions().size()>0) {
 			
 			CategoryDescription description = source.getDescription();

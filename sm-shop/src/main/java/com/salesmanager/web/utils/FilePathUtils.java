@@ -152,9 +152,9 @@ public class FilePathUtils {
 		
 	}
 	
-	public static String buildCategoryUrl(MerchantStore store, HttpServletRequest request, String url) {
+	public static String buildCategoryUrl(MerchantStore store, String contextPath, String url) {
 		StringBuilder resourcePath = new StringBuilder();
-		resourcePath.append(buildStoreUri(store, request))
+		resourcePath.append(buildStoreUri(store, contextPath))
 	
 			.append(Constants.SHOP_URI)
 			
@@ -167,9 +167,9 @@ public class FilePathUtils {
 		
 	}
 	
-	public static String buildProductUrl(MerchantStore store, HttpServletRequest request, String url) {
+	public static String buildProductUrl(MerchantStore store, String contextPath, String url) {
 		StringBuilder resourcePath = new StringBuilder();
-		resourcePath.append(buildStoreUri(store, request))
+		resourcePath.append(buildStoreUri(store, contextPath))
 			.append(Constants.SHOP_URI)
 			.append(Constants.PRODUCT_URI)
 			.append(Constants.SLASH)

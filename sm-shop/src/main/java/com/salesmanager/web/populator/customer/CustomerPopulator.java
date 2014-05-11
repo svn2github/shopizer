@@ -55,7 +55,7 @@ public class CustomerPopulator extends
 
 		try {
 			
-			if(source.getId() !=null){
+			if(source.getId() !=null && source.getId()>0){
 			    target.setId( source.getId() );
 			}
 		    

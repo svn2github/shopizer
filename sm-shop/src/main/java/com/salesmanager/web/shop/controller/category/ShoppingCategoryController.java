@@ -38,8 +38,6 @@ import com.salesmanager.web.entity.catalog.category.ReadableCategory;
 import com.salesmanager.web.entity.catalog.manufacturer.ReadableManufacturer;
 import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.entity.shop.Breadcrumb;
-import com.salesmanager.web.entity.shop.BreadcrumbItem;
-import com.salesmanager.web.entity.shop.BreadcrumbItemType;
 import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.populator.catalog.ReadableCategoryPopulator;
 import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
@@ -47,7 +45,7 @@ import com.salesmanager.web.populator.manufacturer.ReadableManufacturerPopulator
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.model.filter.QueryFilter;
 import com.salesmanager.web.shop.model.filter.QueryFilterType;
-import com.salesmanager.web.utils.FilePathUtils;
+import com.salesmanager.web.utils.BreadcrumbsUtils;
 import com.salesmanager.web.utils.LabelUtils;
 import com.salesmanager.web.utils.PageBuilderUtils;
 
@@ -80,6 +78,9 @@ public class ShoppingCategoryController {
 	
 	@Autowired
 	private LabelUtils messages;
+	
+	@Autowired
+	private BreadcrumbsUtils breadcrumbsUtils;
 	
 	@Autowired
 	private CacheUtils cache;
@@ -147,7 +148,11 @@ public class ShoppingCategoryController {
 		ReadableCategoryPopulator populator = new ReadableCategoryPopulator();
 		ReadableCategory categoryProxy = populator.populate(category, new ReadableCategory(), store, language);
 
-
+		Breadcrumb breadCrumb = breadcrumbsUtils.buildCategoryBreadcrumb(categoryProxy, store, language, request.getContextPath());
+		request.getSession().setAttribute(Constants.BREADCRUMB, breadCrumb);
+		request.setAttribute(Constants.BREADCRUMB, breadCrumb);
+		
+		
 		//meta information
 		PageInformation pageInformation = new PageInformation();
 		pageInformation.setPageDescription(categoryProxy.getDescription().getMetaDescription());
@@ -155,9 +160,13 @@ public class ShoppingCategoryController {
 		pageInformation.setPageTitle(categoryProxy.getDescription().getTitle());
 		pageInformation.setPageUrl(categoryProxy.getDescription().getFriendlyUrl());
 		
-		/** retrieves category id drill down**/
+		//** retrieves category id drill down**//
 		String lineage = new StringBuilder().append(category.getLineage()).append(category.getId()).append(Constants.CATEGORY_LINEAGE_DELIMITER).toString();
 
+		
+
+		
+		/**
 		String[] categoryPath = lineage.split(Constants.CATEGORY_LINEAGE_DELIMITER);
 		List<Long> ids = new ArrayList<Long>();
 		for(int i=0 ; i<categoryPath.length; i++) {
@@ -169,7 +178,7 @@ public class ShoppingCategoryController {
 
 		List<Category> categories = categoryService.listByIds(store, ids, language);
 		
-		/** Rebuild breadcrumb **/
+		*//** Rebuild breadcrumb **//*
 		BreadcrumbItem home = new BreadcrumbItem();
 		home.setItemType(BreadcrumbItemType.HOME);
 		home.setLabel(messages.getMessage(Constants.HOME_MENU_KEY, locale));
@@ -194,8 +203,8 @@ public class ShoppingCategoryController {
 		breadCrumb.setItemType(BreadcrumbItemType.CATEGORY);
 		request.getSession().setAttribute(Constants.BREADCRUMB, breadCrumb);
 		request.setAttribute(Constants.BREADCRUMB, breadCrumb);
-		/** **/
-		
+		*//** **//*
+*/		
 		
 		request.setAttribute(Constants.REQUEST_PAGE_INFORMATION, pageInformation);
 		

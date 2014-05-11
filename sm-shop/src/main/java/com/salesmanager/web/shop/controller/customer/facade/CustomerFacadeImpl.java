@@ -300,7 +300,7 @@ public class CustomerFacadeImpl implements CustomerFacade
      }
     
     @Override
-    public Customer populateCustomerModel(final PersistableCustomer customer,final MerchantStore merchantStore){
+    public Customer populateCustomerModel(final PersistableCustomer customer,final MerchantStore merchantStore) {
         
         LOG.info( "Starting to populate customer model from customer data" );
         Customer customerModel=null;
