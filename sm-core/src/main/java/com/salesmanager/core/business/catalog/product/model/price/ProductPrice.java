@@ -35,7 +35,7 @@ import com.salesmanager.core.utils.CloneUtils;
 public class ProductPrice extends SalesManagerEntity<Long, ProductPrice> {
 	private static final long serialVersionUID = -9186473817468772165L;
 	
-	private final static String DEFAULT_PRICE_CODE="other";
+	private final static String DEFAULT_PRICE_CODE="base";
 
 	@Id
 	@Column(name = "PRODUCT_PRICE_ID")

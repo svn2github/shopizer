@@ -1,5 +1,9 @@
 package com.salesmanager.core.business.catalog.product.dao.file;
 
+import java.util.List;
+
+import javax.persistence.NonUniqueResultException;
+
 import org.springframework.stereotype.Repository;
 
 import com.mysema.query.jpa.JPQLQuery;
@@ -29,7 +33,11 @@ public class DigitalProductDaoImpl extends SalesManagerEntityDaoImpl<Long, Digit
 			.where(qProduct.merchantStore.id.eq(store.getId())
 					.and(qProduct.id.eq(product.getId())));
 		
-		return query.uniqueResult(qDigitalProduct);
+		List<DigitalProduct> results = query.list(qDigitalProduct);
+        if (results.isEmpty()) return null;
+        
+        else if (results.size() == 1) return results.get(0);
+        throw new NonUniqueResultException();
 	}
 	
 	@Override

@@ -1,6 +1,8 @@
 package com.salesmanager.core.business.shoppingcart.dao;
 
-import javax.persistence.NoResultException;
+import java.util.List;
+
+import javax.persistence.NonUniqueResultException;
 
 import org.springframework.stereotype.Repository;
 
@@ -66,7 +68,11 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 				.leftJoin(qShoppingCart.merchantStore).fetch()
 				.where(qShoppingCart.shoppingCartCode.eq(code));
 
-			return query.uniqueResult(qShoppingCart);
+			List<ShoppingCart> results = query.list(qShoppingCart);
+	        if (results.isEmpty()) return null;
+	        
+	        else if (results.size() == 1) return results.get(0);
+	        throw new NonUniqueResultException();
 
 
 	}
@@ -98,12 +104,10 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 
 	@Override
 	public ShoppingCart getByCode(final String code, final MerchantStore store) {
-		try {
+
 
 			QShoppingCart qShoppingCart = QShoppingCart.shoppingCart;
 			QShoppingCartItem qShoppingCartItem = QShoppingCartItem.shoppingCartItem;
-			
-			System.out.println("T");
 
 			JPQLQuery query = new JPAQuery (getEntityManager());
 
@@ -114,20 +118,17 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 				.where(qShoppingCart.shoppingCartCode.eq(code)
 						.and(qShoppingCart.merchantStore.id.eq(store.getId())));
 
-			return query.uniqueResult(qShoppingCart);
-		//} catch(javax.persistence.NoResultException ers) {
-		} catch (NoResultException nre){
-			return null;
-		} catch(RuntimeException ers) {
-			return null;
-		}
+			List<ShoppingCart> results = query.list(qShoppingCart);
+	        if (results.isEmpty()) return null;
+	        
+	        else if (results.size() == 1) return results.get(0);
+	        throw new NonUniqueResultException();
 
 	}
 
 	@Override
 	public ShoppingCart getByCustomer(final Customer customer) {
 
-		try {
 			QShoppingCart qShoppingCart = QShoppingCart.shoppingCart;
 			QShoppingCartItem qShoppingCartItem = QShoppingCartItem.shoppingCartItem;
 
@@ -138,12 +139,12 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 				.leftJoin(qShoppingCartItem.attributes).fetch()
 				.leftJoin(qShoppingCart.merchantStore).fetch()
 				.where(qShoppingCart.customerId.eq(customer.getId()));
-
-			return query.uniqueResult(qShoppingCart);
-
-		} catch(javax.persistence.NoResultException ers) {
-			return null;
-		}
+			
+			List<ShoppingCart> results = query.list(qShoppingCart);
+	        if (results.isEmpty()) return null;
+	        
+	        else if (results.size() == 1) return results.get(0);
+	        throw new NonUniqueResultException();
 
 	}
 

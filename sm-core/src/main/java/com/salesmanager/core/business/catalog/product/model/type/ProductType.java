@@ -21,7 +21,6 @@ import com.salesmanager.core.constants.SchemaConstant;
 @Entity
 @EntityListeners(value = AuditListener.class)
 @Table(name = "PRODUCT_TYPE", schema=SchemaConstant.SALESMANAGER_SCHEMA)
-// TODO : create DAO / Service
 public class ProductType extends SalesManagerEntity<Long, ProductType> implements Auditable {
 	private static final long serialVersionUID = 65541494628227593L;
 	

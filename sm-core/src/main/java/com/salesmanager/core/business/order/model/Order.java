@@ -90,8 +90,10 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@Enumerated(value = EnumType.STRING)
 	private OrderChannel channel;
 
+	@Column (name ="ORDER_TYPE")
+	@Enumerated(value = EnumType.STRING)
+	private OrderType orderType = OrderType.ORDER;
 
-	
 	@Column (name ="PAYMENT_TYPE")
 	@Enumerated(value = EnumType.STRING)
 	private PaymentType paymentType;
@@ -335,6 +337,14 @@ public class Order extends SalesManagerEntity<Long, Order> {
 
 	public PaymentType getPaymentType() {
 		return paymentType;
+	}
+	
+	public OrderType getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(OrderType orderType) {
+		this.orderType = orderType;
 	}
 
 }
