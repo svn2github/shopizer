@@ -25,7 +25,9 @@ public class ReadableCustomerPopulator extends
 
 		try {
 			
-
+		if(source.getId()!=null && source.getId()>0) {
+			target.setId(source.getId());
+		}
 		target.setEmailAddress(source.getEmailAddress());
 		if(source.getBilling()!=null) {
 			Address address = new Address();
