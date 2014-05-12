@@ -200,6 +200,9 @@ function sendContact(){
 									</div>
 									</fieldset>
 			</form:form>
+			
+
+			
             </div>
 <!-- END LEFT-SIDE CONTACT FORM AREA -->
 
@@ -236,20 +239,24 @@ function sendContact(){
                                     	</p>
                                     	<br/>
                                     </c:if>
+                                    <br/>
+									<div id="map_canvas" style="width:600px; height:300px"></div>
+
 			</div>
+			
 
 <!-- GOOGLE MAP -->  
 <c:if test="${requestScope.CONFIGS['displayStoreAddress'] == true}">
 
-<div id="map_canvas" style="width: 430px; max-height: 320px; overflow:hidden;"></div>
+
 <script>
 
-var address = '<c:out value="${requestScope.MERCHANT_STORE.storeaddress}"/> <c:out value="${requestScope.MERCHANT_STORE.storecity}"/> <c:out value="${requestScope.MERCHANT_STORE.storepostalcode}"/>';
+var address = '<c:out value="${requestScope.MERCHANT_STORE.storeaddress}"/> <c:out value="${requestScope.MERCHANT_STORE.storecity}"/> <c:out value="${requestScope.MERCHANT_STORE.zone.code}"/> <c:out value="${requestScope.MERCHANT_STORE.storepostalcode}"/>';
 
 if(address!=null) {
 	geocoder = new google.maps.Geocoder();
 		var mapOptions = {
-  			zoom: 9,
+  			zoom: 8,
   			mapTypeId: google.maps.MapTypeId.ROADMAP
 		}
 		map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
@@ -269,6 +276,5 @@ if(address!=null) {
 
 </script>
 
-<!--<iframe src="http://maps.google.com/maps?f=q&amp;source=s_q&amp;hl=en&amp;geocode=&amp;q=Mockingbird+Station,+Dallas,+TX&amp;aq=1&amp;oq=mockinStation,+Dallas,+TX&amp;sll=32.786144,-96.788897&amp;sspn=0.00929,0.018947&amp;ie=UTF8&amp;hq=&amp;hnear=Mockingbird+Station,+Dallas,+Texas+75206&amp;t=m&amp;ll=32.845774,-96.772385&amp;spn=0.043266,0.061712&amp;z=14&amp;iwloc=A&amp;output=embed" style="width: 100%; height: 380px; border: none;"></iframe><br><small><a style="color:#0000FF;text-align:left" href="http://maps.google.com/maps?f=q&amp;source=embed&amp;hl=en&amp;geocode=&amp;q=Mockingbird+Station,+Dallas,+TX&amp;aq=1&amp;oq=mockinStation,+Dallas,+TX&amp;sll=32.786144,-96.788897&amp;sspn=0.00929,0.018947&amp;ie=UTF8&amp;hq=&amp;hnear=Mockingbird+Station,+Dallas,+Texas+75206&amp;t=m&amp;ll=32.845774,-96.772385&amp;spn=0.043266,0.061712&amp;z=14&amp;iwloc=A">View Larger Map</a></small>-->
 </c:if>
  </div>
