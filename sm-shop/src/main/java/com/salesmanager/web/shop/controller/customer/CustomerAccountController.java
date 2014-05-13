@@ -14,6 +14,7 @@ import javax.validation.Valid;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -390,11 +391,18 @@ public class CustomerAccountController extends AbstractController {
      * Fetch List of customer orders
      * @param model
      * @return view to show order
+     * @throws Exception 
      */
-    public String orders(final Model model){
-        
-        orderService.list();
-        return null;
+    @RequestMapping(value="/orders.html", method={RequestMethod.GET,RequestMethod.POST})
+    public String orders(final Model model,final HttpServletRequest request) throws Exception{
+        Log.info( "Fetching orders for current customer" );
+        MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+        Customer customer=getSessionAttribute( Constants.CUSTOMER, request );
+        Language language = getSessionAttribute(Constants.LANGUAGE, request);
+        model.addAttribute( "orders", customerFacade.getOrdersByCustomer( customer, store,language ) );
+        StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.CustomerOrders).append(".").append(store.getStoreTemplate());
+        return template.toString();
+      
         
     }
 
