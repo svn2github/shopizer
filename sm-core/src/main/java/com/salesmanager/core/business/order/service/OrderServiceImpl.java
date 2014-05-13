@@ -511,4 +511,12 @@ public class OrderServiceImpl  extends SalesManagerEntityServiceImpl<Long, Order
 		return hasDownloads;
 	}
 
+    @Override
+    public OrderList getOrdersByCustomer( final OrderCriteria orderCriteria, final MerchantStore store )
+        throws ServiceException
+    {
+        Validate.notNull(orderCriteria,"Order cannot be null");
+        return orderDao.getOrdersByCustomer( store, orderCriteria );
+    }
+
 }

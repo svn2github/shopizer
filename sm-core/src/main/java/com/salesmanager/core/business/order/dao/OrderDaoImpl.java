@@ -155,4 +155,82 @@ public class OrderDaoImpl  extends SalesManagerEntityDaoImpl<Long, Order> implem
 		return orderList;
 		
 	}
+
+    @Override
+    public OrderList getOrdersByCustomer( final MerchantStore store, final OrderCriteria criteria )
+    {
+        OrderList orderList = new OrderList();
+        StringBuilder countBuilderSelect = new StringBuilder();
+        countBuilderSelect.append("select count(o) from Order as o");
+        
+        StringBuilder countBuilderWhere = new StringBuilder();
+        countBuilderWhere.append(" where o.merchant.id=:mId");
+
+       
+            countBuilderWhere.append(" and o.customerId =:cid");
+           
+       
+        Query countQ = super.getEntityManager().createQuery(
+                countBuilderSelect.toString() + countBuilderWhere.toString());
+
+        countQ.setParameter("mId", store.getId());
+        
+      
+            countQ.setParameter("cid", criteria.getCustomerId());
+         Number count = (Number) countQ.getSingleResult ();
+
+        orderList.setTotalCount(count.intValue());
+        
+        if(count.intValue()==0)
+            return orderList;
+        
+        
+        
+        QOrder qOrder = QOrder.order;
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+        QOrderTotal qOrderTotal = QOrderTotal.orderTotal;
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderProductAttribute qOrderProductAttribute = QOrderProductAttribute.orderProductAttribute;
+        //OrderAccount not loaded for now
+        
+        JPQLQuery query = new JPAQuery (getEntityManager());
+        
+        query.from(qOrder)
+            .join(qOrder.orderProducts, qOrderProduct).fetch()
+            .join(qOrder.orderTotal, qOrderTotal).fetch()
+            .leftJoin(qOrder.orderHistory, qOrderStatusHistory).fetch()
+            .leftJoin(qOrderProduct.downloads).fetch()
+            .leftJoin(qOrderProduct.orderAttributes,qOrderProductAttribute).fetch()
+            .leftJoin(qOrderProduct.prices).fetch();
+            
+            query.where(qOrder.merchant.id.eq(store.getId()),qOrder.customerId.eq( criteria.getCustomerId() ))
+            .orderBy(qOrder.id.desc());
+            
+            BooleanBuilder pBuilder = null;
+
+            if(!StringUtils.isBlank(criteria.getCustomerName())) {
+                if(pBuilder==null) {
+                    pBuilder = new BooleanBuilder();
+                }
+                pBuilder.and(qOrder.customerId.eq( criteria.getCustomerId()));
+
+
+            }
+                   
+        if(criteria.getOrderBy().name().equals(CriteriaOrderBy.ASC)) {
+            query.orderBy(qOrder.datePurchased.asc());
+        } else {
+            query.orderBy(qOrder.datePurchased.desc());
+        }
+        
+        if(criteria.getMaxCount()>0) {
+            query.limit(criteria.getMaxCount());
+            query.offset(criteria.getStartIndex());
+        }
+        
+        
+        orderList.setOrders(query.list(qOrder));
+
+        return orderList;
+    }
 }

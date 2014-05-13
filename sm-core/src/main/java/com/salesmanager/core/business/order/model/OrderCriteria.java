@@ -6,6 +6,7 @@ public class OrderCriteria extends Criteria {
 	
 	private String customerName;
 	private String paymentMethod;
+	private Long customerId;
 	public void setPaymentMethod(String paymentMethod) {
 		this.paymentMethod = paymentMethod;
 	}
@@ -18,5 +19,17 @@ public class OrderCriteria extends Criteria {
 	public String getCustomerName() {
 		return customerName;
 	}
+    public Long getCustomerId()
+    {
+        return customerId;
+    }
+    public void setCustomerId( Long customerId )
+    {
+        this.customerId = customerId;
+    }
+   
+	
+	
+	
 
 }
