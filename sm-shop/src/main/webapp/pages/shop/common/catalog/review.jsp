@@ -87,11 +87,11 @@ response.setDateHeader ("Expires", -1);
 
 						<c:url var="submitReview" value="/shop/customer/review/submit.html"/>
 					    <form:form method="POST" commandName="review" action="${submitReview}">
+					        <form:errors path="*" cssClass="alert alert-error" element="div" />
 					    	<form:hidden id="rating" path="rating"/>
-					    	<form:hidden path="customer.id"/>
 					    	<form:hidden path="productId"/>
 							    <label><s:message code="label.generic.youropinion" text="Your opinion" /></label>
-							    <textarea name="" rows="6" class="span6" path="description"></textarea>
+							    <form:textarea name="" rows="6" class="span6" path="description"/>
 								<label>&nbsp;</label>
 							    <span class="help-block"><s:message code="label.product.clickrate" text="Product rating (click on the stars to activate rating)" /></span>
 							    <div id="rateMe" style="width: 100px;"></div>

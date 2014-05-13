@@ -18,7 +18,7 @@ response.setDateHeader ("Expires", -1);
 									
 									
 										<sec:authorize access="hasRole('AUTH_CUSTOMER') and fullyAuthenticated">
-								  			<a href="<c:url value="/shop/customer/review.html"/>?productId=${product.id}"><s:message code="label.product.reviews.write" text="Write a review" /></a>
+								  			<a href="<c:url value="/shop/customer/review.html"/>?productId=${product.id}"/><button id="reviewButton" type="submit" class="btn btn-default"><s:message code="label.product.reviews.write" text="Write a review" /></button></a>
 								  		</sec:authorize>
 								  		<sec:authorize access="!hasRole('AUTH_CUSTOMER') and !fullyAuthenticated">
 								  			<p class="muted"><s:message code="label.product.reviews.logon.write" text="You have to be authenticated to write a review" /></p>
@@ -48,9 +48,4 @@ response.setDateHeader ("Expires", -1);
 								  			   </script>
 										</c:forEach>
 								 	 </c:if>
-
-								  		
-
-										
-										<!--<a href="<c:url value="/customer/review.html"/>?productId=${product.id}"><s:message code="label.product.reviews.write" text="Write a review" /></a>-->
 
