@@ -57,7 +57,7 @@ $(document).ready(function() {
 });	
 	
 </script>
-
+<c:set var="orders" value="${pageContext.request.contextPath}/shop/customer/orders.html"/>
 
 	<div id="main-content" class="container clearfix">
 		<div class="row-fluid">
@@ -165,7 +165,7 @@ $(document).ready(function() {
 									<p><font color="#FF8C00"><s:message code="label.order.pastorders" text="Past orders"/></font></p>
 								</span>
 								<ul>
-									<li><s:message code="label.order.recent" text="Recent orders"/></li>
+									<li> <a href="${orders}"><s:message code="label.order.recent" text="Recent orders"/></a></li>
 								</ul>
 							</div>
 	

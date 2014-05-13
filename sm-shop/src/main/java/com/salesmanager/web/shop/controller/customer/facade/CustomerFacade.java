@@ -3,6 +3,8 @@
  */
 package com.salesmanager.web.shop.controller.customer.facade;
 
+import java.util.List;
+
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -11,6 +13,7 @@ import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.entity.customer.CustomerEntity;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.customer.ReadableCustomer;
+import com.salesmanager.web.entity.order.ReadableOrder;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 
 /**
@@ -78,6 +81,20 @@ public interface CustomerFacade
 			MerchantStore merchantStore);
 	
 	public void authenticate(Customer customer, String userName, String password) throws Exception;
+	
+	
+	/**
+	 * <p>Method used to fetch all orders associated with customer customer.
+	 * It will used current customer ID to fetch all orders which has been 
+	 * placed by customer for current store.</p>
+	 * 
+	 * @param customer currently logged in customer 
+	 * @param store store associated with current customer
+	 * @return List<ReadableOrder> 
+	 * @throws Exception
+	 */
+	
+	public List<ReadableOrder> getOrdersByCustomer( final Customer customer, final MerchantStore store ,final Language language) throws Exception;
 	
 
 }

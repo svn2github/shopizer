@@ -5,6 +5,7 @@ package com.salesmanager.web.shop.controller.customer.facade;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +37,10 @@ import com.salesmanager.core.business.customer.service.attribute.CustomerOptionV
 import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.order.model.OrderCriteria;
+import com.salesmanager.core.business.order.model.OrderList;
+import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
@@ -57,6 +62,7 @@ import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.entity.customer.CustomerEntity;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.customer.ReadableCustomer;
+import com.salesmanager.web.entity.order.ReadableOrder;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 import com.salesmanager.web.populator.customer.CustomerBillingAddressPopulator;
 import com.salesmanager.web.populator.customer.CustomerDeliveryAddressPopulator;
@@ -65,6 +71,7 @@ import com.salesmanager.web.populator.customer.CustomerPopulator;
 import com.salesmanager.web.populator.customer.PersistableCustomerBillingAddressPopulator;
 import com.salesmanager.web.populator.customer.PersistableCustomerShippingAddressPopulator;
 import com.salesmanager.web.populator.customer.ReadableCustomerPopulator;
+import com.salesmanager.web.populator.order.ReadableOrderPopulator;
 import com.salesmanager.web.populator.shoppingCart.ShoppingCartDataPopulator;
 
 
@@ -134,7 +141,9 @@ public class CustomerFacadeImpl implements CustomerFacade
      private AuthenticationManager customerAuthenticationManager;
 
 
-
+ 	@Autowired
+    protected OrderService orderService;
+ 	
 
     /**
      * Method used to fetch customer based on the username and storecode.
@@ -318,7 +327,7 @@ public class CustomerFacadeImpl implements CustomerFacade
 			//set groups
 
             customerModel.setPassword(passwordEncoder.encodePassword(customer.getPassword(), null));
-			setCustomerModelDefaultProperties(customerModel, merchantStore);
+			//setCustomerModelDefaultProperties(customerModel, merchantStore);
 
             LOG.info( "About to persist customer to database." );
             customerService.saveOrUpdate( customerModel );
@@ -536,6 +545,38 @@ public class CustomerFacadeImpl implements CustomerFacade
 	}
 
 
+	@Override
+	public List<ReadableOrder>  getOrdersByCustomer( final Customer customer, final MerchantStore store, final Language language ) throws Exception{
+	    LOG.info( "Fetching all orders for customer .." +customer.getNick() );
+	    OrderCriteria orderCriteria=new OrderCriteria();
+        orderCriteria.setCustomerId(customer.getId() );
+        orderCriteria.setStartIndex( 0 );
+        orderCriteria.setMaxCount( 40 );
+              
+       
+        return populateOrderData(orderService.getOrdersByCustomer( orderCriteria, store ),store,language);
+	} 
 
+	private List<ReadableOrder> populateOrderData(final OrderList orderList,final MerchantStore store, final Language language){
+	    if(orderList ==null || CollectionUtils.isEmpty( orderList.getOrders() )){
+	        LOG.info( "Order list if empty..Returning empty list" );
+	        return Collections.emptyList();   
+	    }
+	    List<ReadableOrder> orders=new ArrayList<ReadableOrder>();
+	    ReadableOrderPopulator orderPopulator = new ReadableOrderPopulator();
+       
+        for(Order order: orderList.getOrders()){
+            try
+            {
+                orders.add( orderPopulator.populate( order,  new ReadableOrder(), store, language ) );
 
+            }
+            catch ( ConversionException ex )
+            {
+                LOG.error( "Error while converting order to order data", store );
+            }
+        }
+        return orders !=null ? orders : Collections.<ReadableOrder>emptyList();
+	   
+	}
 }
