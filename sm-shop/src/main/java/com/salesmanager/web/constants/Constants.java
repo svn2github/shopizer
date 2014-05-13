@@ -9,6 +9,7 @@ public class Constants {
     public final static String RESPONSE_SUCCESS = "SUCCESS";
     public final static String DEFAULT_LANGUAGE = "en";
 	public final static String LANGUAGE = "LANGUAGE";
+	public final static String LANG = "lang";
 	public final static String BREADCRUMB = "BREADCRUMB";
 
 	public final static String HOME_MENU_KEY = "menu.home";
@@ -93,6 +94,9 @@ public class Constants {
 	public final static int MAX_REVIEW_RATING_SCORE = 5;
 	public final static String SUCCESS = "success";
 	public final static String CANCEL = "cancel";
+	
+	public final static String START = "start";
+	public final static String MAX = "max";
 	
 	public final static String CREDIT_CARD_YEARS_CACHE_KEY = "CREDIT_CARD_YEARS_CACHE_KEY";
 	public final static String MONTHS_OF_YEAR_CACHE_KEY = "MONTHS_OF_YEAR_CACHE_KEY";

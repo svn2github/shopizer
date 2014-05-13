@@ -361,7 +361,7 @@ public class ShoppingOrderController extends AbstractController {
 	        
 			Customer modelCustomer = null;
 			try {//set groups
-				modelCustomer = orderFacade.toCustomerModel(customer, store, language);
+				modelCustomer = customerFacade.populateCustomerModel(customer, store, language);
 				customerFacade.setCustomerModelDefaultProperties(modelCustomer, store);
 				userName = modelCustomer.getNick();
 			} catch(Exception e) {

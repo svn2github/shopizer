@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,18 @@ import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.order.model.Order;
 import com.salesmanager.core.business.order.service.OrderService;
+import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.order.PersistableOrder;
+import com.salesmanager.web.entity.order.ReadableOrderList;
 import com.salesmanager.web.populator.customer.CustomerPopulator;
 import com.salesmanager.web.populator.order.PersistableOrderPopulator;
+import com.salesmanager.web.shop.controller.order.facade.OrderFacade;
 
 @Controller
+@RequestMapping(Constants.SHOP_URI + "/services/private")
 public class OrderRESTController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(OrderRESTController.class);
@@ -50,14 +56,19 @@ public class OrderRESTController {
 	private DigitalProductService digitalProductService;
 	
 	@Autowired
+	private OrderFacade orderFacade;
+	
+	@Autowired
 	private OrderService orderService;
 	
 	@Autowired
 	private CustomerService customerService;
+	
+	@Autowired
+	private LanguageService languageService;
 
 	
-	
-	@RequestMapping( value="/private/order/{store}", method=RequestMethod.POST)
+	@RequestMapping( value="/{store}/orders", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public PersistableOrder createOrder(@PathVariable final String store, @Valid @RequestBody PersistableOrder order, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -102,6 +113,81 @@ public class OrderRESTController {
 		order.setId(modelOrder.getId());
 		
 		return order;
+	}
+	
+	
+	/**
+	 * Get a list of orders
+	 * accept request parameter 'lang' [en,fr...] otherwise store dafault language
+	 * accept request parameter 'start' start index for count
+	 * accept request parameter 'max' maximum number count, otherwise returns all
+	 * @param store
+	 * @param order
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping( value="/{store}/orders/", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	@ResponseBody
+	public ReadableOrderList listOrders(@PathVariable final String store, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+		if(merchantStore!=null) {
+			if(!merchantStore.getCode().equals(store)) {
+				merchantStore = null;
+			}
+		}
+		
+		if(merchantStore== null) {
+			merchantStore = merchantStoreService.getByCode(store);
+		}
+		
+		if(merchantStore==null) {
+			LOGGER.error("Merchant store is null for code " + store);
+			response.sendError(503, "Merchant store is null for code " + store);
+			return null;
+		}
+		
+		//get additional request parameters for orders
+		String lang = request.getParameter(Constants.LANG);		
+		String start = request.getParameter(Constants.START);
+		String max = request.getParameter(Constants.MAX);
+		
+		int startCount = 0;
+		int maxCount = 0;
+		
+		if(StringUtils.isBlank(lang)) {
+			lang = merchantStore.getDefaultLanguage().getCode();
+		}
+		
+		
+		Language language = languageService.getByCode(lang);
+		
+		if(language==null) {
+			LOGGER.error("Language is null for code " + lang);
+			response.sendError(503, "Language is null for code " + lang);
+			return null;
+		}
+		
+		try {
+			startCount = Integer.parseInt(start);
+		} catch (Exception e) {
+			LOGGER.info("Invalid value for start " + start);
+		}
+		
+		try {
+			maxCount = Integer.parseInt(max);
+		} catch (Exception e) {
+			LOGGER.info("Invalid value for max " + max);
+		}
+		
+		
+		ReadableOrderList returnList = orderFacade.getReadableOrderList(merchantStore, startCount, maxCount, language);
+		
+
+		
+		return returnList;
 	}
 
 }

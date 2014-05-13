@@ -44,6 +44,9 @@ public class ReadableCustomerPopulator extends
 				address.setZone(source.getBilling().getZone().getCode());
 			}
 			
+			target.setFirstName(address.getFirstName());
+			target.setLastName(address.getLastName());
+			
 			target.setBilling(address);
 		}
 		

@@ -3,17 +3,15 @@
  */
 package com.salesmanager.web.shop.controller.customer.facade;
 
-import java.util.List;
-
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
+import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.entity.customer.CustomerEntity;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.customer.ReadableCustomer;
-import com.salesmanager.web.entity.order.ReadableOrder;
 import com.salesmanager.web.entity.shoppingcart.ShoppingCartData;
 
 /**
@@ -81,6 +79,11 @@ public interface CustomerFacade
 			MerchantStore merchantStore);
 	
 	public void authenticate(Customer customer, String userName, String password) throws Exception;
+
+	Customer populateCustomerModel(PersistableCustomer customer,
+			MerchantStore merchantStore, Language language);
+	
+
 	
 	
 	/**
@@ -94,7 +97,7 @@ public interface CustomerFacade
 	 * @throws Exception
 	 */
 	
-	public List<ReadableOrder> getOrdersByCustomer( final Customer customer, final MerchantStore store ,final Language language) throws Exception;
+	//public List<ReadableOrder> getOrdersByCustomer( final Customer customer, final MerchantStore store ,final Language language) throws Exception;
 	
 
 }

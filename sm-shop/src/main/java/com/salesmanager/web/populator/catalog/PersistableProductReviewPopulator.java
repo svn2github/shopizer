@@ -56,6 +56,10 @@ public class PersistableProductReviewPopulator extends
 		
 		try {
 			
+			if(target==null) {
+				target = new ProductReview();
+			}
+			
 			Customer customer = customerService.getById(source.getCustomerId());
 			
 			//check if customer belongs to store
@@ -76,7 +80,7 @@ public class PersistableProductReviewPopulator extends
 			
 			target.setProduct(product);
 			
-			Language lang = languageService.getByCode(source.getLanguage());
+			Language lang = languageService.getByCode(language.getCode());
 			if(lang ==null) {
 				throw new ConversionException("Invalid language code, use iso codes (en, fr ...)");
 			}

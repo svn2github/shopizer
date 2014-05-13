@@ -20,6 +20,7 @@ import com.salesmanager.core.business.shipping.model.ShippingSummary;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.order.PersistableOrder;
+import com.salesmanager.web.entity.order.ReadableOrderList;
 import com.salesmanager.web.entity.order.ShopOrder;
 
 
@@ -65,6 +66,7 @@ public interface OrderFacade {
 	void validateOrder(ShopOrder order, BindingResult bindingResult,
 			Map<String, String> messagesResult, MerchantStore store,
 			Locale locale) throws ServiceException;
-	Customer toCustomerModel(PersistableCustomer persistableCustomer,
-			MerchantStore store, Language language) throws ConversionException;
+	
+	
+	ReadableOrderList getReadableOrderList(MerchantStore store, int start, int maxCount, Language language) throws Exception;
 }

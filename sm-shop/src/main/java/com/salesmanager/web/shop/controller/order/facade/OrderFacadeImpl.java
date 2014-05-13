@@ -29,10 +29,11 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionValueService;
-import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
+import com.salesmanager.core.business.order.model.OrderCriteria;
+import com.salesmanager.core.business.order.model.OrderList;
 import com.salesmanager.core.business.order.model.OrderSummary;
 import com.salesmanager.core.business.order.model.OrderTotalSummary;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
@@ -63,13 +64,17 @@ import com.salesmanager.web.entity.order.OrderEntity;
 import com.salesmanager.web.entity.order.OrderTotal;
 import com.salesmanager.web.entity.order.PersistableOrder;
 import com.salesmanager.web.entity.order.PersistableOrderProduct;
+import com.salesmanager.web.entity.order.ReadableOrder;
+import com.salesmanager.web.entity.order.ReadableOrderList;
 import com.salesmanager.web.entity.order.ShopOrder;
 import com.salesmanager.web.populator.customer.CustomerPopulator;
 import com.salesmanager.web.populator.customer.PersistableCustomerPopulator;
 import com.salesmanager.web.populator.order.OrderProductPopulator;
+import com.salesmanager.web.populator.order.ReadableOrderPopulator;
 import com.salesmanager.web.populator.order.ShoppingCartItemPopulator;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
 import com.salesmanager.web.utils.LabelUtils;
+import com.salesmanager.web.utils.LocaleUtils;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
@@ -144,7 +149,7 @@ public class OrderFacadeImpl implements OrderFacade {
 			ShopOrder order, Language language) throws Exception {
 		
 
-		Customer customer = this.toCustomerModel(order.getCustomer(), store, language);
+		Customer customer = customerFacade.populateCustomerModel(order.getCustomer(), store, language);
 		OrderTotalSummary summary = this.calculateOrderTotal(store, customer, order, language);
 		this.setOrderTotals(order, summary);
 		return summary;
@@ -482,7 +487,7 @@ public class OrderFacadeImpl implements OrderFacade {
 			return null;//products are virtual
 		}
 				
-		Customer customer = this.toCustomerModel(order.getCustomer(), store, language);
+		Customer customer = customerFacade.populateCustomerModel(order.getCustomer(), store, language);
 		
 		Delivery delivery = new Delivery();
 		
@@ -515,19 +520,7 @@ public class OrderFacadeImpl implements OrderFacade {
 		
 	}
 	
-	@Override
-	public Customer toCustomerModel(PersistableCustomer persistableCustomer, MerchantStore store, Language language) throws ConversionException {
-		
-		CustomerPopulator populator = new CustomerPopulator();
-		Customer customer = new Customer();
-		populator.setCountryService(countryService);
-		populator.setCustomerOptionService(customerOptionService);
-		populator.setCustomerOptionValueService(customerOptionValueService);
-		populator.setLanguageService(languageService);
-		populator.setZoneService(zoneService);
-		return populator.populate(persistableCustomer, customer, store, language);
-		
-	}
+
 
 
 
@@ -739,10 +732,43 @@ public class OrderFacadeImpl implements OrderFacade {
 			throw se;
 		}
 
-		///sm-shop/WEB-INF/views/error/generic_error.jsp
-
-
 }
+
+
+
+	@Override
+	public ReadableOrderList getReadableOrderList(MerchantStore store,
+			int start, int maxCount, Language language) throws Exception {
+		
+		OrderCriteria criteria = new OrderCriteria();
+		criteria.setStartIndex(start);
+		criteria.setMaxCount(maxCount);
+		OrderList orderList = orderService.listByStore(store, criteria);
+		
+		ReadableOrderPopulator orderPopulator = new ReadableOrderPopulator();
+		Locale locale = LocaleUtils.getLocale(language);
+		orderPopulator.setLocale(locale);
+		
+		List<Order> orders = orderList.getOrders();
+		ReadableOrderList returnList = new ReadableOrderList();
+		
+		if(CollectionUtils.isEmpty(orders)) {
+			returnList.setTotal(0);
+			returnList.setMessage("No results for store code " + store);
+			return null;
+		}
+
+		List<ReadableOrder> readableOrders = new ArrayList<ReadableOrder>();
+		for (Order order : orders) {
+			ReadableOrder readableOrder = new ReadableOrder();
+			orderPopulator.populate(order,readableOrder,store,language);
+			readableOrders.add(readableOrder);
+			
+		}
+		
+		returnList.setTotal(orderList.getTotalCount());
+		return returnList;
+	}
 	
 	
 	

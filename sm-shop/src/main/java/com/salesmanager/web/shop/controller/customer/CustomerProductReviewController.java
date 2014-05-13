@@ -1,15 +1,19 @@
 package com.salesmanager.web.shop.controller.customer;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,6 +39,8 @@ import com.salesmanager.web.populator.catalog.ReadableProductReviewPopulator;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
+import com.salesmanager.web.utils.DateUtil;
+import com.salesmanager.web.utils.LabelUtils;
 
 /**
  * Entry point for logged in customers
@@ -62,6 +68,9 @@ public class CustomerProductReviewController extends AbstractController {
 	
 	@Autowired
 	private CustomerFacade customerFacade;
+	
+	@Autowired
+	private LabelUtils messages;
 
 	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
 	@RequestMapping(value="/review.html", method=RequestMethod.GET)
@@ -130,16 +139,30 @@ public class CustomerProductReviewController extends AbstractController {
 	
 	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
 	@RequestMapping(value="/review/submit.html", method=RequestMethod.POST)
-	public String submitProductReview(@Valid @ModelAttribute("review") PersistableProductReview review, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String submitProductReview(@ModelAttribute("review") PersistableProductReview review, BindingResult bindingResult, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 
 	    MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
 	    Language language = getLanguage(request);
 	    
+        Customer customer =  customerFacade.getCustomerByUserName(request.getRemoteUser(), store);
+        
+        if(customer==null) {
+        	return "redirect:" + Constants.SHOP_URI;
+        }
+
+	    
 	    Product product = productService.getById(review.getProductId());
 	    if(product==null) {
 	    	return "redirect:" + Constants.SHOP_URI;
 	    }
+	    
+	    if(StringUtils.isBlank(review.getDescription())) {
+	    	FieldError error = new FieldError("description","description",messages.getMessage("NotEmpty.review.description", locale));
+			bindingResult.addError(error);
+	    }
+	    
+
 	    
         ReadableProduct readableProduct = new ReadableProduct();
         ReadableProductPopulator readableProductPopulator = new ReadableProductPopulator();
@@ -147,11 +170,17 @@ public class CustomerProductReviewController extends AbstractController {
         readableProductPopulator.populate(product, readableProduct,  store, language);
         model.addAttribute("product", readableProduct);
 	    
-	    Customer customer =  customerFacade.getCustomerByUserName(request.getRemoteUser(), store);
 
 		/** template **/
 		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.review).append(".").append(store.getStoreTemplate());
 
+        if ( bindingResult.hasErrors() )
+        {
+
+            return template.toString();
+
+        }
+		
         
         //check if customer has already evaluated the product
 	    List<ProductReview> reviews = productReviewService.getByProduct(product);
@@ -173,13 +202,16 @@ public class CustomerProductReviewController extends AbstractController {
 	    populator.setLanguageService(languageService);
 	    populator.setProductService(productService);
 	    
+	    review.setDate(DateUtil.formatDate(new Date()));
+	    review.setCustomerId(customer.getId());
+	    
 	    ProductReview productReview = populator.populate(review, store, language);
 	    productReviewService.create(productReview);
         
         model.addAttribute("review", review);
         model.addAttribute("success", "success");
 		
-		
+        model.addAttribute("customerReview", review);
 
 		return template.toString();
 		

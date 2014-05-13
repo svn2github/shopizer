@@ -74,6 +74,7 @@ public class ConfigurationController {
 		}
 		configs.add(merchantGoogleAnalyticsConfiguration);
 		
+		/**
 		MerchantConfiguration merchantGoogleApiConfiguration = merchantConfigurationService.getMerchantConfiguration(Constants.KEY_GOOGLE_API_KEY,store);
 		if(null == merchantGoogleApiConfiguration)
 		{
@@ -82,6 +83,7 @@ public class ConfigurationController {
 			merchantGoogleApiConfiguration.setMerchantConfigurationType(MerchantConfigurationType.CONFIG);
 		}
 		configs.add(merchantGoogleApiConfiguration);
+		**/
 		
 		MerchantConfiguration twitterConfiguration = merchantConfigurationService.getMerchantConfiguration(Constants.KEY_TWITTER_HANDLE,store);
 		if(null == twitterConfiguration)

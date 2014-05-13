@@ -24,6 +24,8 @@ public class CustomerEntity extends Customer implements Serializable {
 	private String gender;
 
 	private String language;
+	private String firstName;
+	private String lastName;
 	
 
 
@@ -62,6 +64,26 @@ public class CustomerEntity extends Customer implements Serializable {
 	}
 	public String getGender() {
 		return gender;
+	}
+
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+
+	public String getLastName() {
+		return lastName;
+	}
+
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 
