@@ -57,7 +57,7 @@ $(document).ready(function() {
 });	
 	
 </script>
-<c:set var="orders" value="${pageContext.request.contextPath}/shop/customer/orders.html"/>
+<c:set var="orders" value="${pageContext.request.contextPath}/shop/customer/customer-orders.html"/>
 
 	<div id="main-content" class="container clearfix">
 		<div class="row-fluid">
