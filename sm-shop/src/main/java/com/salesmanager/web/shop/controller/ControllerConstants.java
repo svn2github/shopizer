@@ -35,6 +35,7 @@ public interface ControllerConstants
             final static String register="register";
             final static String registerConfirmation="registerConfirmation";
             final static String customerOrders="customerOrders";
+            final static String customerOrder="customerOrder";
             final static String Billing="customerAddress";
             final static String EditAddress="editCustomerAddress";
         }

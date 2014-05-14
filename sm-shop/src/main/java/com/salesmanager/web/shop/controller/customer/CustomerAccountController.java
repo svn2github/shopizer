@@ -413,5 +413,18 @@ public class CustomerAccountController extends AbstractController {
         StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.customerOrders).append(".").append(store.getStoreTemplate());
         return template.toString();
      }
+    
+    
+    @RequestMapping(value="/order.html", method={RequestMethod.GET,RequestMethod.POST})
+    public String order(final Model model,final HttpServletRequest request,@RequestParam(value = "orderId" ,required=true) final String orderId) throws Exception{
+        if(StringUtils.isBlank( orderId )){
+          Log.error( "Order Id can not be null or empty" );
+        }
+        Log.info( "Fetching order details for Id " +orderId);
+        MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+        StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.customerOrder).append(".").append(store.getStoreTemplate());
+        return template.toString();
+        
+    }
 
 }
