@@ -47,11 +47,14 @@ import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.customer.Address;
+import com.salesmanager.web.entity.order.ReadableOrderList;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
 //import com.salesmanager.web.shop.controller.data.CountryData;
 import com.salesmanager.web.shop.controller.data.CountryData;
+import com.salesmanager.web.shop.controller.data.paging.PaginaionData;
+import com.salesmanager.web.shop.controller.order.facade.OrderFacade;
 
 /**
  * Entry point for logged in customers
@@ -98,6 +101,9 @@ public class CustomerAccountController extends AbstractController {
     
     @Autowired
     private OrderService orderService;
+    
+    @Autowired
+    private OrderFacade orderFacade;
 
 
 	
@@ -393,17 +399,19 @@ public class CustomerAccountController extends AbstractController {
      * @return view to show order
      * @throws Exception 
      */
-    @RequestMapping(value="/orders.html", method={RequestMethod.GET,RequestMethod.POST})
-    public String orders(final Model model,final HttpServletRequest request) throws Exception{
+    @RequestMapping(value="/customer-orders.html", method={RequestMethod.GET,RequestMethod.POST})
+    public String orders(final Model model,final HttpServletRequest request,@RequestParam(value = "page", defaultValue = "1") final int page) throws Exception{
         Log.info( "Fetching orders for current customer" );
         MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
         Customer customer=getSessionAttribute( Constants.CUSTOMER, request );
         Language language = getSessionAttribute(Constants.LANGUAGE, request);
-        model.addAttribute( "orders", customerFacade.getOrdersByCustomer( customer, store,language ) );
-        StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.CustomerOrders).append(".").append(store.getStoreTemplate());
-        return template.toString();
-      
         
-    }
+        PaginaionData paginaionData=createPaginaionData(page,5);
+        ReadableOrderList readable= orderFacade.getOrdersByCustomer( customer, store,language ,(paginaionData.getOffset() -1),paginaionData.getPageSize());
+        model.addAttribute( "paginationData", calculatePaginaionData(paginaionData,readable.getTotal()));
+        model.addAttribute( "customerOrders", readable);
+        StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.customerOrders).append(".").append(store.getStoreTemplate());
+        return template.toString();
+     }
 
 }

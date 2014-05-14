@@ -544,38 +544,5 @@ public class CustomerFacadeImpl implements CustomerFacade
 	}
 
 
-/*	@Override
-	public List<ReadableOrder>  getOrdersByCustomer( final Customer customer, final MerchantStore store, final Language language ) throws Exception{
-	    LOG.info( "Fetching all orders for customer .." +customer.getNick() );
-	    OrderCriteria orderCriteria=new OrderCriteria();
-        orderCriteria.setCustomerId(customer.getId() );
-        orderCriteria.setStartIndex( 0 );
-        orderCriteria.setMaxCount( 40 );
-              
-       
-        return populateOrderData(orderService.getOrdersByCustomer( orderCriteria, store ),store,language);
-	} 
 
-	private List<ReadableOrder> populateOrderData(final OrderList orderList,final MerchantStore store, final Language language){
-	    if(orderList ==null || CollectionUtils.isEmpty( orderList.getOrders() )){
-	        LOG.info( "Order list if empty..Returning empty list" );
-	        return Collections.emptyList();   
-	    }
-	    List<ReadableOrder> orders=new ArrayList<ReadableOrder>();
-	    ReadableOrderPopulator orderPopulator = new ReadableOrderPopulator();
-       
-        for(Order order: orderList.getOrders()){
-            try
-            {
-                orders.add( orderPopulator.populate( order,  new ReadableOrder(), store, language ) );
-
-            }
-            catch ( ConversionException ex )
-            {
-                LOG.error( "Error while converting order to order data", store );
-            }
-        }
-        return orders !=null ? orders : Collections.<ReadableOrder>emptyList();
-	   
-	}*/
 }

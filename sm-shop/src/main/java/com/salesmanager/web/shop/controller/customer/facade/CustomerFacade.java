@@ -5,7 +5,6 @@ package com.salesmanager.web.shop.controller.customer.facade;
 
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
-import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.web.entity.customer.Address;
@@ -82,22 +81,6 @@ public interface CustomerFacade
 
 	Customer populateCustomerModel(PersistableCustomer customer,
 			MerchantStore merchantStore, Language language);
-	
-
-	
-	
-	/**
-	 * <p>Method used to fetch all orders associated with customer customer.
-	 * It will used current customer ID to fetch all orders which has been 
-	 * placed by customer for current store.</p>
-	 * 
-	 * @param customer currently logged in customer 
-	 * @param store store associated with current customer
-	 * @return List<ReadableOrder> 
-	 * @throws Exception
-	 */
-	
-	//public List<ReadableOrder> getOrdersByCustomer( final Customer customer, final MerchantStore store ,final Language language) throws Exception;
 	
 
 }

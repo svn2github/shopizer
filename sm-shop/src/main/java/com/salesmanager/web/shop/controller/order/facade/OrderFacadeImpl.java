@@ -1,6 +1,7 @@
 package com.salesmanager.web.shop.controller.order.facade;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -20,6 +21,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 
+import com.salesmanager.core.business.catalog.product.model.Product;
+import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
 import com.salesmanager.core.business.catalog.product.service.file.DigitalProductService;
@@ -29,6 +32,7 @@ import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionValueService;
+import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
@@ -58,6 +62,7 @@ import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.utils.CreditCardUtils;
+import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.order.OrderEntity;
@@ -66,17 +71,20 @@ import com.salesmanager.web.entity.order.PersistableOrder;
 import com.salesmanager.web.entity.order.PersistableOrderProduct;
 import com.salesmanager.web.entity.order.ReadableOrder;
 import com.salesmanager.web.entity.order.ReadableOrderList;
+import com.salesmanager.web.entity.order.ReadableOrderProduct;
 import com.salesmanager.web.entity.order.ShopOrder;
+import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.web.populator.customer.CustomerPopulator;
 import com.salesmanager.web.populator.customer.PersistableCustomerPopulator;
 import com.salesmanager.web.populator.order.OrderProductPopulator;
 import com.salesmanager.web.populator.order.ReadableOrderPopulator;
+import com.salesmanager.web.populator.order.ReadableOrderProductPopulator;
 import com.salesmanager.web.populator.order.ShoppingCartItemPopulator;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
 import com.salesmanager.web.utils.LabelUtils;
 import com.salesmanager.web.utils.LocaleUtils;
 
-import edu.emory.mathcs.backport.java.util.Collections;
+
 
 @Service("orderFacade")
 public class OrderFacadeImpl implements OrderFacade {
@@ -111,7 +119,8 @@ public class OrderFacadeImpl implements OrderFacade {
 	private ShippingService shippingService;
 	@Autowired
 	private CustomerFacade customerFacade;
-
+	@Autowired
+    private PricingService pricingService;
 	
 	@Autowired
 	private LabelUtils messages;
@@ -736,41 +745,93 @@ public class OrderFacadeImpl implements OrderFacade {
 
 
 
-	@Override
-	public ReadableOrderList getReadableOrderList(MerchantStore store,
-			int start, int maxCount, Language language) throws Exception {
-		
-		OrderCriteria criteria = new OrderCriteria();
-		criteria.setStartIndex(start);
-		criteria.setMaxCount(maxCount);
-		OrderList orderList = orderService.listByStore(store, criteria);
-		
-		ReadableOrderPopulator orderPopulator = new ReadableOrderPopulator();
-		Locale locale = LocaleUtils.getLocale(language);
-		orderPopulator.setLocale(locale);
-		
-		List<Order> orders = orderList.getOrders();
-		ReadableOrderList returnList = new ReadableOrderList();
-		
-		if(CollectionUtils.isEmpty(orders)) {
-			returnList.setTotal(0);
-			returnList.setMessage("No results for store code " + store);
-			return null;
-		}
+    @Override
+    public ReadableOrderList getReadableOrderList( MerchantStore store, int start, int maxCount, Language language )
+        throws Exception
+    {
 
-		List<ReadableOrder> readableOrders = new ArrayList<ReadableOrder>();
-		for (Order order : orders) {
-			ReadableOrder readableOrder = new ReadableOrder();
-			orderPopulator.populate(order,readableOrder,store,language);
-			readableOrders.add(readableOrder);
-			
-		}
-		
-		returnList.setTotal(orderList.getTotalCount());
-		return returnList;
-	}
+        OrderCriteria criteria = new OrderCriteria();
+        criteria.setStartIndex( start );
+        criteria.setMaxCount( maxCount );
+        OrderList orderList = orderService.listByStore( store, criteria );
+        return populateOrderData( orderList, store, language );
+
+    }
 	
 	
-	
+	@Override
+    public ReadableOrderList  getOrdersByCustomer( final Customer customer, final MerchantStore store, final Language language,final int start, final int maxCount ) throws Exception{
+	    LOGGER.info( "Fetching all orders for customer .." +customer.getNick() );
+        OrderCriteria orderCriteria=new OrderCriteria();
+        orderCriteria.setCustomerId(customer.getId() );
+        orderCriteria.setStartIndex( start );
+        orderCriteria.setMaxCount( maxCount );
+              
+       
+        return populateOrderData(orderService.getOrdersByCustomer( orderCriteria, store ),store,language);
+    } 
+
+     private ReadableOrderList populateOrderData(final OrderList orderList,final MerchantStore store, final Language language){
+        List<Order> orders = orderList.getOrders();
+        ReadableOrderList returnList = new ReadableOrderList();
+        if(CollectionUtils.isEmpty( orders)){
+            LOGGER.info( "Order list if empty..Returning empty list" );
+            returnList.setTotal(0);
+            returnList.setMessage("No results for store code " + store);
+            return null;
+        }
+        
+        ReadableOrderPopulator orderPopulator = new ReadableOrderPopulator();
+        Locale locale = LocaleUtils.getLocale(language);
+        orderPopulator.setLocale(locale);
+        
+        List<ReadableOrder> readableOrders = new ArrayList<ReadableOrder>();
+        for (Order order : orders) {
+            ReadableOrder readableOrder = new ReadableOrder();
+            try
+            {
+                orderPopulator.populate(order,readableOrder,store,language);
+                setOrderProductList(order,locale,store,language,readableOrder);
+            }
+            catch ( ConversionException ex )
+            {
+                LOGGER.error( "Error while converting order to order data", ex );
+                
+            }
+            readableOrders.add(readableOrder);
+            
+        }
+        
+        returnList.setTotal(orderList.getTotalCount());
+        returnList.setOrders( readableOrders );
+        return returnList;
+       
+    }
+    
+    private void setOrderProductList(final Order order, final Locale locale,final MerchantStore store, final Language language , final ReadableOrder readableOrder) throws ConversionException{
+        List<ReadableOrderProduct> orderProducts = new ArrayList<ReadableOrderProduct>();
+        for(OrderProduct p : order.getOrderProducts()) {
+            ReadableOrderProductPopulator orderProductPopulator = new ReadableOrderProductPopulator();
+            orderProductPopulator.setLocale(locale);
+            ReadableOrderProduct orderProduct = new ReadableOrderProduct();
+            orderProductPopulator.populate(p, orderProduct, store, language);
+            
+            Product product = productService.getById(p.getId());
+            
+            if(product!=null) {
+                
+                ReadableProductPopulator productPopulator = new ReadableProductPopulator();
+                productPopulator.setPricingService(pricingService);
+                
+                ReadableProduct productProxy = productPopulator.populate(product, new ReadableProduct(), store, language);
+                orderProduct.setProduct(productProxy);
+                
+            }
+
+            orderProducts.add(orderProduct);
+        }
+        
+        readableOrder.setProducts(orderProducts);
+    }
 
 }

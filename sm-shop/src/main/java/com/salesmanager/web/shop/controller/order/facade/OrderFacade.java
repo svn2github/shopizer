@@ -7,7 +7,6 @@ import java.util.Map;
 import org.springframework.validation.BindingResult;
 
 import com.salesmanager.core.business.customer.model.Customer;
-import com.salesmanager.core.business.generic.exception.ConversionException;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
@@ -18,7 +17,6 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shipping.model.ShippingQuote;
 import com.salesmanager.core.business.shipping.model.ShippingSummary;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
-import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.order.PersistableOrder;
 import com.salesmanager.web.entity.order.ReadableOrderList;
 import com.salesmanager.web.entity.order.ShopOrder;
@@ -69,4 +67,17 @@ public interface OrderFacade {
 	
 	
 	ReadableOrderList getReadableOrderList(MerchantStore store, int start, int maxCount, Language language) throws Exception;
+	
+	/**
+     * <p>Method used to fetch all orders associated with customer customer.
+     * It will used current customer ID to fetch all orders which has been 
+     * placed by customer for current store.</p>
+     * 
+     * @param customer currently logged in customer 
+     * @param store store associated with current customer
+     * @return ReadableOrderList
+     * @throws Exception
+     */
+    
+    public ReadableOrderList getOrdersByCustomer( final Customer customer, final MerchantStore store ,final Language language, final int start, final int maxCount) throws Exception;
 }

@@ -10,10 +10,12 @@ response.setDateHeader ("Expires", -1);
 <%@ taglib uri="http://www.springframework.org/tags" prefix="s" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm" %> 
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="/WEB-INF/shopizer-tags.tld" prefix="sm"%>
  
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
-
+<c:set var="ordersAction" value="${pageContext.request.contextPath}/shop/customer/customer-orders.html"/>
 
 	<div id="main-content" class="container clearfix">
 		<div class="row-fluid">
@@ -23,8 +25,9 @@ response.setDateHeader ("Expires", -1);
 				<header class="page-header">
 					<h1>Order History</h1>
 				</header>
-
-				<div id="shop">
+               <c:choose>
+                 <c:when test="${not empty customerOrders.orders}">
+                 	<div id="shop">
 
 					<!-- HISTORY TABLE -->
 					<table class="table table-striped">
@@ -41,41 +44,17 @@ response.setDateHeader ("Expires", -1);
 						
 						<!-- table items -->
 						<tbody>
+						<c:forEach items="${customerOrders.orders}" var="order" varStatus="orderStatus">
 							<tr><!-- item -->
-								<td>1</td>
-								<td><a href="http://theme.stepofweb.com/Alkaline/v1.0/shop-history-summary.html">6877</a></td>
-								<td>29 June 2014 / 08:33:21</td>
-								<td>$456.00 <small>(3 items)</small></td>
-								<td>Pending</td>
-							</tr><!-- /item -->
-							<tr><!-- item -->
-								<td>2</td>
-								<td><a href="http://theme.stepofweb.com/Alkaline/v1.0/shop-history-summary.html">6878</a></td>
-								<td>12 Jul 2014 / 12:34:41</td>
-								<td>$233.00 <small>(2 items)</small></td>
-								<td>Completed</td>
-							</tr><!-- /item -->
-							<tr><!-- item -->
-								<td>3</td>
-								<td><a href="http://theme.stepofweb.com/Alkaline/v1.0/shop-history-summary.html">6879</a></td>
-								<td>15 September 2014 / 18:23:44</td>
-								<td>$987.00 <small>(8 items)</small></td>
-								<td>Canceled</td>
-							</tr><!-- /item -->
-							<tr><!-- item -->
-								<td>4</td>
-								<td><a href="http://theme.stepofweb.com/Alkaline/v1.0/shop-history-summary.html">6880</a></td>
-								<td>21 December 2014 / 08:33:21</td>
-								<td>$1897.00 <small>(13 items)</small></td>
-								<td>Completed</td>
-							</tr><!-- /item -->
-							<tr><!-- item -->
-								<td>5</td>
-								<td><a href="http://theme.stepofweb.com/Alkaline/v1.0/shop-history-summary.html">6898</a></td>
-								<td>29 December 2014 / 10:21:32</td>
-								<td>$122.00 <small>(2 items)</small></td>
-								<td>Completed</td>
-							</tr><!-- /item -->
+								<td>${orderStatus.index+1}</td>
+								<td><a href="http://theme.stepofweb.com/Alkaline/v1.0/shop-history-summary.html">${order.id}</a></td>
+								<td><fmt:formatDate type="both" value="${order.datePurchased}" /></td>
+								<td><sm:monetary value="${order.total.value}" /><small>(${fn:length(order.products)} items)</small></td>
+								<td>${order.orderStatus}</td>
+								
+							</tr>
+						</c:forEach>
+							
 						</tbody>
 					</table>
 					<!-- /HISTORY TABLE -->
@@ -83,28 +62,35 @@ response.setDateHeader ("Expires", -1);
 
 					<div class="divider half-margins"><!-- divider 30px --></div>
 
-
+					
 					<!-- PAGINATION -->
 					<div class="row">
-
 						<div class="col-md-6 text-left">
-							<p class="hidden-xs pull-left nomargin padding20">Showing 1-10 of 38 results.</p>
+							<p class="hidden-xs pull-left nomargin padding20">Showing ${(paginationData.offset)}-${((paginationData.offset)-1)+(paginationData.pageSize) } of ${paginationData.totalCount} results.</p>
 						</div>
 
 						<div class="col-md-6 responsive-text-center text-right">
 							<ul class="pagination">
 								<li><a href="#"><i class="fa fa-chevron-left"></i></a></li>
-								<li class="active"><a href="#">1</a></li>
-								<li><a href="#">2</a></li>
-								<li><a href="#">3</a></li>
+								<c:forEach begin="1" end="${paginationData.totalPages}" varStatus="paginationDataStatus">
+								    <li class="${paginationData.currentPage eq (paginationDataStatus.index) ? 'active' : ''}"><a href="${ordersAction}?page=${paginationDataStatus.index}">${paginationDataStatus.index}</a></li>
+								</c:forEach>
 								<li><a href="#"><i class="fa fa-chevron-right"></i></a></li>
 							</ul>
 						</div>
 
 					</div>
 					<!-- /PAGINATION -->
+				
 
 				</div>
+                 </c:when>
+                 <c:otherwise>
+                 
+                 </c:otherwise>
+               
+               </c:choose>
+				
 
 			</div>
 
@@ -116,3 +102,5 @@ response.setDateHeader ("Expires", -1);
 		<!-- close row-fluid--> 
 	</div>
 	<!--close .container "main-content" -->
+	
+	<!-- http://theme.stepofweb.com/Alkaline/v1.0/shop-history-summary.html -->
