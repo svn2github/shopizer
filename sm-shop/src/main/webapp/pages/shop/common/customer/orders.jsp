@@ -16,6 +16,7 @@ response.setDateHeader ("Expires", -1);
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 <c:set var="ordersAction" value="${pageContext.request.contextPath}/shop/customer/customer-orders.html"/>
+<c:set var="customerOrder" value="${pageContext.request.contextPath}/shop/customer/order.html"/>
 
 	<div id="main-content" class="container clearfix">
 		<div class="row-fluid">
@@ -47,7 +48,7 @@ response.setDateHeader ("Expires", -1);
 						<c:forEach items="${customerOrders.orders}" var="order" varStatus="orderStatus">
 							<tr><!-- item -->
 								<td>${orderStatus.index+1}</td>
-								<td><a href="http://theme.stepofweb.com/Alkaline/v1.0/shop-history-summary.html">${order.id}</a></td>
+								<td><a href="${customerOrder}?orderId=${order.id}">${order.id}</a></td>
 								<td><fmt:formatDate type="both" value="${order.datePurchased}" /></td>
 								<td><sm:monetary value="${order.total.value}" /><small>(${fn:length(order.products)} items)</small></td>
 								<td>${order.orderStatus}</td>
