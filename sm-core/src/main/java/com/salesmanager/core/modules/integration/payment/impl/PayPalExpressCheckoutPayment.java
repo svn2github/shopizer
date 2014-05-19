@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import urn.ebay.api.PayPalAPI.DoAuthorizationReq;
 import urn.ebay.api.PayPalAPI.DoCaptureReq;
 import urn.ebay.api.PayPalAPI.DoCaptureRequestType;
 import urn.ebay.api.PayPalAPI.DoCaptureResponseType;
@@ -147,7 +146,7 @@ public class PayPalExpressCheckoutPayment implements PaymentModule {
 	}*/
 	
 	public Transaction initPaypalTransaction(MerchantStore store,
-			Customer customer, List<ShoppingCartItem> items, OrderTotalSummary summary, Payment payment,
+			List<ShoppingCartItem> items, OrderTotalSummary summary, Payment payment,
 			IntegrationConfiguration configuration, IntegrationModule module)
 			throws IntegrationException {
 		

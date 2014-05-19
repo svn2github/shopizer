@@ -515,7 +515,18 @@ public class ShippingServiceImpl implements ShippingService {
 					option.setOptionPriceText(priceText);
 				
 					if(StringUtils.isBlank(option.getOptionName())) {
-						option.setOptionName(delivery.getCountry().getName());
+						
+						String countryName = delivery.getCountry().getName();
+						if(countryName == null) {
+							Map<String,Country> deliveryCountries = countryService.getCountriesMap(language);
+							Country dCountry = (Country)deliveryCountries.get(delivery.getCountry().getIsoCode());
+							if(dCountry!=null) {
+								countryName = dCountry.getName();
+							} else {
+								countryName = delivery.getCountry().getIsoCode();
+							}
+						}
+							option.setOptionName(countryName);		
 					}
 				
 					if(shippingOptionPriceType.name().equals(ShippingOptionPriceType.HIGHEST.name())) {

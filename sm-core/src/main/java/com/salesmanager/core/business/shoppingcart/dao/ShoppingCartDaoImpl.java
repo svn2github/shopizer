@@ -71,8 +71,8 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 			List<ShoppingCart> results = query.list(qShoppingCart);
 	        if (results.isEmpty()) return null;
 	        
-	        else if (results.size() == 1) return results.get(0);
-	        throw new NonUniqueResultException();
+	        else if (results.size() >= 1) return results.get(0);
+	        return null;
 
 
 	}
@@ -121,8 +121,8 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 			List<ShoppingCart> results = query.list(qShoppingCart);
 	        if (results.isEmpty()) return null;
 	        
-	        else if (results.size() == 1) return results.get(0);
-	        throw new NonUniqueResultException();
+	        else if (results.size() >= 1) return results.get(0);
+	        return null;
 
 	}
 
@@ -143,8 +143,8 @@ public class ShoppingCartDaoImpl extends SalesManagerEntityDaoImpl<Long, Shoppin
 			List<ShoppingCart> results = query.list(qShoppingCart);
 	        if (results.isEmpty()) return null;
 	        
-	        else if (results.size() == 1) return results.get(0);
-	        throw new NonUniqueResultException();
+	        else if (results.size() >= 1) return results.get(0);
+	        return null;
 
 	}
 
