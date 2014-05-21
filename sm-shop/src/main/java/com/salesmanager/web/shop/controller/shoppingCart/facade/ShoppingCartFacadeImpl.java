@@ -292,7 +292,7 @@ public class ShoppingCartFacadeImpl
 
         if ( cart == null )
         {
-            return new ShoppingCartData();
+            return null;
         }
 
         LOG.info( "Cart model found." );

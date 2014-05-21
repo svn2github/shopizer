@@ -13,6 +13,7 @@ public class PersistableOrder extends OrderEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private PersistableCustomer customer;//might already exist if id > 0, otherwise persist
 	private List<PersistableOrderProduct> orderProductItems;
+	private boolean shipToBillingAdress = true;
 	
 	
 	public void setOrderProductItems(List<PersistableOrderProduct> orderProductItems) {
@@ -26,6 +27,12 @@ public class PersistableOrder extends OrderEntity implements Serializable {
 	}
 	public PersistableCustomer getCustomer() {
 		return customer;
+	}
+	public boolean isShipToBillingAdress() {
+		return shipToBillingAdress;
+	}
+	public void setShipToBillingAdress(boolean shipToBillingAdress) {
+		this.shipToBillingAdress = shipToBillingAdress;
 	}
 
 

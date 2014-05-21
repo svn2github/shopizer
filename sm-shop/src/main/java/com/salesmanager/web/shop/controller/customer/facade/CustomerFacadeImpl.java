@@ -11,7 +11,6 @@ import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
-import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,6 @@ import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionValueService;
 import com.salesmanager.core.business.generic.exception.ConversionException;
-import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
@@ -168,51 +166,63 @@ public class CustomerFacadeImpl implements CustomerFacade
     }
 
 
-    /**
-     * <p>Method responsible for performing customer auto-login, Method will perform following operations
-     * <li> Fetch customer based on userName and Store.</li>
-     * <li> Merge Customer Shopping Cart with Session Cart if any.</li>
-     * <li> Convert Customer to {@link CustomerEntity} </li>
-     * </p>
-     * <p>There is a possibility that customer might have added few items in his/ her shoppingCart
-     * and for this case, we will use sessionShoppingCartId to fetch shoppingCart from database and
-     * will merge sessionShoppingCart with ShoppingCart associated with the Customer.</p>
-     *
-     * @param userName username of Customer
-     * @param storeCode storeCode to which user is associated/
-     * @param sessionShoppingCartId session shopping cart, if user already have few items in Cart.
-     * @throws Exception
-     */
+    /* (non-Javadoc)
+    *  @see com.salesmanager.web.shop.controller.customer.facade#mergeCart(final Customer customerModel, final String sessionShoppingCartId ,final MerchantStore store,final Language language)
+    */
     @Override
-    public ShoppingCartData customerAutoLogin( final String userName, final String sessionShoppingCartId ,final MerchantStore store,final Language language)
+    public ShoppingCartData mergeCart( final Customer customerModel, final String sessionShoppingCartId ,final MerchantStore store,final Language language)
         throws Exception
     {
 
-        LOG.info( "Starting customer autologin process" );
-        Customer customerModel=getCustomerByUserName(userName, store);
+        LOG.debug( "Starting merge cart process" );
         if(customerModel != null){
-            ShoppingCart cartModel =shoppingCartService.getByCustomer( customerModel );
+            ShoppingCart customerCart = shoppingCartService.getByCustomer( customerModel );
             if(StringUtils.isNotBlank( sessionShoppingCartId )){
-            ShoppingCart sessionShoppingCart=shoppingCartService.getByCode( sessionShoppingCartId, store );
-            if(sessionShoppingCart !=null){
-               if(cartModel == null){
-                   LOG.debug( "Not able to find any shoppingCart with current customer" );
-                   sessionShoppingCart.setCustomerId( customerModel.getId() );
-                   shoppingCartService.saveOrUpdate( sessionShoppingCart );
-                   cartModel =shoppingCartService.getById( sessionShoppingCart.getId(), store );
-                   return populateShoppingCartData(cartModel,store,language);
-               }
-               else{
-                   LOG.info( "Customer shopping cart as well session cart is available" );
-                    cartModel=shoppingCartService.mergeShoppingCarts( cartModel, sessionShoppingCart, store );
-                    cartModel =shoppingCartService.getById( cartModel.getId(), store );
-                    return populateShoppingCartData(cartModel,store,language);
-              }
-            }
+	            ShoppingCart sessionShoppingCart = shoppingCartService.getByCode( sessionShoppingCartId, store );
+	            if(sessionShoppingCart != null){
+	               if(customerCart == null){
+	            	   if(sessionShoppingCart.getCustomerId()==null) {//saved shopping cart does not belong to a customer
+		                   LOG.debug( "Not able to find any shoppingCart with current customer" );
+		                   //give it to the customer
+		                   sessionShoppingCart.setCustomerId( customerModel.getId() );
+		                   shoppingCartService.saveOrUpdate( sessionShoppingCart );
+		                   customerCart =shoppingCartService.getById( sessionShoppingCart.getId(), store );
+		                   return populateShoppingCartData(customerCart,store,language);
+	            	   } else {
+	            		   return null;
+	            	   }
+	               }
+	               else{
+	                    if(sessionShoppingCart.getCustomerId()==null) {//saved shopping cart does not belong to a customer
+	                    	//assign it to logged in user
+	                    	LOG.debug( "Customer shopping cart as well session cart is available, merging carts" );
+	                    	customerCart=shoppingCartService.mergeShoppingCarts( customerCart, sessionShoppingCart, store );
+	                    	customerCart =shoppingCartService.getById( customerCart.getId(), store );
+		                    return populateShoppingCartData(customerCart,store,language);
+	                    } else {
+	                    	if(sessionShoppingCart.getCustomerId().longValue()==customerModel.getId().longValue()) {
+	                    		if(!customerCart.getShoppingCartCode().equals(sessionShoppingCart.getShoppingCartCode())) {
+		                    		//merge carts
+		                    		LOG.info( "Customer shopping cart as well session cart is available" );
+		                    		customerCart=shoppingCartService.mergeShoppingCarts( customerCart, sessionShoppingCart, store );
+		                    		customerCart =shoppingCartService.getById( customerCart.getId(), store );
+		    	                    return populateShoppingCartData(customerCart,store,language);
+	                    		} else {
+	                    			return populateShoppingCartData(sessionShoppingCart,store,language);
+	                    		}
+	                    	} else {
+	                    		//the saved cart belongs to another user
+	                    		return null;
+	                    	}
+	                    }
+	            	    
+	                    
+	              }
+	            }
             }
             else{
-                 if(cartModel !=null){
-                     return populateShoppingCartData(cartModel,store,language);
+                 if(customerCart !=null){
+                     return populateShoppingCartData(customerCart,store,language);
                  }
                  return null;
 
@@ -223,7 +233,8 @@ public class CustomerFacadeImpl implements CustomerFacade
 
     }
 
- private ShoppingCartData populateShoppingCartData(final ShoppingCart cartModel , final MerchantStore store, final Language language){
+
+    private ShoppingCartData populateShoppingCartData(final ShoppingCart cartModel , final MerchantStore store, final Language language){
 
         ShoppingCartDataPopulator shoppingCartDataPopulator = new ShoppingCartDataPopulator();
         shoppingCartDataPopulator.setShoppingCartCalculationService( shoppingCartCalculationService );
@@ -285,22 +296,25 @@ public class CustomerFacadeImpl implements CustomerFacade
 
 
     @Override
-    public CustomerEntity registerCustomer( final PersistableCustomer customer,final MerchantStore merchantStore )
+    public CustomerEntity registerCustomer( final PersistableCustomer customer,final MerchantStore merchantStore, Language language )
         throws Exception
     {
        LOG.info( "Starting customer registration process.." );
-        Customer customerModel=populateCustomerModel(customer,merchantStore);
+        Customer customerModel= getCustomerModel(customer,merchantStore,language);
         if(customerModel == null){
             LOG.equals( "Unable to create customer in system" );
             throw new CustomerRegistrationException( "Unable to register customer" );
         }
+        
+        LOG.info( "About to persist customer to database." );
+        customerService.saveOrUpdate( customerModel );
         
        LOG.info( "Returning customer data to controller.." );
        return customerEntityPoulator(customerModel,merchantStore);
      }
     
     @Override
-    public Customer populateCustomerModel(final PersistableCustomer customer,final MerchantStore merchantStore, Language language) {
+    public Customer getCustomerModel(final PersistableCustomer customer,final MerchantStore merchantStore, Language language) throws Exception {
         
         LOG.info( "Starting to populate customer model from customer data" );
         Customer customerModel=null;
@@ -311,51 +325,20 @@ public class CustomerFacadeImpl implements CustomerFacade
         populator.setLanguageService(languageService);
         populator.setLanguageService(languageService);
         populator.setZoneService(zoneService);
-        try
-        {
+
 
             customerModel= populator.populate( customer, merchantStore, language );
 			//set groups
+            if(!StringUtils.isBlank(customerModel.getPassword()) && !StringUtils.isBlank(customerModel.getNick())) {
+            	customerModel.setPassword(passwordEncoder.encodePassword(customer.getPassword(), null));
+            	setCustomerModelDefaultProperties(customerModel, merchantStore);
+            }
 
-            customerModel.setPassword(passwordEncoder.encodePassword(customer.getPassword(), null));
-			setCustomerModelDefaultProperties(customerModel, merchantStore);
-
-            LOG.info( "About to persist customer to database." );
-            customerService.saveOrUpdate( customerModel );
-       }
-        catch ( ConversionException e )
-        {
-           LOG.error( "Exception while converting customer data to customer model ",e );
-           return null;
-        }
-        catch ( ServiceException e )
-        {
-            LOG.error( "Unable to find any group ",e );
-            return null;
-        }
-        catch ( Exception ee )
-        {
-            LOG.error( "Unable to set default properties ",ee );
-            return null;
-        }
-       
-        if(customerModel.getId() !=null){
-            LOG.info( "Returning update instance of customer" );
-            return customerService.getById( customerModel.getId() ); 
-        }
-       
-        Log.info( "Seems some issue while persisting customer  to database..returning null" );
-        return null;
+          return customerModel;
 
     }
     
-    @Override
-    public Customer populateCustomerModel(final PersistableCustomer customer,final MerchantStore merchantStore) {
-        
 
-        return this.populateCustomerModel(customer, merchantStore, merchantStore.getDefaultLanguage());
-
-    }
     
     
     private CustomerEntity customerEntityPoulator(final Customer customerModel,final MerchantStore merchantStore){
@@ -544,5 +527,30 @@ public class CustomerFacadeImpl implements CustomerFacade
 	}
 
 
+	@Override
+	public Customer populateCustomerModel(Customer customerModel,
+			PersistableCustomer customer, MerchantStore merchantStore,
+			Language language) throws Exception {
+        LOG.info( "Starting to populate customer model from customer data" );
+        CustomerPopulator populator = new CustomerPopulator();
+        populator.setCountryService(countryService);
+        populator.setCustomerOptionService(customerOptionService);
+        populator.setCustomerOptionValueService(customerOptionValueService);
+        populator.setLanguageService(languageService);
+        populator.setLanguageService(languageService);
+        populator.setZoneService(zoneService);
+
+
+            customerModel= populator.populate( customer, customerModel, merchantStore, language );
+			//set groups
+            //if(!StringUtils.isBlank(customerModel.getPassword()) && !StringUtils.isBlank(customerModel.getNick())) {
+            //	customerModel.setPassword(passwordEncoder.encodePassword(customer.getPassword(), null));
+            //	setCustomerModelDefaultProperties(customerModel, merchantStore);
+            //}
+
+            LOG.info( "About to persist customer to database." );
+            customerService.saveOrUpdate( customerModel );
+            return customerModel;
+	}
 
 }

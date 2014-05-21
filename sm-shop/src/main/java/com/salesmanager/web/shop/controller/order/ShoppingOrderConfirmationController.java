@@ -3,6 +3,7 @@ package com.salesmanager.web.shop.controller.order;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -26,18 +26,18 @@ import com.salesmanager.core.business.order.model.orderproduct.OrderProductDownl
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.order.service.orderproduct.OrderProductDownloadService;
 import com.salesmanager.core.business.payments.service.PaymentService;
+import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.entity.customer.ReadableCustomer;
 import com.salesmanager.web.entity.order.ReadableOrder;
 import com.salesmanager.web.entity.order.ReadableOrderProduct;
 import com.salesmanager.web.entity.order.ReadableOrderProductDownload;
-import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.web.populator.order.ReadableOrderPopulator;
 import com.salesmanager.web.populator.order.ReadableOrderProductDownloadPopulator;
 import com.salesmanager.web.populator.order.ReadableOrderProductPopulator;
@@ -134,7 +134,14 @@ public class ShoppingOrderConfirmationController extends AbstractController {
 		
 		ReadableCustomer customer = customerFacade.getCustomerById(order.getCustomerId(), store, language);
 		
-		//model.addAttribute("order", order);
+		if(super.getSessionAttribute(Constants.ORDER_ID_TOKEN, request)!=null) {
+			//set this unique token for performing unique operations in the confirmation
+			model.addAttribute("confirmation", "confirmation");
+		}
+		
+		//remove unique token
+		super.removeAttribute(Constants.ORDER_ID_TOKEN, request);
+		
 		
         String[] orderMessageParams = {store.getStorename(), String.valueOf(order.getId())};
         String orderMessage = messages.getMessage("label.checkout.text", orderMessageParams, locale);
@@ -154,25 +161,27 @@ public class ShoppingOrderConfirmationController extends AbstractController {
 			orderProductPopulator.setLocale(locale);
 			ReadableOrderProduct orderProduct = new ReadableOrderProduct();
 			orderProductPopulator.populate(p, orderProduct, store, language);
-			
-			Product product = productService.getById(p.getId());
-			
-			if(product!=null) {
-				
-				ReadableProductPopulator productPopulator = new ReadableProductPopulator();
-				productPopulator.setPricingService(pricingService);
-				
-				ReadableProduct productProxy = productPopulator.populate(product, new ReadableProduct(), store, language);
-				orderProduct.setProduct(productProxy);
-				
-			}
-
 			orderProducts.add(orderProduct);
 		}
 		
 		readableOrder.setProducts(orderProducts);
 		
 		readableOrder.setCustomer(customer);
+		
+		//resolve country and Zone for GA
+		String countryCode = readableOrder.getCustomer().getBilling().getCountry();
+		Map<String,Country> countriesMap = countryService.getCountriesMap(language);
+		Country billingCountry = countriesMap.get(countryCode);
+		if(billingCountry!=null) {
+			readableOrder.getCustomer().getBilling().setCountry(billingCountry.getName());
+		}
+		
+		String zoneCode = readableOrder.getCustomer().getBilling().getZone();
+		Map<String,Zone> zonesMap = zoneService.getZones(language);
+		Zone billingZone = zonesMap.get(zoneCode);
+		if(billingZone!=null) {
+			readableOrder.getCustomer().getBilling().setZone(billingZone.getName());
+		}
 		
 		
 		model.addAttribute("order",readableOrder);

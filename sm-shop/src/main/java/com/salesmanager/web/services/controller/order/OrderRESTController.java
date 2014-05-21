@@ -183,11 +183,12 @@ public class OrderRESTController {
 		}
 		
 		
-		ReadableOrderList returnList = orderFacade.getReadableOrderList(merchantStore, startCount, maxCount, language);
+		//TODO
+		//ReadableOrderList returnList = orderFacade.getReadableOrderList(merchantStore, startCount, maxCount, language);
 		
-
+		return null;
 		
-		return returnList;
+		//return returnList;
 	}
 
 }

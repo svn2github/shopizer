@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @author Umesh Awasthi
  *
  */
-public class PaginaionData implements Serializable
+public class PaginationData implements Serializable
 {
     
     
@@ -24,7 +24,7 @@ public class PaginaionData implements Serializable
     private int totalPages;
 
     
-    public PaginaionData(int pageSize,int currentPage) {
+    public PaginationData(int pageSize,int currentPage) {
         if (pageSize == 0)
             throw new IllegalArgumentException("limit cannot be 0 for pagination.");
 
@@ -68,9 +68,9 @@ public class PaginaionData implements Serializable
      * 
      * @return new pagination object with offset shifted by offset+limit
      */
-    public PaginaionData getNext()
+    public PaginationData getNext()
     {
-        return new PaginaionData( offset + pageSize, pageSize );
+        return new PaginationData( offset + pageSize, pageSize );
     }
     
     
@@ -79,11 +79,11 @@ public class PaginaionData implements Serializable
     *
     * @return new pagination object with offset shifted by offset-limit
     */
-        public PaginaionData getPrevious() {
+        public PaginationData getPrevious() {
             if (pageSize >= offset) {
-                return new PaginaionData(0, pageSize);
+                return new PaginationData(0, pageSize);
             } else {
-                return new PaginaionData(offset - pageSize, pageSize);
+                return new PaginationData(offset - pageSize, pageSize);
             }
         }
 

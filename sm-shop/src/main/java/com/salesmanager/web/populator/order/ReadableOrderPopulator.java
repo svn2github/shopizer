@@ -28,6 +28,9 @@ public class ReadableOrderPopulator extends
 		com.salesmanager.web.entity.order.OrderTotal shippingTotal = null;
 		
 		for(OrderTotal t : source.getOrderTotal()) {
+			if(t.getOrderTotalType()==null) {
+				continue;
+			}
 			if(t.getOrderTotalType().name().equals(OrderTotalType.TOTAL.name())) {
 				com.salesmanager.web.entity.order.OrderTotal totalTotal = createTotal(t);
 				target.setTotal(totalTotal);

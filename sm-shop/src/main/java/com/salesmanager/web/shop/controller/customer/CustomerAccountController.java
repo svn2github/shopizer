@@ -14,10 +14,10 @@ import javax.validation.Valid;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -47,13 +47,15 @@ import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.customer.Address;
+import com.salesmanager.web.entity.customer.CustomerEntity;
+import com.salesmanager.web.entity.customer.CustomerPassword;
 import com.salesmanager.web.entity.order.ReadableOrderList;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
 //import com.salesmanager.web.shop.controller.data.CountryData;
 import com.salesmanager.web.shop.controller.data.CountryData;
-import com.salesmanager.web.shop.controller.data.paging.PaginaionData;
+import com.salesmanager.web.shop.controller.data.paging.PaginationData;
 import com.salesmanager.web.shop.controller.order.facade.OrderFacade;
 
 /**
@@ -132,7 +134,7 @@ public class CustomerAccountController extends AbstractController {
 	}
 	
 	
-	@RequestMapping(value="/customer/account.html", method=RequestMethod.GET)
+	@RequestMapping(value="/account.html", method=RequestMethod.GET)
 	public String displayCustomerAccount(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 
@@ -147,6 +149,22 @@ public class CustomerAccountController extends AbstractController {
 		
 	}
 	
+	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
+	@RequestMapping(value="/password.html", method=RequestMethod.GET)
+	public String displayCustomerChangePassword(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+
+	    MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+
+		CustomerPassword customerPassword = new CustomerPassword();
+		model.addAttribute("password", customerPassword);
+		
+		/** template **/
+		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.changePassword).append(".").append(store.getStoreTemplate());
+
+		return template.toString();
+		
+	}
 	
 
 	
@@ -157,6 +175,7 @@ public class CustomerAccountController extends AbstractController {
 	 * @return
 	 * @throws Exception
 	 */
+	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
 	@RequestMapping(value={"/attributes/save.html"}, method=RequestMethod.POST, produces="application/json")
 	public @ResponseBody String saveCustomerAttributes(HttpServletRequest request, Locale locale) throws Exception {
 		
@@ -290,7 +309,7 @@ public class CustomerAccountController extends AbstractController {
 
 	}
 
-	
+	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
 	@RequestMapping(value="/billing.html", method=RequestMethod.GET)
     public String displayCustomerBillingAddress(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
         
@@ -298,8 +317,9 @@ public class CustomerAccountController extends AbstractController {
         MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
         Language language = getSessionAttribute(Constants.LANGUAGE, request);
         Customer customer=getSessionAttribute( Constants.CUSTOMER, request );
+        CustomerEntity customerEntity = customerFacade.getCustomerDataByUserName( customer.getNick(), store, language );
         if(customer !=null){
-           model.addAttribute( "customer", customerFacade.getCustomerDataByUserName( customer.getNick(), store, language ) );
+           model.addAttribute( "customer",  customerEntity);
         }
         
         
@@ -310,6 +330,7 @@ public class CustomerAccountController extends AbstractController {
         
     }
     
+	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
     @RequestMapping(value="/editAddress.html", method={RequestMethod.GET,RequestMethod.POST})
     public String editAddress(final Model model, final HttpServletRequest request,@RequestParam(value = "customerId", required = false) Long customerId,
                               @RequestParam(value = "billingAddress", required = false) Boolean billingAddress) throws Exception {
@@ -322,6 +343,7 @@ public class CustomerAccountController extends AbstractController {
     }
     
     
+	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
     @RequestMapping(value="/updateAddress.html", method={RequestMethod.GET,RequestMethod.POST})
     public String updateCustomerAddress(@Valid
                                         @ModelAttribute("address") Address address,BindingResult bindingResult,final Model model, final HttpServletRequest request,@RequestParam(value = "customerId", required = false) Long customerId,
@@ -348,7 +370,7 @@ public class CustomerAccountController extends AbstractController {
     
     /** move this common section out */
     
-   @ModelAttribute("countries")
+    @ModelAttribute("countries")
     public List<CountryData> getCountries(final HttpServletRequest request){
         
         Language language = (Language) request.getAttribute( "LANGUAGE" );
@@ -385,46 +407,14 @@ public class CustomerAccountController extends AbstractController {
         }
         return Collections.emptyList();
     }
-    
-    //@ModelAttribute("zones")
+
     @ModelAttribute("zones")
     public List<Zone> getZones(final HttpServletRequest request){
         return zoneService.list();
     }
  
-    
-    /**
-     * Fetch List of customer orders
-     * @param model
-     * @return view to show order
-     * @throws Exception 
-     */
-    @RequestMapping(value="/customer-orders.html", method={RequestMethod.GET,RequestMethod.POST})
-    public String orders(final Model model,final HttpServletRequest request,@RequestParam(value = "page", defaultValue = "1") final int page) throws Exception{
-        Log.info( "Fetching orders for current customer" );
-        MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
-        Customer customer=getSessionAttribute( Constants.CUSTOMER, request );
-        Language language = getSessionAttribute(Constants.LANGUAGE, request);
-        
-        PaginaionData paginaionData=createPaginaionData(page,5);
-        ReadableOrderList readable= orderFacade.getOrdersByCustomer( customer, store,language ,(paginaionData.getOffset() -1),paginaionData.getPageSize());
-        model.addAttribute( "paginationData", calculatePaginaionData(paginaionData,readable.getTotal()));
-        model.addAttribute( "customerOrders", readable);
-        StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.customerOrders).append(".").append(store.getStoreTemplate());
-        return template.toString();
-     }
-    
-    
-    @RequestMapping(value="/order.html", method={RequestMethod.GET,RequestMethod.POST})
-    public String order(final Model model,final HttpServletRequest request,@RequestParam(value = "orderId" ,required=true) final String orderId) throws Exception{
-        if(StringUtils.isBlank( orderId )){
-          Log.error( "Order Id can not be null or empty" );
-        }
-        Log.info( "Fetching order details for Id " +orderId);
-        MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
-        StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.customerOrder).append(".").append(store.getStoreTemplate());
-        return template.toString();
-        
-    }
+
+
+
 
 }

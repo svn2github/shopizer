@@ -17,6 +17,8 @@ public class ReadableOrderProductPopulator extends
 		target.setId(source.getId());
 		target.setOrderedQuantity(source.getProductQuantity());
 		target.setPrice(source.getOneTimeCharge());
+		target.setProductName(source.getProductName());
+		target.setSku(source.getSku());
 		return target;
 	}
 

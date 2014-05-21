@@ -16,6 +16,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
@@ -158,7 +160,22 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 						request.getSession().removeAttribute(Constants.CUSTOMER);
 					}
 					request.setAttribute(Constants.CUSTOMER, customer);
+				} 
+				
+				if(customer==null) {
+					
+					Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		        	if(auth != null &&
+			        		 request.isUserInRole("AUTH_CUSTOMER")) {
+		        		customer = customerService.getByNick(auth.getName());
+		        		if(customer!=null) {
+		        			request.setAttribute(Constants.CUSTOMER, customer);
+		        		}
+			        } 
+					
 				}
+				
+				
 				
 				AnonymousCustomer anonymousCustomer =  (AnonymousCustomer)request.getSession().getAttribute(Constants.ANONYMOUS_CUSTOMER);
 				if(anonymousCustomer==null) {

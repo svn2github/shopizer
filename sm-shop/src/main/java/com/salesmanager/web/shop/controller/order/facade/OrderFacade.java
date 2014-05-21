@@ -17,6 +17,7 @@ import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.shipping.model.ShippingQuote;
 import com.salesmanager.core.business.shipping.model.ShippingSummary;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
+import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.order.PersistableOrder;
 import com.salesmanager.web.entity.order.ReadableOrderList;
 import com.salesmanager.web.entity.order.ShopOrder;
@@ -50,7 +51,10 @@ public interface OrderFacade {
 	 * @return
 	 * @throws Exception
 	 */
-	ShippingQuote getShippingQuote(ShoppingCart cart, ShopOrder order,
+	ShippingQuote getShippingQuote(PersistableCustomer customer, ShoppingCart cart, ShopOrder order,
+			MerchantStore store, Language language) throws Exception;
+	
+	ShippingQuote getShippingQuote(Customer customer, ShoppingCart cart, PersistableOrder order,
 			MerchantStore store, Language language) throws Exception;
 	
 	/**
@@ -65,9 +69,7 @@ public interface OrderFacade {
 			Map<String, String> messagesResult, MerchantStore store,
 			Locale locale) throws ServiceException;
 	
-	
-	ReadableOrderList getReadableOrderList(MerchantStore store, int start, int maxCount, Language language) throws Exception;
-	
+
 	/**
      * <p>Method used to fetch all orders associated with customer customer.
      * It will used current customer ID to fetch all orders which has been 
@@ -79,5 +81,6 @@ public interface OrderFacade {
      * @throws Exception
      */
     
-    public ReadableOrderList getOrdersByCustomer( final Customer customer, final MerchantStore store ,final Language language, final int start, final int maxCount) throws Exception;
+	ReadableOrderList getReadableOrderList(MerchantStore store, Customer customer, int start,
+			int maxCount, Language language) throws Exception;
 }

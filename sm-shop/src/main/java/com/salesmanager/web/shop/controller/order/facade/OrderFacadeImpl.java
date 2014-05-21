@@ -1,7 +1,6 @@
 package com.salesmanager.web.shop.controller.order.facade;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -21,7 +20,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 
-import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
@@ -62,7 +60,6 @@ import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.utils.CreditCardUtils;
-import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.order.OrderEntity;
@@ -73,7 +70,6 @@ import com.salesmanager.web.entity.order.ReadableOrder;
 import com.salesmanager.web.entity.order.ReadableOrderList;
 import com.salesmanager.web.entity.order.ReadableOrderProduct;
 import com.salesmanager.web.entity.order.ShopOrder;
-import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.web.populator.customer.CustomerPopulator;
 import com.salesmanager.web.populator.customer.PersistableCustomerPopulator;
 import com.salesmanager.web.populator.order.OrderProductPopulator;
@@ -84,7 +80,7 @@ import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
 import com.salesmanager.web.utils.LabelUtils;
 import com.salesmanager.web.utils.LocaleUtils;
 
-
+import edu.emory.mathcs.backport.java.util.Collections;
 
 @Service("orderFacade")
 public class OrderFacadeImpl implements OrderFacade {
@@ -120,7 +116,8 @@ public class OrderFacadeImpl implements OrderFacade {
 	@Autowired
 	private CustomerFacade customerFacade;
 	@Autowired
-    private PricingService pricingService;
+	private PricingService pricingService;
+
 	
 	@Autowired
 	private LabelUtils messages;
@@ -158,7 +155,7 @@ public class OrderFacadeImpl implements OrderFacade {
 			ShopOrder order, Language language) throws Exception {
 		
 
-		Customer customer = customerFacade.populateCustomerModel(order.getCustomer(), store, language);
+		Customer customer = customerFacade.getCustomerModel(order.getCustomer(), store, language);
 		OrderTotalSummary summary = this.calculateOrderTotal(store, customer, order, language);
 		this.setOrderTotals(order, summary);
 		return summary;
@@ -332,9 +329,7 @@ public class OrderFacadeImpl implements OrderFacade {
 			//order misc objects
 			modelOrder.setCurrency(store.getCurrency());
 			modelOrder.setMerchant(store);
-			//OrderStatus status = OrderStatus.ORDERED;
-			//modelOrder.setStatus(status);
-			//do not care about previous status
+
 			
 			
 			//customer object
@@ -486,7 +481,7 @@ public class OrderFacadeImpl implements OrderFacade {
 	}
 	
 	@Override
-	public ShippingQuote getShippingQuote(ShoppingCart cart, ShopOrder order, MerchantStore store, Language language) throws Exception {
+	public ShippingQuote getShippingQuote(PersistableCustomer persistableCustomer, ShoppingCart cart, ShopOrder order, MerchantStore store, Language language) throws Exception {
 		
 
 		//create shipping products
@@ -496,7 +491,8 @@ public class OrderFacadeImpl implements OrderFacade {
 			return null;//products are virtual
 		}
 				
-		Customer customer = customerFacade.populateCustomerModel(order.getCustomer(), store, language);
+		Customer customer = customerFacade.getCustomerModel(persistableCustomer, store, language);
+
 		
 		Delivery delivery = new Delivery();
 		
@@ -745,33 +741,82 @@ public class OrderFacadeImpl implements OrderFacade {
 
 
 
-    @Override
-    public ReadableOrderList getReadableOrderList( MerchantStore store, int start, int maxCount, Language language )
-        throws Exception
-    {
-
-        OrderCriteria criteria = new OrderCriteria();
-        criteria.setStartIndex( start );
-        criteria.setMaxCount( maxCount );
-        OrderList orderList = orderService.listByStore( store, criteria );
-        return populateOrderData( orderList, store, language );
-
-    }
-	
-	
 	@Override
-    public ReadableOrderList  getOrdersByCustomer( final Customer customer, final MerchantStore store, final Language language,final int start, final int maxCount ) throws Exception{
-	    LOGGER.info( "Fetching all orders for customer .." +customer.getNick() );
-        OrderCriteria orderCriteria=new OrderCriteria();
-        orderCriteria.setCustomerId(customer.getId() );
-        orderCriteria.setStartIndex( start );
-        orderCriteria.setMaxCount( maxCount );
-              
-       
-        return populateOrderData(orderService.getOrdersByCustomer( orderCriteria, store ),store,language);
-    } 
+	public ReadableOrderList getReadableOrderList(MerchantStore store,
+			Customer customer, int start, int maxCount, Language language) throws Exception {
+		
+		OrderCriteria criteria = new OrderCriteria();
+		criteria.setStartIndex(start);
+		criteria.setMaxCount(maxCount);
+		criteria.setCustomerId(customer.getId());
+		OrderList orderList = orderService.listByStore(store, criteria);
+		
+		ReadableOrderPopulator orderPopulator = new ReadableOrderPopulator();
+		Locale locale = LocaleUtils.getLocale(language);
+		orderPopulator.setLocale(locale);
+		
+		List<Order> orders = orderList.getOrders();
+		ReadableOrderList returnList = new ReadableOrderList();
+		
+		if(CollectionUtils.isEmpty(orders)) {
+			returnList.setTotal(0);
+			returnList.setMessage("No results for store code " + store);
+			return null;
+		}
 
-     private ReadableOrderList populateOrderData(final OrderList orderList,final MerchantStore store, final Language language){
+		List<ReadableOrder> readableOrders = new ArrayList<ReadableOrder>();
+		for (Order order : orders) {
+			ReadableOrder readableOrder = new ReadableOrder();
+			orderPopulator.populate(order,readableOrder,store,language);
+			readableOrders.add(readableOrder);
+			
+		}
+		
+		returnList.setTotal(orderList.getTotalCount());
+		return this.populateOrderList(orderList, store, language);
+		
+	}
+
+
+
+	@Override
+	public ShippingQuote getShippingQuote(Customer customer, ShoppingCart cart,
+			PersistableOrder order, MerchantStore store, Language language)
+			throws Exception {
+		//create shipping products
+		List<ShippingProduct> shippingProducts = shoppingCartService.createShippingProduct(cart);
+
+		if(CollectionUtils.isEmpty(shippingProducts)) {
+			return null;//products are virtual
+		}
+				
+
+		
+		Delivery delivery = new Delivery();
+		
+		//adjust shipping and billing
+		if(order.isShipToBillingAdress()) {
+			Billing billing = customer.getBilling();
+			delivery.setAddress(billing.getAddress());
+			delivery.setCompany(billing.getCompany());
+			delivery.setPostalCode(billing.getPostalCode());
+			delivery.setState(billing.getState());
+			delivery.setCountry(billing.getCountry());
+			delivery.setZone(billing.getZone());
+		} else {
+			delivery = customer.getDelivery();
+		}
+		
+		
+		
+		ShippingQuote quote = shippingService.getShippingQuote(store, delivery, shippingProducts, language);
+
+		return quote;
+	}
+	
+	
+
+     private ReadableOrderList populateOrderList(final OrderList orderList,final MerchantStore store, final Language language){
         List<Order> orders = orderList.getOrders();
         ReadableOrderList returnList = new ReadableOrderList();
         if(CollectionUtils.isEmpty( orders)){
@@ -816,17 +861,19 @@ public class OrderFacadeImpl implements OrderFacade {
             ReadableOrderProduct orderProduct = new ReadableOrderProduct();
             orderProductPopulator.populate(p, orderProduct, store, language);
             
-            Product product = productService.getById(p.getId());
+            //attributes
             
-            if(product!=null) {
+            //Product product = productService.getById(p.getId());
+            
+            //if(product!=null) {
                 
-                ReadableProductPopulator productPopulator = new ReadableProductPopulator();
-                productPopulator.setPricingService(pricingService);
+                //ReadableProductPopulator productPopulator = new ReadableProductPopulator();
+                //productPopulator.setPricingService(pricingService);
                 
-                ReadableProduct productProxy = productPopulator.populate(product, new ReadableProduct(), store, language);
-                orderProduct.setProduct(productProxy);
+                //ReadableProduct productProxy = productPopulator.populate(product, new ReadableProduct(), store, language);
+                //orderProduct.setProduct(productProxy);
                 
-            }
+           //}
 
             orderProducts.add(orderProduct);
         }

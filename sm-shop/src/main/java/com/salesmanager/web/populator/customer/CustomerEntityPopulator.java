@@ -46,6 +46,7 @@ public class CustomerEntityPopulator
             {
                 Address address = new Address();
                 address.setCity( source.getBilling().getCity() );
+                address.setAddress(source.getBilling().getAddress());
                 address.setCompany( source.getBilling().getCompany() );
                 address.setFirstName( source.getBilling().getFirstName() );
                 address.setLastName( source.getBilling().getLastName() );
@@ -67,6 +68,7 @@ public class CustomerEntityPopulator
             {
                 Address address = new Address();
                 address.setCity( source.getDelivery().getCity() );
+                address.setAddress(source.getDelivery().getAddress());
                 address.setCompany( source.getDelivery().getCompany() );
                 address.setFirstName( source.getDelivery().getFirstName() );
                 address.setLastName( source.getDelivery().getLastName() );

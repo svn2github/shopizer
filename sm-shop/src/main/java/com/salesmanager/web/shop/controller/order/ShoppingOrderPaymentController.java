@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.product.service.PricingService;
-import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionService;
 import com.salesmanager.core.business.customer.service.attribute.CustomerOptionValueService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
@@ -51,7 +51,6 @@ import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.order.ShopOrder;
-import com.salesmanager.web.populator.customer.CustomerPopulator;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.order.facade.OrderFacade;
 import com.salesmanager.web.shop.controller.shoppingCart.facade.ShoppingCartFacade;
@@ -96,6 +95,9 @@ public class ShoppingOrderPaymentController extends AbstractController {
 	
 	@Autowired
 	private PricingService pricingService;
+	
+	@Autowired
+	private CustomerService customerService;
 	
 	@Autowired
 	private CustomerOptionService customerOptionService;
@@ -168,15 +170,8 @@ public class ShoppingOrderPaymentController extends AbstractController {
 			if(summary!=null) {
 				order.setShippingSummary(summary);
 			}
-			
-			Customer customer = null;
-			//PersistableCustomer persistableCustomer = order.getCustomer();
-			CustomerPopulator customerPopulator = new CustomerPopulator();
-			customerPopulator.setCountryService(countryService);
-			customerPopulator.setCustomerOptionService(customerOptionService);
-			customerPopulator.setCustomerOptionValueService(customerOptionValueService);
-			customerPopulator.setLanguageService(languageService);
-			customerPopulator.setZoneService(zoneService);
+
+
 			
 			if(action.equals(INIT_ACTION)) {
 				if(paymentmethod.equals("PAYPAL")) {
@@ -188,7 +183,7 @@ public class ShoppingOrderPaymentController extends AbstractController {
 						PayPalExpressCheckoutPayment p = (PayPalExpressCheckoutPayment)module;
 						PaypalPayment payment = new PaypalPayment();
 						payment.setCurrency(store.getCurrency());
-						Transaction transaction = p.initPaypalTransaction(store, customer, cartItems, orderTotalSummary, payment, config, integrationModule);
+						Transaction transaction = p.initPaypalTransaction(store, cartItems, orderTotalSummary, payment, config, integrationModule);
 						transactionService.create(transaction);
 						
 						super.setSessionAttribute(Constants.INIT_TRANSACTION_KEY, transaction, request);

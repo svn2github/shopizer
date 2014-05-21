@@ -12,6 +12,7 @@ public class OrderProductEntity extends OrderProduct implements Serializable {
 	private int orderedQuantity;
 	private BigDecimal price;
 	
+	
 	public void setOrderedQuantity(int orderedQuantity) {
 		this.orderedQuantity = orderedQuantity;
 	}
@@ -24,5 +25,6 @@ public class OrderProductEntity extends OrderProduct implements Serializable {
 	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
+
 
 }

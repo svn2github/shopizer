@@ -33,6 +33,7 @@ public class Constants {
 	public final static String CUSTOMER = "CUSTOMER";
 	public final static String ORDER = "ORDER";
 	public final static String ORDER_ID = "ORDER_ID";
+	public final static String ORDER_ID_TOKEN = "ORDER_ID_TOKEN";
 	public final static String SHIPPING_SUMMARY = "SHIPPING_SUMMARY";
 	public final static String SHIPPING_OPTIONS = "SHIPPING_OPTIONS";
 	public final static String ORDER_SUMMARY = "ORDER_SIMMARY";
@@ -92,6 +93,7 @@ public class Constants {
 
 	public final static String CATEGORY_LINEAGE_DELIMITER = "/";
 	public final static int MAX_REVIEW_RATING_SCORE = 5;
+	public final static int MAX_ORDERS_PAGE = 5;
 	public final static String SUCCESS = "success";
 	public final static String CANCEL = "cancel";
 	

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +31,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.salesmanager.core.business.catalog.product.service.PricingService;
+import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.customer.model.Customer;
+import com.salesmanager.core.business.customer.service.CustomerService;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
@@ -45,6 +48,7 @@ import com.salesmanager.core.business.payments.service.PaymentService;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
+import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.shipping.model.ShippingOption;
 import com.salesmanager.core.business.shipping.model.ShippingQuote;
@@ -54,6 +58,7 @@ import com.salesmanager.core.business.shoppingcart.model.ShoppingCartItem;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.web.admin.entity.userpassword.UserReset;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.customer.AnonymousCustomer;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.order.ReadableOrderTotal;
 import com.salesmanager.web.entity.order.ReadableShippingSummary;
@@ -86,6 +91,9 @@ public class ShoppingOrderController extends AbstractController {
 
 	@Autowired
 	private PaymentService paymentService;
+	
+	@Autowired
+	private CustomerService customerService;
 	
 	@Autowired
 	private ShippingService shippingService;
@@ -182,6 +190,25 @@ public class ShoppingOrderController extends AbstractController {
 			}
 	     } else {
 				customer = orderFacade.initEmptyCustomer(store);
+				AnonymousCustomer anonymousCustomer = (AnonymousCustomer)request.getAttribute(Constants.ANONYMOUS_CUSTOMER);
+				if(anonymousCustomer!=null && anonymousCustomer.getBilling()!=null) {
+					Billing billing = customer.getBilling();
+					billing.setCity(anonymousCustomer.getBilling().getCity());
+					Map<String,Country> countriesMap = countryService.getCountriesMap(language);
+					Country anonymousCountry = countriesMap.get(anonymousCustomer.getBilling().getCountry());
+					if(anonymousCountry!=null) {
+						billing.setCountry(anonymousCountry);
+					}
+					Map<String,Zone> zonesMap = zoneService.getZones(language);
+					Zone anonymousZone = zonesMap.get(anonymousCustomer.getBilling().getZone());
+					if(anonymousZone!=null) {
+						billing.setZone(anonymousZone);
+					}
+					if(anonymousCustomer.getBilling().getPostalCode()!=null) {
+						billing.setPostalCode(anonymousCustomer.getBilling().getPostalCode());
+					}
+					customer.setBilling(billing);
+				}
 	     }
 	
 	     Set<ShoppingCartItem> items = cart.getLineItems();
@@ -199,7 +226,7 @@ public class ShoppingOrderController extends AbstractController {
 		/** shipping **/
 		ShippingQuote quote = null;
 		if(requiresShipping) {
-			quote = orderFacade.getShippingQuote(cart, order, store, language);
+			quote = orderFacade.getShippingQuote(customer, cart, order, store, language);
 			model.addAttribute("shippingQuote", quote);
 		}
 
@@ -337,7 +364,7 @@ public class ShoppingOrderController extends AbstractController {
 	}
 	
 	
-	private Order commitOrder(ShopOrder order, HttpServletRequest request, Locale locale) throws ServiceException {
+	private Order commitOrder(ShopOrder order, HttpServletRequest request, Locale locale) throws Exception, ServiceException {
 		
 		
 			MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
@@ -346,10 +373,26 @@ public class ShoppingOrderController extends AbstractController {
 			
 			String userName = null;
 			String password = null;
+			
+			PersistableCustomer customer = order.getCustomer();
+			
+	        /** set username and password to persistable object **/
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Customer authCustomer = null;
+        	if(auth != null &&
+	        		 request.isUserInRole("AUTH_CUSTOMER")) {
+        		authCustomer = customerFacade.getCustomerByUserName(auth.getName(), store);
+        		//set id and authentication information
+        		customer.setUserName(authCustomer.getNick());
+        		customer.setPassword(authCustomer.getPassword());
+        		customer.setId(authCustomer.getId());
+	        } else {
+	        	//set customer id to null
+	        	customer.setId(null);
+	        }
 		
 	        //if the customer is new, generate a password
-	        PersistableCustomer customer = order.getCustomer();
-	        if(customer.getId()==null || customer.getId()==0) {
+	        if(customer.getId()==null || customer.getId()==0) {//new customer
 	        	password = UserReset.generateRandomString();
 	        	String encodedPassword = passwordEncoder.encodePassword(password, null);
 	        	customer.setPassword(encodedPassword);
@@ -359,11 +402,19 @@ public class ShoppingOrderController extends AbstractController {
 	        	customer.setDelivery(customer.getBilling());
 	        }
 	        
+
+
 			Customer modelCustomer = null;
 			try {//set groups
-				modelCustomer = customerFacade.populateCustomerModel(customer, store, language);
-				customerFacade.setCustomerModelDefaultProperties(modelCustomer, store);
-				userName = modelCustomer.getNick();
+				if(authCustomer==null) {//not authenticated, create a new volatile user
+					modelCustomer = customerFacade.getCustomerModel(customer, store, language);
+					customerFacade.setCustomerModelDefaultProperties(modelCustomer, store);
+					userName = modelCustomer.getNick();
+					LOGGER.debug( "About to persist volatile customer to database." );
+			        customerService.saveOrUpdate( modelCustomer );
+				} else {//use existing customer
+					modelCustomer = customerFacade.populateCustomerModel(authCustomer, customer, store, language);
+				}
 			} catch(Exception e) {
 				throw new ServiceException(e);
 			}
@@ -380,6 +431,8 @@ public class ShoppingOrderController extends AbstractController {
 	        
 	        //save order id in session
 	        super.setSessionAttribute(Constants.ORDER_ID, modelOrder.getId(), request);
+	        //set a unique token for confirmation
+	        super.setSessionAttribute(Constants.ORDER_ID_TOKEN, modelOrder.getId(), request);
 	        
 
 			//get cart
@@ -402,6 +455,8 @@ public class ShoppingOrderController extends AbstractController {
 	        super.removeAttribute(Constants.SHIPPING_SUMMARY, request);
 	        super.removeAttribute(Constants.SHOPPING_CART, request);
 	        
+	        
+	        
 
 	        try {
 		        //refresh customer --
@@ -412,18 +467,17 @@ public class ShoppingOrderController extends AbstractController {
 	        	//check if any downloads exist for this order6
 	    		List<OrderProductDownload> orderProductDownloads = orderProdctDownloadService.getByOrderId(modelOrder.getId());
 	    		if(CollectionUtils.isNotEmpty(orderProductDownloads)) {
-	        	
-		        	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		        	System.out.println(auth.isAuthenticated());
+
+		        	LOGGER.debug("Is user authenticated ? ",auth.isAuthenticated());
 		        	if(auth != null &&
 			        		 request.isUserInRole("AUTH_CUSTOMER")) {
-			        	
+			        	//already authenticated
 			        } else {
 				        //authenticate
 				        customerFacade.authenticate(modelCustomer, userName, password);
 				        super.setSessionAttribute(Constants.CUSTOMER, modelCustomer, request);
 			        }
-		        	
+		        	//send new user registration template
 					if(order.getCustomer().getId()==null || order.getCustomer().getId().longValue()==0) {
 						//send email for new customer
 						customer.setPassword(password);//set clear password for email
@@ -463,9 +517,9 @@ public class ShoppingOrderController extends AbstractController {
 		Language language = (Language)request.getAttribute("LANGUAGE");
 		//validate if session has expired
 		
-		try {
+
 			
-			try {
+		try {
 				
 				//basic stuff
 				String shoppingCartCode  = (String)request.getSession().getAttribute(Constants.SHOPPING_CART);
@@ -521,7 +575,8 @@ public class ShoppingOrderController extends AbstractController {
 					
 					
 				}
-				ShippingQuote quote = orderFacade.getShippingQuote(cart, order, store, language);
+				
+				ShippingQuote quote = orderFacade.getShippingQuote(order.getCustomer(), cart, order, store, language);
 				model.addAttribute("shippingQuote", quote);
 				model.addAttribute("paymentMethods", paymentMethods);
 				
@@ -604,8 +659,9 @@ public class ShoppingOrderController extends AbstractController {
 	
 		        }
 		        
-		        Order modelOrder = this.commitOrder(order, request, locale);
-		        super.setSessionAttribute(Constants.ORDER_ID, modelOrder.getId(), request);
+		        @SuppressWarnings("unused")
+				Order modelOrder = this.commitOrder(order, request, locale);
+
 	        
 			} catch(ServiceException se) {
 
@@ -635,20 +691,17 @@ public class ShoppingOrderController extends AbstractController {
             	StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Checkout.checkout).append(".").append(store.getStoreTemplate());
 	    		return template.toString();
 				
+			} catch(Exception e) {
+				LOGGER.error("Error while commiting order",e);
+				throw e;		
+				
 			}
-			
-			
 
-	        
 	        //redirect to completd
 	        return "redirect://shop/order/confirmation.html";
 	  
 			
-		} catch(Exception e) {
-			LOGGER.error("Error while commiting order",e);
-			throw e;		
-			
-		}
+
 
 		
 	}
@@ -690,7 +743,7 @@ public class ShoppingOrderController extends AbstractController {
 			/** shipping **/
 			ShippingQuote quote = null;
 			if(requiresShipping) {
-				quote = orderFacade.getShippingQuote(cart, order, store, language);
+				quote = orderFacade.getShippingQuote(order.getCustomer(), cart, order, store, language);
 			}
 
 			if(quote!=null) {

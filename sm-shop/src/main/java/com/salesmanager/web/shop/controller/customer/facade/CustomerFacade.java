@@ -49,8 +49,8 @@ public interface CustomerFacade
     public ReadableCustomer getCustomerById(final Long id, final MerchantStore merchantStore, final Language language) throws Exception;
     
     /**
-     * <p>Method responsible for performing customer auto-login, Method will perform following operations
-     * <li> Fetch customer based on userName and Store.</li>
+     * <p>Method responsible for merging cart during authentication, 
+     *     Method will perform following operations
      * <li> Merge Customer Shopping Cart with Session Cart if any.</li>
      * <li> Convert Customer to {@link CustomerEntity} </li>
      * </p>
@@ -60,13 +60,13 @@ public interface CustomerFacade
      * @param sessionShoppingCartId session shopping cart, if user already have few items in Cart.
      * @throws Exception
      */
-    public ShoppingCartData customerAutoLogin(final String userName,final String sessionShoppingCartId,final MerchantStore store,final Language language) throws Exception;
+    public ShoppingCartData mergeCart(final Customer customer,final String sessionShoppingCartId,final MerchantStore store,final Language language) throws Exception;
     
     public Customer getCustomerByUserName(final String userName, final MerchantStore store) throws Exception;
     
     public boolean checkIfUserExists(final String userName,final MerchantStore store) throws Exception;
     
-    public CustomerEntity  registerCustomer( final PersistableCustomer customer,final MerchantStore merchantStore) throws Exception;
+    public CustomerEntity  registerCustomer( final PersistableCustomer customer,final MerchantStore merchantStore, final Language language) throws Exception;
     
     public Address getAddress(final Long userId, final MerchantStore merchantStore,boolean isBillingAddress) throws Exception;
     
@@ -74,13 +74,18 @@ public interface CustomerFacade
                     throws Exception;
 
     public void setCustomerModelDefaultProperties(Customer customer, MerchantStore store) throws Exception; 
-	public Customer populateCustomerModel(PersistableCustomer customer,
-			MerchantStore merchantStore);
+	//public Customer populateCustomerModel(PersistableCustomer customer,
+	//		MerchantStore merchantStore) throws Exception;
 	
 	public void authenticate(Customer customer, String userName, String password) throws Exception;
 
-	Customer populateCustomerModel(PersistableCustomer customer,
-			MerchantStore merchantStore, Language language);
+	Customer getCustomerModel(PersistableCustomer customer,
+			MerchantStore merchantStore, Language language) throws Exception;
+	
+	Customer populateCustomerModel(Customer customerModel, PersistableCustomer customer,
+			MerchantStore merchantStore, Language language) throws Exception;
+	
+
 	
 
 }

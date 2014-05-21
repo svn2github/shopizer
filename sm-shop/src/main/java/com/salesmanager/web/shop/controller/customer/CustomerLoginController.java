@@ -8,10 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,9 +48,16 @@ public class CustomerLoginController extends AbstractController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(CustomerLoginController.class);
 	
-
+	/**
+	 * Customer login entry point
+	 * @param securedCustomer
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
 	@RequestMapping(value="/logon.html", method=RequestMethod.POST)
-	public @ResponseBody String displayLogin(@ModelAttribute SecuredCustomer securedCustomer, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public @ResponseBody String logon(@ModelAttribute SecuredCustomer securedCustomer, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
         AjaxResponse jsonObject=new AjaxResponse();
         
@@ -83,7 +87,7 @@ public class CustomerLoginController extends AbstractController {
             LOG.info( "Fetching and merging Shopping Cart data" );
             final String sessionShoppingCartCode= (String)request.getSession().getAttribute( Constants.SHOPPING_CART );
             if(!StringUtils.isBlank(sessionShoppingCartCode)) {
-	            ShoppingCartData shoppingCartData= customerFacade.customerAutoLogin( request.getRemoteUser(), sessionShoppingCartCode, store, language );
+	            ShoppingCartData shoppingCartData= customerFacade.mergeCart( customerModel, sessionShoppingCartCode, store, language );
 	
 	
 	            if(shoppingCartData !=null){

@@ -14,7 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.shop.controller.data.paging.PaginaionData;
+import com.salesmanager.web.shop.controller.data.paging.PaginationData;
 
 /**
  * @author Umesh A
@@ -71,14 +71,14 @@ public abstract class AbstractController {
  
 	}
 
-    protected PaginaionData createPaginaionData( final int pageNumber, final int pageSize )
+    protected PaginationData createPaginaionData( final int pageNumber, final int pageSize )
     {
-        final PaginaionData paginaionData = new PaginaionData(pageSize,pageNumber);
+        final PaginationData paginaionData = new PaginationData(pageSize,pageNumber);
        
         return paginaionData;
     }
     
-    protected PaginaionData calculatePaginaionData( final PaginaionData paginaionData, final int resultCount){
+    protected PaginationData calculatePaginaionData( final PaginationData paginaionData, final int resultCount){
         paginaionData.setTotalCount( resultCount );
         return paginaionData;
     }

@@ -210,8 +210,12 @@ public class CustomerProductReviewController extends AbstractController {
         
         model.addAttribute("review", review);
         model.addAttribute("success", "success");
+        
+		ReadableProductReviewPopulator reviewPopulator = new ReadableProductReviewPopulator();
+		ReadableProductReview rev = new ReadableProductReview();
+		reviewPopulator.populate(productReview, rev, store, language);
 		
-        model.addAttribute("customerReview", review);
+        model.addAttribute("customerReview", rev);
 
 		return template.toString();
 		

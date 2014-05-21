@@ -66,18 +66,15 @@ public class CustomerPopulator extends
 
 			target.setEmailAddress(source.getEmailAddress());
 			target.setNick(source.getUserName());
-			target.setGender( com.salesmanager.core.business.customer.model.CustomerGender.M);
-			if(source.getGender()!=null) {
+			if(source.getGender()!=null && target.getGender()==null) {
 				target.setGender( com.salesmanager.core.business.customer.model.CustomerGender.valueOf( source.getGender() ) );
 			}
-			
-			 
-			//target.setCity( source.get );
+			if(target.getGender()==null) {
+				target.setGender( com.salesmanager.core.business.customer.model.CustomerGender.M);
+			}
 
 			Map<String,Country> countries = countryService.getCountriesMap(language);
-
 			
-			target.setDefaultLanguage( language );
 			target.setMerchantStore( store );
 
 			Address sourceBilling = source.getBilling();
@@ -203,12 +200,14 @@ public class CustomerPopulator extends
 				}
 			}
 			
-			Language lang = languageService.getByCode(source.getLanguage());
-			if(lang==null) {
-				lang = store.getDefaultLanguage();
+			if(target.getDefaultLanguage()==null) {
+				Language lang = languageService.getByCode(source.getLanguage());
+				if(lang==null) {
+					lang = store.getDefaultLanguage();
+				}
+				
+				target.setDefaultLanguage(lang);
 			}
-			
-			target.setDefaultLanguage(lang);
 
 		
 		} catch (Exception e) {

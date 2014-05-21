@@ -127,7 +127,9 @@ public class CustomerRegistrationController extends AbstractController {
         throws Exception
     {
         MerchantStore merchantStore = (MerchantStore) request.getAttribute( Constants.MERCHANT_STORE );
-
+        Language language = super.getLanguage(request);
+        
+        
         ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
         reCaptcha.setPublicKey( coreConfiguration.getProperty( Constants.RECAPATCHA_PUBLIC_KEY ) );
         reCaptcha.setPrivateKey( coreConfiguration.getProperty( Constants.RECAPATCHA_PRIVATE_KEY ) );
@@ -189,7 +191,7 @@ public class CustomerRegistrationController extends AbstractController {
         CustomerEntity customerData = null;
         try
         {
-            customerData = customerFacade.registerCustomer( customer, merchantStore );
+            customerData = customerFacade.registerCustomer( customer, merchantStore, language );
         }
         catch ( CustomerRegistrationException cre )
         {
