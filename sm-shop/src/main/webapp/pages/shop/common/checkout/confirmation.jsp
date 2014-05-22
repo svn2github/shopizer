@@ -25,20 +25,17 @@ $(document).ready(function() {
 
 
 
-<c:if test="${requestScope.CONFIGS['google_analytics_url'] != null}">
+<c:if test="${requestScope.CONFIGS['google_analytics_url'] != null && confirmation!=null}">
 
 
 <script type="text/javascript">
 //<![CDATA[ 
-	//var _gaq = _gaq || [];
-	//_gaq.push(['_setAccount', '<c:out value="${requestScope.CONFIGS['google_analytics_url']}"/>']);
-	//_gaq.push(['_trackPageview']);
 
 	
 	if(_gaq) {
 		
 		
-	console.log('GAQ ');
+	//console.log('GAQ ');
 
 	_gaq.push(['_trackPageview']);
 	_gaq.push(['_addTrans', 
@@ -57,13 +54,13 @@ $(document).ready(function() {
 		'<c:out value="${order.customer.billing.city}"/>', // city
 		<c:choose>
 		<c:when test="${order.customer.billing.zone!=null}">
-		'<c:out value="${order.customer.billing.zone.name}"/>',// state or province 
+		'<c:out value="${order.customer.billing.zone}"/>',// state or province 
 		</c:when>
 		<c:otherwise>
 		'<c:out value="${order.customer.billing.zone.stateProvince}"/>',// state or province 
 		</c:otherwise>
 		</c:choose>
-		'<c:out value="${order.customer.billing.country.name}"/>' // country
+		'<c:out value="${order.customer.billing.country}"/>' // country
 		 ]);
 
 
@@ -71,8 +68,8 @@ $(document).ready(function() {
 
 	_gaq.push(['_addItem', 
 		'<c:out value="${order.id}"/>', // order ID - required 
-		'<c:out value="${product.product.id}" />', // SKU/code - required 
-		'<c:out value="${product.product.description.name}" />', // product name 
+		'<c:out value="${product.sku}" />', // SKU/code - required 
+		'<c:out value="${product.productName}" />', // product name 
 		'<sm:monetary value="${product.price}" />', // unit price - required 
 		'<c:out value="${product.orderedQuantity}" />' // quantity - required 
 		]); 

@@ -42,7 +42,7 @@ $(document).ready(function() {
 
 	$("#registration_country").change(function() {
 		isFormValid();	
-	})
+	});
 	
 });
 
@@ -147,9 +147,7 @@ $(document).ready(function() {
  
  </script>
 
-<div id="registrationError"  class="alert alert-warning" style="display:none;">
-
-</div>
+<div id="registrationError"  class="alert alert-warning" style="display:none;"></div>
 
 <c:set var="register_url" value="${pageContext.request.contextPath}/shop/customer/register.html"/>
 

@@ -9,8 +9,8 @@
 	});
 	
 	function initMiniCart() {
-		
 		var cartCode = getCartCode();
+		//console.log('Cart code ' + cartCode);
 		if(cartCode!=null) {
 			displayMiniCartSummary(cartCode);
 		}
@@ -310,7 +310,7 @@ function displayMiniCartSummary(code){
 			 
 		 },
 		 success: function(cart) {
-			 if(cart==null) {
+			 if(cart==null || cart=='') {
 					emptyCartLabel();
 					$.cookie('cart',null, { expires: 1, path:'/' });
 			 } else {

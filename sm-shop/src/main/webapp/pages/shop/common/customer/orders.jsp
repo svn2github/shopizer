@@ -15,17 +15,34 @@ response.setDateHeader ("Expires", -1);
  
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
-<c:set var="ordersAction" value="${pageContext.request.contextPath}/shop/customer/customer-orders.html"/>
+<c:set var="ordersAction" value="${pageContext.request.contextPath}/shop/customer/orders.html"/>
 <c:set var="customerOrder" value="${pageContext.request.contextPath}/shop/customer/order.html"/>
 
 	<div id="main-content" class="container clearfix">
 		<div class="row-fluid">
 
-<div class="white">
+		<div class="span12">
 
-				<header class="page-header">
-					<h1>Order History</h1>
-				</header>
+
+				<div class="span8">
+				
+			<div class="box">
+					<span class="box-title">
+						<p class="p-title">
+							<s:message
+									code="menu.order-list" text="List of orders" />
+							&nbsp;
+							<span class="p-title-text">
+							<c:if test="${not empty customerOrders.orders}">
+							
+								<s:message code="label.entitylist.paging"
+							       arguments="${(paginationData.offset)};${((paginationData.offset)-1)+(paginationData.pageSize)};${paginationData.totalCount}"
+							       htmlEscape="false"
+							       argumentSeparator=";" text=""/>
+							
+							</c:if>
+						</p>
+					</span>
                <c:choose>
                  <c:when test="${not empty customerOrders.orders}">
                  	<div id="shop">
@@ -35,22 +52,20 @@ response.setDateHeader ("Expires", -1);
 						<!-- table head -->
 						<thead>
 							<tr>
-								<th>#</th>
-								<th>Order Id</th>
-								<th>Order Date</th>
-								<th>Amount</th>
-								<th>Status</th>
+								<th><s:message code="label.entity.id" text="Id"/></th>
+								<th><s:message code="label.customer.order.date" text="Order date"/></th>
+								<th><s:message code="label.generic.amount" text="Amount"/></th>
+								<th><s:message code="label.entity.status" text="Status"/></th>
 							</tr>
 						</thead>
 						
-						<!-- table items -->
+						<!-- /HISTORY TABLE -->
 						<tbody>
 						<c:forEach items="${customerOrders.orders}" var="order" varStatus="orderStatus">
 							<tr><!-- item -->
-								<td>${orderStatus.index+1}</td>
 								<td><a href="${customerOrder}?orderId=${order.id}">${order.id}</a></td>
 								<td><fmt:formatDate type="both" value="${order.datePurchased}" /></td>
-								<td><sm:monetary value="${order.total.value}" /><small>(${fn:length(order.products)} items)</small></td>
+								<td><sm:monetary value="${order.total.value}" />&nbsp;<small>(${fn:length(order.products)} item(s))</small></td>
 								<td>${order.orderStatus}</td>
 								
 							</tr>
@@ -58,29 +73,19 @@ response.setDateHeader ("Expires", -1);
 							
 						</tbody>
 					</table>
-					<!-- /HISTORY TABLE -->
+					
 
-
-					<div class="divider half-margins"><!-- divider 30px --></div>
 
 					
 					<!-- PAGINATION -->
-					<div class="row">
-						<div class="col-md-6 text-left">
-							<p class="hidden-xs pull-left nomargin padding20">Showing ${(paginationData.offset)}-${((paginationData.offset)-1)+(paginationData.pageSize) } of ${paginationData.totalCount} results.</p>
-						</div>
-
-						<div class="col-md-6 responsive-text-center text-right">
-							<ul class="pagination">
-								<li><a href="#"><i class="fa fa-chevron-left"></i></a></li>
+					<br/>
+					<ul class="pagination">
+						
 								<c:forEach begin="1" end="${paginationData.totalPages}" varStatus="paginationDataStatus">
 								    <li class="${paginationData.currentPage eq (paginationDataStatus.index) ? 'active' : ''}"><a href="${ordersAction}?page=${paginationDataStatus.index}">${paginationDataStatus.index}</a></li>
 								</c:forEach>
-								<li><a href="#"><i class="fa fa-chevron-right"></i></a></li>
-							</ul>
-						</div>
-
-					</div>
+						
+					</ul>
 					<!-- /PAGINATION -->
 				
 
@@ -91,7 +96,14 @@ response.setDateHeader ("Expires", -1);
                  </c:otherwise>
                
                </c:choose>
-				
+			   </div>	
+
+			 </div>
+			 <div class="span4">
+			 	<jsp:include page="/pages/shop/common/customer/customerProfileMenu.jsp" />
+			 	<jsp:include page="/pages/shop/common/customer/customerOrdersMenu.jsp" />
+			 </div>
+
 
 			</div>
 

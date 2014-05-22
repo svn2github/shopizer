@@ -612,6 +612,9 @@ $(document).ready(function() {
 
 	<div id="main-content">
 	<h1><s:message code="label.checkout" text="Checkout" /></h1>
+	<sec:authorize access="!hasRole('AUTH_CUSTOMER') and !fullyAuthenticated">
+				<p class="muted"><s:message code="label.checkout.logon" text="Logon or signup to simplify the online purchase process!"/></p>
+	</sec:authorize>
 
    <c:set var="commitUrl" value="${pageContext.request.contextPath}/shop/order/commitOrder.html"/>
    <form:form id="checkoutForm" method="POST" enctype="multipart/form-data" commandName="order" action="${commitUrl}">
@@ -640,11 +643,7 @@ $(document).ready(function() {
 												<p class="p-title"><s:message code="label.customer.billinginformation" text="Billing information"/></p>
 											</span>
 											
-											<form:hidden path="customer.id"/>
-											<sec:authorize access="!hasRole('AUTH_CUSTOMER') and !fullyAuthenticated">
-													  	<p class="muted"><s:message code="label.checkout.logon" text="Logon or signup to simplify your online purchases!"/></p>
-													  	
-											</sec:authorize>
+											
 					
 											<!-- First name - Last name -->
 											<div class="row-fluid">

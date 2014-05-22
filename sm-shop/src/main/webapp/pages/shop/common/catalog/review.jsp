@@ -53,7 +53,7 @@ response.setDateHeader ("Expires", -1);
 								</tr>
 							</tbody>
 						</table>
-
+					
 						<br/>
 
 
@@ -111,13 +111,14 @@ response.setDateHeader ("Expires", -1);
 								<br/>
 							    <button type="submit" class="btn"><s:message code="button.label.submit2" text="Submit"/></button>
 					    </form:form>
+
+						</c:otherwise>
+						</c:choose>
+					</sec:authorize>
 						</div>
 						<div class="span6">&nbsp;</div>
 						</div>
 						</div>
-						</c:otherwise>
-						</c:choose>
-					</sec:authorize>
 					<sec:authorize access="!hasRole('AUTH_CUSTOMER') and !fullyAuthenticated">
 							<p class="muted"><s:message code="label.product.reviews.logon.write" text="You have to be authenticated to write a review" /></p>
 					</sec:authorize>

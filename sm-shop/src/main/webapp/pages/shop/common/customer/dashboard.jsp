@@ -57,7 +57,7 @@ $(document).ready(function() {
 });	
 	
 </script>
-<c:set var="orders" value="${pageContext.request.contextPath}/shop/customer/customer-orders.html"/>
+
 
 	<div id="main-content" class="container clearfix">
 		<div class="row-fluid">
@@ -133,7 +133,7 @@ $(document).ready(function() {
 				</c:if>
 
 		
-		<c:set var="billing" value="${pageContext.request.contextPath}/shop/customer/billing.html"/>
+		
 		
 				 </br>
 			     <div class="row-fluid">
@@ -143,18 +143,9 @@ $(document).ready(function() {
 	
 							<div class="box">
 								<span class="box-title">
-									<p><font color="#FF8C00"><s:message code="label.customer.myaccount" text="My account"/></font></p>
+									<p class="p-title"><s:message code="label.customer.myaccount" text="My account"/></p>
 								</span>
-								<ul>
-								
-								
-									<li><a href="<c:out value="/customer/account.html"/>"><s:message code="menu.profile" text="Profile"/></a></li>
-									<li>
-									   <a href="${billing}">
-									   		<s:message code="label.customer.billingshipping" text="Billing & shipping information"/>
-									    </a>
-									 </li>
-								</ul>
+								<jsp:include page="/pages/shop/common/customer/customerProfileMenu.jsp" />
 							</div>
 	
 	
@@ -162,11 +153,9 @@ $(document).ready(function() {
 					   <div class="span6">
 							<div class="box">
 								<span class="box-title">
-									<p><font color="#FF8C00"><s:message code="label.order.pastorders" text="Past orders"/></font></p>
+									<p class="p-title"><s:message code="label.order.pastorders" text="Past orders"/></p>
 								</span>
-								<ul>
-									<li> <a href="${orders}"><s:message code="label.order.recent" text="Recent orders"/></a></li>
-								</ul>
+								<jsp:include page="/pages/shop/common/customer/customerOrdersMenu.jsp" />
 							</div>
 	
 					   </div>

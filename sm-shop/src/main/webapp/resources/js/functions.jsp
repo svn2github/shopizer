@@ -44,6 +44,23 @@ function emptyCartLabel(){
 	 $('#cartMessage').show();
 }
 
+function getInvalidEmailMessage() {
+	return '<s:message code="messages.invalid.email" text="Invalid email address"/>';
+}
+
+function getInvalidUserNameMessage() {
+	return '<s:message code="registration.username.length.invalid" text="User name must be at least 6 characters long"/>';
+}
+
+
+function getInvalidPasswordMessage() {
+	return '<s:message code="message.password.length" text="Password must be at least 6 characters long"/>';
+}
+
+function getInvalidCheckPasswordMessage() {
+	return '<s:message code="message.password.checkpassword.identical" text="Both password must match"/>';
+}
+
 function cartInfoLabel(cart){
 	 var labelItem = getItemLabel(cart.quantity);
 	 $("#cartinfo").html('<span id="cartqty">(' + cart.quantity + ' ' + labelItem + ')</span>&nbsp;<span id="cartprice">' + cart.total + '</span>');	

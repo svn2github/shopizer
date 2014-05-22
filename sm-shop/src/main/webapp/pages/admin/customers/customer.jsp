@@ -347,10 +347,10 @@ function resetCustomerPassword(customerId){
 				<c:set var="customerAttr" value="${customer}"/>
 
 
-				<c:url var="customer" value="/admin/customers/save.html"/>
+				<c:url var="saveCustomer" value="/admin/customers/save.html"/>
 
 
-				<form:form method="POST" commandName="customer" action="${customer}">
+				<form:form method="POST" commandName="customer" action="${saveCustomer}">
 				
 					<form:errors id="customer.error" path="*" cssClass="alert alert-error" element="div" />
 					<div id="customerError" class="alert alert-error" style="display:none;"></div>
@@ -381,6 +381,12 @@ function resetCustomerPassword(customerId){
 	                        <div class="controls">
 	                        		<form:input  cssClass="input-large highlight"  maxlength="64"  path="billing.lastName"/>
 	                                <span class="help-inline"><form:errors path="billing.lastName" cssClass="error" /></span>
+	                        </div>
+	                </div>
+	                <div class="control-group">
+	                        <label><s:message code="label.generic.username" text="User Name"/></label>
+	                        <div class="controls">
+	                        		<span class="input-large uneditable-input">${customer.nick}</span><form:hidden path="nick" />
 	                        </div>
 	                </div>
 
