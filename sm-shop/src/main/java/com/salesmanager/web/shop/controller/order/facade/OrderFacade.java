@@ -83,4 +83,17 @@ public interface OrderFacade {
     
 	ReadableOrderList getReadableOrderList(MerchantStore store, Customer customer, int start,
 			int maxCount, Language language) throws Exception;
+	
+	
+	/**
+	 * Get orders for a given store
+	 * @param store
+	 * @param start
+	 * @param maxCount
+	 * @param language
+	 * @return
+	 * @throws Exception
+	 */
+	ReadableOrderList getReadableOrderList(MerchantStore store, int start,
+			int maxCount, Language language) throws Exception;
 }

@@ -183,12 +183,95 @@ public class OrderRESTController {
 		}
 		
 		
-		//TODO
-		//ReadableOrderList returnList = orderFacade.getReadableOrderList(merchantStore, startCount, maxCount, language);
 		
-		return null;
+		ReadableOrderList returnList = orderFacade.getReadableOrderList(merchantStore, startCount, maxCount, language);
+
+		return returnList;
+	}
+	
+	/**
+	 * Get a list of orders for a given customer
+	 * accept request parameter 'lang' [en,fr...] otherwise store dafault language
+	 * accept request parameter 'start' start index for count
+	 * accept request parameter 'max' maximum number count, otherwise returns all
+	 * @param store
+	 * @param order
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping( value="/{store}/orders/customer/{id}", method=RequestMethod.GET)
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	@ResponseBody
+	public ReadableOrderList listOrders(@PathVariable final String store, @PathVariable final Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+		if(merchantStore!=null) {
+			if(!merchantStore.getCode().equals(store)) {
+				merchantStore = null;
+			}
+		}
 		
-		//return returnList;
+		if(merchantStore== null) {
+			merchantStore = merchantStoreService.getByCode(store);
+		}
+		
+		if(merchantStore==null) {
+			LOGGER.error("Merchant store is null for code " + store);
+			response.sendError(503, "Merchant store is null for code " + store);
+			return null;
+		}
+		
+		//get additional request parameters for orders
+		String lang = request.getParameter(Constants.LANG);		
+		String start = request.getParameter(Constants.START);
+		String max = request.getParameter(Constants.MAX);
+		
+		int startCount = 0;
+		int maxCount = 0;
+		
+		if(StringUtils.isBlank(lang)) {
+			lang = merchantStore.getDefaultLanguage().getCode();
+		}
+		
+		
+		Language language = languageService.getByCode(lang);
+		
+		if(language==null) {
+			LOGGER.error("Language is null for code " + lang);
+			response.sendError(503, "Language is null for code " + lang);
+			return null;
+		}
+		
+		try {
+			startCount = Integer.parseInt(start);
+		} catch (Exception e) {
+			LOGGER.info("Invalid value for start " + start);
+		}
+		
+		try {
+			maxCount = Integer.parseInt(max);
+		} catch (Exception e) {
+			LOGGER.info("Invalid value for max " + max);
+		}
+		
+		Customer customer = customerService.getById(id);
+		
+		if(customer==null) {
+			LOGGER.error("Customer is null for id " + id);
+			response.sendError(503, "Customer is null for id " + id);
+			return null;
+		}
+		
+		if(customer.getMerchantStore().getId().intValue()!=merchantStore.getId().intValue()) {
+			LOGGER.error("Customer is null for id " + id + " and store id " + store);
+			response.sendError(503, "Customer is null for id " + id + " and store id " + store);
+			return null;
+		}
+		
+		ReadableOrderList returnList = orderFacade.getReadableOrderList(merchantStore, startCount, maxCount, language);
+
+		return returnList;
 	}
 
 }

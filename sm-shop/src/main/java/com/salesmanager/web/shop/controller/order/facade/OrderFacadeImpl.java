@@ -749,31 +749,8 @@ public class OrderFacadeImpl implements OrderFacade {
 		criteria.setStartIndex(start);
 		criteria.setMaxCount(maxCount);
 		criteria.setCustomerId(customer.getId());
-		OrderList orderList = orderService.listByStore(store, criteria);
-		
-		ReadableOrderPopulator orderPopulator = new ReadableOrderPopulator();
-		Locale locale = LocaleUtils.getLocale(language);
-		orderPopulator.setLocale(locale);
-		
-		List<Order> orders = orderList.getOrders();
-		ReadableOrderList returnList = new ReadableOrderList();
-		
-		if(CollectionUtils.isEmpty(orders)) {
-			returnList.setTotal(0);
-			returnList.setMessage("No results for store code " + store);
-			return null;
-		}
 
-		List<ReadableOrder> readableOrders = new ArrayList<ReadableOrder>();
-		for (Order order : orders) {
-			ReadableOrder readableOrder = new ReadableOrder();
-			orderPopulator.populate(order,readableOrder,store,language);
-			readableOrders.add(readableOrder);
-			
-		}
-		
-		returnList.setTotal(orderList.getTotalCount());
-		return this.populateOrderList(orderList, store, language);
+		return this.getReadableOrderList(criteria, store, language);
 		
 	}
 
@@ -880,5 +857,48 @@ public class OrderFacadeImpl implements OrderFacade {
         
         readableOrder.setProducts(orderProducts);
     }
+
+
+    private ReadableOrderList getReadableOrderList(OrderCriteria criteria, MerchantStore store, Language language) throws Exception {
+		
+		OrderList orderList = orderService.listByStore(store, criteria);
+		
+		ReadableOrderPopulator orderPopulator = new ReadableOrderPopulator();
+		Locale locale = LocaleUtils.getLocale(language);
+		orderPopulator.setLocale(locale);
+		
+		List<Order> orders = orderList.getOrders();
+		ReadableOrderList returnList = new ReadableOrderList();
+		
+		if(CollectionUtils.isEmpty(orders)) {
+			returnList.setTotal(0);
+			returnList.setMessage("No results for store code " + store);
+			return null;
+		}
+
+		List<ReadableOrder> readableOrders = new ArrayList<ReadableOrder>();
+		for (Order order : orders) {
+			ReadableOrder readableOrder = new ReadableOrder();
+			orderPopulator.populate(order,readableOrder,store,language);
+			readableOrders.add(readableOrder);
+			
+		}
+		
+		returnList.setTotal(orderList.getTotalCount());
+		return this.populateOrderList(orderList, store, language);
+    	
+    	
+	}
+
+	@Override
+	public ReadableOrderList getReadableOrderList(MerchantStore store,
+			int start, int maxCount, Language language) throws Exception {
+		
+		OrderCriteria criteria = new OrderCriteria();
+		criteria.setStartIndex(start);
+		criteria.setMaxCount(maxCount);
+
+		return this.getReadableOrderList(criteria, store, language);
+	}
 
 }
