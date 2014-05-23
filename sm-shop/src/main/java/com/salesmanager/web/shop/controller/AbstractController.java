@@ -14,7 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.shop.controller.data.paging.PaginationData;
+import com.salesmanager.web.shop.model.paging.PaginationData;
 
 /**
  * @author Umesh A

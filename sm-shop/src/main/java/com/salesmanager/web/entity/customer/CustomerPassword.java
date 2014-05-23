@@ -10,7 +10,6 @@ import com.salesmanager.web.utils.FieldMatch;
 
 @FieldMatch.List({
     @FieldMatch(first="password",second="checkPassword",message="password.notequal")
-    
 })
 public class CustomerPassword implements Serializable {
 	

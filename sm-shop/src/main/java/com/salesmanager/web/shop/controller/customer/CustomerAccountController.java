@@ -18,9 +18,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -49,14 +53,13 @@ import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.entity.customer.CustomerEntity;
 import com.salesmanager.web.entity.customer.CustomerPassword;
-import com.salesmanager.web.entity.order.ReadableOrderList;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
-//import com.salesmanager.web.shop.controller.data.CountryData;
 import com.salesmanager.web.shop.controller.data.CountryData;
-import com.salesmanager.web.shop.controller.data.paging.PaginationData;
 import com.salesmanager.web.shop.controller.order.facade.OrderFacade;
+//import com.salesmanager.web.shop.controller.data.CountryData;
+import com.salesmanager.web.utils.LabelUtils;
 
 /**
  * Entry point for logged in customers
@@ -89,6 +92,9 @@ public class CustomerAccountController extends AbstractController {
 	
     @Autowired
     private LanguageService languageService;
+    
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 
     @Autowired
@@ -106,6 +112,9 @@ public class CustomerAccountController extends AbstractController {
     
     @Autowired
     private OrderFacade orderFacade;
+    
+	@Autowired
+	private LabelUtils messages;
 
 
 	
@@ -161,6 +170,61 @@ public class CustomerAccountController extends AbstractController {
 		
 		/** template **/
 		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.changePassword).append(".").append(store.getStoreTemplate());
+
+		return template.toString();
+		
+	}
+	
+	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
+	@RequestMapping(value="/changePassword.html", method=RequestMethod.POST)
+	public String changePassword(@Valid @ModelAttribute(value="password") CustomerPassword password, BindingResult bindingResult, Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
+		
+
+	    MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+	    
+		/** template **/
+		StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.changePassword).append(".").append(store.getStoreTemplate());
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Customer customer = null;
+    	if(auth != null &&
+        		 request.isUserInRole("AUTH_CUSTOMER")) {
+    		customer = customerFacade.getCustomerByUserName(auth.getName(), store);
+
+        }
+    	
+    	if(customer==null) {
+    		return "redirect:/"+Constants.SHOP_URI;
+    	}
+    	
+    	String currentPassword = password.getCurrentPassword();
+    	String encodedCurrentPassword = passwordEncoder.encodePassword(currentPassword, null);
+    	
+    	if(!StringUtils.equals(encodedCurrentPassword, customer.getPassword())) {
+			FieldError error = new FieldError("password","password",messages.getMessage("message.invalidpassword", locale));
+        	bindingResult.addError(error);
+    	}
+
+    	
+        if ( bindingResult.hasErrors() )
+        {
+            LOGGER.info( "found {} validation error while validating customer password",
+                         bindingResult.getErrorCount() );
+    		return template.toString();
+
+        }
+    	
+		CustomerPassword customerPassword = new CustomerPassword();
+		model.addAttribute("password", customerPassword);
+		
+		String newPassword = password.getPassword();
+		String encodedPassword = passwordEncoder.encodePassword(newPassword, null);
+		
+		customer.setPassword(encodedPassword);
+		
+		customerService.saveOrUpdate(customer);
+		
+		model.addAttribute("success", "success");
 
 		return template.toString();
 		

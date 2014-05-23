@@ -646,7 +646,7 @@ public class CustomerController {
 			Locale customerLocale = LocaleUtils.getLocale(userLanguage);
 			
 			String password = UserReset.generateRandomString();
-			String encodedPassword = passwordEncoder.encodePassword("228781", null);
+			String encodedPassword = passwordEncoder.encodePassword(password, null);
 			
 			customer.setPassword(encodedPassword);
 			

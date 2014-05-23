@@ -1,4 +1,4 @@
-package com.salesmanager.web.shop.validation;
+package com.salesmanager.web.utils;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
