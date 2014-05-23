@@ -34,6 +34,7 @@
 			
 			//password rules
 			if($(this).hasClass('password')) {	
+				//console.log('check password ' + $(this).val().length);
 				if($(this).val().length<6) {
 					if(errorMessage==null) {
 						errorMessage = getInvalidPasswordMessage();
@@ -43,8 +44,9 @@
 			
 			//repeat password
 			if($(this).hasClass('checkPassword')) {	
+				    //console.log('In check p[assword ' + + $(this).val().length)
 					var pass = $('.password').val();
-					if(($(this).val()!=pass)) {
+					if($(this).val().length<6 || ($(this).val()!=pass)) {
 						if(errorMessage==null) {
 							errorMessage = getInvalidCheckPasswordMessage();
 						}
@@ -57,6 +59,9 @@
  
  
  function isFieldValid(field) {
+		if(field.is(":hidden")) {
+			return true;
+		}
 		var value = field.val();
 		if(!emptyString(value)) {
 			field.css('background-color', '#FFF');

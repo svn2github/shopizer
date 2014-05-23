@@ -323,6 +323,35 @@ function bindActions() {
     $(".shippingOption").click(function() {
     	calculateTotal();
     });
+    
+    <!-- shipping / billing decision -->
+    $("#shipToBillingAdress").click(function() {
+    	shippingQuotes();	
+    	if ($('#shipToBillingAdress').is(':checked')) {
+    		$('#deliveryBox').hide();
+    		isFormValid();
+    	} else {
+    		$('#deliveryBox').show();
+    		isFormValid();
+    	}
+    });
+    
+	$("#submitOrder").click(function(e) {
+		e.preventDefault();//do not submit form
+		resetErrorMessage();
+		setCountrySettings('billing',$('.billing-country-list').val());
+		setCountrySettings('delivery',$('.shipping-country-list').val());
+		$('#pageContainer').showLoading();
+		var paymentSelection = $('input[name=paymentMethodType]:checked', checkoutFormId).val();
+		if(paymentSelection.indexOf('PAYPAL')!=-1) {
+			initPayment(paymentSelection);
+		} else {
+			//submit form
+			$('#pageContainer').hideLoading();
+			$('#checkoutForm').submit();
+			
+		}
+    });
 }
 
 
@@ -558,17 +587,7 @@ $(document).ready(function() {
 	    
 	    
 	    
-	    <!-- shipping / billing decision -->
-	    $("#shipToBillingAdress").click(function() {
-	    	shippingQuotes();	
-	    	if ($('#shipToBillingAdress').is(':checked')) {
-	    		$('#deliveryBox').hide();
-	    		isFormValid();
-	    	} else {
-	    		$('#deliveryBox').show();
-	    		isFormValid();
-	    	}
-	    });
+
 	    
 
 	    
@@ -586,22 +605,7 @@ $(document).ready(function() {
 			}
 		});
 		
-		$("#submitOrder").click(function(e) {
-			e.preventDefault();//do not submit form
-			resetErrorMessage();
-			setCountrySettings('billing',$('.billing-country-list').val());
-			setCountrySettings('delivery',$('.shipping-country-list').val());
-			$('#pageContainer').showLoading();
-			var paymentSelection = $('input[name=paymentMethodType]:checked', checkoutFormId).val();
-			if(paymentSelection.indexOf('PAYPAL')!=-1) {
-				initPayment(paymentSelection);
-			} else {
-				//submit form
-				$('#pageContainer').hideLoading();
-				$('#checkoutForm').submit();
-				
-			}
-	    });
+
 		
 });
 

@@ -25,17 +25,36 @@ $(document).ready(function() {
 	isFormValid();
 	//bind fields to be validated
 	$("input[type='text']").on("change keyup paste", function(){
+		resetGlobalErrors();
 		isFormValid();
 	});
 	
 	$("input[type='password']").on("change keyup paste", function(){
+		resetGlobalErrors();
 		isFormValid();
 	});
+	
+	$("#submitChangePassword").click(function(e) {
+		e.preventDefault();//do not submit form
+		resetGlobalErrors();
+		if(isFormValid()) {
+			$('#changePasswordForm').submit();
+		}
+    });
 
 	
 });
 
 function isFormValid() {
+	
+	if($('.alert-error').is(":visible")) {
+		return true;
+	}
+	
+	if($('.alert-success').is(":visible")) {
+		return true;
+	}
+	
 	var msg = isCustomerFormValid($('#changePasswordForm'));
 
 	if(msg!=null) {//disable submit button
@@ -43,11 +62,17 @@ function isFormValid() {
 		$('#submitChangePassword').prop('disabled', true);
 		$('#formError').html(msg);
 		$('#formError').show();
+		return false;
 	} else {
 		$('#submitChangePassword').removeClass('btn-disabled');
 		$('#submitChangePassword').prop('disabled', false);
 		$('#formError').hide();
+		return true;
 	}
+}
+
+function resetGlobalErrors() {
+	$('.alert-error').hide();
 }
 
 
@@ -64,7 +89,7 @@ function isFormValid() {
 							<s:message code="label.generic.changepassword" text="Change password"/>
 						</p>
 					</span>
-
+				<div id="store.success" class="alert alert-success" style="<c:choose><c:when test="${success!=null}">display:block;</c:when><c:otherwise>display:none;</c:otherwise></c:choose>"><s:message code="message.success" text="Request successfull"/></div>
 				<c:url var="changePassword" value="/shop/customer/changePassword.html"/>
 				<div id="formError"  class="alert alert-warning" style="display:none;"></div>
 				<form:form method="post" action="${changePassword}" id="changePasswordForm" class="form-horizontal" commandName="password">
@@ -82,7 +107,7 @@ function isFormValid() {
 							<label class="required control-label" for="password"><s:message code="label.customer.newpassword" text="New password"/></label>
 							<div class="controls">
 							   <s:message code="newpassword.not.empty" text="New password is required" var="msgPassword"/>
-							   <form:password path="password" cssClass="span3 required" id="password" title="${msgPassword}"/>
+							   <form:password path="password" cssClass="span3 required password" id="password" title="${msgPassword}"/>
 							   <form:errors path="currentPassword" cssClass="error" />
 								
 							</div>
@@ -91,14 +116,14 @@ function isFormValid() {
 							<label class="required control-label" for="repeatPassword"><s:message code="label.customer.repeatpassword" text="Repeat password"/></label>
 							<div class="controls">
 							   <s:message code="label.customer.repeatpassword" text="Current password is required" var="msgRepeatPassword"/>
-							   <form:password path="checkPassword" cssClass="span3 required" id="checkPassword" title="${msgRepeatPassword}"/>
+							   <form:password path="checkPassword" cssClass="span3 required checkPassword" id="checkPassword" title="${msgRepeatPassword}"/>
 							   <form:errors path="currentPassword" cssClass="error" />
 								
 							</div>
 						 </div>
 						
 						<div class="form-actions">
-							<input id="submitChangePassword" class="btn btn-primary btn-large btn-disabled" type="submit" name="changePassword" value="<s:message code="menu.change-password" text="Change password"/>" disabled="">
+							<input id="submitChangePassword" class="btn btn-large btn-disabled" type="submit" name="changePassword" value="<s:message code="menu.change-password" text="Change password"/>" disabled="">
 						</div>
 						
 						

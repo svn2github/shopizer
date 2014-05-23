@@ -130,7 +130,7 @@ $(document).ready(function() {
 		var fieldId = field.prop('id');
 		var value = field.val();
 		if (fieldId.indexOf("hidden_registration_zones") >= 0) {
-			console.log(field.is(":hidden"));
+			//console.log(field.is(":hidden"));
 			if(field.is(":hidden")) {
 				return true;
 			}

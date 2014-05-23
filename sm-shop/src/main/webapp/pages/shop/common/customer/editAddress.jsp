@@ -125,7 +125,11 @@
       					
 				</form:form>
 				</div>
-
+				</div>
+			 	<div class="span4">
+			 		<jsp:include page="/pages/shop/common/customer/customerProfileMenu.jsp" />
+			 		<jsp:include page="/pages/shop/common/customer/customerOrdersMenu.jsp" />
+			 	</div>
 				
 			</div>
 		</div>
