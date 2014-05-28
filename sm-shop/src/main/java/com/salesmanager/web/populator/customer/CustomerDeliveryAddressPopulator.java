@@ -53,7 +53,8 @@ public class CustomerDeliveryAddressPopulator extends AbstractDataPopulator<Cust
             target.setPhone(source.getDelivery().getTelephone());
         }
       
-     
+        target.setStateProvince(source.getDelivery().getState());
+        
         if(source.getDelivery().getTelephone()==null) {
             target.setPhone(source.getDelivery().getTelephone());
         }

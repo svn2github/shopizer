@@ -1,6 +1,5 @@
 package com.salesmanager.web.shop.controller.customer;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -12,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +44,6 @@ import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
-import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.utils.ajax.AjaxResponse;
 import com.salesmanager.web.constants.Constants;
@@ -56,10 +53,11 @@ import com.salesmanager.web.entity.customer.CustomerPassword;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
-import com.salesmanager.web.shop.controller.data.CountryData;
 import com.salesmanager.web.shop.controller.order.facade.OrderFacade;
-//import com.salesmanager.web.shop.controller.data.CountryData;
+import com.salesmanager.web.utils.EmailTemplatesUtils;
 import com.salesmanager.web.utils.LabelUtils;
+import com.salesmanager.web.utils.LocaleUtils;
+//import com.salesmanager.web.shop.controller.data.CountryData;
 
 /**
  * Entry point for logged in customers
@@ -99,6 +97,9 @@ public class CustomerAccountController extends AbstractController {
 
     @Autowired
     private CountryService countryService;
+    
+	@Autowired
+	private EmailTemplatesUtils emailTemplatesUtils;
 
     
     @Autowired
@@ -142,7 +143,7 @@ public class CustomerAccountController extends AbstractController {
 		
 	}
 	
-	
+	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
 	@RequestMapping(value="/account.html", method=RequestMethod.GET)
 	public String displayCustomerAccount(Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -224,6 +225,8 @@ public class CustomerAccountController extends AbstractController {
 		
 		customerService.saveOrUpdate(customer);
 		
+		emailTemplatesUtils.changePasswordNotificationEmail(customer, store, LocaleUtils.getLocale(customer.getDefaultLanguage()), request.getContextPath());
+		
 		model.addAttribute("success", "success");
 
 		return template.toString();
@@ -253,23 +256,23 @@ public class CustomerAccountController extends AbstractController {
 		@SuppressWarnings("rawtypes")
 		Enumeration parameterNames = request.getParameterNames();
 		
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Customer customer = null;
-		
-		while(parameterNames.hasMoreElements()) {
+    	if(auth != null &&
+        		 request.isUserInRole("AUTH_CUSTOMER")) {
+    		customer = customerFacade.getCustomerByUserName(auth.getName(), store);
 
-			String parameterName = (String)parameterNames.nextElement();
-			String parameterValue = request.getParameter(parameterName);
-			if(CUSTOMER_ID_PARAMETER.equals(parameterName)) {
-				customer = customerService.getById(new Long(parameterValue));
-				break;
-			}
-		}
-		
-		if(customer==null) {
-			LOGGER.error("Customer id [customer] is not defined in the parameters");
+        }
+    	
+    	if(customer==null) {
+    		LOGGER.error("Customer id [customer] is not defined in the parameters");
 			resp.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
 			return resp.toJSONString();
-		}
+    	}
+		
+		
+
 		
 		if(customer.getMerchantStore().getId().intValue()!=store.getId().intValue()) {
 			LOGGER.error("Customer id does not belong to current store");
@@ -380,7 +383,20 @@ public class CustomerAccountController extends AbstractController {
 
         MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
         Language language = getSessionAttribute(Constants.LANGUAGE, request);
-        Customer customer=getSessionAttribute( Constants.CUSTOMER, request );
+    
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Customer customer = null;
+    	if(auth != null &&
+        		 request.isUserInRole("AUTH_CUSTOMER")) {
+    		customer = customerFacade.getCustomerByUserName(auth.getName(), store);
+
+        }
+    	
+    	if(customer==null) {
+    		return "redirect:/"+Constants.SHOP_URI;
+    	}
+        
+        
         CustomerEntity customerEntity = customerFacade.getCustomerDataByUserName( customer.getNick(), store, language );
         if(customer !=null){
            model.addAttribute( "customer",  customerEntity);
@@ -396,12 +412,27 @@ public class CustomerAccountController extends AbstractController {
     
 	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
     @RequestMapping(value="/editAddress.html", method={RequestMethod.GET,RequestMethod.POST})
-    public String editAddress(final Model model, final HttpServletRequest request,@RequestParam(value = "customerId", required = false) Long customerId,
+    public String editAddress(final Model model, final HttpServletRequest request,
                               @RequestParam(value = "billingAddress", required = false) Boolean billingAddress) throws Exception {
         MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
-        Address address=customerFacade.getAddress( customerId, store, billingAddress );
+        
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Customer customer = null;
+    	if(auth != null &&
+        		 request.isUserInRole("AUTH_CUSTOMER")) {
+    		customer = customerFacade.getCustomerByUserName(auth.getName(), store);
+
+        }
+    	
+    	if(customer==null) {
+    		return "redirect:/"+Constants.SHOP_URI;
+    	}
+        
+        
+        
+        Address address=customerFacade.getAddress( customer.getId(), store, billingAddress );
         model.addAttribute( "address", address);
-        model.addAttribute( "customerId", customerId );
+        model.addAttribute( "customerId", customer.getId() );
         StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.EditAddress).append(".").append(store.getStoreTemplate());
         return template.toString();
     }
@@ -410,33 +441,52 @@ public class CustomerAccountController extends AbstractController {
 	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
     @RequestMapping(value="/updateAddress.html", method={RequestMethod.GET,RequestMethod.POST})
     public String updateCustomerAddress(@Valid
-                                        @ModelAttribute("address") Address address,BindingResult bindingResult,final Model model, final HttpServletRequest request,@RequestParam(value = "customerId", required = false) Long customerId,
+                                        @ModelAttribute("address") Address address,BindingResult bindingResult,final Model model, final HttpServletRequest request,
                               @RequestParam(value = "billingAddress", required = false) Boolean billingAddress) throws Exception {
        
         MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+        
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Customer customer = null;
+    	if(auth != null &&
+        		 request.isUserInRole("AUTH_CUSTOMER")) {
+    		customer = customerFacade.getCustomerByUserName(auth.getName(), store);
+
+        }
+    	
+    	StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.EditAddress).append(".").append(store.getStoreTemplate());
+    	
+    	if(customer==null) {
+    		return "redirect:/"+Constants.SHOP_URI;
+    	}
+    	
+    	model.addAttribute( "address", address);
+        model.addAttribute( "customerId", customer.getId() );
+        
+        
         if(bindingResult.hasErrors()){
             LOGGER.info( "found {} error(s) while validating  customer address ",
                          bindingResult.getErrorCount() );
-            StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.EditAddress).append(".").append(store.getStoreTemplate());
-            model.addAttribute( "address", address);
-            model.addAttribute( "customerId", customerId );
             return template.toString();
         }
         
-        if(StringUtils.isNotEmpty( address.getBilstateOther() )){
-            address.setZone( address.getBilstateOther() );
-        }
+
         Language language = getSessionAttribute(Constants.LANGUAGE, request);
-        customerFacade.updateAddress( customerId, store, address, language);
-        return ControllerConstants.REDIRECT+BILLING_SECTION;
+        customerFacade.updateAddress( customer.getId(), store, address, language);
+        
+        Customer c = customerService.getById(customer.getId());
+		super.setSessionAttribute(Constants.CUSTOMER, c, request);
+        
+        model.addAttribute("success", "success");
+        
+        return template.toString();
+
     }
     
     
-    /** move this common section out */
-    
-    @ModelAttribute("countries")
-    public List<CountryData> getCountries(final HttpServletRequest request){
-        
+	@ModelAttribute("countries")
+	protected List<Country> getCountries(final HttpServletRequest request){
+	    
         Language language = (Language) request.getAttribute( "LANGUAGE" );
         try
         {
@@ -451,18 +501,7 @@ public class CustomerAccountController extends AbstractController {
             }
             
             List<Country> countryList=countryService.getCountries( language );
-            if(CollectionUtils.isNotEmpty( countryList )){
-                List<CountryData> countryDataList=new ArrayList<CountryData>();
-                LOGGER.info( "Creating country list data " );
-                for(Country country:countryList){
-                    CountryData countryData=new CountryData();
-                    countryData.setName( country.getName() );
-                    countryData.setIsoCode( country.getIsoCode() );
-                    countryData.setId( country.getId() );
-                    countryDataList.add( countryData );
-                }
-                return countryDataList;
-            }
+            return countryList;
         }
         catch ( ServiceException e )
         {
@@ -472,10 +511,10 @@ public class CustomerAccountController extends AbstractController {
         return Collections.emptyList();
     }
 
-    @ModelAttribute("zones")
-    public List<Zone> getZones(final HttpServletRequest request){
-        return zoneService.list();
-    }
+    //@ModelAttribute("zones")
+    //public List<Zone> getZones(final HttpServletRequest request){
+    //    return zoneService.list();
+    //}
  
 
 

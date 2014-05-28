@@ -1,5 +1,6 @@
 package com.salesmanager.web.utils;
 
+import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
@@ -447,6 +448,50 @@ public class EmailTemplatesUtils {
 
 	       } catch (Exception e) {
 	           LOGGER.error("Error occured while sending order download email ",e);
+	       }
+		
+	}
+	
+	/**
+	 * Sends a change password notification email to the Customer
+	 * @param customer
+	 * @param merchantStore
+	 * @param customerLocale
+	 * @param contextPath
+	 */
+	@Async
+	public void changePasswordNotificationEmail(
+			Customer customer, MerchantStore merchantStore,
+			Locale customerLocale, String contextPath) {
+	       LOGGER.debug( "Sending change password email" );
+	       try {
+
+
+				Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(contextPath, merchantStore, messages, customerLocale);
+				
+		        templateTokens.put(EmailConstants.LABEL_HI, messages.getMessage("label.generic.hi", customerLocale));
+		        templateTokens.put(EmailConstants.EMAIL_CUSTOMER_FIRSTNAME, customer.getBilling().getFirstName());
+		        templateTokens.put(EmailConstants.EMAIL_CUSTOMER_LASTNAME, customer.getBilling().getLastName());
+				
+		        String[] date = {DateUtil.formatLongDate(new Date())};
+		        
+		        templateTokens.put(EmailConstants.EMAIL_NOTIFICATION_MESSAGE, messages.getMessage("label.notification.message.passwordchanged", date, customerLocale));
+		        
+
+				Email email = new Email();
+				email.setFrom(merchantStore.getStorename());
+				email.setFromEmail(merchantStore.getStoreEmailAddress());
+				email.setSubject(messages.getMessage("label.notification.title.passwordchanged",customerLocale));
+				email.setTo(customer.getEmailAddress());
+				email.setTemplateName(EmailConstants.EMAIL_NOTIFICATION_TMPL);
+				email.setTemplateTokens(templateTokens);
+	
+	
+				
+				emailService.sendHtmlEmail(merchantStore, email);
+
+	       } catch (Exception e) {
+	           LOGGER.error("Error occured while sending change password email ",e);
 	       }
 		
 	}

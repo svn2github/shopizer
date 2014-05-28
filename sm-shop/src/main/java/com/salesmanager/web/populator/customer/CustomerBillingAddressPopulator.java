@@ -38,6 +38,7 @@ public class CustomerBillingAddressPopulator extends AbstractDataPopulator<Custo
         if(source.getBilling().getZone()!=null) {
             target.setZone(source.getBilling().getZone().getCode());
         }
+        target.setStateProvince(source.getBilling().getState());
         
         return target;
     }

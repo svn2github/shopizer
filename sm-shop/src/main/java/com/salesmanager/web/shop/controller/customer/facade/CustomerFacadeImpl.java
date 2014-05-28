@@ -480,10 +480,11 @@ public class CustomerFacadeImpl implements CustomerFacade
                if(zone==null) {
                   throw new ConversionException("Unsuported zone code " + address.getZone());
                }
-               else{
                    customerModel.getBilling().setZone( zone );
-               }
+                   customerModel.getBilling().setState(null);
                
+           } else {
+        	   customerModel.getBilling().setZone(null);
            }
           
        }
@@ -497,10 +498,12 @@ public class CustomerFacadeImpl implements CustomerFacade
                if(zone==null) {
                    throw new ConversionException("Unsuported zone code " + address.getZone());
                }
-               else{
-                   customerModel.getDelivery().setZone( zone );
-               }
+
+               customerModel.getDelivery().setZone( zone );
+               customerModel.getDelivery().setState(null);
               
+           } else {
+        	   customerModel.getDelivery().setZone(null);
            }
            
        }

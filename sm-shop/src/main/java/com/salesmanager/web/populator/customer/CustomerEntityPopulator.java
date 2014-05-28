@@ -60,6 +60,8 @@ public class CustomerEntityPopulator
                 {
                     address.setZone( source.getBilling().getZone().getCode() );
                 }
+                
+                address.setStateProvince(source.getBilling().getState());
 
                 target.setBilling( address );
             }
@@ -82,6 +84,8 @@ public class CustomerEntityPopulator
                 {
                     address.setZone( source.getDelivery().getZone().getCode() );
                 }
+                
+                address.setStateProvince(source.getDelivery().getState());
 
                 target.setDelivery( address );
             }

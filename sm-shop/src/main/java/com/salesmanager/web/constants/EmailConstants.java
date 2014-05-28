@@ -18,6 +18,7 @@ public class EmailConstants {
 	public static final String EMAIL_CUSTOMER_NAME = "EMAIL_CUSTOMER_NAME";
 	public static final String EMAIL_CUSTOMER_FIRSTNAME = "EMAIL_CUSTOMER_FIRSTNAME";
 	public static final String EMAIL_CUSTOMER_LASTNAME = "EMAIL_CUSTOMER_LASTNAME";
+	public static final String EMAIL_NOTIFICATION_MESSAGE = "EMAIL_NOTIFICATION_MESSAGE";
 	public static final String EMAIL_CUSTOMER_GREETING = "EMAIL_CUSTOMER_GREETING";
 	public static final String EMAIL_RESET_PASSWORD_TXT = "EMAIL_RESET_PASSWORD_TXT";
 	public static final String EMAIL_USER_NAME = "EMAIL_USER_NAME";
@@ -81,6 +82,7 @@ public class EmailConstants {
 	public static final String EMAIL_ORDER_DOWNLOAD_TPL = "email_template_checkout_download.ftl";
 	public static final String ORDER_STATUS_TMPL = "email_template_order_status.ftl";
 	public static final String EMAIL_CONTACT_TMPL = "email_template_contact.ftl";
+	public static final String EMAIL_NOTIFICATION_TMPL = "email_template_notification.ftl";
 	
 	
 }
