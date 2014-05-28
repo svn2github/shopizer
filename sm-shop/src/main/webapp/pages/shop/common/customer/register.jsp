@@ -14,6 +14,9 @@ response.setDateHeader ("Expires", -1);
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 
+<!-- requires functions.jsp -->
+<script src="<c:url value="/resources/js/jquery.maskedinput.min.js" />"></script>
+<script src="<c:url value="/resources/js/shop-customer.js" />"></script>
 <script src="<c:url value="/resources/js/address.js" />"></script>
 
 <script type="text/javascript">
@@ -24,10 +27,10 @@ var RecaptchaOptions = {
 
 $(document).ready(function() {
 	
-	getZones($('#registration_country').val(),'<c:out value="${customer.billing.zone}" />');
-	$("#hidden_registration_zones").hide();
+	getZones($('#registration_country').val(),'<c:out value="${customer.billing.zone}" />',isFormValid);
+	$("#hidden_zones").hide();
 	$("#registration_country").change(function() {
-			getZones($(this).val(),'<c:out value="${customer.billing.zone}" />');
+			getZones($(this).val(),'<c:out value="${customer.billing.zone}" />',isFormValid);
 	})
 	
 	
@@ -47,102 +50,34 @@ $(document).ready(function() {
 });
 
 
- 
+function isFormValid() {
+	
+	if($('.alert-error').is(":visible")) {
+		return true;
+	}
+	
+	if($('.alert-success').is(":visible")) {
+		return true;
+	}
+	
+	$('#registrationError').hide();//reset error message
+	var msg = isCustomerFormValid($('#registrationForm'));
+	
+	if(msg!=null) {//disable submit button
+		$('#submitRegistration').addClass('btn-disabled');
+		$('#submitRegistration').prop('disabled', true);
+		$('#registrationError').html(msg);
+		$('#registrationError').show();
+		return false;
+	} else {
+		$('#submitRegistration').removeClass('btn-disabled');
+		$('#submitRegistration').prop('disabled', false);
+		$('#registrationError').hide();
+		return true;
+	}
+}
 
 
- function isFormValid() {
-		$('#registrationError').hide();//reset error message
-		var $inputs = $('#registrationForm').find(':input');
-		var valid = true;
-		var firstErrorMessage = null;
-		$inputs.each(function() {
-			if($(this).hasClass('required')) {				
-				var fieldValid = isFieldValid($(this));
-				if(!fieldValid) {
-					if(firstErrorMessage==null) {
-						if($(this).attr('title')) {
-							firstErrorMessage = $(this).attr('title');
-						}
-					}
-					valid = false;
-				}
-			}
-			//if has class email
-			if($(this).hasClass('email')) {	
-				var emailValid = validateEmail($(this).val());
-				//console.log('Email is valid ? ' + emailValid);
-				if(!emailValid) {
-					if(firstErrorMessage==null) {
-						firstErrorMessage = '<s:message code="messages.invalid.email" text="Invalid email address"/>';
-						valid = false;
-					}
-				}
-			}
-			
-			//user name
-			if($(this).hasClass('userName')) {	
-				if($(this).val().length<6) {
-					if(firstErrorMessage==null) {
-						firstErrorMessage = '<s:message code="registration.username.length.invalid" text="User name must be at least 6 characters long"/>';
-						valid = false;
-					}
-				}
-			}
-			
-			//password rules
-			if($(this).hasClass('password')) {	
-				if($(this).val().length<6) {
-					if(firstErrorMessage==null) {
-						firstErrorMessage = '<s:message code="message.password.length" text="Password must be at least 6 characters long"/>';
-						valid = false;
-					}
-				}
-			}
-			
-			//repeat password
-			if($(this).hasClass('checkPassword')) {	
-					var pass = $('.password').val();
-					if(($(this).val()!=pass)) {
-						if(firstErrorMessage==null) {
-							firstErrorMessage = '<s:message code="message.password.checkpassword.identical" text="Both password must match"/>';
-							valid = false;
-						}
-					}
-			}
-		});
-		
-		//console.log('Form is valid ? ' + valid);
-		if(valid==false) {//disable submit button
-			$('#submitRegistration').addClass('btn-disabled');
-			$('#submitRegistration').prop('disabled', true);
-			$('#registrationError').html(firstErrorMessage);
-			$('#registrationError').show();
-		} else {
-			$('#submitRegistration').removeClass('btn-disabled');
-			$('#submitRegistration').prop('disabled', false);
-			$('#registrationError').hide();
-		}
- }
- 
- 
- function isFieldValid(field) {
-		var validateField = true;
-		var fieldId = field.prop('id');
-		var value = field.val();
-		if (fieldId.indexOf("hidden_registration_zones") >= 0) {
-			//console.log(field.is(":hidden"));
-			if(field.is(":hidden")) {
-				return true;
-			}
-		}
-		if(!emptyString(value)) {
-			field.css('background-color', '#FFF');
-			return true;
-		} else {
-			field.css('background-color', '#FFC');
-			return false;
-		} 
- }
  
  
  </script>
@@ -202,9 +137,9 @@ $(document).ready(function() {
 							<label class="control-label required"><s:message code="label.generic.stateprovince" text="State / Province"/></label>
 							<div class="controls">
 							<s:message code="NotEmpty.customer.billing.stateProvince" text="State / Province is required" var="msgStateProvince"/>
-							<form:select path="billing.zone" id="registration_zones" >
+							<form:select path="billing.zone" id="customer_zones" >
 							</form:select>
-							<form:input path="billing.stateProvince" cssClass="span8 required" id="hidden_registration_zones" title="${msgStateProvince}"/>
+							<form:input path="billing.stateProvince" cssClass="span8 required" id="hidden_zones" title="${msgStateProvince}"/>
 							</div>
 						</div>		
 						

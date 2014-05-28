@@ -43,7 +43,7 @@ function addShippingAddress(formId){
 
 					<c:if test="${not empty customer}">
 					
-						<form:form action="${editAddress}" id="editBillingAddress_${customer.id}">
+						<form:form action="${editAddress}" method="GET" id="editBillingAddress_${customer.id}">
 						<input type="hidden" name="customerId" value="${customer.id}">
 						<input type="hidden" name="billingAddress" value="true"/>
 						<address>
@@ -63,9 +63,8 @@ function addShippingAddress(formId){
 							
 							<c:if test="${not empty customer.billing.city}">${customer.billing.city} <br />
 							</c:if>
-							<c:if test="${not empty customer.billing.zone}">
 							<c:choose><c:when test="${not empty customer.billing.stateProvince}"><c:out value="${customer.billing.stateProvince}"/></c:when><c:otherwise><script>$.ajax({url: "<c:url value="/shop/reference/zoneName"/>",type: "GET",data: "zoneCode=${customer.billing.zone}",success: function(data){$('#billingZoneName').html(data)}})</script><span id="billingZoneName"><c:out value="${customer.billing.zone}"/></span></c:otherwise></c:choose>,
-							</c:if>
+							
 							<c:if test="${not empty customer.billing.country}">
 							<span id="customerCountryName"><script>$.ajax({url: "<c:url value="/shop/reference/countryName"/>",type: "GET",data: "countryCode=${customer.billing.country}",success: function(data){$('#customerCountryName').html(data)}})</script></span><br/>
 							</c:if>
@@ -106,9 +105,9 @@ function addShippingAddress(formId){
 							<c:if test="${not empty customer.delivery.city}">${customer.delivery.city} <br />
 							</c:if>
 
-							<c:if test="${not empty customer.delivery.zone}">
+							
 							<c:choose><c:when test="${not empty customer.delivery.stateProvince}"><c:out value="${customer.delivery.stateProvince}"/></c:when><c:otherwise><script>$.ajax({url: "<c:url value="/shop/reference/zoneName"/>",type: "GET",data: "zoneCode=${customer.delivery.zone}",success: function(data){$('#deliveryZoneName').html(data)}})</script><span id="deliveryZoneName"><c:out value="${customer.delivery.zone}"/></span></c:otherwise></c:choose>,
-							</c:if>
+							
 							<c:if test="${not empty customer.delivery.country}">
 							<span id="customerDeliveryName"><script>$.ajax({url: "<c:url value="/shop/reference/countryName"/>",type: "GET",data: "countryCode=${customer.delivery.country}",success: function(data){$('#customerDeliveryName').html(data)}})</script></span><br/>
 							</c:if>

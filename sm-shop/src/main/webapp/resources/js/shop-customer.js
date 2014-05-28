@@ -2,7 +2,10 @@
 		var $inputs = $(formId).find(':input');
 		var errorMessage = null;
 		$inputs.each(function() {
-			if($(this).hasClass('required')) {				
+			if($(this).hasClass('required')) {
+				
+				//console.log($(this).attr('id') + ' - ' + $(this).css('display'));
+
 				var fieldValid = isFieldValid($(this));
 				if(!fieldValid) {
 					if(errorMessage==null) {
@@ -12,6 +15,7 @@
 					}
 				}
 			}
+			
 			//if has class email
 			if($(this).hasClass('email')) {	
 				var emailValid = validateEmail($(this).val());
@@ -70,4 +74,28 @@
 			field.css('background-color', '#FFC');
 			return false;
 		} 
+}
+ 
+ function setCountrySettings(prefix, countryCode) {
+		//add masks to your country
+		//console.log('Apply mask ' + countryCode);
+		
+		var phoneSelector = '.' + prefix + '-phone';
+		var postalCodeSelector = '.' + prefix + '-postalCode';
+		
+		if(countryCode=='CA') {//mask for canada
+			$(phoneSelector).mask("?(999) 999-9999");
+			$(postalCodeSelector).mask("?*** ***");
+			return;
+		}
+		if(countryCode=='US') {// mask for united states
+			$(phoneSelector).mask("?(999) 999-9999");
+			$(postalCodeSelector).mask("?99999");
+			return;
+		}
+		
+		$(phoneSelector).unmask();
+		$(postalCodeSelector).unmask();
+
+		
 }
