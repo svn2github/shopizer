@@ -95,23 +95,7 @@ public interface OrderService extends SalesManagerEntityService<Long, Order> {
 			throws ServiceException;
 
 
-	
-	/**
-	 * <p>Method responsible for fetching List of Orders associated with given customer.
-	 * In case there is no order placed by Customer, It will return an empty List.
-	 * </p>
-	 * 
-	 * <p>
-	 * A customer can order Digital as well other kind of orders, Method will fetch all such orders associted with 
-	 * customer for a given Merchant store.
-	 * </p>
-	 * @param customerId
-	 * @param store {@link MerchantStore} 
-	 * @return collection of Orders associated with customer or empty list
-	 * @throws ServiceException
-	 */
-	OrderList getOrdersByCustomer(final OrderCriteria orderCriteria, final MerchantStore store) throws ServiceException;
-	
+
 	
 	/**
 	 * Determines if an Order has download files
