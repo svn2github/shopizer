@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 public abstract class CacheManagerImpl implements CacheManager {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CacheManagerImpl.class);
-	//private String repositoryFileName = "cms/infinispan_configuration.xml";
-	
-	//private EmbeddedCacheManager manager = null;
+
 	@SuppressWarnings("rawtypes")
 	private TreeCache treeCache = null;
 
