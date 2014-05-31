@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
@@ -48,8 +47,6 @@ import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 import com.salesmanager.web.entity.catalog.product.ReadableProductPrice;
 import com.salesmanager.web.entity.catalog.product.ReadableProductReview;
 import com.salesmanager.web.entity.shop.Breadcrumb;
-import com.salesmanager.web.entity.shop.BreadcrumbItem;
-import com.salesmanager.web.entity.shop.BreadcrumbItemType;
 import com.salesmanager.web.entity.shop.PageInformation;
 import com.salesmanager.web.populator.catalog.ReadableProductPopulator;
 import com.salesmanager.web.populator.catalog.ReadableProductPricePopulator;
@@ -58,7 +55,6 @@ import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.model.catalog.Attribute;
 import com.salesmanager.web.shop.model.catalog.AttributeValue;
 import com.salesmanager.web.utils.BreadcrumbsUtils;
-import com.salesmanager.web.utils.FilePathUtils;
 import com.salesmanager.web.utils.ImageFilePathUtils;
 import com.salesmanager.web.utils.LabelUtils;
 import com.salesmanager.web.utils.PageBuilderUtils;
@@ -167,50 +163,7 @@ public class ShopProductController {
 		request.getSession().setAttribute(Constants.BREADCRUMB, breadCrumb);
 		request.setAttribute(Constants.BREADCRUMB, breadCrumb);
 		
-		
-/*		*//** Build breadcrumb **//*
-		BreadcrumbItem home = new BreadcrumbItem();
-		home.setItemType(BreadcrumbItemType.HOME);
-		home.setLabel(messages.getMessage(Constants.HOME_MENU_KEY, locale));
-		home.setUrl(FilePathUtils.buildStoreUri(store, request) + Constants.SHOP_URI);
 
-		Breadcrumb breadCrumb = new Breadcrumb();
-		breadCrumb.setLanguage(language);
-		
-		List<BreadcrumbItem> items = new ArrayList<BreadcrumbItem>();
-		items.add(home);
-		
-		if(!StringUtils.isBlank(reference)) {
-			//get category id
-			try {
-				Long categoryId = Long.parseLong(reference);
-				Category caller = categoryService.getByLanguage(categoryId, language);
-				if(caller!=null) {
-					if(caller.getMerchantStore().getId().intValue()==store.getId().intValue()) {
-						BreadcrumbItem categoryBreadcrump = new BreadcrumbItem();
-						categoryBreadcrump.setItemType(BreadcrumbItemType.CATEGORY);
-						categoryBreadcrump.setLabel(caller.getDescription().getName());
-						categoryBreadcrump.setUrl(caller.getDescription().getSeUrl());
-						items.add(categoryBreadcrump);
-					}
-				}
-			} catch(Exception e) {
-				LOG.error("Cannot get category " + reference,e);
-			}
-			
-		}
-		
-		BreadcrumbItem productBreadcrump = new BreadcrumbItem();
-		productBreadcrump.setItemType(BreadcrumbItemType.PRODUCT);
-		productBreadcrump.setLabel(productProxy.getDescription().getName());
-		productBreadcrump.setUrl((FilePathUtils.buildProductUrl(store, request.getContextPath(), productProxy.getDescription().getFriendlyUrl())));
-		items.add(productBreadcrump);
-
-		breadCrumb.setBreadCrumbs(items);
-		breadCrumb.setItemType(BreadcrumbItemType.PRODUCT);
-		request.getSession().setAttribute(Constants.BREADCRUMB, breadCrumb);
-		request.setAttribute(Constants.BREADCRUMB, breadCrumb);
-		*//** **/
 		
 		StringBuilder relatedItemsCacheKey = new StringBuilder();
 		relatedItemsCacheKey

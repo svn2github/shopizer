@@ -10,7 +10,12 @@ public class ReadableOrderProduct extends OrderProductEntity implements
 	 */
 	private static final long serialVersionUID = 1L;
 	private String productName;
+	private String price;
+	
+	
+	
 	private String sku;
+	private String image;
 	public String getProductName() {
 		return productName;
 	}
@@ -23,5 +28,18 @@ public class ReadableOrderProduct extends OrderProductEntity implements
 	public void setSku(String sku) {
 		this.sku = sku;
 	}
+	public String getImage() {
+		return image;
+	}
+	public void setImage(String image) {
+		this.image = image;
+	}
+	public String getPrice() {
+		return price;
+	}
+	public void setPrice(String price) {
+		this.price = price;
+	}
+
 
 }

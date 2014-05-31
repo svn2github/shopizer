@@ -1,7 +1,8 @@
 package com.salesmanager.web.entity.order;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+
+import com.salesmanager.web.entity.catalog.product.ReadableProduct;
 
 public class OrderProductEntity extends OrderProduct implements Serializable {
 
@@ -10,7 +11,9 @@ public class OrderProductEntity extends OrderProduct implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private int orderedQuantity;
-	private BigDecimal price;
+	private ReadableProduct product;
+
+
 	
 	
 	public void setOrderedQuantity(int orderedQuantity) {
@@ -19,12 +22,14 @@ public class OrderProductEntity extends OrderProduct implements Serializable {
 	public int getOrderedQuantity() {
 		return orderedQuantity;
 	}
-	public BigDecimal getPrice() {
-		return price;
+	public ReadableProduct getProduct() {
+		return product;
 	}
-	public void setPrice(BigDecimal price) {
-		this.price = price;
+	public void setProduct(ReadableProduct product) {
+		this.product = product;
 	}
+
+
 
 
 }

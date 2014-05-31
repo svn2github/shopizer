@@ -3,6 +3,7 @@ package com.salesmanager.web.entity.order;
 import java.io.Serializable;
 import java.util.List;
 
+import com.salesmanager.core.business.reference.currency.model.Currency;
 import com.salesmanager.web.entity.customer.ReadableCustomer;
 
 public class ReadableOrder extends OrderEntity implements Serializable {
@@ -13,6 +14,7 @@ public class ReadableOrder extends OrderEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private ReadableCustomer customer;
 	private List<ReadableOrderProduct> products;
+	private Currency currencyModel;
 	public void setCustomer(ReadableCustomer customer) {
 		this.customer = customer;
 	}
@@ -43,6 +45,13 @@ public class ReadableOrder extends OrderEntity implements Serializable {
 	}
 	public void setProducts(List<ReadableOrderProduct> products) {
 		this.products = products;
+	}
+
+	public Currency getCurrencyModel() {
+		return currencyModel;
+	}
+	public void setCurrencyModel(Currency currencyModel) {
+		this.currencyModel = currencyModel;
 	}
 
 	private OrderTotal total;

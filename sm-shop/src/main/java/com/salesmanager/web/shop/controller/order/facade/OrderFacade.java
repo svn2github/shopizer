@@ -19,6 +19,7 @@ import com.salesmanager.core.business.shipping.model.ShippingSummary;
 import com.salesmanager.core.business.shoppingcart.model.ShoppingCart;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.order.PersistableOrder;
+import com.salesmanager.web.entity.order.ReadableOrder;
 import com.salesmanager.web.entity.order.ReadableOrderList;
 import com.salesmanager.web.entity.order.ShopOrder;
 
@@ -68,6 +69,16 @@ public interface OrderFacade {
 	void validateOrder(ShopOrder order, BindingResult bindingResult,
 			Map<String, String> messagesResult, MerchantStore store,
 			Locale locale) throws ServiceException;
+	
+	/**
+	 * Creates a ReadableOrder object from an orderId
+	 * @param orderId
+	 * @param store
+	 * @param language
+	 * @return
+	 * @throws Exception
+	 */
+	ReadableOrder getReadableOrder(Long orderId, MerchantStore store, Language language) throws Exception;
 	
 
 	/**

@@ -22,6 +22,7 @@ import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.entity.order.ReadableOrder;
 import com.salesmanager.web.entity.order.ReadableOrderList;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
@@ -99,6 +100,13 @@ public class CustomerOrdersController extends AbstractController {
         LOGGER.info( "Fetching order details for Id " +orderId);
         
         //get order id
+        Long lOrderId = null;
+        try {
+        	lOrderId = Long.parseLong(orderId);
+        } catch(NumberFormatException nfe) {
+        	LOGGER.error("Cannot parse orderId to long " + orderId);
+        	return "redirect:/"+Constants.SHOP_URI;
+        }
         
         
         //check if order belongs to customer logged in
@@ -109,7 +117,14 @@ public class CustomerOrdersController extends AbstractController {
     		customer = customerFacade.getCustomerByUserName(auth.getName(), store);
 
         }
-        
+    	
+    	if(customer==null) {
+    		return "redirect:/"+Constants.SHOP_URI;
+    	}
+    	
+    	ReadableOrder order = orderFacade.getReadableOrder(lOrderId, store, customer.getDefaultLanguage());
+
+        model.addAttribute("order", order);
 
         StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.customerOrder).append(".").append(store.getStoreTemplate());
         return template.toString();

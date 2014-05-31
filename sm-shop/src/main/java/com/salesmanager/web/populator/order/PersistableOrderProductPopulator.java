@@ -83,14 +83,14 @@ public class PersistableOrderProductPopulator extends
 				target.getDownloads().add(orderProductDownload);
 			}
 
-			target.setOneTimeCharge(source.getFinalPrice());	
-			target.setProductName(source.getProduct().getDescriptions().iterator().next().getName());
+			target.setOneTimeCharge(source.getPrice());	
+			target.setProductName(source.getProduct().getDescription().getName());
 			target.setProductQuantity(source.getOrderedQuantity());
 			target.setSku(source.getProduct().getSku());
 			
 			OrderProductPrice orderProductPrice = new OrderProductPrice();
 			orderProductPrice.setDefaultPrice(true);
-			orderProductPrice.setProductPrice(source.getFinalPrice());
+			orderProductPrice.setProductPrice(source.getPrice());
 			orderProductPrice.setOrderProduct(target);
 			
 

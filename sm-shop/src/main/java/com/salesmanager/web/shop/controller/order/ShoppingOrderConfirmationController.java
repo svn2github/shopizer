@@ -159,6 +159,8 @@ public class ShoppingOrderConfirmationController extends AbstractController {
 		for(OrderProduct p : order.getOrderProducts()) {
 			ReadableOrderProductPopulator orderProductPopulator = new ReadableOrderProductPopulator();
 			orderProductPopulator.setLocale(locale);
+			orderProductPopulator.setProductService(productService);
+			orderProductPopulator.setPricingService(pricingService);
 			ReadableOrderProduct orderProduct = new ReadableOrderProduct();
 			orderProductPopulator.populate(p, orderProduct, store, language);
 			orderProducts.add(orderProduct);

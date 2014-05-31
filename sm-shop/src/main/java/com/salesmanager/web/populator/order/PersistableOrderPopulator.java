@@ -21,6 +21,8 @@ import com.salesmanager.core.business.order.model.orderstatus.OrderStatusHistory
 import com.salesmanager.core.business.order.model.payment.CreditCard;
 import com.salesmanager.core.business.reference.country.model.Country;
 import com.salesmanager.core.business.reference.country.service.CountryService;
+import com.salesmanager.core.business.reference.currency.model.Currency;
+import com.salesmanager.core.business.reference.currency.service.CurrencyService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.zone.model.Zone;
 import com.salesmanager.core.business.reference.zone.service.ZoneService;
@@ -36,6 +38,9 @@ public class PersistableOrderPopulator extends
 	
 	private CustomerService customerService;
 	private CountryService countryService;
+	private CurrencyService currencyService;
+
+
 	private ZoneService zoneService;
 	private ProductService productService;
 	private DigitalProductService digitalProductService;
@@ -52,6 +57,7 @@ public class PersistableOrderPopulator extends
 		Validate.notNull(customerService,"customerService must be set");
 		Validate.notNull(countryService,"countryService must be set");
 		Validate.notNull(zoneService,"zoneService must be set");
+		Validate.notNull(currencyService,"currencyService must be set");
 
 		try {
 			
@@ -86,8 +92,20 @@ public class PersistableOrderPopulator extends
 				target.setCreditCard(creditCard);
 			}
 			
+			Currency currency = null;
+			try {
+				currency = currencyService.getByCode(source.getCurrency());
+			} catch(Exception e) {
+				throw new ConversionException("Currency not found for code " + source.getCurrency());
+			}
+			
+			if(currency==null) {
+				throw new ConversionException("Currency not found for code " + source.getCurrency());
+			}
+			
+			target.setCurrency(currency);
 			target.setDatePurchased(source.getDatePurchased());
-			target.setCurrency(store.getCurrency());
+			//target.setCurrency(store.getCurrency());
 			target.setCurrencyValue(new BigDecimal(0));
 			target.setMerchant(store);
 			target.setStatus(source.getOrderStatus());
@@ -167,6 +185,38 @@ public class PersistableOrderPopulator extends
 
 	public ProductAttributeService getProductAttributeService() {
 		return productAttributeService;
+	}
+	
+	public CustomerService getCustomerService() {
+		return customerService;
+	}
+
+	public void setCustomerService(CustomerService customerService) {
+		this.customerService = customerService;
+	}
+
+	public CountryService getCountryService() {
+		return countryService;
+	}
+
+	public void setCountryService(CountryService countryService) {
+		this.countryService = countryService;
+	}
+
+	public CurrencyService getCurrencyService() {
+		return currencyService;
+	}
+
+	public void setCurrencyService(CurrencyService currencyService) {
+		this.currencyService = currencyService;
+	}
+
+	public ZoneService getZoneService() {
+		return zoneService;
+	}
+
+	public void setZoneService(ZoneService zoneService) {
+		this.zoneService = zoneService;
 	}
 
 }

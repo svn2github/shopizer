@@ -62,6 +62,7 @@ import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.core.utils.CreditCardUtils;
 import com.salesmanager.web.entity.customer.Address;
 import com.salesmanager.web.entity.customer.PersistableCustomer;
+import com.salesmanager.web.entity.customer.ReadableCustomer;
 import com.salesmanager.web.entity.order.OrderEntity;
 import com.salesmanager.web.entity.order.OrderTotal;
 import com.salesmanager.web.entity.order.PersistableOrder;
@@ -835,22 +836,16 @@ public class OrderFacadeImpl implements OrderFacade {
         for(OrderProduct p : order.getOrderProducts()) {
             ReadableOrderProductPopulator orderProductPopulator = new ReadableOrderProductPopulator();
             orderProductPopulator.setLocale(locale);
+            orderProductPopulator.setProductService(productService);
+            orderProductPopulator.setPricingService(pricingService);
             ReadableOrderProduct orderProduct = new ReadableOrderProduct();
             orderProductPopulator.populate(p, orderProduct, store, language);
             
+            //image
+            
             //attributes
             
-            //Product product = productService.getById(p.getId());
-            
-            //if(product!=null) {
-                
-                //ReadableProductPopulator productPopulator = new ReadableProductPopulator();
-                //productPopulator.setPricingService(pricingService);
-                
-                //ReadableProduct productProxy = productPopulator.populate(product, new ReadableProduct(), store, language);
-                //orderProduct.setProduct(productProxy);
-                
-           //}
+
 
             orderProducts.add(orderProduct);
         }
@@ -899,6 +894,51 @@ public class OrderFacadeImpl implements OrderFacade {
 		criteria.setMaxCount(maxCount);
 
 		return this.getReadableOrderList(criteria, store, language);
+	}
+
+
+
+	@Override
+	public ReadableOrder getReadableOrder(Long orderId, MerchantStore store,
+			Language language) throws Exception {
+		
+		
+		
+		Order modelOrder = orderService.getById(orderId);
+		if(modelOrder==null) {
+			throw new Exception("Order not found with id " + orderId);
+		}
+		
+		ReadableOrder readableOrder = new ReadableOrder();
+		
+		Long customerId = modelOrder.getCustomerId();
+		if(customerId != null) {
+			ReadableCustomer readableCustomer = customerFacade.getCustomerById(customerId, store, language);
+			if(readableCustomer==null) {
+				LOGGER.warn("Customer id " + customerId + " not found in order " + orderId);
+			} else {
+				readableOrder.setCustomer(readableCustomer);
+			}
+		}
+		
+		ReadableOrderPopulator orderPopulator = new ReadableOrderPopulator();
+		orderPopulator.populate(modelOrder, readableOrder,  store, language);
+		
+		//order products
+		List<ReadableOrderProduct> orderProducts = new ArrayList<ReadableOrderProduct>();
+		for(OrderProduct p : modelOrder.getOrderProducts()) {
+			ReadableOrderProductPopulator orderProductPopulator = new ReadableOrderProductPopulator();
+			orderProductPopulator.setProductService(productService);
+			orderProductPopulator.setPricingService(pricingService);
+			
+			ReadableOrderProduct orderProduct = new ReadableOrderProduct();
+			orderProductPopulator.populate(p, orderProduct, store, language);
+			orderProducts.add(orderProduct);
+		}
+		
+		readableOrder.setProducts(orderProducts);
+		
+		return readableOrder;
 	}
 
 }

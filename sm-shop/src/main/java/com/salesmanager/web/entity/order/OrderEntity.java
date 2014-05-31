@@ -23,6 +23,7 @@ public class OrderEntity extends Order implements Serializable {
 	private OrderStatus orderStatus;
 	private CreditCard creditCard;
 	private Date datePurchased;
+	private String currency;
 	
 	public void setTotals(List<OrderTotal> totals) {
 		this.totals = totals;
@@ -72,6 +73,12 @@ public class OrderEntity extends Order implements Serializable {
 	}
 	public OrderStatus getOrderStatus() {
 		return orderStatus;
+	}
+	public String getCurrency() {
+		return currency;
+	}
+	public void setCurrency(String currency) {
+		this.currency = currency;
 	}
 
 
