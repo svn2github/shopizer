@@ -233,6 +233,61 @@ form input.valid {
     width: auto;
 }
 
+.nomargin {
+    margin: 0 !important;
+}
+
+.alert-custom {
+    border-bottom: 1px solid #EEEEEE;
+    background-color: #FFFFFF;
+    padding-bottom: 5px;
+    margin-bottom:18px;
+}
+
+#orderTableTitle {
+	margin-top:20px;
+}
+
+#cartContent .item {
+    border-bottom: 1px dotted #DDDDDD;
+}
+
+#cartContent .cartImage {
+    float: left;
+    padding: 10px;
+    text-align: left;
+    width: 100px;
+}
+
+#cartContent .productName {
+    float: left;
+    padding: 10px;
+    width: 50%;
+}
+
+#cartContent .quantity {
+    float: left;
+    font-size: 15px;
+    padding: 10px;
+    text-align: center;
+    width: 160px;
+}
+
+#cartContent .totalPrice {
+    float: right;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 30px;
+    padding: 10px;
+    text-align: right;
+    width: 150px;
+}
+
+#cartContent .total {
+	text-align: right;
+}
+
+
 
 
 
