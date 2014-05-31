@@ -81,7 +81,7 @@ response.setDateHeader ("Expires", -1);
  	}
  	
  	
- 	function loadCategoryByBrand(filterType,filterVal) {
+ 	function filterCategory(filterType,filterVal) {
 	 		//reset product section
 	 		$('#productsContainer').html('');
 	 		START_COUNT_PRODUCTS = 0;
@@ -154,7 +154,7 @@ response.setDateHeader ("Expires", -1);
               <li class="nav-header"><s:message code="label.manufacturer.brand" text="Brands" /></li>
               <c:forEach items="${manufacturers}" var="manufacturer">
               	<li>
-              		<a href="javascript:loadCategoryByBrand('BRAND','${manufacturer.id}')"><c:out value="${manufacturer.description.name}" /></a></li>
+              		<a href="javascript:filterCategory('BRAND','${manufacturer.id}')"><c:out value="${manufacturer.description.name}" /></a></li>
               </c:forEach>
             </ul>
           </div>          

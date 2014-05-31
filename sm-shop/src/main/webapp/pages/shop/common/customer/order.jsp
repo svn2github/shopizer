@@ -16,126 +16,126 @@ response.setDateHeader ("Expires", -1);
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 
-<link href="<c:url value="/resources/css/essentials.css" />" rel="stylesheet">
-<link href="<c:url value="/resources/css/layout.css" />" rel="stylesheet">
-<link href="<c:url value="/resources/css/shop.css" />" rel="stylesheet">
 
-	<div id="middle" class="container clearfix">
+
+
+	<div id="main-content" class="container clearfix">
 		
 
-<div class="white">
+
 
 				<header class="page-header">
-					<h1>Order Summary <small>29 June 2014</small></h1>
+					<h1><s:message code="label.order.details" text="Order details" />&nbsp;<c:out value="${order.id}"/></h1>
 				</header>
 
-				<div class="" id="shop"><!-- note class 'printable' - this area is printable only! -->
+				
+				<div class="row-fluid">
+				<!-- note class 'printable' - this area is printable only! -->
 
-					<!-- CALLOUT -->
-					<div class="alert alert-default fade in">
+					<!-- Buttons -->
+					<div class="alert-custom">
 
-						<div class="row">
+						<div class="row-fluid">
 
-							<div class="col-md-8 col-sm-8"><!-- left text -->
-								<h4 class="nomargin">Order Date</h4>
+							<div class="col-md-8 col-sm-8 pull-left"><!-- left text -->
 								<p class="nomargin">
-									Order Date: 29 June 2014 / 10:42:11
+									<fmt:formatDate type="both" dateStyle="long" value="${order.datePurchased}" />
 								</p>
+								<h3>
+									<s:message code="label.order.${order.orderStatus.value}" text="${order.orderStatus.value}" />
+								</h3>
 							</div><!-- /left text -->
 
 							
-							<div class="col-md-4 col-sm-4 text-right"><!-- right btn -->
-								<a onclick="window.print();" class="btn btn-primary btn-lg" href="#">PRINT</a>
-							</div><!-- /right btn -->
+							<div class="col-md-4 col-sm-4 text-right pull-right">
+								<a onclick="window.print();" class="btn btn-large" href="#"><s:message code="label.generic.print" text="Print" /></a>
+							</div>
 
 						</div>
 
 					</div>
-					<!-- /CALLOUT -->
 					
-					<div class="divider half-margins"><!-- divider 30px --></div>
+					
 
 					<!-- BILLING and SHIPPING ADDRESS -->
-					<div class="row">
+					<div class="row-fluid">
 						<div class="col-md-6 col-sm-6">
-							<h5><strong>BILLING ADDRESS</strong></h5>
+							<c:if test="${not empty order.customer.billing}">
+							<h5><strong><s:message code="label.customer.billingaddress" text="Billing address" /></strong></h5>
 							<p>
-								<span class="block">Country: United States</span>
-								<span class="block">Name: John Doe</span>
-								<span class="block">Company Name: -</span>
-								<span class="block">Address: 5th Avenue</span>
-								<span class="block">City: New York</span>
+								<c:set var="address" value="${order.customer.billing}" scope="request" />
+								<c:set var="addressType" value="billing" scope="request" />
+								<jsp:include page="/pages/shop/common/preBuiltBlocks/customerAddress.jsp"/>
 							</p>
+							</c:if>
 						</div>
 
 						<div class="col-md-6 col-sm-6">
-							<h5><strong>SHIPPING ADDRESS</strong></h5>
+							<c:if test="${not empty customer.delivery}">
+							<h5><strong><s:message code="label.customer.shippingaddress" text="Shipping address" /></strong></h5>
 							<p>
-								<span class="block">Country: United States</span>
-								<span class="block">Name: John Doe</span>
-								<span class="block">Company Name: -</span>
-								<span class="block">Address: 5th Avenue</span>
-								<span class="block">City: New York</span>
+								<c:set var="address" value="${order.customer.delivery}" scope="request" />
+								<c:set var="addressType" value="delivery" scope="request" />
+								<jsp:include page="/pages/shop/common/preBuiltBlocks/customerAddress.jsp"/>
 							</p>
+							</c:if>
 						</div>						
 					</div>
 					<!-- /BILLING and SHIPPING ADDRESS -->
 
-					<div class="divider half-margins"><!-- divider 60px --></div>
-
-					<!-- SUMMARY TABLE -->
+					<div id="orderTableTitle">
+						<h2>
+						Details
+						</h2>
+					</div>
+		
+					<!-- PRODUCTS TABLE -->
 					<div id="cartContent">
 						<!-- cart header -->
 						<div class="item head">
-							<span class="cart_img"></span>
-							<span class="product_name fsize13 bold">PRODUCT NAME</span>
-							<span class="total_price fsize13 bold">TOTAL</span>
-							<span class="qty fsize13 bold">QUANTITY</span>
+							<span class="cartImage"></span>
+							<span class="productName"><s:message code="label.productedit.productname" text="Product name" /></span>
+							<span class="quantity"><s:message code="label.quantity" text="Quantity" /></span>
+							<span class="totalPrice"><s:message code="label.generic.price" text="Price" /></span>
+							<span class="totalPrice"><s:message code="order.total.subtotal" text="Sub-total" /></span>
 							<div class="clearfix"></div>
 						</div>
 						<!-- /cart header -->
 
 						<!-- cart item -->
+						<c:forEach items="${order.products}" var="product">
 						<div class="item">
-							<div class="cart_img"><img width="60" alt="" src=""></div>
-							<a class="product_name" href="shop-single.html">Man shirt XL</a>
-							<div class="total_price">$<span>21.00</span></div>
-							<div class="qty">1 x $21.00</div>
+							<div class="cartImage">
+							<c:if test="${not empty product.image}">
+							<img width="60" src="<sm:shopProductImage imageName="${product.image}" sku="${product.sku}"/>"/>
+							</c:if>
+							</div>
+							<c:choose>
+							<c:when test="${product.product!=null}">
+								<a class="productName" href="<c:url value="/shop/product/" /><c:out value="${product.product.description.friendlyUrl}"/>.html"><c:out value="${product.productName}"/></a>
+							</c:when>
+							<c:otherwise>
+								<span class="productName"><c:out value="${product.productName}"/></span>
+							</c:otherwise>
+							</c:choose>
+							
+							<div class="quantity"><c:out value="${product.orderedQuantity}"/></div>
+							<div class="totalPrice"><c:out value="${product.price}"/></div>
 							<div class="clearfix"></div>
 						</div>
-						<!-- /cart item -->
-
-						<!-- cart item -->
-						<div class="item">
-							<div class="cart_img"><img width="60" alt="" src=""></div>
-							<a class="product_name" href="shop-single.html">Great Black Shoes For Man and Only Man...</a>
-							<div class="total_price">$<span>32.00</span></div>
-							<div class="qty">1 x $32.56</div>
-							<div class="clearfix"></div>
-						</div>
-						<!-- /cart item -->
-
-						<!-- cart item -->
-						<div class="item">
-							<div class="cart_img"><img width="60" alt="" src=""></div>
-							<a class="product_name" href="shop-single.html">Pink Lady Perfect Shoes</a>
-							<div class="total_price">$<span>67.00</span></div>
-							<div class="qty">1 x $67.19</div>
-							<div class="clearfix"></div>
-						</div>
+						</c:forEach>
 						<!-- /cart item -->
 
 
 						<!-- cart total -->
 						<div class="total pull-right">
-							<small>
-								Shipping: $12.00
-							</small>
-
-							<span class="totalToPay styleSecondColor">
-								TOTAL: $132.00
-							</span>
-
+							<c:forEach items="${order.totals}" var="orderTotal" varStatus="counter">
+								<small>
+									<c:if test="${orderTotal.code=='refund'}"><font color="red"></c:if><s:message code="${orderTotal.code}" text="${orderTotal.code}"/><c:if test="${orderTotal.code=='refund'}"></font></c:if>
+									<span <c:if test="orderTotal.code=='total'">class="totalToPay"</c:if>><strong><c:if test="${orderTotal.code=='refund'}"><font color="red"></c:if><sm:monetary value="${orderTotal.value}" currency="${order.currencyModel}"/><c:if test="${orderTotal.code=='refund'}"></font></c:if></strong></span>
+								</small>
+								<br/>
+							</c:forEach>
 						</div>
 						<!-- /cart total -->
 
@@ -150,11 +150,5 @@ response.setDateHeader ("Expires", -1);
 
 
 
-
-
-		</div>
-		<!-- close row-fluid--> 
 	</div>
 	<!--close .container "main-content" -->
-	
-	<!-- http://theme.stepofweb.com/Alkaline/v1.0/shop-history-summary.html -->
