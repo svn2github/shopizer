@@ -17,6 +17,8 @@ response.setDateHeader ("Expires", -1);
 <%@page pageEncoding="UTF-8"%>
 
 
+//	//$('SelectorToPrint').printElement();
+
 
 
 	<div id="main-content" class="container clearfix">
@@ -25,7 +27,7 @@ response.setDateHeader ("Expires", -1);
 
 
 				<header class="page-header">
-					<h1><s:message code="label.order.details" text="Order details" />&nbsp;<c:out value="${order.id}"/></h1>
+					<h1><s:message code="label.order.details" text="Order details" />&nbsp;#&nbsp;<c:out value="${order.id}"/></h1>
 				</header>
 
 				
@@ -38,12 +40,14 @@ response.setDateHeader ("Expires", -1);
 						<div class="row-fluid">
 
 							<div class="col-md-8 col-sm-8 pull-left"><!-- left text -->
+								<!--
 								<p class="nomargin">
 									<fmt:formatDate type="both" dateStyle="long" value="${order.datePurchased}" />
 								</p>
 								<h3>
 									<s:message code="label.order.${order.orderStatus.value}" text="${order.orderStatus.value}" />
 								</h3>
+								-->
 							</div><!-- /left text -->
 
 							
@@ -55,15 +59,29 @@ response.setDateHeader ("Expires", -1);
 
 					</div>
 					
+					<div id="printableOrder" class="row-fluid">
 					
+					
+					<div class="row-fluid">
+					
+						<div class="col-md-12 col-sm-12 pull-left">
+						
+							
+							<h2><s:message code="label.entity.order" text="Order" />&nbsp;#&nbsp;<c:out value="${order.id}"/><br/></h2>
+							<p class="lead">
+							<fmt:formatDate type="both" dateStyle="long" value="${order.datePurchased}" /><br/>
+							<s:message code="label.order.${order.orderStatus.value}" text="${order.orderStatus.value}" />
+							</p>
+						</div>
+					</div>
 
 					<!-- BILLING and SHIPPING ADDRESS -->
 					<div class="row-fluid">
 						<div class="col-md-6 col-sm-6">
-							<c:if test="${not empty order.customer.billing}">
+							<c:if test="${not empty order.billing}">
 							<h5><strong><s:message code="label.customer.billingaddress" text="Billing address" /></strong></h5>
 							<p>
-								<c:set var="address" value="${order.customer.billing}" scope="request" />
+								<c:set var="address" value="${order.billing}" scope="request" />
 								<c:set var="addressType" value="billing" scope="request" />
 								<jsp:include page="/pages/shop/common/preBuiltBlocks/customerAddress.jsp"/>
 							</p>
@@ -71,10 +89,10 @@ response.setDateHeader ("Expires", -1);
 						</div>
 
 						<div class="col-md-6 col-sm-6">
-							<c:if test="${not empty customer.delivery}">
+							<c:if test="${not empty order.delivery}">
 							<h5><strong><s:message code="label.customer.shippingaddress" text="Shipping address" /></strong></h5>
 							<p>
-								<c:set var="address" value="${order.customer.delivery}" scope="request" />
+								<c:set var="address" value="${order.delivery}" scope="request" />
 								<c:set var="addressType" value="delivery" scope="request" />
 								<jsp:include page="/pages/shop/common/preBuiltBlocks/customerAddress.jsp"/>
 							</p>
@@ -85,7 +103,7 @@ response.setDateHeader ("Expires", -1);
 
 					<div id="orderTableTitle">
 						<h2>
-						Details
+						<s:message code="label.entity.details" text="Details"/>
 						</h2>
 					</div>
 		
@@ -97,7 +115,7 @@ response.setDateHeader ("Expires", -1);
 							<span class="productName"><s:message code="label.productedit.productname" text="Product name" /></span>
 							<span class="quantity"><s:message code="label.quantity" text="Quantity" /></span>
 							<span class="totalPrice"><s:message code="label.generic.price" text="Price" /></span>
-							<span class="totalPrice"><s:message code="order.total.subtotal" text="Sub-total" /></span>
+							<span class="subTotal"><s:message code="order.total.subtotal" text="Sub-total" /></span>
 							<div class="clearfix"></div>
 						</div>
 						<!-- /cart header -->
@@ -121,6 +139,7 @@ response.setDateHeader ("Expires", -1);
 							
 							<div class="quantity"><c:out value="${product.orderedQuantity}"/></div>
 							<div class="totalPrice"><c:out value="${product.price}"/></div>
+							<div class="subTotal"><c:out value="${product.subTotal}"/></div>
 							<div class="clearfix"></div>
 						</div>
 						</c:forEach>
@@ -130,9 +149,9 @@ response.setDateHeader ("Expires", -1);
 						<!-- cart total -->
 						<div class="total pull-right">
 							<c:forEach items="${order.totals}" var="orderTotal" varStatus="counter">
-								<small>
-									<c:if test="${orderTotal.code=='refund'}"><font color="red"></c:if><s:message code="${orderTotal.code}" text="${orderTotal.code}"/><c:if test="${orderTotal.code=='refund'}"></font></c:if>
-									<span <c:if test="orderTotal.code=='total'">class="totalToPay"</c:if>><strong><c:if test="${orderTotal.code=='refund'}"><font color="red"></c:if><sm:monetary value="${orderTotal.value}" currency="${order.currencyModel}"/><c:if test="${orderTotal.code=='refund'}"></font></c:if></strong></span>
+								<small class="totalItem">
+									<c:if test="${orderTotal.code=='refund'}"><font color="red"></c:if><s:message code="${orderTotal.code}" text="${orderTotal.code}"/>:<c:if test="${orderTotal.code=='refund'}"></font></c:if>
+									<span <c:if test="orderTotal.code=='total'">class="totalToPay"</c:if>><strong><c:if test="${orderTotal.code=='refund'}"><font color="red"></c:if><sm:monetary value="${orderTotal.value}" /><c:if test="${orderTotal.code=='refund'}"></font></c:if></strong></span>
 								</small>
 								<br/>
 							</c:forEach>

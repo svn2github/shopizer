@@ -18,6 +18,7 @@ response.setDateHeader ("Expires", -1);
 <script src="<c:url value="/resources/js/jquery.maskedinput.min.js" />"></script>
 <script src="<c:url value="/resources/js/shop-customer.js" />"></script>
 <script src="<c:url value="/resources/js/address.js" />"></script>
+<script src="<c:url value="/resources/js/jquery.printElement.min.js" />"></script>
 
 <script type="text/javascript">
 
@@ -26,6 +27,8 @@ var RecaptchaOptions = {
 };
 
 $(document).ready(function() {
+	
+
 	
 	getZones($('#registration_country').val(),'<c:out value="${customer.billing.zone}" />',isFormValid);
 	$("#hidden_zones").hide();
@@ -204,7 +207,7 @@ function isFormValid() {
 						</div>
 
 						<div class="form-actions">
-							<input id="submitRegistration" type="submit" value="<s:message code="label.generic.register" text="Register"/>" name="register" class="btn btn-primary btn-large">
+							<input id="submitRegistration" type="submit" value="<s:message code="label.generic.register" text="Register"/>" name="register" class="btn btn-large">
 						</div>
 					</fieldset>
 				</form:form>

@@ -70,7 +70,7 @@ $(document).ready(function() {
 		'<c:out value="${order.id}"/>', // order ID - required 
 		'<c:out value="${product.sku}" />', // SKU/code - required 
 		'<c:out value="${product.productName}" />', // product name 
-		'<sm:monetary value="${product.price}" />', // unit price - required 
+		'<c:out value="${product.price}" />', // unit price - required 
 		'<c:out value="${product.orderedQuantity}" />' // quantity - required 
 		]); 
 

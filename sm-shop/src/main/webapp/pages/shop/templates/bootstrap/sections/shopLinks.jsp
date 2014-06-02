@@ -36,7 +36,7 @@
 			<tr id="{{productId}}" class="cart-product">
 				<td>
 			{{#image}}
-					<img width="40" height="40" src="{{contextPath}}{{image}}">
+					<img width="40" src="{{contextPath}}{{image}}">
 			{{/image}}
 			{{^image}}
 					&nbsp

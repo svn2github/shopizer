@@ -196,7 +196,7 @@ function sendContact(){
 										</div>
 
 									<div class="form-actions">
-										<input id="submitContact" type="button" value="<s:message code="label.generic.send" text="Send"/>" name="register" class="btn btn-primary btn-large">
+										<input id="submitContact" type="button" value="<s:message code="label.generic.send" text="Send"/>" name="register" class="btn btn-large">
 									</div>
 									</fieldset>
 			</form:form>
