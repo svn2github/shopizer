@@ -233,6 +233,9 @@ public class InvoiceTestCase extends AbstractSalesManagerCoreTestCase {
 		order.setCurrency(currency);
 		order.setLastModified(new Date());
 		order.setBilling(billing);
+		
+		Locale l = Locale.CANADA;
+		order.setLocale(l);
 
 
 		order.setCurrencyValue(new BigDecimal(0.98));//compared to based currency (not necessary)

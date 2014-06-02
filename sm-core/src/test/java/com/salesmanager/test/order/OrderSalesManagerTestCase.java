@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -140,11 +141,16 @@ public class OrderSalesManagerTestCase extends AbstractSalesManagerCoreTestCase 
 		OrderStatusHistory orderStatusHistory = new OrderStatusHistory();
 		
 		
+		
+		
 		Order order = new Order();
 		order.setDatePurchased(new Date());
 		order.setCurrency(currency);
 		order.setLastModified(new Date());
 		order.setBilling(billing);
+		
+		Locale l = Locale.CANADA;
+		order.setLocale(l);
 
 
 		order.setCurrencyValue(new BigDecimal(0.98));//compared to based currency (not necessary)
