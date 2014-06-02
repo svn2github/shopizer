@@ -240,7 +240,7 @@ form input.valid {
 .alert-custom {
     border-bottom: 1px solid #EEEEEE;
     background-color: #FFFFFF;
-    padding-bottom: 5px;
+    padding-bottom: 20px;
     margin-bottom:18px;
 }
 
@@ -256,13 +256,15 @@ form input.valid {
     float: left;
     padding: 10px;
     text-align: left;
-    width: 100px;
+    width: 15%;
 }
 
 #cartContent .productName {
     float: left;
     padding: 10px;
-    width: 50%;
+    font-size: 15px;
+    text-align: left;
+    width: 40%;
 }
 
 #cartContent .quantity {
@@ -270,21 +272,35 @@ form input.valid {
     font-size: 15px;
     padding: 10px;
     text-align: center;
-    width: 160px;
+    width: 10%;
 }
 
 #cartContent .totalPrice {
     float: right;
     font-size: 15px;
     font-weight: bold;
-    line-height: 30px;
     padding: 10px;
     text-align: right;
-    width: 150px;
+    width: 10%;
+}
+
+
+#cartContent .subTotal {
+    float: right;
+    font-size: 15px;
+    padding: 10px;
+    text-align: right;
+    width: 10%;
 }
 
 #cartContent .total {
 	text-align: right;
+	padding: 10px;
+}
+
+.totalItem {
+	font-size: 15px;
+    padding: 10px;
 }
 
 
