@@ -82,7 +82,7 @@ response.setDateHeader ("Expires", -1);
 									
 									<ul class="dropdown-menu">
 										<li><a href="<c:url value="/admin/users/displayUser.html" />"><s:message code="label.my.profile" text="My profile" /></a></li>
-										<li><a href="javascript:;">TODO //Language</a></li>
+										<!--<li><a href="javascript:;">TODO //Language</a></li>-->
 										<li class="divider"></li>
 										<li>
 											<c:url value="/admin/j_spring_security_logout" var="logoutUrl"/>
