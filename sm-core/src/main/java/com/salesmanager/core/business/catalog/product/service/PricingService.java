@@ -2,6 +2,7 @@ package com.salesmanager.core.business.catalog.product.service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Locale;
 
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.attribute.ProductAttribute;
@@ -9,6 +10,7 @@ import com.salesmanager.core.business.catalog.product.model.price.FinalPrice;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.generic.exception.ServiceException;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.reference.currency.model.Currency;
 
 
 /**
@@ -74,6 +76,18 @@ public interface PricingService {
 	 * @throws ServiceException
 	 */
 	String getDisplayAmount(BigDecimal amount, MerchantStore store)
+			throws ServiceException;
+	
+	/**
+	 * Method to be used when building an amount formatted with the appropriate currency
+	 * @param amount
+	 * @param locale
+	 * @param currency
+	 * @param store
+	 * @return
+	 * @throws ServiceException
+	 */
+	String getDisplayAmount(BigDecimal amount, Locale locale, Currency currency, MerchantStore store)
 			throws ServiceException;
 	
 	/**

@@ -3,6 +3,7 @@ package com.salesmanager.core.business.order.model;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -24,6 +25,7 @@ import javax.persistence.TemporalType;
 import javax.validation.Valid;
 
 import org.hibernate.annotations.OrderBy;
+import org.hibernate.annotations.Type;
 
 import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.common.model.Delivery;
@@ -121,7 +123,12 @@ public class Order extends SalesManagerEntity<Long, Order> {
 	@JoinColumn(name = "CURRENCY_ID")
 	private Currency currency;
 	
+	@Type(type="locale")  
+	@Column (name ="LOCALE")
+	private Locale locale; 
 	
+
+
 	@ManyToOne(targetEntity = MerchantStore.class)
 	@JoinColumn(name="MERCHANTID")
 	private MerchantStore merchant;
@@ -345,6 +352,14 @@ public class Order extends SalesManagerEntity<Long, Order> {
 
 	public void setOrderType(OrderType orderType) {
 		this.orderType = orderType;
+	}
+	
+	public Locale getLocale() {
+		return locale;
+	}
+
+	public void setLocale(Locale locale) {
+		this.locale = locale;
 	}
 
 }

@@ -42,8 +42,6 @@ public class ProductPriceUtils {
 	private final static char DECIMALPOINT = '.';
 	private final static char THOUSANDPOINT = ',';
 	
-	private final static Locale DEFAULT_LOCALE = Locale.US;
-	private final static Currency DEFAULT_CURRENCY = Currency.getInstance(Locale.US);
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProductPriceUtils.class);
 
@@ -194,7 +192,7 @@ public class ProductPriceUtils {
 		NumberFormat nf = null;
 
 			
-		nf = NumberFormat.getInstance(DEFAULT_LOCALE);
+		nf = NumberFormat.getInstance(Constants.DEFAULT_LOCALE);
 
 		nf.setMaximumFractionDigits(Integer.parseInt(Character
 					.toString(DECIMALCOUNT)));
@@ -225,8 +223,8 @@ public class ProductPriceUtils {
 		
 		
 		
-		Currency currency = DEFAULT_CURRENCY;
-		Locale locale = DEFAULT_LOCALE; 
+		Currency currency = Constants.DEFAULT_CURRENCY;
+		Locale locale = Constants.DEFAULT_LOCALE; 
 		
 		try {
 
@@ -253,7 +251,25 @@ public class ProductPriceUtils {
 
     }
 	
+	
+	public String getFormatedAmountWithCurrency(Locale locale, com.salesmanager.core.business.reference.currency.model.Currency currency, BigDecimal amount) throws Exception {
+		if(amount==null) {
+			return "";
+		}
 
+		Currency curr = currency.getCurrency();
+
+
+		
+		NumberFormat currencyInstance = null;
+
+		currencyInstance = NumberFormat.getCurrencyInstance(locale);
+		currencyInstance.setCurrency(curr);
+	    return currencyInstance.format(amount.doubleValue());
+		
+
+    }
+	
 
 	
 	/**
@@ -276,7 +292,7 @@ public class ProductPriceUtils {
 
 		
 		Currency currency = store.getCurrency().getCurrency();
-		nf = NumberFormat.getInstance(DEFAULT_LOCALE);
+		nf = NumberFormat.getInstance(Constants.DEFAULT_LOCALE);
 		nf.setMaximumFractionDigits(Integer.parseInt(Character
 				.toString(DECIMALCOUNT)));
 		nf.setMinimumFractionDigits(Integer.parseInt(Character
@@ -306,7 +322,7 @@ public class ProductPriceUtils {
 
 		
 		Currency curr = currency.getCurrency();
-		nf = NumberFormat.getInstance(DEFAULT_LOCALE);
+		nf = NumberFormat.getInstance(Constants.DEFAULT_LOCALE);
 		nf.setMaximumFractionDigits(Integer.parseInt(Character
 				.toString(DECIMALCOUNT)));
 		nf.setMinimumFractionDigits(Integer.parseInt(Character
@@ -314,7 +330,9 @@ public class ProductPriceUtils {
 		nf.setCurrency(curr);
 
 
-		return nf.format(amount);
+		String stringNumber = nf.format(amount);
+		
+		return stringNumber;
 	}
 
 	/**
@@ -332,7 +350,7 @@ public class ProductPriceUtils {
 
 			Currency currency = store.getCurrency().getCurrency();
 			
-			nf = NumberFormat.getInstance(DEFAULT_LOCALE);//TODO use locale
+			nf = NumberFormat.getInstance(locale);
 			nf.setCurrency(currency);
 			nf.setMaximumFractionDigits(Integer.parseInt(Character
 					.toString(DECIMALCOUNT)));
@@ -410,7 +428,7 @@ public class ProductPriceUtils {
 
 			if (matcher.matches()) {
 
-				Locale locale = DEFAULT_LOCALE;
+				Locale locale = Constants.DEFAULT_LOCALE;
 				//TODO validate amount using old test case
 				if (DECIMALPOINT == ',') {
 					locale = Locale.GERMAN;
