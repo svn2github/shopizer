@@ -31,7 +31,7 @@
 		"type":"moneyorder",
 		"version":"",
 		"regions": ["*"],
-		"moduleImage":"moneyorder.png"
+		"image":"moneyorder.gif"
 	},
 	{
 		"module": "PAYMENT",
