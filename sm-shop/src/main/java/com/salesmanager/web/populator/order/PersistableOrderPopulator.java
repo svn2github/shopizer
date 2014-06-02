@@ -32,6 +32,7 @@ import com.salesmanager.web.entity.customer.PersistableCustomer;
 import com.salesmanager.web.entity.order.OrderTotal;
 import com.salesmanager.web.entity.order.PersistableOrder;
 import com.salesmanager.web.entity.order.PersistableOrderProduct;
+import com.salesmanager.web.utils.LocaleUtils;
 
 public class PersistableOrderPopulator extends
 		AbstractDataPopulator<PersistableOrder, Order> {
@@ -84,6 +85,8 @@ public class PersistableOrderPopulator extends
 					
 				} 
 			}
+			
+			target.setLocale(LocaleUtils.getLocale(store));
 			
 			CreditCard creditCard = source.getCreditCard();
 			if(creditCard!=null) {

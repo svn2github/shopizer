@@ -1,5 +1,6 @@
 package com.salesmanager.web.populator.order;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +43,18 @@ public class ReadableOrderProductPopulator extends
 		}
 		target.setProductName(source.getProductName());
 		target.setSku(source.getSku());
+		
+		//subtotal = price * quantity
+		BigDecimal subTotal = source.getOneTimeCharge();
+		subTotal = subTotal.multiply(new BigDecimal(source.getProductQuantity()));
+		
+		try {
+			String subTotalPrice = pricingService.getDisplayAmount(subTotal, store);
+			target.setSubTotal(subTotalPrice);
+		} catch(Exception e) {
+			throw new ConversionException("Cannot format price",e);
+		}
+		
 		
 		if(productService!=null && pricingService!=null) {
 			String productSku = source.getSku();

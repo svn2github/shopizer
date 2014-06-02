@@ -11,6 +11,7 @@ public class ReadableOrderProduct extends OrderProductEntity implements
 	private static final long serialVersionUID = 1L;
 	private String productName;
 	private String price;
+	private String subTotal;
 	
 	
 	
@@ -39,6 +40,12 @@ public class ReadableOrderProduct extends OrderProductEntity implements
 	}
 	public void setPrice(String price) {
 		this.price = price;
+	}
+	public String getSubTotal() {
+		return subTotal;
+	}
+	public void setSubTotal(String subTotal) {
+		this.subTotal = subTotal;
 	}
 
 

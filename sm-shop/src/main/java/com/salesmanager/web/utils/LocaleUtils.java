@@ -16,6 +16,28 @@ public class LocaleUtils {
 		
 	}
 	
+	/**
+	 * Creates a Locale object for currency format only with country code
+	 * This method ignoes the language
+	 * @param store
+	 * @return
+	 */
+	public static Locale getLocale(MerchantStore store) {
+		
+		Locale defaultLocale = com.salesmanager.core.constants.Constants.DEFAULT_LOCALE;
+		Locale[] locales = Locale.getAvailableLocales();
+		for(int i = 0; i< locales.length; i++) {
+			Locale l = locales[i];
+			if(l.getISO3Country().equals(store.getCurrency().getCode())) {
+				defaultLocale = l;
+				break;
+			}
+		}
+		
+		return defaultLocale;
+		
+	}
+	
 	public static Language getRequestLanguage(HttpServletRequest request) {
 		
 		Language language = (Language) request.getSession().getAttribute(Constants.LANGUAGE);

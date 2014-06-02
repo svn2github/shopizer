@@ -60,6 +60,7 @@ import com.salesmanager.core.business.user.model.Group;
 import com.salesmanager.core.business.user.model.GroupType;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.web.constants.Constants;
+import com.salesmanager.web.utils.LocaleUtils;
 
 @Component
 public class InitStoreData implements InitData {
@@ -658,6 +659,8 @@ public class InitStoreData implements InitData {
 			order.setLastModified(new Date());
 			order.setBilling(billing);
 
+			
+			order.setLocale(LocaleUtils.getLocale(store));
 
 			order.setCurrencyValue(new BigDecimal(0.98));//compared to based currency (not necessary)
 			order.setCustomerId(customer.getId());

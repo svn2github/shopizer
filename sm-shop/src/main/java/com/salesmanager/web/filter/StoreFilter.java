@@ -127,8 +127,8 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 			 * where is my stuff
 			 */
 			String currentPath = System.getProperty("user.dir");
-			System.out.println("*** user.dir ***" + currentPath);
-			LOGGER.debug("*** user.dir ***" + currentPath);
+			//System.out.println("*** user.dir ***" + currentPath);
+			//LOGGER.debug("*** user.dir ***" + currentPath);
 
 			try {
 
@@ -221,7 +221,7 @@ public class StoreFilter extends HandlerInterceptorAdapter {
 				Language language = (Language) request.getSession().getAttribute(Constants.LANGUAGE);
 				if(language==null) {
 					
-					//TODO get the Locale from Spring API, is it simply request.getLocale() ???
+					//TODO get the Locale from Spring API, is it simply request.getLocale()
 					//if so then based on the Locale language locale.getLanguage() get the appropriate Language
 					//object as represented below
 					

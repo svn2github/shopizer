@@ -31,6 +31,7 @@ public class ReadableCustomerPopulator extends
 		target.setEmailAddress(source.getEmailAddress());
 		if(source.getBilling()!=null) {
 			Address address = new Address();
+			address.setAddress(source.getBilling().getAddress());
 			address.setCity(source.getBilling().getCity());
 			address.setCompany(source.getBilling().getCompany());
 			address.setFirstName(source.getBilling().getFirstName());
@@ -53,6 +54,7 @@ public class ReadableCustomerPopulator extends
 		if(source.getDelivery()!=null) {
 			Address address = new Address();
 			address.setCity(source.getDelivery().getCity());
+			address.setAddress(source.getDelivery().getAddress());
 			address.setCompany(source.getDelivery().getCompany());
 			address.setFirstName(source.getDelivery().getFirstName());
 			address.setLastName(source.getDelivery().getLastName());
