@@ -141,7 +141,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 			throws ServiceException {
 		Product product =  productDao.getProductForLocale(productId, language, locale);
 		
-		//TODO still need this
+
 		CatalogServiceHelper.setToAvailability(product, locale);
 		CatalogServiceHelper.setToLanguage(product, language.getId());
 		return product;
@@ -199,33 +199,7 @@ public class ProductServiceImpl extends SalesManagerEntityServiceImpl<Long, Prod
 	}
 		
 
-	//@Override
-/*	public ProductList getProductsForLocale(Category category,
-			Language language, Locale locale, int startIndex, int maxCount)
-			throws ServiceException {
 
-		if(category==null) {
-			throw new ServiceException("The category is null");
-		}
-		
-		//Get the category list
-		StringBuilder lineage = new StringBuilder().append(category.getLineage()).append(category.getId()).append("/");
-		List<Category> categories = categoryService.listByLineage(category.getMerchantStore(),lineage.toString());
-		Set<Long> categoryIds = new HashSet<Long>();
-		for(Category c : categories) {
-			
-			categoryIds.add(c.getId());
-			
-		}
-		
-		categoryIds.add(category.getId());
-		
-		//Get products
-		ProductList productList = productDao.getProductsForLocale(category.getMerchantStore(), categoryIds, language, locale, startIndex, maxCount);
-		
-		return productList;
-		
-	}*/
 	
 
 	@Override
