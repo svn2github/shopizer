@@ -444,6 +444,7 @@ public class ProductController {
 				ppd.setName(ProductPriceDescription.DEFAULT_PRICE_DESCRIPTION);
 				productPriceDescriptions.add(ppd);
 			}
+			newProductPrice.setDescriptions(productPriceDescriptions);
 		}
 		
 		newProduct.setMerchantStore(store);

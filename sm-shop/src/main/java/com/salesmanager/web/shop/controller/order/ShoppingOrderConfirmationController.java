@@ -21,7 +21,6 @@ import com.salesmanager.core.business.catalog.product.service.PricingService;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.order.model.Order;
-import com.salesmanager.core.business.order.model.orderproduct.OrderProduct;
 import com.salesmanager.core.business.order.model.orderproduct.OrderProductDownload;
 import com.salesmanager.core.business.order.service.OrderService;
 import com.salesmanager.core.business.order.service.orderproduct.OrderProductDownloadService;
@@ -34,13 +33,9 @@ import com.salesmanager.core.business.reference.zone.service.ZoneService;
 import com.salesmanager.core.business.shipping.service.ShippingService;
 import com.salesmanager.core.business.shoppingcart.service.ShoppingCartService;
 import com.salesmanager.web.constants.Constants;
-import com.salesmanager.web.entity.customer.ReadableCustomer;
 import com.salesmanager.web.entity.order.ReadableOrder;
-import com.salesmanager.web.entity.order.ReadableOrderProduct;
 import com.salesmanager.web.entity.order.ReadableOrderProductDownload;
-import com.salesmanager.web.populator.order.ReadableOrderPopulator;
 import com.salesmanager.web.populator.order.ReadableOrderProductDownloadPopulator;
-import com.salesmanager.web.populator.order.ReadableOrderProductPopulator;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
@@ -131,9 +126,7 @@ public class ShoppingOrderConfirmationController extends AbstractController {
 			LOGGER.warn("Store id [" + store.getId() + "] differs from order.store.id [" + order.getMerchant().getId() + "]");
 			return new StringBuilder().append("redirect:").append(Constants.SHOP_URI).toString();
 		}
-		
-		ReadableCustomer customer = customerFacade.getCustomerById(order.getCustomerId(), store, language);
-		
+
 		if(super.getSessionAttribute(Constants.ORDER_ID_TOKEN, request)!=null) {
 			//set this unique token for performing unique operations in the confirmation
 			model.addAttribute("confirmation", "confirmation");
@@ -151,24 +144,9 @@ public class ShoppingOrderConfirmationController extends AbstractController {
         String orderEmailMessage = messages.getMessage("label.checkout.email", orderEmailParams, locale);
 		model.addAttribute("orderemail", orderEmailMessage);
 		
-		ReadableOrderPopulator orderPopulator = new ReadableOrderPopulator();
-		ReadableOrder readableOrder = new ReadableOrder();
-		orderPopulator.populate(order, readableOrder,  store, language);
+		ReadableOrder readableOrder = orderFacade.getReadableOrder(orderId, store, language);
 		
-		List<ReadableOrderProduct> orderProducts = new ArrayList<ReadableOrderProduct>();
-		for(OrderProduct p : order.getOrderProducts()) {
-			ReadableOrderProductPopulator orderProductPopulator = new ReadableOrderProductPopulator();
-			orderProductPopulator.setLocale(locale);
-			orderProductPopulator.setProductService(productService);
-			orderProductPopulator.setPricingService(pricingService);
-			ReadableOrderProduct orderProduct = new ReadableOrderProduct();
-			orderProductPopulator.populate(p, orderProduct, store, language);
-			orderProducts.add(orderProduct);
-		}
-		
-		readableOrder.setProducts(orderProducts);
-		
-		readableOrder.setCustomer(customer);
+
 		
 		//resolve country and Zone for GA
 		String countryCode = readableOrder.getCustomer().getBilling().getCountry();

@@ -60,7 +60,7 @@ public class ShoppingOrderDownloadController extends AbstractController {
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 		
 		
-		FileContentType fileType = FileContentType.STATIC_FILE;
+		FileContentType fileType = FileContentType.PRODUCT_DIGITAL;
 		
 		//get customer and check order
 		Order order = orderService.getById(orderId);
@@ -94,6 +94,7 @@ public class ShoppingOrderDownloadController extends AbstractController {
 		
 		
 		if(file!=null) {
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 			return file.getFile().toByteArray();
 		} else {
 			LOGGER.warn("Image not found for OrderProductDownload id " + id);

@@ -1,8 +1,12 @@
 package com.salesmanager.web.shop.controller.customer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +23,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
+import com.salesmanager.core.business.order.model.orderproduct.OrderProductDownload;
+import com.salesmanager.core.business.order.service.orderproduct.OrderProductDownloadService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.core.business.reference.language.service.LanguageService;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.order.ReadableOrder;
 import com.salesmanager.web.entity.order.ReadableOrderList;
+import com.salesmanager.web.entity.order.ReadableOrderProductDownload;
+import com.salesmanager.web.populator.order.ReadableOrderProductDownloadPopulator;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
@@ -45,6 +53,9 @@ public class CustomerOrdersController extends AbstractController {
     
     @Autowired
     private CustomerFacade customerFacade;
+    
+	@Autowired
+	private OrderProductDownloadService orderProdctDownloadService;
     
     
 
@@ -91,9 +102,12 @@ public class CustomerOrdersController extends AbstractController {
 
 	@PreAuthorize("hasRole('AUTH_CUSTOMER')")
     @RequestMapping(value="/order.html", method={RequestMethod.GET,RequestMethod.POST})
-    public String order(final Model model,final HttpServletRequest request,@RequestParam(value = "orderId" ,required=true) final String orderId) throws Exception{
+    public String orderDetails(final Model model,final HttpServletRequest request,@RequestParam(value = "orderId" ,required=true) final String orderId) throws Exception{
         
 		MerchantStore store = getSessionAttribute(Constants.MERCHANT_STORE, request);
+		
+		Language language = (Language)request.getAttribute(Constants.LANGUAGE);
+		
 		if(StringUtils.isBlank( orderId )){
         	LOGGER.error( "Order Id can not be null or empty" );
         }
@@ -125,6 +139,19 @@ public class CustomerOrdersController extends AbstractController {
     	ReadableOrder order = orderFacade.getReadableOrder(lOrderId, store, customer.getDefaultLanguage());
 
         model.addAttribute("order", order);
+        
+		//check if any downloads exist for this order
+		List<OrderProductDownload> orderProductDownloads = orderProdctDownloadService.getByOrderId(order.getId());
+		if(CollectionUtils.isNotEmpty(orderProductDownloads)) {
+			ReadableOrderProductDownloadPopulator populator = new ReadableOrderProductDownloadPopulator();
+			List<ReadableOrderProductDownload> downloads = new ArrayList<ReadableOrderProductDownload>();
+			for(OrderProductDownload download : orderProductDownloads) {
+				ReadableOrderProductDownload view = new ReadableOrderProductDownload();
+				populator.populate(download, view,  store, language);
+				downloads.add(view);
+			}
+			model.addAttribute("downloads", downloads);
+		}
 
         StringBuilder template = new StringBuilder().append(ControllerConstants.Tiles.Customer.customerOrder).append(".").append(store.getStoreTemplate());
         return template.toString();

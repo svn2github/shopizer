@@ -7,9 +7,12 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -22,6 +25,7 @@ import com.salesmanager.core.business.content.model.Content;
 import com.salesmanager.core.business.content.model.ContentDescription;
 import com.salesmanager.core.business.content.service.ContentService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
+import com.salesmanager.core.business.merchant.service.MerchantStoreService;
 import com.salesmanager.core.business.reference.language.model.Language;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.catalog.product.ReadableProduct;
@@ -48,12 +52,14 @@ public class LandingController {
 	
 	@Autowired
 	private PricingService pricingService;
+	
+	@Autowired
+	private MerchantStoreService merchantService;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(LandingController.class);
 
 	
-	//@Autowired
-	//CategoryService categoryService;
-	
-	@RequestMapping(value={"/shop/home.html","/shop/","/shop"}, method=RequestMethod.GET)
+	@RequestMapping(value={Constants.SHOP_URI + "/home.html",Constants.SHOP_URI +"/", Constants.SHOP_URI}, method=RequestMethod.GET)
 	public String displayLanding(Model model, HttpServletRequest request, HttpServletResponse response, Locale locale) throws Exception {
 		
 		Language language = (Language)request.getAttribute(Constants.LANGUAGE);
@@ -121,5 +127,30 @@ public class LandingController {
 
 		return template.toString();
 	}
+	
+	@RequestMapping( value=Constants.SHOP_URI + "/{store}", method=RequestMethod.GET)
+	public String displayStoreLanding(@PathVariable final String store, HttpServletRequest request, HttpServletResponse response) {
+		
+		try {
+			
+			request.getSession().invalidate();
+			request.getSession().removeAttribute(Constants.MERCHANT_STORE);
+			
+			MerchantStore merchantStore = merchantService.getByCode(store);
+			if(merchantStore!=null) {
+				request.getSession().setAttribute(Constants.MERCHANT_STORE, merchantStore);
+			} else {
+				LOGGER.error("MerchantStore does not exist for store code " + store);
+			}
+			
+		} catch(Exception e) {
+			LOGGER.error("Error occured while getting store code " + store, e);
+		}
+		
+
+		
+		return "redirect:" + Constants.SHOP_URI;
+	}
+		
 
 }

@@ -35,7 +35,7 @@ public class FilePathUtils {
 	}
 	
 	public static String buildOrderDownloadProductFilePath(MerchantStore store, ReadableOrderProductDownload digitalProduct, Long orderId) {
-		return new StringBuilder().append(Constants.ORDER_DOWNLOAD_URI).append(Constants.SLASH).append(orderId).append(Constants.SLASH).append(digitalProduct.getId()).append(Constants.URL_EXTENSION).toString();
+		return new StringBuilder().append(Constants.SHOP_URI).append(Constants.ORDER_DOWNLOAD_URI).append(Constants.SLASH).append(orderId).append(Constants.SLASH).append(digitalProduct.getId()).append(Constants.URL_EXTENSION).toString();
 	}
 	
 	/**
