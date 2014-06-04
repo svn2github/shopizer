@@ -18,7 +18,7 @@ response.setDateHeader ("Expires", -1);
 <script src="<c:url value="/resources/js/jquery.maskedinput.min.js" />"></script>
 <script src="<c:url value="/resources/js/shop-customer.js" />"></script>
 <script src="<c:url value="/resources/js/address.js" />"></script>
-<script src="<c:url value="/resources/js/jquery.printElement.min.js" />"></script>
+
 
 <script type="text/javascript">
 

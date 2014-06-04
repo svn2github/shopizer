@@ -16,9 +16,16 @@ response.setDateHeader ("Expires", -1);
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
 
+<script src="<c:url value="/resources/js/jquery.printElement.min.js" />"></script>
 
-//	//$('SelectorToPrint').printElement();
+<script type="text/javascript">
 
+function print() {
+	$('#printableOrder').printElement();
+	//https://github.com/jasonday/printThis
+}
+
+</script>
 
 
 	<div id="main-content" class="container clearfix">
@@ -40,19 +47,30 @@ response.setDateHeader ("Expires", -1);
 						<div class="row-fluid">
 
 							<div class="col-md-8 col-sm-8 pull-left"><!-- left text -->
-								<!--
-								<p class="nomargin">
-									<fmt:formatDate type="both" dateStyle="long" value="${order.datePurchased}" />
-								</p>
-								<h3>
-									<s:message code="label.order.${order.orderStatus.value}" text="${order.orderStatus.value}" />
-								</h3>
-								-->
+
+								
+								          <c:if test="${downloads!=null}">
+									          	<p class="nomargin">
+									          	<c:choose>
+									          		<c:when test="${order.orderStatus.value=='processed'}">
+									          		    <strong><s:message code="label.checkout.downloads.completed" text="label.checkout.downloads.completed"/></strong><br/>
+									          			<c:forEach items="${downloads}" var="download">
+									          				<a href="<sm:orderProductDownload productDownload="${download}" orderId="${order.id}"/>"><c:out value="${download.fileName}" /></a>
+									          			</c:forEach>
+									          		</c:when>
+									          		<c:otherwise>
+														<s:message code="label.checkout.downloads.processing" text="*** An email with your file(s) download instructions will be sent once the payment for this order will be completed."/>
+									          		</c:otherwise>
+									          	</c:choose>
+												</p>
+									       </c:if>
+								
+								
 							</div><!-- /left text -->
 
 							
 							<div class="col-md-4 col-sm-4 text-right pull-right">
-								<a onclick="window.print();" class="btn btn-large" href="#"><s:message code="label.generic.print" text="Print" /></a>
+								<a onclick="print();" class="btn btn-large" href="#"><s:message code="label.generic.print" text="Print" /></a>
 							</div>
 
 						</div>

@@ -29,6 +29,23 @@
          </attribute>
 </tag>
 
+
+<tag>
+ 		 <!-- Builds a content block -->
+         <name>pageContent</name>
+         <tag-class>com.salesmanager.web.tags.PageContentTag</tag-class>
+         <body-content>scriptless</body-content>
+
+ 
+         <attribute>
+                 <name>contentCode</name>
+                 <required>true</required>
+                 <rtexprvalue>true</rtexprvalue>
+                 <type>java.lang.String</type>
+         </attribute>
+
+</tag>
+
 <tag>
  		 <!-- Builds the manufacturer image URL -->
          <name>manufacturerImage</name>
