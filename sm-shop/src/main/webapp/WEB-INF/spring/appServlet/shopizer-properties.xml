@@ -28,7 +28,7 @@
 				<prop key="PRODUCT_IMAGE_MAX_SIZE">9000000</prop>
 				<prop key="IMAGE_FORMATS">jpg|png|gif</prop>
 				
-				<prop key="POPULATE_TEST_DATA">true</prop>
+				<prop key="POPULATE_TEST_DATA">false</prop>
 				
 				<prop key="ORDER_SCHEME">http</prop>
 				<prop key="CONTEXT_PATH">sm-shop</prop>

@@ -72,7 +72,7 @@ response.setDateHeader ("Expires", -1);
 	}
  
  	function loadCategoryProducts() {
- 		var url = '<%=request.getContextPath()%>/shop/services/products/page/' + START_COUNT_PRODUCTS + '/' + MAX_PRODUCTS + '/<c:out value="${requestScope.MERCHANT_STORE.code}"/>/<c:out value="${requestScope.LANGUAGE.code}"/>/<c:out value="${category.description.friendlyUrl}"/>.html';
+ 		var url = '<%=request.getContextPath()%>/services/public/products/page/' + START_COUNT_PRODUCTS + '/' + MAX_PRODUCTS + '/<c:out value="${requestScope.MERCHANT_STORE.code}"/>/<c:out value="${requestScope.LANGUAGE.code}"/>/<c:out value="${category.description.friendlyUrl}"/>.html';
 	 	
  		if(filter!=null) {
  			url = url + '/filter=' + filter + '/filter-value=' + filterValue +'';
@@ -121,12 +121,22 @@ response.setDateHeader ("Expires", -1);
 
     <jsp:include page="/pages/shop/templates/bootstrap/sections/breadcrumb.jsp" />
  
-
+	   <c:if test="${category.description.description!=null}">
+	   		<!-- category description -->
+		   	<div class="row-fluid">
+		   	<p>
+		   		<c:out value="${category.description.description}"/>
+		   	</p>
+		   	</div>
+	   
+	   </c:if>
 
 	<div class="row-fluid">
 	
 	
 	   <div class="span12">
+	   
+
       	
       	<!-- left column -->
         <div class="span3">

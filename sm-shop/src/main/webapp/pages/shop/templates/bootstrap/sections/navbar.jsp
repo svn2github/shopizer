@@ -30,7 +30,7 @@ $(document).ready(function() {
 
 
 	    remote: {
-    		url: '<c:url value="/shop/services/search/${requestScope.MERCHANT_STORE.code}/${requestScope.LANGUAGE.code}/autocomplete.html"/>?q=%QUERY',
+    		url: '<c:url value="/services/public/search/${requestScope.MERCHANT_STORE.code}/${requestScope.LANGUAGE.code}/autocomplete.html"/>?q=%QUERY',
         	filter: function (parsedResponse) {
             	// parsedResponse is the array returned from your backend
             	console.log(parsedResponse);
@@ -65,7 +65,7 @@ $(document).ready(function() {
 				<div class="span4 pull-left">
 						<nav class="logo">
 							 <c:choose>
-	                		<c:when test="${requestScope.MERCHANT_STORE.storeLogo!=null}">
+	                		<c:when test="${not empty requestScope.MERCHANT_STORE.storeLogo}">
 	                			<img class="logoImage" src="<sm:storeLogo/>"/>
 	                		</c:when>
 	                		<c:otherwise>
