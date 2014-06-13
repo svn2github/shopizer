@@ -14,10 +14,8 @@ public class ContactForm {
 	@NotEmpty
 	private String comment;
 	
-	@NotEmpty
+
 	private String captchaResponseField;
-	
-	@NotEmpty
 	private String captchaChallengeField;
 	
 	

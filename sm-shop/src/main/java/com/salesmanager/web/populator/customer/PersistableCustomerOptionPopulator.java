@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
 
 import com.salesmanager.core.business.customer.model.attribute.CustomerOption;
 import com.salesmanager.core.business.generic.exception.ConversionException;
@@ -35,6 +36,12 @@ public class PersistableCustomerOptionPopulator extends
 			target.setCode(source.getCode());
 			target.setMerchantStore(store);
 			target.setSortOrder(source.getOrder());
+			if(!StringUtils.isBlank(source.getType())) {
+				target.setCustomerOptionType(source.getType());
+			} else {
+				target.setCustomerOptionType("TEXT");
+			}
+			target.setPublicOption(true);
 			
 			if(!CollectionUtils.isEmpty(source.getDescriptions())) {
 				Set<com.salesmanager.core.business.customer.model.attribute.CustomerOptionDescription> descriptions = new HashSet<com.salesmanager.core.business.customer.model.attribute.CustomerOptionDescription>();

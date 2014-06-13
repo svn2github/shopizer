@@ -59,8 +59,9 @@ public class CustomerPopulator extends
 			    target.setId( source.getId() );
 			}
 		    
-		    if(!StringUtils.isBlank(source.getPassword())) {
-				target.setPassword(source.getPassword());
+		    
+		    if(!StringUtils.isBlank(source.getEncodedPassword())) {
+				target.setPassword(source.getEncodedPassword());
 				target.setAnonymous(false);
 			}
 

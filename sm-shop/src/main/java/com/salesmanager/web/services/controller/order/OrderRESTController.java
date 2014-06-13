@@ -37,7 +37,7 @@ import com.salesmanager.web.populator.order.PersistableOrderPopulator;
 import com.salesmanager.web.shop.controller.order.facade.OrderFacade;
 
 @Controller
-@RequestMapping(Constants.SHOP_URI + "/services/private")
+@RequestMapping("/services/private")
 public class OrderRESTController {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(OrderRESTController.class);

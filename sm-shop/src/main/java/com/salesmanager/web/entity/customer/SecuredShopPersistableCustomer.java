@@ -5,7 +5,7 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-public class ShopPersistableCustomer extends PersistableCustomer {
+public class SecuredShopPersistableCustomer extends SecuredCustomer {
 
 	/**
 	 * 

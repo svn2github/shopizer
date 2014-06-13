@@ -1,10 +1,13 @@
 package com.salesmanager.web.init.data;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +20,13 @@ import com.salesmanager.core.business.catalog.category.service.CategoryService;
 import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.model.availability.ProductAvailability;
 import com.salesmanager.core.business.catalog.product.model.description.ProductDescription;
+import com.salesmanager.core.business.catalog.product.model.image.ProductImage;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.Manufacturer;
 import com.salesmanager.core.business.catalog.product.model.manufacturer.ManufacturerDescription;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPrice;
 import com.salesmanager.core.business.catalog.product.model.price.ProductPriceDescription;
+import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationship;
+import com.salesmanager.core.business.catalog.product.model.relationship.ProductRelationshipType;
 import com.salesmanager.core.business.catalog.product.model.type.ProductType;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.catalog.product.service.attribute.ProductAttributeService;
@@ -30,9 +36,12 @@ import com.salesmanager.core.business.catalog.product.service.availability.Produ
 import com.salesmanager.core.business.catalog.product.service.image.ProductImageService;
 import com.salesmanager.core.business.catalog.product.service.manufacturer.ManufacturerService;
 import com.salesmanager.core.business.catalog.product.service.price.ProductPriceService;
+import com.salesmanager.core.business.catalog.product.service.relationship.ProductRelationshipService;
 import com.salesmanager.core.business.catalog.product.service.type.ProductTypeService;
 import com.salesmanager.core.business.common.model.Billing;
 import com.salesmanager.core.business.common.model.Delivery;
+import com.salesmanager.core.business.content.model.FileContentType;
+import com.salesmanager.core.business.content.model.ImageContentFile;
 import com.salesmanager.core.business.customer.model.Customer;
 import com.salesmanager.core.business.customer.model.CustomerGender;
 import com.salesmanager.core.business.customer.service.CustomerService;
@@ -124,6 +133,9 @@ public class InitStoreData implements InitData {
 	
 	@Autowired
 	protected GroupService   groupService;
+	
+	@Autowired
+	private ProductRelationshipService productRelationshipService;
 
 	public void initInitialData() throws ServiceException {
 		
@@ -131,6 +143,7 @@ public class InitStoreData implements InitData {
 		LOGGER.info("Starting the initialization of test data");
 		Date date = new Date(System.currentTimeMillis());
 		
+		//2 languages by default
 		Language en = languageService.getByCode("en");
 		Language fr = languageService.getByCode("fr");
 		
@@ -144,20 +157,20 @@ public class InitStoreData implements InitData {
 		
 		 Category book = new Category();
 		    book.setMerchantStore(store);
-		    book.setCode("book");
+		    book.setCode("computerbooks");
 		    book.setVisible(true);
 
 		    CategoryDescription bookEnglishDescription = new CategoryDescription();
-		    bookEnglishDescription.setName("Book");
+		    bookEnglishDescription.setName("Computer Books");
 		    bookEnglishDescription.setCategory(book);
 		    bookEnglishDescription.setLanguage(en);
-		    bookEnglishDescription.setSeUrl("book");
+		    bookEnglishDescription.setSeUrl("computer-books");
 
 		    CategoryDescription bookFrenchDescription = new CategoryDescription();
-		    bookFrenchDescription.setName("Livre");
+		    bookFrenchDescription.setName("Livres d'informatique");
 		    bookFrenchDescription.setCategory(book);
 		    bookFrenchDescription.setLanguage(fr);
-		    bookFrenchDescription.setSeUrl("livre");
+		    bookFrenchDescription.setSeUrl("livres-informatiques");
 
 		    List<CategoryDescription> descriptions = new ArrayList<CategoryDescription>();
 		    descriptions.add(bookEnglishDescription);
@@ -167,59 +180,31 @@ public class InitStoreData implements InitData {
 
 		    categoryService.create(book);
 
-		    Category music = new Category();
-		    music.setMerchantStore(store);
-		    music.setCode("music");
-		    music.setVisible(true);
+		    Category novs = new Category();
+		    novs.setMerchantStore(store);
+		    novs.setCode("novels");
+		    novs.setVisible(false);
 
-		    CategoryDescription musicEnglishDescription = new CategoryDescription();
-		    musicEnglishDescription.setName("Music");
-		    musicEnglishDescription.setCategory(music);
-		    musicEnglishDescription.setLanguage(en);
-		    musicEnglishDescription.setSeUrl("music");
+		    CategoryDescription novsEnglishDescription = new CategoryDescription();
+		    novsEnglishDescription.setName("Novels");
+		    novsEnglishDescription.setCategory(novs);
+		    novsEnglishDescription.setLanguage(en);
+		    novsEnglishDescription.setSeUrl("novels");
 
-		    CategoryDescription musicFrenchDescription = new CategoryDescription();
-		    musicFrenchDescription.setName("Musique");
-		    musicFrenchDescription.setCategory(music);
-		    musicFrenchDescription.setLanguage(fr);
-		    musicFrenchDescription.setSeUrl("musique");
+		    CategoryDescription novsFrenchDescription = new CategoryDescription();
+		    novsFrenchDescription.setName("Romans");
+		    novsFrenchDescription.setCategory(novs);
+		    novsFrenchDescription.setLanguage(fr);
+		    novsFrenchDescription.setSeUrl("romans");
 
 		    List<CategoryDescription> descriptions2 = new ArrayList<CategoryDescription>();
-		    descriptions2.add(musicEnglishDescription);
-		    descriptions2.add(musicFrenchDescription);
+		    descriptions2.add(novsEnglishDescription);
+		    descriptions2.add(novsFrenchDescription);
 
-		    music.setDescriptions(descriptions2);
+		    novs.setDescriptions(descriptions2);
 
-		    categoryService.create(music);
-
-		    Category novell = new Category();
-		    novell.setMerchantStore(store);
-		    novell.setCode("novell");
-		    novell.setVisible(true);
-
-		    CategoryDescription novellEnglishDescription = new CategoryDescription();
-		    novellEnglishDescription.setName("Novell");
-		    novellEnglishDescription.setCategory(novell);
-		    novellEnglishDescription.setLanguage(en);
-		    novellEnglishDescription.setSeUrl("novell");
-
-		    CategoryDescription novellFrenchDescription = new CategoryDescription();
-		    novellFrenchDescription.setName("Roman");
-		    novellFrenchDescription.setCategory(novell);
-		    novellFrenchDescription.setLanguage(fr);
-		    novellFrenchDescription.setSeUrl("roman");
-
-		    List<CategoryDescription> descriptions3 = new ArrayList<CategoryDescription>();
-		    descriptions3.add(novellEnglishDescription);
-		    descriptions3.add(novellFrenchDescription);
-
-		    novell.setDescriptions(descriptions3);
+		    categoryService.create(novs);
 		    
-		    novell.setParent(book);
-
-		    categoryService.create(novell);
-		    categoryService.addChild(book, novell);
-
 		    Category tech = new Category();
 		    tech.setMerchantStore(store);
 		    tech.setCode("tech");
@@ -228,13 +213,13 @@ public class InitStoreData implements InitData {
 		    techEnglishDescription.setName("Technology");
 		    techEnglishDescription.setCategory(tech);
 		    techEnglishDescription.setLanguage(en);
-		    techEnglishDescription.setSeUrl("techno");
+		    techEnglishDescription.setSeUrl("technology");
 
 		    CategoryDescription techFrenchDescription = new CategoryDescription();
 		    techFrenchDescription.setName("Technologie");
 		    techFrenchDescription.setCategory(tech);
 		    techFrenchDescription.setLanguage(fr);
-		    techFrenchDescription.setSeUrl("techno");
+		    techFrenchDescription.setSeUrl("technologie");
 
 		    List<CategoryDescription> descriptions4 = new ArrayList<CategoryDescription>();
 		    descriptions4.add(techEnglishDescription);
@@ -246,6 +231,36 @@ public class InitStoreData implements InitData {
 
 		    categoryService.create(tech);
 		    categoryService.addChild(book, tech);
+
+		    Category web = new Category();
+		    web.setMerchantStore(store);
+		    web.setCode("web");
+		    web.setVisible(true);
+
+		    CategoryDescription webEnglishDescription = new CategoryDescription();
+		    webEnglishDescription.setName("Web");
+		    webEnglishDescription.setCategory(web);
+		    webEnglishDescription.setLanguage(en);
+		    webEnglishDescription.setSeUrl("the-web");
+
+		    CategoryDescription webFrenchDescription = new CategoryDescription();
+		    webFrenchDescription.setName("Web");
+		    webFrenchDescription.setCategory(web);
+		    webFrenchDescription.setLanguage(fr);
+		    webFrenchDescription.setSeUrl("le-web");
+
+		    List<CategoryDescription> descriptions3 = new ArrayList<CategoryDescription>();
+		    descriptions3.add(webEnglishDescription);
+		    descriptions3.add(webFrenchDescription);
+
+		    web.setDescriptions(descriptions3);
+		    
+		    web.setParent(book);
+
+		    categoryService.create(web);
+		    categoryService.addChild(book, web);
+
+
 
 		    Category fiction = new Category();
 		    fiction.setMerchantStore(store);
@@ -270,10 +285,67 @@ public class InitStoreData implements InitData {
 
 		    fiction.setDescriptions(fictiondescriptions);
 		    
-		    fiction.setParent(novell);
+		    fiction.setParent(novs);
 
 		    categoryService.create(fiction);
-		    categoryService.addChild(book, fiction);
+		    categoryService.addChild(novs, fiction);
+		    
+		    
+		    Category business = new Category();
+		    business.setMerchantStore(store);
+		    business.setCode("business");
+		    business.setVisible(true);
+
+		    CategoryDescription businessEnglishDescription = new CategoryDescription();
+		    businessEnglishDescription.setName("Business");
+		    businessEnglishDescription.setCategory(business);
+		    businessEnglishDescription.setLanguage(en);
+		    businessEnglishDescription.setSeUrl("business");
+
+		    CategoryDescription businessFrenchDescription = new CategoryDescription();
+		    businessFrenchDescription.setName("Affaires");
+		    businessFrenchDescription.setCategory(business);
+		    businessFrenchDescription.setLanguage(fr);
+		    businessFrenchDescription.setSeUrl("affaires");
+
+		    List<CategoryDescription> businessdescriptions = new ArrayList<CategoryDescription>();
+		    businessdescriptions.add(businessEnglishDescription);
+		    businessdescriptions.add(businessFrenchDescription);
+
+		    business.setDescriptions(businessdescriptions);
+		    
+
+		    categoryService.create(business);
+
+		   		    
+		    
+		    Category cloud = new Category();
+		    cloud.setMerchantStore(store);
+		    cloud.setCode("cloud");
+		    cloud.setVisible(true);
+
+		    CategoryDescription cloudEnglishDescription = new CategoryDescription();
+		    cloudEnglishDescription.setName("Cloud computing");
+		    cloudEnglishDescription.setCategory(cloud);
+		    cloudEnglishDescription.setLanguage(en);
+		    cloudEnglishDescription.setSeUrl("cloud-computing");
+
+		    CategoryDescription cloudFrenchDescription = new CategoryDescription();
+		    cloudFrenchDescription.setName("Programmation pour le cloud");
+		    cloudFrenchDescription.setCategory(cloud);
+		    cloudFrenchDescription.setLanguage(fr);
+		    cloudFrenchDescription.setSeUrl("programmation-cloud");
+
+		    List<CategoryDescription> clouddescriptions = new ArrayList<CategoryDescription>();
+		    clouddescriptions.add(cloudEnglishDescription);
+		    clouddescriptions.add(cloudFrenchDescription);
+
+		    cloud.setDescriptions(clouddescriptions);
+		    
+		    cloud.setParent(tech);
+
+		    categoryService.create(cloud);
+		    categoryService.addChild(tech, cloud);
 
 		    // Add products
 		    // ProductType generalType = productTypeService.
@@ -283,22 +355,45 @@ public class InitStoreData implements InitData {
 
 		    ManufacturerDescription oreilleyd = new ManufacturerDescription();
 		    oreilleyd.setLanguage(en);
-		    oreilleyd.setName("O\'reilley");
+		    oreilleyd.setName("O\'Reilley");
 		    oreilleyd.setManufacturer(oreilley);
 		    oreilley.getDescriptions().add(oreilleyd);
 
 		    manufacturerService.create(oreilley);
+		    
+		    
+		    Manufacturer sams = new Manufacturer();
+		    sams.setMerchantStore(store);
 
-		    Manufacturer packed = new Manufacturer();
-		    packed.setMerchantStore(store);
+		    ManufacturerDescription samsd = new ManufacturerDescription();
+		    samsd.setLanguage(en);
+		    samsd.setName("Sams");
+		    samsd.setManufacturer(sams);
+		    sams.getDescriptions().add(samsd);
 
-		    ManufacturerDescription packedd = new ManufacturerDescription();
-		    packedd.setLanguage(en);
-		    packedd.setManufacturer(packed);
-		    packedd.setName("Packed publishing");
-		    packed.getDescriptions().add(packedd);
+		    manufacturerService.create(sams);
+		    
+		    Manufacturer packt = new Manufacturer();
+		    packt.setMerchantStore(store);
 
-		    manufacturerService.create(packed);
+		    ManufacturerDescription packtd = new ManufacturerDescription();
+		    packtd.setLanguage(en);
+		    packtd.setName("Packt");
+		    packtd.setManufacturer(packt);
+		    packt.getDescriptions().add(packtd);
+
+		    manufacturerService.create(packt);
+
+		    Manufacturer manning = new Manufacturer();
+		    manning.setMerchantStore(store);
+
+		    ManufacturerDescription manningd = new ManufacturerDescription();
+		    manningd.setLanguage(en);
+		    manningd.setManufacturer(manning);
+		    manningd.setName("Manning");
+		    manning.getDescriptions().add(manningd);
+
+		    manufacturerService.create(manning);
 
 		    Manufacturer novells = new Manufacturer();
 		    novells.setMerchantStore(store);
@@ -311,14 +406,15 @@ public class InitStoreData implements InitData {
 
 		    manufacturerService.create(novells);
 
+		    
 		    // PRODUCT 1
 
 		    Product product = new Product();
-		    product.setProductHeight(new BigDecimal(4));
+		    product.setProductHeight(new BigDecimal(10));
 		    product.setProductLength(new BigDecimal(3));
-		    product.setProductWidth(new BigDecimal(1));
+		    product.setProductWidth(new BigDecimal(6));
 		    product.setSku("TB12345");
-		    product.setManufacturer(oreilley);
+		    product.setManufacturer(manning);
 		    product.setType(generalType);
 		    product.setMerchantStore(store);
 		    product.setProductShipeable(true);
@@ -333,10 +429,18 @@ public class InitStoreData implements InitData {
 		    product.getDescriptions().add(description);
 
 		    product.getCategories().add(tech);
-		    product.getCategories().add(novell);
-		    product.getCategories().add(fiction);
+		    product.getCategories().add(web);
+
 
 		    productService.create(product);
+		    
+		    try {
+		    	InputStream inStream = this.getClass().getClassLoader().getResourceAsStream("/demo/spring.png");
+		    	this.saveFile(inStream, "spring.png", product);
+		    } catch(Exception e) {
+		    	LOGGER.error("Error while reading demo file spring.png",e);
+		    }
+		    
 
 		    // Availability
 		    ProductAvailability availability = new ProductAvailability();
@@ -349,7 +453,7 @@ public class InitStoreData implements InitData {
 
 		    ProductPrice dprice = new ProductPrice();
 		    dprice.setDefaultPrice(true);
-		    dprice.setProductPriceAmount(new BigDecimal(29.99));
+		    dprice.setProductPriceAmount(new BigDecimal(39.99));
 		    dprice.setProductAvailability(availability);
 
 		    ProductPriceDescription dpd = new ProductPriceDescription();
@@ -368,22 +472,31 @@ public class InitStoreData implements InitData {
 		    product2.setProductLength(new BigDecimal(3));
 		    product2.setProductWidth(new BigDecimal(1));
 		    product2.setSku("TB2468");
-		    product2.setManufacturer(packed);
+		    product2.setManufacturer(packt);
 		    product2.setType(generalType);
 		    product2.setMerchantStore(store);
 		    product2.setProductShipeable(true);
 
 		    // Product description
 		    description = new ProductDescription();
-		    description.setName("This is Node.js");
+		    description.setName("Node Web Development");
 		    description.setLanguage(en);
 		    description.setProduct(product2);
-		    description.setSeUrl("This-is-Node-js");
+		    description.setSeUrl("Node-Web-Development");
 
 		    product2.getDescriptions().add(description);
 
 		    product2.getCategories().add(tech);
+		    product2.getCategories().add(web);
+		    
 		    productService.create(product2);
+		    
+		    try {
+		    	InputStream inStream = this.getClass().getClassLoader().getResourceAsStream("/demo/node.jpg");
+		    	this.saveFile(inStream, "node.jpg", product2);
+		    } catch(Exception e) {
+		    	LOGGER.error("Error while reading demo file node.jpg",e);
+		    }
 
 		    // Availability
 		    ProductAvailability availability2 = new ProductAvailability();
@@ -396,7 +509,7 @@ public class InitStoreData implements InitData {
 
 		    ProductPrice dprice2 = new ProductPrice();
 		    dprice2.setDefaultPrice(true);
-		    dprice2.setProductPriceAmount(new BigDecimal(39.99));
+		    dprice2.setProductPriceAmount(new BigDecimal(29.99));
 		    dprice2.setProductAvailability(availability2);
 
 		    dpd = new ProductPriceDescription();
@@ -415,21 +528,21 @@ public class InitStoreData implements InitData {
 		    product3.setProductLength(new BigDecimal(3));
 		    product3.setProductWidth(new BigDecimal(1));
 		    product3.setSku("NB1111");
-		    product3.setManufacturer(packed);
+		    product3.setManufacturer(oreilley);
 		    product3.setType(generalType);
 		    product3.setMerchantStore(store);
 		    product3.setProductShipeable(true);
 
 		    // Product description
 		    description = new ProductDescription();
-		    description.setName("A nice book for you");
+		    description.setName("Programming for PAAS");
 		    description.setLanguage(en);
 		    description.setProduct(product3);
-		    description.setSeUrl("A-nice-book-for-you");
+		    description.setSeUrl("programming-for-paas");
 
 		    product3.getDescriptions().add(description);
 
-		    product3.getCategories().add(novell);
+		    product3.getCategories().add(cloud);
 		    productService.create(product3);
 
 		    // Availability
@@ -454,29 +567,35 @@ public class InitStoreData implements InitData {
 		    dprice3.getDescriptions().add(dpd);
 
 		    productPriceService.create(dprice3);
+		    
+		    try {
+		    	InputStream inStream = this.getClass().getClassLoader().getResourceAsStream("/demo/paas.JPG");
+		    	this.saveFile(inStream, "paas.JPG", product3);
+		    } catch(Exception e) {
+		    	LOGGER.error("Error while reading demo file paas.jpg",e);
+		    }
 
 		    // PRODUCT 4
-
 		    Product product4 = new Product();
 		    product4.setProductHeight(new BigDecimal(4));
 		    product4.setProductLength(new BigDecimal(3));
 		    product4.setProductWidth(new BigDecimal(1));
 		    product4.setSku("SF333345");
-		    product4.setManufacturer(packed);
+		    product4.setManufacturer(sams);
 		    product4.setType(generalType);
 		    product4.setMerchantStore(store);
 		    product4.setProductShipeable(true);
 
 		    // Product description
 		    description = new ProductDescription();
-		    description.setName("Battle of the worlds");
+		    description.setName("Android development");
 		    description.setLanguage(en);
 		    description.setProduct(product4);
-		    description.setSeUrl("Battle-of-the-worlds");
+		    description.setSeUrl("android-application-development");
 
 		    product4.getDescriptions().add(description);
 
-		    product4.getCategories().add(fiction);
+		    product4.getCategories().add(tech);
 		    productService.create(product4);
 
 		    // Availability
@@ -501,29 +620,35 @@ public class InitStoreData implements InitData {
 		    dprice4.getDescriptions().add(dpd);
 
 		    productPriceService.create(dprice4);
+		    
+		    try {
+		    	InputStream inStream = this.getClass().getClassLoader().getResourceAsStream("/demo/android.jpg");
+		    	this.saveFile(inStream, "android.jpg", product4);
+		    } catch(Exception e) {
+		    	LOGGER.error("Error while reading demo file android.jpg",e);
+		    }
 
 		    // PRODUCT 5
-
 		    Product product5 = new Product();
 		    product5.setProductHeight(new BigDecimal(4));
 		    product5.setProductLength(new BigDecimal(3));
 		    product5.setProductWidth(new BigDecimal(1));
 		    product5.setSku("SF333346");
-		    product5.setManufacturer(packed);
+		    product5.setManufacturer(packt);
 		    product5.setType(generalType);
 		    product5.setMerchantStore(store);
 		    product5.setProductShipeable(true);
 
 		    // Product description
 		    description = new ProductDescription();
-		    description.setName("Battle of the worlds 2");
+		    description.setName("Android 3.0 Cookbook");
 		    description.setLanguage(en);
 		    description.setProduct(product5);
-		    description.setSeUrl("Battle-of-the-worlds-2");
+		    description.setSeUrl("android-3-cookbook");
 
 		    product5.getDescriptions().add(description);
 
-		    product5.getCategories().add(fiction);
+		    product5.getCategories().add(tech);
 		    productService.create(product5);
 
 		    // Availability
@@ -548,6 +673,13 @@ public class InitStoreData implements InitData {
 		    dprice5.getDescriptions().add(dpd);
 
 		    productPriceService.create(dprice5);
+		    
+		    try {
+		    	InputStream inStream = this.getClass().getClassLoader().getResourceAsStream("/demo/android2.jpg");
+		    	this.saveFile(inStream, "android2.jpg", product5);
+		    } catch(Exception e) {
+		    	LOGGER.error("Error while reading demo file android2.jpg",e);
+		    }
 
 		    // PRODUCT 6
 
@@ -556,21 +688,21 @@ public class InitStoreData implements InitData {
 		    product6.setProductLength(new BigDecimal(3));
 		    product6.setProductWidth(new BigDecimal(1));
 		    product6.setSku("LL333444");
-		    product6.setManufacturer(packed);
+		    product6.setManufacturer(novells);
 		    product6.setType(generalType);
 		    product6.setMerchantStore(store);
 		    product6.setProductShipeable(true);
 
 		    // Product description
 		    description = new ProductDescription();
-		    description.setName("Life book");
+		    description.setName("The Big Switch");
 		    description.setLanguage(en);
 		    description.setProduct(product6);
-		    description.setSeUrl("Life-book");
+		    description.setSeUrl("the-big-switch");
 
 		    product6.getDescriptions().add(description);
 
-		    product6.getCategories().add(novell);
+		    product6.getCategories().add(business);
 		    productService.create(product6);
 
 		    // Availability
@@ -595,7 +727,50 @@ public class InitStoreData implements InitData {
 		    dprice6.getDescriptions().add(dpd);
 
 		    productPriceService.create(dprice6);
+		    
+		    try {
+		    	InputStream inStream = this.getClass().getClassLoader().getResourceAsStream("/demo/google.jpg");
+		    	this.saveFile(inStream, "google.jpg", product6);
+		    } catch(Exception e) {
+		    	LOGGER.error("Error while reading demo file google.jpg",e);
+		    }
+		    
+		    //featured items
+		    
+			ProductRelationship relationship = new ProductRelationship();
+			relationship.setActive(true);
+			relationship.setCode(ProductRelationshipType.FEATURED_ITEM.name());
+			relationship.setStore(store);
+			relationship.setRelatedProduct(product);
+			
+			productRelationshipService.saveOrUpdate(relationship);
+			
+			relationship = new ProductRelationship();
+			relationship.setActive(true);
+			relationship.setCode(ProductRelationshipType.FEATURED_ITEM.name());
+			relationship.setStore(store);
+			relationship.setRelatedProduct(product6);
+			
+			productRelationshipService.saveOrUpdate(relationship);
+			
+			
+			relationship = new ProductRelationship();
+			relationship.setActive(true);
+			relationship.setCode(ProductRelationshipType.FEATURED_ITEM.name());
+			relationship.setStore(store);
+			relationship.setRelatedProduct(product5);
+			
+			productRelationshipService.saveOrUpdate(relationship);
 
+			
+			relationship = new ProductRelationship();
+			relationship.setActive(true);
+			relationship.setCode(ProductRelationshipType.FEATURED_ITEM.name());
+			relationship.setStore(store);
+			relationship.setRelatedProduct(product2);
+			
+			productRelationshipService.saveOrUpdate(relationship);
+			
 		    
 		    //Create a customer (user name[nick] : shopizer password : password)
 
@@ -752,6 +927,30 @@ public class InitStoreData implements InitData {
 			orderService.create(order);	
 			
 			LOGGER.info("Ending the initialization of test data");
+		
+	}
+	
+	private void saveFile(InputStream fis, String name, Product product) throws Exception {
+		
+        if(fis==null) {
+        	return;
+        }
+		
+		final byte[] is = IOUtils.toByteArray( fis );
+        final ByteArrayInputStream inputStream = new ByteArrayInputStream( is );
+        final ImageContentFile cmsContentImage = new ImageContentFile();
+        cmsContentImage.setFileName( name );
+        cmsContentImage.setFile( inputStream );
+        cmsContentImage.setFileContentType(FileContentType.PRODUCT);
+        
+
+        ProductImage productImage = new ProductImage();
+        productImage.setProductImage(name);
+        productImage.setProduct(product);
+
+        
+        productImageService.addProductImage(product, productImage, cmsContentImage);
+		
 		
 	}
 

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,7 @@ import com.salesmanager.web.shop.model.filter.QueryFilterType;
  *
  */
 @Controller
+@RequestMapping("/services")
 public class ShopProductRESTController {
 	
 	@Autowired
@@ -102,7 +104,7 @@ public class ShopProductRESTController {
 	/**
 	 * Create new product for a given MerchantStore
 	 */
-	@RequestMapping( value="/shop/services/private/product/{store}", method=RequestMethod.POST)
+	@RequestMapping( value="/private/product/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public PersistableProduct createProduct(@PathVariable final String store, @Valid @RequestBody PersistableProduct product, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -156,7 +158,7 @@ public class ShopProductRESTController {
 	}
 	
 
-	@RequestMapping( value="/shop/services/private/product/{store}/{id}", method=RequestMethod.DELETE)
+	@RequestMapping( value="/private/product/{store}/{id}", method=RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteProduct(@PathVariable final String store, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Product product = productService.getById(id);
@@ -177,7 +179,7 @@ public class ShopProductRESTController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping( value="/shop/services/private/manufacturer/{store}", method=RequestMethod.POST)
+	@RequestMapping( value="/private/manufacturer/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public PersistableManufacturer createManufacturer(@PathVariable final String store, @Valid @RequestBody PersistableManufacturer manufacturer, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -228,7 +230,7 @@ public class ShopProductRESTController {
 	}
 	
 	
-	@RequestMapping( value="/shop/services/private/product/optionValue/{store}", method=RequestMethod.POST)
+	@RequestMapping( value="/private/product/optionValue/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public PersistableProductOptionValue createProductOptionValue(@PathVariable final String store, @Valid @RequestBody PersistableProductOptionValue optionValue, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -278,7 +280,7 @@ public class ShopProductRESTController {
 	}
 	
 	
-	@RequestMapping( value="/shop/services/private/product/option/{store}", method=RequestMethod.POST)
+	@RequestMapping( value="/private/product/option/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public PersistableProductOption createProductOption(@PathVariable final String store, @Valid @RequestBody PersistableProductOption option, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -327,7 +329,7 @@ public class ShopProductRESTController {
 	}
 	
 	
-	@RequestMapping( value="/shop/services/private/product/review/{store}", method=RequestMethod.POST)
+	@RequestMapping( value="/private/product/review/{store}", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public PersistableProductReview createProductReview(@PathVariable final String store, @Valid @RequestBody PersistableProductReview review, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -396,7 +398,9 @@ public class ShopProductRESTController {
 	
 	
 	/**
-	 * Will page products of a given category
+	 * Will get products for a given category
+	 * supports language by setting land as a query parameter
+	 * supports paging by adding start and max as query parameters
 	 * @param store
 	 * @param language
 	 * @param category
@@ -406,12 +410,85 @@ public class ShopProductRESTController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/shop/services/public/products/page/{start}/{max}/{store}/{language}/{category}.html")
+	@RequestMapping("/public/{store}/category/{id}/productsproducts/page/{start}/{max}/{store}/{language}/{category}.html")
 	@ResponseBody
-	public ReadableProductList getProducts(@PathVariable int start, @PathVariable int max, @PathVariable String store, @PathVariable final String language, @PathVariable final String category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public ReadableProductList getProducts(@PathVariable String store, @PathVariable final String category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
 		
-		return this.getProducts(start, max, store, language, category, null, model, request, response);
+		/** default routine **/
+		
+		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
+		if(merchantStore!=null) {
+			if(!merchantStore.getCode().equals(store)) {
+				merchantStore = null;
+			}
+		}
+		
+		if(merchantStore== null) {
+			merchantStore = merchantStoreService.getByCode(store);
+		}
+		
+		if(merchantStore==null) {
+			LOGGER.error("Merchant store is null for code " + store);
+			response.sendError(503, "Merchant store is null for code " + store);
+			return null;
+		}
+		
+		Language language = merchantStore.getDefaultLanguage();
+		
+		String lang = language.getCode();
+		
+		if(!StringUtils.isBlank(request.getParameter(Constants.LANG))) {
+			
+			lang = request.getParameter(Constants.LANG);
+			
+		}
+		
+/*		Map<String,Language> langs = languageService.getLanguagesMap();
+
+		
+		if(!StringUtils.isBlank(request.getParameter(Constants.LANG))) {
+			String lang = request.getParameter(Constants.LANG);
+			language = langs.get(language);
+			if(language==null) {
+				language = merchantStore.getDefaultLanguage();
+			}
+		}*/
+		
+		
+		/** end default routine **/
+		
+		
+		//start
+		int iStart = 0;
+		if(!StringUtils.isBlank(request.getParameter(Constants.START))) {
+			
+			String start = request.getParameter(Constants.START);
+			
+			try {
+				iStart = Integer.parseInt(start);
+			} catch(Exception e) {
+				LOGGER.error("Cannot parse start parameter " + start);
+			}
+
+		}
+		
+		//max
+		int iMax = 0;
+		if(!StringUtils.isBlank(request.getParameter(Constants.MAX))) {
+			
+			String max = request.getParameter(Constants.MAX);
+			
+			try {
+				iMax = Integer.parseInt(max);
+			} catch(Exception e) {
+				LOGGER.error("Cannot parse max parameter " + max);
+			}
+
+		}
+
+		
+		return this.getProducts(iStart, iMax, store, lang, category, null, model, request, response);
 	}
 	
 	
@@ -431,7 +508,7 @@ public class ShopProductRESTController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/shop/services/products/public/page/{start}/{max}/{store}/{language}/{category}.html/filter={filterType}/filter-value={filterValue}")
+	@RequestMapping("/products/public/page/{start}/{max}/{store}/{language}/{category}.html/filter={filterType}/filter-value={filterValue}")
 	@ResponseBody
 	public ReadableProductList getProductsFilteredByType(@PathVariable int start, @PathVariable int max, @PathVariable String store, @PathVariable final String language, @PathVariable final String category, @PathVariable final String filterType, @PathVariable final String filterValue, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		

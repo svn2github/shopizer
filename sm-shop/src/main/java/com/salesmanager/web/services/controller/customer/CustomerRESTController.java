@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,13 +50,14 @@ import com.salesmanager.web.populator.customer.PersistableCustomerOptionPopulato
 import com.salesmanager.web.populator.customer.PersistableCustomerOptionValuePopulator;
 import com.salesmanager.web.populator.customer.ReadableCustomerPopulator;
 import com.salesmanager.web.services.controller.category.ShoppingCategoryRESTController;
+import com.salesmanager.web.utils.EmailTemplatesUtils;
 import com.salesmanager.web.utils.EmailUtils;
 import com.salesmanager.web.utils.FilePathUtils;
 import com.salesmanager.web.utils.LabelUtils;
 import com.salesmanager.web.utils.LocaleUtils;
 
 @Controller
-@RequestMapping("/shop/services")
+@RequestMapping("/services")
 public class CustomerRESTController {
 
 	@Autowired
@@ -92,6 +94,10 @@ public class CustomerRESTController {
 	
 	@Autowired
 	private LabelUtils messages;
+	
+	@Autowired
+	private EmailTemplatesUtils emailTemplatesUtils;
+
 
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(ShoppingCategoryRESTController.class);
@@ -100,7 +106,7 @@ public class CustomerRESTController {
 	/**
 	 * Returns a single customer for a given MerchantStore
 	 */
-	@RequestMapping( value="/private/customer/{store}/{id}", method=RequestMethod.GET)
+	@RequestMapping( value="/private/{store}/customer/{id}", method=RequestMethod.GET)
 	@ResponseBody
 	public ReadableCustomer getCustomer(@PathVariable final String store, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
@@ -135,7 +141,16 @@ public class CustomerRESTController {
 	}
 	
 	
-	@RequestMapping( value="/shop/services/private/customer/optionValue/{store}", method=RequestMethod.POST)
+	/**
+	 * Create a customer option value
+	 * @param store
+	 * @param optionValue
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping( value="/private/{store}/customer/optionValue", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public PersistableCustomerOptionValue createCustomerOptionValue(@PathVariable final String store, @Valid @RequestBody PersistableCustomerOptionValue optionValue, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -182,8 +197,16 @@ public class CustomerRESTController {
 		}
 	}
 	
-	
-	@RequestMapping( value="/shop/services/private/customer/option/{store}", method=RequestMethod.POST)
+	/**
+	 * Create a customer option
+	 * @param store
+	 * @param option
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping( value="/private/{store}/customer/option", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public PersistableCustomerOption createCustomerOption(@PathVariable final String store, @Valid @RequestBody PersistableCustomerOption option, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -234,7 +257,7 @@ public class CustomerRESTController {
 	/**
 	 * Returns all customers for a given MerchantStore
 	 */
-	@RequestMapping( value="/private/customer/{store}", method=RequestMethod.GET)
+	@RequestMapping( value="/private/{store}/customer", method=RequestMethod.GET)
 	@ResponseBody
 	public List<ReadableCustomer> getCustomers(@PathVariable final String store, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
@@ -267,70 +290,13 @@ public class CustomerRESTController {
 		
 		return returnCustomers;
 	}
-	
-	
-/*	*//**
-	 * Updates a customer for a given MerchantStore
-	 *//*
-	@RequestMapping( value="/private/customer/{store}/{id}", method=RequestMethod.PUT)
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void updateCustomer(@PathVariable final String store, @PathVariable Long id, @Valid @RequestBody Customer customer, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-		if(merchantStore!=null) {
-			if(!merchantStore.getCode().equals(store)) {
-				merchantStore = null;
-			}
-		}
-		
-		if(merchantStore== null) {
-			merchantStore = merchantStoreService.getByCode(store);
-		}
-		
-		if(merchantStore==null) {
-			LOGGER.error("Merchant store is null for code " + store);
-			response.sendError(503, "Merchant store is null for code " + store);
-		}
-		
-		Customer oldCustomer = customerService.getById(id);
-		if(oldCustomer != null){
-			customer.setId(id);
-			Country country = (customer.getCountry() != null)?countryService.getByCode(customer.getCountry().getIsoCode().toUpperCase()):null;
-			if(country != null){
-				customer.setCountry(country);
-			}
-			
-			Country billCountry = (customer.getBilling() != null)?countryService.getByCode(customer.getBilling().getCountry().getIsoCode().toUpperCase()):null;
-			if(billCountry != null){
-				customer.getBilling().setCountry(billCountry);
-			}
-			
-			Country delCountry = (customer.getDelivery() != null)?countryService.getByCode(customer.getDelivery().getCountry().getIsoCode().toUpperCase()):null;
-			if(delCountry != null){
-				customer.getDelivery().setCountry(delCountry);
-			}
-			
-			if(customer.getZone() != null){
-				customer.setZone(zoneService.getByCode(customer.getZone().getCountry().getIsoCode().toUpperCase()));
-				Country zoneCountry = countryService.getByCode(customer.getZone().getCountry().getIsoCode().toUpperCase());
-				if(zoneCountry != null){
-					customer.getZone().setCountry(zoneCountry);
-				}
-			}
-			
-			customer.setMerchantStore(merchantStore);
-			customer.setDefaultLanguage(languageService.getByCode(Constants.DEFAULT_LANGUAGE));
-			
-			customerService.saveOrUpdate(customer);
-		}else{
-			response.sendError(404, "No Customer found for ID : " + id);
-		}
-	}*/
+
 	
 	
 	/**
 	 * Deletes a customer for a given MerchantStore
 	 */
-	@RequestMapping( value="/private/customer/{store}/{id}", method=RequestMethod.DELETE)
+	@RequestMapping( value="/private/{store}/customer/{id}", method=RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteCustomer(@PathVariable final String store, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -370,7 +336,7 @@ public class CustomerRESTController {
 	/**
 	 * Create new customer for a given MerchantStore
 	 */
-	@RequestMapping( value="/private/customer/{store}", method=RequestMethod.POST)
+	@RequestMapping( value="/private/{store}/customer", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public PersistableCustomer createCustomer(@PathVariable final String store, @Valid @RequestBody PersistableCustomer customer, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -407,47 +373,25 @@ public class CustomerRESTController {
 
 		Locale customerLocale = LocaleUtils.getLocale(cust.getDefaultLanguage());
 		
-		String password = UserReset.generateRandomString();
+		String password = customer.getClearPassword();
+		if(StringUtils.isBlank(password)) {
+			password = UserReset.generateRandomString();
+			customer.setClearPassword(password);
+		}
+
 		@SuppressWarnings("deprecation")
 		String encodedPassword = passwordEncoder.encodePassword(password, null);
+		if(!StringUtils.isBlank(customer.getEncodedPassword())) {
+			encodedPassword = customer.getEncodedPassword();
+			customer.setClearPassword("");
+		}
 		
-		customer.setPassword(encodedPassword);
+		customer.setEncodedPassword(encodedPassword);
 		customerService.save(cust);
 		customer.setId(cust.getId());
-
 		
-		try {
+		emailTemplatesUtils.sendRegistrationEmail(customer, merchantStore, customerLocale, request.getContextPath());
 
-
-			
-			Map<String, String> templateTokens = EmailUtils.createEmailObjectsMap(request.getContextPath(), merchantStore, messages, customerLocale);
-			templateTokens.put(EmailConstants.EMAIL_CUSTOMER_FIRSTNAME, customer.getBilling().getFirstName());
-			templateTokens.put(EmailConstants.EMAIL_CUSTOMER_LASTNAME, customer.getBilling().getLastName());
-			
-			String[] greetingMessage = {merchantStore.getStorename(),FilePathUtils.buildCustomerUri(merchantStore, request.getContextPath()),merchantStore.getStoreEmailAddress()};
-			
-			
-			templateTokens.put(EmailConstants.EMAIL_CUSTOMER_GREETING, messages.getMessage("email.customer.greeting", greetingMessage, customerLocale));
-			templateTokens.put(EmailConstants.EMAIL_USERNAME_LABEL, messages.getMessage("label.generic.username",customerLocale));
-			templateTokens.put(EmailConstants.EMAIL_PASSWORD_LABEL, messages.getMessage("label.generic.password",customerLocale));
-			templateTokens.put(EmailConstants.EMAIL_USER_NAME, customer.getUserName());
-			templateTokens.put(EmailConstants.EMAIL_CUSTOMER_PASSWORD, password);
-
-
-			Email email = new Email();
-			email.setFrom(merchantStore.getStorename());
-			email.setFromEmail(merchantStore.getStoreEmailAddress());
-			email.setSubject(messages.getMessage("email.newuser.title",customerLocale));
-			email.setTo(customer.getEmailAddress());
-			email.setTemplateName(EmailConstants.EMAIL_CUSTOMER_TPL);
-			email.setTemplateTokens(templateTokens);
-
-			//send email
-			emailService.sendHtmlEmail(merchantStore, email);
-		
-		} catch (Exception e) {
-			LOGGER.error("Cannot send email to user",e);
-		}
 
 		return customer;
 	}

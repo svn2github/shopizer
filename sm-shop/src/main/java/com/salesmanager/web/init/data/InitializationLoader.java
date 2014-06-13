@@ -18,6 +18,7 @@ import com.salesmanager.core.business.user.model.Permission;
 import com.salesmanager.core.business.user.service.GroupService;
 import com.salesmanager.core.business.user.service.PermissionService;
 import com.salesmanager.core.constants.SystemConstants;
+import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.web.admin.security.WebUserServices;
 import com.salesmanager.web.constants.ApplicationConstants;
 import com.salesmanager.web.utils.AppConfiguration;
@@ -50,6 +51,9 @@ public class InitializationLoader {
 	
 	@Autowired
 	protected GroupService   groupService;
+	
+	@Autowired
+	private CoreConfiguration configuration;
 	
 	@PostConstruct
 	public void init() {
@@ -191,10 +195,9 @@ public class InitializationLoader {
 	
 	private void loadData() throws ServiceException {
 		
-
-		String loadTestData = appConfiguration.getProperty(ApplicationConstants.POPULATE_TEST_DATA);
+		String loadTestData = configuration.getProperty(ApplicationConstants.POPULATE_TEST_DATA);
 		boolean loadData =  !StringUtils.isBlank(loadTestData) && loadTestData.equals(SystemConstants.CONFIG_VALUE_TRUE);
-		
+
 		
 		if(loadData) {
 			

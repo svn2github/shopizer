@@ -89,7 +89,7 @@ public class SearchController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/shop/services/search/{store}/{language}/autocomplete.html")
+	@RequestMapping("/services/public/search/{store}/{language}/autocomplete.html")
 	@ResponseBody
 	public String autocomplete(@RequestParam("q") String query, @PathVariable String store, @PathVariable final String language, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 	
@@ -133,7 +133,7 @@ public class SearchController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/shop/services/search/{store}/{language}/{start}/{max}/term.html")
+	@RequestMapping("/services/public/search/{store}/{language}/{start}/{max}/term.html")
 	@ResponseBody
 	public SearchProductList search(@RequestBody String json, @PathVariable String store, @PathVariable final String language, @PathVariable int start, @PathVariable int max, Model model, HttpServletRequest request, HttpServletResponse response) {
 	

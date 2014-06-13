@@ -417,7 +417,7 @@ public class ShoppingCategoryController {
 	/**
 	 * Returns all categories for a given MerchantStore
 	 */
-	@RequestMapping("/shop/services/category/{store}/{language}")
+	@RequestMapping("/services/public/category/{store}/{language}")
 	@ResponseBody
 	public List<ReadableCategory> getCategories(@PathVariable final String language, @PathVariable final String store, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -461,7 +461,7 @@ public class ShoppingCategoryController {
 	/**
 	 * Returns an array of products belonging to a given category
 	 * in a given language for a given store
-	 * url example :  http://<host>/sm-shop/shop/services/products/DEFAULT/BOOKS
+	 * url example :  http://<host>/sm-shop/shop/services/public/products/DEFAULT/BOOKS
 	 * @param store
 	 * @param language
 	 * @param category
@@ -471,11 +471,11 @@ public class ShoppingCategoryController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/shop/services/products/{store}/{language}/{category}")
+	@RequestMapping("/services/public/products/{store}/{language}/{category}")
 	@ResponseBody
 	public ProductList getProducts(@PathVariable final String store, @PathVariable final String language, @PathVariable final String category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		//http://localhost:8080/sm-shop/shop/services/products/DEFAULT/en/book.html
+		//http://localhost:8080/sm-shop/services/public/products/DEFAULT/en/book.html
 
 		try {
 
@@ -567,7 +567,7 @@ public class ShoppingCategoryController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/shop/services/products/page/{start}/{max}/{store}/{language}/{category}.html")
+	@RequestMapping("/services/public/products/page/{start}/{max}/{store}/{language}/{category}.html")
 	@ResponseBody
 	public ProductList getProducts(@PathVariable int start, @PathVariable int max, @PathVariable String store, @PathVariable final String language, @PathVariable final String category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
@@ -592,7 +592,7 @@ public class ShoppingCategoryController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/shop/services/products/page/{start}/{max}/{store}/{language}/{category}.html/filter={filterType}/filter-value={filterValue}")
+	@RequestMapping("/services/public/products/page/{start}/{max}/{store}/{language}/{category}.html/filter={filterType}/filter-value={filterValue}")
 	@ResponseBody
 	public ProductList getProductsFilteredByType(@PathVariable int start, @PathVariable int max, @PathVariable String store, @PathVariable final String language, @PathVariable final String category, @PathVariable final String filterType, @PathVariable final String filterValue, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		

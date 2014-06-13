@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.salesmanager.core.business.catalog.category.model.Category;
 import com.salesmanager.core.business.catalog.category.service.CategoryService;
-import com.salesmanager.core.business.catalog.product.model.Product;
 import com.salesmanager.core.business.catalog.product.service.ProductService;
 import com.salesmanager.core.business.merchant.model.MerchantStore;
 import com.salesmanager.core.business.merchant.service.MerchantStoreService;
@@ -39,6 +39,7 @@ import com.salesmanager.web.populator.catalog.ReadableCategoryPopulator;
  *
  */
 @Controller
+@RequestMapping("/services")
 public class ShoppingCategoryRESTController {
 	
 	@Autowired
@@ -59,20 +60,15 @@ public class ShoppingCategoryRESTController {
 	
 
 	
-	@RequestMapping( value="/shop/services/public/category/{store}/{language}/{id}", method=RequestMethod.GET)
+	@RequestMapping( value="/public/{store}/category/{id}", method=RequestMethod.GET)
 	@ResponseBody
-	public ReadableCategory getCategory(@PathVariable final String store, @PathVariable final String language, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) {
+	public ReadableCategory getCategory(@PathVariable final String store, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) {
 		
 		
 		try {
 			
-			Map<String,Language> langs = languageService.getLanguagesMap();
-			Language lang = langs.get(language);
-			if(lang==null) {
-				lang = languageService.getByCode(Constants.DEFAULT_LANGUAGE);
-			}
-
-
+			/** default routine **/
+			
 			MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 			if(merchantStore!=null) {
 				if(!merchantStore.getCode().equals(store)) {
@@ -90,7 +86,27 @@ public class ShoppingCategoryRESTController {
 				return null;
 			}
 			
-			Category dbCategory = categoryService.getByLanguage(id, lang);
+			Language language = merchantStore.getDefaultLanguage();
+			
+			Map<String,Language> langs = languageService.getLanguagesMap();
+
+			
+			if(!StringUtils.isBlank(request.getParameter(Constants.LANG))) {
+				String lang = request.getParameter(Constants.LANG);
+				if(lang!=null) {
+					language = langs.get(language);
+				}
+			}
+			
+			if(language==null) {
+				language = merchantStore.getDefaultLanguage();
+			}
+			
+			
+			/** end default routine **/
+
+			
+			Category dbCategory = categoryService.getByLanguage(id, language);
 			
 			if(dbCategory==null) {
 				response.sendError(503,  "Invalid category id");
@@ -120,58 +136,13 @@ public class ShoppingCategoryRESTController {
 		}
 	}
 	
-/*	*//**
-	 * Updates a category for a given MerchantStore
-	 *//*
-	@RequestMapping( value="/shop/services/rest/category/{store}/{language}/{id}", method=RequestMethod.PUT)
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void updateCategory(@PathVariable final String store, @PathVariable final String language, @PathVariable Long id, @Valid @RequestBody Category category, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Map<String,Language> langs = languageService.getLanguagesMap();
-		Language lang = langs.get(language);
-		if(lang==null) {
-			lang = languageService.getByCode(Constants.DEFAULT_LANGUAGE);
-		}
-		
-		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-		if(merchantStore!=null) {
-			if(!merchantStore.getCode().equals(store)) {
-				merchantStore = null;
-			}
-		}
-		
-		if(merchantStore== null) {
-			merchantStore = merchantStoreService.getByCode(store);
-		}
-		
-		if(merchantStore==null) {
-			LOGGER.error("Merchant store is null for code " + store);
-			response.sendError(503, "Merchant store is null for code " + store);
-		}
-		
-		Category oldCategory = categoryService.getById(id);
-		if(oldCategory != null){
-			category.setId(oldCategory.getId());
-			category.setMerchantStore(merchantStore);
-			
-			List<CategoryDescription> descriptions = category.getDescriptions();
-			if(descriptions != null) {
-				for(CategoryDescription description : descriptions) {
-					description.setLanguage(lang);
-					description.setCategory(category);
-				}
-			}
-			
-			categoryService.saveOrUpdate(category);
-		}else{
-			response.sendError(404, "No Category found for ID : " + id);
-		}
-	}*/
+
 	
 	
 	/**
 	 * Create new category for a given MerchantStore
 	 */
-	@RequestMapping( value="/shop/services/private/category/{store}", method=RequestMethod.POST)
+	@RequestMapping( value="/private/{store}/category", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
 	public PersistableCategory createCategory(@PathVariable final String store, @Valid @RequestBody PersistableCategory category, HttpServletRequest request, HttpServletResponse response) {
@@ -225,7 +196,7 @@ public class ShoppingCategoryRESTController {
 	/**
 	 * Deletes a category for a given MerchantStore
 	 */
-	@RequestMapping( value="/shop/services/private/category/{store}/{id}", method=RequestMethod.DELETE)
+	@RequestMapping( value="/private/{store}/category/{id}", method=RequestMethod.DELETE)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteCategory(@PathVariable final String store, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Category category = categoryService.getById(id);
@@ -235,64 +206,7 @@ public class ShoppingCategoryRESTController {
 			response.sendError(404, "No Category found for ID : " + id);
 		}
 	}
-	
 
-	
-/*	*//**
-	 * Updates a product for a given MerchantStore
-	 *//*
-	@RequestMapping( value="/shop/services/rest/products/{store}/{language}/{category}/{id}", method=RequestMethod.PUT)
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void updateProduct(@PathVariable final String store, @PathVariable final String language, @PathVariable final String category, @PathVariable Long id, @Valid @RequestBody Product product, Model model, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Map<String,Language> langs = languageService.getLanguagesMap();
-		Language lang = langs.get(language);
-		if(lang==null) {
-			lang = languageService.getByCode(Constants.DEFAULT_LANGUAGE);
-		}
-		
-		MerchantStore merchantStore = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
-		if(merchantStore!=null) {
-			if(!merchantStore.getCode().equals(store)) {
-				merchantStore = null;
-			}
-		}
-		
-		if(merchantStore== null) {
-			merchantStore = merchantStoreService.getByCode(store);
-		}
-		
-		if(merchantStore==null) {
-			LOGGER.error("Merchant store is null for code " + store);
-			response.sendError(503, "Merchant store is null for code " + store);
-		}
-		
-		Product oldProduct = productService.getById(id);
-		if(oldProduct != null){
-			product.setId(oldProduct.getId());
-			product.setMerchantStore(merchantStore);
-			
-			//TODO: Implementation goes here
-			
-			productService.saveOrUpdate(product);
-		}else{
-			response.sendError(404, "No Product found for ID : " + id);
-		}
-	}*/
-	
-	
-	/**
-	 * Deletes a product for a given MerchantStore
-	 */
-	@RequestMapping( value="/shop/services/private/products/{store}/{language}/{category}/{id}", method=RequestMethod.DELETE)
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteProduct(@PathVariable final String store, @PathVariable final String language, @PathVariable final String category, @PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
-		Product product = productService.getById(id);
-		if(product != null && product.getMerchantStore().getCode().equalsIgnoreCase(store)){
-			productService.delete(product);
-		}else{
-			response.sendError(404, "No Product found for ID : " + id);
-		}
-	}
 	
 	
 

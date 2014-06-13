@@ -27,6 +27,31 @@ public class CustomerEntity extends Customer implements Serializable {
 	private String firstName;
 	private String lastName;
 	
+	private String encodedPassword = null;
+	private String clearPassword = null;
+	
+	private String storeCode;
+	
+	@NotEmpty(message="{NotEmpty.customer.userName}")
+	private String userName;
+	
+	public void setUserName(final String userName) {
+		this.userName = userName;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+
+	public void setStoreCode(final String storeCode) {
+		this.storeCode = storeCode;
+	}
+
+
+	public String getStoreCode() {
+		return storeCode;
+	}
 
 
 	public void setEmailAddress(final String emailAddress) {
@@ -84,6 +109,22 @@ public class CustomerEntity extends Customer implements Serializable {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public String getEncodedPassword() {
+		return encodedPassword;
+	}
+
+	public void setEncodedPassword(String encodedPassword) {
+		this.encodedPassword = encodedPassword;
+	}
+
+	public String getClearPassword() {
+		return clearPassword;
+	}
+
+	public void setClearPassword(String clearPassword) {
+		this.clearPassword = clearPassword;
 	}
 
 

@@ -107,6 +107,14 @@ public class ContactController extends AbstractController {
 		MerchantStore store = (MerchantStore)request.getAttribute(Constants.MERCHANT_STORE);
 
 		try {
+			
+			if ( StringUtils.isBlank( contact.getCaptchaResponseField() )) {
+    			FieldError error = new FieldError("captchaResponseField","captchaResponseField",messages.getMessage("NotEmpty.contact.captchaResponseField", locale));
+    			bindingResult.addError(error);
+	            ajaxResponse.setErrorString(bindingResult.getAllErrors().get(0).getDefaultMessage());
+	            ajaxResponse.setStatus(AjaxResponse.RESPONSE_STATUS_FAIURE);
+	            return ajaxResponse.toJSONString();
+			}
 
 	        ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
 	        reCaptcha.setPublicKey( coreConfiguration.getProperty( Constants.RECAPATCHA_PUBLIC_KEY ) );

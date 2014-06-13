@@ -330,7 +330,7 @@ public class CustomerFacadeImpl implements CustomerFacade
             customerModel= populator.populate( customer, merchantStore, language );
 			//set groups
             if(!StringUtils.isBlank(customerModel.getPassword()) && !StringUtils.isBlank(customerModel.getNick())) {
-            	customerModel.setPassword(passwordEncoder.encodePassword(customer.getPassword(), null));
+            	customerModel.setPassword(passwordEncoder.encodePassword(customer.getClearPassword(), null));
             	setCustomerModelDefaultProperties(customerModel, merchantStore);
             }
 

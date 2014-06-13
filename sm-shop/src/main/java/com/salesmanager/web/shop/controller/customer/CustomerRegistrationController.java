@@ -41,7 +41,7 @@ import com.salesmanager.core.utils.CoreConfiguration;
 import com.salesmanager.web.constants.Constants;
 import com.salesmanager.web.entity.customer.AnonymousCustomer;
 import com.salesmanager.web.entity.customer.CustomerEntity;
-import com.salesmanager.web.entity.customer.ShopPersistableCustomer;
+import com.salesmanager.web.entity.customer.SecuredShopPersistableCustomer;
 import com.salesmanager.web.shop.controller.AbstractController;
 import com.salesmanager.web.shop.controller.ControllerConstants;
 import com.salesmanager.web.shop.controller.customer.facade.CustomerFacade;
@@ -104,7 +104,7 @@ public class CustomerRegistrationController extends AbstractController {
 
 		model.addAttribute( "recapatcha_public_key", coreConfiguration.getProperty( Constants.RECAPATCHA_PUBLIC_KEY ) );
 		
-		ShopPersistableCustomer customer = new ShopPersistableCustomer();
+		SecuredShopPersistableCustomer customer = new SecuredShopPersistableCustomer();
 		AnonymousCustomer anonymousCustomer = (AnonymousCustomer)request.getAttribute(Constants.ANONYMOUS_CUSTOMER);
 		if(anonymousCustomer!=null) {
 			customer.setBilling(anonymousCustomer.getBilling());
@@ -122,7 +122,7 @@ public class CustomerRegistrationController extends AbstractController {
 
     @RequestMapping( value = "/register.html", method = RequestMethod.POST )
     public String registerCustomer( @Valid
-    @ModelAttribute("customer") ShopPersistableCustomer customer, BindingResult bindingResult, Model model,
+    @ModelAttribute("customer") SecuredShopPersistableCustomer customer, BindingResult bindingResult, Model model,
                                     HttpServletRequest request, final Locale locale )
         throws Exception
     {

@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.salesmanager.web.entity.customer.attribute.PersistableCustomerAttribute;
 
-public class PersistableCustomer extends SecuredCustomer implements Serializable {
+public class PersistableCustomer extends CustomerEntity implements Serializable {
 
 	/**
 	 * 
