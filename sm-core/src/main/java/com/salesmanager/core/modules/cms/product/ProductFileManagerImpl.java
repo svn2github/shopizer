@@ -130,8 +130,11 @@ public class ProductFileManagerImpl extends ProductFileManager {
 			FileNameMap fileNameMap = URLConnection.getFileNameMap();
 			
 			String contentType = fileNameMap.getContentTypeFor(contentImage.getFileName());
-			String extension = contentType.substring(contentType.indexOf("/")+1,contentType.length());
-			
+			String extension = null;
+			if(contentType!=null) {
+				extension = contentType.substring(contentType.indexOf("/")+1,contentType.length());
+			}
+
 			if(extension==null){
 				extension="jpeg";
 			}
